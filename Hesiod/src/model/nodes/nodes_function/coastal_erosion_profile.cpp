@@ -61,7 +61,7 @@ void setup_coastal_erosion_profile_node(BaseNode &node)
 
   // clang-format off
   node.add_attr<FloatAttribute>(A_GROUND_EXTENT, "Ground Shore Width", 0.03f, 0.f, 0.2f);
-  node.add_attr<FloatAttribute>(A_WATER_RATIO, "Water Shore Width Ratio", 1.f, 0.f, 10.f);
+  node.add_attr<FloatAttribute>(A_WATER_RATIO, "Water Shore Width Ratio", 10.f, 0.f, 10.f);
   node.add_attr<FloatAttribute>(A_SCARP_RATIO, "Scarp Extent", 0.9f, 0.f, 1.f);
   node.add_attr<FloatAttribute>(A_SLOPE, "Shore Slope", 0.5f, 0.f, 8.f);
   node.add_attr<BoolAttribute>(A_POST_FILTER, "Enable Shore Smoothing", true);

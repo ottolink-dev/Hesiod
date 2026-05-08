@@ -14,65 +14,103 @@ using namespace attr;
 namespace hesiod
 {
 
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
+
+constexpr const char *P_Z_IN = "elevation_in";
+constexpr const char *P_DEPTH_IN = "water_depth_in";
+constexpr const char *P_MASK_IN = "mask";
+
+constexpr const char *P_Z_OUT = "elevation";
+constexpr const char *P_DEPTH_OUT = "water_depth";
+constexpr const char *P_MASK_OUT = "water_mask";
+
+constexpr const char *A_ADDITIONAL_DEPTH = "additional_depth";
+constexpr const char *A_ITERATIONS = "iterations";
+
+// -----------------------------------------------------------------------------
+// Setup
+// -----------------------------------------------------------------------------
+
 void setup_coastal_erosion_diffusion_node(BaseNode &node)
 {
   Logger::log()->trace("setup node {}", node.get_label());
 
-  // port(s)
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "elevation_in");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "water_depth_in");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, "elevation", CONFIG(node));
-  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, "water_depth", CONFIG(node));
-  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, "water_mask", CONFIG(node));
+  // --- Ports
 
-  // attribute(s)
-  node.add_attr<FloatAttribute>("additional_depth", "additional_depth", 0.05f, 0.f, 0.2f);
-  node.add_attr<IntAttribute>("iterations", "iterations", 10, 0, INT_MAX);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_Z_IN);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_DEPTH_IN);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_MASK_IN);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_Z_OUT, CONFIG(node));
+  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_DEPTH_OUT, CONFIG(node));
+  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_MASK_OUT, CONFIG(node));
 
-  // attribute(s) order
-  node.set_attr_ordered_key({"additional_depth", "iterations"});
+  // --- Attributes
+
+  // clang-format off
+  node.add_attr<FloatAttribute>(A_ADDITIONAL_DEPTH, "Additional Depth", 0.05f, 0.f, 0.2f);
+  node.add_attr<IntAttribute>(A_ITERATIONS, "Iterations", 10, 0, INT_MAX);
+  // clang-format on
+
+  // --- Attribute(s) order
+
+  node.set_attr_ordered_key({"_GROUPBOX_BEGIN_Main Parameters",
+                             A_ADDITIONAL_DEPTH,
+                             A_ITERATIONS,
+                             "_GROUPBOX_END_"});
 }
+
+// -----------------------------------------------------------------------------
+// Compute
+// -----------------------------------------------------------------------------
 
 void compute_coastal_erosion_diffusion_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  hmap::VirtualArray *p_z = node.get_value_ref<hmap::VirtualArray>("elevation_in");
-  hmap::VirtualArray *p_depth = node.get_value_ref<hmap::VirtualArray>("water_depth_in");
+  // --- Inputs / Outputs
 
-  if (p_z && p_depth)
-  {
-    hmap::VirtualArray *p_z_out = node.get_value_ref<hmap::VirtualArray>("elevation");
-    hmap::VirtualArray *p_depth_out = node.get_value_ref<hmap::VirtualArray>(
-        "water_depth");
-    hmap::VirtualArray *p_mask = node.get_value_ref<hmap::VirtualArray>("water_mask");
+  auto *p_z = node.get_value_ref<hmap::VirtualArray>(P_Z_IN);
+  auto *p_depth = node.get_value_ref<hmap::VirtualArray>(P_DEPTH_IN);
+  auto *p_mask = node.get_value_ref<hmap::VirtualArray>(P_MASK_IN);
 
-    hmap::for_each_tile(
-        {p_depth, p_z, p_depth_out, p_z_out, p_mask},
-        [&node](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
-        {
-          hmap::Array *pa_depth = p_arrays[0];
-          hmap::Array *pa_z = p_arrays[1];
-          hmap::Array *pa_depth_out = p_arrays[2];
-          hmap::Array *pa_z_out = p_arrays[3];
-          hmap::Array *pa_mask = p_arrays[4];
+  auto *p_z_out = node.get_value_ref<hmap::VirtualArray>(P_Z_OUT);
+  auto *p_depth_out = node.get_value_ref<hmap::VirtualArray>(P_DEPTH_OUT);
+  auto *p_mask_out = node.get_value_ref<hmap::VirtualArray>(P_MASK_OUT);
 
-          *pa_z_out = *pa_z;
-          *pa_depth_out = *pa_depth;
+  if (!p_z || !p_depth)
+    return;
 
-          hmap::coastal_erosion_diffusion(
-              *pa_z_out,
-              *pa_depth_out,
-              node.get_attr<FloatAttribute>("additional_depth"),
-              node.get_attr<IntAttribute>("iterations"),
-              pa_mask);
-        },
-        node.cfg().cm_cpu);
+  // --- Params
 
-    p_z_out->smooth_overlap_buffers();
-    p_depth_out->smooth_overlap_buffers();
-    p_mask->smooth_overlap_buffers();
-  }
+  const auto additional_depth = node.get_attr<FloatAttribute>(A_ADDITIONAL_DEPTH);
+  const auto iterations = node.get_attr<IntAttribute>(A_ITERATIONS);
+
+  // --- Compute
+
+  hmap::for_each_tile(
+      {p_z, p_depth, p_mask},
+      {p_z_out, p_depth_out, p_mask_out},
+      [&](std::vector<const hmap::Array *> in,
+          std::vector<hmap::Array *>       out,
+          const hmap::TileRegion &)
+      {
+        auto [pa_z, pa_depth, pa_mask] = unpack<3>(in);
+
+        auto [pa_z_out, pa_depth_out, pa_mask_out] = unpack<3>(out);
+
+        *pa_z_out = *pa_z;
+        *pa_depth_out = *pa_depth;
+
+        hmap::coastal_erosion_diffusion(*pa_z_out,
+                                        *pa_depth_out,
+                                        additional_depth,
+                                        iterations,
+                                        pa_mask,
+                                        pa_mask_out);
+      },
+      node.cfg().cm_cpu);
 }
 
 } // namespace hesiod
