@@ -433,7 +433,6 @@ std::map<std::string, std::string> get_node_inventory()
       {"White", "Primitive/Random"},
       {"WhiteDensityMap", "Primitive/Random"},
       {"WhiteSparse", "Primitive/Random"},
-      {"Wrinkle", "WIP"}, // Filter/Recast
       {"ZeroedEdges", "Boundaries"},
       {"Zoom", "Operator/Transform"},
   };
@@ -762,7 +761,6 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
     SETUP_NODE(White, white);
     SETUP_NODE(WhiteDensityMap, white_density_map);
     SETUP_NODE(WhiteSparse, white_sparse);
-    SETUP_NODE(Wrinkle, wrinkle);
     SETUP_NODE(ZeroedEdges, zeroed_edges);
     SETUP_NODE(Zoom, zoom);
 #endif

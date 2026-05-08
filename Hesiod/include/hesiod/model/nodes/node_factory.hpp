@@ -326,7 +326,6 @@ DECLARE_NODE(wavelet_noise)
 DECLARE_NODE(white)
 DECLARE_NODE(white_density_map)
 DECLARE_NODE(white_sparse)
-DECLARE_NODE(wrinkle)
 DECLARE_NODE(zeroed_edges)
 DECLARE_NODE(zoom)
 #endif
