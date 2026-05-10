@@ -266,7 +266,7 @@ std::map<std::string, std::string> get_node_inventory()
       {"Laplace", "Filter/Smoothing"},
       {"Lerp", "Math/Base"},
       {"LocalMetrics", "Terrain Features"},
-      // {"LevelSetCurvature", "Terrain Features"},
+      {"LevelSetCurvature", "WIP"}, // "Terrain Features/Advanced"},
       {"MakeBinary", "Operator/Morphology"},
       {"MakePeriodic", "Operator/Tiling"},
       {"MakePeriodicStitching", "Operator/Tiling"},
