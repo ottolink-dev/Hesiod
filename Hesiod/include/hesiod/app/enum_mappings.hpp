@@ -108,6 +108,7 @@ static struct EnumMappings
   const std::map<std::string, int> heightmap_export_format_map = {
       {"png (8 bit)", ExportFormat::PNG8BIT},
       {"png (16 bit)", ExportFormat::PNG16BIT},
+      {"exr (32 bit), Preserve absolute values", ExportFormat::EXR32BIT},
       {"raw (16 bit, Unity)", ExportFormat::RAW16BIT}};
 
   const std::map<std::string, int> interpolation_method2d_map = {

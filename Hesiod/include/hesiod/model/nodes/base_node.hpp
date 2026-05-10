@@ -152,6 +152,7 @@ enum ExportFormat : int
   PNG8BIT,
   PNG16BIT,
   RAW16BIT,
+  EXR32BIT,
 };
 
 enum MaskCombineMethod : int
