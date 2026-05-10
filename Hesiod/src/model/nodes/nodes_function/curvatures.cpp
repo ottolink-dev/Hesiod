@@ -16,6 +16,7 @@ using namespace attr;
 
 namespace hesiod
 {
+
 // -----------------------------------------------------------------------------
 // Ports & Attributes
 // -----------------------------------------------------------------------------
@@ -37,22 +38,25 @@ void setup_curvatures_node(BaseNode &node)
 {
   Logger::log()->trace("setup node {}", node.get_label());
 
-  // port(s)
+  // --- Ports
+
   node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_IN);
   node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_OUT, CONFIG(node));
 
-  // attribute(s)
-  node.add_attr<FloatAttribute>(A_RADIUS, "Radius", 0.f, 0.f, 0.5f);
-  node.add_attr<EnumAttribute>(A_CTYPE,
-                               "Curvature Type",
-                               enum_mappings.curvature_type_map,
-                               "Mean");
+  // --- Attributes
+
   std::vector<std::string> choices = {"Positive", "Negative", "Both"};
+
+  // clang-format off
+  node.add_attr<FloatAttribute>(A_RADIUS, "Radius", 0.f, 0.f, 0.5f);
+  node.add_attr<EnumAttribute>(A_CTYPE, "Curvature Type", enum_mappings.curvature_type_map, "Mean");
   node.add_attr<ChoiceAttribute>(A_CLAMPING, "Values Kept", choices);
   node.add_attr<FloatAttribute>(A_SATMAX, "Saturation Ratio", 2.f, 0.f, 20.f, "{:.0f}%");
   node.add_attr<BoolAttribute>(A_APPROX, "Approx. Algo.", false);
+  // clang-format on
 
-  // attribute(s) order
+  // --- Attribute(s) order
+
   node.set_attr_ordered_key({"_GROUPBOX_BEGIN_Metric Choice",
                              A_RADIUS,
                              A_CTYPE,
@@ -73,64 +77,48 @@ void compute_curvatures_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
+  // --- Inputs / Outputs
+
   auto *p_in = node.get_value_ref<hmap::VirtualArray>(P_IN);
   auto *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
   if (!p_in)
     return;
 
-  // --- Params lambda
+  // --- Params
 
-  const auto params = [&node, p_out]()
-  {
-    struct P
-    {
-      int                 ir;
-      hmap::CurvatureType ctype;
-      std::string         choice;
-      bool                keep_both;
-      float               satmin;
-      float               satmax;
-      bool                approx_algo;
-    };
+  // clang-format off
+  const auto radius      = node.get_attr<FloatAttribute>(A_RADIUS);
+  const auto ctype       = hmap::CurvatureType(node.get_attr<EnumAttribute>(A_CTYPE));
+  const auto clamping    = node.get_attr<ChoiceAttribute>(A_CLAMPING);
+  const auto approx_algo = node.get_attr<BoolAttribute>(A_APPROX);
+  const auto sat_perc    = 0.01f * node.get_attr<FloatAttribute>(A_SATMAX);
+  // clang-format on
 
-    int ir = std::max(1, (int)(node.get_attr<FloatAttribute>(A_RADIUS) * p_out->shape.x));
-    auto ctype = hmap::CurvatureType(node.get_attr<EnumAttribute>(A_CTYPE));
-
-    std::string choice = node.get_attr<ChoiceAttribute>(A_CLAMPING);
-    bool        keep_both = (choice == "Both");
-
-    float sat_perc = 0.01f * node.get_attr<FloatAttribute>(A_SATMAX);
-
-    // clang-format off
-    return P{
-      .ir = ir,
-      .ctype = ctype,
-      .choice = choice,
-      .keep_both = keep_both,
-      .satmin = sat_perc,
-      .satmax = 1.f -  sat_perc,
-      .approx_algo = node.get_attr<BoolAttribute>(A_APPROX)
-    };
-    // clang-format on
-  }();
+  const bool  keep_both = (clamping == "Both");
+  const int   ir = std::max(1, int(radius * p_out->shape.x));
+  const float satmin = sat_perc;
+  const float satmax = 1.f - sat_perc;
 
   // --- Compute
 
   hmap::for_each_tile(
-      {p_out, p_in},
-      [&params](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
+      {p_in},
+      {p_out},
+      [&](std::vector<const hmap::Array *> in,
+          std::vector<hmap::Array *>       out,
+          const hmap::TileRegion &)
       {
-        auto [pa_out, pa_in] = unpack<2>(p_arrays);
-        *pa_out = hmap::gpu::curvature_quadric(*pa_in,
-                                               params.ir,
-                                               params.ctype,
-                                               params.approx_algo);
+        auto [pa_in] = unpack<1>(in);
 
-        // if only one curvature sign is kept
-        if (!params.keep_both)
+        auto [pa_out] = unpack<1>(out);
+
+        *pa_out = hmap::gpu::curvature_quadric(*pa_in, ir, ctype, approx_algo);
+
+        // keep only one curvature sign if requested
+        if (!keep_both)
         {
-          if (params.choice == "Negative")
+          if (clamping == "Negative")
             *pa_out *= -1.f;
 
           hmap::clamp_min(*pa_out, 0.f);
@@ -138,9 +126,9 @@ void compute_curvatures_node(BaseNode &node)
       },
       node.cfg().cm_gpu);
 
-  // post-process
-  p_out->smooth_overlap_buffers();
-  post_apply_saturate_percentile(node, *p_out, params.satmin, params.satmax);
+  // --- Post-process
+
+  post_apply_saturate_percentile(node, *p_out, satmin, satmax);
   post_process_heightmap(node, *p_out);
 }
 
