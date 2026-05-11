@@ -162,6 +162,11 @@ void AppSettingsWindow::setup_layout()
   this->bind_bool("Enable example selector at startup",
                   ctx.app_settings.interface.enable_example_selector_at_startup);
 
+  this->add_title("Node Editor");
+
+  this->bind_bool("Show node toolbat in settings pan",
+                  ctx.app_settings.node_editor.show_node_toolbar_in_settings_pan);
+
   this->add_title("Viewport");
 
   this->bind_bool("Add border skirt to the heightmap",

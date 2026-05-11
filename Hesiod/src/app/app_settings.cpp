@@ -132,6 +132,9 @@ void AppSettings::json_from(nlohmann::json const &json)
   json_safe_get(json,
                 "node_editor.show_node_settings_pan",
                 node_editor.show_node_settings_pan);
+  json_safe_get(json,
+                "node_editor.show_node_toolbar_in_settings_pan",
+                node_editor.show_node_toolbar_in_settings_pan);
   json_safe_get(json, "node_editor.show_viewer", node_editor.show_viewer);
   json_safe_get(json,
                 "node_editor.disable_during_update",
@@ -203,6 +206,8 @@ nlohmann::json AppSettings::json_to() const
   json["node_editor.auto_layout_dx"] = node_editor.auto_layout_dx;
   json["node_editor.auto_layout_dy"] = node_editor.auto_layout_dy;
   json["node_editor.show_node_settings_pan"] = node_editor.show_node_settings_pan;
+  json["node_editor.show_node_toolbar_in_settings_pan"] =
+      node_editor.show_node_toolbar_in_settings_pan;
   json["node_editor.show_viewer"] = node_editor.show_viewer;
   json["node_editor.disable_during_update"] = node_editor.disable_during_update;
   json["node_editor.enable_node_groups"] = node_editor.enable_node_groups;

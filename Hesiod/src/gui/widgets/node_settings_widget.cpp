@@ -139,10 +139,12 @@ void NodeSettingsWidget::update_content()
                     });
     }
 
+    bool add_toolbar = HSD_CTX.app_settings.node_editor.show_node_toolbar_in_settings_pan;
+
     auto *attr_widget = new NodeAttributesWidget(p_gno->get_shared(),
                                                  node_id,
                                                  this->p_graph_node_widget,
-                                                 /* add_toolbar */ false,
+                                                 add_toolbar,
                                                  /* parent */ nullptr);
     if (!attr_widget)
       continue;
