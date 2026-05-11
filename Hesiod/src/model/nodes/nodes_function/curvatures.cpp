@@ -110,7 +110,6 @@ void compute_curvatures_node(BaseNode &node)
           const hmap::TileRegion &)
       {
         auto [pa_in] = unpack<1>(in);
-
         auto [pa_out] = unpack<1>(out);
 
         *pa_out = hmap::gpu::curvature_quadric(*pa_in, ir, ctype, approx_algo);
