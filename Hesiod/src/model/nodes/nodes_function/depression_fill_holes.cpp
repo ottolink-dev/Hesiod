@@ -46,9 +46,11 @@ void setup_deposition_fill_holes_node(BaseNode &node)
 
   // clang-format off
   node.add_attr<FloatAttribute>(A_RADIUS, "Radius", 0.05f, 0.f, 0.2f);
-  node.add_attr<FloatAttribute>(A_STRENGTH, "Strength", 0.1f, 0.f, 1.f);
+  node.add_attr<FloatAttribute>(A_STRENGTH, "Strength", 1.f, 0.f, 1.f);
   node.add_attr<IntAttribute>(A_ITERATIONS, "Iterations", 1, 1, 16);
   // clang-format on
+
+  // --- Attribute(s) order
 
   node.set_attr_ordered_key({"_GROUPBOX_BEGIN_Main Parameters",
                              A_RADIUS,
@@ -56,6 +58,7 @@ void setup_deposition_fill_holes_node(BaseNode &node)
                              A_ITERATIONS,
                              "_GROUPBOX_END_"});
 
+  setup_pre_process_mask_attributes(node);
   setup_post_process_heightmap_attributes(node,
                                           {.add_mix = true, .remap_active_state = false});
 }
@@ -88,6 +91,10 @@ void compute_deposition_fill_holes_node(BaseNode &node)
 
   const int ir = std::max(1, int(radius * p_out->shape.x));
 
+  // --- Prepare mask
+
+  std::shared_ptr<hmap::VirtualArray> sp_mask = pre_process_mask(node, p_mask, *p_in);
+  
   // --- Compute
 
   hmap::for_each_tile(
@@ -102,9 +109,7 @@ void compute_deposition_fill_holes_node(BaseNode &node)
 
         *pa_out = *pa_in;
 
-        // TODO proper mask handling
-
-        hmap::gpu::deposition_fill_holes(*pa_out, ir, strength, iterations);
+        hmap::gpu::deposition_fill_holes(*pa_out, ir, strength, pa_mask, iterations);
 
         *pa_deposition = *pa_out - *pa_in;
       },
@@ -112,9 +117,8 @@ void compute_deposition_fill_holes_node(BaseNode &node)
 
   // --- Post-process
 
-  p_out->smooth_overlap_buffers();
-  p_deposition->smooth_overlap_buffers();
   post_process_heightmap(node, *p_out);
+  p_deposition->smooth_overlap_buffers();
 }
 
 } // namespace hesiod
