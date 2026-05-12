@@ -56,6 +56,8 @@ void setup_thermal_scree_node(BaseNode &node)
   node.add_attr<BoolAttribute>(A_SCALE_TALUS, "Scale with Elevation", true);
   // clang-format on
 
+  // --- Attribute(s) order
+
   node.set_attr_ordered_key({"_GROUPBOX_BEGIN_Slope Constraints",
                              A_TALUS_GLOBAL,
                              A_SCALE_TALUS,

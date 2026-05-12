@@ -18,149 +18,188 @@ using namespace attr;
 namespace hesiod
 {
 
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
+
+constexpr const char *P_IN = "input";
+constexpr const char *P_MASK = "mask";
+constexpr const char *P_OUT = "output";
+constexpr const char *P_DEPOSITION = "deposition";
+
+constexpr const char *A_TYPE = "type";
+constexpr const char *A_TALUS = "talus_global";
+constexpr const char *A_DURATION = "duration";
+constexpr const char *A_SCALE_TALUS = "scale_talus_with_elevation";
+
+// -----------------------------------------------------------------------------
+// Setup
+// -----------------------------------------------------------------------------
+
 void setup_thermal_node(BaseNode &node)
 {
   Logger::log()->trace("setup node {}", node.get_label());
 
-  // port(s)
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "input");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "mask");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, "output", CONFIG(node));
-  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, "deposition", CONFIG(node));
+  // --- Ports
 
-  // attribute(s)
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_IN);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_MASK);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_OUT, CONFIG(node));
+  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_DEPOSITION, CONFIG(node));
+
+  // --- Attributes
+
   std::vector<std::string> choices =
       {"Standard", "Linear", "Bedrock", "Olsen", "Ridge", "Inflate"};
-  node.add_attr<ChoiceAttribute>("type", "", choices);
 
-  node.add_attr<FloatAttribute>("talus_global", "Slope", 1.f, 0.f, FLT_MAX);
-  node.add_attr<FloatAttribute>("duration", "Duration", 0.3f, 0.05f, 6.f);
-  node.add_attr<BoolAttribute>("scale_talus_with_elevation",
-                               "Scale with Elevation",
-                               false);
+  // clang-format off
+  node.add_attr<ChoiceAttribute>(A_TYPE, "", choices);
+  node.add_attr<FloatAttribute>(A_TALUS, "Slope", 1.f, 0.f, FLT_MAX);
+  node.add_attr<FloatAttribute>(A_DURATION, "Duration", 0.3f, 0.05f, 6.f);
+  node.add_attr<BoolAttribute>(A_SCALE_TALUS, "Scale with Elevation", false);
+  // clang-format on
 
-  // attribute(s) order
-  node.set_attr_ordered_key({
-      "_GROUPBOX_BEGIN_Deposition Model",
-      "type",
-      "_GROUPBOX_END_",
-      //
-      "_GROUPBOX_BEGIN_Parameters",
-      "talus_global",
-      "scale_talus_with_elevation",
-      "duration",
-      "_GROUPBOX_END_",
-  });
+  // --- Attribute(s) order
+
+  node.set_attr_ordered_key({"_GROUPBOX_BEGIN_Deposition Model",
+                             A_TYPE,
+                             "_GROUPBOX_END_",
+                             //
+                             "_GROUPBOX_BEGIN_Parameters",
+                             A_TALUS,
+                             A_SCALE_TALUS,
+                             A_DURATION,
+                             "_GROUPBOX_END_"});
 
   setup_pre_process_mask_attributes(node);
   setup_post_process_heightmap_attributes(node,
                                           {.add_mix = true, .remap_active_state = false});
 }
 
+// -----------------------------------------------------------------------------
+// Compute
+// -----------------------------------------------------------------------------
+
 void compute_thermal_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  hmap::VirtualArray *p_in = node.get_value_ref<hmap::VirtualArray>("input");
+  // --- Inputs / Outputs
 
-  if (p_in)
+  auto *p_in = node.get_value_ref<hmap::VirtualArray>(P_IN);
+  auto *p_mask = node.get_value_ref<hmap::VirtualArray>(P_MASK);
+  auto *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
+  auto *p_deposition = node.get_value_ref<hmap::VirtualArray>(P_DEPOSITION);
+
+  if (!p_in)
+    return;
+
+  // --- Prepare mask
+
+  std::shared_ptr<hmap::VirtualArray> sp_mask = pre_process_mask(node, p_mask, *p_in);
+
+  // --- Params
+
+  // clang-format off
+  const auto type = node.get_attr<ChoiceAttribute>(A_TYPE);
+  const auto talus_global = node.get_attr<FloatAttribute>(A_TALUS);
+  const auto duration = node.get_attr<FloatAttribute>(A_DURATION);
+  const auto scale_talus = node.get_attr<BoolAttribute>(A_SCALE_TALUS);
+  // clang-format on
+
+  const float talus = talus_global / float(p_out->shape.x);
+  const int   iterations = int(duration * p_out->shape.x);
+
+  // --- Talus map
+
+  hmap::VirtualArray talus_map(CONFIG(node));
+  talus_map.fill(talus, node.cfg().cm_cpu);
+
+  if (scale_talus)
   {
-    hmap::VirtualArray *p_mask = node.get_value_ref<hmap::VirtualArray>("mask");
-    hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>("output");
-    hmap::VirtualArray *p_deposition_map = node.get_value_ref<hmap::VirtualArray>(
-        "deposition");
+    talus_map.copy_from(*p_in, node.cfg().cm_cpu);
+    talus_map.remap(talus / 100.f, talus, node.cfg().cm_cpu);
+  }
 
-    // prepare mask
-    std::shared_ptr<hmap::VirtualArray> sp_mask = pre_process_mask(node, p_mask, *p_in);
+  // --- Compute
 
-    // inputs
-    float talus = node.get_attr<FloatAttribute>("talus_global") / (float)p_out->shape.x;
-    int   iterations = int(node.get_attr<FloatAttribute>("duration") * p_out->shape.x);
+  hmap::for_each_tile(
+      {p_in, p_mask, &talus_map},
+      {p_out, p_deposition},
+      [&](std::vector<const hmap::Array *> in,
+          std::vector<hmap::Array *>       out,
+          const hmap::TileRegion &)
+      {
+        auto [pa_in, pa_mask, pa_talus_map] = unpack<3>(in);
+        auto [pa_out, pa_deposition] = unpack<2>(out);
 
-    hmap::VirtualArray talus_map = hmap::VirtualArray(CONFIG(node));
-    talus_map.fill(talus, node.cfg().cm_cpu);
+        *pa_out = *pa_in;
 
-    if (node.get_attr<BoolAttribute>("scale_talus_with_elevation"))
-    {
-      talus_map.copy_from(*p_in, node.cfg().cm_cpu);
-      talus_map.remap(talus / 100.f, talus, node.cfg().cm_cpu);
-    }
-
-    hmap::for_each_tile(
-        {p_out, p_in, p_mask, &talus_map, p_deposition_map},
-        [&node, talus, iterations](std::vector<hmap::Array *> p_arrays,
-                                   const hmap::TileRegion &)
+        if (type == "Standard")
         {
-          auto [pa_out, pa_in, pa_mask, pa_talus_map, pa_deposition_map] = unpack<5>(
-              p_arrays);
+          hmap::gpu::thermal(*pa_out,
+                             pa_mask,
+                             *pa_talus_map,
+                             iterations,
+                             nullptr,
+                             pa_deposition);
+        }
+        else if (type == "Ridge")
+        {
+          hmap::gpu::thermal_ridge(*pa_out,
+                                   pa_mask,
+                                   *pa_talus_map,
+                                   iterations,
+                                   pa_deposition);
+        }
+        else if (type == "Linear")
+        {
+          const int iterations_half = int(0.5f * iterations);
 
-          const std::string type = node.get_attr<ChoiceAttribute>("type");
+          hmap::gpu::thermal(*pa_out,
+                             pa_mask,
+                             *pa_talus_map,
+                             iterations_half,
+                             nullptr,
+                             nullptr);
 
-          *pa_out = *pa_in;
+          hmap::gpu::thermal_ridge(*pa_out,
+                                   pa_mask,
+                                   *pa_talus_map,
+                                   iterations_half,
+                                   pa_deposition);
+        }
+        else if (type == "Bedrock")
+        {
+          hmap::gpu::thermal_auto_bedrock(*pa_out,
+                                          pa_mask,
+                                          *pa_talus_map,
+                                          iterations,
+                                          pa_deposition);
+        }
+        else if (type == "Olsen")
+        {
+          hmap::gpu::thermal_olsen(*pa_out, pa_mask, *pa_talus_map, iterations);
 
-          if (type == "Standard")
-          {
-            hmap::gpu::thermal(*pa_out,
-                               pa_mask,
-                               *pa_talus_map,
-                               iterations,
-                               nullptr, // bedrock
-                               pa_deposition_map);
-          }
-          else if (type == "Ridge")
-          {
-            hmap::gpu::thermal_ridge(*pa_out,
-                                     pa_mask,
-                                     *pa_talus_map,
-                                     iterations,
-                                     pa_deposition_map);
-          }
-          else if (type == "Linear")
-          {
-            int iterations_half = int(0.5f * iterations);
+          *pa_deposition = *pa_out - *pa_in;
+        }
+        else if (type == "Inflate")
+        {
+          hmap::gpu::thermal_inflate(*pa_out, pa_mask, *pa_talus_map, iterations);
 
-            hmap::gpu::thermal(*pa_out,
-                               pa_mask,
-                               *pa_talus_map,
-                               iterations_half,
-                               /* pa_deposition_map */ nullptr);
+          *pa_deposition = *pa_out - *pa_in;
+        }
+      },
+      node.cfg().cm_gpu);
 
-            hmap::gpu::thermal_ridge(*pa_out,
-                                     pa_mask,
-                                     *pa_talus_map,
-                                     iterations_half,
-                                     pa_deposition_map);
-          }
-          else if (type == "Bedrock")
-          {
-            hmap::gpu::thermal_auto_bedrock(*pa_out,
-                                            pa_mask,
-                                            *pa_talus_map,
-                                            iterations,
-                                            pa_deposition_map);
-          }
-          else if (type == "Olsen")
-          {
-            hmap::gpu::thermal_olsen(*pa_out, pa_mask, *pa_talus_map, iterations);
-            *pa_deposition_map = *pa_out - *pa_in;
-          }
-          else if (type == "Inflate")
-          {
-            hmap::gpu::thermal_inflate(*pa_out, pa_mask, *pa_talus_map, iterations);
-            *pa_deposition_map = *pa_out - *pa_in;
-          }
-        },
-        node.cfg().cm_gpu);
+  // --- Post-process
 
-    // post-process
-    p_out->smooth_overlap_buffers();
-    post_process_heightmap(node, *p_out, p_in);
+  post_process_heightmap(node, *p_out, p_in);
 
-    if (p_deposition_map)
-    {
-      p_deposition_map->smooth_overlap_buffers();
-      p_deposition_map->remap(0.f, 1.f, node.cfg().cm_cpu);
-    }
+  if (p_deposition)
+  {
+    p_deposition->smooth_overlap_buffers();
+    p_deposition->remap(0.f, 1.f, node.cfg().cm_cpu);
   }
 }
 
