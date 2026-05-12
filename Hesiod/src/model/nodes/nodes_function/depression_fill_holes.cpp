@@ -94,7 +94,7 @@ void compute_deposition_fill_holes_node(BaseNode &node)
   // --- Prepare mask
 
   std::shared_ptr<hmap::VirtualArray> sp_mask = pre_process_mask(node, p_mask, *p_in);
-  
+
   // --- Compute
 
   hmap::for_each_tile(

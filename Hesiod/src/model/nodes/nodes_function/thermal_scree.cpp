@@ -16,35 +16,54 @@ using namespace attr;
 namespace hesiod
 {
 
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
+
+constexpr const char *P_IN = "input";
+constexpr const char *P_MASK = "mask";
+constexpr const char *P_ZMAX = "zmax";
+constexpr const char *P_OUT = "output";
+constexpr const char *P_DEPOSITION = "deposition";
+
+constexpr const char *A_TALUS_GLOBAL = "talus_global";
+constexpr const char *A_ZMAX = "zmax";
+constexpr const char *A_DURATION = "duration";
+constexpr const char *A_SCALE_TALUS = "scale_talus_with_elevation";
+
+// -----------------------------------------------------------------------------
+// Setup
+// -----------------------------------------------------------------------------
+
 void setup_thermal_scree_node(BaseNode &node)
 {
   Logger::log()->trace("setup node {}", node.get_label());
 
-  // port(s)
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "input");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "mask");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "zmax");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, "output", CONFIG(node));
-  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, "deposition", CONFIG(node));
+  // --- Ports
 
-  // attribute(s)
-  node.add_attr<FloatAttribute>("talus_global", "Slope", 2.f, 0.f, FLT_MAX);
-  node.add_attr<FloatAttribute>("zmax", "Scree Max Elevation", 0.5f, -1.f, 2.f);
-  node.add_attr<FloatAttribute>("duration", "Duration", 0.3f, 0.05f, 6.f);
-  // node.add_attr<BoolAttribute>("talus_constraint", "Talus Constraint", true);
-  node.add_attr<BoolAttribute>("scale_talus_with_elevation",
-                               "Scale with Elevation",
-                               true);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_IN);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_MASK);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_ZMAX);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_OUT, CONFIG(node));
+  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_DEPOSITION, CONFIG(node));
 
-  // attribute(s) order
+  // --- Attributes
+
+  // clang-format off
+  node.add_attr<FloatAttribute>(A_TALUS_GLOBAL, "Slope", 2.f, 0.f, FLT_MAX);
+  node.add_attr<FloatAttribute>(A_ZMAX, "Scree Max Elevation", 0.5f, -1.f, 2.f);
+  node.add_attr<FloatAttribute>(A_DURATION, "Duration", 0.3f, 0.05f, 6.f);
+  node.add_attr<BoolAttribute>(A_SCALE_TALUS, "Scale with Elevation", true);
+  // clang-format on
+
   node.set_attr_ordered_key({"_GROUPBOX_BEGIN_Slope Constraints",
-                             "talus_global",
-                             "scale_talus_with_elevation",
-                             "zmax",
+                             A_TALUS_GLOBAL,
+                             A_SCALE_TALUS,
+                             A_ZMAX,
                              "_GROUPBOX_END_",
                              //
                              "_GROUPBOX_BEGIN_Deposition Dynamics",
-                             "duration",
+                             A_DURATION,
                              "_GROUPBOX_END_"});
 
   setup_pre_process_mask_attributes(node);
@@ -52,72 +71,94 @@ void setup_thermal_scree_node(BaseNode &node)
                                           {.add_mix = true, .remap_active_state = false});
 }
 
+// -----------------------------------------------------------------------------
+// Compute
+// -----------------------------------------------------------------------------
+
 void compute_thermal_scree_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  hmap::VirtualArray *p_in = node.get_value_ref<hmap::VirtualArray>("input");
+  // --- Inputs / Outputs
 
-  if (p_in)
+  auto *p_in = node.get_value_ref<hmap::VirtualArray>(P_IN);
+  auto *p_mask = node.get_value_ref<hmap::VirtualArray>(P_MASK);
+  auto *p_zmax = node.get_value_ref<hmap::VirtualArray>(P_ZMAX);
+  auto *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
+  auto *p_deposition = node.get_value_ref<hmap::VirtualArray>(P_DEPOSITION);
+
+  if (!p_in)
+    return;
+
+  // --- Params
+
+  // clang-format off
+  const auto talus_global = node.get_attr<FloatAttribute>(A_TALUS_GLOBAL);
+  const auto zmax_value   = node.get_attr<FloatAttribute>(A_ZMAX);
+  const auto duration     = node.get_attr<FloatAttribute>(A_DURATION);
+  const auto scale_talus  = node.get_attr<BoolAttribute>(A_SCALE_TALUS);
+  // clang-format on
+
+  const float talus = talus_global / float(p_out->shape.x);
+  const int   iterations = int(duration * p_out->shape.x);
+
+  // --- Prepare mask
+
+  std::shared_ptr<hmap::VirtualArray> sp_mask = pre_process_mask(node, p_mask, *p_in);
+
+  // --- Talus map
+
+  hmap::VirtualArray talus_map(CONFIG(node));
+  talus_map.fill(talus, node.cfg().cm_cpu);
+
+  if (scale_talus)
   {
-    hmap::VirtualArray *p_mask = node.get_value_ref<hmap::VirtualArray>("mask");
-    hmap::VirtualArray *p_zmax = node.get_value_ref<hmap::VirtualArray>("zmax");
-    hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>("output");
-    hmap::VirtualArray *p_deposition_map = node.get_value_ref<hmap::VirtualArray>(
-        "deposition");
+    talus_map.copy_from(*p_in, node.cfg().cm_cpu);
+    talus_map.remap(talus / 10.f, talus, node.cfg().cm_cpu);
+  }
 
-    // prepare mask
-    std::shared_ptr<hmap::VirtualArray> sp_mask = pre_process_mask(node, p_mask, *p_in);
+  // --- Z max map
 
-    float talus = node.get_attr<FloatAttribute>("talus_global") / (float)p_out->shape.x;
-    int   iterations = int(node.get_attr<FloatAttribute>("duration") * p_out->shape.x);
+  hmap::VirtualArray zmax_map(CONFIG(node));
 
-    hmap::VirtualArray talus_map = hmap::VirtualArray(CONFIG(node));
-    talus_map.fill(talus, node.cfg().cm_cpu);
+  if (!p_zmax)
+  {
+    zmax_map.fill(zmax_value, node.cfg().cm_cpu);
+    p_zmax = &zmax_map;
+  }
 
-    if (node.get_attr<BoolAttribute>("scale_talus_with_elevation"))
-    {
-      talus_map.copy_from(*p_in, node.cfg().cm_cpu);
-      talus_map.remap(talus / 10.f, talus, node.cfg().cm_cpu);
-    }
+  // --- Compute
 
-    hmap::VirtualArray zmax = hmap::VirtualArray(CONFIG(node));
+  hmap::for_each_tile(
+      {p_in, p_mask, &talus_map, p_zmax},
+      {p_out, p_deposition},
+      [&](std::vector<const hmap::Array *> in,
+          std::vector<hmap::Array *>       out,
+          const hmap::TileRegion &)
+      {
+        auto [pa_in, pa_mask, pa_talus_map, pa_zmax] = unpack<4>(in);
+        auto [pa_out, pa_deposition] = unpack<2>(out);
 
-    if (!p_zmax)
-    {
-      zmax.fill(node.get_attr<FloatAttribute>("zmax"), node.cfg().cm_cpu);
-      p_zmax = &zmax;
-    }
+        *pa_out = *pa_in;
 
-    hmap::for_each_tile(
-        {p_out, p_mask, &talus_map, p_zmax, p_deposition_map},
-        [&node, talus, iterations](std::vector<hmap::Array *> p_arrays,
-                                   const hmap::TileRegion &)
-        {
-          hmap::Array *pa_out = p_arrays[0];
-          hmap::Array *pa_mask = p_arrays[1];
-          hmap::Array *pa_talus_map = p_arrays[2];
-          hmap::Array *pa_zmax = p_arrays[3];
-          hmap::Array *pa_deposition_map = p_arrays[4];
+        hmap::gpu::thermal_scree(*pa_out,
+                                 pa_mask,
+                                 *pa_talus_map,
+                                 *pa_zmax,
+                                 iterations,
+                                 pa_deposition);
+      },
+      node.cfg().cm_gpu);
 
-          hmap::gpu::thermal_scree(*pa_out,
-                                   pa_mask,
-                                   *pa_talus_map,
-                                   *pa_zmax,
-                                   iterations,
-                                   pa_deposition_map);
-        },
-        node.cfg().cm_gpu);
+  // --- Post-process
 
-    // post-process
-    p_out->smooth_overlap_buffers();
-    post_process_heightmap(node, *p_out, p_in);
+  p_out->smooth_overlap_buffers();
+  post_process_heightmap(node, *p_out, p_in);
 
-    if (p_deposition_map)
-    {
-      p_deposition_map->smooth_overlap_buffers();
-      p_deposition_map->remap(0.f, 1.f, node.cfg().cm_cpu);
-    }
+  if (p_deposition)
+  {
+    p_deposition->smooth_overlap_buffers();
+    p_deposition->remap(0.f, 1.f, node.cfg().cm_cpu);
   }
 }
 
