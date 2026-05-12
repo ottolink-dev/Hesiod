@@ -195,7 +195,8 @@ std::map<std::string, std::string> get_node_inventory()
       {"Curvatures", "Terrain Features"},
       {"Debug", "Debug"},
       {"Dendry", "WIP"},
-      {"DepressionFilling", "Erosion"},
+      {"DepositionFillHoles", "Erosion/Deposition"},
+      {"DepressionFilling", "Erosion/Deposition"},
       {"Detrend", "WIP"},                     // Filter/Recurve
       {"DiffusionLimitedAggregation", "WIP"}, // Primitive/Coherent
       {"Dilation", "WIP/DEPRECATED"},
@@ -534,6 +535,7 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
     SETUP_NODE(CurvatureMean, curvature_mean);
     SETUP_NODE(Curvatures, curvatures);
     SETUP_NODE(Dendry, dendry);
+    SETUP_NODE(DepositionFillHoles, deposition_fill_holes);
     SETUP_NODE(DepressionFilling, depression_filling);
     SETUP_NODE(Detrend, detrend);
     SETUP_NODE(DiffusionLimitedAggregation, diffusion_limited_aggregation);
