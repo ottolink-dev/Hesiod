@@ -8,6 +8,7 @@
 #include "hesiod/gui/widgets/gui_utils.hpp"
 #include "hesiod/gui/widgets/icon_check_box.hpp"
 #include "hesiod/gui/widgets/node_attributes_widget.hpp"
+#include "hesiod/gui/widgets/node_library_widget.hpp"
 #include "hesiod/gui/widgets/node_settings_widget.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/utils.hpp"

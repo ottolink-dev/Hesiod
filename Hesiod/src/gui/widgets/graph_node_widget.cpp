@@ -707,6 +707,262 @@ std::string GraphNodeWidget::on_new_node_request(const std::string &node_type,
   return node_id;
 }
 
+std::string GraphNodeWidget::on_new_node_request_chain(const std::string &node_type)
+{
+  Logger::log()->trace("GraphNodeWidget::on_new_node_request_chain: node_type {}",
+                       node_type);
+
+  // --- Safeguards
+
+  auto gno = this->p_graph_node.lock();
+  if (!gno)
+    return "";
+
+  if (node_type == "")
+    return "";
+
+  // get current node selection
+  std::vector<std::string> selected_ids = this->get_selected_node_ids();
+
+  // empty selection => skip
+  if (selected_ids.empty())
+  {
+    HSD_APP->notify("Select a node before inserting a new node.");
+    return "";
+  }
+
+  // --- Backup selected node connections
+
+  const std::string selected_id = selected_ids.back();
+
+  // position
+  gngui::GraphicsNode *p_gx_node = this->get_graphics_node_by_id(selected_id);
+  if (!p_gx_node)
+  {
+    Logger::log()->error(
+        "GraphNodeWidget::on_new_node_request_replace: p_gx_node is nullptr");
+    return "";
+  }
+  QPointF node_pos = p_gx_node->pos();
+
+  float dx = HSD_CTX.app_settings.node_editor.position_delta_when_duplicating_node;
+  node_pos = node_pos + QPointF(dx, 0.f);
+
+  // backup links
+  std::vector<gnode::LinkView> link_views = gno->get_link_views(selected_id);
+
+  // --- BLOCK update on connection
+
+  this->update_node_on_connection_finished = false;
+
+  // --- Delete downstream links of selected node
+
+  for (const auto &data : link_views)
+  {
+    if (data.from == selected_id)
+    {
+      bool link_will_be_replaced = true;
+
+      // graphics object first and then the model link
+      this->remove_link(data.from,
+                        data.port_from,
+                        data.to,
+                        data.port_to,
+                        link_will_be_replaced);
+      gno->remove_link(data.from, data.port_from, data.to, data.port_to);
+    }
+  }
+
+  // --- Create new node
+
+  this->deselect_all();
+  std::string new_id = this->on_new_node_request(node_type, node_pos);
+  this->set_node_as_selected(new_id);
+
+  // --- Recreate the links if possible
+
+  int link_creation_count = 0;
+
+  for (const auto &data : link_views)
+  {
+    // change only the output links of the selected node
+    if (data.from != selected_id)
+      continue;
+
+    gnode::Node *p_new_node = gno->get_node_ref_by_id(new_id);
+
+    // reconnect selected_id (output) => new_id (input)
+    {
+      std::string from = data.from;
+      std::string to = new_id;
+
+      // check the port exists
+      int port_id = p_new_node->get_port_index(data.port_label_to);
+      if (port_id < 0)
+        continue;
+
+      this->add_link(from, data.port_label_from, to, data.port_label_to);
+      gno->new_link(from, data.port_label_from, to, data.port_label_to);
+      link_creation_count++;
+    }
+
+    // connect new_id (output) => some downstream node (input)
+    {
+      std::string from = new_id;
+      std::string to = data.to;
+
+      // check the port exists
+      int port_id = p_new_node->get_port_index(data.port_label_from);
+      if (port_id < 0)
+        continue;
+
+      this->add_link(from, data.port_label_from, to, data.port_label_to);
+      gno->new_link(from, data.port_label_from, to, data.port_label_to);
+      link_creation_count++;
+    }
+  }
+
+  // if no link has been created, try to connect the first output of
+  // 'selected_id' to the first input of 'new_id'
+  {
+    BaseNode *p_bnode_from = gno->get_node_ref_by_id<BaseNode>(selected_id);
+    BaseNode *p_bnode_to = gno->get_node_ref_by_id<BaseNode>(new_id);
+
+    if (p_bnode_from && p_bnode_to)
+    {
+      // 1st outlet
+      int kfrom = -1;
+
+      for (int k = 0; k < p_bnode_from->get_nports(); ++k)
+        if (p_bnode_from->get_port_type(k) == gngui::PortType::OUT)
+        {
+          kfrom = k;
+          break;
+        }
+
+      // 1st inlet
+      if (kfrom != -1)
+      {
+        std::string data_type = p_bnode_from->get_data_type(kfrom);
+        int         kto = -1;
+        for (int k = 0; k < p_bnode_to->get_nports(); ++k)
+          if (p_bnode_to->get_port_type(k) == gngui::PortType::IN &&
+              p_bnode_to->get_data_type(k) == data_type)
+          {
+            kto = k;
+            break;
+          }
+
+        if (kto != -1)
+        {
+          std::string port_label_from = p_bnode_from->get_port_label(kfrom);
+          std::string port_label_to = p_bnode_to->get_port_label(kto);
+
+          this->add_link(selected_id, port_label_from, new_id, port_label_to);
+          gno->new_link(selected_id, port_label_from, new_id, port_label_to);
+        }
+      }
+    }
+  }
+
+  // --- UNBLOCK update on connection
+
+  this->update_node_on_connection_finished = true;
+
+  // --- Update and exit
+
+  gno->update(selected_id);
+  return new_id;
+}
+
+std::string GraphNodeWidget::on_new_node_request_replace(const std::string &node_type)
+{
+  Logger::log()->trace("GraphNodeWidget::on_new_node_request_replace: node_type {}",
+                       node_type);
+
+  // --- Safeguards
+
+  auto gno = this->p_graph_node.lock();
+  if (!gno)
+    return "";
+
+  if (node_type == "")
+    return "";
+
+  // get current node selection
+  std::vector<std::string> selected_ids = this->get_selected_node_ids();
+
+  // empty selection => skip
+  if (selected_ids.empty())
+  {
+    HSD_APP->notify("Select a node before replacing it.");
+    return "";
+  }
+
+  // --- Backup selected node connections
+
+  const std::string selected_id = selected_ids.back();
+
+  // position
+  gngui::GraphicsNode *p_gx_node = this->get_graphics_node_by_id(selected_id);
+  if (!p_gx_node)
+  {
+    Logger::log()->error(
+        "GraphNodeWidget::on_new_node_request_replace: p_gx_node is nullptr");
+    return "";
+  }
+  const QPointF node_pos = p_gx_node->pos();
+
+  // backup links
+  std::vector<gnode::LinkView> link_views = gno->get_link_views(selected_id);
+
+  // --- BLOCK update on connection
+
+  this->update_node_on_connection_finished = false;
+
+  // --- Remove selected node
+
+  this->remove_node(selected_id);             // graphics object first
+  this->on_node_deleted_request(selected_id); // then propagate
+
+  // --- Create new node
+
+  this->deselect_all();
+  std::string new_id = this->on_new_node_request(node_type, node_pos);
+  this->set_node_as_selected(new_id);
+
+  // --- Recreate the links if possible
+
+  for (const auto &data : link_views)
+  {
+    // replace former ID by new one
+    std::string from = (data.from == selected_id) ? new_id : data.from;
+    std::string to = (data.to == selected_id) ? new_id : data.to;
+
+    // check if the port to be connected actually exists on the new
+    // node before continuing
+    std::string port_label = (from == new_id) ? data.port_label_from : data.port_label_to;
+    gnode::Node *p_new_node = gno->get_node_ref_by_id(new_id);
+    int          port_id = p_new_node->get_port_index(port_label);
+
+    if (port_id < 0)
+      continue;
+
+    // add graphics link and then model link
+    this->add_link(from, data.port_label_from, to, data.port_label_to);
+    gno->new_link(from, data.port_label_from, to, data.port_label_to);
+  }
+
+  // --- UNBLOCK update on connection
+
+  this->update_node_on_connection_finished = true;
+
+  // --- Update and exit
+
+  gno->update(new_id);
+  return new_id;
+}
+
 void GraphNodeWidget::on_node_deleted_request(const std::string &node_id)
 {
   Logger::log()->trace("GraphNodeWidget::on_node_deleted_request, node {}", node_id);
@@ -943,11 +1199,8 @@ void GraphNodeWidget::on_viewport_request()
   }
 
   this->data_viewers.push_back(new Viewer3D(this)); // no parent, independant window
-  Logger::log()->trace("ok0");
   this->data_viewers.back()->show();
-  Logger::log()->trace("ok1");
   Viewer *p_viewer = dynamic_cast<Viewer *>(this->data_viewers.back().get());
-  Logger::log()->trace("ok2");
 
   // remove the widget from the widget list if it is closed
   this->connect(p_viewer,
@@ -957,7 +1210,6 @@ void GraphNodeWidget::on_viewport_request()
                   std::erase_if(this->data_viewers,
                                 [p_viewer](QWidget *ptr) { return ptr == p_viewer; });
                 });
-  Logger::log()->trace("ok3");
 
   // set data of the currently selected node, if any
   std::vector<std::string> selected_ids = this->get_selected_node_ids();

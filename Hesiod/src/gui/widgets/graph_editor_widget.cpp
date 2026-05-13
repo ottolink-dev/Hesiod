@@ -10,6 +10,7 @@
 #include "hesiod/gui/widgets/graph_node_widget.hpp"
 #include "hesiod/gui/widgets/graph_toolbar.hpp"
 #include "hesiod/gui/widgets/gui_utils.hpp"
+#include "hesiod/gui/widgets/node_library_widget.hpp"
 #include "hesiod/gui/widgets/node_settings_widget.hpp"
 #include "hesiod/gui/widgets/viewers/viewer_3d.hpp"
 #include "hesiod/logger.hpp"
@@ -66,6 +67,17 @@ void GraphEditorWidget::json_from(nlohmann::json const &json)
             { this->viewer->json_from(json[graph_id]["graph_editor_widget.viewer3d"]); });
       }
     }
+
+    // node library
+    if (this->node_library_widget)
+    {
+      if (json.contains(graph_id) &&
+          json[graph_id].contains("graph_editor_widget.node_library_widget"))
+      {
+        this->node_library_widget->json_from(
+            json[graph_id]["graph_editor_widget.node_library_widget"]);
+      }
+    }
   }
 }
 
@@ -78,9 +90,12 @@ nlohmann::json GraphEditorWidget::json_to() const
   {
     json = this->graph_node_widget->json_to();
 
-    // Viewer3D
     if (this->viewer)
       json["graph_editor_widget.viewer3d"] = this->viewer->json_to();
+
+    if (this->node_library_widget)
+      json["graph_editor_widget.node_library_widget"] = this->node_library_widget
+                                                            ->json_to();
   }
 
   return json;
@@ -104,10 +119,23 @@ void GraphEditorWidget::setup_layout()
   if (!gno)
     return;
 
+  // --- Layout
+
   auto *layout = new QGridLayout();
   layout->setContentsMargins(0, 0, 0, 0);
   layout->setSpacing(0);
   this->setLayout(layout);
+
+  // optional left pan for node library
+  bool show_lib = HSD_CTX.app_settings.node_editor.show_node_library_pan;
+  int  row_offset = 0;
+
+  if (show_lib)
+  {
+    this->node_library_widget = new NodeLibraryWidget();
+    layout->addWidget(node_library_widget, 0, 0, 2, 1);
+    row_offset++;
+  }
 
   // left pan with splitter
   {
@@ -121,7 +149,7 @@ void GraphEditorWidget::setup_layout()
     splitter->addWidget(this->viewer);
     splitter->addWidget(this->graph_node_widget);
 
-    layout->addWidget(splitter, 0, 0);
+    layout->addWidget(splitter, 0, row_offset);
   }
 
   // right pan
@@ -132,7 +160,7 @@ void GraphEditorWidget::setup_layout()
     set_style(this->node_settings_widget,
               std::format("border-left: 1px solid {};", color));
 
-    layout->addWidget(this->node_settings_widget, 0, 1, 2, 1);
+    layout->addWidget(this->node_settings_widget, 0, row_offset + 1, 2, 1);
 
     this->node_settings_widget->setVisible(
         HSD_CTX.app_settings.node_editor.show_node_settings_pan);
@@ -141,7 +169,31 @@ void GraphEditorWidget::setup_layout()
   // bottom toolbar
   {
     auto *graph_toolbar = new GraphToolbar(this->graph_node_widget);
-    layout->addWidget(graph_toolbar, 1, 0);
+    layout->addWidget(graph_toolbar, 1, row_offset);
+  }
+
+  // --- Connection(s)
+
+  if (this->node_library_widget)
+  {
+    this->connect(this->node_library_widget,
+                  &NodeLibraryWidget::node_type_selected,
+                  this->graph_node_widget,
+                  [this](const std::string &node_type)
+                  {
+                    QPointF center = this->graph_node_widget->get_center();
+                    this->graph_node_widget->on_new_node_request(node_type, center);
+                  });
+
+    this->connect(this->node_library_widget,
+                  &NodeLibraryWidget::node_type_selected_shift,
+                  this->graph_node_widget,
+                  &GraphNodeWidget::on_new_node_request_chain);
+
+    this->connect(this->node_library_widget,
+                  &NodeLibraryWidget::node_type_selected_ctrl,
+                  this->graph_node_widget,
+                  &GraphNodeWidget::on_new_node_request_replace);
   }
 }
 

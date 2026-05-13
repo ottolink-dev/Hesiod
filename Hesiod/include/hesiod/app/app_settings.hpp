@@ -88,6 +88,7 @@ struct AppSettings
     float       position_delta_when_duplicating_node = 200.f;
     float       auto_layout_dx = 256.f;
     float       auto_layout_dy = 384.f;
+    bool        show_node_library_pan = true;
     bool        show_node_settings_pan = true;
     bool        show_node_toolbar_in_settings_pan = true;
     bool        show_viewer = true;

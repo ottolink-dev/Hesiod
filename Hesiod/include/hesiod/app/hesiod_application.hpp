@@ -18,6 +18,8 @@
 #define HSD_CTX                                                                          \
   static_cast<hesiod::HesiodApplication *>(QCoreApplication::instance())->get_context()
 
+#define HSD_APP static_cast<hesiod::HesiodApplication *>(QCoreApplication::instance())
+
 namespace hesiod
 {
 

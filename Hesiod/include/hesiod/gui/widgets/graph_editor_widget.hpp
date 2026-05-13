@@ -3,6 +3,7 @@
 #pragma once
 #include <memory>
 
+#include "hesiod/gui/widgets/node_library_widget.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 
 namespace hesiod
@@ -37,8 +38,9 @@ private:
   void setup_layout();
 
   std::weak_ptr<GraphNode> p_graph_node;
-  GraphNodeWidget         *graph_node_widget;
-  NodeSettingsWidget      *node_settings_widget;
+  GraphNodeWidget         *graph_node_widget = nullptr;
+  NodeSettingsWidget      *node_settings_widget = nullptr;
+  NodeLibraryWidget       *node_library_widget = nullptr;
   Viewer3D                *viewer = nullptr;
 };
 

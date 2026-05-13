@@ -164,8 +164,12 @@ void AppSettingsWindow::setup_layout()
 
   this->add_title("Node Editor");
 
-  this->bind_bool("Show node toolbat in settings pan",
+  this->bind_bool("Show node toolbar in settings pan",
                   ctx.app_settings.node_editor.show_node_toolbar_in_settings_pan);
+  this->bind_bool("Show node library pan",
+                  ctx.app_settings.node_editor.show_node_library_pan);
+
+  bool show_node_library_pan = true;
 
   this->add_title("Viewport");
 

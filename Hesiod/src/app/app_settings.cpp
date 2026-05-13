@@ -130,6 +130,9 @@ void AppSettings::json_from(nlohmann::json const &json)
   json_safe_get(json, "node_editor.auto_layout_dx", node_editor.auto_layout_dx);
   json_safe_get(json, "node_editor.auto_layout_dy", node_editor.auto_layout_dy);
   json_safe_get(json,
+                "node_editor.show_node_library_pan",
+                node_editor.show_node_library_pan);
+  json_safe_get(json,
                 "node_editor.show_node_settings_pan",
                 node_editor.show_node_settings_pan);
   json_safe_get(json,
@@ -205,6 +208,7 @@ nlohmann::json AppSettings::json_to() const
       node_editor.position_delta_when_duplicating_node;
   json["node_editor.auto_layout_dx"] = node_editor.auto_layout_dx;
   json["node_editor.auto_layout_dy"] = node_editor.auto_layout_dy;
+  json["node_editor.show_node_library_pan"] = node_editor.show_node_library_pan;
   json["node_editor.show_node_settings_pan"] = node_editor.show_node_settings_pan;
   json["node_editor.show_node_toolbar_in_settings_pan"] =
       node_editor.show_node_toolbar_in_settings_pan;

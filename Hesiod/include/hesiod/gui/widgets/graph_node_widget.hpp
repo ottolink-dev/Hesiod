@@ -88,6 +88,8 @@ public slots:
   void on_graph_settings_request();
 
   std::string on_new_node_request(const std::string &node_type, QPointF scene_pos);
+  std::string on_new_node_request_chain(const std::string &node_type);
+  std::string on_new_node_request_replace(const std::string &node_type);
   void        on_node_deleted_request(const std::string &node_id);
   void        on_node_reload_request(const std::string &node_id);
   void        on_node_right_clicked(const std::string &node_id, QPointF scene_pos);
