@@ -1140,9 +1140,8 @@ void GraphNodeWidget::on_nodes_duplicate_request(
   std::vector<QPointF> scene_pos_shifted = {};
 
   AppContext &ctx = HSD_CTX;
-  QPointF     delta = QPointF(
-      ctx.app_settings.node_editor.position_delta_when_duplicating_node,
-      ctx.app_settings.node_editor.position_delta_when_duplicating_node);
+  float       dx = ctx.app_settings.node_editor.position_delta_when_duplicating_node;
+  QPointF     delta = QPointF(dx, dx);
 
   for (auto &p : scene_pos_list)
     scene_pos_shifted.push_back(p + delta);
