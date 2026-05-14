@@ -966,8 +966,7 @@ void GraphNodeWidget::on_node_deleted_request(const std::string &node_id)
   if (!gno)
     return;
 
-  // spare some update time by updating the downstream nodes in one
-  // pass afterwards
+  // block connection-related updates
   this->set_block_graph_model_updates(true);
 
   this->set_enabled(false);
