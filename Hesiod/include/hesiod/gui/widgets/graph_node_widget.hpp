@@ -44,8 +44,14 @@ public:
 
   void add_import_texture_nodes(const std::vector<std::string> &texture_paths);
 
+  // --- Relationship to graph model ---
   void apply_new_config(int new_resolution);
   void apply_new_config(const GraphConfig &new_config);
+
+  // NB - only block updates coming from GraphNodeWidget, other classes may trigger an
+  // update of the model
+  bool is_graph_model_updates_blocked() const;
+  void set_block_graph_model_updates(bool new_state);
 
   void update_graph_model(const std::vector<std::string> &node_ids = {});
   void update_graph_model(const std::string &node_id);
@@ -119,7 +125,7 @@ private:
   // --- Members ---
   std::weak_ptr<GraphNode>       p_graph_node; // own by GraphManager
   std::vector<QPointer<QWidget>> data_viewers;
-  bool                           update_node_on_connection_finished = true;
+  bool                           block_graph_model_updates = false;
   nlohmann::json                 json_copy_buffer;
   std::string                    last_node_created_id = "";
   bool                           is_selecting_with_rubber_band = false;

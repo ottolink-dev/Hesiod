@@ -20,8 +20,6 @@ QWidget *node_widget_factory(const std::string        &node_type,
   {
     std::string cat = m->get_category();
 
-    Logger::log()->debug("cat: %s", cat);
-
     if (cat.find("WIP") != std::string::npos)
       msg = "Work in progress\nNode subject to change";
 

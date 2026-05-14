@@ -89,8 +89,6 @@ void GraphNodeWidget::add_import_texture_nodes(
     BaseNode *p_node = gno->get_node_ref_by_id<BaseNode>(node_id);
     if (p_node)
     {
-      // p_node->json_from(json_node["settings"]);
-      // p_node->set_id(node_id);
       auto *p_attr = p_node->get_attributes_ref()
                          ->at("fname")
                          ->get_ref<attr::FilenameAttribute>();
@@ -267,16 +265,23 @@ GraphNode *GraphNodeWidget::get_p_graph_node()
   return gno.get();
 }
 
+bool GraphNodeWidget::is_graph_model_updates_blocked() const
+{
+  return this->block_graph_model_updates;
+}
+
 void GraphNodeWidget::json_from(nlohmann::json const &json)
 {
   Logger::log()->trace("GraphNodeWidget::json_from");
   this->clear_graphic_scene();
 
-  // to prevent nodes update at each link creation when the loading
-  // the graph (very slooow)
-  this->update_node_on_connection_finished = false;
+  // the graph model loading and updating is taken care of by
+  // GraphNode (model) and does not need to be updated again when the
+  // graphics object are recreated (and are going to trigger signals
+  // requesting some model updates...)
+  this->set_block_graph_model_updates(true);
   GraphViewer::json_from(json);
-  this->update_node_on_connection_finished = true;
+  this->set_block_graph_model_updates(false);
 
   // viewers
   if (json.contains("viewers") && json["viewers"].is_array())
@@ -408,6 +413,9 @@ void GraphNodeWidget::on_connection_deleted(const std::string &id_out,
   if (!gno)
     return;
 
+  Logger::log()->debug("BLOCKED? {}",
+                       this->is_graph_model_updates_blocked() ? "TRUE" : "FALSE");
+
   this->set_enabled(false);
 
   // see GraphNodeWidget::on_node_deleted
@@ -494,10 +502,7 @@ void GraphNodeWidget::on_connection_finished(const std::string &id_out,
 
   gno->new_link(id_out, port_id_out, id_in, port_id_in);
 
-  // no update for instance during deserialization to avoid a full
-  // graph update at each link creation
-  if (this->update_node_on_connection_finished)
-    this->update_graph_model(id_in);
+  this->update_graph_model(id_in);
 }
 
 void GraphNodeWidget::on_graph_clear_request()
@@ -746,9 +751,9 @@ std::string GraphNodeWidget::on_new_node_request_chain(const std::string &node_t
   // backup links
   std::vector<gnode::LinkView> link_views = gno->get_link_views(selected_id);
 
-  // --- BLOCK update on connection
+  // --- BLOCK model updates
 
-  this->update_node_on_connection_finished = false;
+  this->set_block_graph_model_updates(true);
 
   // --- Delete downstream links of selected node
 
@@ -756,15 +761,9 @@ std::string GraphNodeWidget::on_new_node_request_chain(const std::string &node_t
   {
     if (data.from == selected_id)
     {
-      bool link_will_be_replaced = true;
-
       // graphics object first and then the model link
-      this->remove_link(data.from,
-                        data.port_from,
-                        data.to,
-                        data.port_to,
-                        link_will_be_replaced);
-      gno->remove_link(data.from, data.port_from, data.to, data.port_to);
+      this->remove_link(data.from, data.port_from, data.to, data.port_to);
+      // gno->remove_link(data.from, data.port_from, data.to, data.port_to);
     }
   }
 
@@ -819,6 +818,7 @@ std::string GraphNodeWidget::on_new_node_request_chain(const std::string &node_t
 
   // if no link has been created, try to connect the first output of
   // 'selected_id' to the first input of 'new_id'
+  if (link_creation_count == 0)
   {
     BaseNode *p_bnode_from = gno->get_node_ref_by_id<BaseNode>(selected_id);
     BaseNode *p_bnode_to = gno->get_node_ref_by_id<BaseNode>(new_id);
@@ -860,9 +860,9 @@ std::string GraphNodeWidget::on_new_node_request_chain(const std::string &node_t
     }
   }
 
-  // --- UNBLOCK update on connection
+  // --- UNBLOCK model updates
 
-  this->update_node_on_connection_finished = true;
+  this->set_block_graph_model_updates(false);
 
   // --- Update and exit
 
@@ -911,9 +911,9 @@ std::string GraphNodeWidget::on_new_node_request_replace(const std::string &node
   // backup links
   std::vector<gnode::LinkView> link_views = gno->get_link_views(selected_id);
 
-  // --- BLOCK update on connection
+  // --- BLOCK model updates
 
-  this->update_node_on_connection_finished = false;
+  this->set_block_graph_model_updates(true);
 
   // --- Remove selected node
 
@@ -948,9 +948,9 @@ std::string GraphNodeWidget::on_new_node_request_replace(const std::string &node
     gno->new_link(from, data.port_label_from, to, data.port_label_to);
   }
 
-  // --- UNBLOCK update on connection
+  // --- UNBLOCK model updates
 
-  this->update_node_on_connection_finished = true;
+  this->set_block_graph_model_updates(false);
 
   // --- Update and exit
 
@@ -966,13 +966,15 @@ void GraphNodeWidget::on_node_deleted_request(const std::string &node_id)
   if (!gno)
     return;
 
-  this->update_node_on_connection_finished = false; // spare some update time
+  // spare some update time by updating the downstream nodes in one
+  // pass afterwards
+  this->set_block_graph_model_updates(true);
 
   this->set_enabled(false);
   gno->remove_node(node_id);
   this->set_enabled(true);
 
-  this->update_node_on_connection_finished = true;
+  this->set_block_graph_model_updates(false);
 
   Q_EMIT this->node_deleted(this->get_id(), node_id);
 }
@@ -1228,6 +1230,14 @@ void GraphNodeWidget::reselect_backup_ids()
       });
 }
 
+void GraphNodeWidget::set_block_graph_model_updates(bool new_state)
+{
+  Logger::log()->trace("GraphNodeWidget::set_block_graph_model_updates: state is now {}",
+                       new_state ? "BLOCKED" : "UNBLOCKED");
+
+  this->block_graph_model_updates = new_state;
+}
+
 void GraphNodeWidget::set_json_copy_buffer(nlohmann::json const &new_json_copy_buffer)
 {
   this->json_copy_buffer = new_json_copy_buffer;
@@ -1398,11 +1408,18 @@ void GraphNodeWidget::update_graph_model(const std::vector<std::string> &node_id
 {
   Logger::log()->trace("GraphNodeWidget::update_graph_model");
 
+  if (this->is_graph_model_updates_blocked())
+  {
+    Logger::log()->trace("GraphNodeWidget::update_graph_model: graph model updates are "
+                         "blocked, no update");
+    return;
+  }
+
   auto gno = this->p_graph_node.lock();
   if (!gno)
   {
     Logger::log()->error(
-        "GraphNodeWidget::update_graph_model: grpah node model ptr is nullptr");
+        "GraphNodeWidget::update_graph_model: graph node model ptr is nullptr");
     return;
   }
 
