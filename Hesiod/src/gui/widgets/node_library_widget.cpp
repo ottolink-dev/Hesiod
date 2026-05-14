@@ -19,7 +19,7 @@ NodeLibraryWidget::NodeLibraryWidget(QWidget *parent) : QWidget(parent)
   Logger::log()->trace("NodeLibraryWidget::NodeLibraryWidget");
 
   this->search_bar = new QLineEdit(this);
-  this->tree_widget = new QTreeWidget(this);
+  this->tree_widget = new LibraryTreeWidget(this);
 
   this->setMinimumWidth(256);
   this->setup_layout();
@@ -109,6 +109,11 @@ void NodeLibraryWidget::setup_connections()
                 &QLineEdit::textChanged,
                 this,
                 &NodeLibraryWidget::filter_nodes);
+
+  this->connect(this->tree_widget,
+                &LibraryTreeWidget::node_type_dragged,
+                this,
+                &NodeLibraryWidget::node_type_dragged);
 }
 
 void NodeLibraryWidget::setup_layout()
