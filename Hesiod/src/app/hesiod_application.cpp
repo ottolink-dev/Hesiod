@@ -13,6 +13,7 @@
 #include <QProgressDialog>
 #include <QStatusBar>
 #include <QUrl>
+#include <QCoreApplication>
 
 #include <omp.h>
 
@@ -80,6 +81,9 @@ HesiodApplication::HesiodApplication(int &argc, char **argv) : QApplication(argc
   }
 
   // --- Continue with GUI
+
+  QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+  QCoreApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
 
   // launch splash
   SplashScreen *splash = new SplashScreen();
