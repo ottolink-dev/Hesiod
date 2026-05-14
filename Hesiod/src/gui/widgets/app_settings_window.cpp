@@ -169,8 +169,6 @@ void AppSettingsWindow::setup_layout()
   this->bind_bool("Show node library pan",
                   ctx.app_settings.node_editor.show_node_library_pan);
 
-  bool show_node_library_pan = true;
-
   this->add_title("Viewport");
 
   this->bind_bool("Add border skirt to the heightmap",

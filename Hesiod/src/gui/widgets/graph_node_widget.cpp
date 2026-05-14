@@ -971,9 +971,13 @@ void GraphNodeWidget::on_node_deleted_request(const std::string &node_id)
   if (!gno)
     return;
 
+  this->update_node_on_connection_finished = false; // spare some update time
+
   this->set_enabled(false);
   gno->remove_node(node_id);
   this->set_enabled(true);
+
+  this->update_node_on_connection_finished = true;
 
   Q_EMIT this->node_deleted(this->get_id(), node_id);
 }

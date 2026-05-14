@@ -3,6 +3,9 @@
 #pragma once
 #include <fstream>
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-function"
+
 // in this order, required by args.hxx
 #include "highmap/algebra.hpp"
 static std::istream &operator>>(std::istream &is, glm::ivec2 &vec2)
@@ -12,6 +15,8 @@ static std::istream &operator>>(std::istream &is, glm::ivec2 &vec2)
   is >> vec2.y;
   return is;
 }
+#pragma GCC diagnostic pop
+
 #include <args.hxx>
 
 #include "hesiod/model/graph/graph_config.hpp"
