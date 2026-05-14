@@ -47,6 +47,9 @@ public:
   void apply_new_config(int new_resolution);
   void apply_new_config(const GraphConfig &new_config);
 
+  void update_graph_model(const std::vector<std::string> &node_ids = {});
+  void update_graph_model(const std::string &node_id);
+
 signals:
   // TODO REMOVE GRAPH_ID
 

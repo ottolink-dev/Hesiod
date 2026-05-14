@@ -416,17 +416,31 @@ void GraphNode::update()
     this->update_finished();
 }
 
-void GraphNode::update(const std::string &node_id)
+void GraphNode::update(const std::vector<std::string> &node_ids)
 {
-  Logger::log()->trace("GraphNode::update: id = {}", node_id);
+  Logger::log()->trace("GraphNode::update");
+
+  // log
+  {
+    std::string node_ids_str = "";
+    for (const auto &s : node_ids)
+      node_ids_str += s + ", ";
+    Logger::log()->trace("GraphNode::update: node_ids: {}", node_ids_str);
+  }
 
   if (this->update_started)
     this->update_started();
 
-  gnode::Graph::update(node_id);
+  gnode::Graph::update(node_ids);
 
   if (this->update_finished)
     this->update_finished();
+}
+
+void GraphNode::update(const std::string &node_id)
+{
+  Logger::log()->trace("GraphNode::update: id = {}", node_id);
+  this->update(std::vector<std::string>{node_id});
 }
 
 } // namespace hesiod

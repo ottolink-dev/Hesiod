@@ -370,7 +370,7 @@ nlohmann::json GraphNodeWidget::json_import(nlohmann::json const &json, QPointF 
         gno->new_link(node_id_from, port_out_id, node_id_to, port_in_id);
       }
 
-    gno->update();
+    this->update_graph_model();
   }
 
   return json_copy;
@@ -419,7 +419,7 @@ void GraphNodeWidget::on_connection_deleted(const std::string &id_out,
   QCoreApplication::processEvents();
 
   if (!prevent_graph_update)
-    gno->update(id_in);
+    this->update_graph_model(id_in);
 
   this->set_enabled(true);
 }
@@ -497,7 +497,7 @@ void GraphNodeWidget::on_connection_finished(const std::string &id_out,
   // no update for instance during deserialization to avoid a full
   // graph update at each link creation
   if (this->update_node_on_connection_finished)
-    gno->update(id_in);
+    this->update_graph_model(id_in);
 }
 
 void GraphNodeWidget::on_graph_clear_request()
@@ -623,12 +623,7 @@ void GraphNodeWidget::on_graph_new_request()
 void GraphNodeWidget::on_graph_reload_request()
 {
   Logger::log()->trace("GraphNodeWidget::on_graph_reload_request");
-
-  auto gno = this->p_graph_node.lock();
-  if (!gno)
-    return;
-
-  gno->update();
+  this->update_graph_model();
 }
 
 void GraphNodeWidget::on_graph_settings_request()
@@ -871,7 +866,7 @@ std::string GraphNodeWidget::on_new_node_request_chain(const std::string &node_t
 
   // --- Update and exit
 
-  gno->update(selected_id);
+  this->update_graph_model(selected_id);
   return new_id;
 }
 
@@ -959,7 +954,7 @@ std::string GraphNodeWidget::on_new_node_request_replace(const std::string &node
 
   // --- Update and exit
 
-  gno->update(new_id);
+  this->update_graph_model(new_id);
   return new_id;
 }
 
@@ -1021,12 +1016,7 @@ void GraphNodeWidget::on_node_pinned(const std::string &node_id, bool state)
 void GraphNodeWidget::on_node_reload_request(const std::string &node_id)
 {
   Logger::log()->trace("GraphNodeWidget::on_node_reload_request, node [{}]", node_id);
-
-  auto gno = this->p_graph_node.lock();
-  if (!gno)
-    return;
-
-  gno->update(node_id);
+  this->update_graph_model(node_id);
 }
 
 void GraphNodeWidget::on_node_right_clicked(const std::string &node_id, QPointF scene_pos)
@@ -1402,6 +1392,29 @@ void GraphNodeWidget::setup_connections()
     if (safe_this)
       Q_EMIT safe_this->compute_finished(node_id);
   };
+}
+
+void GraphNodeWidget::update_graph_model(const std::vector<std::string> &node_ids)
+{
+  Logger::log()->trace("GraphNodeWidget::update_graph_model");
+
+  auto gno = this->p_graph_node.lock();
+  if (!gno)
+  {
+    Logger::log()->error(
+        "GraphNodeWidget::update_graph_model: grpah node model ptr is nullptr");
+    return;
+  }
+
+  if (node_ids.empty())
+    gno->update();
+  else
+    gno->update(node_ids);
+}
+
+void GraphNodeWidget::update_graph_model(const std::string &node_id)
+{
+  this->update_graph_model(std::vector<std::string>{node_id});
 }
 
 } // namespace hesiod

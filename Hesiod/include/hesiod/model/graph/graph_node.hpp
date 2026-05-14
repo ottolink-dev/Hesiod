@@ -45,6 +45,7 @@ public:
                         const std::string                  &id = "") override;
   virtual void remove_node(const std::string &id) override;
   void         update() override;
+  void         update(const std::vector<std::string> &node_ids) override;
   void         update(const std::string &node_id) override;
 
   // --- Inter-graph Broadcasting ---
