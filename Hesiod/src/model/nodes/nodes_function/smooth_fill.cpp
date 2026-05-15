@@ -15,76 +15,110 @@ using namespace attr;
 namespace hesiod
 {
 
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
+
+constexpr const char *P_IN = "input";
+constexpr const char *P_MASK = "mask";
+constexpr const char *P_OUT = "output";
+constexpr const char *P_DEPOSITION = "deposition";
+
+constexpr const char *A_RADIUS = "radius";
+constexpr const char *A_K = "k";
+constexpr const char *A_NORMALIZED = "normalized_map";
+
+// -----------------------------------------------------------------------------
+// Setup
+// -----------------------------------------------------------------------------
+
 void setup_smooth_fill_node(BaseNode &node)
 {
   Logger::log()->trace("setup node {}", node.get_label());
 
-  // port(s)
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "input");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "mask");
+  // --- Ports
 
-  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, "output", CONFIG(node));
-  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, "deposition", CONFIG(node));
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_IN);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_MASK);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_OUT, CONFIG(node));
+  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_DEPOSITION, CONFIG(node));
 
-  // attribute(s)
-  node.add_attr<FloatAttribute>("radius", "radius", 0.05f, 0.001f, 0.2f);
-  node.add_attr<FloatAttribute>("k", "k", 0.01f, 0.01f, 1.f);
-  node.add_attr<BoolAttribute>("normalized_map", "normalized_map", true);
+  // --- Attributes
 
-  // attribute(s) order
-  node.set_attr_ordered_key({"radius", "k", "normalized_map"});
+  // clang-format off
+  node.add_attr<FloatAttribute>(A_RADIUS, "Radius", 0.05f, 0.001f, 0.2f);
+  node.add_attr<FloatAttribute>(A_K, "k", 0.01f, 0.01f, 1.f);
+  node.add_attr<BoolAttribute>(A_NORMALIZED, "normalized_map", true);
+  // clang-format on
+
+  // --- Attribute(s) order
+
+  node.set_attr_ordered_key({A_RADIUS, A_K, A_NORMALIZED});
 
   setup_pre_process_mask_attributes(node);
   setup_post_process_heightmap_attributes(node,
                                           {.add_mix = true, .remap_active_state = false});
 }
 
+// -----------------------------------------------------------------------------
+// Compute
+// -----------------------------------------------------------------------------
+
 void compute_smooth_fill_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  hmap::VirtualArray *p_in = node.get_value_ref<hmap::VirtualArray>("input");
+  // --- Inputs / Outputs
 
-  if (p_in)
+  auto *p_in = node.get_value_ref<hmap::VirtualArray>(P_IN);
+  auto *p_mask = node.get_value_ref<hmap::VirtualArray>(P_MASK);
+  auto *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
+  auto *p_deposition = node.get_value_ref<hmap::VirtualArray>(P_DEPOSITION);
+
+  if (!p_in)
+    return;
+
+  // --- Prepare mask
+
+  std::shared_ptr<hmap::VirtualArray> sp_mask = pre_process_mask(node, p_mask, *p_in);
+
+  // --- Params
+
+  // clang-format off
+  const auto radius     = node.get_attr<FloatAttribute>(A_RADIUS);
+  const auto k          = node.get_attr<FloatAttribute>(A_K);
+  const auto normalized = node.get_attr<BoolAttribute>(A_NORMALIZED);
+  // clang-format on
+
+  const int ir = std::max(1, int(radius * p_out->shape.x));
+
+  // --- Compute
+
+  hmap::for_each_tile(
+      {p_in, p_mask},
+      {p_out, p_deposition},
+      [&](std::vector<const hmap::Array *> in,
+          std::vector<hmap::Array *>       out,
+          const hmap::TileRegion &)
+      {
+        auto [pa_in, pa_mask] = unpack<2>(in);
+        auto [pa_out, pa_deposition] = unpack<2>(out);
+
+        *pa_out = *pa_in;
+
+        hmap::gpu::smooth_fill(*pa_out, ir, pa_mask, k, pa_deposition);
+      },
+      node.cfg().cm_gpu);
+
+  // --- Post-process
+
+  p_deposition->smooth_overlap_buffers();
+  if (normalized)
   {
-    hmap::VirtualArray *p_mask = node.get_value_ref<hmap::VirtualArray>("mask");
-    hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>("output");
-    hmap::VirtualArray *p_deposition_map = node.get_value_ref<hmap::VirtualArray>(
-        "deposition");
-
-    // prepare mask
-    std::shared_ptr<hmap::VirtualArray> sp_mask = pre_process_mask(node, p_mask, *p_in);
-
-    int ir = std::max(1, (int)(node.get_attr<FloatAttribute>("radius") * p_out->shape.x));
-
-    hmap::for_each_tile(
-        {p_out, p_in, p_mask, p_deposition_map},
-        [&node, &ir](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
-        {
-          hmap::Array *pa_out = p_arrays[0];
-          hmap::Array *pa_in = p_arrays[1];
-          hmap::Array *pa_mask = p_arrays[2];
-          hmap::Array *pa_deposition = p_arrays[3];
-
-          *pa_out = *pa_in;
-
-          hmap::gpu::smooth_fill(*pa_out,
-                                 ir,
-                                 pa_mask,
-                                 node.get_attr<FloatAttribute>("k"),
-                                 pa_deposition);
-        },
-        node.cfg().cm_gpu);
-
-    p_out->smooth_overlap_buffers();
-    p_deposition_map->smooth_overlap_buffers();
-
-    if (node.get_attr<BoolAttribute>("normalized_map"))
-      p_deposition_map->remap(0.f, 1.f, node.cfg().cm_cpu);
-
-    // post-process
-    post_process_heightmap(node, *p_out, p_in);
+    p_deposition->remap(0.f, 1.f, node.cfg().cm_cpu);
   }
+
+  post_process_heightmap(node, *p_out, p_in);
 }
 
 } // namespace hesiod
