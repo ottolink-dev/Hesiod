@@ -284,7 +284,7 @@ std::map<std::string, std::string> get_node_inventory()
       {"MorphologicalTopHat", "WIP/DEPRECATED"},
       {"MountainCone", "Primitive/Geological"},
       {"MountainInselberg", "Primitive/Geological"},
-      {"MountainRangeRadial", "Primitive/Geological"},
+      {"MountainRangeRadial", "WIP"}, // , "Primitive/Geological"},
       {"MountainStump", "Primitive/Geological"},
       {"MountainTibesti", "Primitive/Geological"},
       {"Mudslide", "WIP"}, // "Erosion"},
