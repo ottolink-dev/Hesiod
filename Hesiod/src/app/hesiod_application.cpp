@@ -6,6 +6,7 @@
 #include <iostream>
 #include <sstream>
 
+#include <QCoreApplication>
 #include <QDesktopServices>
 #include <QFileDialog>
 #include <QMenuBar>
@@ -13,7 +14,6 @@
 #include <QProgressDialog>
 #include <QStatusBar>
 #include <QUrl>
-#include <QCoreApplication>
 
 #include <omp.h>
 

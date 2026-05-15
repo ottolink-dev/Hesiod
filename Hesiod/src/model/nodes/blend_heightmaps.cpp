@@ -97,11 +97,13 @@ void blend_heightmaps(BaseNode           &node,
   auto lambda_tile =
       [&lambda](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
   {
-    hmap::Array &m = *p_arrays[0];
-    hmap::Array &a1 = *p_arrays[1];
-    hmap::Array &a2 = *p_arrays[2];
-
-    lambda(m, a1, a2);
+    if (p_arrays.size() >= 3)
+    {
+      hmap::Array &m = *p_arrays[0];
+      hmap::Array &a1 = *p_arrays[1];
+      hmap::Array &a2 = *p_arrays[2];
+      lambda(m, a1, a2);
+    }
   };
 
   hmap::for_each_tile({&h_out, &h1, &h2}, lambda_tile, node.cfg().cm_cpu);
