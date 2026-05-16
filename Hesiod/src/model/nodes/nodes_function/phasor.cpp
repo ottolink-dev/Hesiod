@@ -55,30 +55,38 @@ void setup_phasor_node(BaseNode &node)
   // --- Attributes
 
   // clang-format off
-  node.add_attr<FloatAttribute>(A_KP_GLOBAL, "kp_global", 8.f, 0.f, FLT_MAX);
-  node.add_attr<FloatAttribute>(A_ANGLE_SHIFT, "angle_shift", 0.f, -180.f, 180.f, "{:.0f}°");
+  node.add_attr<FloatAttribute>(A_KP_GLOBAL, "Spatial Frequency", 8.f, 0.f, FLT_MAX);
+  node.add_attr<FloatAttribute>(A_ANGLE_SHIFT, "Angle Offset", 0.f, -180.f, 180.f, "{:.0f}°");
   node.add_attr<SeedAttribute>(A_SEED, "Seed");
-  node.add_attr<EnumAttribute>(A_PROFILE, "Profile Type", enum_mappings.phasor_profile_map, "Cosine");
-  node.add_attr<IntAttribute>(A_OCTAVES, "Octaves", 8, 1, 8);
-  node.add_attr<FloatAttribute>(A_WEIGHT, "Weight", 0.f, 0.f, 1.f);
-  node.add_attr<FloatAttribute>(A_PERSISTENCE, "Persistence", 0.3f, 0.f, 1.f);
+  node.add_attr<EnumAttribute>(A_PROFILE, "Waveform Profile", enum_mappings.phasor_profile_map, "Cosine Square");
+  node.add_attr<IntAttribute>(A_OCTAVES, "Octaves", 4, 1, 8);
+  node.add_attr<FloatAttribute>(A_WEIGHT, "Weight", 0.7f, 0.f, 1.f);
+  node.add_attr<FloatAttribute>(A_PERSISTENCE, "Persistence", 0.5f, 0.f, 1.f);
   node.add_attr<FloatAttribute>(A_LACUNARITY, "Lacunarity", 2.f, 0.01f, 4.f);
-  node.add_attr<FloatAttribute>(A_DELTA, "delta", 0.01f, 0.f, 1.f);
-  node.add_attr<FloatAttribute>(A_PHASE_SMOOTHING, "phase_smoothing", 10.f, 0.001f, 100.f, "{:.2e}", true);
+  node.add_attr<FloatAttribute>(A_DELTA, "Profile Sharpness", 3.f, 0.001f, 100.f, "{:.2e}", true);
+  node.add_attr<FloatAttribute>(A_PHASE_SMOOTHING, "Phase Transition Smoothing", 10.f, 0.001f, 100.f, "{:.2e}", true);
   // clang-format on
 
   // --- Attribute(s) order
 
-  node.set_attr_ordered_key({A_KP_GLOBAL,
+  node.set_attr_ordered_key({"_GROUPBOX_BEGIN_Global Controls",
+                             A_KP_GLOBAL,
                              A_ANGLE_SHIFT,
                              A_SEED,
+                             "_GROUPBOX_END_",
+                             //
+                             "_GROUPBOX_BEGIN_Waveform Shape",
                              A_PROFILE,
+                             A_DELTA,
+                             A_PHASE_SMOOTHING,
+                             "_GROUPBOX_END_",
+                             //
+                             "_GROUPBOX_BEGIN_Fractal Layers",
                              A_OCTAVES,
                              A_WEIGHT,
                              A_PERSISTENCE,
                              A_LACUNARITY,
-                             A_DELTA,
-                             A_PHASE_SMOOTHING});
+                             "_GROUPBOX_END_"});
 
   setup_post_process_heightmap_attributes(node,
                                           {.add_mix = false, .remap_active_state = true});
