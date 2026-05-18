@@ -39,6 +39,7 @@ void post_apply_enveloppe(BaseNode           &node,
 
           *pa_out -= hmin;
           *pa_out *= *pa_env;
+          *pa_out += hmin;
         },
         node.cfg().cm_cpu);
   }

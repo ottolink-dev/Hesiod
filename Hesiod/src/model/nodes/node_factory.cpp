@@ -154,7 +154,7 @@ std::map<std::string, std::string> get_node_inventory()
       {"Bulkify", "Boundaries"},
       {"Bump", "Primitive/Function"},
       {"BumpLorentzian", "Primitive/Function"},
-      {"Caldera", "Primitive/Geological"},
+      {"Caldera", "WIP"}, // "Primitive/Geological"},
       {"Clamp", "Filter/Range"},
       {"ClampOblique", "Filter/Range"},
       {"Closing", "WIP/DEPRECATED"},
@@ -405,7 +405,7 @@ std::map<std::string, std::string> get_node_inventory()
       {"TextureToHeightmap", "Texture"},
       {"TextureUvChecker", "Texture"},
       {"Thermal", "Erosion/Deposition"},
-      {"ThermalFlatten", "WIP"}, // "Erosion/Deposition"
+      {"ThermalFlatten", "Erosion/Deposition"},
       {"ThermalScree", "Erosion/Deposition"},
       {"Thru", "Routing"},
       {"Toggle", "Routing"},

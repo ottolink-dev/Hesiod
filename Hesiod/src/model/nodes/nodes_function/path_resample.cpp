@@ -45,9 +45,9 @@ void setup_path_resample_node(BaseNode &node)
                                       "Catmullrom",
                                       "Decasteljau",
                                       "Cubic",
-                                      "Cubic Periodic",
+                                      "Cubic Per.",
                                       "Akima",
-                                      "Akima Periodic",
+                                      "Akima Per.",
                                       "Linear"};
 
   // attribute(s)
@@ -58,8 +58,6 @@ void setup_path_resample_node(BaseNode &node)
   node.add_attr<BoolAttribute>(A_ENABLE_DECIMATE, "Enable Decimation", false);
   node.add_attr<IntAttribute>(A_DECIMATE_SAMPLING, "Sampling Rate", 8, 2, INT_MAX);
   // clang-format on
-
-  node.get_attr_ref<ChoiceAttribute>(A_METHOD)->set_use_combo_list(true);
 
   // attribute(s) order
   node.set_attr_ordered_key({"_GROUPBOX_BEGIN_Resampling",
@@ -127,11 +125,11 @@ void compute_path_resample_node(BaseNode &node)
     *p_out = hmap::decasteljau(*p_out, npoints, edm);
   else if (method == "Cubic")
     p_out->resample_interp(npoints, IM1D::CUBIC);
-  else if (method == "Cubic Periodic")
+  else if (method == "Cubic Per.")
     p_out->resample_interp(npoints, IM1D::CUBIC_PERIODIC);
   else if (method == "Akima")
     p_out->resample_interp(npoints, IM1D::AKIMA);
-  else if (method == "Akima Periodic")
+  else if (method == "Akima Per.")
     p_out->resample_interp(npoints, IM1D::AKIMA_PERIODIC);
   else if (method == "Linear")
     p_out->resample_interp(npoints, IM1D::LINEAR);
