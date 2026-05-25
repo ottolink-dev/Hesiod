@@ -51,10 +51,11 @@ void setup_pre_process_mask_attributes(BaseNode &node);
 
 struct DefaultNoiseOptions
 {
-  bool  add_default_noise = true;
-  float noise_amp = 0.1f;
-  float kw = 2.f;
-  float smoothness = 0.f;
+  bool        add_default_noise = true;
+  float       noise_amp = 0.1f;
+  float       kw = 2.f;
+  float       smoothness = 0.f;
+  std::string noise_type = "OpenSimplex2";
 };
 
 void generate_noise(BaseNode            &node,

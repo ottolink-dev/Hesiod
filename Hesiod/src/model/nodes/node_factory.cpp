@@ -347,7 +347,7 @@ std::map<std::string, std::string> get_node_inventory()
       {"ReverseAboveThreshold", "Filter/Recurve"},
       {"ReverseMidpoint", "WIP"}, // Primitive/Authoring
       {"Ridgelines", "Primitive/Authoring"},
-      {"Rift", "Primitive/Function"},
+      {"Rift", "Primitive/Geological"},
       {"Rifts", "Erosion/Hydraulic"},
       {"Rotate", "Operator/Transform"},
       {"RotateDisplacement", "Math"},
