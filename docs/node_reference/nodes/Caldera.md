@@ -13,7 +13,7 @@ Caldera generates a volcanic caldera landscape.
 # Category
 
 
-Primitive/Geological
+WIP
 # Inputs
 
 |Name|Type|Description|

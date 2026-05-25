@@ -195,7 +195,7 @@
         }
     },
     "AreaRemove": {
-        "category": "Operator/Morphology",
+        "category": "Terrain Features/Morphology",
         "description": "Removes connected regions whose area is below a threshold. The threshold is defined indirectly using a radius parameter, which is converted internally into an equivalent surface. The filter does not operate on a geometric radius directly, but on the area derived from it.",
         "label": "AreaRemove",
         "parameters": {
@@ -1299,7 +1299,7 @@
         }
     },
     "Caldera": {
-        "category": "Primitive/Geological",
+        "category": "WIP",
         "description": "Caldera generates a volcanic caldera landscape.",
         "label": "Caldera",
         "parameters": {
@@ -1405,19 +1405,19 @@
             "clamp": {
                 "description": "Clamping range.",
                 "key": "clamp",
-                "label": "clamp",
+                "label": "Clamp",
                 "type": "Value range"
             },
             "k_max": {
                 "description": "Upper bound smoothing intensity.",
                 "key": "k_max",
-                "label": "k_max",
+                "label": "K Max",
                 "type": "Float"
             },
             "k_min": {
                 "description": "Lower bound smoothing intensity.",
                 "key": "k_min",
-                "label": "k_min",
+                "label": "K Min",
                 "type": "Float"
             },
             "post_gain": {
@@ -1471,19 +1471,19 @@
             "remap": {
                 "description": "Remap the operator's output to a specified range, defaulting to [0, 1].",
                 "key": "remap",
-                "label": "remap",
+                "label": "Remap",
                 "type": "Bool"
             },
             "smooth_max": {
                 "description": "Activate smooth clamping for the upper bound.",
                 "key": "smooth_max",
-                "label": "smooth_max",
+                "label": "Smooth Max",
                 "type": "Bool"
             },
             "smooth_min": {
                 "description": "Activate smooth clamping for the lower bound.",
                 "key": "smooth_min",
-                "label": "smooth_min",
+                "label": "Smooth Min",
                 "type": "Bool"
             }
         },
@@ -2285,13 +2285,13 @@
             "additional_depth": {
                 "description": "No description",
                 "key": "additional_depth",
-                "label": "additional_depth",
+                "label": "Additional Depth",
                 "type": "Float"
             },
             "iterations": {
                 "description": "No description",
                 "key": "iterations",
-                "label": "iterations",
+                "label": "Iterations",
                 "type": "Integer"
             }
         },
@@ -2304,6 +2304,12 @@
             },
             "elevation_in": {
                 "caption": "elevation_in",
+                "data_type": "VirtualArray",
+                "description": "No description",
+                "type": "input"
+            },
+            "mask": {
+                "caption": "mask",
                 "data_type": "VirtualArray",
                 "description": "No description",
                 "type": "input"
@@ -2414,7 +2420,13 @@
             "scarp_extent_ratio": {
                 "description": "Ratio in [0,1] defining how much of the ground-side profile is a vertical scarp instead of a sloped shore.",
                 "key": "scarp_extent_ratio",
-                "label": "Scarp Smoothness",
+                "label": "Scarp Extent",
+                "type": "Float"
+            },
+            "scarp_mask_ratio": {
+                "description": "No description",
+                "key": "scarp_mask_ratio",
+                "label": "Scarp Mask Transition",
                 "type": "Float"
             },
             "shore_ground_extent": {
@@ -2434,6 +2446,12 @@
                 "key": "slope_shore",
                 "label": "Shore Slope",
                 "type": "Float"
+            },
+            "solid_shore_mask": {
+                "description": "No description",
+                "key": "solid_shore_mask",
+                "label": "Solid Shore Mask",
+                "type": "Bool"
             }
         },
         "ports": {
@@ -2484,6 +2502,69 @@
                 "data_type": "VirtualArray",
                 "description": "Input water depth map used to maintain water surface height consistency.",
                 "type": "input"
+            }
+        }
+    },
+    "CoastalFetch": {
+        "category": "WIP",
+        "description": "No description available",
+        "label": "CoastalFetch",
+        "parameters": {
+            "ndirections": {
+                "description": "No description",
+                "key": "ndirections",
+                "label": "Directions Sampling",
+                "type": "Integer"
+            },
+            "post_gain": {
+                "description": "Mid-centered gain transformation applied to the elevation values. This is a non-linear recurve operator centered around the mid elevation (typically 0.5). Increasing the gain pushes values toward the minimum and maximum elevations, creating flatter low/high regions with a steeper transition around the midpoint.",
+                "key": "post_gain",
+                "label": "Gain",
+                "type": "Float"
+            },
+            "post_gamma": {
+                "description": "Standard gamma correction applied to the elevation values. This is a monotonic power-law remapping that shifts emphasis toward low or high elevations, making the overall shape sharper or bulkier without changing its ordering.",
+                "key": "post_gamma",
+                "label": "Gamma",
+                "type": "Float"
+            },
+            "post_inverse": {
+                "description": "Inverts the output values after processing, flipping low and high values across the midrange.",
+                "key": "post_inverse",
+                "label": "Invert Output",
+                "type": "Bool"
+            },
+            "post_remap": {
+                "description": "Linearly remaps the output values to a specified target range (default is [0, 1]).",
+                "key": "post_remap",
+                "label": "Remap Range",
+                "type": "Value range"
+            },
+            "post_saturate": {
+                "description": "Modifies the amplitude of elevations by first clamping them to a given interval and then scaling them so that the restricted interval matches the original input range. This enhances contrast in elevation variations while maintaining overall structure.",
+                "key": "post_saturate",
+                "label": "Saturation Range",
+                "type": "Value range"
+            },
+            "post_smoothing_radius": {
+                "description": "Defines the radius for post-processing smoothing, determining the size of the neighborhood used to average local values and reduce high-frequency detail. A radius of 0 disables smoothing.",
+                "key": "post_smoothing_radius",
+                "label": "Smoothing Radius",
+                "type": "Float"
+            }
+        },
+        "ports": {
+            "input": {
+                "caption": "input",
+                "data_type": "VirtualArray",
+                "description": "No description",
+                "type": "input"
+            },
+            "output": {
+                "caption": "output",
+                "data_type": "VirtualArray",
+                "description": "No description",
+                "type": "output"
             }
         }
     },
@@ -3335,29 +3416,113 @@
         "description": "Crater generates a crater landscape..",
         "label": "Crater",
         "parameters": {
+            "angle": {
+                "description": "No description",
+                "key": "angle",
+                "label": "Rotation Angle",
+                "type": "Float"
+            },
+            "asym_ratio": {
+                "description": "No description",
+                "key": "asym_ratio",
+                "label": "Asymmetry Ratio",
+                "type": "Float"
+            },
             "center": {
                 "description": "Reference center within the heightmap.",
                 "key": "center",
-                "label": "center",
+                "label": "Center",
                 "type": "Vec2Float"
             },
-            "depth": {
-                "description": "Crater depth.",
-                "key": "depth",
-                "label": "depth",
+            "central_peak_extent": {
+                "description": "No description",
+                "key": "central_peak_extent",
+                "label": "Central Peak Extent",
                 "type": "Float"
             },
-            "lip_decay": {
-                "description": "Ejecta lip decay.",
-                "key": "lip_decay",
-                "label": "lip_decay",
+            "central_peak_height": {
+                "description": "No description",
+                "key": "central_peak_height",
+                "label": "Central Peak Height",
                 "type": "Float"
             },
-            "lip_height_ratio": {
-                "description": "Controls the ejecta lip relative height.",
-                "key": "lip_height_ratio",
-                "label": "lip_height_ratio",
+            "dn_add_default_noise": {
+                "description": "Enables or disables the built-in drainage noise. If an external noise input is provided, it overrides this default noise.",
+                "key": "dn_add_default_noise",
+                "label": "Activate",
+                "type": "Bool"
+            },
+            "dn_kw": {
+                "description": "Base spatial frequencies in the X and Y directions.",
+                "key": "dn_kw",
+                "label": "Spatial Frequency",
                 "type": "Float"
+            },
+            "dn_noise_amp": {
+                "description": "Noise amplitude.",
+                "key": "dn_noise_amp",
+                "label": "Amplitude",
+                "type": "Float"
+            },
+            "dn_noise_type": {
+                "description": "Noise type.",
+                "key": "dn_noise_type",
+                "label": "Type",
+                "type": "Enumeration"
+            },
+            "dn_seed": {
+                "description": "Random seed number. The random seed is an offset to the randomized process. A different seed will produce a new result.",
+                "key": "dn_seed",
+                "label": "Seed",
+                "type": "Random seed number"
+            },
+            "dn_smoothness": {
+                "description": "Controls the resulting smoothness of the fractal layering process.",
+                "key": "dn_smoothness",
+                "label": "Smoothness",
+                "type": "Float"
+            },
+            "elevation_offset": {
+                "description": "No description",
+                "key": "elevation_offset",
+                "label": "Elevation Offset",
+                "type": "Float"
+            },
+            "inner_depth": {
+                "description": "No description",
+                "key": "inner_depth",
+                "label": "Inner Basin Depth",
+                "type": "Float"
+            },
+            "inner_exp": {
+                "description": "No description",
+                "key": "inner_exp",
+                "label": "Inner Basin Falloff",
+                "type": "Float"
+            },
+            "lip_exp": {
+                "description": "No description",
+                "key": "lip_exp",
+                "label": "Rim Falloff",
+                "type": "Float"
+            },
+            "lip_extent": {
+                "description": "No description",
+                "key": "lip_extent",
+                "label": "Rim Width",
+                "type": "Float"
+            },
+            "lip_height": {
+                "description": "No description",
+                "key": "lip_height",
+                "label": "Rim Height",
+                "type": "Float"
+            },
+            "n_terraces": {
+                "description": "No description",
+                "key": "n_terraces",
+                "label": "Terrace Count",
+                "type": "Integer"
             },
             "post_gain": {
                 "description": "Mid-centered gain transformation applied to the elevation values. This is a non-linear recurve operator centered around the mid elevation (typically 0.5). Increasing the gain pushes values toward the minimum and maximum elevations, creating flatter low/high regions with a steeper transition around the midpoint.",
@@ -3398,27 +3563,45 @@
             "radius": {
                 "description": "Crater radius.",
                 "key": "radius",
-                "label": "radius",
+                "label": "Crater Radius",
+                "type": "Float"
+            },
+            "terrace_exp": {
+                "description": "No description",
+                "key": "terrace_exp",
+                "label": "Terrace Sharpness",
+                "type": "Float"
+            },
+            "terrace_extent": {
+                "description": "No description",
+                "key": "terrace_extent",
+                "label": "Terrace Extent",
+                "type": "Float"
+            },
+            "terrace_persistence": {
+                "description": "No description",
+                "key": "terrace_persistence",
+                "label": "Terrace Persistence",
                 "type": "Float"
             }
         },
         "ports": {
-            "control": {
-                "caption": "control",
+            "crater_mask": {
+                "caption": "crater_mask",
                 "data_type": "VirtualArray",
-                "description": "Control parameter, acts as a multiplier for the weight parameter.",
+                "description": "No description",
+                "type": "output"
+            },
+            "envelope": {
+                "caption": "envelope",
+                "data_type": "VirtualArray",
+                "description": "Heightmap used as a post-process amplitude multiplier for the generated noise.",
                 "type": "input"
             },
-            "dx": {
-                "caption": "dx",
+            "noise": {
+                "caption": "noise",
                 "data_type": "VirtualArray",
-                "description": "Displacement with respect to the domain size (x-direction).",
-                "type": "input"
-            },
-            "dy": {
-                "caption": "dy",
-                "data_type": "VirtualArray",
-                "description": "Displacement with respect to the domain size (y-direction).",
+                "description": "No description",
                 "type": "input"
             },
             "output": {
@@ -3758,8 +3941,137 @@
             }
         }
     },
+    "DepositionFillHoles": {
+        "category": "Erosion/Deposition",
+        "description": "No description available",
+        "label": "DepositionFillHoles",
+        "parameters": {
+            "iterations": {
+                "description": "No description",
+                "key": "iterations",
+                "label": "Iterations",
+                "type": "Integer"
+            },
+            "mask_activate": {
+                "description": "Enables or disables the internal mask. If the node's 'mask' input is connected, this setting is bypassed and the input mask is used instead.",
+                "key": "mask_activate",
+                "label": "mask_activate",
+                "type": "Bool"
+            },
+            "mask_gain": {
+                "description": "Controls the intensity or influence of the internal mask. Bypassed if the 'mask' input is connected.",
+                "key": "mask_gain",
+                "label": "mask_gain",
+                "type": "Float"
+            },
+            "mask_inverse": {
+                "description": "Inverts the internal mask, applying the operator where the mask is low. Ignored if a 'mask' input is provided.",
+                "key": "mask_inverse",
+                "label": "mask_inverse",
+                "type": "Bool"
+            },
+            "mask_radius": {
+                "description": "Defines the smoothing radius for the internal mask. A value of 0 disables smoothing. This is bypassed if the 'mask' input is used.",
+                "key": "mask_radius",
+                "label": "mask_radius",
+                "type": "Float"
+            },
+            "mask_type": {
+                "description": "Specifies how the internal mask is computed: 'Elevation' uses height, 'Gradient Norm' uses slope, and 'Elevation mid-range' selects the middle portion of the height range. This parameter is ignored when a 'mask' input is connected.",
+                "key": "mask_type",
+                "label": "mask_type",
+                "type": "Choice"
+            },
+            "post_gain": {
+                "description": "Mid-centered gain transformation applied to the elevation values. This is a non-linear recurve operator centered around the mid elevation (typically 0.5). Increasing the gain pushes values toward the minimum and maximum elevations, creating flatter low/high regions with a steeper transition around the midpoint.",
+                "key": "post_gain",
+                "label": "Gain",
+                "type": "Float"
+            },
+            "post_gamma": {
+                "description": "Standard gamma correction applied to the elevation values. This is a monotonic power-law remapping that shifts emphasis toward low or high elevations, making the overall shape sharper or bulkier without changing its ordering.",
+                "key": "post_gamma",
+                "label": "Gamma",
+                "type": "Float"
+            },
+            "post_inverse": {
+                "description": "Inverts the output values after processing, flipping low and high values across the midrange.",
+                "key": "post_inverse",
+                "label": "Invert Output",
+                "type": "Bool"
+            },
+            "post_mix": {
+                "description": "Mixing factor for blending input and output values. A value of 0 uses only the input, 1 uses only the output, and intermediate values perform a linear interpolation.",
+                "key": "post_mix",
+                "label": "Mix Factor",
+                "type": "Float"
+            },
+            "post_mix_method": {
+                "description": "Method used to combine input and output values. Options include linear interpolation (default), min, max, smooth min, smooth max, add, and subtract.",
+                "key": "post_mix_method",
+                "label": "Mix Method",
+                "type": "Enumeration"
+            },
+            "post_remap": {
+                "description": "Linearly remaps the output values to a specified target range (default is [0, 1]).",
+                "key": "post_remap",
+                "label": "Remap Range",
+                "type": "Value range"
+            },
+            "post_saturate": {
+                "description": "Modifies the amplitude of elevations by first clamping them to a given interval and then scaling them so that the restricted interval matches the original input range. This enhances contrast in elevation variations while maintaining overall structure.",
+                "key": "post_saturate",
+                "label": "Saturation Range",
+                "type": "Value range"
+            },
+            "post_smoothing_radius": {
+                "description": "Defines the radius for post-processing smoothing, determining the size of the neighborhood used to average local values and reduce high-frequency detail. A radius of 0 disables smoothing.",
+                "key": "post_smoothing_radius",
+                "label": "Smoothing Radius",
+                "type": "Float"
+            },
+            "radius": {
+                "description": "No description",
+                "key": "radius",
+                "label": "Radius",
+                "type": "Float"
+            },
+            "strength": {
+                "description": "No description",
+                "key": "strength",
+                "label": "Strength",
+                "type": "Float"
+            }
+        },
+        "ports": {
+            "deposition": {
+                "caption": "deposition",
+                "data_type": "VirtualArray",
+                "description": "No description",
+                "type": "output"
+            },
+            "input": {
+                "caption": "input",
+                "data_type": "VirtualArray",
+                "description": "No description",
+                "type": "input"
+            },
+            "mask": {
+                "caption": "mask",
+                "data_type": "VirtualArray",
+                "description": "No description",
+                "type": "input"
+            },
+            "output": {
+                "caption": "output",
+                "data_type": "VirtualArray",
+                "description": "No description",
+                "type": "output"
+            }
+        }
+    },
     "DepressionFilling": {
-        "category": "Erosion",
+        "category": "Erosion/Deposition",
         "description": "DepressionFilling is used to fill depressions or sinks in an heightmap. It ensures that there are no depressions, i.e. areas within a digital elevation model that are surrounded by higher terrain, with no outlet to lower areas.",
         "label": "DepressionFilling",
         "parameters": {
@@ -4055,7 +4367,7 @@
         }
     },
     "DistanceTransform": {
-        "category": "Operator/Morphology",
+        "category": "Terrain Features/Morphology",
         "description": "Generates a distance map where each pixel's value represents the shortest distance to the nearest non-zero value in the input heightmap.",
         "label": "DistanceTransform",
         "parameters": {
@@ -4243,6 +4555,12 @@
                 "data_type": "VirtualArray",
                 "description": "No description",
                 "type": "output"
+            },
+            "reference": {
+                "caption": "reference",
+                "data_type": "VirtualArray",
+                "description": "No description",
+                "type": "input"
             }
         }
     },
@@ -4718,6 +5036,12 @@
                 "key": "fname",
                 "label": "Filename",
                 "type": "Filename"
+            },
+            "force_shape": {
+                "description": "No description",
+                "key": "force_shape",
+                "label": "Force Export Shape",
+                "type": "Choice"
             },
             "format": {
                 "description": "Export format. Available values: png (16 bit), png (8 bit), raw (16 bit, Unity).",
@@ -5445,7 +5769,7 @@
             "elevation": {
                 "description": "No description",
                 "key": "elevation",
-                "label": "elevation",
+                "label": "Elevation",
                 "type": "Float"
             }
         },
@@ -8542,19 +8866,19 @@
             "clip_range": {
                 "description": "No description",
                 "key": "clip_range",
-                "label": "clip_range",
+                "label": "Clip Range",
                 "type": "Bool"
             },
             "flip_y": {
                 "description": "No description",
                 "key": "flip_y",
-                "label": "flip_y",
+                "label": "Flip Y",
                 "type": "Bool"
             },
             "fname": {
                 "description": "Filename of the image file to import.",
                 "key": "fname",
-                "label": "fname",
+                "label": "Filename",
                 "type": "Filename"
             },
             "post_gain": {
@@ -9506,6 +9830,75 @@
             }
         }
     },
+    "LevelSetCurvature": {
+        "category": "WIP",
+        "description": "No description available",
+        "label": "LevelSetCurvature",
+        "parameters": {
+            "post_gain": {
+                "description": "Mid-centered gain transformation applied to the elevation values. This is a non-linear recurve operator centered around the mid elevation (typically 0.5). Increasing the gain pushes values toward the minimum and maximum elevations, creating flatter low/high regions with a steeper transition around the midpoint.",
+                "key": "post_gain",
+                "label": "Gain",
+                "type": "Float"
+            },
+            "post_gamma": {
+                "description": "Standard gamma correction applied to the elevation values. This is a monotonic power-law remapping that shifts emphasis toward low or high elevations, making the overall shape sharper or bulkier without changing its ordering.",
+                "key": "post_gamma",
+                "label": "Gamma",
+                "type": "Float"
+            },
+            "post_inverse": {
+                "description": "Inverts the output values after processing, flipping low and high values across the midrange.",
+                "key": "post_inverse",
+                "label": "Invert Output",
+                "type": "Bool"
+            },
+            "post_remap": {
+                "description": "Linearly remaps the output values to a specified target range (default is [0, 1]).",
+                "key": "post_remap",
+                "label": "Remap Range",
+                "type": "Value range"
+            },
+            "post_saturate": {
+                "description": "Modifies the amplitude of elevations by first clamping them to a given interval and then scaling them so that the restricted interval matches the original input range. This enhances contrast in elevation variations while maintaining overall structure.",
+                "key": "post_saturate",
+                "label": "Saturation Range",
+                "type": "Value range"
+            },
+            "post_smoothing_radius": {
+                "description": "Defines the radius for post-processing smoothing, determining the size of the neighborhood used to average local values and reduce high-frequency detail. A radius of 0 disables smoothing.",
+                "key": "post_smoothing_radius",
+                "label": "Smoothing Radius",
+                "type": "Float"
+            },
+            "radius": {
+                "description": "No description",
+                "key": "radius",
+                "label": "Radius",
+                "type": "Float"
+            },
+            "values_kept": {
+                "description": "No description",
+                "key": "values_kept",
+                "label": "Values Kept",
+                "type": "Choice"
+            }
+        },
+        "ports": {
+            "input": {
+                "caption": "input",
+                "data_type": "VirtualArray",
+                "description": "No description",
+                "type": "input"
+            },
+            "output": {
+                "caption": "output",
+                "data_type": "VirtualArray",
+                "description": "No description",
+                "type": "output"
+            }
+        }
+    },
     "LocalMetrics": {
         "category": "Terrain Features",
         "description": "Computes local geometric metrics on a heightmap to characterize terrain features such as roughness, convexity, or other neighborhood-based properties. The result highlights spatial variations based on a selected metric and a given sampling radius, and can be further refined using percentile-based saturation and post-processing controls.",
@@ -9594,7 +9987,7 @@
         }
     },
     "MakeBinary": {
-        "category": "Operator/Morphology",
+        "category": "Terrain Features/Morphology",
         "description": "No description available",
         "label": "MakeBinary",
         "parameters": {
@@ -10203,7 +10596,7 @@
         }
     },
     "MorphologicalOperators": {
-        "category": "Operator/Morphology",
+        "category": "Terrain Features",
         "description": "No description available",
         "label": "MorphologicalOperators",
         "parameters": {
@@ -10665,7 +11058,7 @@
         }
     },
     "MountainRangeRadial": {
-        "category": "Primitive/Geological",
+        "category": "WIP",
         "description": "Generates a heightmap representing a radial mountain range emanating from a specified center.",
         "label": "MountainRangeRadial",
         "parameters": {
@@ -13362,19 +13755,19 @@
             "angle_shift": {
                 "description": "No description",
                 "key": "angle_shift",
-                "label": "angle_shift",
+                "label": "Angle Offset",
                 "type": "Float"
             },
             "delta": {
                 "description": "No description",
                 "key": "delta",
-                "label": "delta",
+                "label": "Profile Sharpness",
                 "type": "Float"
             },
             "kp_global": {
                 "description": "No description",
                 "key": "kp_global",
-                "label": "kp_global",
+                "label": "Spatial Frequency",
                 "type": "Float"
             },
             "lacunarity": {
@@ -13398,7 +13791,7 @@
             "phase_smoothing": {
                 "description": "No description",
                 "key": "phase_smoothing",
-                "label": "phase_smoothing",
+                "label": "Phase Transition Smoothing",
                 "type": "Float"
             },
             "post_gain": {
@@ -13440,7 +13833,7 @@
             "profile": {
                 "description": "No description",
                 "key": "profile",
-                "label": "Profile Type",
+                "label": "Waveform Profile",
                 "type": "Enumeration"
             },
             "seed": {
@@ -14530,7 +14923,7 @@
         }
     },
     "RecastCanyon": {
-        "category": "Filter/Recast",
+        "category": "WIP",
         "description": "TODO",
         "label": "RecastCanyon",
         "parameters": {
@@ -14575,7 +14968,7 @@
         }
     },
     "RecastCliff": {
-        "category": "Filter/Recast",
+        "category": "WIP",
         "description": "RecastCliff add cliffs in a heightmap by introducing sharp changes in elevation to simulate steep vertical terrain features such as cliffs or escarpments.",
         "label": "RecastCliff",
         "parameters": {
@@ -14626,7 +15019,7 @@
         }
     },
     "RecastCliffDirectional": {
-        "category": "Filter/Recast",
+        "category": "WIP",
         "description": "TODO",
         "label": "RecastCliffDirectional",
         "parameters": {
@@ -14683,7 +15076,7 @@
         }
     },
     "RecastCracks": {
-        "category": "Filter/Recast",
+        "category": "WIP",
         "description": "TODO",
         "label": "RecastCracks",
         "parameters": {
@@ -14722,7 +15115,7 @@
         }
     },
     "RecastSag": {
-        "category": "Filter/Recast",
+        "category": "WIP",
         "description": "RecastSag add cliffs in a heightmap by introducing sinks, droops, or bends downward changes in elevation.",
         "label": "RecastSag",
         "parameters": {
@@ -14880,7 +15273,7 @@
         }
     },
     "RelativeDistanceFromSkeleton": {
-        "category": "Operator/Morphology",
+        "category": "Terrain Features/Morphology",
         "description": "No description available",
         "label": "RelativeDistanceFromSkeleton",
         "parameters": {
@@ -15321,21 +15714,99 @@
         }
     },
     "Rift": {
-        "category": "Primitive/Function",
-        "description": "Rift is function used to represent a conceptualized rift.",
+        "category": "Primitive/Geological",
+        "description": "Rift is a procedural primitive used to represent a conceptualized geological rift or elongated depression with configurable radial profiles, slopes, and bottom shaping.",
         "label": "Rift",
         "parameters": {
             "angle": {
-                "description": "Angle.",
+                "description": "Orientation angle of the rift axis in degrees.",
                 "key": "angle",
-                "label": "angle",
+                "label": "Angle",
+                "type": "Float"
+            },
+            "axial_slope": {
+                "description": "Longitudinal slope applied along the rift axis.",
+                "key": "axial_slope",
+                "label": "Axial Slope",
+                "type": "Float"
+            },
+            "bottom_depth": {
+                "description": "Additional depth contribution applied to the inner bottom region of the rift.",
+                "key": "bottom_depth",
+                "label": "Bottom Depth",
+                "type": "Float"
+            },
+            "bottom_extent": {
+                "description": "Relative width of the inner bottom region inside the rift.",
+                "key": "bottom_extent",
+                "label": "Bottom Extent",
+                "type": "Float"
+            },
+            "bottom_profile": {
+                "description": "Profile function used to shape the bottom region of the rift.",
+                "key": "bottom_profile",
+                "label": "Bottom Profile",
+                "type": "Enumeration"
+            },
+            "bottom_profile_param": {
+                "description": "Additional shaping parameter associated with the selected bottom profile.",
+                "key": "bottom_profile_param",
+                "label": "Bottom Profile Sharpness",
                 "type": "Float"
             },
             "center": {
                 "description": "Reference center within the heightmap.",
                 "key": "center",
-                "label": "center",
+                "label": "Center",
                 "type": "Vec2Float"
+            },
+            "depth": {
+                "description": "Overall depth amplitude of the rift.",
+                "key": "depth",
+                "label": "Depth",
+                "type": "Float"
+            },
+            "dn_add_default_noise": {
+                "description": "Enables or disables the built-in drainage noise. If an external noise input is provided, it overrides this default noise.",
+                "key": "dn_add_default_noise",
+                "label": "Activate",
+                "type": "Bool"
+            },
+            "dn_kw": {
+                "description": "Base spatial frequencies in the X and Y directions.",
+                "key": "dn_kw",
+                "label": "Spatial Frequency",
+                "type": "Float"
+            },
+            "dn_noise_amp": {
+                "description": "Noise amplitude.",
+                "key": "dn_noise_amp",
+                "label": "Amplitude",
+                "type": "Float"
+            },
+            "dn_noise_type": {
+                "description": "Noise type.",
+                "key": "dn_noise_type",
+                "label": "Type",
+                "type": "Enumeration"
+            },
+            "dn_seed": {
+                "description": "Random seed number. The random seed is an offset to the randomized process. A different seed will produce a new result.",
+                "key": "dn_seed",
+                "label": "Seed",
+                "type": "Random seed number"
+            },
+            "dn_smoothness": {
+                "description": "Controls the resulting smoothness of the fractal layering process.",
+                "key": "dn_smoothness",
+                "label": "Smoothness",
+                "type": "Float"
+            },
+            "outer_slope": {
+                "description": "Controls the steepness of the outer falloff surrounding the rift.",
+                "key": "outer_slope",
+                "label": "Outer Slope",
+                "type": "Float"
             },
             "post_gain": {
                 "description": "Mid-centered gain transformation applied to the elevation values. This is a non-linear recurve operator centered around the mid elevation (typically 0.5). Increasing the gain pushes values toward the minimum and maximum elevations, creating flatter low/high regions with a steeper transition around the midpoint.",
@@ -15373,42 +15844,36 @@
                 "label": "Smoothing Radius",
                 "type": "Float"
             },
-            "sharp_bottom": {
-                "description": "Decide whether the rift bottom is sharp or not.",
-                "key": "sharp_bottom",
-                "label": "sharp_bottom",
+            "profile": {
+                "description": "Profile function used to shape the outer rift cross-section.",
+                "key": "profile",
+                "label": "Profile",
+                "type": "Enumeration"
+            },
+            "profile_param": {
+                "description": "Additional shaping parameter associated with the selected outer profile.",
+                "key": "profile_param",
+                "label": "Profile Sharpness",
+                "type": "Float"
+            },
+            "radius": {
+                "description": "Half-width of the rift in normalized domain units.",
+                "key": "radius",
+                "label": "Radius",
+                "type": "Float"
+            },
+            "scale_with_depth": {
+                "description": "If enabled, the rift radius and related features scale proportionally with the depth value.",
+                "key": "scale_with_depth",
+                "label": "Scale Radius with Depth",
                 "type": "Bool"
-            },
-            "slope": {
-                "description": "Rift slope.",
-                "key": "slope",
-                "label": "slope",
-                "type": "Float"
-            },
-            "width": {
-                "description": "Rift width.",
-                "key": "width",
-                "label": "width",
-                "type": "Float"
             }
         },
         "ports": {
-            "control": {
-                "caption": "control",
+            "dr": {
+                "caption": "dr",
                 "data_type": "VirtualArray",
-                "description": "Control parameter, acts as a multiplier for the width parameter.",
-                "type": "input"
-            },
-            "dx": {
-                "caption": "dx",
-                "data_type": "VirtualArray",
-                "description": "Displacement with respect to the domain size (x-direction).",
-                "type": "input"
-            },
-            "dy": {
-                "caption": "dy",
-                "data_type": "VirtualArray",
-                "description": "Displacement with respect to the domain size (y-direction).",
+                "description": "Optional noise field used to locally modulate the rift radius.",
                 "type": "input"
             },
             "envelope": {
@@ -15417,10 +15882,22 @@
                 "description": "Heightmap used as a post-process amplitude multiplier for the generated noise.",
                 "type": "input"
             },
+            "offset": {
+                "caption": "offset",
+                "data_type": "VirtualArray",
+                "description": "Optional noise field used to locally offset the rift axis position.",
+                "type": "input"
+            },
             "output": {
                 "caption": "output",
                 "data_type": "VirtualArray",
-                "description": "Rift heightmap.",
+                "description": "Generated rift heightmap.",
+                "type": "output"
+            },
+            "rift_mask": {
+                "caption": "rift_mask",
+                "data_type": "VirtualArray",
+                "description": "Mask representing the spatial extent and influence of the rift structure.",
                 "type": "output"
             }
         }
@@ -17694,7 +18171,7 @@
         }
     },
     "Skeleton": {
-        "category": "Operator/Morphology",
+        "category": "Terrain Features/Morphology",
         "description": "No description available",
         "label": "Skeleton",
         "parameters": {
@@ -18016,7 +18493,7 @@
             "radius": {
                 "description": "Filter radius with respect to the domain size.",
                 "key": "radius",
-                "label": "radius",
+                "label": "Radius",
                 "type": "Float"
             }
         },
@@ -18530,49 +19007,49 @@
                 "type": "Choice"
             },
             "post_gain": {
-                "description": "Mid-centered gain transformation applied to the elevation values. Increasing the gain pushes values toward extremes, flattening low/high regions and steepening transitions.",
+                "description": "Mid-centered gain transformation applied to the elevation values. This is a non-linear recurve operator centered around the mid elevation (typically 0.5). Increasing the gain pushes values toward the minimum and maximum elevations, creating flatter low/high regions with a steeper transition around the midpoint.",
                 "key": "post_gain",
                 "label": "Gain",
                 "type": "Float"
             },
             "post_gamma": {
-                "description": "Gamma correction applied to the elevation values. Adjusts contrast by emphasizing low or high values without changing ordering.",
+                "description": "Standard gamma correction applied to the elevation values. This is a monotonic power-law remapping that shifts emphasis toward low or high elevations, making the overall shape sharper or bulkier without changing its ordering.",
                 "key": "post_gamma",
                 "label": "Gamma",
                 "type": "Float"
             },
             "post_inverse": {
-                "description": "Inverts the output values after processing, flipping low and high values.",
+                "description": "Inverts the output values after processing, flipping low and high values across the midrange.",
                 "key": "post_inverse",
                 "label": "Invert Output",
                 "type": "Bool"
             },
             "post_mix": {
-                "description": "Blending factor between input and processed output. 0 keeps input, 1 uses full output.",
+                "description": "Mixing factor for blending input and output values. A value of 0 uses only the input, 1 uses only the output, and intermediate values perform a linear interpolation.",
                 "key": "post_mix",
                 "label": "Mix Factor",
                 "type": "Float"
             },
             "post_mix_method": {
-                "description": "Method used to combine input and output values (e.g., linear, min, max, add, subtract).",
+                "description": "Method used to combine input and output values. Options include linear interpolation (default), min, max, smooth min, smooth max, add, and subtract.",
                 "key": "post_mix_method",
                 "label": "Mix Method",
                 "type": "Enumeration"
             },
             "post_remap": {
-                "description": "Linearly remaps the output values to a target range.",
+                "description": "Linearly remaps the output values to a specified target range (default is [0, 1]).",
                 "key": "post_remap",
                 "label": "Remap Range",
                 "type": "Value range"
             },
             "post_saturate": {
-                "description": "Enhances contrast by clamping values to a range and rescaling to the full output interval.",
+                "description": "Modifies the amplitude of elevations by first clamping them to a given interval and then scaling them so that the restricted interval matches the original input range. This enhances contrast in elevation variations while maintaining overall structure.",
                 "key": "post_saturate",
                 "label": "Saturation Range",
                 "type": "Value range"
             },
             "post_smoothing_radius": {
-                "description": "Applies additional smoothing to the output. Larger values reduce fine details.",
+                "description": "Defines the radius for post-processing smoothing, determining the size of the neighborhood used to average local values and reduce high-frequency detail. A radius of 0 disables smoothing.",
                 "key": "post_smoothing_radius",
                 "label": "Smoothing Radius",
                 "type": "Float"
@@ -19274,6 +19751,201 @@
             },
             "noise_y": {
                 "caption": "noise_y",
+                "data_type": "VirtualArray",
+                "description": "No description",
+                "type": "input"
+            },
+            "output": {
+                "caption": "output",
+                "data_type": "VirtualArray",
+                "description": "No description",
+                "type": "output"
+            }
+        }
+    },
+    "StrataPlates": {
+        "category": "Erosion/Stratify",
+        "description": "No description available",
+        "label": "StrataPlates",
+        "parameters": {
+            "direction_count": {
+                "description": "No description",
+                "key": "direction_count",
+                "label": "Direction Count",
+                "type": "Integer"
+            },
+            "direction_offset": {
+                "description": "No description",
+                "key": "direction_offset",
+                "label": "Direction Offset",
+                "type": "Integer"
+            },
+            "dn_add_default_noise": {
+                "description": "Enables or disables the built-in drainage noise. If an external noise input is provided, it overrides this default noise.",
+                "key": "dn_add_default_noise",
+                "label": "Activate",
+                "type": "Bool"
+            },
+            "dn_kw": {
+                "description": "Base spatial frequencies in the X and Y directions.",
+                "key": "dn_kw",
+                "label": "Spatial Frequency",
+                "type": "Float"
+            },
+            "dn_noise_amp": {
+                "description": "Noise amplitude.",
+                "key": "dn_noise_amp",
+                "label": "Amplitude",
+                "type": "Float"
+            },
+            "dn_noise_type": {
+                "description": "Noise type.",
+                "key": "dn_noise_type",
+                "label": "Type",
+                "type": "Enumeration"
+            },
+            "dn_seed": {
+                "description": "Random seed number. The random seed is an offset to the randomized process. A different seed will produce a new result.",
+                "key": "dn_seed",
+                "label": "Seed",
+                "type": "Random seed number"
+            },
+            "dn_smoothness": {
+                "description": "Controls the resulting smoothness of the fractal layering process.",
+                "key": "dn_smoothness",
+                "label": "Smoothness",
+                "type": "Float"
+            },
+            "mask_activate": {
+                "description": "Enables or disables the internal mask. If the node's 'mask' input is connected, this setting is bypassed and the input mask is used instead.",
+                "key": "mask_activate",
+                "label": "mask_activate",
+                "type": "Bool"
+            },
+            "mask_gain": {
+                "description": "Controls the intensity or influence of the internal mask. Bypassed if the 'mask' input is connected.",
+                "key": "mask_gain",
+                "label": "mask_gain",
+                "type": "Float"
+            },
+            "mask_inverse": {
+                "description": "Inverts the internal mask, applying the operator where the mask is low. Ignored if a 'mask' input is provided.",
+                "key": "mask_inverse",
+                "label": "mask_inverse",
+                "type": "Bool"
+            },
+            "mask_radius": {
+                "description": "Defines the smoothing radius for the internal mask. A value of 0 disables smoothing. This is bypassed if the 'mask' input is used.",
+                "key": "mask_radius",
+                "label": "mask_radius",
+                "type": "Float"
+            },
+            "mask_type": {
+                "description": "Specifies how the internal mask is computed: 'Elevation' uses height, 'Gradient Norm' uses slope, and 'Elevation mid-range' selects the middle portion of the height range. This parameter is ignored when a 'mask' input is connected.",
+                "key": "mask_type",
+                "label": "mask_type",
+                "type": "Choice"
+            },
+            "mix_ratio": {
+                "description": "No description",
+                "key": "mix_ratio",
+                "label": "Mix Ratio",
+                "type": "Float"
+            },
+            "post_gain": {
+                "description": "Mid-centered gain transformation applied to the elevation values. This is a non-linear recurve operator centered around the mid elevation (typically 0.5). Increasing the gain pushes values toward the minimum and maximum elevations, creating flatter low/high regions with a steeper transition around the midpoint.",
+                "key": "post_gain",
+                "label": "Gain",
+                "type": "Float"
+            },
+            "post_gamma": {
+                "description": "Standard gamma correction applied to the elevation values. This is a monotonic power-law remapping that shifts emphasis toward low or high elevations, making the overall shape sharper or bulkier without changing its ordering.",
+                "key": "post_gamma",
+                "label": "Gamma",
+                "type": "Float"
+            },
+            "post_inverse": {
+                "description": "Inverts the output values after processing, flipping low and high values across the midrange.",
+                "key": "post_inverse",
+                "label": "Invert Output",
+                "type": "Bool"
+            },
+            "post_mix": {
+                "description": "Mixing factor for blending input and output values. A value of 0 uses only the input, 1 uses only the output, and intermediate values perform a linear interpolation.",
+                "key": "post_mix",
+                "label": "Mix Factor",
+                "type": "Float"
+            },
+            "post_mix_method": {
+                "description": "Method used to combine input and output values. Options include linear interpolation (default), min, max, smooth min, smooth max, add, and subtract.",
+                "key": "post_mix_method",
+                "label": "Mix Method",
+                "type": "Enumeration"
+            },
+            "post_remap": {
+                "description": "Linearly remaps the output values to a specified target range (default is [0, 1]).",
+                "key": "post_remap",
+                "label": "Remap Range",
+                "type": "Value range"
+            },
+            "post_saturate": {
+                "description": "Modifies the amplitude of elevations by first clamping them to a given interval and then scaling them so that the restricted interval matches the original input range. This enhances contrast in elevation variations while maintaining overall structure.",
+                "key": "post_saturate",
+                "label": "Saturation Range",
+                "type": "Value range"
+            },
+            "post_smoothing_radius": {
+                "description": "Defines the radius for post-processing smoothing, determining the size of the neighborhood used to average local values and reduce high-frequency detail. A radius of 0 disables smoothing.",
+                "key": "post_smoothing_radius",
+                "label": "Smoothing Radius",
+                "type": "Float"
+            },
+            "random_directions": {
+                "description": "No description",
+                "key": "random_directions",
+                "label": "Random Directions",
+                "type": "Bool"
+            },
+            "seed": {
+                "description": "Random seed number. The random seed is an offset to the randomized process. A different seed will produce a new result.",
+                "key": "seed",
+                "label": "Seed",
+                "type": "Random seed number"
+            },
+            "skew": {
+                "description": "No description",
+                "key": "skew",
+                "label": "Skew",
+                "type": "Float"
+            },
+            "slope": {
+                "description": "No description",
+                "key": "slope",
+                "label": "Slope",
+                "type": "Float"
+            }
+        },
+        "ports": {
+            "dx": {
+                "caption": "dx",
+                "data_type": "VirtualArray",
+                "description": "Displacement with respect to the domain size (x-direction).",
+                "type": "input"
+            },
+            "dy": {
+                "caption": "dy",
+                "data_type": "VirtualArray",
+                "description": "Displacement with respect to the domain size (y-direction).",
+                "type": "input"
+            },
+            "input": {
+                "caption": "input",
+                "data_type": "VirtualArray",
+                "description": "No description",
+                "type": "input"
+            },
+            "mask": {
+                "caption": "mask",
                 "data_type": "VirtualArray",
                 "description": "No description",
                 "type": "input"
@@ -20162,7 +20834,7 @@
         }
     },
     "Thermal": {
-        "category": "Erosion/Thermal",
+        "category": "Erosion/Deposition",
         "description": "Thermal is an erosion operator used to simulate the process of thermal erosion, which is a type of erosion that occurs due to temperature fluctuations causing the breakdown and movement of soil and rock materials.",
         "label": "Thermal",
         "parameters": {
@@ -20297,20 +20969,14 @@
         }
     },
     "ThermalFlatten": {
-        "category": "WIP",
+        "category": "Erosion/Deposition",
         "description": "TODO",
         "label": "ThermalFlatten",
         "parameters": {
-            "iterations": {
-                "description": "TODO",
-                "key": "iterations",
-                "label": "iterations",
-                "type": "Integer"
-            },
-            "post_filter_radius": {
-                "description": "TODO",
-                "key": "post_filter_radius",
-                "label": "post_filter_radius",
+            "duration": {
+                "description": "No description",
+                "key": "duration",
+                "label": "Duration",
                 "type": "Float"
             },
             "scale_talus_with_elevation": {
@@ -20318,6 +20984,18 @@
                 "key": "scale_talus_with_elevation",
                 "label": "scale_talus_with_elevation",
                 "type": "Bool"
+            },
+            "sigma_inf": {
+                "description": "No description",
+                "key": "sigma_inf",
+                "label": "sigma_inf",
+                "type": "Float"
+            },
+            "sigma_sup": {
+                "description": "No description",
+                "key": "sigma_sup",
+                "label": "sigma_sup",
+                "type": "Float"
             },
             "talus_global": {
                 "description": "TODO",
@@ -20333,6 +21011,12 @@
                 "description": "TODO",
                 "type": "input"
             },
+            "mask": {
+                "caption": "mask",
+                "data_type": "VirtualArray",
+                "description": "No description",
+                "type": "input"
+            },
             "output": {
                 "caption": "output",
                 "data_type": "VirtualArray",
@@ -20342,7 +21026,7 @@
         }
     },
     "ThermalScree": {
-        "category": "Erosion/Thermal",
+        "category": "Erosion/Deposition",
         "description": "TODO",
         "label": "ThermalScree",
         "parameters": {
@@ -20786,7 +21470,7 @@
         }
     },
     "ValleyFill": {
-        "category": "Erosion/Thermal",
+        "category": "Erosion/Deposition",
         "description": "Fill valleys using thermal scree deposition and height-based blending.",
         "label": "ValleyFill",
         "parameters": {
@@ -22970,7 +23654,7 @@
             "density": {
                 "description": "Noise density.",
                 "key": "density",
-                "label": "density",
+                "label": "Density",
                 "type": "Float"
             },
             "post_gain": {
@@ -23039,81 +23723,6 @@
                 "caption": "output",
                 "data_type": "VirtualArray",
                 "description": "Generated noise.",
-                "type": "output"
-            }
-        }
-    },
-    "Wrinkle": {
-        "category": "WIP",
-        "description": "TODO",
-        "label": "Wrinkle",
-        "parameters": {
-            "displacement_amplitude": {
-                "description": "TODO",
-                "key": "displacement_amplitude",
-                "label": "displacement_amplitude",
-                "type": "Float"
-            },
-            "kw": {
-                "description": "Base spatial frequencies in the X and Y directions. The frequencies are defined with respect to the entire domain: for example, kw = 2 produces two full oscillations across the domain width (and similarly for the Y direction).",
-                "key": "kw",
-                "label": "kw",
-                "type": "Float"
-            },
-            "octaves": {
-                "description": "The number of octaves for fractal noise generation. More octaves add finer details to the terrain.",
-                "key": "octaves",
-                "label": "Octaves",
-                "type": "Integer"
-            },
-            "radius": {
-                "description": "TODO",
-                "key": "radius",
-                "label": "radius",
-                "type": "Float"
-            },
-            "seed": {
-                "description": "Random seed number. The random seed is an offset to the randomized process. A different seed will produce a new result.",
-                "key": "seed",
-                "label": "Seed",
-                "type": "Random seed number"
-            },
-            "weight": {
-                "description": "Controls how much higher FBM octaves contribute to the noise based on local elevation. A higher weight suppresses high-frequency octaves at low elevations and increases their influence at higher elevations, producing terrain where fine details appear mainly near peaks while lower areas remain smoother.",
-                "key": "weight",
-                "label": "Weight",
-                "type": "Float"
-            },
-            "wrinkle_amplitude": {
-                "description": "TODO",
-                "key": "wrinkle_amplitude",
-                "label": "wrinkle_amplitude",
-                "type": "Float"
-            },
-            "wrinkle_angle": {
-                "description": "TODO",
-                "key": "wrinkle_angle",
-                "label": "wrinkle_angle",
-                "type": "Float"
-            }
-        },
-        "ports": {
-            "input": {
-                "caption": "input",
-                "data_type": "VirtualArray",
-                "description": "TODO",
-                "type": "input"
-            },
-            "mask": {
-                "caption": "mask",
-                "data_type": "VirtualArray",
-                "description": "Mask defining the filtering intensity (expected in [0, 1]).",
-                "type": "input"
-            },
-            "output": {
-                "caption": "output",
-                "data_type": "VirtualArray",
-                "description": "TODO",
                 "type": "output"
             }
         }

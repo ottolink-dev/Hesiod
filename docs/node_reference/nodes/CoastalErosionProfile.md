@@ -49,10 +49,12 @@ Erosion/Water
 |mask_radius|Float|Defines the smoothing radius for the internal mask. A value of 0 disables smoothing. This is bypassed if the 'mask' input is used.|
 |mask_type|Choice|Specifies how the internal mask is computed: 'Elevation' uses height, 'Gradient Norm' uses slope, and 'Elevation mid-range' selects the middle portion of the height range. This parameter is ignored when a 'mask' input is connected.|
 |Iterations|Integer|No description|
-|Scarp Smoothness|Float|Ratio in [0,1] defining how much of the ground-side profile is a vertical scarp instead of a sloped shore.|
+|Scarp Extent|Float|Ratio in [0,1] defining how much of the ground-side profile is a vertical scarp instead of a sloped shore.|
+|Scarp Mask Transition|Float|No description|
 |Ground Shore Width|Float|Horizontal extent over which the ground-side coastal profile is applied, with respect to a unit domain.|
 |Water Shore Width Ratio|Float|Ratio controlling how far the underwater slope extends relative to the shore width.|
 |Shore Slope|Float|Ground-side slope magnitude of the coastal profile, in elevation units per domain width.|
+|Solid Shore Mask|Bool|No description|
 
 # Example
 

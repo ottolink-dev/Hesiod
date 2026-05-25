@@ -13,7 +13,7 @@ DepressionFilling is used to fill depressions or sinks in an heightmap. It ensur
 # Category
 
 
-Erosion
+Erosion/Deposition
 # Inputs
 
 |Name|Type|Description|

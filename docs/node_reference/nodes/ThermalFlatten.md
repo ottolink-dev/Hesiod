@@ -13,12 +13,13 @@ TODO
 # Category
 
 
-WIP
+Erosion/Deposition
 # Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |input|VirtualArray|TODO|
+|mask|VirtualArray|No description|
 
 # Outputs
 
@@ -30,9 +31,10 @@ WIP
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
-|iterations|Integer|TODO|
-|post_filter_radius|Float|TODO|
+|Duration|Float|No description|
 |scale_talus_with_elevation|Bool|Scales the talus amplitude based on heightmap elevation, reducing it at lower elevations and maintaining the nominal value at higher elevations.|
+|sigma_inf|Float|No description|
+|sigma_sup|Float|No description|
 |talus_global|Float|TODO|
 
 # Example

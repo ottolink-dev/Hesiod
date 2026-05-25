@@ -13,7 +13,7 @@ Generates a distance map where each pixel's value represents the shortest distan
 # Category
 
 
-Operator/Morphology
+Terrain Features/Morphology
 # Inputs
 
 |Name|Type|Description|

@@ -30,7 +30,7 @@ Hydrology
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
-|elevation|Float|No description|
+|Elevation|Float|No description|
 
 # Example
 

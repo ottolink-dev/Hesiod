@@ -13,7 +13,7 @@ TODO
 # Category
 
 
-Erosion/Thermal
+Erosion/Deposition
 # Inputs
 
 |Name|Type|Description|

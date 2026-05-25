@@ -13,7 +13,7 @@ Thermal is an erosion operator used to simulate the process of thermal erosion, 
 # Category
 
 
-Erosion/Thermal
+Erosion/Deposition
 # Inputs
 
 |Name|Type|Description|
