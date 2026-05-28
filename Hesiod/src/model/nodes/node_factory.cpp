@@ -322,6 +322,7 @@ std::map<std::string, std::string> get_node_inventory()
       {"Phasor", "Primitive/Coherent"},
       {"Plateau", "Filter/Recurve"},
       {"Plates", "Primitive/Geological"},
+      {"PolarShape", "Primitive/Function"},
       {"PolygonField", "Primitive/Coherent"},
       {"PolygonFieldFbm", "Primitive/Coherent"},
       {"PostProcess", "Filter"},
@@ -657,6 +658,7 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
     SETUP_NODE(Phasor, phasor);
     SETUP_NODE(Plateau, plateau);
     SETUP_NODE(Plates, plates);
+    SETUP_NODE(PolarShape, polar_shape);
     SETUP_NODE(PolygonField, polygon_field);
     SETUP_NODE(PolygonFieldFbm, polygon_field_fbm);
     SETUP_NODE(PostProcess, post_process);
