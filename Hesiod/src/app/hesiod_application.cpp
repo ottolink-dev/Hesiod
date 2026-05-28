@@ -190,6 +190,12 @@ void HesiodApplication::load_project_model_and_ui(const std::string &fname,
         this->context.app_settings.window.show_texture_downloader_widget);
   }
 
+  if (this->context.app_settings.interface.enable_heightmapper_widget)
+  {
+    this->project_ui->get_heightmapper_widget_ref()->setVisible(
+        this->context.app_settings.window.show_heightmapper_widget);
+  }
+
   // --- connections
 
   // ProjectUI -> Project
@@ -715,6 +721,13 @@ void HesiodApplication::setup_menu_bar()
     view_menu->addAction(show_texture_downloader);
   }
 
+  auto *show_heightmapper_widget = new QAction("Tangram Heightmapper", this);
+  show_heightmapper_widget->setIcon(HSD_ICON("public"));
+  if (this->context.app_settings.interface.enable_heightmapper_widget)
+  {
+    view_menu->addAction(show_heightmapper_widget);
+  }
+
   view_menu->addSeparator();
 
   auto *show_viewer_action = new QAction("Show Viewer in Main Window", this);
@@ -823,6 +836,22 @@ void HesiodApplication::setup_menu_bar()
           this->context.app_settings.window.show_texture_downloader_widget = !state;
           this->project_ui->get_texture_downloader_ref()->setVisible(!state);
           show_texture_downloader->setChecked(!state);
+        });
+  }
+
+  if (this->context.app_settings.interface.enable_heightmapper_widget)
+  {
+    this->connect(
+        show_heightmapper_widget,
+        &QAction::triggered,
+        this,
+        [this, show_heightmapper_widget]()
+        {
+          bool state = this->project_ui->get_heightmapper_widget_ref()->isVisible();
+          this->context.app_settings.window.show_heightmapper_widget = !state;
+          this->project_ui->get_heightmapper_widget_ref()->setVisible(!state);
+          this->project_ui->get_heightmapper_widget_ref()->reload();
+          show_heightmapper_widget->setChecked(!state);
         });
   }
 

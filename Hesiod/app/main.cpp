@@ -27,6 +27,13 @@ int main(int argc, char *argv[])
   // --- Start app
 
   qputenv("QT_LOGGING_RULES", HESIOD_QPUTENV_QT_LOGGING_RULES);
+
+  qputenv("QTWEBENGINE_CHROMIUM_FLAGS",
+          "--ignore-gpu-blocklist "
+          "--use-gl=swiftshader " // software WebGL fallback
+          "--enable-webgl "
+          "--disable-gpu-driver-bug-workarounds");
+
   hesiod::HesiodApplication app(argc, argv);
 
   if (!app.is_headless())

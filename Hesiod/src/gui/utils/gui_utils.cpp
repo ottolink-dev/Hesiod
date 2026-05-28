@@ -1,6 +1,7 @@
 /* Copyright (c) 2023 Otto Link. Distributed under the terms of the GNU General
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
+#include <QColorSpace>
 #include <QLabel>
 #include <QLayout>
 #include <QMenu>
@@ -98,6 +99,34 @@ void resize_font(QWidget *widget, int relative_size_modification)
   QFont font = widget->font();
   font.setPointSize(font.pointSize() + relative_size_modification);
   widget->setFont(font);
+}
+
+bool save_heightmap(const QImage                &src,
+                    const std::filesystem::path &path,
+                    float                        aspect_ratio)
+{
+  // --- Crop to aspect ratio (centered) ---
+  int src_w = src.width();
+  int src_h = src.height();
+
+  int crop_w = src_w;
+  int crop_h = static_cast<int>(src_w / aspect_ratio);
+
+  if (crop_h > src_h) // pillarbox case
+  {
+    crop_h = src_h;
+    crop_w = static_cast<int>(src_h * aspect_ratio);
+  }
+
+  int offset_x = (src_w - crop_w) / 2;
+  int offset_y = (src_h - crop_h) / 2;
+
+  QImage cropped = src.copy(offset_x, offset_y, crop_w, crop_h);
+  cropped.setColorSpace(QColorSpace());
+
+  // --- Save ---
+  QString qpath = QString::fromStdString(path.string());
+  return cropped.save(qpath, "PNG");
 }
 
 void set_style(QWidget *widget, const std::string &style)

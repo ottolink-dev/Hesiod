@@ -39,7 +39,8 @@ include(HesiodGitVersion)
 # Dependencies
 # ------------------------------
 find_package(spdlog REQUIRED)
-find_package(Qt6 REQUIRED COMPONENTS Core Widgets OpenGL OpenGLWidgets)
+find_package(Qt6 REQUIRED COMPONENTS Core Widgets OpenGL OpenGLWidgets
+                                     WebEngineWidgets)
 find_package(nlohmann_json REQUIRED)
 
 add_compile_definitions(

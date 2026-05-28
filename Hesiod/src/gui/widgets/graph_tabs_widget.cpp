@@ -73,6 +73,23 @@ std::string GraphTabsWidget::get_selected_graph_id() const
   return selected_tab_text.toStdString();
 }
 
+void GraphTabsWidget::on_heightmap_download_ready(
+    const HeightmapperWidget::DownloadInfo &info)
+{
+  Logger::log()->trace("GraphTabsWidget::on_heightmap_download_ready");
+
+  QImage img = QImage::fromData(info.data, "PNG");
+  img = img.convertToFormat(QImage::Format_Grayscale16);
+
+  std::string graph_id = this->get_selected_graph_id();
+
+  QPointer<GraphEditorWidget> gew = this->graph_editor_widget_map.at(graph_id);
+  if (gew && gew->get_graph_node_widget())
+    gew->get_graph_node_widget()->add_import_heightmap_node(img);
+  else
+    Logger::log()->error("GraphTabsWidget::on_heightmap_download_ready: dangling ptr");
+}
+
 void GraphTabsWidget::on_textures_request(const std::vector<std::string> &texture_paths)
 {
   Logger::log()->trace("GraphTabsWidget::on_textures_request");

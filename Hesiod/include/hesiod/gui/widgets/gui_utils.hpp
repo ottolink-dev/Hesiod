@@ -1,10 +1,12 @@
 /* Copyright (c) 2023 Otto Link. Distributed under the terms of the GNU General Public
    License. The full license is in the file LICENSE, distributed with this software. */
 #pragma once
+#include <filesystem>
 #include <functional>
 
 #include <QApplication>
 #include <QGridLayout>
+#include <QImage>
 #include <QLayout>
 #include <QWidget>
 
@@ -32,5 +34,9 @@ void render_widget_screenshot(QWidget              *widget,
 
 int   float_to_slider_pos(float v, float min, float max, int slider_steps);
 float slider_pos_to_float(int pos, float min, float max, int slider_steps);
+
+bool save_heightmap(const QImage                &src,
+                    const std::filesystem::path &path,
+                    float                        aspectRatio);
 
 } // namespace hesiod
