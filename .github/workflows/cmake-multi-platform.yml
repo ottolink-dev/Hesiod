@@ -2,7 +2,7 @@ name: CMake on multiple platforms
 
 on:
   push:
-    branches: [ "main", "dev", "v0.5.0-rc"]
+    branches: [ "main", "dev"]
   pull_request:
     branches: [ "main", "dev" ]
 
@@ -34,13 +34,14 @@ jobs:
       uses: jurplel/install-qt-action@v3
       with:
         version: "6.4.2"
+	modules: 'qtwebengine'
 
     - name: Install system dependencies (ubuntu)
       if: startsWith (matrix.os, 'ubuntu')
       run: |
         sudo apt update
         sudo apt-get update
-        sudo apt-get -y install libglfw3 libglfw3-dev libglew-dev libopengl-dev freeglut3-dev libglm-dev fuse libfuse2 opencl-headers ocl-icd-opencl-dev pocl-opencl-icd libassimp-dev libopencv-dev libxkbcommon-dev libspdlog-dev libfftw3-dev libgsl-dev nlohmann-json3-dev qt6-webengine-dev
+        sudo apt-get -y install libglfw3 libglfw3-dev libglew-dev libopengl-dev freeglut3-dev libglm-dev fuse libfuse2 opencl-headers ocl-icd-opencl-dev pocl-opencl-icd libassimp-dev libopencv-dev libxkbcommon-dev libspdlog-dev libfftw3-dev libgsl-dev nlohmann-json3-dev
 
     - name: Install system dependencies (windows)
       if: startsWith (matrix.os, 'windows')
