@@ -2,6 +2,7 @@
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
 #include <QBuffer>
+#include <QComboBox>
 #include <QDir>
 #include <QFile>
 #include <QIODevice>
@@ -11,8 +12,12 @@
 #include "hesiod/gui/widgets/heightmapper_widget.hpp"
 #include "hesiod/logger.hpp"
 
-static constexpr const char
-    *heightmapper_url = "https://tangrams.github.io/heightmapper/"; // TODO move to config
+static const QList<QPair<QString, QString>> source_urls = {
+    {"Manticorp",
+     "https://manticorp.github.io/unrealheightmap/#width/1024/height/1024/outputformat/"
+     "png16"},
+    {"Tangram Heightmapper", "https://tangrams.github.io/heightmapper"},
+};
 
 namespace hesiod
 {
@@ -35,15 +40,28 @@ HeightmapperWidget::HeightmapperWidget(QWidget *parent) : QWidget(parent)
 
   this->setMinimumSize(QSize(768, 768));
 
+  // --- combo box ---
+  this->url_combo = new QComboBox(this);
+  for (const auto &[label, url] : source_urls)
+    this->url_combo->addItem(label, url);
+
+  connect(this->url_combo,
+          &QComboBox::currentIndexChanged,
+          this,
+          &HeightmapperWidget::on_source_changed);
+
+  // --- layout ---
   auto *layout = new QVBoxLayout(this);
-  layout->setContentsMargins(0, 0, 0, 0);
+  layout->setContentsMargins(4, 4, 4, 4);
+  layout->setSpacing(4);
+  layout->addWidget(this->url_combo);
   layout->addWidget(this->view);
 
   this->setup_download_interception();
 
-  this->view->load(QUrl(heightmapper_url));
+  // load first entry
+  this->view->load(QUrl(source_urls.first().second));
 
-  // restore window geometry
   this->restore_window_state();
 }
 
@@ -134,6 +152,13 @@ void HeightmapperWidget::on_download_requested(QWebEngineDownloadRequest *downlo
               break;
             }
           });
+}
+
+void HeightmapperWidget::on_source_changed(int index)
+{
+  const QString url = this->url_combo->itemData(index).toString();
+  if (!url.isEmpty())
+    this->view->load(QUrl(url));
 }
 
 void HeightmapperWidget::reload()

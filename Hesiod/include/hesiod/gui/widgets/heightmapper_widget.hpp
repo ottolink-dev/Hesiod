@@ -3,6 +3,7 @@
 #pragma once
 
 #include <QByteArray>
+#include <QComboBox>
 #include <QString>
 #include <QWebEngineDownloadRequest>
 #include <QWebEngineHistory>
@@ -45,6 +46,7 @@ public slots:
 
 private slots:
   void on_download_requested(QWebEngineDownloadRequest *download);
+  void on_source_changed(int index);
 
   // --- Qt Events
   void closeEvent(QCloseEvent *event) override;
@@ -59,6 +61,7 @@ private:
   // --- Members
   QWebEngineView    *view = nullptr;
   QWebEngineProfile *profile = nullptr;
+  QComboBox         *url_combo = nullptr;
 };
 
 } // namespace hesiod
