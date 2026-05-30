@@ -24,6 +24,7 @@ constexpr const char *P_DS = "offset";
 constexpr const char *P_ENV = "envelope";
 constexpr const char *P_OUT = "output";
 constexpr const char *P_RIFT_MASK = "rift_mask";
+constexpr const char *P_BOTTOM_MASK = "bottom_mask";
 
 constexpr const char *A_ANGLE = "angle";
 constexpr const char *A_RADIUS = "radius";
@@ -36,6 +37,7 @@ constexpr const char *A_BOTTOM_EXTENT = "bottom_extent";
 constexpr const char *A_BOTTOM_DEPTH = "bottom_depth";
 constexpr const char *A_BOTTOM_PROFILE = "bottom_profile";
 constexpr const char *A_BOTTOM_PROFILE_PARAM = "bottom_profile_param";
+constexpr const char *A_BOTTOM_MIN_DEPTH = "bottom_force_minimum_depth";
 constexpr const char *A_OUTER_SLOPE = "outer_slope";
 constexpr const char *A_CENTER = "center";
 
@@ -54,6 +56,7 @@ void setup_rift_node(BaseNode &node)
   node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_ENV);
   node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_OUT, CONFIG(node));
   node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_RIFT_MASK, CONFIG(node));
+  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_BOTTOM_MASK, CONFIG(node));
 
   // --- Attributes
 
@@ -69,6 +72,7 @@ void setup_rift_node(BaseNode &node)
   node.add_attr<FloatAttribute>(A_BOTTOM_DEPTH, "Bottom Depth", 0.02f, 0.f, 1.f);
   node.add_attr<EnumAttribute>(A_BOTTOM_PROFILE, "Bottom Profile", enum_mappings.radial_profile_map, "Square Root");
   node.add_attr<FloatAttribute>(A_BOTTOM_PROFILE_PARAM, "Bottom Profile Sharpness", 0.5f, 0.f, 10.f);
+  node.add_attr<BoolAttribute>(A_BOTTOM_MIN_DEPTH, "Ensure Minimum Depth", true);
   node.add_attr<FloatAttribute>(A_OUTER_SLOPE, "Outer Slope", 0.2f, -4.f, 4.f);
   node.add_attr<Vec2FloatAttribute>(A_CENTER, "Center");
   // clang-format on
@@ -99,6 +103,7 @@ void setup_rift_node(BaseNode &node)
       A_BOTTOM_DEPTH,
       A_BOTTOM_PROFILE,
       A_BOTTOM_PROFILE_PARAM,
+      A_BOTTOM_MIN_DEPTH,
       "_GROUPBOX_END_",
   });
 
@@ -125,6 +130,7 @@ void compute_rift_node(BaseNode &node)
   auto *p_env = node.get_value_ref<hmap::VirtualArray>(P_ENV);
   auto *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
   auto *p_rmask = node.get_value_ref<hmap::VirtualArray>(P_RIFT_MASK);
+  auto *p_bmask = node.get_value_ref<hmap::VirtualArray>(P_BOTTOM_MASK);
 
   if (!p_out)
     return;
@@ -132,19 +138,20 @@ void compute_rift_node(BaseNode &node)
   // --- Params
 
   // clang-format off
-  const auto angle                = node.get_attr<FloatAttribute>(A_ANGLE);
-  const auto radius               = node.get_attr<FloatAttribute>(A_RADIUS);
-  const auto axial_slope          = node.get_attr<FloatAttribute>(A_AXIAL_SLOPE);
-  const auto depth                = node.get_attr<FloatAttribute>(A_DEPTH);
-  const auto scale_with_depth     = node.get_attr<BoolAttribute>(A_SCALE_WITH_DEPTH);
-  const auto profile              = hmap::RadialProfile(node.get_attr<EnumAttribute>(A_PROFILE));
-  const auto profile_param        = node.get_attr<FloatAttribute>(A_PROFILE_PARAM);
-  const auto bottom_extent        = node.get_attr<FloatAttribute>(A_BOTTOM_EXTENT);
-  const auto bottom_depth         = node.get_attr<FloatAttribute>(A_BOTTOM_DEPTH);
-  const auto bottom_profile       = hmap::RadialProfile(node.get_attr<EnumAttribute>(A_BOTTOM_PROFILE));
-  const auto bottom_profile_param = node.get_attr<FloatAttribute>(A_BOTTOM_PROFILE_PARAM);
-  const auto outer_slope          = node.get_attr<FloatAttribute>(A_OUTER_SLOPE);
-  const auto center               = node.get_attr<Vec2FloatAttribute>(A_CENTER);
+  const auto angle                  = node.get_attr<FloatAttribute>(A_ANGLE);
+  const auto radius                 = node.get_attr<FloatAttribute>(A_RADIUS);
+  const auto axial_slope            =  node.get_attr<FloatAttribute>(A_AXIAL_SLOPE);
+  const auto depth                  = node.get_attr<FloatAttribute>(A_DEPTH);
+  const auto scale_with_depth       = node.get_attr<BoolAttribute>(A_SCALE_WITH_DEPTH);
+  const auto profile                = hmap::RadialProfile(node.get_attr<EnumAttribute>(A_PROFILE));
+  const auto profile_param          = node.get_attr<FloatAttribute>(A_PROFILE_PARAM);
+  const auto bottom_extent          = node.get_attr<FloatAttribute>(A_BOTTOM_EXTENT);
+  const auto bottom_depth           = node.get_attr<FloatAttribute>(A_BOTTOM_DEPTH);
+  const auto bottom_profile         = hmap::RadialProfile(node.get_attr<EnumAttribute>(A_BOTTOM_PROFILE));
+  const auto bottom_profile_param   = node.get_attr<FloatAttribute>(A_BOTTOM_PROFILE_PARAM);
+  const auto bottom_force_min_depth = node.get_attr<BoolAttribute>(A_BOTTOM_MIN_DEPTH); 
+  const auto outer_slope            = node.get_attr<FloatAttribute>(A_OUTER_SLOPE);
+  const auto center                 = node.get_attr<Vec2FloatAttribute>(A_CENTER);
   // clang-format on
 
   // --- Resolve default noise
@@ -156,13 +163,13 @@ void compute_rift_node(BaseNode &node)
 
   hmap::for_each_tile(
       {p_dr, p_ds},
-      {p_out, p_rmask},
+      {p_out, p_rmask, p_bmask},
       [&](std::vector<const hmap::Array *> in,
           std::vector<hmap::Array *>       out,
           const hmap::TileRegion          &region)
       {
         auto [pa_dr, pa_ds] = unpack<2>(in);
-        auto [pa_out, pa_rmask] = unpack<2>(out);
+        auto [pa_out, pa_rmask, pa_bmask] = unpack<3>(out);
 
         *pa_out = hmap::rift(region.shape,
                              angle,
@@ -176,13 +183,14 @@ void compute_rift_node(BaseNode &node)
                              bottom_depth,
                              bottom_profile,
                              bottom_profile_param,
+                             bottom_force_min_depth,
                              outer_slope,
                              pa_dr,
                              pa_ds,
                              center,
                              region.bbox,
                              pa_rmask,
-                             /* p_bottom_mask */ nullptr);
+                             pa_bmask);
       },
       node.cfg().cm_cpu);
 

@@ -3,7 +3,7 @@
  * this software. */
 #include "attributes.hpp"
 
-#include "highmap/interpolate_array.hpp"
+#include "highmap/interpolate/interpolate_array.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
