@@ -30,7 +30,6 @@ int main(int argc, char *argv[])
 
   qputenv("QTWEBENGINE_CHROMIUM_FLAGS",
           "--ignore-gpu-blocklist "
-          "--use-gl=swiftshader " // software WebGL fallback
           "--enable-webgl "
           "--disable-gpu-driver-bug-workarounds");
 
