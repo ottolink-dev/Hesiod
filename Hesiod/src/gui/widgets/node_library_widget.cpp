@@ -1,6 +1,8 @@
 /* Copyright (c) 2026 Otto Link. Distributed under the terms of the GNU General
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
+#include <utility>
+
 #include <QHeaderView>
 #include <QPushButton>
 #include <QToolTip>
@@ -11,8 +13,21 @@
 #include "hesiod/model/nodes/node_factory.hpp"
 #include "hesiod/model/utils.hpp"
 
+#define HSD_CAT_BASE_ALPHA 0.5f
+#define HSD_CAT_DIM_ALPHA 0.3f
+
 namespace hesiod
 {
+
+QColor helper_dim_color(const QColor &color, const QColor &bg, float amount)
+{
+  amount = std::clamp(amount, 0.f, 1.f);
+
+  return QColor(color.red() * amount + bg.red() * (1.f - amount),
+                color.green() * amount + bg.green() * (1.f - amount),
+                color.blue() * amount + bg.blue() * (1.f - amount),
+                color.alpha());
+}
 
 NodeLibraryWidget::NodeLibraryWidget(QWidget *parent) : QWidget(parent)
 {
@@ -147,20 +162,32 @@ void NodeLibraryWidget::setup_layout()
 
   // retrieve the category → color map from the style settings
   const auto &color_map = HSD_CTX.style_settings.category_color_map;
+  QColor      base = HSD_CTX.app_settings.colors.bg_primary;
 
   // keep track of QTreeWidgetItems per path so we can build the hierarchy
   std::map<std::string, QTreeWidgetItem *> path_to_item;
 
-  auto get_or_create_category =
-      [&](const std::string              &categories_str,
-          const std::vector<std::string> &categories) -> QTreeWidgetItem *
+  auto get_or_create_category = [&](const std::string              &categories_str,
+                                    const std::vector<std::string> &categories)
+      -> std::pair<QTreeWidgetItem *, QColor>
   {
+    // apply category color if available (use the main category for
+    // the color)
+    QColor color = Qt::white;
+    {
+      auto color_it = color_map.find(categories.front());
+      if (color_it != color_map.end())
+        color = color_it->second;
+    }
+    color.setAlphaF(HSD_CAT_BASE_ALPHA);
+
     if (path_to_item.count(categories_str))
-      return path_to_item.at(categories_str);
+      return {path_to_item.at(categories_str), color};
 
     QTreeWidgetItem *parent_item = nullptr;
     std::string      current_path;
 
+    // generate category tree
     for (size_t i = 0; i < categories.size(); ++i)
     {
       if (i > 0)
@@ -175,38 +202,37 @@ void NodeLibraryWidget::setup_layout()
         cat_item->setText(0, QString::fromStdString(categories[i]));
         cat_item->setFlags(cat_item->flags() & ~Qt::ItemIsSelectable);
 
-        // apply category color if available
-        auto color_it = color_map.find(categories[i]);
-        if (color_it != color_map.end())
-        {
-          QColor color = color_it->second;
-          // cat_item->setForeground(0, QBrush(color));
+        // text color
+        // cat_item->setForeground(0, QBrush(color));
 
-          // tinted background
-          QColor bg = color;
-          bg.setAlphaF(0.5f);
-          cat_item->setBackground(0, QBrush(bg));
-        }
-
+        // tinted background
+        QColor bg = i == 0 ? color : helper_dim_color(color, base, HSD_CAT_DIM_ALPHA);
+        cat_item->setBackground(0, QBrush(bg));
         cat_item->setExpanded(true);
+
         path_to_item[current_path] = cat_item;
       }
 
       parent_item = path_to_item.at(current_path);
     }
 
-    return parent_item;
+    return {parent_item, color};
   };
 
   for (const auto &[categories_str, node_types] : category_nodes)
   {
     std::vector<std::string> categories = split_string(categories_str, '/');
-    QTreeWidgetItem *cat_item = get_or_create_category(categories_str, categories);
+
+    auto [cat_item, color] = get_or_create_category(categories_str, categories);
 
     for (const std::string &node_type : node_types)
     {
       QTreeWidgetItem *node_item = new QTreeWidgetItem(cat_item);
       node_item->setText(0, QString::fromStdString(node_type));
+
+      // tinted background
+      QColor bg = helper_dim_color(color, base, HSD_CAT_DIM_ALPHA);
+      node_item->setBackground(0, QBrush(bg));
 
       // store the canonical type id for retrieval in the signal
       node_item->setData(0, Qt::UserRole, QString::fromStdString(node_type));

@@ -240,6 +240,18 @@ std::vector<std::string> split_string(const std::string &string, char delimiter)
   return result;
 }
 
+void string_to_file(const std::string &content, const std::string &fname)
+{
+  std::ofstream file(fname);
+
+  if (!file.is_open())
+  {
+    throw std::runtime_error("Failed to open file: " + fname);
+  }
+
+  file << content;
+}
+
 std::string timestamp(std::chrono::system_clock::time_point tp)
 {
   std::time_t t = std::chrono::system_clock::to_time_t(tp);

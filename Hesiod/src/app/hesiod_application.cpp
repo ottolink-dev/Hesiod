@@ -65,6 +65,13 @@ HesiodApplication::HesiodApplication(int &argc, char **argv) : QApplication(argc
   // init OpenMP
   hmap::init_openmp(this->context.app_settings.global.omp_num_threads);
 
+  // OpenCV info
+  const std::string cv_log_fname = "opencv_build_information.log";
+  Logger::log()->trace(
+      "HesiodApplication::HesiodApplication: OpenCV build information dumped in: {}",
+      cv_log_fname);
+  string_to_file(hmap::get_opencv_build_information(), cv_log_fname);
+
   // for colormaps loading
   hesiod::ColorGradientManager::get_instance();
 
