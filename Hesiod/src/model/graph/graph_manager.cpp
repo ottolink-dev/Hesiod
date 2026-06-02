@@ -134,7 +134,8 @@ void GraphManager::export_flatten()
     t_sources.push_back(p_t);
   }
 
-  glm::vec2        origin(bbox_global.x, bbox_global.y);
+  // bbox_global is (min_x, max_x, min_y, max_y); origin is the lower corner
+  glm::vec2        origin(bbox_global.x, bbox_global.z);
   glm::vec2        size(bbox_global.y - bbox_global.x, bbox_global.w - bbox_global.z);
   float            rotation_angle = 0.f;
   hmap::CoordFrame frame_export(origin, size, rotation_angle);
