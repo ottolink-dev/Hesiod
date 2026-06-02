@@ -36,7 +36,7 @@ To get the submodules, you will need a GitHub account with its SSH key configure
 
 Install [Qt6](https://doc.qt.io/qt-6/windows.html) and install the missing OpenSource dependencies using `vcpkg`:
 ```
-vcpkg install glfw3 opengl gsl glew freeglut glm libpng glm opencl assimp spdlog opencv
+vcpkg install glfw3 opengl gsl glew freeglut glm libpng glm opencl assimp spdlog opencv[openexr]
 ```
 
 You should then be able to build the sources using Visual Studio.
