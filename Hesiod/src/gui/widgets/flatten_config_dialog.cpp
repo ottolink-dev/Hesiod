@@ -4,6 +4,7 @@
 #include <QDialogButtonBox>
 #include <QFileDialog>
 #include <QGridLayout>
+#include <QPoint>
 #include <QPushButton>
 
 #include "hesiod/gui/widgets/flatten_config_dialog.hpp"
@@ -12,6 +13,9 @@
 
 namespace hesiod
 {
+
+// short edge is rounded down to a multiple of this so shape / tiling stays clean
+#define SHAPE_SNAP 16
 
 FlattenConfigDialog::FlattenConfigDialog(FlattenConfig &export_param, QWidget *parent)
     : QDialog(parent), export_param(export_param)
@@ -51,7 +55,22 @@ FlattenConfigDialog::FlattenConfigDialog(FlattenConfig &export_param, QWidget *p
           this->export_param.export_path = fname.toStdString();
       });
 
-  // --- shape
+  // --- aspect ratio (drives the shape; "Custom" unlocks an independent Y)
+
+  QLabel *label_aspect_text = new QLabel("aspect");
+  layout->addWidget(label_aspect_text, row, 0);
+
+  this->combo_aspect = new QComboBox();
+  // itemData = (width, height) ratio; (0, 0) marks Custom
+  this->combo_aspect->addItem("1:1 (square)", QPoint(1, 1));
+  this->combo_aspect->addItem("2:1 (equirectangular)", QPoint(2, 1));
+  this->combo_aspect->addItem("3:2", QPoint(3, 2));
+  this->combo_aspect->addItem("16:9", QPoint(16, 9));
+  this->combo_aspect->addItem("Custom", QPoint(0, 0));
+  layout->addWidget(this->combo_aspect, row, 1, 1, 2);
+  row++;
+
+  // --- shape (long edge, 2^n)
 
   QLabel *label_shape_text = new QLabel("shape");
   layout->addWidget(label_shape_text, row, 0);
@@ -60,27 +79,62 @@ FlattenConfigDialog::FlattenConfigDialog(FlattenConfig &export_param, QWidget *p
   this->slider_shape->setRange(8, 12); // 256 -> 4096
   this->slider_shape->setSingleStep(1);
   this->slider_shape->setPageStep(1);
-  int pos = (int)std::log2(this->export_param.shape.x);
-  this->slider_shape->setValue(pos);
+  int long_edge = std::max(this->export_param.shape.x, this->export_param.shape.y);
+  this->slider_shape->setValue((int)std::log2(long_edge));
   layout->addWidget(this->slider_shape, row, 1);
 
   this->label_shape = new QLabel(QString().asprintf("%dx%d",
                                                     this->export_param.shape.x,
                                                     this->export_param.shape.y));
   layout->addWidget(this->label_shape, row, 2);
+  row++;
 
+  // --- short edge (Custom only)
+
+  this->label_shape_y_text = new QLabel("height");
+  layout->addWidget(this->label_shape_y_text, row, 0);
+
+  this->slider_shape_y = new QSlider(Qt::Horizontal);
+  this->slider_shape_y->setRange(8, 12); // 256 -> 4096
+  this->slider_shape_y->setSingleStep(1);
+  this->slider_shape_y->setPageStep(1);
+  this->slider_shape_y->setValue((int)std::log2(this->export_param.shape.y));
+  layout->addWidget(this->slider_shape_y, row, 1);
+
+  this->label_shape_y = new QLabel(
+      QString().asprintf("%d", this->export_param.shape.y));
+  layout->addWidget(this->label_shape_y, row, 2);
+  row++;
+
+  // pick the combo entry that matches the current shape (else Custom)
+  {
+    int x = this->export_param.shape.x;
+    int y = this->export_param.shape.y;
+    int idx = this->combo_aspect->count() - 1; // Custom
+    for (int i = 0; i < this->combo_aspect->count(); ++i)
+    {
+      QPoint r = this->combo_aspect->itemData(i).toPoint();
+      if (r.x() > 0 && x * r.y() == y * r.x())
+      {
+        idx = i;
+        break;
+      }
+    }
+    this->combo_aspect->setCurrentIndex(idx);
+  }
+
+  connect(this->combo_aspect,
+          QOverload<int>::of(&QComboBox::currentIndexChanged),
+          [this]() { this->recompute_shape(); });
   connect(this->slider_shape,
           &QSlider::valueChanged,
-          [this]()
-          {
-            int pos = this->slider_shape->value();
-            this->export_param.shape = glm::ivec2(std::pow(2, pos), std::pow(2, pos));
-            this->label_shape->setText(QString().asprintf("%dx%d",
-                                                          this->export_param.shape.x,
-                                                          this->export_param.shape.y));
-          });
+          [this]() { this->recompute_shape(); });
+  connect(this->slider_shape_y,
+          &QSlider::valueChanged,
+          [this]() { this->recompute_shape(); });
 
-  row++;
+  // initial sync (also sets Custom-row visibility)
+  this->recompute_shape();
 
   // --- tiling
 
@@ -122,10 +176,10 @@ FlattenConfigDialog::FlattenConfigDialog(FlattenConfig &export_param, QWidget *p
   this->slider_overlap->setRange(0, this->steps);
   this->slider_overlap->setSingleStep(1);
   this->slider_overlap->setPageStep(1);
-  pos = float_to_slider_pos(this->export_param.overlap,
-                            this->vmin,
-                            this->vmax,
-                            this->steps);
+  int pos = float_to_slider_pos(this->export_param.overlap,
+                                this->vmin,
+                                this->vmax,
+                                this->steps);
   this->slider_overlap->setValue(pos);
   layout->addWidget(this->slider_overlap, row, 1);
 
@@ -158,6 +212,51 @@ FlattenConfigDialog::FlattenConfigDialog(FlattenConfig &export_param, QWidget *p
 
   connect(button_box, &QDialogButtonBox::accepted, this, &QDialog::accept);
   connect(button_box, &QDialogButtonBox::rejected, this, &QDialog::reject);
+}
+
+void FlattenConfigDialog::recompute_shape()
+{
+  const QPoint ratio = this->combo_aspect->currentData().toPoint();
+  const bool   is_custom = (ratio.x() == 0 || ratio.y() == 0);
+
+  // the height slider is only relevant (and shown) in Custom mode
+  this->label_shape_y_text->setVisible(is_custom);
+  this->slider_shape_y->setVisible(is_custom);
+  this->label_shape_y->setVisible(is_custom);
+
+  int x, y;
+
+  if (is_custom)
+  {
+    x = 1 << this->slider_shape->value();
+    y = 1 << this->slider_shape_y->value();
+  }
+  else
+  {
+    const int w = ratio.x();
+    const int h = ratio.y();
+    const int long_edge = 1 << this->slider_shape->value();
+
+    // long edge follows the slider; short edge is derived from the ratio and
+    // snapped down to a multiple of SHAPE_SNAP so shape / tiling stays clean
+    auto snap = [](int v)
+    { return std::max(SHAPE_SNAP, (v / SHAPE_SNAP) * SHAPE_SNAP); };
+
+    if (w >= h)
+    {
+      x = long_edge;
+      y = snap(long_edge * h / w);
+    }
+    else
+    {
+      y = long_edge;
+      x = snap(long_edge * w / h);
+    }
+  }
+
+  this->export_param.shape = glm::ivec2(x, y);
+  this->label_shape->setText(QString().asprintf("%dx%d", x, y));
+  this->label_shape_y->setText(QString().asprintf("%d", y));
 }
 
 } // namespace hesiod
