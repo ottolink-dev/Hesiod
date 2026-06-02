@@ -146,15 +146,45 @@ void GraphManager::export_flatten()
                           frame_export,
                           export_cfg.cm_cpu);
 
-  // raw heightmap
-  const std::string fname = export_param.export_path.string();
-  h_export.to_array(export_cfg.cm_cpu).to_png_grayscale(fname, CV_16U);
+  // guard the output path: OpenCV's imwrite throws (and, uncaught, aborts the
+  // whole application) if the path is empty or has no extension it recognises
+  std::filesystem::path out_path = export_param.export_path;
 
-  // will hillshading
-  const std::filesystem::path fname_hs = insert_before_extension(export_param.export_path,
-                                                                 "_preview");
-  h_export.to_array(export_cfg.cm_cpu)
-      .to_png(fname_hs.string(), hmap::Cmap::TERRAIN, true);
+  if (out_path.empty())
+  {
+    Logger::log()->error("GraphManager::export_flatten: export path is empty, "
+                         "nothing was written");
+    return;
+  }
+
+  if (out_path.extension().empty())
+  {
+    out_path.replace_extension(".png");
+    Logger::log()->warn("GraphManager::export_flatten: export path had no "
+                        "extension, defaulting to {}",
+                        out_path.string());
+  }
+
+  // catch any writer error (unsupported extension, unwritable path, ...) so a
+  // failed export reports an error instead of crashing the app
+  try
+  {
+    // raw heightmap
+    h_export.to_array(export_cfg.cm_cpu).to_png_grayscale(out_path.string(), CV_16U);
+
+    // with hillshading
+    const std::filesystem::path fname_hs = insert_before_extension(out_path,
+                                                                   "_preview");
+    h_export.to_array(export_cfg.cm_cpu)
+        .to_png(fname_hs.string(), hmap::Cmap::TERRAIN, true);
+  }
+  catch (const std::exception &e)
+  {
+    Logger::log()->error("GraphManager::export_flatten: failed to write export "
+                         "image '{}': {}",
+                         out_path.string(),
+                         e.what());
+  }
 }
 
 const BroadcastMap &GraphManager::get_broadcast_params()
