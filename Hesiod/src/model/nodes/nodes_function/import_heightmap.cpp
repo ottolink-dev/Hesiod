@@ -118,6 +118,12 @@ void compute_import_heightmap_node(BaseNode &node)
 
   hmap::Array z(fname.string(), flip_y);
 
+  if (z.shape.x * z.shape.y == 0)
+  {
+    Logger::log()->error("compute_import_heightmap_node: Failed to construct Array");
+    return;
+  }
+
   // --- Resample
 
   if (sampling_method == "Bicubic")
