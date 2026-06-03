@@ -14,53 +14,81 @@ using namespace attr;
 namespace hesiod
 {
 
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
+
+constexpr const char *P_DENSITY = "density";
+constexpr const char *P_ENV = "envelope";
+constexpr const char *P_OUT = "output";
+
+constexpr const char *A_SEED = "seed";
+
+// -----------------------------------------------------------------------------
+// Setup
+// -----------------------------------------------------------------------------
+
 void setup_white_density_map_node(BaseNode &node)
 {
   Logger::log()->trace("setup node {}", node.get_label());
 
-  // port(s)
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "density");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "envelope");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, "output", CONFIG(node));
+  // --- Ports
 
-  // attribute(s)
-  node.add_attr<SeedAttribute>("seed", "Seed");
-  // attribute(s) order
-  node.set_attr_ordered_key({"seed"});
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_DENSITY);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_ENV);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_OUT, CONFIG(node));
+
+  // --- Attributes
+
+  node.add_attr<SeedAttribute>(A_SEED, "Seed");
+
+  // --- Attribute(s) order
+
+  node.set_attr_ordered_key({A_SEED});
 
   setup_post_process_heightmap_attributes(node,
                                           {.add_mix = true, .remap_active_state = true});
 }
 
+// -----------------------------------------------------------------------------
+// Compute
+// -----------------------------------------------------------------------------
+
 void compute_white_density_map_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  hmap::VirtualArray *p_density = node.get_value_ref<hmap::VirtualArray>("density");
+  // --- Inputs / Outputs
 
-  if (p_density)
-  {
-    hmap::VirtualArray *p_env = node.get_value_ref<hmap::VirtualArray>("envelope");
-    hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>("output");
+  auto *p_density = node.get_value_ref<hmap::VirtualArray>(P_DENSITY);
+  auto *p_env = node.get_value_ref<hmap::VirtualArray>(P_ENV);
+  auto *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
-    // base noise function
-    int seed = node.get_attr<SeedAttribute>("seed");
+  if (!p_density)
+    return;
 
-    hmap::for_each_tile(
-        {p_out, p_density},
-        [&seed](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
-        {
-          hmap::Array *pa_out = p_arrays[0];
-          hmap::Array *pa_density = p_arrays[1];
+  // --- Params
 
-          *pa_out = hmap::white_density_map(*pa_density, (uint)seed++);
-        },
-        node.cfg().cm_cpu);
+  const auto seed = node.get_attr<SeedAttribute>(A_SEED);
 
-    // post-process
-    post_apply_enveloppe(node, *p_out, p_env);
-    post_process_heightmap(node, *p_out);
-  }
+  // --- Compute
+
+  hmap::for_each_tile(
+      {p_out, p_density},
+      [seed](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &region) mutable
+      {
+        auto [pa_out, pa_density] = unpack<2>(p_arrays);
+
+        const uint tile_seed = seed + region.key.hash();
+
+        *pa_out = hmap::white_density_map(*pa_density, tile_seed);
+      },
+      node.cfg().cm_cpu);
+
+  // --- Post-process
+
+  post_apply_enveloppe(node, *p_out, p_env);
+  post_process_heightmap(node, *p_out);
 }
 
 } // namespace hesiod

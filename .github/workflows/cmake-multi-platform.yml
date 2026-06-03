@@ -2,7 +2,7 @@ name: CMake on multiple platforms
 
 on:
   push:
-    branches: [ "main", "dev", "v0.5.0-rc"]
+    branches: [ "main", "dev"]
   pull_request:
     branches: [ "main", "dev" ]
 
@@ -26,14 +26,15 @@ jobs:
             cpp_compiler: g++
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with: 
         submodules: recursive
 
     - name: Install Qt
-      uses: jurplel/install-qt-action@v3
+      uses: jurplel/install-qt-action@v4
       with:
         version: "6.4.2"
+        modules: 'qtwebengine qtpositioning qtwebchannel'
 
     - name: Install system dependencies (ubuntu)
       if: startsWith (matrix.os, 'ubuntu')

@@ -6,6 +6,7 @@
 #include <iostream>
 #include <sstream>
 
+#include <QCoreApplication>
 #include <QDesktopServices>
 #include <QFileDialog>
 #include <QMenuBar>
@@ -64,6 +65,13 @@ HesiodApplication::HesiodApplication(int &argc, char **argv) : QApplication(argc
   // init OpenMP
   hmap::init_openmp(this->context.app_settings.global.omp_num_threads);
 
+  // OpenCV info
+  const std::string cv_log_fname = "opencv_build_information.log";
+  Logger::log()->trace(
+      "HesiodApplication::HesiodApplication: OpenCV build information dumped in: {}",
+      cv_log_fname);
+  string_to_file(hmap::get_opencv_build_information(), cv_log_fname);
+
   // for colormaps loading
   hesiod::ColorGradientManager::get_instance();
 
@@ -80,6 +88,9 @@ HesiodApplication::HesiodApplication(int &argc, char **argv) : QApplication(argc
   }
 
   // --- Continue with GUI
+
+  QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+  QCoreApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
 
   // launch splash
   SplashScreen *splash = new SplashScreen();
@@ -184,6 +195,12 @@ void HesiodApplication::load_project_model_and_ui(const std::string &fname,
   {
     this->project_ui->get_texture_downloader_ref()->setVisible(
         this->context.app_settings.window.show_texture_downloader_widget);
+  }
+
+  if (this->context.app_settings.interface.enable_heightmapper_widget)
+  {
+    this->project_ui->get_heightmapper_widget_ref()->setVisible(
+        this->context.app_settings.window.show_heightmapper_widget);
   }
 
   // --- connections
@@ -711,6 +728,13 @@ void HesiodApplication::setup_menu_bar()
     view_menu->addAction(show_texture_downloader);
   }
 
+  auto *show_heightmapper_widget = new QAction("Tangram Heightmapper", this);
+  show_heightmapper_widget->setIcon(HSD_ICON("public"));
+  if (this->context.app_settings.interface.enable_heightmapper_widget)
+  {
+    view_menu->addAction(show_heightmapper_widget);
+  }
+
   view_menu->addSeparator();
 
   auto *show_viewer_action = new QAction("Show Viewer in Main Window", this);
@@ -819,6 +843,22 @@ void HesiodApplication::setup_menu_bar()
           this->context.app_settings.window.show_texture_downloader_widget = !state;
           this->project_ui->get_texture_downloader_ref()->setVisible(!state);
           show_texture_downloader->setChecked(!state);
+        });
+  }
+
+  if (this->context.app_settings.interface.enable_heightmapper_widget)
+  {
+    this->connect(
+        show_heightmapper_widget,
+        &QAction::triggered,
+        this,
+        [this, show_heightmapper_widget]()
+        {
+          bool state = this->project_ui->get_heightmapper_widget_ref()->isVisible();
+          this->context.app_settings.window.show_heightmapper_widget = !state;
+          this->project_ui->get_heightmapper_widget_ref()->setVisible(!state);
+          this->project_ui->get_heightmapper_widget_ref()->reload();
+          show_heightmapper_widget->setChecked(!state);
         });
   }
 

@@ -154,7 +154,7 @@ std::map<std::string, std::string> get_node_inventory()
       {"Bulkify", "Boundaries"},
       {"Bump", "Primitive/Function"},
       {"BumpLorentzian", "Primitive/Function"},
-      {"Caldera", "Primitive/Geological"},
+      {"Caldera", "WIP"}, // "Primitive/Geological"},
       {"Clamp", "Filter/Range"},
       {"ClampOblique", "Filter/Range"},
       {"Closing", "WIP/DEPRECATED"},
@@ -284,7 +284,7 @@ std::map<std::string, std::string> get_node_inventory()
       {"MorphologicalTopHat", "WIP/DEPRECATED"},
       {"MountainCone", "Primitive/Geological"},
       {"MountainInselberg", "Primitive/Geological"},
-      {"MountainRangeRadial", "Primitive/Geological"},
+      {"MountainRangeRadial", "WIP"}, // , "Primitive/Geological"},
       {"MountainStump", "Primitive/Geological"},
       {"MountainTibesti", "Primitive/Geological"},
       {"Mudslide", "WIP"}, // "Erosion"},
@@ -322,6 +322,7 @@ std::map<std::string, std::string> get_node_inventory()
       {"Phasor", "Primitive/Coherent"},
       {"Plateau", "Filter/Recurve"},
       {"Plates", "Primitive/Geological"},
+      {"PolarShape", "Primitive/Function"},
       {"PolygonField", "Primitive/Coherent"},
       {"PolygonFieldFbm", "Primitive/Coherent"},
       {"PostProcess", "Filter"},
@@ -347,7 +348,7 @@ std::map<std::string, std::string> get_node_inventory()
       {"ReverseAboveThreshold", "Filter/Recurve"},
       {"ReverseMidpoint", "WIP"}, // Primitive/Authoring
       {"Ridgelines", "Primitive/Authoring"},
-      {"Rift", "Primitive/Function"},
+      {"Rift", "Primitive/Geological"},
       {"Rifts", "Erosion/Hydraulic"},
       {"Rotate", "Operator/Transform"},
       {"RotateDisplacement", "Math"},
@@ -405,7 +406,7 @@ std::map<std::string, std::string> get_node_inventory()
       {"TextureToHeightmap", "Texture"},
       {"TextureUvChecker", "Texture"},
       {"Thermal", "Erosion/Deposition"},
-      {"ThermalFlatten", "WIP"}, // "Erosion/Deposition"
+      {"ThermalFlatten", "Erosion/Deposition"},
       {"ThermalScree", "Erosion/Deposition"},
       {"Thru", "Routing"},
       {"Toggle", "Routing"},
@@ -657,6 +658,7 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
     SETUP_NODE(Phasor, phasor);
     SETUP_NODE(Plateau, plateau);
     SETUP_NODE(Plates, plates);
+    SETUP_NODE(PolarShape, polar_shape);
     SETUP_NODE(PolygonField, polygon_field);
     SETUP_NODE(PolygonFieldFbm, polygon_field_fbm);
     SETUP_NODE(PostProcess, post_process);

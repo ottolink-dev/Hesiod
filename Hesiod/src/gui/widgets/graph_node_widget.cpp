@@ -15,6 +15,7 @@
 
 #include "attributes/widgets/abstract_widget.hpp"
 #include "attributes/widgets/attributes_widget.hpp"
+#include "attributes/widgets/bool_widget.hpp"
 #include "attributes/widgets/filename_widget.hpp"
 
 #include "hesiod/app/hesiod_application.hpp"
@@ -61,6 +62,62 @@ GraphNodeWidget::~GraphNodeWidget()
   this->clear_data_viewers();
 }
 
+void GraphNodeWidget::add_import_heightmap_node(const QImage &img)
+{
+  Logger::log()->trace("GraphNodeWidget::add_import_heightmap_node");
+
+  auto gno = this->p_graph_node.lock();
+  if (!gno)
+    return;
+
+  // --- Crop and save heightmap file
+
+  const std::filesystem::path path = HSD_CTX.project_model->get_path();
+  const glm::ivec2            model_shape = gno->get_config_ref()->shape;
+
+  float aspect_ratio = model_shape.x / model_shape.y;
+
+  // --- Create new import node
+
+  Logger::log()->trace("GraphNodeWidget::add_import_heightmap_node: creating new node");
+
+  // create both model and graphic nodes
+  std::string node_id = this->on_new_node_request("ImportHeightmap", this->get_center());
+
+  // setup attributes
+  BaseNode *p_node = gno->get_node_ref_by_id<BaseNode>(node_id);
+
+  if (p_node)
+  {
+    // create filename and save image
+    std::filesystem::path fpath = path / ("heightmapper_import_" + node_id + ".png");
+    save_heightmap(img, fpath, aspect_ratio);
+
+    // adjust node parameter accordingly
+    {
+      auto *p_attr = p_node->get_attributes_ref()
+                         ->at("fname")
+                         ->get_ref<attr::FilenameAttribute>();
+      p_attr->set_value(fpath.string());
+    }
+
+    {
+      auto *p_attr = p_node->get_attributes_ref()
+                         ->at("dequantize")
+                         ->get_ref<attr::BoolAttribute>();
+      p_attr->set_value(true);
+    }
+
+    p_node->compute();
+  }
+  else
+  {
+    Logger::log()->error(
+        "GraphNodeWidget::add_import_heightmap_node: dangling ptr for node_id {}",
+        node_id);
+  }
+}
+
 void GraphNodeWidget::add_import_texture_nodes(
     const std::vector<std::string> &texture_paths)
 {
@@ -68,22 +125,16 @@ void GraphNodeWidget::add_import_texture_nodes(
   if (!gno)
     return;
 
-  QRectF bbox = this->get_bounding_box();
-
-  AppContext &ctx = HSD_CTX;
-  QPointF     delta = QPointF(
-      ctx.app_settings.node_editor.position_delta_when_duplicating_node,
-      ctx.app_settings.node_editor.position_delta_when_duplicating_node);
-
+  float dx = HSD_CTX.app_settings.node_editor.position_delta_when_duplicating_node;
   float dy = 0.f;
+
   for (auto &fname : texture_paths)
   {
     Logger::log()->trace("GraphNodeWidget::add_import_texture_nodes: {}", fname);
 
     // create both model and graphic nodes
-    std::string node_id = this->on_new_node_request("ImportTexture",
-                                                    bbox.topRight() +
-                                                        QPointF(delta.x(), dy));
+    QPointF     pos = this->get_center() + QPointF(dx, dy);
+    std::string node_id = this->on_new_node_request("ImportTexture", pos);
 
     // setup attributes
     BaseNode *p_node = gno->get_node_ref_by_id<BaseNode>(node_id);
@@ -103,7 +154,7 @@ void GraphNodeWidget::add_import_texture_nodes(
           node_id);
     }
 
-    dy += delta.y();
+    dy += dx;
   }
 }
 

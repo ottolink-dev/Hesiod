@@ -51,6 +51,13 @@ void compute_import_texture_node(BaseNode &node)
   {
     // load rgba data
     hmap::Tensor tensor4(fname, node.get_attr<BoolAttribute>("flip_y"));
+
+    if (tensor4.shape.x * tensor4.shape.y == 0)
+    {
+      Logger::log()->error("compute_import_texture_node: Failed to construct Tensor");
+      return;
+    }
+
     tensor4 = tensor4.resample_to_shape_xy(node.cfg().shape);
 
     hmap::Array ra = tensor4.get_slice(0);

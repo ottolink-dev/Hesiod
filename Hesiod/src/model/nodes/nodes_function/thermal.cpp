@@ -50,7 +50,7 @@ void setup_thermal_node(BaseNode &node)
   // --- Attributes
 
   std::vector<std::string> choices =
-      {"Standard", "Linear", "Bedrock", "Olsen", "Ridge", "Inflate"};
+      {"Standard", "Linear", "Bedrock", "Olsen", "Ridge", "Schott", "Inflate"};
 
   // clang-format off
   node.add_attr<ChoiceAttribute>(A_TYPE, "", choices);
@@ -180,6 +180,12 @@ void compute_thermal_node(BaseNode &node)
         else if (type == "Olsen")
         {
           hmap::gpu::thermal_olsen(*pa_out, pa_mask, *pa_talus_map, iterations);
+
+          *pa_deposition = *pa_out - *pa_in;
+        }
+        else if (type == "Schott")
+        {
+          hmap::gpu::thermal_schott(*pa_out, pa_mask, *pa_talus_map, iterations);
 
           *pa_deposition = *pa_out - *pa_in;
         }

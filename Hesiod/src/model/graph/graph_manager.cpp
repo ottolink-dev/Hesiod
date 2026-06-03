@@ -4,7 +4,7 @@
 #include "nlohmann/json.hpp"
 
 #include "highmap/coord_frame.hpp"
-#include "highmap/interpolate_array.hpp"
+#include "highmap/interpolate/interpolate_array.hpp"
 
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/logger.hpp"

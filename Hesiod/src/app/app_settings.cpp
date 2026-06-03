@@ -89,6 +89,9 @@ void AppSettings::json_from(nlohmann::json const &json)
   json_safe_get(json,
                 "interface.enable_texture_downloader",
                 interface.enable_texture_downloader);
+  json_safe_get(json,
+                "interface.enable_heightmapper_widget",
+                interface.enable_heightmapper_widget);
   json_safe_get(json, "interface.enable_tool_tips", interface.enable_tool_tips);
   json_safe_get(json,
                 "interface.enable_example_selector_at_startup",
@@ -150,15 +153,19 @@ void AppSettings::json_from(nlohmann::json const &json)
 
   // window
   {
-    json_safe_get(json, "window.x", window.x);
-    json_safe_get(json, "window.y", window.y);
-    json_safe_get(json, "window.w", window.w);
-    json_safe_get(json, "window.h", window.h);
+    json_safe_get(json, "window.geom_main.x", window.geom_main.x);
+    json_safe_get(json, "window.geom_main.y", window.geom_main.y);
+    json_safe_get(json, "window.geom_main.w", window.geom_main.w);
+    json_safe_get(json, "window.geom_main.h", window.geom_main.h);
     json_safe_get(json, "window.progress_bar_width", window.progress_bar_width);
-    json_safe_get(json, "window.gm_x", window.gm_x);
-    json_safe_get(json, "window.gm_y", window.gm_y);
-    json_safe_get(json, "window.gm_w", window.gm_w);
-    json_safe_get(json, "window.gm_h", window.gm_h);
+    json_safe_get(json, "window.geom_graph_manager.x", window.geom_graph_manager.x);
+    json_safe_get(json, "window.geom_graph_manager.y", window.geom_graph_manager.y);
+    json_safe_get(json, "window.geom_graph_manager.w", window.geom_graph_manager.w);
+    json_safe_get(json, "window.geom_graph_manager.h", window.geom_graph_manager.h);
+    json_safe_get(json, "window.geom_heightmapper.x", window.geom_heightmapper.x);
+    json_safe_get(json, "window.geom_heightmapper.y", window.geom_heightmapper.y);
+    json_safe_get(json, "window.geom_heightmapper.w", window.geom_heightmapper.w);
+    json_safe_get(json, "window.geom_heightmapper.h", window.geom_heightmapper.h);
   }
 }
 
@@ -193,6 +200,7 @@ nlohmann::json AppSettings::json_to() const
   json["interface.enable_node_settings_in_node_body"] =
       interface.enable_node_settings_in_node_body;
   json["interface.enable_texture_downloader"] = interface.enable_texture_downloader;
+  json["interface.enable_heightmapper_widget"] = interface.enable_heightmapper_widget;
   json["interface.enable_tool_tips"] = interface.enable_tool_tips;
   json["interface.enable_example_selector_at_startup"] =
       interface.enable_example_selector_at_startup;
@@ -220,17 +228,22 @@ nlohmann::json AppSettings::json_to() const
   json["viewer.height"] = viewer.height;
   json["viewer.add_heighmap_skirt"] = viewer.add_heighmap_skirt;
 
-  json["window.x"] = window.x;
-  json["window.y"] = window.y;
-  json["window.w"] = window.w;
-  json["window.h"] = window.h;
+  json["window.geom_main.x"] = window.geom_main.x;
+  json["window.geom_main.y"] = window.geom_main.y;
+  json["window.geom_main.w"] = window.geom_main.w;
+  json["window.geom_main.h"] = window.geom_main.h;
   json["window.progress_bar_width"] = window.progress_bar_width;
-  json["window.gm_x"] = window.gm_x;
-  json["window.gm_y"] = window.gm_y;
-  json["window.gm_w"] = window.gm_w;
-  json["window.gm_h"] = window.gm_h;
+  json["window.geom_graph_manager.x"] = window.geom_graph_manager.x;
+  json["window.geom_graph_manager.y"] = window.geom_graph_manager.y;
+  json["window.geom_graph_manager.w"] = window.geom_graph_manager.w;
+  json["window.geom_graph_manager.h"] = window.geom_graph_manager.h;
+  json["window.geom_heightmapper.x"] = window.geom_heightmapper.x;
+  json["window.geom_heightmapper.y"] = window.geom_heightmapper.y;
+  json["window.geom_heightmapper.w"] = window.geom_heightmapper.w;
+  json["window.geom_heightmapper.h"] = window.geom_heightmapper.h;
   json["window.show_graph_manager_widget"] = window.show_graph_manager_widget;
   json["window.show_texture_downloader_widget"] = window.show_texture_downloader_widget;
+  json["window.show_heightmapper_widget"] = window.show_heightmapper_widget;
 
   return json;
 }

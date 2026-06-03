@@ -203,7 +203,8 @@ static struct EnumMappings
       {"Cosine Peaky", hmap::PhasorProfile::PP_COSINE_PEAKY},
       {"Cosine Square", hmap::PhasorProfile::PP_COSINE_SQUARE},
       {"Cosine", hmap::PhasorProfile::PP_COSINE_STD},
-      {"Triangle", hmap::PhasorProfile::PP_TRIANGLE}};
+      {"Triangle", hmap::PhasorProfile::PP_TRIANGLE},
+      {"Dune", hmap::PhasorProfile::PP_DUNE}};
 
   const std::map<std::string, int> primitive_type_map = {
       {"Biquad Pulse", hmap::PrimitiveType::PRIM_BIQUAD_PULSE},
@@ -216,7 +217,10 @@ static struct EnumMappings
       {"Linear", hmap::RadialProfile::RP_LINEAR},
       {"Power Law", hmap::RadialProfile::RP_POW},
       {"Smoothstep", hmap::RadialProfile::RP_SMOOTHSTEP},
-      {"Smoothstep Upper", hmap::RadialProfile::RP_SMOOTHSTEP_UPPER}};
+      {"Smoothstep Upper", hmap::RadialProfile::RP_SMOOTHSTEP_UPPER},
+      {"Flat Bottom", hmap::RadialProfile::RP_FLAT_BOTTOM},
+      {"Square Root", hmap::RadialProfile::RP_SQRT},
+  };
 
   const std::map<std::string, int> stamping_blend_method_map = {
       {"add", hmap::StampingBlendMethod::ADD},

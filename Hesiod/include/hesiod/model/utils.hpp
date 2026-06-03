@@ -118,10 +118,11 @@ std::string ptr_as_string(void *ptr);
 std::string remove_trailing_char(const std::string &input, char ch);
 void        replace_all(std::string &str, const std::string &from, const std::string &to);
 std::vector<std::string> split_string(const std::string &string, char delimiter);
-std::string              timestamp(std::chrono::system_clock::time_point tp);
-std::string              timestamp();
-unsigned int             to_uint_safe(const std::string &str);
-std::string              wrap_text(const std::string &text, std::size_t max_len);
+void         string_to_file(const std::string &content, const std::string &fname);
+std::string  timestamp(std::chrono::system_clock::time_point tp);
+std::string  timestamp();
+unsigned int to_uint_safe(const std::string &str);
+std::string  wrap_text(const std::string &text, std::size_t max_len);
 
 std::string ascii_progress_bar(float fraction,
                                int   width = 40,

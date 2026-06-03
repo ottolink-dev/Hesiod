@@ -3,6 +3,8 @@ add_library(hesiod_options INTERFACE)
 # Require C++20
 target_compile_features(hesiod_options INTERFACE cxx_std_20)
 
+add_definitions(-D_USE_MATH_DEFINES)
+
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
   message(STATUS "GNU|Clang compiler")
 
@@ -58,5 +60,4 @@ endif()
 if(MSVC)
   message(STATUS "MSVC compiler")
   target_compile_options(hesiod_options INTERFACE /W4)
-  add_compile_definitions(M_PI=3.14159265358979323846)
 endif()

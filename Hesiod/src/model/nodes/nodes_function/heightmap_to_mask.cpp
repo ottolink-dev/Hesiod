@@ -45,8 +45,7 @@ void compute_heightmap_to_mask_node(BaseNode &node)
         {p_mask, p_in},
         [](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
         {
-          hmap::Array *pa_mask = p_arrays[0];
-          hmap::Array *pa_in = p_arrays[1];
+          auto [pa_mask, pa_in] = unpack<2>(p_arrays);
 
           *pa_mask = *pa_in;
           hmap::clamp(*pa_mask, 0.f, 1.f);

@@ -30,10 +30,10 @@ void MainWindow::restore_geometry()
 
   AppContext &ctx = HSD_CTX;
 
-  this->setGeometry(ctx.app_settings.window.x,
-                    ctx.app_settings.window.y,
-                    ctx.app_settings.window.w,
-                    ctx.app_settings.window.h);
+  this->setGeometry(ctx.app_settings.window.geom_main.x,
+                    ctx.app_settings.window.geom_main.y,
+                    ctx.app_settings.window.geom_main.w,
+                    ctx.app_settings.window.geom_main.h);
 }
 
 void MainWindow::save_geometry() const
@@ -43,10 +43,10 @@ void MainWindow::save_geometry() const
   AppContext &ctx = HSD_CTX;
 
   QRect geom = this->geometry();
-  ctx.app_settings.window.x = geom.x();
-  ctx.app_settings.window.y = geom.y();
-  ctx.app_settings.window.w = geom.width();
-  ctx.app_settings.window.h = geom.height();
+  ctx.app_settings.window.geom_main.x = geom.x();
+  ctx.app_settings.window.geom_main.y = geom.y();
+  ctx.app_settings.window.geom_main.w = geom.width();
+  ctx.app_settings.window.geom_main.h = geom.height();
 }
 
 void MainWindow::setup_connections_with_project()

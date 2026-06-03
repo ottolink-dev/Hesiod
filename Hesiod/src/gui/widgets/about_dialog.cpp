@@ -87,10 +87,13 @@ AboutDialog::AboutDialog()
   {
     std::ifstream f("data/git_version.txt");
     std::string   version = "???";
-    if (f.is_open())
-      version = "Copyright (c) 2023-2025 Otto Link.\n" +
-                std::string((std::istreambuf_iterator<char>(f)),
-                            std::istreambuf_iterator<char>());
+
+    if (f)
+    {
+      std::stringstream buffer;
+      buffer << f.rdbuf();
+      version = "Copyright (c) 2023-2025 Otto Link.\n" + buffer.str();
+    }
 
     QLabel *label = new QLabel(version.c_str());
     resize_font(label, -2);

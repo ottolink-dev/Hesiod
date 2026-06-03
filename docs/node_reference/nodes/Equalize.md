@@ -20,6 +20,7 @@ Filter/Recurve
 | :--- | :--- | :--- |
 |input|VirtualArray|No description|
 |mask|VirtualArray|No description|
+|reference|VirtualArray|No description|
 
 # Outputs
 

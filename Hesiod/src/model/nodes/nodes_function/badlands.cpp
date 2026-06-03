@@ -15,75 +15,136 @@ using namespace attr;
 namespace hesiod
 {
 
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
+
+constexpr const char *P_DX = "dx";
+constexpr const char *P_DY = "dy";
+constexpr const char *P_ENV = "envelope";
+constexpr const char *P_OUT = "out";
+
+constexpr const char *A_ELEVATION = "elevation";
+constexpr const char *A_KW = "kw";
+constexpr const char *A_SEED = "seed";
+constexpr const char *A_OCTAVES = "octaves";
+constexpr const char *A_RUGOSITY = "rugosity";
+constexpr const char *A_ANGLE = "angle";
+constexpr const char *A_K_SMOOTHING = "k_smoothing";
+constexpr const char *A_BASE_NOISE_AMP = "base_noise_amp";
+
+// -----------------------------------------------------------------------------
+// Setup
+// -----------------------------------------------------------------------------
+
 void setup_badlands_node(BaseNode &node)
 {
   Logger::log()->trace("setup node {}", node.get_label());
 
-  // port(s)
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "dx");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "dy");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "envelope");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, "out", CONFIG(node));
+  // --- Ports
 
-  // attribute(s)
-  node.add_attr<FloatAttribute>("elevation", "elevation", 0.4f, 0.f, 1.f);
-  node.add_attr<WaveNbAttribute>("kw", "Spatial Frequency");
-  node.add_attr<SeedAttribute>("seed", "Seed");
-  node.add_attr<IntAttribute>("octaves", "Octaves", 8, 0, 32);
-  node.add_attr<FloatAttribute>("rugosity", "rugosity", 0.2f, 0.f, 1.f);
-  node.add_attr<FloatAttribute>("angle", "angle", 30.f, -180.f, 180.f);
-  node.add_attr<FloatAttribute>("k_smoothing", "k_smoothing", 0.1f, 0.f, 1.f);
-  node.add_attr<FloatAttribute>("base_noise_amp", "base_noise_amp", 0.2f, 0.f, 1.f);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_DX);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_DY);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_ENV);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_OUT, CONFIG(node));
 
-  // attribute(s) order
-  node.set_attr_ordered_key({"elevation",
-                             "kw",
-                             "seed",
-                             "octaves",
-                             "_SEPARATOR_",
-                             "rugosity",
-                             "angle",
-                             "k_smoothing",
-                             "base_noise_amp"});
+  // --- Attributes
+
+  // clang-format off
+  node.add_attr<FloatAttribute>(A_ELEVATION, "Elevation", 0.4f, 0.f, 1.f);
+  node.add_attr<WaveNbAttribute>(A_KW, "Spatial Frequency");
+  node.add_attr<SeedAttribute>(A_SEED, "Seed");
+  node.add_attr<IntAttribute>(A_OCTAVES, "Octaves", 8, 0, 32);
+  node.add_attr<FloatAttribute>(A_RUGOSITY, "Smoothness", 0.2f, 0.f, 1.f);
+  node.add_attr<FloatAttribute>(A_ANGLE, "Noise Angle", 30.f, -180.f, 180.f);
+  node.add_attr<FloatAttribute>(A_K_SMOOTHING, "Transition Smoothness", 0.1f, 0.f, 1.f);
+  node.add_attr<FloatAttribute>(A_BASE_NOISE_AMP, "Noise Amplitude", 0.2f, 0.f, 1.f);
+  // clang-format on
+
+  // --- Attribute(s) order
+
+  node.set_attr_ordered_key({"_GROUPBOX_BEGIN_Main Parameters",
+                             A_KW,
+                             A_ELEVATION,
+                             A_K_SMOOTHING,
+                             A_SEED,
+                             A_OCTAVES,
+                             "_GROUPBOX_END_",
+                             //
+                             "_GROUPBOX_BEGIN_Base Noise",
+                             A_BASE_NOISE_AMP,
+                             A_RUGOSITY,
+                             A_ANGLE,
+                             "_GROUPBOX_END_"});
 
   setup_post_process_heightmap_attributes(
       node,
       {.add_mix = false, .remap_active_state = false});
 }
 
+// -----------------------------------------------------------------------------
+// Compute
+// -----------------------------------------------------------------------------
+
 void compute_badlands_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  // base badlands function
-  hmap::VirtualArray *p_dx = node.get_value_ref<hmap::VirtualArray>("dx");
-  hmap::VirtualArray *p_dy = node.get_value_ref<hmap::VirtualArray>("dy");
-  hmap::VirtualArray *p_env = node.get_value_ref<hmap::VirtualArray>("envelope");
-  hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>("out");
+  // --- Inputs / Outputs
+
+  auto *p_dx = node.get_value_ref<hmap::VirtualArray>(P_DX);
+  auto *p_dy = node.get_value_ref<hmap::VirtualArray>(P_DY);
+  auto *p_env = node.get_value_ref<hmap::VirtualArray>(P_ENV);
+  auto *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
+
+  if (!p_out)
+    return;
+
+  // --- Params
+
+  // clang-format off
+  const auto elevation      = node.get_attr<FloatAttribute>(A_ELEVATION);
+  const auto kw             = node.get_attr<WaveNbAttribute>(A_KW);
+  const auto seed           = node.get_attr<SeedAttribute>(A_SEED);
+  const auto octaves        = node.get_attr<IntAttribute>(A_OCTAVES);
+  const auto rugosity       = node.get_attr<FloatAttribute>(A_RUGOSITY);
+  const auto angle          = node.get_attr<FloatAttribute>(A_ANGLE);
+  const auto k_smoothing    = node.get_attr<FloatAttribute>(A_K_SMOOTHING);
+  const auto base_noise_amp = node.get_attr<FloatAttribute>(A_BASE_NOISE_AMP);
+  // clang-format on
+
+  const float noise_amp_scaled = base_noise_amp * 2.f / std::max(kw.x, kw.y);
+
+  // --- Compute
 
   hmap::for_each_tile(
-      {p_out, p_dx, p_dy},
-      [&node](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &region)
+      {p_dx, p_dy},
+      {p_out},
+      [&](std::vector<const hmap::Array *> in,
+          std::vector<hmap::Array *>       out,
+          const hmap::TileRegion          &region)
       {
-        auto [pa_out, pa_dx, pa_dy] = unpack<3>(p_arrays);
+        auto [pa_dx, pa_dy] = unpack<2>(in);
+        auto [pa_out] = unpack<1>(out);
 
         *pa_out = hmap::gpu::badlands(region.shape,
-                                      node.get_attr<WaveNbAttribute>("kw"),
-                                      node.get_attr<SeedAttribute>("seed"),
-                                      node.get_attr<IntAttribute>("octaves"),
-                                      node.get_attr<FloatAttribute>("rugosity"),
-                                      node.get_attr<FloatAttribute>("angle"),
-                                      node.get_attr<FloatAttribute>("k_smoothing"),
-                                      node.get_attr<FloatAttribute>("base_noise_amp"),
+                                      kw,
+                                      seed,
+                                      octaves,
+                                      rugosity,
+                                      angle,
+                                      k_smoothing,
+                                      noise_amp_scaled,
                                       pa_dx,
                                       pa_dy,
                                       region.bbox);
       },
       node.cfg().cm_gpu);
 
-  p_out->remap(0.f, node.get_attr<FloatAttribute>("elevation"), node.cfg().cm_cpu);
+  p_out->remap(0.f, elevation, node.cfg().cm_cpu);
 
-  // post-process
+  // --- Post-process
+
   post_apply_enveloppe(node, *p_out, p_env);
   post_process_heightmap(node, *p_out);
 }

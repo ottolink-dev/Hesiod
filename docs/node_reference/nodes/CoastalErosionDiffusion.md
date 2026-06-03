@@ -19,6 +19,7 @@ Erosion/Water
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |elevation_in|VirtualArray|No description|
+|mask|VirtualArray|No description|
 |water_depth_in|VirtualArray|No description|
 
 # Outputs
@@ -33,8 +34,8 @@ Erosion/Water
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
-|additional_depth|Float|No description|
-|iterations|Integer|No description|
+|Additional Depth|Float|No description|
+|Iterations|Integer|No description|
 
 # Example
 

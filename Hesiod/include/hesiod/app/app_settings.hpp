@@ -72,6 +72,7 @@ struct AppSettings
     bool enable_data_preview_in_node_body = true;
     bool enable_node_settings_in_node_body = false;
     bool enable_texture_downloader = true;
+    bool enable_heightmapper_widget = true;
     bool enable_tool_tips = true;
     bool enable_example_selector_at_startup = true;
   } interface;
@@ -106,19 +107,23 @@ struct AppSettings
 
   struct Window // main window
   {
-    int x = 0;
-    int y = 0;
-    int w = 1024;
-    int h = 1024;
-    int progress_bar_width = 200;
+    struct WindowGeometry
+    {
+      int x = 0;
+      int y = 0;
+      int w = 1024;
+      int h = 1024;
+    };
 
-    int gm_x = 0; // graph manager geometry
-    int gm_y = 0;
-    int gm_w = 1024;
-    int gm_h = 1024;
+    WindowGeometry geom_main;
+    WindowGeometry geom_graph_manager;
+    WindowGeometry geom_heightmapper;
+
+    int progress_bar_width = 200;
 
     bool show_graph_manager_widget = false;
     bool show_texture_downloader_widget = false;
+    bool show_heightmapper_widget = false;
   } window;
 };
 

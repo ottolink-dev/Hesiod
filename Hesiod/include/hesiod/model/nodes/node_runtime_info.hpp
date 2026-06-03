@@ -18,6 +18,8 @@ enum class NodeRuntimeStep
 
 struct NodeRuntimeInfo
 {
+  virtual ~NodeRuntimeInfo() = default;
+
   std::chrono::system_clock::time_point time_creation;
   std::chrono::system_clock::time_point time_last_update;
   float                                 update_time;

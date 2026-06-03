@@ -9,6 +9,8 @@
 
 #include "nlohmann/json.hpp"
 
+#include "hesiod/gui/widgets/heightmapper_widget.hpp"
+
 namespace hesiod
 {
 
@@ -52,6 +54,7 @@ public slots:
   // --- From GraphNodeWidget signals ---
   void on_copy_buffer_has_changed(const nlohmann::json &new_json);
   void on_has_been_cleared(const std::string &graph_id);
+  void on_heightmap_download_ready(const HeightmapperWidget::DownloadInfo &info);
   void on_new_node_created(const std::string &graph_id, const std::string &id);
   void on_node_deleted(const std::string &graph_id, const std::string &id);
   void on_textures_request(const std::vector<std::string> &texture_paths);

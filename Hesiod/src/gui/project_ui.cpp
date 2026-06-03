@@ -9,6 +9,7 @@
 #include "hesiod/gui/project_ui.hpp"
 #include "hesiod/gui/widgets/graph_manager_widget.hpp"
 #include "hesiod/gui/widgets/graph_tabs_widget.hpp"
+#include "hesiod/gui/widgets/heightmapper_widget.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/project_model.hpp"
 #include "hesiod/model/utils.hpp"
@@ -32,6 +33,9 @@ void ProjectUI::cleanup()
   if (this->texture_downloader)
     this->texture_downloader->deleteLater();
 
+  if (this->heightmapper_widget)
+    this->heightmapper_widget->deleteLater();
+
   QCoreApplication::processEvents();
 }
 
@@ -43,6 +47,11 @@ GraphManagerWidget *ProjectUI::get_graph_manager_widget_ref()
 GraphTabsWidget *ProjectUI::get_graph_tabs_widget_ref()
 {
   return this->graph_tabs_widget;
+}
+
+HeightmapperWidget *ProjectUI::get_heightmapper_widget_ref()
+{
+  return this->heightmapper_widget.get();
 }
 
 qtd::TextureDownloader *ProjectUI::get_texture_downloader_ref()
@@ -113,6 +122,12 @@ void ProjectUI::initialize(ProjectModel *project)
   {
     // no parent, top-level window (managed by a QPointer)
     this->texture_downloader = new qtd::TextureDownloader();
+  }
+
+  if (HSD_CTX.app_settings.interface.enable_heightmapper_widget)
+  {
+    // no parent, top-level window (managed by a QPointer)
+    this->heightmapper_widget = new HeightmapperWidget();
   }
 
   // connections
@@ -187,6 +202,12 @@ void ProjectUI::setup_connections()
                 &qtd::TextureDownloader::textures_retrieved,
                 this->graph_tabs_widget,
                 &GraphTabsWidget::on_textures_request);
+
+  // HeightmapperWidget -> GraphTabsWidget
+  this->connect(this->heightmapper_widget,
+                &HeightmapperWidget::heightmap_download_ready,
+                this->graph_tabs_widget,
+                &GraphTabsWidget::on_heightmap_download_ready);
 }
 
 } // namespace hesiod

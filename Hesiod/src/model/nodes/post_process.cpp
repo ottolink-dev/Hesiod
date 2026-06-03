@@ -39,6 +39,7 @@ void post_apply_enveloppe(BaseNode           &node,
 
           *pa_out -= hmin;
           *pa_out *= *pa_env;
+          *pa_out += hmin;
         },
         node.cfg().cm_cpu);
   }
@@ -116,7 +117,7 @@ void post_process_heightmap(BaseNode           &node,
         {&h},
         [post_gamma](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
         {
-          hmap::Array *pa = p_arrays[0];
+          auto [pa] = unpack<1>(p_arrays);
           hmap::gamma_correction(*pa, post_gamma);
         },
         node.cfg().cm_cpu);
@@ -137,7 +138,7 @@ void post_process_heightmap(BaseNode           &node,
         {&h},
         [post_gain](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
         {
-          hmap::Array *pa = p_arrays[0];
+          auto [pa] = unpack<1>(p_arrays);
           hmap::gain(*pa, post_gain);
         },
         node.cfg().cm_cpu);
@@ -155,7 +156,7 @@ void post_process_heightmap(BaseNode           &node,
         {&h},
         [&ir](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
         {
-          hmap::Array *pa_out = p_arrays[0];
+          auto [pa_out] = unpack<1>(p_arrays);
           return hmap::gpu::smooth_cpulse(*pa_out, ir);
         },
         node.cfg().cm_gpu);
@@ -180,7 +181,7 @@ void post_process_heightmap(BaseNode           &node,
         [&node, &hmin, &hmax](std::vector<hmap::Array *> p_arrays,
                               const hmap::TileRegion &)
         {
-          hmap::Array *pa_out = p_arrays[0];
+          auto [pa_out] = unpack<1>(p_arrays);
 
           float k = 0.1f; // TODO hardcoded?
 

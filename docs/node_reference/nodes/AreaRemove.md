@@ -13,7 +13,7 @@ Removes connected regions whose area is below a threshold. The threshold is defi
 # Category
 
 
-Operator/Morphology
+Terrain Features/Morphology
 # Inputs
 
 |Name|Type|Description|

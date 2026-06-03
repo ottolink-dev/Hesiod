@@ -13,7 +13,7 @@ Fill valleys using thermal scree deposition and height-based blending.
 # Category
 
 
-Erosion/Thermal
+Erosion/Deposition
 # Inputs
 
 |Name|Type|Description|

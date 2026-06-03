@@ -258,7 +258,7 @@ void DataPreview::update_preview()
                        : (img_format == QImage::Format_RGB888)   ? 3
                                                                  : 4;
 
-    if (img.size() != static_cast<size_t>(shape.x * shape.y * nchannels))
+    if (img.size() != shape.x * shape.y * nchannels)
     {
       Logger::log()->critical(
           "DataPreview::update_preview: inconsistent image buffer size");

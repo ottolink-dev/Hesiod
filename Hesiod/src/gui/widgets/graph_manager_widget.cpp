@@ -415,10 +415,10 @@ void GraphManagerWidget::restore_window_state()
 {
   AppContext &ctx = HSD_CTX;
 
-  this->setGeometry(ctx.app_settings.window.gm_x,
-                    ctx.app_settings.window.gm_y,
-                    ctx.app_settings.window.gm_w,
-                    ctx.app_settings.window.gm_h);
+  this->setGeometry(ctx.app_settings.window.geom_graph_manager.x,
+                    ctx.app_settings.window.geom_graph_manager.y,
+                    ctx.app_settings.window.geom_graph_manager.w,
+                    ctx.app_settings.window.geom_graph_manager.h);
 }
 
 void GraphManagerWidget::save_window_state() const
@@ -426,10 +426,10 @@ void GraphManagerWidget::save_window_state() const
   AppContext &ctx = HSD_CTX;
 
   QRect geom = this->geometry();
-  ctx.app_settings.window.gm_x = geom.x();
-  ctx.app_settings.window.gm_y = geom.y();
-  ctx.app_settings.window.gm_w = geom.width();
-  ctx.app_settings.window.gm_h = geom.height();
+  ctx.app_settings.window.geom_graph_manager.x = geom.x();
+  ctx.app_settings.window.geom_graph_manager.y = geom.y();
+  ctx.app_settings.window.geom_graph_manager.w = geom.width();
+  ctx.app_settings.window.geom_graph_manager.h = geom.height();
 }
 
 void GraphManagerWidget::set_is_dirty(bool new_is_dirty)

@@ -22,10 +22,12 @@ namespace hesiod
 
 constexpr const char *P_OUT = "output";
 
-constexpr const char *A_FILENAME = "fname";
+constexpr const char *A_FILENAME = "fname"; // used in GraphNodeWidget
 constexpr const char *A_FLIP_Y = "flip_y";
 constexpr const char *A_CLIP_RANGE = "clip_range";
 constexpr const char *A_SAMPLING_METHOD = "sampling_method";
+constexpr const char *A_DEQUANTIZE = "dequantize"; // used in GraphNodeWidget
+constexpr const char *A_ITERATIONS = "iterations";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -48,6 +50,10 @@ void setup_import_heightmap_node(BaseNode &node)
   node.add_attr<BoolAttribute>(A_FLIP_Y, "Flip Y", true);
   node.add_attr<BoolAttribute>(A_CLIP_RANGE, "Clip Range", false);
   node.add_attr<ChoiceAttribute>(A_SAMPLING_METHOD, "Sampling Method", choices);
+  
+  node.add_attr<BoolAttribute>(A_DEQUANTIZE, "Enable Dequantize", false);
+  node.add_attr<IntAttribute>(A_ITERATIONS, "Iterations", 4, 1, 16);
+
   // clang-format on
 
   // --- Attribute(s) order
@@ -57,6 +63,11 @@ void setup_import_heightmap_node(BaseNode &node)
                              A_FLIP_Y,
                              A_CLIP_RANGE,
                              A_SAMPLING_METHOD,
+                             "_GROUPBOX_END_",
+                             //
+                             "_GROUPBOX_BEGIN_Dequantization",
+                             A_DEQUANTIZE,
+                             A_ITERATIONS,
                              "_GROUPBOX_END_"});
 
   setup_post_process_heightmap_attributes(
@@ -86,6 +97,8 @@ void compute_import_heightmap_node(BaseNode &node)
   const auto flip_y          = node.get_attr<BoolAttribute>(A_FLIP_Y);
   const auto clip_range      = node.get_attr<BoolAttribute>(A_CLIP_RANGE);
   const auto sampling_method = node.get_attr<ChoiceAttribute>(A_SAMPLING_METHOD);
+  const auto dequantize      = node.get_attr<BoolAttribute>(A_DEQUANTIZE);
+  const auto iterations      = node.get_attr<IntAttribute>(A_ITERATIONS);
   // clang-format on
 
   // --- Sanity check
@@ -104,6 +117,12 @@ void compute_import_heightmap_node(BaseNode &node)
   // --- Import
 
   hmap::Array z(fname.string(), flip_y);
+
+  if (z.shape.x * z.shape.y == 0)
+  {
+    Logger::log()->error("compute_import_heightmap_node: Failed to construct Array");
+    return;
+  }
 
   // --- Resample
 
@@ -130,6 +149,22 @@ void compute_import_heightmap_node(BaseNode &node)
           auto [pa_out] = unpack<1>(out);
 
           hmap::clamp(*pa_out, 0.f, 1.f);
+        },
+        node.cfg().cm_cpu);
+  }
+
+  if (dequantize)
+  {
+    hmap::for_each_tile(
+        {p_out},
+        [&](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &region)
+        {
+          auto [pa_out] = unpack<1>(p_arrays);
+
+          const uint      tile_seed = region.key.hash();
+          constexpr float dither_amplitude = 0.01f;
+
+          *pa_out = hmap::dequantize(*pa_out, tile_seed, dither_amplitude, iterations);
         },
         node.cfg().cm_cpu);
   }

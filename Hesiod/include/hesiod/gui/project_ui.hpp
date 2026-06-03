@@ -8,6 +8,8 @@
 
 #include "qtd/texture_downloader.hpp"
 
+#include "hesiod/gui/widgets/heightmapper_widget.hpp"
+
 namespace hesiod
 {
 
@@ -36,12 +38,14 @@ public:
   QWidget                *get_widget();
   GraphManagerWidget     *get_graph_manager_widget_ref();
   GraphTabsWidget        *get_graph_tabs_widget_ref();
+  HeightmapperWidget     *get_heightmapper_widget_ref();
   qtd::TextureDownloader *get_texture_downloader_ref();
 
 private:
   GraphManagerWidget              *graph_manager_widget;
   GraphTabsWidget                 *graph_tabs_widget;
   QPointer<qtd::TextureDownloader> texture_downloader;
+  QPointer<HeightmapperWidget>     heightmapper_widget;
 };
 
 } // namespace hesiod

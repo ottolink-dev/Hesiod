@@ -13,7 +13,7 @@ Generates a heightmap representing a radial mountain range emanating from a spec
 # Category
 
 
-Primitive/Geological
+WIP
 # Inputs
 
 |Name|Type|Description|

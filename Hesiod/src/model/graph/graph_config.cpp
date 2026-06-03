@@ -93,8 +93,8 @@ void GraphConfig::set_overlap(float new_overlap)
 
 void GraphConfig::update_parameters()
 {
-  int w = int(this->shape.x / this->tiling.x);
-  int h = int(this->shape.y / this->tiling.y);
+  int w = this->shape.x / this->tiling.x;
+  int h = this->shape.y / this->tiling.y;
 
   this->tile_shape = {w, h};
   this->halo = std::max(int(this->overlap * w), int(this->overlap * h));
