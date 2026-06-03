@@ -101,8 +101,7 @@ FlattenConfigDialog::FlattenConfigDialog(FlattenConfig &export_param, QWidget *p
   this->slider_shape_y->setValue((int)std::log2(this->export_param.shape.y));
   layout->addWidget(this->slider_shape_y, row, 1);
 
-  this->label_shape_y = new QLabel(
-      QString().asprintf("%d", this->export_param.shape.y));
+  this->label_shape_y = new QLabel(QString().asprintf("%d", this->export_param.shape.y));
   layout->addWidget(this->label_shape_y, row, 2);
   row++;
 
@@ -239,8 +238,7 @@ void FlattenConfigDialog::recompute_shape()
 
     // long edge follows the slider; short edge is derived from the ratio and
     // snapped down to a multiple of SHAPE_SNAP so shape / tiling stays clean
-    auto snap = [](int v)
-    { return std::max(SHAPE_SNAP, (v / SHAPE_SNAP) * SHAPE_SNAP); };
+    auto snap = [](int v) { return std::max(SHAPE_SNAP, (v / SHAPE_SNAP) * SHAPE_SNAP); };
 
     if (w >= h)
     {

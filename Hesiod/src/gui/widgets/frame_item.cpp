@@ -130,7 +130,11 @@ void FrameItem::paint(QPainter                       *painter,
   // background
   if (!this->pixmap.isNull())
   {
+    painter->save();
+    painter->translate(0, this->rect().height());
+    painter->scale(1.0, -1.0);
     painter->drawPixmap(this->rect(), this->pixmap, this->pixmap.rect());
+    painter->restore();
   }
   else
   {

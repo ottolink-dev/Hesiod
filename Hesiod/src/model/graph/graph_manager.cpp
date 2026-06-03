@@ -173,8 +173,7 @@ void GraphManager::export_flatten()
     h_export.to_array(export_cfg.cm_cpu).to_png_grayscale(out_path.string(), CV_16U);
 
     // with hillshading
-    const std::filesystem::path fname_hs = insert_before_extension(out_path,
-                                                                   "_preview");
+    const std::filesystem::path fname_hs = insert_before_extension(out_path, "_preview");
     h_export.to_array(export_cfg.cm_cpu)
         .to_png(fname_hs.string(), hmap::Cmap::TERRAIN, true);
   }
