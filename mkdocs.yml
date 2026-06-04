@@ -46,6 +46,7 @@ nav:
     - 'core_concepts/masks-selectors.md'
     - 'core_concepts/broadcast-receive.md'
     - 'core_concepts/tiling-overlap.md'
+    - 'core_concepts/glossary.md'
   - 'User Manual':
     - 'user_manual/index.md'
     - 'user_manual/node_settings/node_settings_management.md'
