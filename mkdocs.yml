@@ -7,6 +7,17 @@ theme:
 nav:
   - 'Start Here':
     - 'index.md'
+  - 'User Manual':
+    - 'user_manual/index.md'
+    - 'user_manual/node_settings/node_settings_management.md'
+    - 'user_manual/bake_and_export/bake_and_export.md'
+    - 'user_manual/coordinate_system/index.md'
+    - 'user_manual/patch-of-graphs.md'
+    - 'Using Physics-Based Procedures':
+      - 'user_manual/using_physics_based_procedures/index.md'
+      - 'Hydrology':
+        - 'user_manual/using_physics_based_procedures/hydrology/index.md'
+        - 'user_manual/using_physics_based_procedures/hydrology/flooding/index.md'
   - 'Node Reference':
     - 'node_reference/categories.md'
     - 'node_reference/nodes/Abs.md'
@@ -307,4 +318,6 @@ nav:
     - 'node_reference/nodes/WhiteSparse.md'
     - 'node_reference/nodes/ZeroedEdges.md'
     - 'node_reference/nodes/Zoom.md'
+  - 'FAQ':
+    - 'faq/index.md'
 
