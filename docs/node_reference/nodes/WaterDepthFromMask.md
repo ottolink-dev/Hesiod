@@ -10,24 +10,24 @@ Computes water depth over a terrain using a mask to define flooded regions. The 
 ![img](../../images/nodes/WaterDepthFromMask_settings.png)
 
 
-# Category
+## Category
 
 
 Hydrology
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |elevation|VirtualArray|Input terrain elevation (height field).|
 |water_mask|VirtualArray|Input mask defining where water can accumulate. Values above the threshold indicate flooded regions.|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |water_depth|VirtualArray|Output water depth map representing flooded areas.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -36,14 +36,15 @@ Hydrology
 |Relaxation Factor|Float|Relaxation factor for the SOR solver. Values between 1 and 2 are recommended for faster convergence.|
 |Convergence Tolerance|Float|Convergence tolerance. The solver stops when the maximum update between iterations falls below this value.|
 
-# Example
+## Example
 
 
 ![img](../../images/nodes/WaterDepthFromMask_hsd_example.png)
 
-Corresponding Hesiod file: [WaterDepthFromMask.hsd](../../examples/WaterDepthFromMask.hsd). Use [Ctrl+I] in the node editor to import a hsd file within your current project. 
+Corresponding Hesiod file: [WaterDepthFromMask.hsd](../../examples/WaterDepthFromMask.hsd). Use [Ctrl+I] in the node editor to import a hsd file within your current project.
 
-> **Note:** Example files are kept up-to-date with the latest version of [Hesiod](https://github.com/otto-link/Hesiod).
-> If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).
+!!! note
+    Example files are kept up-to-date with the latest version of [Hesiod](https://github.com/otto-link/Hesiod).
+    If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).
 
-  
+

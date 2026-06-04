@@ -10,11 +10,11 @@ Fill valleys using thermal scree deposition and height-based blending.
 ![img](../../images/nodes/ValleyFill_settings.png)
 
 
-# Category
+## Category
 
 
 Erosion/Deposition
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -22,14 +22,14 @@ Erosion/Deposition
 |mask|VirtualArray|Mask defining the filtering intensity (expected in [0, 1]).|
 |noise|VirtualArray|No description|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |deposition|VirtualArray|No description|
 |output|VirtualArray|Eroded heightmap.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -55,14 +55,15 @@ Erosion/Deposition
 |Scale with Elevation|Bool|Defines the critical talus angle (repose slope) above which material becomes unstable and moves downslope during thermal erosion.|
 |Slope|Float|Selects the thermal erosion variant or behavior model, controlling how material is redistributed when slopes exceed the talus angle.|
 
-# Example
+## Example
 
 
 ![img](../../images/nodes/ValleyFill_hsd_example.png)
 
-Corresponding Hesiod file: [ValleyFill.hsd](../../examples/ValleyFill.hsd). Use [Ctrl+I] in the node editor to import a hsd file within your current project. 
+Corresponding Hesiod file: [ValleyFill.hsd](../../examples/ValleyFill.hsd). Use [Ctrl+I] in the node editor to import a hsd file within your current project.
 
-> **Note:** Example files are kept up-to-date with the latest version of [Hesiod](https://github.com/otto-link/Hesiod).
-> If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).
+!!! note
+    Example files are kept up-to-date with the latest version of [Hesiod](https://github.com/otto-link/Hesiod).
+    If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).
 
-  
+

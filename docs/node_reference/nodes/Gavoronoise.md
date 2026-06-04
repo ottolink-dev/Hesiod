@@ -10,11 +10,11 @@ Generates a 2D heightmap using the GavoroNoise algorithm, a procedural noise tec
 ![img](../../images/nodes/Gavoronoise_settings.png)
 
 
-# Category
+## Category
 
 
 Primitive/Coherent
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -24,13 +24,13 @@ Primitive/Coherent
 |dy|VirtualArray|Displacement with respect to the domain size (y-direction).|
 |envelope|VirtualArray|Heightmap used as a post-process amplitude multiplier for the generated noise.|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|The final heightmap generated using the GavoroNoise algorithm.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -54,7 +54,8 @@ Primitive/Coherent
 |z_cut_max|Float|Defines the maximum cutoff value for the Z-axis in the generated noise.|
 |z_cut_min|Float|Defines the minimum cutoff value for the Z-axis in the generated noise.|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

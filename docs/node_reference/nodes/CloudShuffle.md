@@ -10,23 +10,23 @@ No description available
 ![img](../../images/nodes/CloudShuffle_settings.png)
 
 
-# Category
+## Category
 
 
 Geometry/Cloud
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |input|Cloud|No description|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|Cloud|No description|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -35,14 +35,15 @@ Geometry/Cloud
 |dy|Float|No description|
 |Seed|Random seed number|Random seed number. The random seed is an offset to the randomized process. A different seed will produce a new result.|
 
-# Example
+## Example
 
 
 ![img](../../images/nodes/CloudShuffle_hsd_example.png)
 
-Corresponding Hesiod file: [CloudShuffle.hsd](../../examples/CloudShuffle.hsd). Use [Ctrl+I] in the node editor to import a hsd file within your current project. 
+Corresponding Hesiod file: [CloudShuffle.hsd](../../examples/CloudShuffle.hsd). Use [Ctrl+I] in the node editor to import a hsd file within your current project.
 
-> **Note:** Example files are kept up-to-date with the latest version of [Hesiod](https://github.com/otto-link/Hesiod).
-> If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).
+!!! note
+    Example files are kept up-to-date with the latest version of [Hesiod](https://github.com/otto-link/Hesiod).
+    If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).
 
-  
+

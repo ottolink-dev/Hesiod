@@ -10,11 +10,11 @@ MixTexture enables the seamless integration of multiple textures by utilizing th
 ![img](../../images/nodes/MixTexture_settings.png)
 
 
-# Category
+## Category
 
 
 Texture
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -23,20 +23,21 @@ Texture
 |texture3|VirtualTexture|Input texture.|
 |texture4|VirtualTexture|Input texture.|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |texture|VirtualTexture|Output texture.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |reset_output_alpha|Bool|Reset the output alpha channel to 1 (opaque).|
 |use_sqrt_avg|Bool|Use square averaging for alpha-compositing (instead of linear averaging).|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

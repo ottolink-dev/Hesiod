@@ -10,23 +10,23 @@ Measures the terrain roughness by computing the square root of the sum of square
 ![img](../../images/nodes/Ruggedness_settings.png)
 
 
-# Category
+## Category
 
 
 WIP/DEPRECATED
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |input|VirtualArray|Heightmap input representing terrain elevations, used to calculate ruggedness.|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|Resulting heightmap where each pixel represents the calculated ruggedness value.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -40,7 +40,8 @@ WIP/DEPRECATED
 |Smoothing Radius|Float|Defines the radius for post-processing smoothing, determining the size of the neighborhood used to average local values and reduce high-frequency detail. A radius of 0 disables smoothing.|
 |radius|Float|Defines the neighborhood radius used for computing ruggedness. Larger values consider a wider area, capturing broader terrain variations.|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

@@ -10,11 +10,11 @@ GaussianPulse generates a Gaussian pulse.
 ![img](../../images/nodes/GaussianPulse_settings.png)
 
 
-# Category
+## Category
 
 
 Primitive/Function
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -23,13 +23,13 @@ Primitive/Function
 |dy|VirtualArray|Displacement with respect to the domain size (y-direction).|
 |envelope|VirtualArray|Heightmap used as a post-process amplitude multiplier for the generated noise.|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|Gaussian heightmap.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -42,7 +42,8 @@ Primitive/Function
 |Smoothing Radius|Float|Defines the radius for post-processing smoothing, determining the size of the neighborhood used to average local values and reduce high-frequency detail. A radius of 0 disables smoothing.|
 |radius|Float|Pulse half-width.|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

@@ -10,11 +10,11 @@ ExpandShrink is a maximum/minimum filter with a weighted kernel. It can be used 
 ![img](../../images/nodes/ExpandShrink_settings.png)
 
 
-# Category
+## Category
 
 
 Filter/Recast
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -22,13 +22,13 @@ Filter/Recast
 |kernel|Array|No description|
 |mask|VirtualArray|Mask defining the filtering intensity (expected in [0, 1]).|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|Filtered heightmap.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -50,7 +50,8 @@ Filter/Recast
 |radius|Float|Filter radius with respect to the domain size.|
 |shrink|Bool|Shrink (if true) or expand (if false).|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

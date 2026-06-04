@@ -10,23 +10,24 @@ No description available
 ![img](../../images/nodes/PathFromCsv_settings.png)
 
 
-# Category
+## Category
 
 
 Geometry/Path
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |path|Path|No description|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |fname|Filename|No description|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

@@ -10,24 +10,25 @@ CloudMerge merges two clouds into a single one.
 ![img](../../images/nodes/CloudMerge_settings.png)
 
 
-# Category
+## Category
 
 
 Geometry/Cloud
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |cloud1|Cloud|Input cloud.|
 |cloud2|Cloud|Input cloud.|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |cloud|Cloud|Merged cloud.|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

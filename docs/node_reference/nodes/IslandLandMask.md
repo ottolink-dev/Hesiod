@@ -10,17 +10,17 @@ No description available
 ![img](../../images/nodes/IslandLandMask_settings.png)
 
 
-# Category
+## Category
 
 
 Primitive/Geological
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |out|VirtualArray|No description|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -43,14 +43,15 @@ Primitive/Geological
 |Seed|Random seed number|Random seed number. The random seed is an offset to the randomized process. A different seed will produce a new result.|
 |Weight|Float|Controls how much higher FBM octaves contribute to the noise based on local elevation. A higher weight suppresses high-frequency octaves at low elevations and increases their influence at higher elevations, producing terrain where fine details appear mainly near peaks while lower areas remain smoother.|
 
-# Example
+## Example
 
 
 ![img](../../images/nodes/IslandLandMask_hsd_example.png)
 
-Corresponding Hesiod file: [IslandLandMask.hsd](../../examples/IslandLandMask.hsd). Use [Ctrl+I] in the node editor to import a hsd file within your current project. 
+Corresponding Hesiod file: [IslandLandMask.hsd](../../examples/IslandLandMask.hsd). Use [Ctrl+I] in the node editor to import a hsd file within your current project.
 
-> **Note:** Example files are kept up-to-date with the latest version of [Hesiod](https://github.com/otto-link/Hesiod).
-> If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).
+!!! note
+    Example files are kept up-to-date with the latest version of [Hesiod](https://github.com/otto-link/Hesiod).
+    If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).
 
-  
+

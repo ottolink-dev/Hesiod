@@ -10,11 +10,11 @@ TODO
 ![img](../../images/nodes/QuiltingBlend_settings.png)
 
 
-# Category
+## Category
 
 
 Operator/Resynthesis
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -23,13 +23,13 @@ Operator/Resynthesis
 |input 3|VirtualArray|TODO|
 |input 4|VirtualArray|TODO|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|TODO|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -41,7 +41,8 @@ Operator/Resynthesis
 |patch_width|Float|TODO|
 |Seed|Random seed number|Random seed number. The random seed is an offset to the randomized process. A different seed will produce a new result.|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

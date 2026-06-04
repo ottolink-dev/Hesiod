@@ -10,23 +10,23 @@ Apply a Gaussian function to every values.
 ![img](../../images/nodes/GaussianDecay_settings.png)
 
 
-# Category
+## Category
 
 
 Math/Base
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |input|VirtualArray|Input heightmap.|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|Output heightmap.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -40,7 +40,8 @@ Math/Base
 |Smoothing Radius|Float|Defines the radius for post-processing smoothing, determining the size of the neighborhood used to average local values and reduce high-frequency detail. A radius of 0 disables smoothing.|
 |sigma|Float|Gaussian half-width, represents the distance from the peak of the Gaussian curve to the points where the amplitude drops to half of its maximum value.|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

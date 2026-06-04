@@ -10,11 +10,11 @@ TODO
 ![img](../../images/nodes/HydraulicProcedural_settings.png)
 
 
-# Category
+## Category
 
 
 Erosion/Hydraulic
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -25,14 +25,14 @@ Erosion/Hydraulic
 |noise_x|VirtualArray|No description|
 |noise_y|VirtualArray|No description|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|TODO|
 |ridge_mask|VirtualArray|TODO|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -68,7 +68,8 @@ Erosion/Hydraulic
 |Seed|Random seed number|Random seed number. The random seed is an offset to the randomized process. A different seed will produce a new result.|
 |Reference Talus|Float|No description|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

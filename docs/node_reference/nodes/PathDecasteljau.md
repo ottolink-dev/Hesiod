@@ -10,29 +10,30 @@ PathDecasteljau uses Decasteljau interpolation to replace sharp angles and strai
 ![img](../../images/nodes/PathDecasteljau_settings.png)
 
 
-# Category
+## Category
 
 
 WIP/DEPRECATED
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |input|Path|Input path.|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|Path|Output path.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |edge_divisions|Integer|Edge sub-divisions of each edge. After the operation, the path is remeshed based on this new sub-division.|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

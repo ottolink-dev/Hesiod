@@ -10,24 +10,24 @@ The Blend operator takes two input heightmaps.
 ![img](../../images/nodes/Blend_settings.png)
 
 
-# Category
+## Category
 
 
 Operator/Blend
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |input 1|VirtualArray|Input heightmap.|
 |input 2|VirtualArray|Input heightmap.|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|Output heightmap.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -44,7 +44,8 @@ Operator/Blend
 |radius|Float|Filter radius with respect to the domain size (if any).|
 |swap_inputs|Bool|No description|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

@@ -10,23 +10,23 @@ TODO
 ![img](../../images/nodes/SetBorders_settings.png)
 
 
-# Category
+## Category
 
 
 Boundaries
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |input|VirtualArray|TODO|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|TODO|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -37,7 +37,8 @@ Boundaries
 |value_south|Float|TODO|
 |value_west|Float|TODO|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

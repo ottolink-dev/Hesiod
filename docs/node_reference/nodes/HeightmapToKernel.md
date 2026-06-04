@@ -10,23 +10,23 @@ Convert an heightmap to a kernel.
 ![img](../../images/nodes/HeightmapToKernel_settings.png)
 
 
-# Category
+## Category
 
 
 Converter
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |heightmap|VirtualArray|Input heightmap.|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |kernel|Array|Output kernel.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -35,7 +35,8 @@ Converter
 |normalize|Bool|Normalize kernel so that the sum of the elements equals 1, preserving the overall intensity of an heightmap after convolution for instance.|
 |radius|Float|Kernel radius with respect to the domain size.|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

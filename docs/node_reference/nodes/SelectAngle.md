@@ -10,23 +10,23 @@ SelectAngle is a thresholding operator. It selects angle values within a specifi
 ![img](../../images/nodes/SelectAngle_settings.png)
 
 
-# Category
+## Category
 
 
 Terrain Features/Selector
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |input|VirtualArray|Input heightmap.|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|Mask heightmap (in [0, 1]).|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -42,7 +42,8 @@ Terrain Features/Selector
 |radius|Float|Pre-filter radius.|
 |sigma|Float|Selection half-width.|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

@@ -10,24 +10,24 @@ TODO
 ![img](../../images/nodes/PathDig_settings.png)
 
 
-# Category
+## Category
 
 
 Geometry/Path
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |input|VirtualArray|TODO|
 |path|Path|TODO|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|TODO|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -37,7 +37,8 @@ Geometry/Path
 |force_downhill|Bool|TODO|
 |width|Float|TODO|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

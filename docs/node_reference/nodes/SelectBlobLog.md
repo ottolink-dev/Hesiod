@@ -10,23 +10,23 @@ SelectBlobLog performs 'blob' detection using oa Laplacian of Gaussian (log) met
 ![img](../../images/nodes/SelectBlobLog_settings.png)
 
 
-# Category
+## Category
 
 
 Terrain Features/Selector
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |input|VirtualArray|Input heightmap.|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|Mask heightmap (in [0, 1]).|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -38,7 +38,8 @@ Terrain Features/Selector
 |Smoothing Radius|Float|Defines the radius for post-processing smoothing, determining the size of the neighborhood used to average local values and reduce high-frequency detail. A radius of 0 disables smoothing.|
 |radius|Float|Detection radius with respect to the domain size.|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

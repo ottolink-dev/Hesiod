@@ -10,24 +10,24 @@ CombineMask performs basic logical operations on a pair of heightmaps (assuming 
 ![img](../../images/nodes/CombineMask_settings.png)
 
 
-# Category
+## Category
 
 
 Terrain Features/Mask Operations
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |input 1|VirtualArray|Input mask.|
 |input 2|VirtualArray|Input mask.|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|Combined mask.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -40,7 +40,8 @@ Terrain Features/Mask Operations
 |Smoothing Radius|Float|Defines the radius for post-processing smoothing, determining the size of the neighborhood used to average local values and reduce high-frequency detail. A radius of 0 disables smoothing.|
 |swap_inputs|Bool|No description|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

@@ -10,23 +10,23 @@ SelectInterval is a thresholding operator. It transforms an input heightmap into
 ![img](../../images/nodes/SelectInterval_settings.png)
 
 
-# Category
+## Category
 
 
 Terrain Features/Selector
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |input|VirtualArray|Input heightmap.|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|Mask heightmap (in [0, 1]).|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -39,7 +39,8 @@ Terrain Features/Selector
 |value1|Float|Selection value, lower bound.|
 |value2|Float|Selection value, upper bound.|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

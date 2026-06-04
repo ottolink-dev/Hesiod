@@ -10,24 +10,24 @@ TODO
 ![img](../../images/nodes/HydraulicStreamUpscaleAmplification_settings.png)
 
 
-# Category
+## Category
 
 
 WIP
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |input|VirtualArray|TODO|
 |mask|VirtualArray|Mask defining the filtering intensity (expected in [0, 1]).|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|TODO|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -38,7 +38,8 @@ WIP
 |talus_ref|Float|Reference talus, with small values of talus_ref leading to thinner flow streams.|
 |upscaling_levels|Integer|TODO|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

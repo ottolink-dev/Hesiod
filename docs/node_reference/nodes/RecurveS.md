@@ -10,24 +10,25 @@ RecurveS applied a curve adjustment filter using a smooth S-shape curve.
 ![img](../../images/nodes/RecurveS_settings.png)
 
 
-# Category
+## Category
 
 
 WIP
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |input|VirtualArray|Input heightmap.|
 |mask|VirtualArray|Mask defining the filtering intensity (expected in [0, 1]).|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|Filtered heightmap.|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

@@ -10,23 +10,23 @@ PathFractalize fractalizes a polyline using a mid-point displacement algorithm. 
 ![img](../../images/nodes/PathFractalize_settings.png)
 
 
-# Category
+## Category
 
 
 Geometry/Path
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |input|Path|Input path.|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|Path|Output path.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -37,14 +37,15 @@ Geometry/Path
 |Random Seed|Random seed number|Random seed number. The random seed is an offset to the randomized process. A different seed will produce a new result.|
 |Sigma|Float|Half-width of the random Gaussian displacement, normalized by the distance between points.|
 
-# Example
+## Example
 
 
 ![img](../../images/nodes/PathFractalize_hsd_example.png)
 
-Corresponding Hesiod file: [PathFractalize.hsd](../../examples/PathFractalize.hsd). Use [Ctrl+I] in the node editor to import a hsd file within your current project. 
+Corresponding Hesiod file: [PathFractalize.hsd](../../examples/PathFractalize.hsd). Use [Ctrl+I] in the node editor to import a hsd file within your current project.
 
-> **Note:** Example files are kept up-to-date with the latest version of [Hesiod](https://github.com/otto-link/Hesiod).
-> If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).
+!!! note
+    Example files are kept up-to-date with the latest version of [Hesiod](https://github.com/otto-link/Hesiod).
+    If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).
 
-  
+

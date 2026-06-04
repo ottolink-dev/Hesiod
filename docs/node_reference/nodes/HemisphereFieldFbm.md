@@ -10,11 +10,11 @@ No description available
 ![img](../../images/nodes/HemisphereFieldFbm_settings.png)
 
 
-# Category
+## Category
 
 
 Primitive/Coherent
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -25,13 +25,13 @@ Primitive/Coherent
 |envelope|VirtualArray|Heightmap used as a post-process amplitude multiplier for the generated noise.|
 |size|VirtualArray|No description|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|No description|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -56,14 +56,15 @@ Primitive/Coherent
 |Seed|Random seed number|Random seed number. The random seed is an offset to the randomized process. A different seed will produce a new result.|
 |shift|Float|No description|
 
-# Example
+## Example
 
 
 ![img](../../images/nodes/HemisphereFieldFbm_hsd_example.png)
 
-Corresponding Hesiod file: [HemisphereFieldFbm.hsd](../../examples/HemisphereFieldFbm.hsd). Use [Ctrl+I] in the node editor to import a hsd file within your current project. 
+Corresponding Hesiod file: [HemisphereFieldFbm.hsd](../../examples/HemisphereFieldFbm.hsd). Use [Ctrl+I] in the node editor to import a hsd file within your current project.
 
-> **Note:** Example files are kept up-to-date with the latest version of [Hesiod](https://github.com/otto-link/Hesiod).
-> If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).
+!!! note
+    Example files are kept up-to-date with the latest version of [Hesiod](https://github.com/otto-link/Hesiod).
+    If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).
 
-  
+

@@ -10,29 +10,30 @@ Applies a smoothstep function to the input heightmap, creating a smooth transiti
 ![img](../../images/nodes/Smoothstep_settings.png)
 
 
-# Category
+## Category
 
 
 Math/Base
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |input|VirtualArray|Input heightmap.|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|Output heightmap with the smoothstep function applied.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |order|Choice|The order of the smoothstep function, determining the smoothness of the transition.|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

@@ -10,23 +10,23 @@ TODO
 ![img](../../images/nodes/PathSmooth_settings.png)
 
 
-# Category
+## Category
 
 
 Geometry/Path
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |input|Path|TODO|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|Path|TODO|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -34,7 +34,8 @@ Geometry/Path
 |inertia|Float|TODO|
 |navg|Integer|TODO|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

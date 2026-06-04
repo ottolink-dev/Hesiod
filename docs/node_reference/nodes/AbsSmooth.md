@@ -10,23 +10,23 @@ Apply a smooth absolute value function to every values. The smooth absolute oper
 ![img](../../images/nodes/AbsSmooth_settings.png)
 
 
-# Category
+## Category
 
 
 Math/Base
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |input|VirtualArray|Input heightmap.|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|Output heightmap.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -41,10 +41,11 @@ Math/Base
 |Smoothing Radius|Float|Defines the radius for post-processing smoothing, determining the size of the neighborhood used to average local values and reduce high-frequency detail. A radius of 0 disables smoothing.|
 |vshift|Float|Reference value for the zero-equivalent value of the absolute value.|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.
 # Note
 
 Automatically included.

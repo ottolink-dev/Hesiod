@@ -10,24 +10,24 @@ Falloff is an operator that enforces values close to zero at the domain edges.
 ![img](../../images/nodes/Falloff_settings.png)
 
 
-# Category
+## Category
 
 
 Boundaries
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |dr|VirtualArray|Displacement with respect to the domain size (radial direction).|
 |input|VirtualArray|Input heightmap.|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|Filtered heightmap.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -40,7 +40,8 @@ Boundaries
 |Smoothing Radius|Float|Defines the radius for post-processing smoothing, determining the size of the neighborhood used to average local values and reduce high-frequency detail. A radius of 0 disables smoothing.|
 |strength|Float|Falloff strength.|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

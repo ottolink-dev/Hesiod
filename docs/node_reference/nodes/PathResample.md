@@ -10,23 +10,23 @@ PathResample resamples the path based to get (approximately) a given distance be
 ![img](../../images/nodes/PathResample_settings.png)
 
 
-# Category
+## Category
 
 
 Geometry/Path
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |input|Path|Input path.|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |path|Path|No description|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -36,7 +36,8 @@ Geometry/Path
 |Enable Decimation|Bool|No description|
 |Interpolation|Choice|No description|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

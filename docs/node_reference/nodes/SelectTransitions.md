@@ -10,11 +10,11 @@ SelectTransitions returns a mask filled with 1 at the blending transition betwee
 ![img](../../images/nodes/SelectTransitions_settings.png)
 
 
-# Category
+## Category
 
 
 Terrain Features/Selector
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -22,13 +22,13 @@ Terrain Features/Selector
 |input 1|VirtualArray|Input heightmap 1.|
 |input 2|VirtualArray|Input heightmap 2.|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|Mask heightmap (in [0, 1]).|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -39,7 +39,8 @@ Terrain Features/Selector
 |Saturation Range|Value range|Modifies the amplitude of elevations by first clamping them to a given interval and then scaling them so that the restricted interval matches the original input range. This enhances contrast in elevation variations while maintaining overall structure.|
 |Smoothing Radius|Float|Defines the radius for post-processing smoothing, determining the size of the neighborhood used to average local values and reduce high-frequency detail. A radius of 0 disables smoothing.|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

@@ -10,11 +10,11 @@ HydraulicParticle is a particle-based hydraulic erosion operator that simulates 
 ![img](../../images/nodes/HydraulicParticle_settings.png)
 
 
-# Category
+## Category
 
 
 Erosion/Hydraulic
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -23,7 +23,7 @@ Erosion/Hydraulic
 |mask|VirtualArray|Mask defining the filtering intensity (expected in [0, 1]).|
 |moisture|VirtualArray|Moisture map, influences the amount of water locally deposited.|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -31,7 +31,7 @@ Erosion/Hydraulic
 |erosion|VirtualArray|Erosion map (in [0, 1]).|
 |output|VirtualArray|Eroded heightmap.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -67,7 +67,8 @@ Erosion/Hydraulic
 |Ridge Spatial Frequency|Float|No description|
 |Seed|Random seed number|Random seed number. The random seed is an offset to the randomized process. A different seed will produce a new result.|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

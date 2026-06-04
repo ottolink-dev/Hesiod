@@ -10,11 +10,11 @@ Applies a zoom effect to an heightmap with an adjustable center. This function s
 ![img](../../images/nodes/Zoom_settings.png)
 
 
-# Category
+## Category
 
 
 Operator/Transform
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -22,13 +22,13 @@ Operator/Transform
 |dy|VirtualArray|Displacement with respect to the domain size (y-direction).|
 |input|VirtualArray|Displacement with respect to the domain size (x-direction).|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|Zoom heightmap.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -37,7 +37,8 @@ Operator/Transform
 |remap|Bool|Remap the operator's output to a specified range, defaulting to [0, 1].|
 |zoom_factor|Float|The factor by which to zoom the heightmap.|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

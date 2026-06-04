@@ -10,23 +10,23 @@ Caldera generates a volcanic caldera landscape.
 ![img](../../images/nodes/Caldera_settings.png)
 
 
-# Category
+## Category
 
 
 WIP
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |dr|VirtualArray|Displacement with respect to the domain size (normal direction).|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|Caldera heightmap.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -44,7 +44,8 @@ WIP
 |sigma_outer|Float|Crater outer lip half-width.|
 |z_bottom|Float|Crater bottom elevation.|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

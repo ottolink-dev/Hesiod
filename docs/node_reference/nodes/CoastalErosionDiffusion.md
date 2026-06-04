@@ -10,11 +10,11 @@ No description available
 ![img](../../images/nodes/CoastalErosionDiffusion_settings.png)
 
 
-# Category
+## Category
 
 
 Erosion/Water
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -22,7 +22,7 @@ Erosion/Water
 |mask|VirtualArray|No description|
 |water_depth_in|VirtualArray|No description|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -30,21 +30,22 @@ Erosion/Water
 |water_depth|VirtualArray|Output water depth map representing flooded areas.|
 |water_mask|VirtualArray|No description|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |Additional Depth|Float|No description|
 |Iterations|Integer|No description|
 
-# Example
+## Example
 
 
 ![img](../../images/nodes/CoastalErosionDiffusion_hsd_example.png)
 
-Corresponding Hesiod file: [CoastalErosionDiffusion.hsd](../../examples/CoastalErosionDiffusion.hsd). Use [Ctrl+I] in the node editor to import a hsd file within your current project. 
+Corresponding Hesiod file: [CoastalErosionDiffusion.hsd](../../examples/CoastalErosionDiffusion.hsd). Use [Ctrl+I] in the node editor to import a hsd file within your current project.
 
-> **Note:** Example files are kept up-to-date with the latest version of [Hesiod](https://github.com/otto-link/Hesiod).
-> If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).
+!!! note
+    Example files are kept up-to-date with the latest version of [Hesiod](https://github.com/otto-link/Hesiod).
+    If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).
 
-  
+

@@ -10,23 +10,23 @@ Computes local geometric metrics on a heightmap to characterize terrain features
 ![img](../../images/nodes/LocalMetrics_settings.png)
 
 
-# Category
+## Category
 
 
 Terrain Features
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |input|VirtualArray|Input heightmap on which the local metric is computed.|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |mask|VirtualArray|Output heightmap containing the computed local metric values after optional saturation and post-processing.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -42,7 +42,8 @@ Terrain Features
 |Radius|Float|Defines the spatial radius used to compute the local metric. It controls the size of the neighborhood around each point, with larger values producing smoother, more global features and smaller values capturing fine details.|
 |Saturation Ratio|Float|Upper percentile used for adaptive saturation of the output values. Values above this percentile are progressively compressed to reduce the influence of extreme outliers, improving contrast in the majority of the data while preserving overall structure.|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

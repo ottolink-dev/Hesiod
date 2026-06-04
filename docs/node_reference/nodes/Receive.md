@@ -10,23 +10,24 @@ Retrieves a heightmap broadcasted by another node using the specified tag.
 ![img](../../images/nodes/Receive_settings.png)
 
 
-# Category
+## Category
 
 
 Routing
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|The heightmap retrieved from the broadcast source.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |tag|Choice|Tag identifying the broadcasted heightmap to receive.|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

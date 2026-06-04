@@ -10,23 +10,23 @@ No description available
 ![img](../../images/nodes/PathInflate_settings.png)
 
 
-# Category
+## Category
 
 
 Geometry/Path
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |input|Path|No description|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |path|Path|No description|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -34,7 +34,8 @@ Geometry/Path
 |Inflation Radius|Float|No description|
 |Step Size|Float|No description|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

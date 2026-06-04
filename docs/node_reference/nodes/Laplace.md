@@ -10,31 +10,32 @@ Laplace smoothing filter reduces noise and smooth out variations in pixel intens
 ![img](../../images/nodes/Laplace_settings.png)
 
 
-# Category
+## Category
 
 
 Filter/Smoothing
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |input|VirtualArray|Input heightmap.|
 |mask|VirtualArray|Mask defining the filtering intensity (expected in [0, 1]).|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|Filtered heightmap.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |iterations|Integer|Number of successive filtering iterations.|
 |sigma|Float|Filtering strength.|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

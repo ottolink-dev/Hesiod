@@ -10,24 +10,24 @@ Projects heightmap values along a discrete grid direction using talus-based atte
 ![img](../../images/nodes/ProjectTalus_settings.png)
 
 
-# Category
+## Category
 
 
 Filter
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |input|VirtualArray|Input heightmap whose values are projected along the selected direction.|
 |mask|VirtualArray|Optional mask controlling where the projection effect is applied.|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|Resulting heightmap after directional projection and talus-based attenuation.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -47,7 +47,8 @@ Filter
 |Smoothing Radius|Float|Defines the radius for post-processing smoothing, determining the size of the neighborhood used to average local values and reduce high-frequency detail. A radius of 0 disables smoothing.|
 |Slope|Float|Talus attenuation coefficient controlling how quickly projected values decay with distance along the propagation direction. Higher values result in shorter propagation ranges.|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

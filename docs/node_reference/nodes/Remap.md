@@ -10,29 +10,30 @@ The Remap operator is used to adjust the elevation values across the entire data
 ![img](../../images/nodes/Remap_settings.png)
 
 
-# Category
+## Category
 
 
 Filter/Range
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |input|VirtualArray|Input heightmap.|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|Remapped heightmap.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |remap|Value range|Target range: define the new minimum and maximum values to remap the elevation values to.|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

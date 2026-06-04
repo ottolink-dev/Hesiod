@@ -10,11 +10,11 @@ Carves and blends a flatbed shape along a path into an existing heightmap using 
 ![img](../../images/nodes/FlatbedCarve_settings.png)
 
 
-# Category
+## Category
 
 
 Hydrology
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -22,14 +22,14 @@ Hydrology
 |input|VirtualArray|Input heightmap to be modified by the flatbed carving operation.|
 |path|Path|Path defining the centerline along which the flatbed is carved.|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |mask|VirtualArray|Output falloff mask representing the influence region of the flatbed carve.|
 |output|VirtualArray|Resulting heightmap after carving and blending the flatbed along the path.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -42,14 +42,15 @@ Hydrology
 |Profile Sharpness|Float|Shape parameter controlling the curvature or sharpness of the selected radial profile.|
 |Bed Base Height|Float|Minimum height value assigned to the bed bottom, defining the base elevation of the carved region.|
 
-# Example
+## Example
 
 
 ![img](../../images/nodes/FlatbedCarve_hsd_example.png)
 
-Corresponding Hesiod file: [FlatbedCarve.hsd](../../examples/FlatbedCarve.hsd). Use [Ctrl+I] in the node editor to import a hsd file within your current project. 
+Corresponding Hesiod file: [FlatbedCarve.hsd](../../examples/FlatbedCarve.hsd). Use [Ctrl+I] in the node editor to import a hsd file within your current project.
 
-> **Note:** Example files are kept up-to-date with the latest version of [Hesiod](https://github.com/otto-link/Hesiod).
-> If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).
+!!! note
+    Example files are kept up-to-date with the latest version of [Hesiod](https://github.com/otto-link/Hesiod).
+    If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).
 
-  
+

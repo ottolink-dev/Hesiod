@@ -10,11 +10,11 @@ No description available
 ![img](../../images/nodes/DirectionalBlur_settings.png)
 
 
-# Category
+## Category
 
 
 Filter/Smoothing
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -22,13 +22,13 @@ Filter/Smoothing
 |input|VirtualArray|No description|
 |mask|VirtualArray|No description|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|No description|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -49,7 +49,8 @@ Filter/Smoothing
 |radius|Float|No description|
 |steps|Integer|No description|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

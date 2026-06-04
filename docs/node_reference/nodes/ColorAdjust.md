@@ -10,23 +10,23 @@ Applies color correction and tonemapping to a texture, including levels, exposur
 ![img](../../images/nodes/ColorAdjust_settings.png)
 
 
-# Category
+## Category
 
 
 Texture
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |texture_in|VirtualTexture|No description|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |texture_out|VirtualTexture|No description|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -41,7 +41,8 @@ Texture
 |Saturation|Float|Controls color intensity (0 = grayscale, 1 = original).|
 |Temperature|Float|Shifts color balance between warm (red) and cool (blue) tones.|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

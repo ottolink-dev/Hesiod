@@ -10,23 +10,23 @@ Clamp restrict a value within a specified range. Essentially, it ensures that a 
 ![img](../../images/nodes/Clamp_settings.png)
 
 
-# Category
+## Category
 
 
 Filter/Range
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |input|VirtualArray|Input heightmap.|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|Clamped heightmap.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -45,7 +45,8 @@ Filter/Range
 |Smooth Max|Bool|Activate smooth clamping for the upper bound.|
 |Smooth Min|Bool|Activate smooth clamping for the lower bound.|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

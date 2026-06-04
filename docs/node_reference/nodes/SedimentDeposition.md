@@ -10,25 +10,25 @@ TODO
 ![img](../../images/nodes/SedimentDeposition_settings.png)
 
 
-# Category
+## Category
 
 
 WIP
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |input|VirtualArray|TODO|
 |mask|VirtualArray|Mask defining the filtering intensity (expected in [0, 1]).|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |deposition|VirtualArray|Deposition map (in [0, 1]).|
 |output|VirtualArray|TODO|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -38,7 +38,8 @@ WIP
 |subiterations|Integer|No description|
 |talus_global|Float|TODO|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

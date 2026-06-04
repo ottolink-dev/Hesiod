@@ -10,31 +10,32 @@ RecurveKura is an operator based on the Kumaraswamy distribution that can be use
 ![img](../../images/nodes/RecurveKura_settings.png)
 
 
-# Category
+## Category
 
 
 Filter/Recurve
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |input|VirtualArray|Input heightmap.|
 |mask|VirtualArray|Mask defining the filtering intensity (expected in [0, 1]).|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|Filtered heightmap.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |a|Float|Primarily controls the rightward skewness and tail behavior of the distribution.|
 |b|Float|Primarily controls the leftward skewness and tail behavior.|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

@@ -10,23 +10,23 @@ Identifies and selects valley-like regions in the heightmap based on curvature a
 ![img](../../images/nodes/SelectValley_settings.png)
 
 
-# Category
+## Category
 
 
 Terrain Features/Selector
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |input|VirtualArray|Heightmap data used as input for valley detection.|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|A mask representing the relative width of the valley. The value is 1 at the valley center and decreases to 0 at the edges of the valley.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -39,7 +39,8 @@ Terrain Features/Selector
 |radius|Float|Defines the search radius for valley detection, controlling how localized or broad the selection is.|
 |ridge_select|Bool|If enabled, selects ridges instead of valleys.|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

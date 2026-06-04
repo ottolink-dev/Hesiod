@@ -10,30 +10,31 @@ Erosion removes small structures or noise from an image, and it also shrinks the
 ![img](../../images/nodes/Erosion_settings.png)
 
 
-# Category
+## Category
 
 
 WIP/DEPRECATED
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |input|VirtualArray|Input heightmap.|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|Dilated heightmap.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |GPU|Bool|Toogle GPU acceleration on or off.|
 |radius|Float|Filter radius with respect to the domain size.|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

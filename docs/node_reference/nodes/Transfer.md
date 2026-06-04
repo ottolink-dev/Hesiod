@@ -10,24 +10,24 @@ Blends the high-frequency details of a source heightmap into a target heightmap.
 ![img](../../images/nodes/Transfer_settings.png)
 
 
-# Category
+## Category
 
 
 Operator/Blend
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |source|VirtualArray|Heightmap providing the high-frequency details to transfer.|
 |target|VirtualArray|Heightmap that serves as the base for blending the source details.|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|Resulting heightmap that combines the target’s base shape with the source’s high-frequency details.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -46,14 +46,15 @@ Operator/Blend
 |radius|Float|Radius of the smoothing filter used to separate low and high frequencies when extracting details from the source.|
 |target_prefiltering|Bool|If enabled, the target is smoothed before the source details are added, resulting in a softer blend between base and transferred features.|
 
-# Example
+## Example
 
 
 ![img](../../images/nodes/Transfer_hsd_example.png)
 
-Corresponding Hesiod file: [Transfer.hsd](../../examples/Transfer.hsd). Use [Ctrl+I] in the node editor to import a hsd file within your current project. 
+Corresponding Hesiod file: [Transfer.hsd](../../examples/Transfer.hsd). Use [Ctrl+I] in the node editor to import a hsd file within your current project.
 
-> **Note:** Example files are kept up-to-date with the latest version of [Hesiod](https://github.com/otto-link/Hesiod).
-> If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).
+!!! note
+    Example files are kept up-to-date with the latest version of [Hesiod](https://github.com/otto-link/Hesiod).
+    If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).
 
-  
+

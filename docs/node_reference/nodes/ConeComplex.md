@@ -10,11 +10,11 @@ Generates a complex conical heightfield with valleys, directional bias, and radi
 ![img](../../images/nodes/ConeComplex_settings.png)
 
 
-# Category
+## Category
 
 
 Primitive/Function
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -23,13 +23,13 @@ Primitive/Function
 |dy|VirtualArray|Displacement with respect to the domain size (y-direction).|
 |envelope|VirtualArray|Heightmap used as a post-process amplitude multiplier for the generated noise.|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|Generated conical heightfield.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -57,7 +57,8 @@ Primitive/Function
 |valley_decay_ratio|Float|Controls how valley amplitude decays toward the center.|
 |valley_nb|Integer|Number of valleys arranged radially around the cone.|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

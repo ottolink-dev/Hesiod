@@ -10,11 +10,11 @@ Generates a synthetic procedural terrain inspired by basaltic landforms. Credit:
 ![img](../../images/nodes/BasaltField_settings.png)
 
 
-# Category
+## Category
 
 
 Primitive/Geological
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -22,13 +22,13 @@ Primitive/Geological
 |dy|VirtualArray|Displacement with respect to the domain size (y-direction).|
 |envelope|VirtualArray|Heightmap used as a post-process amplitude multiplier for the generated noise.|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |out|VirtualArray|The generated heightmap from brush strokes.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -57,7 +57,8 @@ Primitive/Geological
 |small_scale_overlay_amp|Float|No description|
 |warp_kw|Float|No description|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

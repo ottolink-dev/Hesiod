@@ -10,30 +10,31 @@ Median3x3 filter is a median filter with a 3x3 kernel used to reduce noise while
 ![img](../../images/nodes/Median3x3_settings.png)
 
 
-# Category
+## Category
 
 
 Filter/Smoothing
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |input|VirtualArray|Input heightmap.|
 |mask|VirtualArray|Mask defining the filtering intensity (expected in [0, 1]).|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|Filtered heightmap.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |GPU|Bool|Toogle GPU acceleration on or off.|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

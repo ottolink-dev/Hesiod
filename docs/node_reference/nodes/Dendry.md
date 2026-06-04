@@ -10,11 +10,11 @@ Dendry is a procedural model for dendritic patterns generation.
 ![img](../../images/nodes/Dendry_settings.png)
 
 
-# Category
+## Category
 
 
 WIP
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -23,13 +23,13 @@ WIP
 |dy|VirtualArray|Displacement with respect to the domain size (y-direction).|
 |envelope|VirtualArray|Heightmap used as a post-process amplitude multiplier for the generated noise.|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |out|VirtualArray|TODO|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -49,7 +49,8 @@ WIP
 |slope_power|Float|Additional parameter to control the variation of slope on terrains.|
 |subsampling|Integer|Function evaluation subsampling, use higher values for faster computation at the cost of a coarser resolution.|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

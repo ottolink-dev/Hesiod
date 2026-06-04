@@ -10,11 +10,11 @@ Ridgelines generates an heightmap assuming the input path defines a ridgeline.
 ![img](../../images/nodes/Ridgelines_settings.png)
 
 
-# Category
+## Category
 
 
 Primitive/Authoring
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -22,13 +22,13 @@ Primitive/Authoring
 |dy|VirtualArray|Displacement with respect to the domain size (y-direction).|
 |path|Path|Set of points (x, y) and elevations z.|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |heightmap|VirtualArray|Interpolated heightmap.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -37,7 +37,8 @@ Primitive/Authoring
 |vmin|Float|Minimum value (lower values are clamped).|
 |width|Float|Ridge edge width.|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

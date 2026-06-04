@@ -10,23 +10,23 @@ Computes a multi-scale soil/rock mask using curvature analysis across progressiv
 ![img](../../images/nodes/SelectSoilRocks_settings.png)
 
 
-# Category
+## Category
 
 
 Terrain Features/ForTexturing
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |input|VirtualArray|Input heightmap or scalar field used to compute curvature across scales.|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|Computed multi-scale soil/rock selection mask.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -45,14 +45,15 @@ Terrain Features/ForTexturing
 |Smaller-Scale Influence|Float|Weight applied when descending to smaller smoothing radii, allowing fine-scale features to contribute more or less strongly.|
 |Sampling Steps|Integer|Number of logarithmic scales evaluated between rmin and rmax.|
 
-# Example
+## Example
 
 
 ![img](../../images/nodes/SelectSoilRocks_hsd_example.png)
 
-Corresponding Hesiod file: [SelectSoilRocks.hsd](../../examples/SelectSoilRocks.hsd). Use [Ctrl+I] in the node editor to import a hsd file within your current project. 
+Corresponding Hesiod file: [SelectSoilRocks.hsd](../../examples/SelectSoilRocks.hsd). Use [Ctrl+I] in the node editor to import a hsd file within your current project.
 
-> **Note:** Example files are kept up-to-date with the latest version of [Hesiod](https://github.com/otto-link/Hesiod).
-> If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).
+!!! note
+    Example files are kept up-to-date with the latest version of [Hesiod](https://github.com/otto-link/Hesiod).
+    If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).
 
-  
+

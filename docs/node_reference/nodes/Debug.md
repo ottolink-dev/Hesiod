@@ -10,17 +10,18 @@ No description available
 ![img](../../images/nodes/Debug_settings.png)
 
 
-# Category
+## Category
 
 
 Debug
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |input|VirtualArray|No description|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

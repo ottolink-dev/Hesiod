@@ -10,18 +10,18 @@ HydraulicStream is a hydraulic erosion operator using a flow-stream formulation 
 ![img](../../images/nodes/HydraulicStreamLog_settings.png)
 
 
-# Category
+## Category
 
 
 Erosion/Hydraulic
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |input|VirtualArray|Input elevation map to erode.|
 |mask|VirtualArray|Mask controlling the local intensity of erosion (expected in [0, 1]).|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -30,7 +30,7 @@ Erosion/Hydraulic
 |flow_map|VirtualArray|Flow accumulation map computed using the infinite flow direction algorithm.|
 |output|VirtualArray|Final terrain after erosion, deposition, and post-processing.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -51,7 +51,8 @@ Erosion/Hydraulic
 |Water Saturation Threshold|Float|Flow accumulation saturation threshold. Controls clipping of water flux to avoid runaway erosion.|
 |Slope Threshold|Float|Reference talus angle. Lower values produce thinner flow streams by increasing directional concentration.|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

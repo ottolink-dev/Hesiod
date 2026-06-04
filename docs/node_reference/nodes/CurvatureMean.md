@@ -10,23 +10,23 @@ No description available
 ![img](../../images/nodes/CurvatureMean_settings.png)
 
 
-# Category
+## Category
 
 
 WIP/DEPRECATED
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |input|VirtualArray|No description|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|No description|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -42,7 +42,8 @@ WIP/DEPRECATED
 |values_kept|Choice|No description|
 |vc_max|Float|No description|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

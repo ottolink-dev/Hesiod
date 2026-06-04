@@ -10,30 +10,31 @@ ColorizeSolid generates an uniform texture based on an input color.
 ![img](../../images/nodes/ColorizeSolid_settings.png)
 
 
-# Category
+## Category
 
 
 Texture
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |alpha|VirtualArray|No description|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |texture|VirtualTexture|Texture (RGBA).|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |Transparency|Float|Transparency as a scalar value|
 |Solid Color|Color|Solid color.|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

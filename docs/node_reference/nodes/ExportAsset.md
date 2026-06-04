@@ -10,11 +10,11 @@ Exports both the heightmap and texture as a single asset. The mesh can either be
 ![img](../../images/nodes/ExportAsset_settings.png)
 
 
-# Category
+## Category
 
 
 Export
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -23,7 +23,7 @@ Export
 |normal map details|VirtualTexture|Optional normal map for enhancing lighting effects on small details.|
 |texture|VirtualTexture|Heightmap data defining texture color values.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -37,7 +37,8 @@ Export
 |Max Error|Float|Maximum allowable error when generating an optimized triangulated mesh.|
 |Mesh Type:|Enumeration|Specifies the type of mesh geometry used. Options include 'triangles' and 'triangles (optimized)'.|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

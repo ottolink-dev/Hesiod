@@ -10,11 +10,11 @@ TODO
 ![img](../../images/nodes/TextureQuiltingExpand_settings.png)
 
 
-# Category
+## Category
 
 
 Texture
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -25,7 +25,7 @@ Texture
 |texture C|VirtualTexture|TODO|
 |texture D|VirtualTexture|TODO|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -36,7 +36,7 @@ Texture
 |texture C out|VirtualTexture|TODO|
 |texture D out|VirtualTexture|TODO|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -49,7 +49,8 @@ Texture
 |patch_width|Float|TODO|
 |Seed|Random seed number|Random seed number. The random seed is an offset to the randomized process. A different seed will produce a new result.|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

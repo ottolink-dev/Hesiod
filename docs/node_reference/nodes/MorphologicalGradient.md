@@ -10,23 +10,23 @@ MorphologicalGradient calculates the difference between dilation and erosion of 
 ![img](../../images/nodes/MorphologicalGradient_settings.png)
 
 
-# Category
+## Category
 
 
 WIP/DEPRECATED
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |input|VirtualArray|Input heightmap.|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|Gradient heightmap.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -40,14 +40,15 @@ WIP/DEPRECATED
 |Smoothing Radius|Float|Defines the radius for post-processing smoothing, determining the size of the neighborhood used to average local values and reduce high-frequency detail. A radius of 0 disables smoothing.|
 |radius|Float|Filter radius with respect to the domain size.|
 
-# Example
+## Example
 
 
 ![img](../../images/nodes/MorphologicalGradient_hsd_example.png)
 
-Corresponding Hesiod file: [MorphologicalGradient.hsd](../../examples/MorphologicalGradient.hsd). Use [Ctrl+I] in the node editor to import a hsd file within your current project. 
+Corresponding Hesiod file: [MorphologicalGradient.hsd](../../examples/MorphologicalGradient.hsd). Use [Ctrl+I] in the node editor to import a hsd file within your current project.
 
-> **Note:** Example files are kept up-to-date with the latest version of [Hesiod](https://github.com/otto-link/Hesiod).
-> If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).
+!!! note
+    Example files are kept up-to-date with the latest version of [Hesiod](https://github.com/otto-link/Hesiod).
+    If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).
 
-  
+

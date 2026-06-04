@@ -10,23 +10,23 @@ Generates a path between two domain boundaries by selecting start and end points
 ![img](../../images/nodes/FindCutPath_settings.png)
 
 
-# Category
+## Category
 
 
 Geometry/Path
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |input|VirtualArray|Input scalar field used to guide boundary point selection (e.g., elevation map).|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |path|Path|Generated path connecting the selected boundary points.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -41,14 +41,15 @@ Geometry/Path
 |Start Boundary|Enumeration|Boundary where the path starts (e.g., West, East, North, South).|
 |Search Steps|Integer|No description|
 
-# Example
+## Example
 
 
 ![img](../../images/nodes/FindCutPath_hsd_example.png)
 
-Corresponding Hesiod file: [FindCutPath.hsd](../../examples/FindCutPath.hsd). Use [Ctrl+I] in the node editor to import a hsd file within your current project. 
+Corresponding Hesiod file: [FindCutPath.hsd](../../examples/FindCutPath.hsd). Use [Ctrl+I] in the node editor to import a hsd file within your current project.
 
-> **Note:** Example files are kept up-to-date with the latest version of [Hesiod](https://github.com/otto-link/Hesiod).
-> If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).
+!!! note
+    Example files are kept up-to-date with the latest version of [Hesiod](https://github.com/otto-link/Hesiod).
+    If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).
 
-  
+

@@ -10,25 +10,25 @@ Crater generates a crater landscape..
 ![img](../../images/nodes/Crater_settings.png)
 
 
-# Category
+## Category
 
 
 Primitive/Geological
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
-|envelope|VirtualArray|No description|
+|envelope|VirtualArray|Heightmap used as a post-process amplitude multiplier for the generated noise.|
 |noise|VirtualArray|No description|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |crater_mask|VirtualArray|No description|
 |output|VirtualArray|Crater heightmap.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -37,12 +37,12 @@ Primitive/Geological
 |Center|Vec2Float|Reference center within the heightmap.|
 |Central Peak Extent|Float|No description|
 |Central Peak Height|Float|No description|
-|Activate|Bool|No description|
-|Spatial Frequency|Float|No description|
-|Amplitude|Float|No description|
-|Type|Enumeration|No description|
-|Seed|Random seed number|No description|
-|Smoothness|Float|No description|
+|Activate|Bool|Enables or disables the built-in drainage noise. If an external noise input is provided, it overrides this default noise.|
+|Spatial Frequency|Float|Base spatial frequencies in the X and Y directions.|
+|Amplitude|Float|Noise amplitude.|
+|Type|Enumeration|Noise type.|
+|Seed|Random seed number|Random seed number. The random seed is an offset to the randomized process. A different seed will produce a new result.|
+|Smoothness|Float|Controls the resulting smoothness of the fractal layering process.|
 |Elevation Offset|Float|No description|
 |Inner Basin Depth|Float|No description|
 |Inner Basin Falloff|Float|No description|
@@ -61,7 +61,8 @@ Primitive/Geological
 |Terrace Extent|Float|No description|
 |Terrace Persistence|Float|No description|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

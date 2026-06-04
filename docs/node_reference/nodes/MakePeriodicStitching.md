@@ -10,29 +10,30 @@ Makes the input heightmap tileable by creating a smooth transition at the bounda
 ![img](../../images/nodes/MakePeriodicStitching_settings.png)
 
 
-# Category
+## Category
 
 
 Operator/Tiling
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |input|VirtualArray|The input heightmap to be made tileable.|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|The output heightmap with smooth transitions at the boundaries, making it tileable.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |overlap|Float|The ratio of overlap at the boundaries. A higher value creates a smoother transition but may reduce the usable area of the heightmap.|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

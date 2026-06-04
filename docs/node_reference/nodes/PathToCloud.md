@@ -10,23 +10,24 @@ PathToCloud convert a Path to a set of points (Cloud).
 ![img](../../images/nodes/PathToCloud_settings.png)
 
 
-# Category
+## Category
 
 
 Geometry/Path
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |path|Path|Input path.|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |cloud|Cloud|Output cloud.|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

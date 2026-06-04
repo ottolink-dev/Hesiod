@@ -10,11 +10,11 @@ TODO
 ![img](../../images/nodes/ThermalScree_settings.png)
 
 
-# Category
+## Category
 
 
 Erosion/Deposition
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -22,14 +22,14 @@ Erosion/Deposition
 |mask|VirtualArray|Mask defining the filtering intensity (expected in [0, 1]).|
 |zmax|VirtualArray|TODO|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |deposition|VirtualArray|Deposition map (in [0, 1]).|
 |output|VirtualArray|TODO|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -51,7 +51,8 @@ Erosion/Deposition
 |Slope|Float|TODO|
 |Scree Max Elevation|Float|TODO|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

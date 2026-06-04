@@ -10,23 +10,23 @@ A process that modifies the amplitude of elevations by first clamping them to a 
 ![img](../../images/nodes/Saturate_settings.png)
 
 
-# Category
+## Category
 
 
 Filter/Recurve
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |input|VirtualArray|Input heightmap.|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|Saturated heightmap.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -41,7 +41,8 @@ Filter/Recurve
 |Smoothing Radius|Float|Defines the radius for post-processing smoothing, determining the size of the neighborhood used to average local values and reduce high-frequency detail. A radius of 0 disables smoothing.|
 |range|Value range|Saturation range: define the minimum and maximum values of the saturation process.|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

@@ -10,24 +10,25 @@ Computes the absolute water elevation by adding the terrain elevation and the wa
 ![img](../../images/nodes/WaterElevationFromDepth_settings.png)
 
 
-# Category
+## Category
 
 
 Hydrology
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |elevation|VirtualArray|Input terrain elevation values.|
 |water_depth|VirtualArray|Output water depth map representing flooded areas.|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |water_elevation|VirtualArray|Output absolute water elevation computed as elevation + water_depth.|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

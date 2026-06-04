@@ -10,23 +10,23 @@ Rugosity identifies heightmap rugosity, i.e. the roughness or irregularity of th
 ![img](../../images/nodes/Rugosity_settings.png)
 
 
-# Category
+## Category
 
 
 Terrain Features/Advanced
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |input|VirtualArray|Input heightmap.|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|Rugosity.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -40,7 +40,8 @@ Terrain Features/Advanced
 |radius|Float|Filter radius with respect to the domain size.|
 |vc_max|Float|Rugosity clamping upper bound.|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

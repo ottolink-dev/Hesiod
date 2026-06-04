@@ -10,11 +10,11 @@ CloudSDF evaluates the signed distance function of a set of points. It assigns a
 ![img](../../images/nodes/CloudSDF_settings.png)
 
 
-# Category
+## Category
 
 
 Geometry/Cloud
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -22,13 +22,13 @@ Geometry/Cloud
 |dx|VirtualArray|Displacement with respect to the domain size (x-direction).|
 |dy|VirtualArray|Displacement with respect to the domain size (y-direction).|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |sdf|VirtualArray|Signed distance as an heightmap.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -39,7 +39,8 @@ Geometry/Cloud
 |Saturation Range|Value range|Modifies the amplitude of elevations by first clamping them to a given interval and then scaling them so that the restricted interval matches the original input range. This enhances contrast in elevation variations while maintaining overall structure.|
 |Smoothing Radius|Float|Defines the radius for post-processing smoothing, determining the size of the neighborhood used to average local values and reduce high-frequency detail. A radius of 0 disables smoothing.|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

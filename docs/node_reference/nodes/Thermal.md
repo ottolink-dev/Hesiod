@@ -10,25 +10,25 @@ Thermal is an erosion operator used to simulate the process of thermal erosion, 
 ![img](../../images/nodes/Thermal_settings.png)
 
 
-# Category
+## Category
 
 
 Erosion/Deposition
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |input|VirtualArray|Input heightmap.|
 |mask|VirtualArray|Mask defining the filtering intensity (expected in [0, 1]).|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |deposition|VirtualArray|Deposition map (in [0, 1]).|
 |output|VirtualArray|Eroded heightmap.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -50,7 +50,8 @@ Erosion/Deposition
 |Slope|Float|Defines the critical talus angle (repose slope) above which material becomes unstable and moves downslope during thermal erosion.|
 ||Choice|No description|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

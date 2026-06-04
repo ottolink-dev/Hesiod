@@ -10,24 +10,24 @@ Displays a split view of two arrays using a horizontal and vertical slice.
 ![img](../../images/nodes/Compare_settings.png)
 
 
-# Category
+## Category
 
 
 Debug
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |a|VirtualArray|First input array (top-left region).|
 |b|VirtualArray|Second input array (bottom-right region).|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|Resulting array combining a and b based on slice position.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -35,7 +35,8 @@ Debug
 |Y-cutslice Position|Float|Normalized vertical slice position (0 = top, 1 = bottom).|
 |Swap Inputs|Bool|Swaps the roles of input arrays a and b.|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.
