@@ -10,23 +10,24 @@ TODO
 ![img](../../images/nodes/TextureUvChecker_settings.png)
 
 
-# Category
+## Category
 
 
 Texture
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |texture|VirtualTexture|TODO|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |size|Choice|TODO|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

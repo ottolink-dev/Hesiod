@@ -10,30 +10,31 @@ Removes connected regions whose area is below a threshold. The threshold is defi
 ![img](../../images/nodes/AreaRemove_settings.png)
 
 
-# Category
+## Category
 
 
 Terrain Features/Morphology
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |input|VirtualArray|Input scalar field or mask in which connected regions are analyzed.|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|Output field where regions smaller than the computed area threshold have been removed.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |Background Value|Float|Value considered as background. Regions matching this value are treated as empty and ignored during area evaluation.|
 |Minimum Radius|Float|Minimum equivalent radius used to compute the area threshold. Internally, this radius is converted to a surface, and regions with an area smaller than this value are removed.|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

@@ -10,24 +10,24 @@ Adjusts the frequency content of the input field by decomposing it into multiple
 ![img](../../images/nodes/SpectralEqualizer_settings.png)
 
 
-# Category
+## Category
 
 
 Filter
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |input|VirtualArray|Input field to be processed.|
 |mask|VirtualArray|Optional mask controlling where the effect is applied.|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|Output field with adjusted spectral content.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -37,18 +37,19 @@ Filter
 |mask_inverse|Bool|Inverts the internal mask, applying the operator where the mask is low. Ignored if a 'mask' input is provided.|
 |mask_radius|Float|Defines the smoothing radius for the internal mask. A value of 0 disables smoothing. This is bypassed if the 'mask' input is used.|
 |mask_type|Choice|Specifies how the internal mask is computed: 'Elevation' uses height, 'Gradient Norm' uses slope, and 'Elevation mid-range' selects the middle portion of the height range. This parameter is ignored when a 'mask' input is connected.|
-|Gain|Float|Mid-centered gain transformation applied to the elevation values. Increasing the gain pushes values toward extremes, flattening low/high regions and steepening transitions.|
-|Gamma|Float|Gamma correction applied to the elevation values. Adjusts contrast by emphasizing low or high values without changing ordering.|
-|Invert Output|Bool|Inverts the output values after processing, flipping low and high values.|
-|Mix Factor|Float|Blending factor between input and processed output. 0 keeps input, 1 uses full output.|
-|Mix Method|Enumeration|Method used to combine input and output values (e.g., linear, min, max, add, subtract).|
-|Remap Range|Value range|Linearly remaps the output values to a target range.|
-|Saturation Range|Value range|Enhances contrast by clamping values to a range and rescaling to the full output interval.|
-|Smoothing Radius|Float|Applies additional smoothing to the output. Larger values reduce fine details.|
+|Gain|Float|Mid-centered gain transformation applied to the elevation values. This is a non-linear recurve operator centered around the mid elevation (typically 0.5). Increasing the gain pushes values toward the minimum and maximum elevations, creating flatter low/high regions with a steeper transition around the midpoint.|
+|Gamma|Float|Standard gamma correction applied to the elevation values. This is a monotonic power-law remapping that shifts emphasis toward low or high elevations, making the overall shape sharper or bulkier without changing its ordering.|
+|Invert Output|Bool|Inverts the output values after processing, flipping low and high values across the midrange.|
+|Mix Factor|Float|Mixing factor for blending input and output values. A value of 0 uses only the input, 1 uses only the output, and intermediate values perform a linear interpolation.|
+|Mix Method|Enumeration|Method used to combine input and output values. Options include linear interpolation (default), min, max, smooth min, smooth max, add, and subtract.|
+|Remap Range|Value range|Linearly remaps the output values to a specified target range (default is [0, 1]).|
+|Saturation Range|Value range|Modifies the amplitude of elevations by first clamping them to a given interval and then scaling them so that the restricted interval matches the original input range. This enhances contrast in elevation variations while maintaining overall structure.|
+|Smoothing Radius|Float|Defines the radius for post-processing smoothing, determining the size of the neighborhood used to average local values and reduce high-frequency detail. A radius of 0 disables smoothing.|
 |Radius Max.|Float|Maximum smoothing radius defining the lowest frequency band. Controls large-scale structures.|
 |Radius Min.|Float|Minimum smoothing radius defining the highest frequency band. Controls fine details.|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

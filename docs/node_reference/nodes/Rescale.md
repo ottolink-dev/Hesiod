@@ -10,30 +10,31 @@ The Rescale operator involves adjusting each data point by multiplying it with a
 ![img](../../images/nodes/Rescale_settings.png)
 
 
-# Category
+## Category
 
 
 Filter/Range
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |input|VirtualArray|Input heightmap.|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|Rescaled heightmap.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |centered|Bool|Determine whether a mean offset is applied to the values to center the scaling.|
 |scaling|Float|Constant by which each elevation values will be multiplied.|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

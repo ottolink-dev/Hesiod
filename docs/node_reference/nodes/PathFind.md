@@ -10,11 +10,11 @@ TODO
 ![img](../../images/nodes/PathFind_settings.png)
 
 
-# Category
+## Category
 
 
 Geometry/Path
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -22,13 +22,13 @@ Geometry/Path
 |mask nogo|VirtualArray|TODO|
 |waypoints|Path|TODO|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |path|Path|TODO|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -36,7 +36,8 @@ Geometry/Path
 |downsampling|Integer|TODO|
 |elevation_ratio|Float|TODO|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

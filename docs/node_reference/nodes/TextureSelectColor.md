@@ -10,23 +10,23 @@ Generates a mask by selecting pixels from the input texture that match a target 
 ![img](../../images/nodes/TextureSelectColor_settings.png)
 
 
-# Category
+## Category
 
 
 Texture
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |texture|VirtualTexture|Input texture to analyze.|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |mask|VirtualArray|Output mask where matching pixels are set to 1 and others to 0.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -39,7 +39,8 @@ Texture
 |Smoothing Radius|Float|Defines the radius for post-processing smoothing, determining the size of the neighborhood used to average local values and reduce high-frequency detail. A radius of 0 disables smoothing.|
 |Tolerance|Float|Maximum allowed difference between the pixel color and the target color for a match.|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

@@ -10,23 +10,23 @@ Applies a morphological operator to detect ridges (top hat) or valleys (black ha
 ![img](../../images/nodes/MorphologicalTopHat_settings.png)
 
 
-# Category
+## Category
 
 
 WIP/DEPRECATED
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |input|VirtualArray|Input heightmap.|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|Output heightmap.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -41,7 +41,8 @@ WIP/DEPRECATED
 |radius|Float|Filter radius with respect to the domain size.|
 |top_hat|Bool|Toggle between top hat (ridge detection) and black hat (valley detection) morphological operator.|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

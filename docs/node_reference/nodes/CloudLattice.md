@@ -10,17 +10,17 @@ Generate a grid lattice set of points.
 ![img](../../images/nodes/CloudLattice_settings.png)
 
 
-# Category
+## Category
 
 
 Geometry/Cloud
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |cloud|Cloud|Set of points (x, y) and elevations z.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -30,7 +30,8 @@ Geometry/Cloud
 |Seed|Random seed number|Random seed number. The random seed is an offset to the randomized process. A different seed will produce a new result.|
 |stagger_ratio|Wavenumber|Point offset in x and y directions for every two lines or columns.|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

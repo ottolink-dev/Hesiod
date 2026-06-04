@@ -10,11 +10,11 @@ ColorizeGradient generates a texture based on colormaps to assign colors to data
 ![img](../../images/nodes/ColorizeGradient_settings.png)
 
 
-# Category
+## Category
 
 
 Texture
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -22,13 +22,13 @@ Texture
 |level|VirtualArray|Data values for color selection.|
 |noise|VirtualArray|TODO|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |texture|VirtualTexture|Texture (RGBA).|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -37,7 +37,8 @@ Texture
 |reverse_alpha|Bool|Reverse the input alpha map.|
 |reverse_colormap|Bool|Reverse the colormap range.|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

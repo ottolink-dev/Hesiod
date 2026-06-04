@@ -10,11 +10,11 @@ Slope is function used to represent continuous terrain slope.
 ![img](../../images/nodes/Slope_settings.png)
 
 
-# Category
+## Category
 
 
 Primitive/Function
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -22,13 +22,13 @@ Primitive/Function
 |dx|VirtualArray|Displacement with respect to the domain size (x-direction).|
 |dy|VirtualArray|Displacement with respect to the domain size (y-direction).|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|Slope heightmap.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -42,7 +42,8 @@ Primitive/Function
 |Smoothing Radius|Float|Defines the radius for post-processing smoothing, determining the size of the neighborhood used to average local values and reduce high-frequency detail. A radius of 0 disables smoothing.|
 |talus_global|Float|Slope slope...|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

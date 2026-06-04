@@ -10,30 +10,31 @@ DepressionFilling is used to fill depressions or sinks in an heightmap. It ensur
 ![img](../../images/nodes/DepressionFilling_settings.png)
 
 
-# Category
+## Category
 
 
 Erosion/Deposition
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |input|VirtualArray|Input heightmap.|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |fill map|VirtualArray|Filling map.|
 |output|VirtualArray|Filled heightmap.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |remap fill map|Bool|Remap to [0, 1] the filling map.|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

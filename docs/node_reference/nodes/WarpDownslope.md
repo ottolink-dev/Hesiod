@@ -10,24 +10,24 @@ Warp the heightmap with a direction and amount based on the local downslope.
 ![img](../../images/nodes/WarpDownslope_settings.png)
 
 
-# Category
+## Category
 
 
 WIP
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |input|VirtualArray|Input heightmap.|
 |mask|VirtualArray|Mask defining the filtering intensity (expected in [0, 1]).|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|Filtered heightmap.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -35,7 +35,8 @@ WIP
 |radius|Float|Prefiltering radius for gradient computation.|
 |reverse|Bool|Reverse warping direction (upslope if true and downslope otherwise).|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

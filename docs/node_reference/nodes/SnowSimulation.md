@@ -10,11 +10,11 @@ No description available
 ![img](../../images/nodes/SnowSimulation_settings.png)
 
 
-# Category
+## Category
 
 
 Hydrology
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -23,14 +23,14 @@ Hydrology
 |melting_map|VirtualArray|Optional spatial melting factor in [0,1] controlling local snow removal.|
 |snow_depth_in|VirtualArray|Optional initial snow thickness used as the starting state of the simulation.|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |elevation|VirtualArray|Output elevation including terrain and accumulated snow.|
 |snow_depth|VirtualArray|Final snow thickness after accumulation, transport, and melting.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -48,14 +48,15 @@ Hydrology
 |Base Repose Slope|Float|Base repose angle of snow. Higher values allow steeper slopes before snow starts to slide.|
 |Thermal Repose Ratio|Float|Controls how strongly thermal creep depends on the repose angle. Lower values produce smoother snow on shallow slopes.|
 
-# Example
+## Example
 
 
 ![img](../../images/nodes/SnowSimulation_hsd_example.png)
 
-Corresponding Hesiod file: [SnowSimulation.hsd](../../examples/SnowSimulation.hsd). Use [Ctrl+I] in the node editor to import a hsd file within your current project. 
+Corresponding Hesiod file: [SnowSimulation.hsd](../../examples/SnowSimulation.hsd). Use [Ctrl+I] in the node editor to import a hsd file within your current project.
 
-> **Note:** Example files are kept up-to-date with the latest version of [Hesiod](https://github.com/otto-link/Hesiod).
-> If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).
+!!! note
+    Example files are kept up-to-date with the latest version of [Hesiod](https://github.com/otto-link/Hesiod).
+    If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).
 
-  
+

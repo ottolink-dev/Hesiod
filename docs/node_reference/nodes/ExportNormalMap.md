@@ -10,17 +10,17 @@ ExportNormalMap is an operator for exporting the normal map of an heightmap as a
 ![img](../../images/nodes/ExportNormalMap_settings.png)
 
 
-# Category
+## Category
 
 
 Export
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |input|VirtualArray|Input heightmap.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -29,7 +29,8 @@ Export
 |Auto Export on Node Update|Bool|Controls whether the output file is automatically written when the node is updated. Default is false. When set to true, the file is saved automatically on updates. If false, use the 'Force Reload' button on the node to manually trigger the export.|
 |fname|Filename|Export file name.|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

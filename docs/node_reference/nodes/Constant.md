@@ -10,23 +10,24 @@ No description available
 ![img](../../images/nodes/Constant_settings.png)
 
 
-# Category
+## Category
 
 
 Primitive/Function
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|No description|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |value|Float|No description|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

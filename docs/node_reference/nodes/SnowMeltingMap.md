@@ -10,23 +10,23 @@ No description available
 ![img](../../images/nodes/SnowMeltingMap_settings.png)
 
 
-# Category
+## Category
 
 
 Hydrology
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |elevation|VirtualArray|No description|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |melting_map|VirtualArray|No description|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -39,14 +39,15 @@ Hydrology
 |Sun Azimuth|Float|No description|
 |Sun Zenith|Float|No description|
 
-# Example
+## Example
 
 
 ![img](../../images/nodes/SnowMeltingMap_hsd_example.png)
 
-Corresponding Hesiod file: [SnowMeltingMap.hsd](../../examples/SnowMeltingMap.hsd). Use [Ctrl+I] in the node editor to import a hsd file within your current project. 
+Corresponding Hesiod file: [SnowMeltingMap.hsd](../../examples/SnowMeltingMap.hsd). Use [Ctrl+I] in the node editor to import a hsd file within your current project.
 
-> **Note:** Example files are kept up-to-date with the latest version of [Hesiod](https://github.com/otto-link/Hesiod).
-> If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).
+!!! note
+    Example files are kept up-to-date with the latest version of [Hesiod](https://github.com/otto-link/Hesiod).
+    If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).
 
-  
+

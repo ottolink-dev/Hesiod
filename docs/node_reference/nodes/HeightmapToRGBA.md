@@ -10,11 +10,11 @@ HeightmapToRGBA converts a series of heightmaps into an RGBA splatmap.
 ![img](../../images/nodes/HeightmapToRGBA_settings.png)
 
 
-# Category
+## Category
 
 
 Converter
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -23,13 +23,14 @@ Converter
 |G|VirtualArray|Green channel.|
 |R|VirtualArray|Red channel.|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |RGBA|VirtualTexture|RGBA heightmap.|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

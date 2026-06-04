@@ -10,11 +10,11 @@ Paraboloid Node
 ![img](../../images/nodes/Paraboloid_settings.png)
 
 
-# Category
+## Category
 
 
 Primitive/Function
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -22,13 +22,13 @@ Primitive/Function
 |dy|VirtualArray|Displacement with respect to the domain size (y-direction).|
 |envelope|VirtualArray|Heightmap used as a post-process amplitude multiplier for the generated noise.|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|Paraboloid.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -46,7 +46,8 @@ Primitive/Function
 |reverse_y|Bool|Reverse coefficient of second principal axis.|
 |v0|Float|Value at the paraboloid center.|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

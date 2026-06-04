@@ -10,17 +10,17 @@ No description available
 ![img](../../images/nodes/TextureSplitChannels_settings.png)
 
 
-# Category
+## Category
 
 
 Texture
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |texture|VirtualTexture|No description|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -29,7 +29,8 @@ Texture
 |G|VirtualArray|No description|
 |R|VirtualArray|No description|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

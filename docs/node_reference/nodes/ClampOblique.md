@@ -10,23 +10,23 @@ Clamps the input heightmap against an oblique plane defined by angle, slope, and
 ![img](../../images/nodes/ClampOblique_settings.png)
 
 
-# Category
+## Category
 
 
 Filter/Range
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |input|VirtualArray|Input heightmap or scalar field to be clamped against the oblique plane.|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|Resulting heightmap after applying the oblique clamping operation.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -45,14 +45,15 @@ Filter/Range
 |Clamp Mode|Bool|If enabled, applies a max-clamp; otherwise applies a min-clamp.|
 |Clamp Value|Float|Offset applied to the generated oblique plane before clamping.|
 
-# Example
+## Example
 
 
 ![img](../../images/nodes/ClampOblique_hsd_example.png)
 
-Corresponding Hesiod file: [ClampOblique.hsd](../../examples/ClampOblique.hsd). Use [Ctrl+I] in the node editor to import a hsd file within your current project. 
+Corresponding Hesiod file: [ClampOblique.hsd](../../examples/ClampOblique.hsd). Use [Ctrl+I] in the node editor to import a hsd file within your current project.
 
-> **Note:** Example files are kept up-to-date with the latest version of [Hesiod](https://github.com/otto-link/Hesiod).
-> If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).
+!!! note
+    Example files are kept up-to-date with the latest version of [Hesiod](https://github.com/otto-link/Hesiod).
+    If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).
 
-  
+

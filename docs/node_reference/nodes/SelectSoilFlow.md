@@ -10,23 +10,23 @@ Computes a soil–flow selection map based on the terrain gradient and the flow-
 ![img](../../images/nodes/SelectSoilFlow_settings.png)
 
 
-# Category
+## Category
 
 
 Terrain Features/ForTexturing
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |input|VirtualArray|Input heightmap used to compute curvature and gradient contributions.|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|Output soil-flow mask combining flow and gradient effects.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -45,14 +45,15 @@ Terrain Features/ForTexturing
 |Gradient Radius|Float|Radius used to compute local gradient magnitudes, defining the neighborhood size influencing slope estimation. Larger radii yield smooth gradients.|
 |Ref. Talus|Float|Reference talus value for river extraction.|
 
-# Example
+## Example
 
 
 ![img](../../images/nodes/SelectSoilFlow_hsd_example.png)
 
-Corresponding Hesiod file: [SelectSoilFlow.hsd](../../examples/SelectSoilFlow.hsd). Use [Ctrl+I] in the node editor to import a hsd file within your current project. 
+Corresponding Hesiod file: [SelectSoilFlow.hsd](../../examples/SelectSoilFlow.hsd). Use [Ctrl+I] in the node editor to import a hsd file within your current project.
 
-> **Note:** Example files are kept up-to-date with the latest version of [Hesiod](https://github.com/otto-link/Hesiod).
-> If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).
+!!! note
+    Example files are kept up-to-date with the latest version of [Hesiod](https://github.com/otto-link/Hesiod).
+    If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).
 
-  
+

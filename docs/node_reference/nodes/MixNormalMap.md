@@ -10,31 +10,32 @@ TODO
 ![img](../../images/nodes/MixNormalMap_settings.png)
 
 
-# Category
+## Category
 
 
 Texture
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |normal map base|VirtualTexture|TODO|
 |normal map detail|VirtualTexture|TODO|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |normal map|VirtualTexture|TODO|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |blending_method|Enumeration|TODO|
 |detail_scaling|Float|TODO|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

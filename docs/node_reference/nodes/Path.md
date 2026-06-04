@@ -10,30 +10,31 @@ A polyline defined by a series of connected points (x, y) with elevation data (z
 ![img](../../images/nodes/Path_settings.png)
 
 
-# Category
+## Category
 
 
 Geometry/Path
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |background|VirtualArray|No description|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |path|Path|Outputs the path as a set of directed points (x, y) and elevations (z).|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |Closed Path|Bool|No description|
 |Path|Cloud|The sequence of points defining the path. Each point consists of coordinates (x, y) and an elevation (z).|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

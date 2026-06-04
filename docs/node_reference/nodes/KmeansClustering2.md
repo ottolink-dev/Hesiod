@@ -10,24 +10,24 @@ KmeansClustering2 node groups the data into clusters based on the values of the 
 ![img](../../images/nodes/KmeansClustering2_settings.png)
 
 
-# Category
+## Category
 
 
 Terrain Features/Clustering
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |feature 1|VirtualArray|First measurable property or characteristic of the data points being analyzed (e.g elevation, gradient norm, etc...|
 |feature 2|VirtualArray|Second measurable property or characteristic of the data points being analyzed (e.g elevation, gradient norm, etc...|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|Cluster labelling.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -37,7 +37,8 @@ Terrain Features/Clustering
 |weights.x|Float|Weight of the first feature.|
 |weights.y|Float|Weight of the second feature.|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

@@ -10,17 +10,17 @@ ImportHeightmap imports an heighmap from a grayscale PNG 8bit file.
 ![img](../../images/nodes/ImportHeightmap_settings.png)
 
 
-# Category
+## Category
 
 
 Export
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|Output heightmap.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -35,7 +35,8 @@ Export
 |Smoothing Radius|Float|Defines the radius for post-processing smoothing, determining the size of the neighborhood used to average local values and reduce high-frequency detail. A radius of 0 disables smoothing.|
 |Sampling Method|Choice|No description|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

@@ -10,11 +10,11 @@ SetAlpha adjusts the transparency of a texture based on an input alpha value, wh
 ![img](../../images/nodes/SetAlpha_settings.png)
 
 
-# Category
+## Category
 
 
 Texture
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -22,13 +22,13 @@ Texture
 |noise|VirtualArray|TODO|
 |texture in|VirtualTexture|TODO|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |texture out|VirtualTexture|TODO|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -36,7 +36,8 @@ Texture
 |clamp|Bool|TODO|
 |reverse|Bool|TODO|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

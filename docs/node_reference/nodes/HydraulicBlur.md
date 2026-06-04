@@ -10,23 +10,23 @@ Hydraulic Blur applied a cell-based hydraulic erosion using a nonlinear diffusio
 ![img](../../images/nodes/HydraulicBlur_settings.png)
 
 
-# Category
+## Category
 
 
 WIP
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |input|VirtualArray|Input heightmap.|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|Eroded heightmap.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -42,7 +42,8 @@ WIP
 |radius|Float|Gaussian filter radius (with respect to a unit domain).|
 |vmax|Float|Maximum elevation for the details.|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

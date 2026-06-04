@@ -10,24 +10,24 @@ WaveDune mimics using a periodic function the formation and spatial distribution
 ![img](../../images/nodes/WaveDune_settings.png)
 
 
-# Category
+## Category
 
 
 Primitive/Function
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |dr|VirtualArray|Displacement with respect to the domain size (normal direction).|
 |envelope|VirtualArray|Heightmap used as a post-process amplitude multiplier for the generated noise.|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|WaveDune heightmap.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -45,7 +45,8 @@ Primitive/Function
 |xbottom|Float|Relative position of the dune bottom, in [0, 1].|
 |xtop|Float|Relative position of the dune top, in [0, 1].|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

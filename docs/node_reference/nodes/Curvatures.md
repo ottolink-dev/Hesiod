@@ -10,23 +10,23 @@ No description available
 ![img](../../images/nodes/Curvatures_settings.png)
 
 
-# Category
+## Category
 
 
 Terrain Features
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |input|VirtualArray|No description|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |mask|VirtualArray|No description|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -44,7 +44,8 @@ Terrain Features
 |Radius|Float|No description|
 |Saturation Ratio|Float|No description|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

@@ -10,31 +10,32 @@ RadialDisplacementToXy interprets the input array dr as a radial displacement an
 ![img](../../images/nodes/RadialDisplacementToXy_settings.png)
 
 
-# Category
+## Category
 
 
 Math
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |dr|VirtualArray|Radial displacement.|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |dx|VirtualArray|Displacement with respect to the domain size (x-direction).|
 |dy|VirtualArray|Displacement with respect to the domain size (y-direction).|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |center|Vec2Float|Reference center within the heightmap.|
 |smoothing|Float|Smoothing parameter to avoid discontinuity at the origin.|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

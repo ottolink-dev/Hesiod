@@ -10,17 +10,17 @@ ExportHeightmap is an operator for exporting a heightmap in various file formats
 ![img](../../images/nodes/ExportHeightmap_settings.png)
 
 
-# Category
+## Category
 
 
 Export
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |input|VirtualArray|Input heightmap.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -30,7 +30,8 @@ Export
 |Force Export Shape|Choice|No description|
 |File Format|Enumeration|Export format. Available values: png (16 bit), png (8 bit), raw (16 bit, Unity).|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

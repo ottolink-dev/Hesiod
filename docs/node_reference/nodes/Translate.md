@@ -10,11 +10,11 @@ Translates an heightmap by a specified amount along the x and y axes. This funct
 ![img](../../images/nodes/Translate_settings.png)
 
 
-# Category
+## Category
 
 
 Operator/Transform
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -22,20 +22,21 @@ Operator/Transform
 |dy|VirtualArray|Displacement with respect to the domain size (y-direction).|
 |input|VirtualArray|Displacement with respect to the domain size (x-direction).|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|Translate heightmap.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |center|Vec2Float|No description|
 |periodic|Bool|If set to `true`, the translation is periodic, meaning that elements that move out of one side of the array reappear on the opposite side.|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

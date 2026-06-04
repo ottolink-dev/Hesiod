@@ -10,29 +10,30 @@ Apply an absolute function to every values.
 ![img](../../images/nodes/Abs_settings.png)
 
 
-# Category
+## Category
 
 
 Math/Base
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |input|VirtualArray|Input heightmap.|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|Output heightmap.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |vshift|Float|Reference value for the zero-equivalent value of the absolute value.|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

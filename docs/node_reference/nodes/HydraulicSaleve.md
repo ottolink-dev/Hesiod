@@ -10,11 +10,11 @@ Simulates hydraulic erosion using a stream power law on an adaptive triangulated
 ![img](../../images/nodes/HydraulicSaleve_settings.png)
 
 
-# Category
+## Category
 
 
 Erosion/Hydraulic
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -23,13 +23,13 @@ Erosion/Hydraulic
 |input|VirtualArray|No description|
 |mask|VirtualArray|No description|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|No description|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -67,7 +67,8 @@ Erosion/Hydraulic
 |Uniform Slope Limiter|Bool|If enabled, uses a single slope limit everywhere. Otherwise, slope varies spatially (center vs borders).|
 |Uplift Rate|Float|Constant terrain elevation increase per iteration. Competes with erosion => defines long-term mountain vs valley balance.|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

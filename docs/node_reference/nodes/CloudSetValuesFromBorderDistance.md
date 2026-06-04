@@ -10,30 +10,31 @@ No description available
 ![img](../../images/nodes/CloudSetValuesFromBorderDistance_settings.png)
 
 
-# Category
+## Category
 
 
 Geometry/Cloud
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |cloud|Cloud|Set of points (x, y) and elevations z.|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |out|Cloud|No description|
 
-# Example
+## Example
 
 
 ![img](../../images/nodes/CloudSetValuesFromBorderDistance_hsd_example.png)
 
-Corresponding Hesiod file: [CloudSetValuesFromBorderDistance.hsd](../../examples/CloudSetValuesFromBorderDistance.hsd). Use [Ctrl+I] in the node editor to import a hsd file within your current project. 
+Corresponding Hesiod file: [CloudSetValuesFromBorderDistance.hsd](../../examples/CloudSetValuesFromBorderDistance.hsd). Use [Ctrl+I] in the node editor to import a hsd file within your current project.
 
-> **Note:** Example files are kept up-to-date with the latest version of [Hesiod](https://github.com/otto-link/Hesiod).
-> If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).
+!!! note
+    Example files are kept up-to-date with the latest version of [Hesiod](https://github.com/otto-link/Hesiod).
+    If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).
 
-  
+

@@ -10,30 +10,31 @@ Fold iteratively applies the absolute value function to the input field, effecti
 ![img](../../images/nodes/Fold_settings.png)
 
 
-# Category
+## Category
 
 
 Filter/Recast
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |input|VirtualArray|Input heightmap.|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|Folded heightmap.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |iterations|Integer|Number of successive foldings.|
 |k|Float|Smoothing parameter of the smooth absolute value.|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

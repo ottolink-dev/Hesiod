@@ -10,24 +10,25 @@ TODO
 ![img](../../images/nodes/ImportTexture_settings.png)
 
 
-# Category
+## Category
 
 
 Export
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |texture|VirtualTexture|TODO|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |flip_y|Bool|No description|
 |fname|Filename|TODO|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

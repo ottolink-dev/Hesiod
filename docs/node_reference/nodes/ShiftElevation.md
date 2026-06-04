@@ -10,29 +10,30 @@ The ShiftElevation operator involves adjusting each data point by adding it with
 ![img](../../images/nodes/ShiftElevation_settings.png)
 
 
-# Category
+## Category
 
 
 Filter/Range
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |input|VirtualArray|Input heightmap.|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|Resulting heightmap after applying the shift.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |shift|Float|Constant by which each elevation values will be added.|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

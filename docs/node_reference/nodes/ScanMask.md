@@ -10,23 +10,23 @@ ScanMask adjusts the brightness and contrast of an input mask.
 ![img](../../images/nodes/ScanMask_settings.png)
 
 
-# Category
+## Category
 
 
 Terrain Features/Mask Operations
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |input|VirtualArray|Input heightmap.|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|Adjusted heightmap.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -34,7 +34,8 @@ Terrain Features/Mask Operations
 |contrast|Float|Contrast adjustment.|
 |remap|Bool|Remap the operator's output to a specified range, defaulting to [0, 1].|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

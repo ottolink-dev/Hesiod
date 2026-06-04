@@ -10,17 +10,17 @@ No description available
 ![img](../../images/nodes/CloudToVectors_settings.png)
 
 
-# Category
+## Category
 
 
 Geometry/Cloud
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |cloud|Cloud|No description|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -28,7 +28,8 @@ Geometry/Cloud
 |x|vector<float>|No description|
 |y|vector<float>|No description|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

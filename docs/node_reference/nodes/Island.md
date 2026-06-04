@@ -10,18 +10,18 @@ This function generates a procedural island heightmap from a binary land mask by
 ![img](../../images/nodes/Island_settings.png)
 
 
-# Category
+## Category
 
 
 Primitive/Geological
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |dr|VirtualArray|Input radial noise. Optional, if not set, the embedded default noise generator is used.|
 |land_mask|VirtualArray|Binary mask defining the island’s footprint; nonzero pixels are considered land. Consider using the node IslandLandMask to generate this mask.|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -29,7 +29,7 @@ Primitive/Geological
 |out|VirtualArray|No description|
 |water_depth|VirtualArray|Output water depth map representing flooded areas.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -62,17 +62,18 @@ Primitive/Geological
 |Water Decay Rate|Float|Water depth decay with the distance to the shoreline.|
 |Water Depth Level|Float|Maximum deth of water.|
 
-# Example
+## Example
 
 
 ![img](../../images/nodes/Island_hsd_example.png)
 
-Corresponding Hesiod file: [Island.hsd](../../examples/Island.hsd). Use [Ctrl+I] in the node editor to import a hsd file within your current project. 
+Corresponding Hesiod file: [Island.hsd](../../examples/Island.hsd). Use [Ctrl+I] in the node editor to import a hsd file within your current project.
 
-> **Note:** Example files are kept up-to-date with the latest version of [Hesiod](https://github.com/otto-link/Hesiod).
-> If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).
+!!! note
+    Example files are kept up-to-date with the latest version of [Hesiod](https://github.com/otto-link/Hesiod).
+    If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).
 
-  
+
 # Screenshots
 
 ![img](../../images/nodes/Island_wiki0.png)

@@ -10,11 +10,11 @@ No description available
 ![img](../../images/nodes/Blend3_settings.png)
 
 
-# Category
+## Category
 
 
 Operator/Blend
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -22,13 +22,13 @@ Operator/Blend
 |input 2|VirtualArray|No description|
 |input 3|VirtualArray|No description|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|No description|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -50,7 +50,8 @@ Operator/Blend
 |swap_inputs_12|Bool|No description|
 |swap_inputs_23|Bool|No description|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

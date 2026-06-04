@@ -10,11 +10,11 @@ TODO
 ![img](../../images/nodes/RecastCanyon_settings.png)
 
 
-# Category
+## Category
 
 
 WIP
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -22,20 +22,21 @@ WIP
 |mask|VirtualArray|Mask defining the filtering intensity (expected in [0, 1]).|
 |noise|VirtualArray|TODO|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|TODO|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |gamma|Float|TODO|
 |vcut|Float|TODO|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

@@ -10,11 +10,11 @@ Applies a terracing effect to the input heightmap by quantizing elevation levels
 ![img](../../images/nodes/Terrace_settings.png)
 
 
-# Category
+## Category
 
 
 WIP/DEPRECATED
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -22,13 +22,13 @@ WIP/DEPRECATED
 |mask|VirtualArray|Mask defining the filtering intensity (expected in [0, 1]).|
 |noise|VirtualArray|Optional noise map used to perturb the position of the terrace levels for a more natural look.|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|Resulting heightmap after applying the terracing effect.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -42,7 +42,8 @@ WIP/DEPRECATED
 |noise_ratio|Float|Ratio between deterministic and noisy placement of terrace levels; 0 uses only uniform levels, 1 uses full noise-based variation.|
 |Seed|Random seed number|Random seed number. The random seed is an offset to the randomized process. A different seed will produce a new result.|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

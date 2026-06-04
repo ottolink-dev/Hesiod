@@ -10,23 +10,23 @@ ValleyWidth identifies valley lines and measure the width of the valley at each 
 ![img](../../images/nodes/ValleyWidth_settings.png)
 
 
-# Category
+## Category
 
 
 Terrain Features/Landform
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |input|VirtualArray|Input heightmap.|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|Valley width heightmap.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -39,7 +39,8 @@ Terrain Features/Landform
 |radius|Float|Filter radius with respect to the domain size.|
 |ridge_select|Bool|If enabled, selects ridges instead of valleys.|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

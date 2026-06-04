@@ -125,7 +125,7 @@ def generate_node_markdown(data):
         md_file.new_paragraph()
 
         # Category
-        md_file.new_header(level=1, title="Category")
+        md_file.new_header(level=2, title="Category", add_table_of_contents='n')
         md_file.new_paragraph(node_info["category"])
 
         # Generate tables for inputs, outputs, and parameters
@@ -134,7 +134,7 @@ def generate_node_markdown(data):
         generate_parameters_table(md_file, node_info)
 
         # Handle node snapshot images
-        md_file.new_header(level=1, title="Example")
+        md_file.new_header(level=2, title="Example", add_table_of_contents='n')
 
         img_fname = node_type + "_hsd_example.png"
 
@@ -145,11 +145,19 @@ def generate_node_markdown(data):
 
             hsd_fname = node_type + '.hsd'
             md_file.new_paragraph(
-                'Corresponding Hesiod file: [{}]({}). Use [Ctrl+I] in the node editor to import a hsd file within your current project. \n\n> **Note:** Example files are kept up-to-date with the latest version of [Hesiod](https://github.com/otto-link/Hesiod).\n> If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).'
+                'Corresponding Hesiod file: [{}]({}). Use [Ctrl+I] in the node '
+                'editor to import a hsd file within your current project.\n\n'
+                '!!! note\n'
+                '    Example files are kept up-to-date with the latest version of '
+                '[Hesiod](https://github.com/otto-link/Hesiod).\n'
+                '    If you find an error, please '
+                '[open an issue](https://github.com/otto-link/Hesiod/issues).'
                 .format(hsd_fname, os.path.join(hsd_relative_path, hsd_fname)))
             md_file.new_paragraph()
         else:
-            md_file.new_paragraph('No example available.')
+            md_file.new_paragraph(
+                '!!! note "No example yet"\n'
+                '    No example available for this node.')
 
         # add manual-input existing content
         fname = os.path.join(NODE_MARKDOWN_PATH, node_type + '.in.md')
@@ -175,7 +183,7 @@ def generate_ports_table(md_file, node_info, port_type, title):
         for entry in entries:
             table.extend(entry)
 
-        md_file.new_header(level=1, title=title)
+        md_file.new_header(level=2, title=title, add_table_of_contents='n')
         md_file.new_table(columns=3,
                           rows=len(entries) + 1,
                           text=table,
@@ -197,7 +205,7 @@ def generate_parameters_table(md_file, node_info):
         for entry in entries:
             table.extend(entry)
 
-        md_file.new_header(level=1, title="Parameters")
+        md_file.new_header(level=2, title="Parameters", add_table_of_contents='n')
         md_file.new_table(columns=3,
                           rows=len(entries) + 1,
                           text=table,

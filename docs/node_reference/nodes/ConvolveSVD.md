@@ -10,24 +10,24 @@ ConvolveSVD performs convolution using a Singular Value Decomposition (SVD) of t
 ![img](../../images/nodes/ConvolveSVD_settings.png)
 
 
-# Category
+## Category
 
 
 Math/Convolution
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |input|VirtualArray|Input heightmap.|
 |kernel|Array|Convolution kernel.|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|Output heightmap.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -41,7 +41,8 @@ Math/Convolution
 |Smoothing Radius|Float|Defines the radius for post-processing smoothing, determining the size of the neighborhood used to average local values and reduce high-frequency detail. A radius of 0 disables smoothing.|
 |rank|Integer|Rank of the singular value decomposition.|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

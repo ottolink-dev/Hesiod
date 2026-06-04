@@ -10,17 +10,17 @@ KernelPrim generates a 'kernel', refering to a small matrix used to apply specif
 ![img](../../images/nodes/KernelPrim_settings.png)
 
 
-# Category
+## Category
 
 
 Primitive/Kernel
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |kernel|Array|Output kernel.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -28,7 +28,8 @@ Primitive/Kernel
 |normalize|Bool|Normalize kernel so that the sum of the elements equals 1, preserving the overall intensity of an heightmap after convolution for instance.|
 |radius|Float|Kernel radius with respect to the domain size.|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

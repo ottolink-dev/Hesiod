@@ -10,17 +10,17 @@ No description available
 ![img](../../images/nodes/KernelDiskSmooth_settings.png)
 
 
-# Category
+## Category
 
 
 Primitive/Kernel
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |kernel|Array|No description|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -28,7 +28,8 @@ Primitive/Kernel
 |r_cutoff|Float|No description|
 |radius|Float|No description|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

@@ -10,11 +10,11 @@ This function computes a Voronoi diagram or derived metric (such as F1, F2, or e
 ![img](../../images/nodes/Vororand_settings.png)
 
 
-# Category
+## Category
 
 
 Primitive/Coherent
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -23,13 +23,13 @@ Primitive/Coherent
 |dy|VirtualArray|Displacement with respect to the domain size (y-direction).|
 |envelope|VirtualArray|Heightmap used as a post-process amplitude multiplier for the generated noise.|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |out|VirtualArray|No description|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -47,7 +47,8 @@ Primitive/Coherent
 |sqrt_output|Bool|No description|
 |variability|Float|No description|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

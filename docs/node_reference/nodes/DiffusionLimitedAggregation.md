@@ -10,17 +10,17 @@ DiffusionLimitedAggregation creates branching, fractal-like structures that rese
 ![img](../../images/nodes/DiffusionLimitedAggregation_settings.png)
 
 
-# Category
+## Category
 
 
 WIP
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|DiffusionLimitedAggregation heightmap.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -37,7 +37,8 @@ WIP
 |seeding_radius|Float|The radius within which initial seeding of particles occurs. This radius defines the area where the first particles are placed.|
 |slope|Float|Slope of the talus added to the DLA pattern.|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

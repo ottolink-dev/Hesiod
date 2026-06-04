@@ -10,23 +10,23 @@ Computes the accumulation curvature of a heightmap, indicating how terrain shape
 ![img](../../images/nodes/AccumulationCurvature_settings.png)
 
 
-# Category
+## Category
 
 
 WIP/DEPRECATED
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |input|VirtualArray|Input heightmap used for accumulation curvature analysis.|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|Computed accumulation curvature of the input heightmap.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -42,7 +42,8 @@ WIP/DEPRECATED
 |radius|Float|Defines the filter radius relative to the domain size, controlling the scale of curvature analysis.|
 |vc_max|Float|No description|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

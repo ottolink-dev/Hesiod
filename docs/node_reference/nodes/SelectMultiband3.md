@@ -10,17 +10,17 @@ TODO
 ![img](../../images/nodes/SelectMultiband3_settings.png)
 
 
-# Category
+## Category
 
 
 Terrain Features/Selector
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |input|VirtualArray|TODO|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -28,7 +28,7 @@ Terrain Features/Selector
 |low|VirtualArray|TODO|
 |mid|VirtualArray|TODO|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -42,7 +42,8 @@ Terrain Features/Selector
 |ratio1|Float|TODO|
 |ratio2|Float|TODO|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

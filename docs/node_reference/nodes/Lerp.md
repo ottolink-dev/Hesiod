@@ -10,11 +10,11 @@ The Lerp operator, short for linear interpolation, is a method for smoothly tran
 ![img](../../images/nodes/Lerp_settings.png)
 
 
-# Category
+## Category
 
 
 Math/Base
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -22,13 +22,13 @@ Math/Base
 |b|VirtualArray|End heightmap (t = 1).|
 |t|VirtualArray|Lerp factor, expected in [0, 1].|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|Interpolated heightmap.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -43,7 +43,8 @@ Math/Base
 |Swap Inputs|Bool|No description|
 |Blend Factor 't' (a -> b)|Float|Lerp factor (in [0, 1]). Used only if the node input 't' is not set.|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

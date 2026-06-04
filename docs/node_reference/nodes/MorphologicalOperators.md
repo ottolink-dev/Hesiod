@@ -10,23 +10,23 @@ No description available
 ![img](../../images/nodes/MorphologicalOperators_settings.png)
 
 
-# Category
+## Category
 
 
 Terrain Features
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |input|VirtualArray|No description|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|No description|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -40,7 +40,8 @@ Terrain Features
 |radius|Float|No description|
 |Saturation Ratio|Float|No description|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

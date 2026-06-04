@@ -10,11 +10,11 @@ TODO
 ![img](../../images/nodes/Preview_settings.png)
 
 
-# Category
+## Category
 
 
 Debug
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -26,7 +26,8 @@ Debug
 |texture|VirtualTexture|TODO|
 |water_depth|VirtualArray|Output water depth map representing flooded areas.|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

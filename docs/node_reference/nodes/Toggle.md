@@ -10,30 +10,31 @@ A routing utility node that outputs either input A or input B based on the value
 ![img](../../images/nodes/Toggle_settings.png)
 
 
-# Category
+## Category
 
 
 Routing
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |input A|VirtualArray|First heightmap input. Used when the 'toggle' parameter is true (A).|
 |input B|VirtualArray|Second heightmap input. Used when the 'toggle' parameter is false (B).|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|Selected input passed through: either input A or input B depending on the 'toggle' state.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |toggle|Bool|Determines which input is routed to the output.|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

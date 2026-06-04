@@ -10,23 +10,23 @@ Generates a soil-weathering selection mask by combining curvature and gradient a
 ![img](../../images/nodes/SelectSoilWeathered_settings.png)
 
 
-# Category
+## Category
 
 
 Terrain Features/ForTexturing
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |input|VirtualArray|Input heightmap used to compute curvature and gradient contributions.|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|Output soil-weathered mask combining curvature and gradient effects.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -44,17 +44,18 @@ Terrain Features/ForTexturing
 |Curvature Radius|Float|Radius used for curvature computation. Larger radii capture broader-scale curvature.|
 |Gradient Radius|Float|Radius used to compute local gradient magnitudes, defining the neighborhood size influencing slope estimation. Larger radii yield smooth gradients.|
 
-# Example
+## Example
 
 
 ![img](../../images/nodes/SelectSoilWeathered_hsd_example.png)
 
-Corresponding Hesiod file: [SelectSoilWeathered.hsd](../../examples/SelectSoilWeathered.hsd). Use [Ctrl+I] in the node editor to import a hsd file within your current project. 
+Corresponding Hesiod file: [SelectSoilWeathered.hsd](../../examples/SelectSoilWeathered.hsd). Use [Ctrl+I] in the node editor to import a hsd file within your current project.
 
-> **Note:** Example files are kept up-to-date with the latest version of [Hesiod](https://github.com/otto-link/Hesiod).
-> If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).
+!!! note
+    Example files are kept up-to-date with the latest version of [Hesiod](https://github.com/otto-link/Hesiod).
+    If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).
 
-  
+
 # Screenshots
 
 ![img](../../images/nodes/SelectSoilWeathered_wiki0.png)

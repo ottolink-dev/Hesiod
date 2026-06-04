@@ -10,23 +10,23 @@ Generates a distance map where each pixel's value represents the shortest distan
 ![img](../../images/nodes/DistanceTransform_settings.png)
 
 
-# Category
+## Category
 
 
 Terrain Features/Morphology
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |input|VirtualArray|Input heightmap used to compute the distance transform.|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |output|VirtualArray|Generated distance map based on the input heightmap.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -42,7 +42,8 @@ Terrain Features/Morphology
 |threshold|Float|Defines the cutoff value for considering non-zero input pixels.|
 |transform_type|Enumeration|Specifies the distance metric used for transformation (e.g., Euclidean, Manhattan, or Chessboard distance).|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

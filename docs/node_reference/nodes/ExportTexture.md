@@ -10,17 +10,17 @@ ExportTexture is a texture to a PNG image file.
 ![img](../../images/nodes/ExportTexture_settings.png)
 
 
-# Category
+## Category
 
 
 Export
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |texture|VirtualTexture|Input texture.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -29,7 +29,8 @@ Export
 |Auto Export on Node Update|Bool|Controls whether the output file is automatically written when the node is updated. Default is false. When set to true, the file is saved automatically on updates. If false, use the 'Force Reload' button on the node to manually trigger the export.|
 |fname|Filename|Export file name.|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

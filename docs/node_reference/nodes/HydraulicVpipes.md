@@ -10,11 +10,11 @@ HydraulicVpipes performs hydraulic erosion using a virtual pipe algorithm, which
 ![img](../../images/nodes/HydraulicVpipes_settings.png)
 
 
-# Category
+## Category
 
 
 WIP
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -23,7 +23,7 @@ WIP
 |mask|VirtualArray|Mask defining the filtering intensity (expected in [0, 1]).|
 |moisture|VirtualArray|Moisture map, influences the amount of water locally deposited.|
 
-# Outputs
+## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -31,7 +31,7 @@ WIP
 |sediment|VirtualArray|No description|
 |water_depth|VirtualArray|Output water depth map representing flooded areas.|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -47,7 +47,8 @@ WIP
 |maintain_water_volume|Bool|No description|
 |water_height|Float|Total water height..|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.

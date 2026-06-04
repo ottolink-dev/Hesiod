@@ -10,17 +10,17 @@ TODO
 ![img](../../images/nodes/ExportAsCubemap_settings.png)
 
 
-# Category
+## Category
 
 
 WIP
-# Inputs
+## Inputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |input|VirtualArray|TODO|
 
-# Parameters
+## Parameters
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
@@ -32,7 +32,8 @@ WIP
 |overlap|Float|TODO|
 |splitted|Bool|TODO|
 
-# Example
+## Example
 
 
-No example available.  
+!!! note "No example yet"
+    No example available for this node.
