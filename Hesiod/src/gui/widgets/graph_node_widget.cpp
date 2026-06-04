@@ -523,7 +523,14 @@ void GraphNodeWidget::on_connection_dropped(const std::string &node_id,
         if (to_type == from_type)
         {
           std::string port_to_id = p_node_to->get_port_label(k);
+
+          // GUI
           this->add_link(node_id, port_id, node_to, port_to_id);
+
+          // model
+          gno->new_link(node_id, port_id, node_to, port_to_id);
+          gno->update(node_to);
+
           break;
         }
       }
