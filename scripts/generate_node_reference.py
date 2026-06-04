@@ -204,33 +204,6 @@ def generate_parameters_table(md_file, node_info):
                           text_align="left")
 
 
-def generate_mkdocs_yml(fname_yml, data):
-    STUB = """site_name: Hesiod Documentation
-
-theme:
-    name: null
-    custom_dir: 'docs/custom-theme/'
-
-nav:
-  - 'Start Here':
-    - 'index.md'
-  - 'Node Reference':
-    - 'node_reference/categories.md'
-###LIST###
-"""
-
-    nlist = ''
-
-    for node_type in data.keys():
-        nlist += "    - 'node_reference/nodes/{}.md'\n".format(node_type)
-        # print(node_type)
-
-    STUB = STUB.replace('###LIST###', nlist)
-
-    with open(fname_yml, 'w') as f:
-        f.write(STUB)
-
-
 def main():
     """Main function to generate markdown documentation."""
     generate_snapshots()  # Generate node snapshots
@@ -239,7 +212,7 @@ def main():
 
     node_data = load_node_data()
 
-    generate_mkdocs_yml('mkdocs.yml', node_data)
+    generate_nav_summary(node_data)
     generate_node_markdown(node_data)
 
     generate_categories_markdown(node_data)
