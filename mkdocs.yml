@@ -42,6 +42,7 @@ nav:
     - 'index.md'
   - 'Core Concepts':
     - 'core_concepts/index.md'
+    - 'core_concepts/heightmaps.md'
   - 'User Manual':
     - 'user_manual/index.md'
     - 'user_manual/node_settings/node_settings_management.md'
