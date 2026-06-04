@@ -17,7 +17,6 @@ theme:
         icon: material/weather-sunny
         name: Switch to dark mode
   features:
-    - navigation.sections
     - navigation.top
     - navigation.indexes
     - search.suggest
@@ -32,7 +31,11 @@ plugins:
 markdown_extensions:
   - admonition
   - pymdownx.details
-  - pymdownx.superfences
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
 
 exclude_docs: |
   *.in.md
