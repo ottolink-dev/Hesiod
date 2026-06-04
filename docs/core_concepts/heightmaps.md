@@ -7,6 +7,13 @@ a height value. Brighter = higher. Almost every node in Hesiod takes one or more
 heightmaps in and produces a heightmap out — that is the data flowing along the
 wires in a graph.
 
+```mermaid
+graph LR
+  A["Noise<br/>(primitive)"] -->|heightmap| B["Erosion"] -->|heightmap| C["Colorize"]
+```
+
+Each wire carries a heightmap from one node to the next.
+
 Heights live in a **normalized** range and the terrain lives in a **unit square**
 (`[0,1] × [0,1]`); real-world scale is applied only at export. This is why the same
 graph behaves the same at any resolution. (Details:

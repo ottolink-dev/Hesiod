@@ -5,6 +5,11 @@ the [node reference](../node_reference/) or the [user manual](../user_manual/ind
 it helps to know a handful of ideas that everything else is built on. Each page
 below is short and links down to the deeper documentation when you want detail.
 
+![The Hesiod interface: a node graph on the left produces the rendered terrain on the right.](../images/demo_screenshot.png)
+
+The node graph on the left is where you work; the terrain on the right is what it
+produces. Everything in these pages is about what flows through that graph.
+
 ## The vocabulary
 
 - **[Heightmaps & virtual arrays](heightmaps.md)** — the data every node reads and

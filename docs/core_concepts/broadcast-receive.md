@@ -9,6 +9,20 @@ into several graphs and need one graph's output available in another.
 A **Broadcast** node publishes the heightmap on its input under a named **tag**.
 A **Receive** node in any graph picks a tag from a list and outputs that heightmap.
 
+```mermaid
+graph LR
+  subgraph GA ["Graph A"]
+    a1["…"] --> BC["Broadcast<br/>tag: mountains"]
+  end
+  subgraph GB ["Graph B"]
+    RC["Receive<br/>tag: mountains"] --> b1["…"]
+  end
+  BC -. "tag: mountains" .-> RC
+```
+
+No wire connects the two graphs — the dashed link is the tag carrying the heightmap
+from Graph A's `Broadcast` to Graph B's `Receive`.
+
 ## How Hesiod handles it
 
 These are the `Broadcast` and `Receive` nodes (in the **Routing** category).

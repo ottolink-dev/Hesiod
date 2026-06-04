@@ -19,6 +19,16 @@ A selector takes a heightmap on its `input` port and returns a heightmap on its
 `output` port, which you feed into another node's mask input. Because a mask is just
 a heightmap, anything that makes a heightmap can be a mask, and masks compose.
 
+```mermaid
+graph LR
+  T["terrain<br/>heightmap"] --> S["SelectSlope"]
+  S -->|mask| F["Filter<br/>(masked)"]
+  T --> F
+```
+
+Here `SelectSlope` turns the terrain into a mask of the steep areas; the filter then
+only acts where the mask is high.
+
 `CombineMask` takes two heightmaps and merges them — intersection (per-cell minimum),
 union (per-cell maximum), or exclusion (the difference) — so you can build up
 "steep *and* high" or "valley *or* river" regions from simpler selectors.

@@ -7,6 +7,25 @@ into **tiles** and compute them piece by piece. **Overlap** is a margin shared
 between neighbouring tiles so that operations needing nearby data (erosion,
 blurring) don't produce visible **seams** where tiles meet.
 
+```text
+ A 2 × 2 tiling splits the map into four pieces:
+
+   +--------+--------+
+   | tile 0 | tile 1 |
+   +--------+--------+
+   | tile 2 | tile 3 |
+   +--------+--------+
+
+ Looking across one seam (a slice through tile 0 → tile 1):
+
+   no overlap:   [   tile 0   ][   tile 1   ]
+                              ^ hard seam — erosion/blur can't see across it
+
+   with overlap: [   tile 0  ····][····  tile 1   ]
+                             ^^^^^^^^^ shared margin, computed by BOTH tiles,
+                                       so the seam blends away
+```
+
 You meet these as parameters in batch/headless mode, for example:
 
 ```text
