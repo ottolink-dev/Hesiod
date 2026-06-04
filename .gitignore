@@ -6,3 +6,4 @@ build/
 launch.json
 .idea/
 .vscode/
+.venv-docs/
