@@ -7,3 +7,5 @@ launch.json
 .idea/
 .vscode/
 .venv-docs/
+__pycache__/
+*.pyc
