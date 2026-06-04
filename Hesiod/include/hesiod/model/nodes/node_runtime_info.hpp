@@ -25,8 +25,8 @@ struct NodeRuntimeInfo
   float                                 update_time;
   size_t                                eval_count = 0;
 
-  virtual void           json_from(nlohmann::json const &json);
-  virtual nlohmann::json json_to() const;
+  void           json_from(nlohmann::json const &json);
+  nlohmann::json json_to() const;
 
   std::chrono::steady_clock::time_point timer_t0;
 };
