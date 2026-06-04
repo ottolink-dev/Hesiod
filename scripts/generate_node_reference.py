@@ -10,6 +10,7 @@ BUILD_PATH = "build"
 HSD_DATA_PATH = "Hesiod/data"
 NODE_SNAPSHOT_PATH = "docs/images/nodes/"
 NODE_MARKDOWN_PATH = "docs/node_reference/nodes"
+NODE_REFERENCE_PATH = "docs/node_reference"
 NODE_EXAMPLES_PATH = "docs/examples"
 
 
@@ -65,6 +66,41 @@ def generate_categories_markdown(data):
                       text=cat_table,
                       text_align="left")
     md_file.create_md_file()
+
+
+def build_nav_summary(data):
+    """Build the literate-nav SUMMARY.md body, grouping nodes by category.
+
+    Returns the markdown text; does not write to disk (kept pure for testing).
+    """
+    # primary -> {secondary_or_None: [node_type, ...]}
+    cat_tree = {}
+    for node_type, node_info in data.items():
+        parts = node_info["category"].split("/")
+        primary = parts[0]
+        secondary = parts[1] if len(parts) > 1 else None
+        cat_tree.setdefault(primary, {}).setdefault(secondary, []).append(node_type)
+
+    lines = ["* [Categories](categories.md)"]
+    for primary in sorted(cat_tree):
+        lines.append("* {}".format(primary))
+        sub = cat_tree[primary]
+        # nodes attached directly to the primary category (no secondary)
+        for node_type in sorted(sub.get(None, [])):
+            lines.append("    * [{0}](nodes/{0}.md)".format(node_type))
+        # then each secondary category as a nested section
+        for secondary in sorted(s for s in sub if s is not None):
+            lines.append("    * {}".format(secondary))
+            for node_type in sorted(sub[secondary]):
+                lines.append("        * [{0}](nodes/{0}.md)".format(node_type))
+    return "\n".join(lines) + "\n"
+
+
+def generate_nav_summary(data):
+    """Write docs/node_reference/SUMMARY.md for mkdocs-literate-nav."""
+    fname = os.path.join(NODE_REFERENCE_PATH, "SUMMARY.md")
+    with open(fname, "w", encoding="utf-8") as f:
+        f.write(build_nav_summary(data))
 
 
 def generate_node_markdown(data):
