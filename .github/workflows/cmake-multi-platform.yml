@@ -9,6 +9,7 @@ on:
       - "docs/**"
   pull_request:
     branches: [ "main", "dev" ]
+    paths-ignore:
       - "mkdocs.yml"
       - ".readthedocs.yaml"
       - "docs/**"
