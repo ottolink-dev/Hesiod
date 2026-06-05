@@ -41,6 +41,9 @@ void apply_global_style(QApplication &app)
 
   app.setStyleSheet(style_sheet.c_str());
 
+  // re-tint icons to match the (now loaded) palette text color
+  ctx.app_settings.icons.apply_text_color(ctx.app_settings.colors.text_primary);
+
   // graph viewer style
   {
     gngui::Style *p_style = gngui::Style::get_style().get();

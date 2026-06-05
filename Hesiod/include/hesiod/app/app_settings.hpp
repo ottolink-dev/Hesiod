@@ -51,7 +51,14 @@ struct AppSettings
     explicit Icons();
     QIcon get(const std::string &name) const;
 
-    std::map<std::string, QIcon> icons_map; // populated in ctor
+    // Re-render icons, swapping the baked foreground color (#F4F4F5) for
+    // `color` so the icons follow the active palette. Call after the user
+    // settings (colors) have been loaded; multi-color icons (accent, black)
+    // are preserved.
+    void apply_text_color(const QColor &color);
+
+    std::map<std::string, QIcon>       icons_map;  // name -> (tinted) icon
+    std::map<std::string, std::string> icon_paths; // name -> absolute .svg path
   } icons;
 
   struct Global

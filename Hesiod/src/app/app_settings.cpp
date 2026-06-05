@@ -1,8 +1,14 @@
 /* Copyright (c) 2025 Otto Link. Distributed under the terms of the GNU General
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
+#include <QBuffer>
+#include <QByteArray>
 #include <QDir>
+#include <QFile>
 #include <QFileInfo>
+#include <QImage>
+#include <QImageReader>
+#include <QPixmap>
 
 #include "highmap/opencl/gpu_opencl.hpp"
 
@@ -35,8 +41,44 @@ AppSettings::Icons::Icons()
   for (const QFileInfo &file_info : file_list)
   {
     QString fileName = file_info.baseName(); // name without extension
-    QIcon   icon(file_info.absoluteFilePath());
-    this->icons_map[fileName.toStdString()] = icon;
+    // keep the source path so icons can be re-tinted once the palette is
+    // loaded (see apply_text_color); load an untinted icon for now
+    this->icon_paths[fileName.toStdString()] = file_info.absoluteFilePath()
+                                                   .toStdString();
+    this->icons_map[fileName.toStdString()] = QIcon(file_info.absoluteFilePath());
+  }
+}
+
+void AppSettings::Icons::apply_text_color(const QColor &color)
+{
+  Logger::log()->trace("AppSettings::Icons::apply_text_color: {}",
+                       color.name().toStdString());
+
+  // The icon SVGs bake in the dark-theme foreground (#F4F4F5). Swap it for
+  // the active text color so the icons follow the palette; other colors
+  // (accent #5E81AC, black, ...) are left untouched.
+  const QByteArray target = color.name().toUtf8();
+
+  for (const auto &[name, path] : this->icon_paths)
+  {
+    QFile file(QString::fromStdString(path));
+    if (!file.open(QIODevice::ReadOnly))
+      continue;
+
+    QByteArray data = file.readAll();
+    file.close();
+
+    data.replace("#F4F4F5", target);
+    data.replace("#f4f4f5", target);
+
+    QBuffer      buffer(&data);
+    QImageReader reader(&buffer, "svg");
+    reader.setScaledSize(QSize(64, 64)); // render crisp, let Qt downscale
+    const QImage image = reader.read();
+    if (image.isNull())
+      continue; // svg image plugin missing or unreadable; keep default icon
+
+    this->icons_map[name] = QIcon(QPixmap::fromImage(image));
   }
 }
 
