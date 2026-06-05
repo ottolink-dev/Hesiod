@@ -3,16 +3,19 @@
 ## The idea
 
 A **heightmap** is a grayscale image of elevation: a 2-D grid where each cell holds
-a height value. Brighter = higher. Almost every node in Hesiod takes one or more
-heightmaps in and produces a heightmap out — that is the data flowing along the
-wires in a graph.
+a height value. Brighter = higher. Most nodes in Hesiod take one or more heightmaps
+in and produce a heightmap out — that is the data flowing along the wires in a graph.
+A few nodes convert to other types: a **colouriser**, for example, takes a heightmap
+in and produces a *texture* (an RGBA image) out.
 
 ```mermaid
 graph LR
-  A["Noise<br/>(primitive)"] -->|heightmap| B["Erosion"] -->|heightmap| C["Colorize"]
+  A["Noise<br/>(primitive)"] -->|heightmap| B["Erosion"] -->|heightmap| C["Colorize"] -->|texture| D["Export"]
 ```
 
-Each wire carries a heightmap from one node to the next.
+Most wires carry a heightmap from one node to the next; the colouriser is where the
+data turns into a texture. Matching wire types matters — you cannot feed a texture
+into a node that expects a heightmap.
 
 Heights live in a **normalized** range and the terrain lives in a **unit square**
 (`[0,1] × [0,1]`); real-world scale is applied only at export. This is why the same
