@@ -3,8 +3,15 @@ name: CMake on multiple platforms
 on:
   push:
     branches: [ "main", "dev"]
+    paths-ignore:
+      - "mkdocs.yml"
+      - ".readthedocs.yaml"
+      - "docs/**"
   pull_request:
     branches: [ "main", "dev" ]
+      - "mkdocs.yml"
+      - ".readthedocs.yaml"
+      - "docs/**"
 
 jobs:
   build:
