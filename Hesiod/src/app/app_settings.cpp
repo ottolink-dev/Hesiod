@@ -41,10 +41,10 @@ AppSettings::Icons::Icons()
   for (const QFileInfo &file_info : file_list)
   {
     QString fileName = file_info.baseName(); // name without extension
+
     // keep the source path so icons can be re-tinted once the palette is
     // loaded (see apply_text_color); load an untinted icon for now
-    this->icon_paths[fileName.toStdString()] = file_info.absoluteFilePath()
-                                                   .toStdString();
+    this->icon_paths[fileName.toStdString()] = file_info.absoluteFilePath().toStdString();
     this->icons_map[fileName.toStdString()] = QIcon(file_info.absoluteFilePath());
   }
 }

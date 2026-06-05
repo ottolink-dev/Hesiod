@@ -79,7 +79,8 @@ def build_nav_summary(data):
         parts = node_info["category"].split("/")
         primary = parts[0]
         secondary = parts[1] if len(parts) > 1 else None
-        cat_tree.setdefault(primary, {}).setdefault(secondary, []).append(node_type)
+        cat_tree.setdefault(primary, {}).setdefault(secondary,
+                                                    []).append(node_type)
 
     lines = ["* [Categories](categories.md)"]
     for primary in sorted(cat_tree):
@@ -125,7 +126,9 @@ def generate_node_markdown(data):
         md_file.new_paragraph()
 
         # Category
-        md_file.new_header(level=2, title="Category", add_table_of_contents='n')
+        md_file.new_header(level=2,
+                           title="Category",
+                           add_table_of_contents='n')
         md_file.new_paragraph(node_info["category"])
 
         # Generate tables for inputs, outputs, and parameters
@@ -151,13 +154,12 @@ def generate_node_markdown(data):
                 '    Example files are kept up-to-date with the latest version of '
                 '[Hesiod](https://github.com/otto-link/Hesiod).\n'
                 '    If you find an error, please '
-                '[open an issue](https://github.com/otto-link/Hesiod/issues).'
-                .format(hsd_fname, os.path.join(hsd_relative_path, hsd_fname)))
+                '[open an issue](https://github.com/otto-link/Hesiod/issues).'.
+                format(hsd_fname, os.path.join(hsd_relative_path, hsd_fname)))
             md_file.new_paragraph()
         else:
-            md_file.new_paragraph(
-                '!!! note "No example yet"\n'
-                '    No example available for this node.')
+            md_file.new_paragraph('!!! note "No example yet"\n'
+                                  '    No example available for this node.')
 
         # add manual-input existing content
         fname = os.path.join(NODE_MARKDOWN_PATH, node_type + '.in.md')
@@ -205,7 +207,9 @@ def generate_parameters_table(md_file, node_info):
         for entry in entries:
             table.extend(entry)
 
-        md_file.new_header(level=2, title="Parameters", add_table_of_contents='n')
+        md_file.new_header(level=2,
+                           title="Parameters",
+                           add_table_of_contents='n')
         md_file.new_table(columns=3,
                           rows=len(entries) + 1,
                           text=table,
