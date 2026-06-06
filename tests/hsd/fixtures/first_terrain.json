@@ -1,0 +1,15 @@
+{
+  "config": {"shape": [1024, 1024], "tiling": [4, 4], "overlap": 0.5},
+  "nodes": [
+    {"id": "noise", "type": "NoiseFbm", "params": {"kw": [4, 4], "seed": 1}},
+    {"id": "ero", "type": "HydraulicParticle"},
+    {"id": "col", "type": "ColorizeGradient"}
+  ],
+  "links": [
+    ["noise.output", "ero.input"],
+    ["ero.output", "col.input"]
+  ],
+  "export": [
+    {"node": "ero", "port": "output", "path": "terrain.png"}
+  ]
+}
