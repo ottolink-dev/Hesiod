@@ -12,7 +12,7 @@
 
 #include "hesiod/app/app_context.hpp"
 #include "hesiod/gui/widgets/app_settings_window.hpp"
-#include "hesiod/gui/widgets/bake_config_dialog.hpp"
+#include "hesiod/gui/widgets/graph_config_widgets/bake_config_dialog.hpp"
 #include "hesiod/gui/widgets/main_window.hpp"
 
 #define HSD_CTX                                                                          \

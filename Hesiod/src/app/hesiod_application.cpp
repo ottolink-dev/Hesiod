@@ -24,9 +24,9 @@
 #include "hesiod/cli/batch_mode.hpp"
 #include "hesiod/gui/project_ui.hpp"
 #include "hesiod/gui/widgets/about_dialog.hpp"
-#include "hesiod/gui/widgets/bake_config_dialog.hpp"
 #include "hesiod/gui/widgets/documentation_popup.hpp"
 #include "hesiod/gui/widgets/example_selector_dialog.hpp"
+#include "hesiod/gui/widgets/graph_config_widgets/bake_config_dialog.hpp"
 #include "hesiod/gui/widgets/graph_manager_widget.hpp"
 #include "hesiod/gui/widgets/graph_tabs_widget.hpp"
 #include "hesiod/gui/widgets/gui_utils.hpp"
@@ -276,7 +276,7 @@ void HesiodApplication::on_export_batch()
 
   bake_settings = dialog.get_bake_settings();
 
-  Logger::log()->trace("MainWindow::on_export_batch: size = {}, nvariants = {}",
+  Logger::log()->trace("HesiodApplication::on_export_batch: size = {}, nvariants = {}",
                        bake_settings.resolution,
                        bake_settings.nvariants);
 
@@ -320,14 +320,15 @@ void HesiodApplication::on_export_batch()
     if (k > 0)
       export_path /= "variants_" + std::to_string(k);
 
-    Logger::log()->info("MainWindow::on_export_batch: export path: {}",
+    Logger::log()->info("HesiodApplication::on_export_batch: export path: {}",
                         export_path.string());
 
     // create it
     if (!fs::exists(export_path))
     {
-      Logger::log()->trace("MainWindow::on_export_batch: creating export repertory {}",
-                           export_path.string());
+      Logger::log()->trace(
+          "HesiodApplication::on_export_batch: creating export repertory {}",
+          export_path.string());
       fs::create_directories(export_path);
     }
 
@@ -362,13 +363,21 @@ void HesiodApplication::on_export_batch()
         bake_config.cm_gpu.mode = hmap::ForEachMode::VA_DISTRIBUTED;
       }
 
+      // define bake shape, keep the aspect ratio
+      float      scale = static_cast<float>(bake_settings.resolution) / p_config->shape.x;
+      glm::ivec2 bake_shape = {static_cast<int>(scale * p_config->shape.x),
+                               static_cast<int>(scale * p_config->shape.y)};
+
+      Logger::log()->trace("HesiodApplication::on_export_batch: bake_shape: ({}, {})",
+                           bake_shape.x,
+                           bake_shape.y);
+
       // run batch node
-      hesiod::cli::run_batch_mode(
-          fname.string(),
-          glm::ivec2(bake_settings.resolution, bake_settings.resolution),
-          bake_config.tiling,
-          bake_config.overlap,
-          &bake_config);
+      hesiod::cli::run_batch_mode(fname.string(),
+                                  bake_shape,
+                                  bake_config.tiling,
+                                  bake_config.overlap,
+                                  &bake_config);
     }
   }
 

@@ -97,7 +97,10 @@ void GraphConfig::update_parameters()
   int h = this->shape.y / this->tiling.y;
 
   this->tile_shape = {w, h};
-  this->halo = std::max(int(this->overlap * w), int(this->overlap * h));
+
+  // take the min to prevent having an halo larger than the actual
+  // tile shape
+  this->halo = std::min(int(this->overlap * w), int(this->overlap * h));
 
   this->log_debug();
 }

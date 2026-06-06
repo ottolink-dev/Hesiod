@@ -4,7 +4,7 @@
 #include <filesystem>
 #include <random>
 
-#include "hesiod/gui/widgets/bake_config_dialog.hpp"
+#include "hesiod/gui/widgets/graph_config_widgets/bake_config_dialog.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/utils.hpp"
 

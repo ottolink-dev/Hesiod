@@ -32,8 +32,8 @@ DataPreview::DataPreview(std::weak_ptr<BaseNode> model, QWidget *parent)
                        p_model->get_id());
 
   AppContext &ctx = HSD_CTX;
-  const auto  shape = glm::ivec2(ctx.app_settings.node_editor.preview_w,
-                                ctx.app_settings.node_editor.preview_h);
+  auto        shape = glm::ivec2(ctx.app_settings.node_editor.preview_w,
+                          ctx.app_settings.node_editor.preview_h);
 
   this->setFixedSize(QSize(shape.x, shape.y));
   this->setAlignment(Qt::AlignLeft | Qt::AlignTop);
@@ -134,8 +134,16 @@ void DataPreview::update_preview()
   const std::string data_type = p_model->get_data_type(preview_port_index);
 
   AppContext &ctx = HSD_CTX;
-  const auto  shape = glm::ivec2(ctx.app_settings.node_editor.preview_w,
-                                ctx.app_settings.node_editor.preview_h);
+  auto        shape = glm::ivec2(ctx.app_settings.node_editor.preview_w,
+                          ctx.app_settings.node_editor.preview_h);
+
+  // adjust aspect ratio
+  const glm::ivec2 &data_shape = p_model->cfg().shape;
+
+  float aspect_ratio = static_cast<float>(data_shape.x) /
+                       static_cast<float>(data_shape.y);
+
+  shape.y = static_cast<int>(shape.x / aspect_ratio);
 
   Logger::log()->trace("DataPreview::update_preview, data_type: {}", data_type);
 

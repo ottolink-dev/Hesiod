@@ -1,7 +1,7 @@
 /* Copyright (c) 2023 Otto Link. Distributed under the terms of the GNU General
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
-#include "hesiod/gui/widgets/bake_config_dialog.hpp"
+#include "hesiod/gui/widgets/graph_config_widgets/bake_config_dialog.hpp"
 
 namespace hesiod
 {
@@ -31,7 +31,7 @@ BakeConfigDialog::BakeConfigDialog(int               max_size,
   // Fill power-of-two options up to max_size
   for (int size = 2; size <= max_size; size *= 2)
   {
-    this->resolution_combo->addItem(QString("%1 x %1").arg(size), size);
+    this->resolution_combo->addItem(QString("%1").arg(size), size);
   }
   this->resolution_combo->setCurrentIndex(
       this->resolution_combo->findData(initial_value.resolution));
@@ -60,7 +60,7 @@ BakeConfigDialog::BakeConfigDialog(int               max_size,
 
   // Layout
   auto *form_layout = new QFormLayout;
-  form_layout->addRow("Resolution:", this->resolution_combo);
+  form_layout->addRow("Resolution (x):", this->resolution_combo);
 
   auto *slider_layout = new QHBoxLayout;
   slider_layout->addWidget(new QLabel("Variants:"));

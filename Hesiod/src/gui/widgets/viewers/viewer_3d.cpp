@@ -286,6 +286,8 @@ void Viewer3D::update_renderer()
             {
               bool add_skirt = HSD_CTX.app_settings.viewer.add_heighmap_skirt;
 
+              Logger::log()->debug("SHAPE: {} {}", h.shape.x, h.shape.y);
+
               this->p_renderer->set_heightmap_geometry(arr.vector,
                                                        h.shape.x,
                                                        h.shape.y,

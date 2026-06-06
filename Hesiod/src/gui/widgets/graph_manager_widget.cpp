@@ -8,8 +8,8 @@
 
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/widgets/coord_frame_widget.hpp"
-#include "hesiod/gui/widgets/flatten_config_dialog.hpp"
-#include "hesiod/gui/widgets/graph_config_dialog.hpp"
+#include "hesiod/gui/widgets/graph_config_widgets/flatten_config_dialog.hpp"
+#include "hesiod/gui/widgets/graph_config_widgets/graph_config_dialog.hpp"
 #include "hesiod/gui/widgets/graph_manager_widget.hpp"
 #include "hesiod/gui/widgets/string_input_dialog.hpp"
 #include "hesiod/logger.hpp"
