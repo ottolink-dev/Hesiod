@@ -23,9 +23,9 @@ bin/./hesiod --batch graph_made_with_the_gui.hsd --shape=1024,1024 --tiling=1,1 
 
 ## For users
 
-A stub of user manual in under construction [here](user_manual/index.md).
+A stub of a user manual is under construction [here](user_manual/index.md).
 
-## For developpers
+## For developers
 
 As an open-source tool, hosted on [github.com/otto-link/Hesiod](https://github.com/otto-link/Hesiod), Hesiod greatly encourages contributions. Developers and enthusiasts are welcome to improve existing features, add new capabilities, or fix bugs, enhancing the tool's functionality and broadening its application scope.
 
