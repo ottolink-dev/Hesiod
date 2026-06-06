@@ -43,17 +43,22 @@ class Catalog:
     def has_node(self, node_type):
         return node_type in self._data
 
+    def _require(self, node_type):
+        if node_type not in self._data:
+            raise KeyError(f"unknown node type {node_type!r}")
+        return self._data[node_type]
+
     def category(self, node_type):
-        return self._data[node_type].get("category", "")
+        return self._require(node_type).get("category", "")
 
     def description(self, node_type):
-        return self._data[node_type].get("description", "")
+        return self._require(node_type).get("description", "")
 
     def params(self, node_type):
-        return self._data[node_type].get("parameters") or {}
+        return self._require(node_type).get("parameters") or {}
 
     def ports(self, node_type):
-        return self._data[node_type].get("ports") or {}
+        return self._require(node_type).get("ports") or {}
 
     def port(self, node_type, port_id):
         return self.ports(node_type).get(port_id)
