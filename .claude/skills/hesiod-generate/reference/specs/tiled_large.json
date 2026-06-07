@@ -1,0 +1,10 @@
+{
+  "config": {"shape": [4096, 4096], "tiling": [4, 4], "overlap": 0.25},
+  "nodes": [
+    {"id": "noise", "type": "NoiseFbm", "params": {"kw": [8, 8], "seed": 42}},
+    {"id": "ero", "type": "HydraulicParticle"},
+    {"id": "exp", "type": "ExportHeightmap"}
+  ],
+  "links": [["noise.output", "ero.input"], ["ero.output", "exp.input"]],
+  "export": [{"node": "ero", "port": "output", "path": "large.png"}]
+}
