@@ -1,3 +1,6 @@
+import json
+
+
 def _err(level, problem, suggestion="", node_id=None, link=None):
     return {"level": level, "node_id": node_id, "link": link,
             "problem": problem, "suggestion": suggestion}
@@ -60,3 +63,37 @@ def validate_spec(spec, catalog):
             errors.append(_err("L2", f"export target '{n}.{p}' is not an output port"))
 
     return errors
+
+
+def _model_view(hsd):
+    g = hsd["graph_manager"]["graph_nodes"]["graph"]
+    nodes = {n["id"]: n["label"] for n in g["nodes"]}
+    links = sorted((l["node_id_from"], l["port_id_from"],
+                    l["node_id_to"], l["port_id_to"]) for l in g["links"])
+    return nodes, links
+
+
+def _ui_view(hsd):
+    g = hsd["graph_tabs_widget"]["graph_node_widgets"]["graph"]
+    nodes = {n["id"]: n["caption"] for n in g["nodes"]}
+    links = sorted((l["node_out_id"], l["port_out_id"],
+                    l["node_in_id"], l["port_in_id"]) for l in g["links"])
+    return nodes, links
+
+
+def consistency_errors(hsd):
+    """Pure-stdlib model<->UI consistency check (replaces deepdiff)."""
+    errors = []
+    mn, ml = _model_view(hsd)
+    un, ul = _ui_view(hsd)
+    if mn != un:
+        errors.append(f"node mismatch between model and UI: model={mn} ui={un}")
+    if ml != ul:
+        errors.append(f"link mismatch between model and UI: model={ml} ui={ul}")
+    return errors
+
+
+def lint_file(path):
+    with open(path) as f:
+        hsd = json.load(f)
+    return {"consistency": consistency_errors(hsd), "validation": []}
