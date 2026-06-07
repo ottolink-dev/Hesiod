@@ -60,6 +60,7 @@ nav:
     - 'guides/texturing.md'
     - 'guides/export-formats.md'
     - 'guides/batch-headless.md'
+    - 'guides/llm-procedural-generation.md'
   - 'User Manual':
     - 'user_manual/index.md'
     - 'user_manual/node_settings/node_settings_management.md'
