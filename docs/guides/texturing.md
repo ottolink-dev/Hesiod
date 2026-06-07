@@ -12,14 +12,13 @@ downstream lives in texture space.
 1. From a heightmap, build **soil/material masks** with the for-texturing
    selectors: **`SelectSoilFlow`**, **`SelectSoilRocks`**,
    **`SelectSoilWeathered`** (see [Masks & Selectors](masks-selectors.md)).
-2. **Colorize** each layer:
-   - **`ColorizeGradient`** — map elevation/mask to a colour gradient.
-   - **`ColorizeSolid`** — a flat colour layer.
-
-   These take a `VirtualArray` in and output a `texture` (`VirtualTexture`).
+2. **Colorize** each layer — these take a `VirtualArray` in and output a
+   `texture` (`VirtualTexture`):
+    - **`ColorizeGradient`** — map elevation/mask to a colour gradient.
+    - **`ColorizeSolid`** — a flat colour layer.
 3. **Blend** the layers:
-   - **`MixTexture`** — combine colour layers (often weighted by a soil mask).
-   - **`MixNormalMap`** — combine normal-map detail.
+    - **`MixTexture`** — combine colour layers (often weighted by a soil mask).
+    - **`MixNormalMap`** — combine normal-map detail.
 4. **Adjust**: **`ColorAdjust`** (levels/balance), **`SetAlpha`** (transparency),
    **`TextureSplitChannels`** / **`TextureSelectColor`** for channel work.
 5. **Export** with **`ExportTexture`** (or `ExportNormalMap`). See
