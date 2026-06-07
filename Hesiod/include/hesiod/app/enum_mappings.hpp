@@ -81,6 +81,12 @@ static struct EnumMappings
       {"Manhattan", hmap::DistanceFunction::MANHATTAN},
   };
 
+  const std::map<std::string, int> distance_function_axis_map = {
+      {"X and Y", hmap::DistanceFunctionAxis::DFA_XY},
+      {"X only", hmap::DistanceFunctionAxis::DFA_X},
+      {"Y only", hmap::DistanceFunctionAxis::DFA_Y},
+  };
+
   const std::map<std::string, int> distance_transform_type_map = {
       {"Exact", hmap::DistanceTransformType::DT_EXACT},
       {"Approx. (fast)", hmap::DistanceTransformType::DT_APPROX},
