@@ -1,0 +1,47 @@
+import os, sys
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "..", "scripts"))
+
+from hsd.builder import Graph
+
+
+def _consistent(hsd):
+    """model nodes/links must match UI nodes/links (ids + types)."""
+    g = hsd["graph_manager"]["graph_nodes"]["graph"]
+    ui = hsd["graph_tabs_widget"]["graph_node_widgets"]["graph"]
+    model_nodes = {n["id"]: n["label"] for n in g["nodes"]}
+    ui_nodes = {n["id"]: n["caption"] for n in ui["nodes"]}
+    assert model_nodes == ui_nodes
+    model_links = {(l["node_id_from"], l["port_id_from"],
+                    l["node_id_to"], l["port_id_to"]) for l in g["links"]}
+    ui_links = {(l["node_out_id"], l["port_out_id"],
+                 l["node_in_id"], l["port_in_id"]) for l in ui["links"]}
+    assert model_links == ui_links
+
+
+def test_build_minimal_graph():
+    g = Graph(config={"shape": [512, 512], "tiling": [1, 1], "overlap": 0.0})
+    g.add_node("noise", "NoiseFbm", {"kw": {"label": "kw", "type": 17,
+               "type_string": "Wavenumber", "value": [4, 4]}})
+    g.add_node("exp", "ExportHeightmap", {})
+    g.link("noise", "output", "exp", "input")
+    g.set_export("noise", "output", "out.png")
+    hsd = g.to_hsd()
+
+    gm = hsd["graph_manager"]["graph_nodes"]["graph"]
+    assert len(gm["nodes"]) == 2
+    assert {n["label"] for n in gm["nodes"]} == {"NoiseFbm", "ExportHeightmap"}
+    assert gm["model_config"]["shape.x"] == 512
+    # export wired to the model id of the 'noise' node
+    noise_id = next(n["id"] for n in gm["nodes"] if n["label"] == "NoiseFbm")
+    ep = hsd["graph_manager"]["export_param"]
+    assert ep["ids"] == [["graph", noise_id, "output"]]
+    assert ep["export_path"] == "out.png"
+    _consistent(hsd)
+
+
+def test_id_count_is_next_free():
+    g = Graph()
+    g.add_node("a", "Abs", {})
+    g.add_node("b", "Abs", {})
+    hsd = g.to_hsd()
+    assert hsd["graph_manager"]["graph_nodes"]["graph"]["id_count"] == 3
