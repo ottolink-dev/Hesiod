@@ -1,0 +1,62 @@
+def _err(level, problem, suggestion="", node_id=None, link=None):
+    return {"level": level, "node_id": node_id, "link": link,
+            "problem": problem, "suggestion": suggestion}
+
+
+def validate_spec(spec, catalog):
+    """Return a list of structured error dicts; empty list means valid."""
+    errors = []
+    ids = {}
+
+    # L1: node types and params
+    for node in spec.nodes:
+        if node.id in ids:
+            errors.append(_err("L1", f"duplicate node id '{node.id}'", node_id=node.id))
+        ids[node.id] = node.type
+        if not catalog.has_node(node.type):
+            errors.append(_err("L1", f"unknown node type '{node.type}'",
+                               "run `hsd nodes --search <term>` to find a valid type",
+                               node_id=node.id))
+            continue
+        params_meta = catalog.params(node.type)
+        for pname in node.params:
+            if pname not in params_meta:
+                errors.append(_err(
+                    "L1", f"unknown param '{pname}' on node type '{node.type}'",
+                    f"run `hsd nodes --show {node.type}` to list its params",
+                    node_id=node.id))
+
+    # L2: links resolve + datatype compatibility
+    for a, ap, b, bp in spec.links:
+        link = (a, ap, b, bp)
+        if a not in ids or b not in ids:
+            errors.append(_err("L2", f"link references unknown node: {a} or {b}",
+                               link=link))
+            continue
+        out = catalog.port(ids[a], ap) if catalog.has_node(ids[a]) else None
+        inp = catalog.port(ids[b], bp) if catalog.has_node(ids[b]) else None
+        if out is None or out.get("type") != "output":
+            errors.append(_err("L2", f"'{a}.{ap}' is not an output port", link=link))
+            continue
+        if inp is None or inp.get("type") != "input":
+            errors.append(_err("L2", f"'{b}.{bp}' is not an input port", link=link))
+            continue
+        if out["data_type"] != inp["data_type"]:
+            errors.append(_err(
+                "L2",
+                f"incompatible data type: {a}.{ap} is {out['data_type']} but "
+                f"{b}.{bp} is {inp['data_type']}",
+                "Colorize* converts VirtualArray->VirtualTexture; insert one if "
+                "bridging heightmap to colour",
+                link=link))
+
+    # L2: export targets resolve to a real output port
+    for n, p, _path in spec.exports:
+        if n not in ids:
+            errors.append(_err("L2", f"export references unknown node '{n}'"))
+            continue
+        port = catalog.port(ids[n], p) if catalog.has_node(ids[n]) else None
+        if port is None or port.get("type") != "output":
+            errors.append(_err("L2", f"export target '{n}.{p}' is not an output port"))
+
+    return errors

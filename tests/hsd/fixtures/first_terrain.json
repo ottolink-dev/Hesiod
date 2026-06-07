@@ -7,7 +7,7 @@
   ],
   "links": [
     ["noise.output", "ero.input"],
-    ["ero.output", "col.input"]
+    ["ero.output", "col.level"]
   ],
   "export": [
     {"node": "ero", "port": "output", "path": "terrain.png"}
