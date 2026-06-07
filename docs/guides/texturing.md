@@ -25,6 +25,9 @@ downstream lives in texture space.
 5. **Export** with **`ExportTexture`** (or `ExportNormalMap`). See
    [Export Formats](export-formats.md).
 
+![The colorize pipeline in Hesiod: NoiseFbm feeds ColorizeGradient, whose texture output runs to ExportTexture. The 3D viewport shows the colourised terrain and the ExportTexture settings panel is open on the right.](../images/guides/texturing-ui.png)
+*The minimal `NoiseFbm → ColorizeGradient → ExportTexture` graph from [`texturing-result.hsd`](graphs/texturing-result.hsd), open in Hesiod.*
+
 ## Why colour can't go to ExportHeightmap
 
 `ColorizeGradient`/`ColorizeSolid` convert `VirtualArray → VirtualTexture`. A
