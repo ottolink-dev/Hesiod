@@ -1,4 +1,4 @@
-import os, sys, json
+import os, sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "..", "scripts"))
 
 from hsd.spec import Spec, SpecError
@@ -29,5 +29,23 @@ def test_missing_node_id_raises():
     try:
         Spec.from_dict({"nodes": [{"type": "X"}]})
         assert False, "expected SpecError"
-    except SpecError:
-        pass
+    except SpecError as e:
+        assert "id" in str(e)
+
+
+def test_link_not_a_pair_raises():
+    try:
+        Spec.from_dict({"nodes": [{"id": "a", "type": "X"}],
+                        "links": [["a.out"]]})
+        assert False, "expected SpecError"
+    except SpecError as e:
+        assert "pair" in str(e).lower()
+
+
+def test_export_missing_key_raises():
+    try:
+        Spec.from_dict({"nodes": [{"id": "a", "type": "X"}],
+                        "export": [{"node": "a", "port": "output"}]})
+        assert False, "expected SpecError"
+    except SpecError as e:
+        assert "export" in str(e).lower()

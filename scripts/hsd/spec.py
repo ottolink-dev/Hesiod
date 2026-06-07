@@ -37,15 +37,21 @@ class Spec:
                 raise SpecError(f"node '{raw.get('id')}' is missing 'type'")
             nodes.append(NodeSpec(raw["id"], raw["type"], raw.get("params", {}) or {}))
 
-        links = [
-            (*_endpoint(a), *_endpoint(b))
-            for a, b in (d.get("links", []) or [])
-        ]
+        links = []
+        for entry in (d.get("links", []) or []):
+            if not isinstance(entry, (list, tuple)) or len(entry) != 2:
+                raise SpecError(
+                    f"link must be a [from, to] pair, got: {entry!r}")
+            a, b = entry
+            links.append((*_endpoint(a), *_endpoint(b)))
 
-        exports = [
-            (e["node"], e["port"], e["path"])
-            for e in (d.get("export", []) or [])
-        ]
+        exports = []
+        for e in (d.get("export", []) or []):
+            missing = [k for k in ("node", "port", "path") if k not in e]
+            if missing:
+                raise SpecError(
+                    f"export entry missing {missing}: {e!r}")
+            exports.append((e["node"], e["port"], e["path"]))
 
         return cls(config, nodes, links, exports)
 
