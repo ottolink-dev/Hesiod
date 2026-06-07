@@ -31,7 +31,7 @@ Each picks out a feature as a mask (`Terrain Features/Selector`):
 
 ## Applying the mask
 
-![A SmoothCpulse filter masked by SelectSlope: NoiseFbm feeds both the filter input and the selector, and SelectSlope's slope mask drives the filter's mask port so smoothing is confined to the steep faces.](../images/guides/masks-applied.png)
+![The Hesiod node graph for masked smoothing: NoiseFbm feeds both the SmoothCpulse filter and a SelectSlope selector, and SelectSlope's output is wired into SmoothCpulse's mask input port. The 3D viewport shows the smoothed result and the SmoothCpulse settings panel is open on the right.](../images/guides/masks-applied.png)
 *`NoiseFbm → SmoothCpulse`, with `SelectSlope → SmoothCpulse.mask`. Source graph: [`masks-applied.hsd`](graphs/masks-applied.hsd) — and [`masks-unmasked.hsd`](graphs/masks-unmasked.hsd) for the no-mask comparison.*
 
 Feed the mask into a node's mask input port — for example, confine
