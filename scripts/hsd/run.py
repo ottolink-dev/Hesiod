@@ -12,8 +12,10 @@ class RunError(Exception):
 
 def find_binary():
     env = os.environ.get("HESIOD_BIN")
-    if env and Path(env).exists():
-        return env
+    if env:
+        if Path(env).exists():
+            return env
+        raise RunError(f"HESIOD_BIN is set to {env!r} but that path does not exist")
     if _DEFAULT_BIN.exists():
         return str(_DEFAULT_BIN)
     raise RunError(

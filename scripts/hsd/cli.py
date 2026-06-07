@@ -95,8 +95,12 @@ def _cmd_nodes(args, cat):
 
 
 def _pair(s):
-    a, b = s.split(",")
-    return [int(a), int(b)]
+    try:
+        a, b = s.split(",")
+        return [int(a), int(b)]
+    except ValueError:
+        raise argparse.ArgumentTypeError(
+            f"expected 'W,H' (e.g. '512,512'), got: {s!r}")
 
 
 def main(argv=None):

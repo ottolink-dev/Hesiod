@@ -59,6 +59,9 @@ class Graph:
             "links": links,
             "model_config": self._model_config(),
             "nodes": nodes,
+            "origin": [0.0, 0.0],
+            "rotation_angle": 0.0,
+            "size": [1.0, 1.0],
         }
 
     def _ui(self):
@@ -100,6 +103,8 @@ class Graph:
             "graph_manager": {
                 "export_param": self._export_param(),
                 "graph_nodes": {"graph": self._model()},
+                "graph_order": ["graph"],
+                "id_count": 0,
             },
             "graph_manager_widget": {"frames": {"graph": {"current_bg_tag": "NONE"}}},
             "graph_tabs_widget": {"graph_node_widgets": {"graph": self._ui()}},

@@ -1,7 +1,7 @@
 import os, sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "..", "scripts"))
 
-from hsd.run import find_binary, build_batch_command
+from hsd.run import find_binary, build_batch_command, RunError
 
 
 def test_find_binary_prefers_env(monkeypatch, tmp_path):
@@ -10,6 +10,18 @@ def test_find_binary_prefers_env(monkeypatch, tmp_path):
     fake.chmod(0o755)
     monkeypatch.setenv("HESIOD_BIN", str(fake))
     assert find_binary() == str(fake)
+
+
+def test_find_binary_env_missing_path_is_explicit(monkeypatch, tmp_path):
+    # HESIOD_BIN set to a nonexistent path must raise an explicit error, not
+    # silently fall back to the default and emit a misleading "set HESIOD_BIN"
+    missing = tmp_path / "nope" / "hesiod"
+    monkeypatch.setenv("HESIOD_BIN", str(missing))
+    try:
+        find_binary()
+        assert False, "expected RunError"
+    except RunError as e:
+        assert "HESIOD_BIN" in str(e)
 
 
 def test_build_batch_command_includes_overrides():

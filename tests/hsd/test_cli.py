@@ -22,6 +22,14 @@ def test_build_reports_validation_errors(tmp_path):
     assert rc != 0
 
 
+def test_make_builds_without_run_flag(tmp_path):
+    # make without --run should behave like build (no binary needed)
+    out = tmp_path / "g.hsd"
+    rc = main(["make", FIX, "-o", str(out)])
+    assert rc == 0
+    assert out.exists()
+
+
 def test_nodes_show(capsys):
     rc = main(["nodes", "--show", "NoiseFbm"])
     out = capsys.readouterr().out

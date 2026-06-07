@@ -39,6 +39,19 @@ def test_incompatible_link_datatype():
                for e in errs)
 
 
+def test_unknown_type_link_no_secondary_error():
+    # a link off an unknown-type node should only report the L1 unknown-type,
+    # not a misleading secondary L2 "not an output port"
+    spec = Spec.from_dict({
+        "nodes": [{"id": "x", "type": "Nope"},
+                  {"id": "e", "type": "ExportHeightmap"}],
+        "links": [["x.output", "e.input"]],
+    })
+    errs = validate_spec(spec, CAT)
+    assert any(e["level"] == "L1" for e in errs)
+    assert not any(e["level"] == "L2" and "output port" in e["problem"] for e in errs)
+
+
 def test_dangling_export():
     spec = Spec.from_dict({"nodes": [{"id": "n", "type": "NoiseFbm"}],
                            "export": [{"node": "missing", "port": "output",

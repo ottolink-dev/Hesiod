@@ -30,11 +30,16 @@ def validate_spec(spec, catalog):
                     node_id=node.id))
 
     # L2: links resolve + datatype compatibility
+    known = {nid for nid, ntype in ids.items() if catalog.has_node(ntype)}
     for a, ap, b, bp in spec.links:
         link = (a, ap, b, bp)
         if a not in ids or b not in ids:
             errors.append(_err("L2", f"link references unknown node: {a} or {b}",
                                link=link))
+            continue
+        # an unknown node type already produced an L1 error; don't pile on a
+        # misleading secondary "not an output/input port" for the same cause
+        if a not in known or b not in known:
             continue
         out = catalog.port(ids[a], ap) if catalog.has_node(ids[a]) else None
         inp = catalog.port(ids[b], bp) if catalog.has_node(ids[b]) else None
@@ -57,6 +62,8 @@ def validate_spec(spec, catalog):
     for n, p, _path in spec.exports:
         if n not in ids:
             errors.append(_err("L2", f"export references unknown node '{n}'"))
+            continue
+        if n not in known:        # unknown node type already reported at L1
             continue
         port = catalog.port(ids[n], p) if catalog.has_node(ids[n]) else None
         if port is None or port.get("type") != "output":
