@@ -4,6 +4,9 @@ Texturing turns a scalar heightmap (`VirtualArray`) into colour output
 (`VirtualTexture`). The conversion happens at the colorize step, and everything
 downstream lives in texture space.
 
+![A heightmap colourised through ColorizeGradient: deep-water basins, sandy coasts, green lowlands, brown hills and snow on the peaks.](../images/guides/texturing-result.png)
+*`NoiseFbm → ColorizeGradient → ExportTexture`. Source graph: [`texturing-result.hsd`](graphs/texturing-result.hsd).*
+
 ## The pipeline
 
 1. From a heightmap, build **soil/material masks** with the for-texturing

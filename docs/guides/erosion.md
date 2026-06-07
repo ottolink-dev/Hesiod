@@ -3,6 +3,9 @@
 Hesiod ships two families of erosion. Reach for them after you have a base
 heightmap (see [Getting Started](../getting_started/index.md)).
 
+![A raw NoiseFbm heightmap before any erosion: soft, rounded lumps with no drainage structure.](../images/guides/erosion-before.png)
+*The base terrain these recipes start from. Source graph: [`erosion-before.hsd`](graphs/erosion-before.hsd).*
+
 ## Thermal erosion
 
 Material slumps downhill once a slope exceeds the *angle of repose* (talus
@@ -15,6 +18,9 @@ noise read as weathered rock.
 - **`ValleyFill`**, **`DepressionFilling`**, **`DepositionFillHoles`** —
   deposition-side cleanup (fill pits and basins).
 
+![The base terrain after Thermal erosion: peaks are softened and debris has gathered as scree at the slope bases.](../images/guides/erosion-thermal.png)
+*`NoiseFbm → Thermal`. Source graph: [`erosion-thermal.hsd`](graphs/erosion-thermal.hsd).*
+
 ## Hydraulic erosion
 
 Simulated water flows downhill, picking up and depositing sediment: it carves
@@ -24,6 +30,9 @@ drainage channels and river valleys and lays down alluvial deposits.
 - **`HydraulicStreamLog`** — stream-power channel carving.
 - **`HydraulicSaleve`**, **`HydraulicProcedural`** — alternative hydraulic models.
 - **`Rifts`** — incised rift/channel features.
+
+![The same base terrain after HydraulicParticle erosion: water has carved dendritic drainage channels and valleys.](../images/guides/erosion-hydraulic.png)
+*`NoiseFbm → HydraulicParticle`. Source graph: [`erosion-hydraulic.hsd`](graphs/erosion-hydraulic.hsd).*
 
 ## Choosing and combining
 
