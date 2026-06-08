@@ -73,7 +73,16 @@ Both env vars must be set; without `HESIOD_BIN` the runner raises an error, and 
    - `out.png` — 16-bit grayscale heightmap
    - `out_preview.png` — TERRAIN colourmap + hillshade
 
-   Open `out_preview.png` to judge the result visually. **Outputs are only written if the spec contains an `export` entry** — a spec without `export` builds and runs but produces no files.
+   Open `out_preview.png` for a visual gut-check, but **verify numerically — the colourmap misleads** (a flat max plateau can look thin, value ranges are remapped). Use the built-in inspector on the raw 16-bit `out.png`:
+
+   ```bash
+   PYTHONPATH=scripts python3 -m hsd inspect out.png              # dims, bitdepth, min/max/mean
+   PYTHONPATH=scripts python3 -m hsd inspect out.png --edges      # border means + left/right wrap-seam match
+   PYTHONPATH=scripts python3 -m hsd inspect out.png --landfrac 0.5   # fraction of pixels above a threshold
+   PYTHONPATH=scripts python3 -m hsd inspect out.png --profile col --profile-n 16  # column-mean profile
+   ```
+
+   This catches what the preview hides — e.g. confirming borders are 0, caps are symmetric, or a wrap seam matches. **Outputs are only written if the spec contains an `export` entry** — a spec without `export` builds and runs but produces no files.
 
 7. **Iterate.** Adjust params, re-validate, re-run. For large shapes or tiling sweeps, work at 512 × 512 first, then scale up.
 
