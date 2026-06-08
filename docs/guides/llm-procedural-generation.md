@@ -71,16 +71,20 @@ See the seed-sweep examples in the skill's `reference/recipes.md` and in
 ### Scaling resolution
 
 Work at a low resolution (256 × 256 or 512 × 512) while iterating on the graph, then
-scale up without touching the spec. The `--shape`, `--tiling`, and `--overlap` flags on
-`hsd make` and `hsd run` override the spec's `config` block at render time:
+scale up. The `--shape`, `--tiling`, and `--overlap` flags on `hsd make` and `hsd run`
+override the **compute** config (the resolution each graph node processes at), which is
+useful for fast iteration. However, the **exported PNG resolution** is set by `config.shape`
+baked into the `.hsd` at build time. To change the output file's dimensions, update
+`config.shape` in the spec JSON and rebuild:
 
 ```bash
-# prototype quickly
+# prototype quickly at low compute resolution
 hsd make terrain.json -o terrain.hsd --run --shape 512,512
 
-# scale up for production — same spec, no edits
-hsd make terrain.json -o terrain.hsd --run \
-  --shape 4096,4096 --tiling 4,4 --overlap 0.25
+# scale up for production: update config.shape in the spec, then rebuild
+# (--shape only affects compute resolution, not the exported file dimensions)
+hsd make terrain_4k.json -o terrain.hsd --run \
+  --tiling 4,4 --overlap 0.25
 ```
 
 The `--tiling` flag splits the logical map into a grid of tiles rendered separately;

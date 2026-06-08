@@ -17,9 +17,11 @@ Controls the canvas size and tiling behaviour for the render.
 | `tiling` | `[x, y]` | `[1, 1]` | Number of tiles along each axis |
 | `overlap` | number (float) | `0.0` | Blending margin ratio (0–1); use 0.25 for tiled large maps |
 
-`config` may be omitted entirely; the defaults above apply. Individual fields may also be
-overridden at run time with `--shape`, `--tiling`, `--overlap` flags on `hsd make` or `hsd run`
-without editing the spec file.
+`config` may be omitted entirely; the defaults above apply. The `--shape`, `--tiling`,
+and `--overlap` flags on `hsd make` or `hsd run` override the **compute** config used by
+each graph node. Note that the **exported PNG resolution** is controlled by `config.shape`
+baked into the `.hsd` at build time; to change the output file's dimensions, update
+`config.shape` here and rebuild — `--shape` alone does not affect the export dimensions.
 
 ```json
 "config": {"shape": [1024, 1024], "tiling": [1, 1], "overlap": 0.0}
@@ -200,7 +202,9 @@ Note that `noise_type` is `Enumeration` — its valid choices are listed inline;
 Every link must connect ports of the **same `data_type`** (`VirtualArray` or `VirtualTexture`).
 These types are incompatible and cannot be mixed in a single link.
 
-The bridge nodes (`ColorizeGradient`, `ColorizeSolid`) accept a `VirtualArray` input and emit a
-`VirtualTexture` output; they are the only way to cross the type boundary.
+`ColorizeGradient` is the primary bridge: it accepts a `VirtualArray` on its `level` input
+and emits a `VirtualTexture` on its `texture` output, mapping heightmap values to a colour
+gradient. `ColorizeSolid` also outputs a `VirtualTexture` but renders a uniform colour (no
+`level` input); use it when you want a flat tint, not a gradient map.
 
 For the full explanation with port tables and a fork diagram, see `SKILL.md §4`.

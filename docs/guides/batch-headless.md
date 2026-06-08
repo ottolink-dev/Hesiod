@@ -77,7 +77,7 @@ the `.hsd` file. It holds:
 |---|---|
 | `export_path` | Output file path (without extension); the binary appends `.png` and `_preview.png`. |
 | `ids` | Which node/port outputs to export. |
-| `shape` | Default heightmap resolution. Overridden at runtime by `--shape`. |
+| `shape` | Exported PNG resolution, baked in at build time from the spec's `config.shape`. To change export dimensions, update `config.shape` in the spec and rebuild. |
 | `tiling` | Default tile grid. Overridden by `--tiling`. |
 | `overlap` | Default overlap ratio. Overridden by `--overlap`. |
 
@@ -110,7 +110,7 @@ PYTHONPATH=scripts python3 -m hsd <subcommand> [args]
 | `nodes --show TYPE` | Show ports and parameters for a node type. |
 | `build SPEC -o OUT` | Compile a JSON spec to a `.hsd` file (no render). |
 | `validate SPEC` | Check a spec for type errors, unknown nodes, bad links. Prints `ok` or structured errors. |
-| `lint FILE` | Style and unknown-param checks beyond hard validation. |
+| `lint FILE` | Model↔UI consistency check on a compiled `.hsd` file (not a spec JSON). |
 | `run FILE [--shape --tiling --overlap]` | Run a pre-built `.hsd` with the Hesiod binary. |
 | `make SPEC -o OUT [--run ...]` | Compile + optionally run in one step. The most common command. |
 
@@ -153,9 +153,11 @@ terrain work are:
 | `VirtualTexture` | RGBA colour image | `ColorizeGradient`, `ColorizeSolid`, `ExportTexture` |
 
 These are **incompatible** — linking `VirtualArray → VirtualTexture` or vice versa
-produces a validation error. The bridge nodes are `ColorizeGradient` and `ColorizeSolid`,
-which accept a `VirtualArray` on their `level` input and emit a `VirtualTexture` on their
-`texture` output.
+produces a validation error. The primary bridge node is `ColorizeGradient`, which accepts
+a `VirtualArray` on its `level` input and emits a `VirtualTexture` on its `texture` output.
+`ColorizeSolid` also outputs a `VirtualTexture`, but it renders a **uniform colour** (set
+via its `color` param) and has no `level` input; it accepts an optional `alpha`
+(VirtualArray) input only.
 
 **Exporting both heightmap and colour** requires a fork at the `VirtualArray` output:
 
@@ -209,13 +211,16 @@ PYTHONPATH=scripts python3 -m hsd make \
   -o /tmp/test.hsd --run --shape 256,256 --tiling 1,1
 ```
 
-On success the toolkit writes:
+On success the toolkit writes files at the path set in the spec's `export[].path` field
+(not derived from the `-o` `.hsd` path). For `heightmap_export.json` (export path
+`"heightmap.png"`) that is, relative to cwd:
 
-- `/tmp/test.png` — 16-bit grayscale heightmap
-- `/tmp/test_preview.png` — TERRAIN colourmap + hillshade
+- `heightmap.png` — 16-bit grayscale heightmap
+- `heightmap_preview.png` — TERRAIN colourmap + hillshade
 
-Scale up by changing `--shape` and `--tiling` without touching the spec file. A verified
-4096 × 4096 tiled spec (4 × 4 tiles, 0.25 overlap) is at
+To change the output file dimensions, update `config.shape` in the spec and rebuild — the
+exported PNG resolution is baked into the `.hsd` at build time; `--shape` overrides the
+compute config only. A verified 4096 × 4096 tiled spec (4 × 4 tiles, 0.25 overlap) is at
 `.claude/skills/hesiod-generate/reference/specs/tiled_large.json`.
 
 ---

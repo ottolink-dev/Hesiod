@@ -52,10 +52,11 @@ Both env vars must be set; without `HESIOD_BIN` the runner raises an error, and 
 
    Structured errors name the offending node and suggest a fix. Fix all errors before proceeding.
 
-4. **Lint (optional).** Checks style / unknown params beyond hard validation:
+4. **Lint (optional).** Checks model↔UI consistency in a compiled `.hsd` file (not a
+   spec JSON). Run it on the `.hsd` output of `hsd build` or `hsd make`:
 
    ```bash
-   PYTHONPATH=scripts python3 -m hsd lint my_spec.json
+   PYTHONPATH=scripts python3 -m hsd lint out.hsd
    ```
 
 5. **Build + run in one step.**
@@ -67,11 +68,17 @@ Both env vars must be set; without `HESIOD_BIN` the runner raises an error, and 
      --shape 1024,1024 --tiling 1,1 --overlap 0.0
    ```
 
-   `--shape`, `--tiling`, `--overlap` override the spec's `config` block at run time — useful for testing at low resolution without editing the spec.
+   `--shape`, `--tiling`, `--overlap` override the **compute** config used by each
+   graph node at render time. They do **not** change the exported PNG resolution —
+   that comes from `export_param.shape` baked into the `.hsd` at build time from the
+   spec's `config.shape`. To change the output file's dimensions, set `config.shape`
+   in the spec JSON and rebuild.
 
-6. **Inspect outputs.** `make --run` writes:
-   - `out.png` — 16-bit grayscale heightmap
-   - `out_preview.png` — TERRAIN colourmap + hillshade
+6. **Inspect outputs.** `make --run` writes files at the path(s) set in the spec's
+   `export[].path` field (not derived from `-o`). For `heightmap_export.json`
+   (export path `"heightmap.png"`) that is:
+   - `heightmap.png` — 16-bit grayscale heightmap (relative to cwd)
+   - `heightmap_preview.png` — TERRAIN colourmap + hillshade (relative to cwd)
 
    Open `out_preview.png` for a visual gut-check, but **verify numerically — the colourmap misleads** (a flat max plateau can look thin, value ranges are remapped). Use the built-in inspector on the raw 16-bit `out.png`:
 
@@ -110,7 +117,11 @@ Every link must connect ports of the **same `data_type`**. The two types are:
 
 These are **incompatible**. Wiring `VirtualArray → VirtualTexture` or vice versa produces a validation error.
 
-**The bridge:** `ColorizeGradient` accepts a `VirtualArray` on its `level` input and emits a `VirtualTexture` on its `texture` output. `ColorizeSolid` does the same. These are the only nodes that cross the type boundary.
+**The bridge:** `ColorizeGradient` accepts a `VirtualArray` on its `level` input and
+emits a `VirtualTexture` on its `texture` output. `ColorizeSolid` also outputs a
+`VirtualTexture` but its inputs differ — it takes an optional `alpha` (VirtualArray)
+and renders a **uniform colour** set via its `color` param; it has no `level` input.
+Use `ColorizeGradient` when you need to map heightmap values to a colour gradient.
 
 **Exporting both heightmap and colour** requires a fork:
 
@@ -123,7 +134,8 @@ ColorizeGradient.texture ──► ExportTexture.texture          (VirtualTextur
 
 **Always run `hsd nodes --show TYPE` before wiring.** Port names are often not `input`/`output`. Confirmed examples:
 
-- `ColorizeGradient`: input `level` (VirtualArray), output `texture` (VirtualTexture)
+- `ColorizeGradient`: inputs `level`, `alpha`, `noise` (all VirtualArray), output `texture` (VirtualTexture)
+- `ColorizeSolid`: input `alpha` (VirtualArray, optional), output `texture` (VirtualTexture); no `level` port
 - `ExportHeightmap`: input `input` (VirtualArray) — no output port
 - `ExportTexture`: input `texture` (VirtualTexture) — no output port
 - `HydraulicParticle`: input `input`, output `output` (both VirtualArray); also `erosion`, `deposition` outputs
@@ -268,7 +280,10 @@ PYTHONPATH=scripts python3 -m hsd make large_spec.json -o large.hsd --run \
   --shape 4096,4096 --tiling 4,4 --overlap 0.25
 ```
 
-The `--shape`/`--tiling`/`--overlap` flags on `make` and `run` override `config` without editing the spec file — useful for scaling a verified spec up to production resolution.
+The `--shape`/`--tiling`/`--overlap` flags on `make` and `run` override the **compute**
+config for each node. Note that the exported PNG resolution is controlled by `config.shape`
+baked into the `.hsd` at build time; to change the output file dimensions, update
+`config.shape` in the spec and rebuild.
 
 A verified 4096 × 4096, 4 × 4 tiled spec is at `reference/specs/tiled_large.json`.
 
@@ -284,11 +299,14 @@ PYTHONPATH=scripts python3 -m hsd validate my_spec.json
 
 Successful output: `ok`
 
-Failed output names the node and describes the problem:
+Failed output names the node and describes the problem. Each line has a level prefix
+(`L1` for node/param errors, `L2` for link/port errors), an optional `[node_id]` tag,
+and a suggestion on the next line when one is available. For example:
 
 ```
-error: node 'col' — unknown port 'input' for type ColorizeGradient
-  hint: available inputs: alpha, level, noise
+L1 [n1]: unknown param 'badparam' on node type 'NoiseFbm'
+      -> run `hsd nodes --show NoiseFbm` to list its params
+L2: 'col.input' is not an input port
 ```
 
 Fix every reported error before calling `make --run`. Common pitfalls:
