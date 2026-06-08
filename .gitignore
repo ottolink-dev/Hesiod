@@ -10,3 +10,4 @@ launch.json
 __pycache__/
 *.pyc
 site/
+docs/superpowers/

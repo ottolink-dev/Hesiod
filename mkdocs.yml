@@ -39,6 +39,7 @@ markdown_extensions:
 
 exclude_docs: |
   *.in.md
+  superpowers/
 
 nav:
   - 'Start Here':
@@ -52,6 +53,13 @@ nav:
     - 'core_concepts/glossary.md'
   - 'Getting Started':
     - 'getting_started/index.md'
+  - 'Guides':
+    - 'guides/index.md'
+    - 'guides/erosion.md'
+    - 'guides/masks-selectors.md'
+    - 'guides/texturing.md'
+    - 'guides/export-formats.md'
+    - 'guides/batch-headless.md'
   - 'User Manual':
     - 'user_manual/index.md'
     - 'user_manual/node_settings/node_settings_management.md'
