@@ -14,98 +14,155 @@ using namespace attr;
 namespace hesiod
 {
 
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
+
+constexpr const char *P_IN = "input";
+constexpr const char *P_OUT = "output";
+
+constexpr const char *A_RADIUS = "radius";
+constexpr const char *A_UNIFORM_RADIUS = "uniform_radius";
+constexpr const char *A_RADIUS_WEST = "radius_west";
+constexpr const char *A_RADIUS_EAST = "radius_east";
+constexpr const char *A_RADIUS_NORTH = "radius_north";
+constexpr const char *A_RADIUS_SOUTH = "radius_south";
+constexpr const char *A_UNIFORM_VALUE = "uniform_value";
+constexpr const char *A_VALUE_WEST = "value_west";
+constexpr const char *A_VALUE_EAST = "value_east";
+constexpr const char *A_VALUE_NORTH = "value_north";
+constexpr const char *A_VALUE_SOUTH = "value_south";
+
+// -----------------------------------------------------------------------------
+// Setup
+// -----------------------------------------------------------------------------
+
 void setup_set_borders_node(BaseNode &node)
 {
   Logger::log()->trace("setup node {}", node.get_label());
 
-  // port(s)
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "input");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, "output", CONFIG(node));
+  // --- Ports
 
-  // attribute(s)
-  node.add_attr<FloatAttribute>("radius", "radius", 0.4f, 0.f, 0.5f);
-  node.add_attr<BoolAttribute>("unique_border_radius", "unique_border_radius", true);
-  node.add_attr<FloatAttribute>("radius_west", "radius_west", 0.4f, 0.f, 0.5f);
-  node.add_attr<FloatAttribute>("radius_east", "radius_east", 0.4f, 0.f, 0.5f);
-  node.add_attr<FloatAttribute>("radius_north", "radius_north", 0.4f, 0.f, 0.5f);
-  node.add_attr<FloatAttribute>("radius_south", "radius_south", 0.4f, 0.f, 0.5f);
-  node.add_attr<BoolAttribute>("unique_border_value", "unique_border_value", false);
-  node.add_attr<FloatAttribute>("value_west", "value_west", -0.5f, -FLT_MAX, FLT_MAX);
-  node.add_attr<FloatAttribute>("value_east", "value_east", 0.5f, -FLT_MAX, FLT_MAX);
-  node.add_attr<FloatAttribute>("value_north", "value_north", 0.5f, -FLT_MAX, FLT_MAX);
-  node.add_attr<FloatAttribute>("value_south", "value_south", -0.5f, -FLT_MAX, FLT_MAX);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_IN);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_OUT, CONFIG(node));
 
-  // attribute(s) order
-  node.set_attr_ordered_key({"radius",
-                             "unique_border_radius",
-                             "radius_west",
-                             "radius_east",
-                             "radius_north",
-                             "radius_south",
-                             "_SEPARATOR_",
-                             "unique_border_value",
-                             "value_west",
-                             "value_east",
-                             "value_north",
-                             "value_south"});
+  // --- Attributes
+
+  // clang-format off
+  node.add_attr<FloatAttribute>(A_RADIUS, "Radius", 0.4f, 0.f, 0.5f);
+  node.add_attr<BoolAttribute>(A_UNIFORM_RADIUS, "Uniform Radius", true);
+  node.add_attr<FloatAttribute>(A_RADIUS_WEST,  "West",  0.4f, 0.f, 0.5f);
+  node.add_attr<FloatAttribute>(A_RADIUS_EAST,  "East",  0.4f, 0.f, 0.5f);
+  node.add_attr<FloatAttribute>(A_RADIUS_NORTH, "North", 0.4f, 0.f, 0.5f);
+  node.add_attr<FloatAttribute>(A_RADIUS_SOUTH, "South", 0.4f, 0.f, 0.5f);
+  node.add_attr<BoolAttribute>(A_UNIFORM_VALUE, "Uniform Value", false);
+  node.add_attr<FloatAttribute>(A_VALUE_WEST,  "West",  -0.5f, -FLT_MAX, FLT_MAX);
+  node.add_attr<FloatAttribute>(A_VALUE_EAST,  "East",   0.5f, -FLT_MAX, FLT_MAX);
+  node.add_attr<FloatAttribute>(A_VALUE_NORTH, "North",  0.5f, -FLT_MAX, FLT_MAX);
+  node.add_attr<FloatAttribute>(A_VALUE_SOUTH, "South", -0.5f, -FLT_MAX, FLT_MAX);
+  // clang-format on
+
+  // --- Attribute order
+
+  node.set_attr_ordered_key({
+      "_GROUPBOX_BEGIN_Border Radius",
+      A_RADIUS,
+      A_UNIFORM_RADIUS,
+      A_RADIUS_WEST,
+      A_RADIUS_EAST,
+      A_RADIUS_NORTH,
+      A_RADIUS_SOUTH,
+      "_GROUPBOX_END_",
+      //
+      "_GROUPBOX_BEGIN_Border Values",
+      A_UNIFORM_VALUE,
+      A_VALUE_WEST,
+      A_VALUE_EAST,
+      A_VALUE_NORTH,
+      A_VALUE_SOUTH,
+      "_GROUPBOX_END_",
+  });
 }
+
+// -----------------------------------------------------------------------------
+// Compute
+// -----------------------------------------------------------------------------
 
 void compute_set_borders_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  hmap::VirtualArray *p_in = node.get_value_ref<hmap::VirtualArray>("input");
+  // --- Inputs / Outputs
 
-  if (p_in)
+  auto *p_in = node.get_value_ref<hmap::VirtualArray>(P_IN);
+  auto *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
+
+  if (!p_in || !p_out)
+    return;
+
+  // --- Helpers
+
+  const auto to_px_x = [&](float r) { return std::max(1, int(r * p_in->shape.x)); };
+
+  const auto to_px_y = [&](float r) { return std::max(1, int(r * p_in->shape.y)); };
+
+  // --- Border radii
+
+  // engine order: {west=.x, east=.y, south=.z, north=.w}
+  glm::ivec4 buffer_sizes;
+
+  if (node.get_attr<BoolAttribute>(A_UNIFORM_RADIUS))
   {
-    hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>("output");
+    const float r = node.get_attr<FloatAttribute>(A_RADIUS);
 
-    // Per-edge buffer thickness, scaled by the axis each edge runs along
-    // (E/W along x, N/S along y) so caps are predictable on non-square maps.
-    auto to_px_x = [&](float r) { return std::max(1, (int)(r * p_in->shape.x)); };
-    auto to_px_y = [&](float r) { return std::max(1, (int)(r * p_in->shape.y)); };
-
-    int rw, re, rn, rs;
-    if (node.get_attr<BoolAttribute>("unique_border_radius"))
-    {
-      const float r = node.get_attr<FloatAttribute>("radius");
-      rw = re = to_px_x(r);
-      rn = rs = to_px_y(r);
-    }
-    else
-    {
-      rw = to_px_x(node.get_attr<FloatAttribute>("radius_west"));
-      re = to_px_x(node.get_attr<FloatAttribute>("radius_east"));
-      rn = to_px_y(node.get_attr<FloatAttribute>("radius_north"));
-      rs = to_px_y(node.get_attr<FloatAttribute>("radius_south"));
-    }
-
-    // engine order: {west=.x, east=.y, south=.z, north=.w}
-    glm::ivec4 buffer_sizes(rw, re, rs, rn);
-
-    const float vw = node.get_attr<FloatAttribute>("value_west");
-    const float ve = node.get_attr<FloatAttribute>("value_east");
-    const float vn = node.get_attr<FloatAttribute>("value_north");
-    const float vs = node.get_attr<FloatAttribute>("value_south");
-
-    glm::vec4 border_values;
-    if (node.get_attr<BoolAttribute>("unique_border_value"))
-      border_values = {vw, vw, vw, vw};
-    else
-      border_values = {vw, ve, vs, vn}; // {west, east, south, north} per engine
-
-    hmap::for_each_tile(
-        {p_out, p_in},
-        [border_values, buffer_sizes](std::vector<hmap::Array *> p_arrays,
-                                      const hmap::TileRegion &)
-        {
-          auto [pa_out, pa_in] = unpack<2>(p_arrays);
-          *pa_out = *pa_in;
-
-          hmap::set_borders(*pa_out, border_values, buffer_sizes);
-        },
-        node.cfg().cm_single_array);
+    buffer_sizes = {
+        to_px_x(r), // west
+        to_px_x(r), // east
+        to_px_y(r), // south
+        to_px_y(r)  // north
+    };
   }
+  else
+  {
+    buffer_sizes = {to_px_x(node.get_attr<FloatAttribute>(A_RADIUS_WEST)),
+                    to_px_x(node.get_attr<FloatAttribute>(A_RADIUS_EAST)),
+                    to_px_y(node.get_attr<FloatAttribute>(A_RADIUS_SOUTH)),
+                    to_px_y(node.get_attr<FloatAttribute>(A_RADIUS_NORTH))};
+  }
+
+  // --- Border values
+
+  const float vw = node.get_attr<FloatAttribute>(A_VALUE_WEST);
+  const float ve = node.get_attr<FloatAttribute>(A_VALUE_EAST);
+  const float vn = node.get_attr<FloatAttribute>(A_VALUE_NORTH);
+  const float vs = node.get_attr<FloatAttribute>(A_VALUE_SOUTH);
+
+  glm::vec4 border_values;
+
+  if (node.get_attr<BoolAttribute>(A_UNIFORM_VALUE))
+  {
+    border_values = {vw, vw, vw, vw};
+  }
+  else
+  {
+    // engine order: {west, east, south, north}
+    border_values = {vw, ve, vs, vn};
+  }
+
+  // --- Compute
+
+  hmap::for_each_tile(
+      {p_out, p_in},
+      [buffer_sizes, border_values](std::vector<hmap::Array *> p_arrays,
+                                    const hmap::TileRegion &)
+      {
+        auto [pa_out, pa_in] = unpack<2>(p_arrays);
+
+        *pa_out = *pa_in;
+
+        hmap::set_borders(*pa_out, border_values, buffer_sizes);
+      },
+      node.cfg().cm_single_array);
 }
 
 } // namespace hesiod

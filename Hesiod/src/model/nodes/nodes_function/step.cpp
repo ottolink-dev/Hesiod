@@ -26,7 +26,7 @@ void setup_step_node(BaseNode &node)
   node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, "output", CONFIG(node));
 
   // attribute(s)
-  node.add_attr<FloatAttribute>("angle", "angle", 0.f, -180.f, 180.f);
+  node.add_attr<FloatAttribute>("angle", "angle", 0.f, -180.f, 180.f, "{:.1f}°");
   node.add_attr<FloatAttribute>("slope", "slope", 2.f, 0.01f, FLT_MAX);
   node.add_attr<Vec2FloatAttribute>("center", "center");
 
