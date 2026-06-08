@@ -51,10 +51,15 @@ void compute_wave_sine_node(BaseNode &node)
         hmap::Array *pa_out = p_arrays[0];
         hmap::Array *pa_dr = p_arrays[1];
 
+        // phase_shift slider is in degrees (range -180..180, matching `angle`);
+        // hmap::wave_sine expects radians in cos(2*pi*r + phase). Convert here.
+        const float phase_rad = node.get_attr<FloatAttribute>("phase_shift") *
+                                (float)(M_PI / 180.0);
+
         *pa_out = hmap::wave_sine(region.shape,
                                   node.get_attr<FloatAttribute>("kw"),
                                   node.get_attr<FloatAttribute>("angle"),
-                                  node.get_attr<FloatAttribute>("phase_shift"),
+                                  phase_rad,
                                   pa_dr,
                                   nullptr,
                                   nullptr,
