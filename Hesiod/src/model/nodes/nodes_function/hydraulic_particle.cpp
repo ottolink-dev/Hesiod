@@ -228,6 +228,17 @@ void compute_hydraulic_particle_node(BaseNode &node)
   float hmin = p_in->min(node.cfg().cm_cpu);
   float hmax = p_in->max(node.cfg().cm_cpu);
 
+  // Particle erosion is gradient-driven: flat or masked-to-zero input has no
+  // slope, so particles carry no sediment and the output is unchanged. Warn
+  // rather than silently returning the input untouched.
+  if (hmax - hmin < 1.0e-6f)
+    Logger::log()->warn(
+        "HydraulicParticle [{}]: input is flat/near-constant (value range ~ 0). "
+        "Erosion is gradient-driven and will produce little or no change. "
+        "Erode full-domain relief first, then multiply by the land mask; "
+        "or enable ridge forcing.",
+        node.get_id());
+
   hmap::for_each_tile(
       {p_in, p_bedrock, p_moisture, p_mask},
       {p_out, p_erosion, p_deposition},
