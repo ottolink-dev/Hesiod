@@ -1,0 +1,336 @@
+{
+  "maps": {
+    "blending_method_map": {
+      "add": 0,
+      "exclusion": 1,
+      "gradients": 2,
+      "maximum": 3,
+      "maximum_smooth": 4,
+      "minimum": 5,
+      "minimum_smooth": 6,
+      "multiply": 7,
+      "multiply_add": 8,
+      "negate": 9,
+      "overlay": 10,
+      "replace": 11,
+      "soft": 12,
+      "substract": 13
+    },
+    "clamping_mode_map": {
+      "Clamp both": 2,
+      "Keep negative & clamp": 1,
+      "Keep positive & clamp": 0,
+      "No clamping": 3
+    },
+    "cmap_map": {
+      "bone": 0,
+      "gray": 1,
+      "jet": 4,
+      "magma": 5,
+      "nipy_spectral": 6,
+      "terrain": 8,
+      "viridis": 10
+    },
+    "curvature_type_map": {
+      "Accumulation": 7,
+      "Contour": 5,
+      "Gaussian": 3,
+      "Max": 1,
+      "Mean": 2,
+      "Min": 0,
+      "Profile": 4,
+      "Ring": 10,
+      "Rotor": 11,
+      "Shape Index": 8,
+      "Tangential": 6,
+      "Unsphericity": 9
+    },
+    "distance_function_map": {
+      "Chebyshev": 0,
+      "Euclidian": 1,
+      "Euclidian/Chebyshev": 2,
+      "Manhattan": 3
+    },
+    "distance_transform_type_map": {
+      "Approx. (fast)": 1,
+      "Exact": 0,
+      "Jump flooding (GPU)": 3,
+      "Manhattan (fast)": 2
+    },
+    "domain_boundary_map": {
+      "East": 1,
+      "North": 2,
+      "South": 3,
+      "West": 0
+    },
+    "erosion_profile_map": {
+      "Cosine": 0,
+      "Cosine Bulk": 1,
+      "Cosine Peak": 2,
+      "Parabol": 3,
+      "Saw Sharp": 4,
+      "Saw Smooth": 5,
+      "Sharp Valleys": 6,
+      "Square-root": 7,
+      "Triangle Grenier": 8,
+      "Triangle Sharp": 9,
+      "Triangle Smooth": 10
+    },
+    "flow_direction_method_map": {
+      "D8": 0,
+      "Priority Flood": 1
+    },
+    "heightmap_export_format_map": {
+      "exr (32 bit), Preserve absolute values": 3,
+      "png (16 bit)": 1,
+      "png (8 bit)": 0,
+      "raw (16 bit, Unity)": 2
+    },
+    "interpolation_method2d_map": {
+      "Delaunay": 0,
+      "Gaussian Weighting": 3,
+      "Inverse Weighting Distance": 2,
+      "Nearest": 1
+    },
+    "kernel_type_map": {
+      "biweight": 0,
+      "cone": 2,
+      "cone_smooth": 3,
+      "cubic_pulse": 1,
+      "cupola": 9,
+      "disk": 4,
+      "lorentzian": 5,
+      "smooth_cosine": 6,
+      "square": 7,
+      "tricube": 8
+    },
+    "local_metrics_map": {
+      "Aspect Variance": 0,
+      "Maximum": 1,
+      "Mean": 6,
+      "Median Deviation": 2,
+      "Minimum": 3,
+      "Relative Elevation": 10,
+      "Relief": 4,
+      "Ruggedness": 11,
+      "Rugosity Concave": 12,
+      "Rugosity Convex": 13,
+      "Skewness": 7,
+      "Topographic Position Index": 9,
+      "Variance": 5,
+      "Z-Score": 8
+    },
+    "mask_combine_method_map": {
+      "exclusion": 2,
+      "intersection": 1,
+      "union": 0
+    },
+    "morphology_operation_map": {
+      "Black Hat": 5,
+      "Border": 0,
+      "Closing": 1,
+      "Closing by Reconst.": 9,
+      "Dilation": 2,
+      "Erosion": 3,
+      "Gradient": 7,
+      "Laplacian": 8,
+      "Opening": 4,
+      "Opening by Reconst.": 10,
+      "Top Hat": 6
+    },
+    "noise_type_map": {
+      "OpenSimplex2": 4,
+      "OpenSimplex2S": 5,
+      "Perlin": 1,
+      "Perlin (billow)": 2,
+      "Perlin (half)": 3,
+      "Value": 6,
+      "Value (cubic)": 7,
+      "Value (delaunay)": 8,
+      "Value (linear)": 9,
+      "Worley": 10,
+      "Worley (doube)": 11,
+      "Worley (value)": 12
+    },
+    "noise_type_map_fbm": {
+      "OpenSimplex2": 4,
+      "OpenSimplex2S": 5,
+      "Perlin": 1,
+      "Perlin (billow)": 2,
+      "Perlin (half)": 3,
+      "Value": 6,
+      "Value (cubic)": 7,
+      "Value (linear)": 9,
+      "Worley": 10,
+      "Worley (doube)": 11,
+      "Worley (value)": 12
+    },
+    "periodicity_type_map": {
+      "X and Y": 2,
+      "X-only": 0,
+      "Y-only": 1
+    },
+    "phasor_profile_map": {
+      "Cosine": 3,
+      "Cosine Bulky": 0,
+      "Cosine Peaky": 1,
+      "Cosine Square": 2,
+      "Dune": 5,
+      "Triangle": 4
+    },
+    "primitive_type_map": {
+      "Biquad Pulse": 0,
+      "Cone Smooth": 3,
+      "Cubic Pulse": 4,
+      "Smooth Cosine": 5
+    },
+    "radial_profile_map": {
+      "Flat Bottom": 5,
+      "Gain": 0,
+      "Linear": 1,
+      "Power Law": 2,
+      "Smoothstep": 3,
+      "Smoothstep Upper": 4,
+      "Square Root": 6
+    },
+    "stamping_blend_method_map": {
+      "add": 0,
+      "maximum": 1,
+      "maximum_smooth": 2,
+      "minimum": 3,
+      "minimum_smooth": 4,
+      "multiply": 5,
+      "substract": 6
+    },
+    "voronoi_return_type_map": {
+      "Cell value": 7,
+      "Cell value * (F2 - F1)": 8,
+      "Edge distance exp. decay": 5,
+      "Edge distance squared": 6,
+      "F1 * F2: squared": 2,
+      "F1 / F2: squared": 3,
+      "F1: squared distance to the closest point": 0,
+      "F2 - F1: squared": 4,
+      "F2: squared distance to the second closest point": 1
+    }
+  },
+  "node_param": {
+    "Blend": {
+      "blending_method": "blending_method_map"
+    },
+    "Blend3": {
+      "blending_method1": "blending_method_map",
+      "blending_method2": "blending_method_map"
+    },
+    "Bulkify": {
+      "bulk_type": "primitive_type_map"
+    },
+    "CloudToArrayInterp": {
+      "itp_method": "interpolation_method2d_map"
+    },
+    "CombineMask": {
+      "method": "mask_combine_method_map"
+    },
+    "ConeComplex": {
+      "erosion_profile": "erosion_profile_map"
+    },
+    "Curvatures": {
+      "ctype": "curvature_type_map"
+    },
+    "DistanceTransform": {
+      "transform_type": "distance_transform_type_map"
+    },
+    "ExpandShrink": {
+      "kernel": "kernel_type_map"
+    },
+    "ExportHeightmap": {
+      "format": "heightmap_export_format_map"
+    },
+    "Falloff": {
+      "distance_function": "distance_function_map"
+    },
+    "FindCutPath": {
+      "end": "domain_boundary_map",
+      "start": "domain_boundary_map"
+    },
+    "FlatbedCarve": {
+      "radial_profile": "radial_profile_map"
+    },
+    "HeightmapToKernel": {
+      "envelope_kernel": "kernel_type_map"
+    },
+    "HydraulicProcedural": {
+      "erosion_profile": "erosion_profile_map"
+    },
+    "IslandLandMask": {
+      "noise_type": "noise_type_map"
+    },
+    "KernelPrim": {
+      "kernel": "kernel_type_map"
+    },
+    "LocalMetrics": {
+      "metric": "local_metrics_map"
+    },
+    "MakePeriodic": {
+      "periodicity_type": "periodicity_type_map"
+    },
+    "MorphologicalOperators": {
+      "operator": "morphology_operation_map"
+    },
+    "Noise": {
+      "noise_type": "noise_type_map"
+    },
+    "NoiseFbm": {
+      "noise_type": "noise_type_map"
+    },
+    "NoiseIq": {
+      "noise_type": "noise_type_map"
+    },
+    "NoiseJordan": {
+      "noise_type": "noise_type_map"
+    },
+    "NoisePingpong": {
+      "noise_type": "noise_type_map"
+    },
+    "NoiseRidged": {
+      "noise_type": "noise_type_map"
+    },
+    "NoiseSwiss": {
+      "noise_type": "noise_type_map"
+    },
+    "Phasor": {
+      "profile": "phasor_profile_map"
+    },
+    "Rift": {
+      "bottom_profile": "radial_profile_map",
+      "profile": "radial_profile_map"
+    },
+    "SelectSoilRocks": {
+      "curvature_clamp_mode": "clamping_mode_map"
+    },
+    "SelectSoilWeathered": {
+      "curvature_clamp_mode": "clamping_mode_map"
+    },
+    "Stamping": {
+      "blend_method": "stamping_blend_method_map"
+    },
+    "Vorolines": {
+      "return_type": "voronoi_return_type_map"
+    },
+    "VorolinesFbm": {
+      "return_type": "voronoi_return_type_map"
+    },
+    "Voronoi": {
+      "return_type": "voronoi_return_type_map"
+    },
+    "VoronoiFbm": {
+      "return_type": "voronoi_return_type_map"
+    },
+    "Vororand": {
+      "return_type": "voronoi_return_type_map"
+    },
+    "ZeroedEdges": {
+      "distance_function": "distance_function_map"
+    }
+  }
+}
