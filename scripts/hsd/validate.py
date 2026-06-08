@@ -11,6 +11,13 @@ def validate_spec(spec, catalog):
     errors = []
     ids = {}
 
+    # Load enum catalog once; if absent, skip enum-choice validation (no false positives)
+    try:
+        from hsd.enums import EnumCatalog
+        enum_catalog = EnumCatalog.load()
+    except FileNotFoundError:
+        enum_catalog = None
+
     # L1: node types and params
     for node in spec.nodes:
         if node.id in ids:
@@ -22,12 +29,27 @@ def validate_spec(spec, catalog):
                                node_id=node.id))
             continue
         params_meta = catalog.params(node.type)
-        for pname in node.params:
+        for pname, pvalue in node.params.items():
             if pname not in params_meta:
                 errors.append(_err(
                     "L1", f"unknown param '{pname}' on node type '{node.type}'",
                     f"run `hsd nodes --show {node.type}` to list its params",
                     node_id=node.id))
+                continue
+            # Enum-choice validation: only for string values on Enumeration params
+            param_type = params_meta[pname].get("type", "")
+            if (param_type == "Enumeration"
+                    and isinstance(pvalue, str)
+                    and enum_catalog is not None):
+                if enum_catalog.map_for(node.type, pname) is not None:
+                    valid = enum_catalog.choices(node.type, pname)
+                    if pvalue not in valid:
+                        errors.append(_err(
+                            "L1",
+                            f"invalid enum choice '{pvalue}' for param "
+                            f"'{pname}' on node type '{node.type}'",
+                            f"valid choices: {', '.join(valid)}",
+                            node_id=node.id))
 
     # L2: links resolve + datatype compatibility
     known = {nid for nid, ntype in ids.items() if catalog.has_node(ntype)}

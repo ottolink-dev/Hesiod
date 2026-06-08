@@ -58,3 +58,43 @@ def test_dangling_export():
                                        "path": "o.png"}]})
     errs = validate_spec(spec, CAT)
     assert any("export" in e["problem"].lower() for e in errs)
+
+
+# --- enum choice validation tests ---
+
+def test_invalid_enum_choice_yields_l1_error():
+    spec = Spec.from_dict({
+        "nodes": [{"id": "bl", "type": "Blend",
+                   "params": {"blending_method": "not_a_method"}}],
+    })
+    errs = validate_spec(spec, CAT)
+    l1 = [e for e in errs if e["level"] == "L1"]
+    assert any("not_a_method" in e["problem"] for e in l1), (
+        f"expected L1 error naming the bad choice; got {errs}"
+    )
+    # suggestion should list valid choices
+    matching = next(e for e in l1 if "not_a_method" in e["problem"])
+    assert "maximum" in matching.get("suggestion", "")
+
+
+def test_valid_enum_choice_no_error():
+    spec = Spec.from_dict({
+        "nodes": [{"id": "bl", "type": "Blend",
+                   "params": {"blending_method": "maximum"}}],
+    })
+    errs = validate_spec(spec, CAT)
+    assert not any("blending_method" in e.get("problem", "") for e in errs), (
+        f"unexpected errors for valid enum string: {errs}"
+    )
+
+
+def test_dict_enum_value_not_validated():
+    """A dict value-object passthrough must not trigger enum validation."""
+    full = {"label": "blending_method", "type": 4, "type_string": "Enumeration",
+            "choice": "maximum", "value": 3}
+    spec = Spec.from_dict({
+        "nodes": [{"id": "bl", "type": "Blend",
+                   "params": {"blending_method": full}}],
+    })
+    errs = validate_spec(spec, CAT)
+    assert not any("blending_method" in e.get("problem", "") for e in errs)

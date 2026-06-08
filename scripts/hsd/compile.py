@@ -9,6 +9,14 @@ def compile_spec(spec, catalog):
     nodes/params here raise KeyError-style errors; call validate first for
     friendly messages.
     """
+    # Load enum catalog once; guard FileNotFoundError so graphs without string
+    # enum params still compile even if the catalog is absent.
+    try:
+        from hsd.enums import EnumCatalog
+        enum_catalog = EnumCatalog.load()
+    except FileNotFoundError:
+        enum_catalog = None
+
     g = Graph(config=spec.config or {"shape": [1024, 1024], "tiling": [1, 1],
                                       "overlap": 0.0})
     for node in spec.nodes:
@@ -16,7 +24,9 @@ def compile_spec(spec, catalog):
         vobjs = {}
         for pname, pvalue in node.params.items():
             type_string = params_meta.get(pname, {}).get("type", "")
-            vobjs[pname] = value_object(pname, type_string, pvalue)
+            vobjs[pname] = value_object(pname, type_string, pvalue,
+                                        node_type=node.type,
+                                        enum_catalog=enum_catalog)
         g.add_node(node.id, node.type, vobjs)
 
     for a, ap, b, bp in spec.links:
