@@ -50,6 +50,16 @@ def validate_spec(spec, catalog):
                             f"'{pname}' on node type '{node.type}'",
                             f"valid choices: {', '.join(valid)}",
                             node_id=node.id))
+                else:
+                    # Uncatalogued Enumeration: the string cannot be resolved to
+                    # an integer, so build/make would fail. Catch it at validate.
+                    errors.append(_err(
+                        "L1",
+                        f"enum param '{pname}' on node type '{node.type}' is not "
+                        f"auto-resolvable from the string '{pvalue}'",
+                        f"pass a full value-object dict for '{pname}' instead "
+                        f"(run `hsd nodes --show {node.type}` to inspect it)",
+                        node_id=node.id))
 
     # L2: links resolve + datatype compatibility
     known = {nid for nid, ntype in ids.items() if catalog.has_node(ntype)}

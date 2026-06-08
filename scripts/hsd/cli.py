@@ -6,6 +6,8 @@ from hsd.catalog import Catalog
 from hsd.enums import EnumCatalog
 from hsd.spec import Spec
 from hsd.compile import compile_spec
+from hsd.params import ParamError
+from hsd.enums import EnumError
 from hsd.validate import validate_spec, lint_file
 from hsd.run import run_batch
 from hsd.png import read_png
@@ -26,7 +28,11 @@ def _cmd_build(args, cat):
     if errors:
         _print_errors(errors)
         return 1
-    hsd = compile_spec(spec, cat).to_hsd()
+    try:
+        hsd = compile_spec(spec, cat).to_hsd()
+    except (ParamError, EnumError) as exc:
+        sys.stderr.write(f"error: {exc}\n")
+        return 1
     with open(args.output, "w") as f:
         json.dump(hsd, f, indent=4)
     print(f"wrote {args.output}")

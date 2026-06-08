@@ -88,6 +88,22 @@ def test_valid_enum_choice_no_error():
     )
 
 
+def test_uncatalogued_enum_string_yields_l1_error():
+    # CloudRandom.method is an Enumeration in the doc but has NO catalog mapping,
+    # so a bare string can't be resolved to an int -> validate must flag it (L1)
+    # rather than letting build/make die with a ParamError traceback.
+    spec = Spec.from_dict({
+        "nodes": [{"id": "c", "type": "CloudRandom",
+                   "params": {"method": "some_choice"}}],
+    })
+    errs = validate_spec(spec, CAT)
+    l1 = [e for e in errs if e["level"] == "L1" and "method" in e["problem"]]
+    assert l1, f"expected an L1 error for the uncatalogued enum string; got {errs}"
+    err = l1[0]
+    assert "auto-resolvable" in err["problem"]
+    assert "value-object dict" in err.get("suggestion", "")
+
+
 def test_dict_enum_value_not_validated():
     """A dict value-object passthrough must not trigger enum validation."""
     full = {"label": "blending_method", "type": 4, "type_string": "Enumeration",

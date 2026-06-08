@@ -22,6 +22,21 @@ def test_build_reports_validation_errors(tmp_path):
     assert rc != 0
 
 
+def test_build_uncatalogued_enum_string_clean_rc1(tmp_path, capsys):
+    # An uncatalogued Enumeration string must produce a clean rc=1 (validation
+    # gate) rather than an unhandled ParamError/EnumError traceback.
+    bad = tmp_path / "uncat.json"
+    bad.write_text(json.dumps({
+        "nodes": [{"id": "c", "type": "CloudRandom",
+                   "params": {"method": "some_choice"}}],
+    }))
+    rc = main(["build", str(bad), "-o", str(tmp_path / "x.hsd")])
+    err = capsys.readouterr().err
+    assert rc == 1
+    assert "method" in err
+    assert "value-object dict" in err
+
+
 def test_make_builds_without_run_flag(tmp_path):
     # make without --run should behave like build (no binary needed)
     out = tmp_path / "g.hsd"

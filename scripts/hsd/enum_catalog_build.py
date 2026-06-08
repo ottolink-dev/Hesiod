@@ -187,9 +187,13 @@ def find_helper_calls(body: str) -> list:
 
 
 def build_setup_func_to_camel(node_types: list) -> dict:
-    """Build {setup_func_name: CamelCaseType} from two sources:
+    """Build {setup_func_name: [CamelCaseType, ...]} from two sources:
     1. node_factory.cpp SETUP_NODE(CamelType, snake_name) macros (authoritative, handles typos).
     2. camel_to_snake() derivation for any nodes not covered by the factory parse.
+
+    The mapping is ONE-TO-MANY: a single setup function may be registered for
+    several node types, e.g. SETUP_NODE(NoiseIq, noise_iq) and
+    SETUP_NODE(NoiseJordan, noise_iq) both resolve to setup_noise_iq_node.
     """
     mapping: dict = {}
 
@@ -201,26 +205,31 @@ def build_setup_func_to_camel(node_types: list) -> dict:
             camel = m.group(1)
             snake = m.group(2)
             func_name = f"setup_{snake}_node"
-            mapping[func_name] = camel
+            bucket = mapping.setdefault(func_name, [])
+            if camel not in bucket:
+                bucket.append(camel)
 
     # Source 2: fallback via camel_to_snake for any node type not already mapped
-    covered_camel = set(mapping.values())
+    covered_camel = {c for camels in mapping.values() for c in camels}
     for nt in node_types:
         if nt not in covered_camel:
             snake = camel_to_snake(nt)
             func_name = f"setup_{snake}_node"
-            if func_name not in mapping:
-                mapping[func_name] = nt
+            bucket = mapping.setdefault(func_name, [])
+            if nt not in bucket:
+                bucket.append(nt)
 
     return mapping
 
 
 def build_node_param(maps: dict) -> dict:
     # Build snake → CamelCase lookup from canonical node-type names
-    node_types = list(json.loads(NODE_DOC_JSON.read_text()).keys())
+    node_doc = json.loads(NODE_DOC_JSON.read_text())
+    node_types = list(node_doc.keys())
     snake_to_camel: dict = {camel_to_snake(t): t for t in node_types}
 
-    # Authoritative setup_func_name → CamelCase (handles typos like reverse_above_theshold)
+    # Authoritative setup_func_name → [CamelCase, ...] (one-to-many; handles typos
+    # like reverse_above_theshold and shared setup funcs like setup_noise_iq_node).
     setup_func_to_camel: dict = build_setup_func_to_camel(node_types)
 
     map_names = set(maps.keys())
@@ -252,26 +261,30 @@ def build_node_param(maps: dict) -> dict:
 
         for func_name, body in bodies.items():
             if func_name.endswith('_node'):
-                # Determine CamelCase node type (use factory mapping to handle typos)
-                node_type = setup_func_to_camel.get(func_name)
-                if node_type is None:
+                # Determine CamelCase node type(s). A single setup function may be
+                # registered for multiple node types (one-to-many), so apply its
+                # params to EVERY node type that shares it.
+                node_types_for_func = setup_func_to_camel.get(func_name)
+                if not node_types_for_func:
                     # Fallback: derive from name
                     snake = func_name[len('setup_'):-len('_node')]
-                    node_type = snake_to_camel.get(snake)
-                if node_type is None:
+                    derived = snake_to_camel.get(snake)
+                    node_types_for_func = [derived] if derived else []
+                if not node_types_for_func:
                     continue
 
                 direct = extract_enum_params(body, const_map, map_names)
-                if direct:
-                    if node_type not in node_direct:
-                        node_direct[node_type] = {}
-                    node_direct[node_type].update(direct)
-
                 calls = find_helper_calls(body)
-                if calls:
-                    if node_type not in node_helpers:
-                        node_helpers[node_type] = []
-                    node_helpers[node_type].extend(calls)
+
+                for node_type in node_types_for_func:
+                    if direct:
+                        if node_type not in node_direct:
+                            node_direct[node_type] = {}
+                        node_direct[node_type].update(direct)
+                    if calls:
+                        if node_type not in node_helpers:
+                            node_helpers[node_type] = []
+                        node_helpers[node_type].extend(calls)
             else:
                 # Helper function — record its enum params
                 direct = extract_enum_params(body, const_map, map_names)
@@ -281,20 +294,7 @@ def build_node_param(maps: dict) -> dict:
                     helper_params[func_name].update(direct)
 
     # -----------------------------------------------------------------------
-    # Pass B: resolve helper calls transitively (one level is enough per spec,
-    # but we do it iteratively until stable so deeper chains also work).
-    # -----------------------------------------------------------------------
-    changed = True
-    while changed:
-        changed = False
-        for func_name, body_params in list(helper_params.items()):
-            # If this helper itself calls other helpers, pull their params in.
-            # We need the body again — re-parse would be expensive, so instead
-            # track helper→helpers the same way we track node→helpers.
-            pass  # helpers calling helpers not seen in this codebase; skip.
-
-    # -----------------------------------------------------------------------
-    # Pass C: merge helper params into each node's param set.
+    # Pass B: merge helper params into each node's param set.
     # Helper params are added FIRST so that node-own wiring takes precedence.
     # -----------------------------------------------------------------------
     node_param: dict = {}
@@ -310,7 +310,28 @@ def build_node_param(maps: dict) -> dict:
         if merged:
             node_param[node_type] = merged
 
-    return node_param
+    # -----------------------------------------------------------------------
+    # Pass C: intersect with the real parameters from node_documentation.json.
+    # The cpp parser merges a helper's params into EVERY caller, but a helper
+    # only adds a param under certain options (e.g.
+    # setup_post_process_heightmap_attributes adds post_mix_method only when
+    # add_mix==true). Drop any (node_type, param) whose param is not an actual
+    # Enumeration/Choice parameter on that node per the canonical doc JSON.
+    # -----------------------------------------------------------------------
+    filtered: dict = {}
+    for node_type, params in node_param.items():
+        doc_params = (node_doc.get(node_type, {}).get("parameters") or {})
+        kept: dict = {}
+        for param_key, map_name in params.items():
+            doc_entry = doc_params.get(param_key)
+            if not isinstance(doc_entry, dict):
+                continue
+            if doc_entry.get("type") in ("Enumeration", "Choice"):
+                kept[param_key] = map_name
+        if kept:
+            filtered[node_type] = kept
+
+    return filtered
 
 
 # ---------------------------------------------------------------------------
@@ -427,10 +448,13 @@ def validate(catalog: dict) -> None:
     assert node_param.get("Stamping", {}).get("blend_method") == "stamping_blend_method_map", (
         f"Stamping.blend_method should map to stamping_blend_method_map, got {node_param.get('Stamping', {}).get('blend_method')}"
     )
-    # New asserts: helper-propagated params
+    # New asserts: helper-propagated params, filtered against the doc JSON.
+    # Before the doc-param intersection the parser over-claimed post_mix_method
+    # on ~70 nodes that don't actually expose it; after filtering only the
+    # genuinely-present ones remain (87 per node_documentation.json).
     post_mix_nodes = [nt for nt, params in node_param.items() if "post_mix_method" in params]
-    assert len(post_mix_nodes) >= 100, (
-        f"Expected >=100 node types with post_mix_method, got {len(post_mix_nodes)}: {sorted(post_mix_nodes)}"
+    assert len(post_mix_nodes) >= 80, (
+        f"Expected >=80 node types with post_mix_method, got {len(post_mix_nodes)}: {sorted(post_mix_nodes)}"
     )
     assert node_param.get("CoastalErosionProfile", {}).get("dn_noise_type") == "noise_type_map_fbm", (
         f"CoastalErosionProfile.dn_noise_type should be noise_type_map_fbm, got "

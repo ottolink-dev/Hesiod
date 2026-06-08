@@ -69,6 +69,19 @@ def test_map_for_uncatalogued_node_returns_none(catalog):
     assert catalog.map_for("CloudRandom", "method") is None
 
 
+def test_map_for_noiseiq_noise_type_not_none(catalog):
+    # Regression: NoiseIq and NoiseJordan share setup_noise_iq_node. A one-to-one
+    # func->type map dropped NoiseIq; the one-to-many fix must give both noise_type.
+    assert catalog.map_for("NoiseIq", "noise_type") is not None
+    assert catalog.map_for("NoiseJordan", "noise_type") is not None
+
+
+def test_noisefbm_has_no_post_mix_method(catalog):
+    # Regression: the cpp parser over-claimed post_mix_method on NoiseFbm, which
+    # has no such param per node_documentation.json. The doc-param filter drops it.
+    assert catalog.map_for("NoiseFbm", "post_mix_method") is None
+
+
 # ---------------------------------------------------------------------------
 # resolve — uncatalogued node/param returns None (caller falls back)
 # ---------------------------------------------------------------------------
