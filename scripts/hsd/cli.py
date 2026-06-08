@@ -7,6 +7,8 @@ from hsd.spec import Spec
 from hsd.compile import compile_spec
 from hsd.validate import validate_spec, lint_file
 from hsd.run import run_batch
+from hsd.png import read_png
+from hsd.inspect import stats, edges, landfrac, profile
 
 
 def _print_errors(errors):
@@ -71,6 +73,44 @@ def _cmd_make(args, cat):
     return _cmd_run(args, cat)
 
 
+def _cmd_inspect(args, cat):
+    try:
+        img = read_png(args.file)
+    except Exception as exc:
+        sys.stderr.write(f"error reading PNG: {exc}\n")
+        return 1
+
+    s = stats(img)
+    print(f"width:    {s['width']}")
+    print(f"height:   {s['height']}")
+    print(f"bitdepth: {s['bitdepth']}")
+    print(f"channels: {s['channels']}")
+    print(f"min:      {s['min']:.6f}")
+    print(f"max:      {s['max']:.6f}")
+    print(f"mean:     {s['mean']:.6f}")
+
+    if args.edges:
+        e = edges(img)
+        print(f"top:      {e['top']:.6f}")
+        print(f"bottom:   {e['bottom']:.6f}")
+        print(f"left:     {e['left']:.6f}")
+        print(f"right:    {e['right']:.6f}")
+        print(f"lr_match: {e['lr_match']:.6f}")
+
+    if args.landfrac is not None:
+        threshold = args.landfrac
+        frac = landfrac(img, threshold)
+        print(f"landfrac ({threshold}): {frac:.6f}")
+
+    if args.profile:
+        p = profile(img, args.profile, args.profile_n)
+        label = f"profile ({args.profile}, n={args.profile_n})"
+        values = "  ".join(f"{v:.4f}" for v in p)
+        print(f"{label}: [{values}]")
+
+    return 0
+
+
 def _cmd_nodes(args, cat):
     if args.show:
         if not cat.has_node(args.show):
@@ -120,9 +160,22 @@ def main(argv=None):
     p = sub.add_parser("nodes"); p.add_argument("--search"); p.add_argument("--category")
     p.add_argument("--show")
 
+    p = sub.add_parser("inspect"); p.add_argument("file")
+    p.add_argument("--edges", action="store_true",
+                   help="print mean value of each border edge and lr_match seam metric")
+    p.add_argument("--landfrac", nargs="?", type=float, const=0.5, default=None,
+                   metavar="T",
+                   help="print land fraction (pixels >= T, default T=0.5)")
+    p.add_argument("--profile", choices=["row", "col"],
+                   help="print evenly-spaced row or column means")
+    p.add_argument("--profile-n", dest="profile_n", type=int, default=16,
+                   metavar="N",
+                   help="number of profile samples (default 16)")
+
     args = parser.parse_args(argv)
     cat = Catalog.load()
     return {
         "build": _cmd_build, "validate": _cmd_validate, "lint": _cmd_lint,
         "run": _cmd_run, "make": _cmd_make, "nodes": _cmd_nodes,
+        "inspect": _cmd_inspect,
     }[args.cmd](args, cat)
