@@ -5,9 +5,13 @@ A minimal PNG encoder is embedded here to produce deterministic test images
 without any external dependencies (PIL/numpy/etc).
 """
 import io
+import os
 import struct
+import sys
 import zlib
 import pytest
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "..", "scripts"))
 
 from hsd.png import read_png
 

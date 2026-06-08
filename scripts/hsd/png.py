@@ -30,7 +30,6 @@ Usage::
 read_png also accepts any file-like object supporting .read(), or a path string.
 """
 
-import io
 import struct
 import zlib
 
