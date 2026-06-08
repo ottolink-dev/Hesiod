@@ -31,7 +31,6 @@ graph that more complex specs extend. It produces one heightmap output (`heightm
 Run command:
 
 ```bash
-HESIOD_BIN=/home/barrulus/dev/Hesiod/build/bin/hesiod \
 QT_QPA_PLATFORM=offscreen \
 PYTHONPATH=scripts python3 -m hsd make \
   .claude/skills/hesiod-generate/reference/specs/heightmap_export.json \
@@ -75,7 +74,6 @@ rendered to disk via the `ExportTexture` node's internal export path.
 Run command:
 
 ```bash
-HESIOD_BIN=/home/barrulus/dev/Hesiod/build/bin/hesiod \
 QT_QPA_PLATFORM=offscreen \
 PYTHONPATH=scripts python3 -m hsd make \
   .claude/skills/hesiod-generate/reference/specs/colour_fork.json \
@@ -118,7 +116,6 @@ graph is identical to the minimal case.
 Run command:
 
 ```bash
-HESIOD_BIN=/home/barrulus/dev/Hesiod/build/bin/hesiod \
 QT_QPA_PLATFORM=offscreen \
 PYTHONPATH=scripts python3 -m hsd make \
   .claude/skills/hesiod-generate/reference/specs/tiled_large.json \
@@ -131,7 +128,6 @@ Files written: `large.png` (16-bit grayscale heightmap) and `large_preview.png`
 To test at reduced resolution without editing the spec:
 
 ```bash
-HESIOD_BIN=/home/barrulus/dev/Hesiod/build/bin/hesiod \
 QT_QPA_PLATFORM=offscreen \
 PYTHONPATH=scripts python3 -m hsd make \
   .claude/skills/hesiod-generate/reference/specs/tiled_large.json \
@@ -184,7 +180,6 @@ for clean longitude tileability. Spec: [`reference/specs/fmg_globe.json`](specs/
 Smoke test at low resolution (keeps the 2:1 ratio):
 
 ```bash
-HESIOD_BIN=/home/barrulus/dev/Hesiod/build/bin/hesiod \
 QT_QPA_PLATFORM=offscreen \
 PYTHONPATH=scripts python3 -m hsd make \
   .claude/skills/hesiod-generate/reference/specs/fmg_globe.json \
@@ -194,7 +189,6 @@ PYTHONPATH=scripts python3 -m hsd make \
 Full production render (matches the spec's `config` block):
 
 ```bash
-HESIOD_BIN=/home/barrulus/dev/Hesiod/build/bin/hesiod \
 QT_QPA_PLATFORM=offscreen \
 PYTHONPATH=scripts python3 -m hsd make \
   .claude/skills/hesiod-generate/reference/specs/fmg_globe.json \

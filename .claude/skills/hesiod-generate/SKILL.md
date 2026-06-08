@@ -13,20 +13,25 @@ The `hsd` toolkit lets you author, validate, and render Hesiod procedural terrai
 
 ## 2. Prerequisites
 
-All commands run from the **repo root** (`/home/barrulus/dev/Hesiod` or the active worktree root). Prefix every invocation with `PYTHONPATH=scripts`:
+All commands run from the **repository root** (the directory containing `scripts/` and `Hesiod/`). Prefix every invocation with `PYTHONPATH=scripts`:
 
 ```bash
 PYTHONPATH=scripts python3 -m hsd <subcommand> [args]
 ```
 
-For rendering (the `--run` flag or `hsd run`), point at the Hesiod binary and suppress the display:
+For rendering (the `--run` flag or `hsd run`), the runner auto-locates the Hesiod binary and you must suppress the display:
 
-```bash
-export HESIOD_BIN=/home/barrulus/dev/Hesiod/build/bin/hesiod
-export QT_QPA_PLATFORM=offscreen
-```
+- **In-tree build** (`build/bin/hesiod` exists under the repo root): no extra config needed — the runner finds it automatically.
+- **Binary elsewhere**: set `HESIOD_BIN` before running:
+  ```bash
+  export HESIOD_BIN=/path/to/hesiod
+  ```
+- **Always** set `QT_QPA_PLATFORM=offscreen` for headless rendering:
+  ```bash
+  export QT_QPA_PLATFORM=offscreen
+  ```
 
-Both env vars must be set; without `HESIOD_BIN` the runner raises an error, and without `QT_QPA_PLATFORM=offscreen` it tries to open an X display.
+Without `QT_QPA_PLATFORM=offscreen` the binary tries to open an X display. Without a binary (either in-tree or via `HESIOD_BIN`), the runner raises an error.
 
 ---
 
@@ -62,7 +67,6 @@ Both env vars must be set; without `HESIOD_BIN` the runner raises an error, and 
 5. **Build + run in one step.**
 
    ```bash
-   HESIOD_BIN=/home/barrulus/dev/Hesiod/build/bin/hesiod \
    QT_QPA_PLATFORM=offscreen \
    PYTHONPATH=scripts python3 -m hsd make my_spec.json -o out.hsd --run \
      --shape 1024,1024 --tiling 1,1 --overlap 0.0
@@ -100,7 +104,7 @@ You can also separate build and run:
 PYTHONPATH=scripts python3 -m hsd build my_spec.json -o out.hsd
 
 # run a pre-built .hsd
-HESIOD_BIN=... QT_QPA_PLATFORM=offscreen \
+QT_QPA_PLATFORM=offscreen \
 PYTHONPATH=scripts python3 -m hsd run out.hsd --shape 1024,1024
 ```
 
@@ -197,7 +201,6 @@ Verified ready-to-run specs in [`reference/specs/`](reference/specs/):
 Run a recipe directly:
 
 ```bash
-HESIOD_BIN=/home/barrulus/dev/Hesiod/build/bin/hesiod \
 QT_QPA_PLATFORM=offscreen \
 PYTHONPATH=scripts python3 -m hsd make \
   .claude/skills/hesiod-generate/reference/specs/heightmap_export.json \
@@ -211,9 +214,9 @@ PYTHONPATH=scripts python3 -m hsd make \
 ### Seed sweep — shell loop
 
 ```bash
-HESIOD_BIN=/home/barrulus/dev/Hesiod/build/bin/hesiod
-QT_QPA_PLATFORM=offscreen
-export HESIOD_BIN QT_QPA_PLATFORM
+export QT_QPA_PLATFORM=offscreen
+# If hesiod is not at build/bin/hesiod under the repo root, also set:
+# export HESIOD_BIN=/path/to/hesiod
 
 for seed in 1 2 3 4 5; do
   # write a per-seed spec
