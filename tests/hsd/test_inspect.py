@@ -257,6 +257,31 @@ class TestProfile:
         with pytest.raises((ValueError, KeyError, Exception)):
             profile(img, "diagonal", 4)
 
+    def test_row_profile_n1_returns_middle_row(self):
+        """
+        profile(img, 'row', 1) should return the mean of the MIDDLE row
+        (index height//2), not index 0.
+
+        Use a 5-row image where each row has a distinct constant value:
+          row 0: all 10,  row 1: all 50,  row 2: all 200,  row 3: all 50,  row 4: all 10
+        Middle row = index 2 → mean = 200/255.
+        """
+        rows = [
+            [10] * 4,   # row 0
+            [50] * 4,   # row 1
+            [200] * 4,  # row 2  ← middle (5//2 = 2)
+            [50] * 4,   # row 3
+            [10] * 4,   # row 4
+        ]
+        img = _make_img(4, 5, 8, 0, rows)
+        result = profile(img, "row", 1)
+        assert len(result) == 1
+        assert result[0] == pytest.approx(200 / 255, abs=1e-5), (
+            f"profile(img,'row',1) should return middle row mean (200/255≈{200/255:.4f}), "
+            f"got {result[0]:.4f}. "
+            "This checks that n=1 uses index height//2, not index 0."
+        )
+
 
 # ---------------------------------------------------------------------------
 # Optional binary-gated integration test

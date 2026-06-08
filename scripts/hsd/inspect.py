@@ -121,14 +121,14 @@ def edges(img: dict) -> dict:
 
 def landfrac(img: dict, threshold: float = 0.5) -> float:
     """
-    Return the fraction of pixels whose normalised value is >= *threshold*.
+    Return the fraction of pixels whose normalised value is at or above *threshold*.
 
     Parameters
     ----------
     img:
         Decoded image dict from :func:`hsd.png.read_png`.
     threshold:
-        Normalised value (0..1) above which a pixel is counted as "land".
+        Normalised value (0..1) at or above which a pixel is counted as "land".
         Default 0.5.
 
     Returns
@@ -158,7 +158,8 @@ def profile(img: dict, axis: str, n: int) -> list:
         ``"col"`` — *n* evenly-spaced columns from left to right; each value
         is the mean (normalised) of all pixels in that column.
     n:
-        Number of samples to return.
+        Number of samples to return.  When *n* is 1, the single sample is
+        taken from the midpoint (``total // 2``) rather than the first index.
 
     Returns
     -------
@@ -186,7 +187,7 @@ def profile(img: dict, axis: str, n: int) -> list:
             return sum(lrows[y][i] for y in range(height)) / height
 
     if n == 1:
-        indices = [0]
+        indices = [total // 2]
     else:
         # n evenly-spaced indices spanning [0, total-1]
         indices = [round(i * (total - 1) / (n - 1)) for i in range(n)]

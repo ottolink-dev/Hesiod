@@ -69,13 +69,15 @@ def _paeth_predictor(a, b, c):
     return c
 
 
-def _unfilter(filter_type, raw, prev, bps):
+def _unfilter(filter_type, raw, prev, bpp):
     """
     Undo a single PNG scanline filter.
 
     raw       : bytes of the filtered scanline (without the filter byte)
     prev      : bytes of the *reconstructed* previous scanline, or None
-    bps       : bytes per sample (1 for 8-bit, 2 for 16-bit)
+    bpp       : bytes per pixel = channels * (bitdepth // 8)
+                This is the look-back stride used by Sub/Average/Paeth filters
+                per PNG spec RFC 2083 §6.
     Returns   : bytearray of reconstructed scanline bytes
     """
     n = len(raw)
@@ -86,7 +88,7 @@ def _unfilter(filter_type, raw, prev, bps):
 
     elif filter_type == 1:  # Sub
         for i in range(n):
-            a = out[i - bps] if i >= bps else 0
+            a = out[i - bpp] if i >= bpp else 0
             out[i] = (raw[i] + a) & 0xFF
 
     elif filter_type == 2:  # Up
@@ -96,15 +98,15 @@ def _unfilter(filter_type, raw, prev, bps):
 
     elif filter_type == 3:  # Average
         for i in range(n):
-            a = out[i - bps] if i >= bps else 0
+            a = out[i - bpp] if i >= bpp else 0
             b = prev[i] if prev is not None else 0
             out[i] = (raw[i] + ((a + b) >> 1)) & 0xFF
 
     elif filter_type == 4:  # Paeth
         for i in range(n):
-            a = out[i - bps] if i >= bps else 0
+            a = out[i - bpp] if i >= bpp else 0
             b = prev[i] if prev is not None else 0
-            c = prev[i - bps] if (prev is not None and i >= bps) else 0
+            c = prev[i - bpp] if (prev is not None and i >= bpp) else 0
             out[i] = (raw[i] + _paeth_predictor(a, b, c)) & 0xFF
 
     else:
@@ -190,7 +192,8 @@ def read_png(source):
         )
 
     channels = _COLOR_TYPE_CHANNELS[color_type]
-    bps = bitdepth // 8  # bytes per sample
+    bps = bitdepth // 8  # bytes per sample (1 for 8-bit, 2 for 16-bit)
+    bpp = channels * bps  # bytes per pixel — look-back stride for Sub/Avg/Paeth
 
     # Decompress all IDAT chunks together
     raw_idat = b"".join(idat_chunks)
@@ -216,7 +219,7 @@ def read_png(source):
         raw = scanline_data[pos:pos + stride]
         pos += stride
 
-        reconstructed = _unfilter(filter_type, raw, prev_reconstructed, bps)
+        reconstructed = _unfilter(filter_type, raw, prev_reconstructed, bpp)
         prev_reconstructed = bytes(reconstructed)
 
         # Parse samples from reconstructed bytes
