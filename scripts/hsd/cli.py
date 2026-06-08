@@ -3,6 +3,7 @@ import json
 import sys
 
 from hsd.catalog import Catalog
+from hsd.enums import EnumCatalog
 from hsd.spec import Spec
 from hsd.compile import compile_spec
 from hsd.validate import validate_spec, lint_file
@@ -116,6 +117,11 @@ def _cmd_nodes(args, cat):
         if not cat.has_node(args.show):
             sys.stderr.write(f"unknown node type: {args.show}\n")
             return 1
+        # Load enum catalog once; skip enrichment if missing.
+        try:
+            enum_catalog = EnumCatalog.load()
+        except FileNotFoundError:
+            enum_catalog = None
         print(f"{args.show}  [{cat.category(args.show)}]")
         print(f"  {cat.description(args.show)}")
         print("  ports:")
@@ -123,7 +129,15 @@ def _cmd_nodes(args, cat):
             print(f"    {p['type']:6} {pid}: {p['data_type']}")
         print("  params:")
         for pid, p in cat.params(args.show).items():
-            print(f"    {pid}: {p['type']}")
+            ptype = p["type"]
+            if ptype in ("Enumeration", "Choice") and enum_catalog is not None:
+                choices = enum_catalog.choices(args.show, pid)
+                if choices is not None:
+                    print(f"    {pid}: {ptype}  [{' | '.join(choices)}]")
+                else:
+                    print(f"    {pid}: {ptype}  (pass a full value-object dict)")
+            else:
+                print(f"    {pid}: {ptype}")
         return 0
     for t in cat.node_types():
         if args.category and not cat.category(t).startswith(args.category):

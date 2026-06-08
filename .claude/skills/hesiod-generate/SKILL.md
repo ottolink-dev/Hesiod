@@ -157,6 +157,15 @@ Rules:
 - Only list params you want to override — omitted params use Hesiod's defaults (tolerant loader).
 - `config` can be omitted; defaults are `shape:[1024,1024]`, `tiling:[1,1]`, `overlap:0.0`.
 - `export` is required for file output. Without it the graph runs but writes nothing.
+- **Enumeration / Choice params take a plain string.** The toolkit resolves it to the correct
+  integer. Run `hsd nodes --show TYPE` to see valid choices listed inline next to the param name.
+  Example — `"blending_method": "maximum"` for a `Blend` node. A handful of uncatalogued enums
+  still need a full value-object dict; `--show` will print `(pass a full value-object dict)` for
+  those, and validation will flag invalid strings.
+
+  ```json
+  {"id": "blend", "type": "Blend", "params": {"blending_method": "maximum"}}
+  ```
 
 ---
 

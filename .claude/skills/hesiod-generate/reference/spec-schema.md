@@ -112,13 +112,33 @@ The following param types can be set with direct JSON values:
 | `Vec2Float` | `[x, y]` | `[0.5, 0.5]` |
 | `Value range` | `[lo, hi]` | `[0.0, 1.0]` |
 | `Choice` | string | `"turbulence"` |
+| `Enumeration` | string | `"maximum"` |
 | `String` | string | `"my_label"` |
 | `Color` | `[r, g, b, a]` | `[0.2, 0.4, 0.8, 1.0]` |
 
-**Advanced types** — `Color gradient`, `Cloud`, `Path`, `Enumeration`, `Filename`, and any other
-type not in the table above — require passing a full value object (a dict matching Hesiod's
-internal representation). Do not attempt to set these with a scalar or simple array. Inspect the
-format with `hsd nodes --show TYPE` and look at `.hsd` files produced by the GUI for reference.
+**Enumeration and Choice params accept a plain string.** The toolkit resolves it to the correct
+integer at compile time. Run `hsd nodes --show TYPE` to see valid choices inline — they appear
+in the param line as a `[a | b | c | ...]` list. Example:
+
+```
+blending_method: Enumeration  [add | maximum | maximum_smooth | minimum | multiply | replace | substract | ...]
+```
+
+Set the param in your spec exactly as the choice string shown:
+
+```json
+{"id": "blend", "type": "Blend", "params": {"blending_method": "maximum"}}
+```
+
+**Escape hatch:** a small number of `Enumeration` params are not yet catalogued (e.g. the
+`method` param on `CloudRandom`). For these, `hsd nodes --show TYPE` prints
+`(pass a full value-object dict)` and validation will report the issue. Use a full value-object
+dict in that case, copying the format from a `.hsd` file produced by the GUI.
+
+**Advanced types** — `Color gradient`, `Cloud`, `Path`, `Filename`, and any other type not in
+the table above — require passing a full value object (a dict matching Hesiod's internal
+representation). Do not attempt to set these with a scalar or simple array. Look at `.hsd` files
+produced by the GUI for reference.
 
 ---
 
@@ -155,7 +175,7 @@ NoiseFbm  [Primitive/Coherent]
   params:
     kw: Wavenumber
     lacunarity: Float
-    noise_type: Enumeration
+    noise_type: Enumeration  [OpenSimplex2 | OpenSimplex2S | Perlin | Perlin (billow) | Perlin (half) | Value | Value (cubic) | Value (linear) | Worley | Worley (doube) | Worley (value)]
     octaves: Integer
     persistence: Float
     post_gain: Float
@@ -170,7 +190,8 @@ NoiseFbm  [Primitive/Coherent]
 
 The output shows each port's direction (`input`/`output`), name, and `data_type`; and each param's
 name and type string. Use the type string to look up the JSON form in the scalar-types table above.
-Note that `noise_type` is `Enumeration` — an advanced type that requires a full value object.
+Note that `noise_type` is `Enumeration` — its valid choices are listed inline; pass a plain string
+(e.g. `"Perlin"`) in your spec and the toolkit resolves it automatically.
 
 ---
 

@@ -36,3 +36,25 @@ def test_nodes_show(capsys):
     assert rc == 0
     assert "output" in out and "VirtualArray" in out
     assert "kw" in out
+
+
+def test_nodes_show_enum_choices(capsys):
+    """--show should list valid choices inline for catalogued Enumeration params."""
+    rc = main(["nodes", "--show", "Blend"])
+    out = capsys.readouterr().out
+    assert rc == 0
+    # blending_method is Enumeration and catalogued — choices must appear
+    assert "blending_method: Enumeration" in out
+    assert "maximum" in out
+    assert "replace" in out
+    # choices are presented as a bracketed pipe-separated list
+    assert "[" in out and "|" in out
+
+
+def test_nodes_show_enum_choices_noisefbm(capsys):
+    """--show lists noise_type choices for NoiseFbm."""
+    rc = main(["nodes", "--show", "NoiseFbm"])
+    out = capsys.readouterr().out
+    assert rc == 0
+    assert "noise_type: Enumeration" in out
+    assert "Perlin" in out
