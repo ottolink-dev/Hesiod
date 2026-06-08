@@ -233,7 +233,7 @@
         "label": "Badlands",
         "parameters": {
             "angle": {
-                "description": "No description",
+                "description": "Expressed in degrees.",
                 "key": "angle",
                 "label": "angle",
                 "type": "Float"
@@ -1100,7 +1100,7 @@
         "label": "Bump",
         "parameters": {
             "center": {
-                "description": "Reference center within the heightmap.",
+                "description": "Reference center within the heightmap. Coordinates are in domain units; center.y is measured from the bottom of the map (y increases upward).",
                 "key": "center",
                 "label": "center",
                 "type": "Vec2Float"
@@ -1199,7 +1199,7 @@
         "label": "BumpLorentzian",
         "parameters": {
             "center": {
-                "description": "Reference center within the heightmap.",
+                "description": "Reference center within the heightmap. Coordinates are in domain units; center.y is measured from the bottom of the map (y increases upward).",
                 "key": "center",
                 "label": "center",
                 "type": "Vec2Float"
@@ -1253,7 +1253,7 @@
                 "type": "Float"
             },
             "radius": {
-                "description": "Filter radius with respect to the domain size.",
+                "description": "Filter radius with respect to the domain size. Specified in domain units (same scale as center); on a non-square map the footprint is therefore elliptical, since x and y span different physical extents.",
                 "key": "radius",
                 "label": "radius",
                 "type": "Float"
@@ -1304,7 +1304,7 @@
         "label": "Caldera",
         "parameters": {
             "center": {
-                "description": "Reference center within the heightmap.",
+                "description": "Reference center within the heightmap. Coordinates are in domain units; center.y is measured from the bottom of the map (y increases upward).",
                 "key": "center",
                 "label": "center",
                 "type": "Vec2Float"
@@ -1358,7 +1358,7 @@
                 "type": "Float"
             },
             "radius": {
-                "description": "Crater radius.",
+                "description": "Crater radius. Specified in domain units (same scale as center); on a non-square map the footprint is therefore elliptical, since x and y span different physical extents.",
                 "key": "radius",
                 "label": "radius",
                 "type": "Float"
@@ -1508,13 +1508,13 @@
         "label": "ClampOblique",
         "parameters": {
             "angle": {
-                "description": "Angle of the oblique plane, defining its orientation.",
+                "description": "Angle of the oblique plane, defining its orientation. Expressed in degrees.",
                 "key": "angle",
                 "label": "Angle",
                 "type": "Float"
             },
             "center": {
-                "description": "Center point of the oblique plane used for clamping.",
+                "description": "Center point of the oblique plane used for clamping. Coordinates are in domain units; center.y is measured from the bottom of the map (y increases upward).",
                 "key": "center",
                 "label": "Center",
                 "type": "Vec2Float"
@@ -2871,7 +2871,7 @@
                 "type": "Float"
             },
             "center": {
-                "description": "Center position of the cone in world coordinate space.",
+                "description": "Center position of the cone in world coordinate space. Coordinates are in domain units; center.y is measured from the bottom of the map (y increases upward).",
                 "key": "center",
                 "label": "center",
                 "type": "Vec2Float"
@@ -2994,7 +2994,7 @@
                 "type": "Float"
             },
             "center": {
-                "description": "Center position of the cone in world coordinate space.",
+                "description": "Center position of the cone in world coordinate space. Coordinates are in domain units; center.y is measured from the bottom of the map (y increases upward).",
                 "key": "center",
                 "label": "center",
                 "type": "Vec2Float"
@@ -3072,7 +3072,7 @@
                 "type": "Float"
             },
             "radius": {
-                "description": "Effective radius of the cone in coordinate space units.",
+                "description": "Effective radius of the cone in coordinate space units. Specified in domain units (same scale as center); on a non-square map the footprint is therefore elliptical, since x and y span different physical extents.",
                 "key": "radius",
                 "label": "radius",
                 "type": "Float"
@@ -3153,7 +3153,7 @@
                 "type": "Float"
             },
             "center": {
-                "description": "Center position of the cone in world coordinate space.",
+                "description": "Center position of the cone in world coordinate space. Coordinates are in domain units; center.y is measured from the bottom of the map (y increases upward).",
                 "key": "center",
                 "label": "center",
                 "type": "Vec2Float"
@@ -3207,7 +3207,7 @@
                 "type": "Float"
             },
             "radius": {
-                "description": "Effective radius of the cone in coordinate space units.",
+                "description": "Effective radius of the cone in coordinate space units. Specified in domain units (same scale as center); on a non-square map the footprint is therefore elliptical, since x and y span different physical extents.",
                 "key": "radius",
                 "label": "radius",
                 "type": "Float"
@@ -3417,7 +3417,7 @@
         "label": "Crater",
         "parameters": {
             "angle": {
-                "description": "No description",
+                "description": "Expressed in degrees.",
                 "key": "angle",
                 "label": "Rotation Angle",
                 "type": "Float"
@@ -3429,7 +3429,7 @@
                 "type": "Float"
             },
             "center": {
-                "description": "Reference center within the heightmap.",
+                "description": "Reference center within the heightmap. Coordinates are in domain units; center.y is measured from the bottom of the map (y increases upward).",
                 "key": "center",
                 "label": "Center",
                 "type": "Vec2Float"
@@ -3561,7 +3561,7 @@
                 "type": "Float"
             },
             "radius": {
-                "description": "Crater radius.",
+                "description": "Crater radius. Specified in domain units (same scale as center); on a non-square map the footprint is therefore elliptical, since x and y span different physical extents.",
                 "key": "radius",
                 "label": "Crater Radius",
                 "type": "Float"
@@ -4243,7 +4243,7 @@
         "label": "DirectionalBlur",
         "parameters": {
             "angle": {
-                "description": "No description",
+                "description": "Expressed in degrees.",
                 "key": "angle",
                 "label": "angle",
                 "type": "Float"
@@ -6106,7 +6106,7 @@
         "label": "GaborWaveFbm",
         "parameters": {
             "angle": {
-                "description": "Controls the base orientation of the Gabor wavelets, influencing the dominant direction of the noise pattern.",
+                "description": "Controls the base orientation of the Gabor wavelets, influencing the dominant direction of the noise pattern. Expressed in degrees.",
                 "key": "angle",
                 "label": "angle",
                 "type": "Float"
@@ -6667,7 +6667,7 @@
         "label": "GaussianPulse",
         "parameters": {
             "center": {
-                "description": "Reference center within the heightmap.",
+                "description": "Reference center within the heightmap. Coordinates are in domain units; center.y is measured from the bottom of the map (y increases upward).",
                 "key": "center",
                 "label": "center",
                 "type": "Vec2Float"
@@ -6709,7 +6709,7 @@
                 "type": "Float"
             },
             "radius": {
-                "description": "Pulse half-width.",
+                "description": "Pulse half-width. Specified in domain units (same scale as center); on a non-square map the footprint is therefore elliptical, since x and y span different physical extents.",
                 "key": "radius",
                 "label": "radius",
                 "type": "Float"
@@ -6760,7 +6760,7 @@
                 "type": "Float"
             },
             "angle": {
-                "description": "Sets the primary orientation of the wave structures in the noise.",
+                "description": "Sets the primary orientation of the wave structures in the noise. Expressed in degrees.",
                 "key": "angle",
                 "label": "angle",
                 "type": "Float"
@@ -7714,7 +7714,7 @@
     },
     "HydraulicParticle": {
         "category": "Erosion/Hydraulic",
-        "description": "HydraulicParticle is a particle-based hydraulic erosion operator that simulates the erosion and sediment transport processes that occur due to the flow of water over a terrain represented by the input heightmap. This type of operator models erosion by tracking the movement of virtual particles (or sediment particles) as they are transported by water flow and interact with the terrain.",
+        "description": "HydraulicParticle is a particle-based hydraulic erosion operator that simulates the erosion and sediment transport processes that occur due to the flow of water over a terrain represented by the input heightmap. This type of operator models erosion by tracking the movement of virtual particles (or sediment particles) as they are transported by water flow and interact with the terrain. Erosion is gradient-driven: flat or masked-to-zero input has no slope and produces little or no change. Erode full-domain relief first, then multiply by the land mask.",
         "label": "HydraulicParticle",
         "parameters": {
             "angle_bias": {
@@ -9230,7 +9230,7 @@
         "label": "IslandLandMask",
         "parameters": {
             "center": {
-                "description": "No description",
+                "description": "No description Coordinates are in domain units; center.y is measured from the bottom of the map (y increases upward).",
                 "key": "center",
                 "label": "center",
                 "type": "Vec2Float"
@@ -9320,7 +9320,7 @@
                 "type": "Float"
             },
             "radius": {
-                "description": "No description",
+                "description": "No description Specified in domain units (same scale as center); on a non-square map the footprint is therefore elliptical, since x and y span different physical extents.",
                 "key": "radius",
                 "label": "radius",
                 "type": "Float"
@@ -9419,7 +9419,7 @@
         "label": "KernelGabor",
         "parameters": {
             "angle": {
-                "description": "Kernel angle.",
+                "description": "Kernel angle. Expressed in degrees.",
                 "key": "angle",
                 "label": "angle",
                 "type": "Float"
@@ -10757,7 +10757,7 @@
         "label": "MountainCone",
         "parameters": {
             "angle": {
-                "description": "No description",
+                "description": "Expressed in degrees.",
                 "key": "angle",
                 "label": "angle",
                 "type": "Float"
@@ -10769,7 +10769,7 @@
                 "type": "Float"
             },
             "center": {
-                "description": "No description",
+                "description": "No description Coordinates are in domain units; center.y is measured from the bottom of the map (y increases upward).",
                 "key": "center",
                 "label": "center",
                 "type": "Vec2Float"
@@ -10910,7 +10910,7 @@
                 "type": "Bool"
             },
             "angle": {
-                "description": "No description",
+                "description": "Expressed in degrees.",
                 "key": "angle",
                 "label": "angle",
                 "type": "Float"
@@ -10928,7 +10928,7 @@
                 "type": "Float"
             },
             "center": {
-                "description": "No description",
+                "description": "No description Coordinates are in domain units; center.y is measured from the bottom of the map (y increases upward).",
                 "key": "center",
                 "label": "center",
                 "type": "Vec2Float"
@@ -11069,7 +11069,7 @@
                 "type": "Float"
             },
             "center": {
-                "description": "The center point of the radial mountain range as normalized coordinates within [0, 1].",
+                "description": "The center point of the radial mountain range as normalized coordinates within [0, 1]. Coordinates are in domain units; center.y is measured from the bottom of the map (y increases upward).",
                 "key": "center",
                 "label": "center",
                 "type": "Vec2Float"
@@ -11210,7 +11210,7 @@
                 "type": "Bool"
             },
             "angle": {
-                "description": "No description",
+                "description": "Expressed in degrees.",
                 "key": "angle",
                 "label": "angle",
                 "type": "Float"
@@ -11222,7 +11222,7 @@
                 "type": "Float"
             },
             "center": {
-                "description": "No description",
+                "description": "No description Coordinates are in domain units; center.y is measured from the bottom of the map (y increases upward).",
                 "key": "center",
                 "label": "center",
                 "type": "Vec2Float"
@@ -11357,7 +11357,7 @@
                 "type": "Bool"
             },
             "angle": {
-                "description": "No description",
+                "description": "Expressed in degrees.",
                 "key": "angle",
                 "label": "angle",
                 "type": "Float"
@@ -11381,7 +11381,7 @@
                 "type": "Float"
             },
             "center": {
-                "description": "No description",
+                "description": "No description Coordinates are in domain units; center.y is measured from the bottom of the map (y increases upward).",
                 "key": "center",
                 "label": "center",
                 "type": "Vec2Float"
@@ -11633,7 +11633,7 @@
                 "type": "Float"
             },
             "center": {
-                "description": "2D center point of the rotated step axis, expressed in normalized domain coordinates.",
+                "description": "2D center point of the rotated step axis, expressed in normalized domain coordinates. Coordinates are in domain units; center.y is measured from the bottom of the map (y increases upward).",
                 "key": "center",
                 "label": "Center",
                 "type": "Vec2Float"
@@ -12899,7 +12899,7 @@
                 "type": "Float"
             },
             "angle": {
-                "description": "Angle.",
+                "description": "Angle. Expressed in degrees.",
                 "key": "angle",
                 "label": "angle",
                 "type": "Float"
@@ -12911,7 +12911,7 @@
                 "type": "Float"
             },
             "center": {
-                "description": "Reference center within the heightmap.",
+                "description": "Reference center within the heightmap. Coordinates are in domain units; center.y is measured from the bottom of the map (y increases upward).",
                 "key": "center",
                 "label": "center",
                 "type": "Vec2Float"
@@ -14889,7 +14889,7 @@
         "label": "RadialDisplacementToXy",
         "parameters": {
             "center": {
-                "description": "Reference center within the heightmap.",
+                "description": "Reference center within the heightmap. Coordinates are in domain units; center.y is measured from the bottom of the map (y increases upward).",
                 "key": "center",
                 "label": "center",
                 "type": "Vec2Float"
@@ -15030,7 +15030,7 @@
                 "type": "Float"
             },
             "angle": {
-                "description": "TODO",
+                "description": "TODO Expressed in degrees.",
                 "key": "angle",
                 "label": "angle",
                 "type": "Float"
@@ -15755,7 +15755,7 @@
                 "type": "Float"
             },
             "center": {
-                "description": "Reference center within the heightmap.",
+                "description": "Reference center within the heightmap. Coordinates are in domain units; center.y is measured from the bottom of the map (y increases upward).",
                 "key": "center",
                 "label": "Center",
                 "type": "Vec2Float"
@@ -15857,7 +15857,7 @@
                 "type": "Float"
             },
             "radius": {
-                "description": "Half-width of the rift in normalized domain units.",
+                "description": "Half-width of the rift in normalized domain units. Specified in domain units (same scale as center); on a non-square map the footprint is therefore elliptical, since x and y span different physical extents.",
                 "key": "radius",
                 "label": "Radius",
                 "type": "Float"
@@ -15914,7 +15914,7 @@
                 "type": "Float"
             },
             "angle": {
-                "description": "No description",
+                "description": "Expressed in degrees.",
                 "key": "angle",
                 "label": "angle",
                 "type": "Float"
@@ -15926,7 +15926,7 @@
                 "type": "Bool"
             },
             "center": {
-                "description": "No description",
+                "description": "No description Coordinates are in domain units; center.y is measured from the bottom of the map (y increases upward).",
                 "key": "center",
                 "label": "center",
                 "type": "Vec2Float"
@@ -16151,7 +16151,7 @@
         "label": "Rotate",
         "parameters": {
             "angle": {
-                "description": "No description",
+                "description": "Expressed in degrees.",
                 "key": "angle",
                 "label": "angle",
                 "type": "Float"
@@ -16184,7 +16184,7 @@
         "label": "RotateDisplacement",
         "parameters": {
             "angle": {
-                "description": "No description",
+                "description": "Expressed in degrees.",
                 "key": "angle",
                 "label": "angle",
                 "type": "Float"
@@ -16550,7 +16550,7 @@
         "label": "SelectAngle",
         "parameters": {
             "angle": {
-                "description": "Selection center value.",
+                "description": "Selection center value. Expressed in degrees.",
                 "key": "angle",
                 "label": "angle",
                 "type": "Float"
@@ -16919,7 +16919,7 @@
         "label": "SelectInwardOutward",
         "parameters": {
             "center": {
-                "description": "Reference center within the heightmap.",
+                "description": "Reference center within the heightmap. Coordinates are in domain units; center.y is measured from the bottom of the map (y increases upward).",
                 "key": "center",
                 "label": "center",
                 "type": "Vec2Float"
@@ -17877,6 +17877,36 @@
                 "key": "value_west",
                 "label": "value_west",
                 "type": "Float"
+            },
+            "radius_west": {
+                "key": "radius_west",
+                "label": "radius_west",
+                "type": "Float",
+                "description": "West-edge buffer thickness (fraction of width)."
+            },
+            "radius_east": {
+                "key": "radius_east",
+                "label": "radius_east",
+                "type": "Float",
+                "description": "East-edge buffer thickness (fraction of width)."
+            },
+            "radius_north": {
+                "key": "radius_north",
+                "label": "radius_north",
+                "type": "Float",
+                "description": "North (top) edge buffer thickness (fraction of height)."
+            },
+            "radius_south": {
+                "key": "radius_south",
+                "label": "radius_south",
+                "type": "Float",
+                "description": "South (bottom) edge buffer thickness (fraction of height)."
+            },
+            "unique_border_radius": {
+                "key": "unique_border_radius",
+                "label": "unique_border_radius",
+                "type": "Bool",
+                "description": "When true, use the single `radius` for all edges; when false, use the per-edge radii. N/S buffers scale by map height, E/W by width."
             }
         },
         "ports": {
@@ -18008,7 +18038,7 @@
                 "type": "Bool"
             },
             "angle": {
-                "description": "No description",
+                "description": "Expressed in degrees.",
                 "key": "angle",
                 "label": "angle",
                 "type": "Float"
@@ -18026,7 +18056,7 @@
                 "type": "Float"
             },
             "center": {
-                "description": "No description",
+                "description": "No description Coordinates are in domain units; center.y is measured from the bottom of the map (y increases upward).",
                 "key": "center",
                 "label": "center",
                 "type": "Vec2Float"
@@ -18203,13 +18233,13 @@
         "label": "Slope",
         "parameters": {
             "angle": {
-                "description": "Angle.",
+                "description": "Angle. Expressed in degrees.",
                 "key": "angle",
                 "label": "angle",
                 "type": "Float"
             },
             "center": {
-                "description": "Reference center within the heightmap.",
+                "description": "Reference center within the heightmap. Coordinates are in domain units; center.y is measured from the bottom of the map (y increases upward).",
                 "key": "center",
                 "label": "center",
                 "type": "Vec2Float"
@@ -19205,7 +19235,7 @@
         "label": "SteepenConvective",
         "parameters": {
             "angle": {
-                "description": "TODO",
+                "description": "TODO Expressed in degrees.",
                 "key": "angle",
                 "label": "angle",
                 "type": "Float"
@@ -19256,13 +19286,13 @@
         "label": "Step",
         "parameters": {
             "angle": {
-                "description": "Angle.",
+                "description": "Angle. Expressed in degrees.",
                 "key": "angle",
                 "label": "angle",
                 "type": "Float"
             },
             "center": {
-                "description": "Reference center within the heightmap.",
+                "description": "Reference center within the heightmap. Coordinates are in domain units; center.y is measured from the bottom of the map (y increases upward).",
                 "key": "center",
                 "label": "center",
                 "type": "Vec2Float"
@@ -19349,7 +19379,7 @@
         "label": "Strata",
         "parameters": {
             "angle": {
-                "description": "No description",
+                "description": "Expressed in degrees.",
                 "key": "angle",
                 "label": "angle",
                 "type": "Float"
@@ -19586,7 +19616,7 @@
                 "type": "Float"
             },
             "angle": {
-                "description": "No description",
+                "description": "Expressed in degrees.",
                 "key": "angle",
                 "label": "Orientation Angle",
                 "type": "Float"
@@ -21343,7 +21373,7 @@
         "label": "Translate",
         "parameters": {
             "center": {
-                "description": "No description",
+                "description": "No description Coordinates are in domain units; center.y is measured from the bottom of the map (y increases upward).",
                 "key": "center",
                 "label": "center",
                 "type": "Vec2Float"
@@ -21709,7 +21739,7 @@
         "label": "Vorolines",
         "parameters": {
             "angle": {
-                "description": "No description",
+                "description": "Expressed in degrees.",
                 "key": "angle",
                 "label": "angle",
                 "type": "Float"
@@ -21826,7 +21856,7 @@
         "label": "VorolinesFbm",
         "parameters": {
             "angle": {
-                "description": "No description",
+                "description": "Expressed in degrees.",
                 "key": "angle",
                 "label": "angle",
                 "type": "Float"
@@ -22965,7 +22995,7 @@
         "label": "WaveDune",
         "parameters": {
             "angle": {
-                "description": "Angle in the horizontal plane.",
+                "description": "Angle in the horizontal plane. Expressed in degrees.",
                 "key": "angle",
                 "label": "angle",
                 "type": "Float"
@@ -23070,19 +23100,19 @@
         "label": "WaveSine",
         "parameters": {
             "angle": {
-                "description": "Angle in the horizontal plane.",
+                "description": "Angle in the horizontal plane. Expressed in degrees.",
                 "key": "angle",
                 "label": "angle",
                 "type": "Float"
             },
             "kw": {
-                "description": "Base spatial frequencies in the X and Y directions. The frequencies are defined with respect to the entire domain: for example, kw = 2 produces two full oscillations across the domain width (and similarly for the Y direction).",
+                "description": "Base spatial frequencies in the X and Y directions. The frequencies are defined with respect to the entire domain: for example, kw = 2 produces two full oscillations across the domain width (and similarly for the Y direction). Wavenumber in cycles across the unit domain (applied to both X and Y).",
                 "key": "kw",
                 "label": "kw",
                 "type": "Float"
             },
             "phase_shift": {
-                "description": "Phase shift.",
+                "description": "Phase shift. In degrees. Phase offset of cos(2*pi*r + phase); the wave is measured from the domain origin (0,0) and is not symmetric about the centre.",
                 "key": "phase_shift",
                 "label": "phase_shift",
                 "type": "Float"
@@ -23163,7 +23193,7 @@
         "label": "WaveSquare",
         "parameters": {
             "angle": {
-                "description": "Angle in the horizontal plane.",
+                "description": "Angle in the horizontal plane. Expressed in degrees.",
                 "key": "angle",
                 "label": "angle",
                 "type": "Float"
@@ -23256,7 +23286,7 @@
         "label": "WaveTriangular",
         "parameters": {
             "angle": {
-                "description": "Angle in the horizontal plane.",
+                "description": "Angle in the horizontal plane. Expressed in degrees.",
                 "key": "angle",
                 "label": "angle",
                 "type": "Float"
@@ -23820,7 +23850,7 @@
         "label": "Zoom",
         "parameters": {
             "center": {
-                "description": "Reference center within the heightmap.",
+                "description": "Reference center within the heightmap. Coordinates are in domain units; center.y is measured from the bottom of the map (y increases upward).",
                 "key": "center",
                 "label": "center",
                 "type": "Vec2Float"

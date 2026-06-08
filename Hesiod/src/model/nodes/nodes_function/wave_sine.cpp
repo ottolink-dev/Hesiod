@@ -14,47 +14,102 @@ using namespace attr;
 namespace hesiod
 {
 
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
+
+constexpr const char *P_DR = "dr";
+constexpr const char *P_ENV = "envelope";
+constexpr const char *P_OUT = "output";
+
+constexpr const char *A_KW = "kw";
+constexpr const char *A_ANGLE = "angle";
+constexpr const char *A_PHASE_SHIFT = "phase_shift";
+
+// -----------------------------------------------------------------------------
+// Setup
+// -----------------------------------------------------------------------------
+
 void setup_wave_sine_node(BaseNode &node)
 {
   Logger::log()->trace("setup node {}", node.get_label());
 
-  // port(s)
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "dr");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "envelope");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, "output", CONFIG(node));
+  // --- Ports
 
-  // attribute(s)
-  node.add_attr<FloatAttribute>("kw", "kw", 2.f, 0.01f, FLT_MAX);
-  node.add_attr<FloatAttribute>("angle", "angle", 0.f, -180.f, 180.f);
-  node.add_attr<FloatAttribute>("phase_shift", "phase_shift", 0.f, -180.f, 180.f);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_DR);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_ENV);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_OUT, CONFIG(node));
 
-  // attribute(s) order
-  node.set_attr_ordered_key({"kw", "angle", "phase_shift"});
+  // --- Attributes
+
+  node.add_attr<FloatAttribute>(A_KW, "kw", 2.f, 0.01f, FLT_MAX);
+  node.add_attr<FloatAttribute>(A_ANGLE, "angle", 0.f, -180.f, 180.f, "{:.1f}°");
+  node.add_attr<FloatAttribute>(A_PHASE_SHIFT,
+                                "phase_shift",
+                                0.f,
+                                -180.f,
+                                180.f,
+                                "{:.1f}°");
+
+  // --- Attribute(s) order
+
+  node.set_attr_ordered_key({
+      "_GROUPBOX_BEGIN_Wave Parameters",
+      A_KW,
+      A_ANGLE,
+      A_PHASE_SHIFT,
+      "_GROUPBOX_END_",
+  });
 
   setup_post_process_heightmap_attributes(node,
                                           {.add_mix = true, .remap_active_state = true});
 }
 
+// -----------------------------------------------------------------------------
+// Compute
+// -----------------------------------------------------------------------------
+
 void compute_wave_sine_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  // base noise function
-  hmap::VirtualArray *p_dr = node.get_value_ref<hmap::VirtualArray>("dr");
-  hmap::VirtualArray *p_env = node.get_value_ref<hmap::VirtualArray>("envelope");
-  hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>("output");
+  // --- Inputs / Outputs
+
+  auto *p_dr = node.get_value_ref<hmap::VirtualArray>(P_DR);
+  auto *p_env = node.get_value_ref<hmap::VirtualArray>(P_ENV);
+  auto *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
+
+  if (!p_out)
+    return;
+
+  // --- Params
+
+  // clang-format off
+  const auto kw          = node.get_attr<FloatAttribute>(A_KW);
+  const auto angle       = node.get_attr<FloatAttribute>(A_ANGLE);
+  const auto phase_shift = node.get_attr<FloatAttribute>(A_PHASE_SHIFT);
+  // clang-format on
+
+  // phase_shift slider is in degrees (range -180..180, matching `angle`);
+  // hmap::wave_sine expects radians in cos(2*pi*r + phase). Convert here.
+  const float phase_rad = phase_shift * float(M_PI / 180.0);
+
+  // --- Compute
 
   hmap::for_each_tile(
-      {p_out, p_dr},
-      [&node](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &region)
+      {p_dr},
+      {p_out},
+      [&](std::vector<const hmap::Array *> in,
+          std::vector<hmap::Array *>       out,
+          const hmap::TileRegion          &region)
       {
-        hmap::Array *pa_out = p_arrays[0];
-        hmap::Array *pa_dr = p_arrays[1];
+        auto [pa_dr] = unpack<1>(in);
+        auto [pa_out] = unpack<1>(out);
 
         *pa_out = hmap::wave_sine(region.shape,
-                                  node.get_attr<FloatAttribute>("kw"),
-                                  node.get_attr<FloatAttribute>("angle"),
-                                  node.get_attr<FloatAttribute>("phase_shift"),
+                                  kw,
+                                  angle,
+                                  phase_rad,
                                   pa_dr,
                                   nullptr,
                                   nullptr,
@@ -62,7 +117,8 @@ void compute_wave_sine_node(BaseNode &node)
       },
       node.cfg().cm_cpu);
 
-  // post-process
+  // --- Post-process
+
   post_apply_enveloppe(node, *p_out, p_env);
   post_process_heightmap(node, *p_out);
 }
