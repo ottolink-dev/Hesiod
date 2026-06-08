@@ -25,6 +25,6 @@ def test_detects_inconsistent_mirror(tmp_path):
 def test_lint_file_reads_path(tmp_path):
     f = sorted(glob.glob(os.path.join(
         os.path.dirname(__file__), "..", "..", "Hesiod", "data", "examples", "*.hsd")))[0]
-    # lint returns a dict with 'consistency' and 'validation' keys
+    # lint returns a dict with a 'consistency' key (list of model/UI mismatches)
     result = lint_file(f)
-    assert "consistency" in result and "validation" in result
+    assert "consistency" in result and isinstance(result["consistency"], list)

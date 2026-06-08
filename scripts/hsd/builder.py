@@ -11,7 +11,10 @@ class BuilderError(Exception):
 
 class Graph:
     def __init__(self, config=None):
-        self.config = config or {"shape": [1024, 1024], "tiling": [1, 1], "overlap": 0.0}
+        # merge per-key over defaults so a partial config (e.g. only "overlap")
+        # doesn't KeyError on shape/tiling later
+        defaults = {"shape": [1024, 1024], "tiling": [1, 1], "overlap": 0.0}
+        self.config = {**defaults, **(config or {})}
         self._nodes = []          # list of (name, type, value_objects_dict)
         self._name_to_id = {}
         self._links = []          # list of (from_name, from_port, to_name, to_port)

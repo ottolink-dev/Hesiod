@@ -50,7 +50,7 @@ def _cmd_validate(args, cat):
 
 def _cmd_lint(args, cat):
     result = lint_file(args.file)
-    problems = result["consistency"] + result["validation"]
+    problems = result["consistency"]
     if problems:
         for p in problems:
             sys.stderr.write(f"{p}\n")

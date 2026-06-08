@@ -135,4 +135,4 @@ def consistency_errors(hsd):
 def lint_file(path):
     with open(path) as f:
         hsd = json.load(f)
-    return {"consistency": consistency_errors(hsd), "validation": []}
+    return {"consistency": consistency_errors(hsd)}

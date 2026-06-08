@@ -45,3 +45,14 @@ def test_id_count_is_next_free():
     g.add_node("b", "Abs", {})
     hsd = g.to_hsd()
     assert hsd["graph_manager"]["graph_nodes"]["graph"]["id_count"] == 3
+
+
+def test_partial_config_fills_defaults():
+    # a config missing shape/tiling must not KeyError; defaults fill the gaps
+    g = Graph(config={"overlap": 0.5})
+    g.add_node("n", "Abs", {})
+    hsd = g.to_hsd()
+    mc = hsd["graph_manager"]["graph_nodes"]["graph"]["model_config"]
+    assert mc["shape.x"] == 1024 and mc["shape.y"] == 1024
+    assert mc["tiling.x"] == 1 and mc["tiling.y"] == 1
+    assert mc["overlap"] == 0.5
