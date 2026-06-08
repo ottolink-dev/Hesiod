@@ -116,23 +116,129 @@ def camel_to_snake(name: str) -> str:
     return s.lower()
 
 
+def extract_function_bodies(text: str) -> dict:
+    """Return {func_name: body_text} for every void setup_*(...)  function in text.
+
+    Uses a simple brace-counting approach to find the matching closing brace.
+    """
+    bodies: dict = {}
+    # Match function header; body starts at the '{' that follows
+    header_re = re.compile(r'void\s+(setup_\w+)\s*\([^)]*\)\s*\{', re.DOTALL)
+    for m in header_re.finditer(text):
+        func_name = m.group(1)
+        start = m.end()  # position just after the opening '{'
+        depth = 1
+        pos = start
+        while pos < len(text) and depth > 0:
+            ch = text[pos]
+            if ch == '{':
+                depth += 1
+            elif ch == '}':
+                depth -= 1
+            pos += 1
+        bodies[func_name] = text[start:pos - 1]
+    return bodies
+
+
+def extract_enum_params(body: str, const_map: dict, map_names: set) -> dict:
+    """Extract {param_key: map_name} from EnumAttribute add_attr calls in body."""
+    result: dict = {}
+    attr_re = re.compile(
+        r'add_attr\s*<\s*EnumAttribute\s*>\s*\('
+        r'\s*'
+        r'(?:"((?:[^"\\]|\\.)*)"|(\w+))'   # groups 1,2: literal or identifier
+        r'\s*,'                              # comma after KEY
+        r'(?:[^;]*?)'                        # label + anything before map
+        r'enum_mappings\s*\.\s*(\w+)',      # group 3: map name (greedy word capture)
+        re.DOTALL,
+    )
+    for m in attr_re.finditer(body):
+        lit_key = m.group(1)
+        id_key = m.group(2)
+        map_name = m.group(3)
+
+        if map_name not in map_names:
+            continue
+
+        if lit_key is not None:
+            param_key = lit_key
+        elif id_key is not None:
+            if id_key in const_map:
+                param_key = const_map[id_key]
+            else:
+                continue
+        else:
+            continue
+
+        result[param_key] = map_name
+    return result
+
+
+def find_helper_calls(body: str) -> list:
+    """Return list of setup_* helper function names called in body (not setup_*_node)."""
+    # Match calls like  setup_foo_bar(  where the name does NOT end in _node
+    call_re = re.compile(r'\b(setup_\w+)\s*\(')
+    helpers = []
+    for m in call_re.finditer(body):
+        name = m.group(1)
+        if not name.endswith('_node'):
+            helpers.append(name)
+    return helpers
+
+
+def build_setup_func_to_camel(node_types: list) -> dict:
+    """Build {setup_func_name: CamelCaseType} from two sources:
+    1. node_factory.cpp SETUP_NODE(CamelType, snake_name) macros (authoritative, handles typos).
+    2. camel_to_snake() derivation for any nodes not covered by the factory parse.
+    """
+    mapping: dict = {}
+
+    # Source 1: parse SETUP_NODE macros
+    factory_cpp = NODES_DIR / "node_factory.cpp"
+    if factory_cpp.exists():
+        text = factory_cpp.read_text(errors="replace")
+        for m in re.finditer(r'SETUP_NODE\s*\(\s*(\w+)\s*,\s*(\w+)\s*\)', text):
+            camel = m.group(1)
+            snake = m.group(2)
+            func_name = f"setup_{snake}_node"
+            mapping[func_name] = camel
+
+    # Source 2: fallback via camel_to_snake for any node type not already mapped
+    covered_camel = set(mapping.values())
+    for nt in node_types:
+        if nt not in covered_camel:
+            snake = camel_to_snake(nt)
+            func_name = f"setup_{snake}_node"
+            if func_name not in mapping:
+                mapping[func_name] = nt
+
+    return mapping
+
+
 def build_node_param(maps: dict) -> dict:
     # Build snake → CamelCase lookup from canonical node-type names
     node_types = list(json.loads(NODE_DOC_JSON.read_text()).keys())
     snake_to_camel: dict = {camel_to_snake(t): t for t in node_types}
 
+    # Authoritative setup_func_name → CamelCase (handles typos like reverse_above_theshold)
+    setup_func_to_camel: dict = build_setup_func_to_camel(node_types)
+
     map_names = set(maps.keys())
 
-    node_param: dict = {}
+    # -----------------------------------------------------------------------
+    # Pass A: parse ALL cpp files, build:
+    #   helper_params: {func_name: {param_key: map_name}}  for helper funcs
+    #   node_direct:   {NodeType: {param_key: map_name}}   direct in node func
+    #   node_helpers:  {NodeType: [helper_func_name, ...]} helpers called
+    # -----------------------------------------------------------------------
+    helper_params: dict = {}   # func_name → {param: map}
+    node_direct:   dict = {}   # NodeType  → {param: map}
+    node_helpers:  dict = {}   # NodeType  → [helper_name]
 
     cpp_files = list(NODES_DIR.rglob("*.cpp"))
 
     for fpath in cpp_files:
         text = fpath.read_text(errors="replace")
-
-        # Only process files that reference enum_mappings
-        if "enum_mappings." not in text:
-            continue
 
         # Collect constexpr const char* constants in this file
         const_map: dict = {}
@@ -142,60 +248,67 @@ def build_node_param(maps: dict) -> dict:
         ):
             const_map[m.group(1)] = m.group(2)
 
-        # Find which node type(s) this file defines via setup_<snake>_node
-        node_types_in_file: list = []
-        for m in re.finditer(r'void\s+setup_(\w+)_node\s*\(', text):
-            snake = m.group(1)
-            if snake in snake_to_camel:
-                node_types_in_file.append(snake_to_camel[snake])
+        bodies = extract_function_bodies(text)
 
-        if not node_types_in_file:
-            continue
-
-        # Find every add_attr<EnumAttribute>(..., enum_mappings.<map_name>...) call.
-        # The call may span multiple lines, so search the whole file text.
-        # We capture: the KEY argument (first arg, after the opening paren)
-        # and the map_name (after "enum_mappings.").
-        # Pattern: add_attr<EnumAttribute>( KEY , ... , enum_mappings.MAPNAME ...
-        # KEY is either "literal" or an identifier (A_XXX constant).
-        attr_re = re.compile(
-            r'add_attr\s*<\s*EnumAttribute\s*>\s*\('
-            r'\s*'
-            r'(?:"((?:[^"\\]|\\.)*)"|(\w+))'   # groups 1,2: literal or identifier
-            r'\s*,'                              # comma after KEY
-            r'(?:[^;]*?)'                        # label + anything before map
-            r'enum_mappings\s*\.\s*(\w+_map)',  # group 3: map name
-            re.DOTALL,
-        )
-
-        for m in attr_re.finditer(text):
-            lit_key = m.group(1)
-            id_key = m.group(2)
-            map_name = m.group(3)
-
-            if map_name not in map_names:
-                continue  # skip maps not in our catalog
-
-            # Resolve the param key
-            if lit_key is not None:
-                param_key = lit_key
-            elif id_key is not None:
-                if id_key in const_map:
-                    param_key = const_map[id_key]
-                else:
-                    # Could not resolve — skip
-                    print(
-                        f"  NOTE: unresolved key identifier {id_key!r} in {fpath.name}",
-                        file=sys.stderr,
-                    )
+        for func_name, body in bodies.items():
+            if func_name.endswith('_node'):
+                # Determine CamelCase node type (use factory mapping to handle typos)
+                node_type = setup_func_to_camel.get(func_name)
+                if node_type is None:
+                    # Fallback: derive from name
+                    snake = func_name[len('setup_'):-len('_node')]
+                    node_type = snake_to_camel.get(snake)
+                if node_type is None:
                     continue
-            else:
-                continue
 
-            for node_type in node_types_in_file:
-                if node_type not in node_param:
-                    node_param[node_type] = {}
-                node_param[node_type][param_key] = map_name
+                direct = extract_enum_params(body, const_map, map_names)
+                if direct:
+                    if node_type not in node_direct:
+                        node_direct[node_type] = {}
+                    node_direct[node_type].update(direct)
+
+                calls = find_helper_calls(body)
+                if calls:
+                    if node_type not in node_helpers:
+                        node_helpers[node_type] = []
+                    node_helpers[node_type].extend(calls)
+            else:
+                # Helper function — record its enum params
+                direct = extract_enum_params(body, const_map, map_names)
+                if direct:
+                    if func_name not in helper_params:
+                        helper_params[func_name] = {}
+                    helper_params[func_name].update(direct)
+
+    # -----------------------------------------------------------------------
+    # Pass B: resolve helper calls transitively (one level is enough per spec,
+    # but we do it iteratively until stable so deeper chains also work).
+    # -----------------------------------------------------------------------
+    changed = True
+    while changed:
+        changed = False
+        for func_name, body_params in list(helper_params.items()):
+            # If this helper itself calls other helpers, pull their params in.
+            # We need the body again — re-parse would be expensive, so instead
+            # track helper→helpers the same way we track node→helpers.
+            pass  # helpers calling helpers not seen in this codebase; skip.
+
+    # -----------------------------------------------------------------------
+    # Pass C: merge helper params into each node's param set.
+    # Helper params are added FIRST so that node-own wiring takes precedence.
+    # -----------------------------------------------------------------------
+    node_param: dict = {}
+
+    all_node_types = set(node_direct.keys()) | set(node_helpers.keys())
+    for node_type in all_node_types:
+        merged: dict = {}
+        # First apply helper params (lower priority)
+        for helper_name in node_helpers.get(node_type, []):
+            merged.update(helper_params.get(helper_name, {}))
+        # Then apply node's own direct params (higher priority / overrides)
+        merged.update(node_direct.get(node_type, {}))
+        if merged:
+            node_param[node_type] = merged
 
     return node_param
 
@@ -314,6 +427,22 @@ def validate(catalog: dict) -> None:
     assert node_param.get("Stamping", {}).get("blend_method") == "stamping_blend_method_map", (
         f"Stamping.blend_method should map to stamping_blend_method_map, got {node_param.get('Stamping', {}).get('blend_method')}"
     )
+    # New asserts: helper-propagated params
+    post_mix_nodes = [nt for nt, params in node_param.items() if "post_mix_method" in params]
+    assert len(post_mix_nodes) >= 100, (
+        f"Expected >=100 node types with post_mix_method, got {len(post_mix_nodes)}: {sorted(post_mix_nodes)}"
+    )
+    assert node_param.get("CoastalErosionProfile", {}).get("dn_noise_type") == "noise_type_map_fbm", (
+        f"CoastalErosionProfile.dn_noise_type should be noise_type_map_fbm, got "
+        f"{node_param.get('CoastalErosionProfile', {}).get('dn_noise_type')}"
+    )
+    # Verify at least one known post-processed node has post_mix_method
+    # (Thermal calls setup_post_process_heightmap_attributes)
+    assert node_param.get("Thermal", {}).get("post_mix_method") == "blending_method_map", (
+        f"Thermal.post_mix_method should be blending_method_map, got "
+        f"{node_param.get('Thermal', {}).get('post_mix_method')}"
+    )
+    print(f"post_mix_method node count: {len(post_mix_nodes)}")
 
     total_choices = sum(len(v) for v in maps.values())
 

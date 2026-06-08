@@ -215,39 +215,127 @@
     }
   },
   "node_param": {
+    "AbsSmooth": {
+      "post_mix_method": "blending_method_map"
+    },
+    "AccumulationCurvature": {
+      "post_mix_method": "blending_method_map"
+    },
+    "Badlands": {
+      "post_mix_method": "blending_method_map"
+    },
+    "BasaltField": {
+      "post_mix_method": "blending_method_map"
+    },
     "Blend": {
-      "blending_method": "blending_method_map"
+      "blending_method": "blending_method_map",
+      "post_mix_method": "blending_method_map"
     },
     "Blend3": {
       "blending_method1": "blending_method_map",
-      "blending_method2": "blending_method_map"
+      "blending_method2": "blending_method_map",
+      "post_mix_method": "blending_method_map"
+    },
+    "BlendPoissonBf": {
+      "post_mix_method": "blending_method_map"
+    },
+    "Border": {
+      "post_mix_method": "blending_method_map"
+    },
+    "Brush": {
+      "post_mix_method": "blending_method_map"
     },
     "Bulkify": {
-      "bulk_type": "primitive_type_map"
+      "bulk_type": "primitive_type_map",
+      "post_mix_method": "blending_method_map"
+    },
+    "Bump": {
+      "post_mix_method": "blending_method_map"
+    },
+    "BumpLorentzian": {
+      "post_mix_method": "blending_method_map"
+    },
+    "Caldera": {
+      "post_mix_method": "blending_method_map"
+    },
+    "Clamp": {
+      "post_mix_method": "blending_method_map"
+    },
+    "ClampOblique": {
+      "post_mix_method": "blending_method_map"
+    },
+    "CloudSDF": {
+      "post_mix_method": "blending_method_map"
     },
     "CloudToArrayInterp": {
       "itp_method": "interpolation_method2d_map"
     },
+    "CoastalErosionProfile": {
+      "dn_noise_type": "noise_type_map_fbm"
+    },
+    "CoastalFetch": {
+      "post_mix_method": "blending_method_map"
+    },
     "CombineMask": {
-      "method": "mask_combine_method_map"
+      "method": "mask_combine_method_map",
+      "post_mix_method": "blending_method_map"
+    },
+    "Cone": {
+      "post_mix_method": "blending_method_map"
     },
     "ConeComplex": {
-      "erosion_profile": "erosion_profile_map"
+      "erosion_profile": "erosion_profile_map",
+      "post_mix_method": "blending_method_map"
+    },
+    "ConeSigmoid": {
+      "post_mix_method": "blending_method_map"
+    },
+    "ConvolveSVD": {
+      "post_mix_method": "blending_method_map"
+    },
+    "Cos": {
+      "post_mix_method": "blending_method_map"
+    },
+    "Crater": {
+      "dn_noise_type": "noise_type_map_fbm",
+      "post_mix_method": "blending_method_map"
+    },
+    "CurvatureMean": {
+      "post_mix_method": "blending_method_map"
     },
     "Curvatures": {
-      "ctype": "curvature_type_map"
+      "ctype": "curvature_type_map",
+      "post_mix_method": "blending_method_map"
+    },
+    "Dendry": {
+      "post_mix_method": "blending_method_map"
+    },
+    "DepositionFillHoles": {
+      "post_mix_method": "blending_method_map"
+    },
+    "DiffusionLimitedAggregation": {
+      "post_mix_method": "blending_method_map"
+    },
+    "DirectionalBlur": {
+      "post_mix_method": "blending_method_map"
     },
     "DistanceTransform": {
+      "post_mix_method": "blending_method_map",
       "transform_type": "distance_transform_type_map"
     },
+    "Equalize": {
+      "post_mix_method": "blending_method_map"
+    },
     "ExpandShrink": {
-      "kernel": "kernel_type_map"
+      "kernel": "kernel_type_map",
+      "post_mix_method": "blending_method_map"
     },
     "ExportHeightmap": {
       "format": "heightmap_export_format_map"
     },
     "Falloff": {
-      "distance_function": "distance_function_map"
+      "distance_function": "distance_function_map",
+      "post_mix_method": "blending_method_map"
     },
     "FindCutPath": {
       "end": "domain_boundary_map",
@@ -256,81 +344,414 @@
     "FlatbedCarve": {
       "radial_profile": "radial_profile_map"
     },
+    "GaborWaveFbm": {
+      "post_mix_method": "blending_method_map"
+    },
+    "Gain": {
+      "post_mix_method": "blending_method_map"
+    },
+    "GammaCorrection": {
+      "post_mix_method": "blending_method_map"
+    },
+    "GammaCorrectionLocal": {
+      "post_mix_method": "blending_method_map"
+    },
+    "GaussianDecay": {
+      "post_mix_method": "blending_method_map"
+    },
+    "GaussianPulse": {
+      "post_mix_method": "blending_method_map"
+    },
+    "Gavoronoise": {
+      "post_mix_method": "blending_method_map"
+    },
+    "Gradient": {
+      "post_mix_method": "blending_method_map"
+    },
+    "GradientAngle": {
+      "post_mix_method": "blending_method_map"
+    },
+    "GradientNorm": {
+      "post_mix_method": "blending_method_map"
+    },
+    "GradientTalus": {
+      "post_mix_method": "blending_method_map"
+    },
     "HeightmapToKernel": {
       "envelope_kernel": "kernel_type_map"
     },
+    "HeightmapToMask": {
+      "post_mix_method": "blending_method_map"
+    },
+    "HemisphereFieldFbm": {
+      "post_mix_method": "blending_method_map"
+    },
+    "HydraulicBlur": {
+      "post_mix_method": "blending_method_map"
+    },
+    "HydraulicMusgrave": {
+      "post_mix_method": "blending_method_map"
+    },
+    "HydraulicParticle": {
+      "post_mix_method": "blending_method_map"
+    },
     "HydraulicProcedural": {
-      "erosion_profile": "erosion_profile_map"
+      "erosion_profile": "erosion_profile_map",
+      "post_mix_method": "blending_method_map"
+    },
+    "HydraulicSaleve": {
+      "dn_noise_type": "noise_type_map_fbm",
+      "post_mix_method": "blending_method_map"
+    },
+    "HydraulicStreamLog": {
+      "post_mix_method": "blending_method_map"
+    },
+    "ImportHeightmap": {
+      "post_mix_method": "blending_method_map"
+    },
+    "Inverse": {
+      "post_mix_method": "blending_method_map"
+    },
+    "Island": {
+      "post_mix_method": "blending_method_map"
     },
     "IslandLandMask": {
-      "noise_type": "noise_type_map"
+      "noise_type": "noise_type_map",
+      "post_mix_method": "blending_method_map"
     },
     "KernelPrim": {
       "kernel": "kernel_type_map"
     },
+    "Kuwahara": {
+      "post_mix_method": "blending_method_map"
+    },
+    "Lerp": {
+      "post_mix_method": "blending_method_map"
+    },
+    "LevelSetCurvature": {
+      "post_mix_method": "blending_method_map"
+    },
     "LocalMetrics": {
-      "metric": "local_metrics_map"
+      "metric": "local_metrics_map",
+      "post_mix_method": "blending_method_map"
     },
     "MakePeriodic": {
       "periodicity_type": "periodicity_type_map"
     },
+    "MeanShift": {
+      "post_mix_method": "blending_method_map"
+    },
+    "MedianPseudo": {
+      "post_mix_method": "blending_method_map"
+    },
+    "Mixer": {
+      "post_mix_method": "blending_method_map"
+    },
+    "MorphologicalGradient": {
+      "post_mix_method": "blending_method_map"
+    },
     "MorphologicalOperators": {
-      "operator": "morphology_operation_map"
+      "operator": "morphology_operation_map",
+      "post_mix_method": "blending_method_map"
+    },
+    "MorphologicalTopHat": {
+      "post_mix_method": "blending_method_map"
+    },
+    "MountainCone": {
+      "post_mix_method": "blending_method_map"
+    },
+    "MountainInselberg": {
+      "post_mix_method": "blending_method_map"
+    },
+    "MountainRangeRadial": {
+      "post_mix_method": "blending_method_map"
+    },
+    "MountainStump": {
+      "post_mix_method": "blending_method_map"
+    },
+    "MountainTibesti": {
+      "post_mix_method": "blending_method_map"
+    },
+    "Mudslide": {
+      "post_mix_method": "blending_method_map"
+    },
+    "Multisteps": {
+      "post_mix_method": "blending_method_map"
     },
     "Noise": {
-      "noise_type": "noise_type_map"
+      "noise_type": "noise_type_map",
+      "post_mix_method": "blending_method_map"
     },
     "NoiseFbm": {
-      "noise_type": "noise_type_map"
-    },
-    "NoiseIq": {
-      "noise_type": "noise_type_map"
+      "noise_type": "noise_type_map_fbm",
+      "post_mix_method": "blending_method_map"
     },
     "NoiseJordan": {
-      "noise_type": "noise_type_map"
+      "noise_type": "noise_type_map_fbm",
+      "post_mix_method": "blending_method_map"
+    },
+    "NoiseParberry": {
+      "post_mix_method": "blending_method_map"
     },
     "NoisePingpong": {
-      "noise_type": "noise_type_map"
+      "noise_type": "noise_type_map_fbm",
+      "post_mix_method": "blending_method_map"
     },
     "NoiseRidged": {
-      "noise_type": "noise_type_map"
+      "noise_type": "noise_type_map_fbm",
+      "post_mix_method": "blending_method_map"
     },
     "NoiseSwiss": {
-      "noise_type": "noise_type_map"
+      "noise_type": "noise_type_map_fbm",
+      "post_mix_method": "blending_method_map"
+    },
+    "NormalMapToHeightmap": {
+      "post_mix_method": "blending_method_map"
+    },
+    "Paraboloid": {
+      "post_mix_method": "blending_method_map"
+    },
+    "PathSDF": {
+      "post_mix_method": "blending_method_map"
+    },
+    "PathToHeightmap": {
+      "post_mix_method": "blending_method_map"
     },
     "Phasor": {
+      "post_mix_method": "blending_method_map",
       "profile": "phasor_profile_map"
+    },
+    "Plateau": {
+      "post_mix_method": "blending_method_map"
+    },
+    "Plates": {
+      "post_mix_method": "blending_method_map"
+    },
+    "PolarShape": {
+      "post_mix_method": "blending_method_map"
+    },
+    "PolygonField": {
+      "post_mix_method": "blending_method_map"
+    },
+    "PolygonFieldFbm": {
+      "post_mix_method": "blending_method_map"
+    },
+    "PostProcess": {
+      "post_mix_method": "blending_method_map"
+    },
+    "ProjectTalus": {
+      "post_mix_method": "blending_method_map"
+    },
+    "RelativeDistanceFromSkeleton": {
+      "post_mix_method": "blending_method_map"
+    },
+    "RelativeElevation": {
+      "post_mix_method": "blending_method_map"
+    },
+    "ReverseAboveThreshold": {
+      "post_mix_method": "blending_method_map"
+    },
+    "ReverseMidpoint": {
+      "post_mix_method": "blending_method_map"
     },
     "Rift": {
       "bottom_profile": "radial_profile_map",
+      "dn_noise_type": "noise_type_map_fbm",
+      "post_mix_method": "blending_method_map",
       "profile": "radial_profile_map"
     },
+    "Rifts": {
+      "dn_noise_type": "noise_type_map_fbm",
+      "post_mix_method": "blending_method_map"
+    },
+    "Ruggedness": {
+      "post_mix_method": "blending_method_map"
+    },
+    "Rugosity": {
+      "post_mix_method": "blending_method_map"
+    },
+    "Saturate": {
+      "post_mix_method": "blending_method_map"
+    },
+    "SelectAngle": {
+      "post_mix_method": "blending_method_map"
+    },
+    "SelectBlobLog": {
+      "post_mix_method": "blending_method_map"
+    },
+    "SelectCavities": {
+      "post_mix_method": "blending_method_map"
+    },
+    "SelectGt": {
+      "post_mix_method": "blending_method_map"
+    },
+    "SelectInterval": {
+      "post_mix_method": "blending_method_map"
+    },
+    "SelectInwardOutward": {
+      "post_mix_method": "blending_method_map"
+    },
+    "SelectMidrange": {
+      "post_mix_method": "blending_method_map"
+    },
+    "SelectMultiband3": {
+      "post_mix_method": "blending_method_map"
+    },
+    "SelectPulse": {
+      "post_mix_method": "blending_method_map"
+    },
+    "SelectRivers": {
+      "post_mix_method": "blending_method_map"
+    },
+    "SelectSlope": {
+      "post_mix_method": "blending_method_map"
+    },
+    "SelectSoilFlow": {
+      "post_mix_method": "blending_method_map"
+    },
     "SelectSoilRocks": {
-      "curvature_clamp_mode": "clamping_mode_map"
+      "curvature_clamp_mode": "clamping_mode_map",
+      "post_mix_method": "blending_method_map"
     },
     "SelectSoilWeathered": {
-      "curvature_clamp_mode": "clamping_mode_map"
+      "curvature_clamp_mode": "clamping_mode_map",
+      "post_mix_method": "blending_method_map"
+    },
+    "SelectTransitions": {
+      "post_mix_method": "blending_method_map"
+    },
+    "SelectValley": {
+      "post_mix_method": "blending_method_map"
+    },
+    "ShapeIndex": {
+      "post_mix_method": "blending_method_map"
+    },
+    "ShatteredPeak": {
+      "post_mix_method": "blending_method_map"
+    },
+    "Slope": {
+      "post_mix_method": "blending_method_map"
+    },
+    "SmoothCpulse": {
+      "post_mix_method": "blending_method_map"
+    },
+    "SmoothFill": {
+      "post_mix_method": "blending_method_map"
+    },
+    "SmoothFillHoles": {
+      "post_mix_method": "blending_method_map"
+    },
+    "SmoothFillSmearPeaks": {
+      "post_mix_method": "blending_method_map"
+    },
+    "SpectralEqualizer": {
+      "post_mix_method": "blending_method_map"
     },
     "Stamping": {
-      "blend_method": "stamping_blend_method_map"
+      "blend_method": "stamping_blend_method_map",
+      "post_mix_method": "blending_method_map"
+    },
+    "Step": {
+      "post_mix_method": "blending_method_map"
+    },
+    "Strata": {
+      "post_mix_method": "blending_method_map"
+    },
+    "StrataCells": {
+      "post_mix_method": "blending_method_map"
+    },
+    "StrataPlates": {
+      "dn_noise_type": "noise_type_map_fbm",
+      "post_mix_method": "blending_method_map"
+    },
+    "StrataTerrace": {
+      "post_mix_method": "blending_method_map"
+    },
+    "TextureSelectColor": {
+      "post_mix_method": "blending_method_map"
+    },
+    "TextureToHeightmap": {
+      "post_mix_method": "blending_method_map"
+    },
+    "Thermal": {
+      "post_mix_method": "blending_method_map"
+    },
+    "ThermalScree": {
+      "post_mix_method": "blending_method_map"
+    },
+    "Transfer": {
+      "post_mix_method": "blending_method_map"
+    },
+    "Unsphericity": {
+      "post_mix_method": "blending_method_map"
+    },
+    "ValleyFill": {
+      "dn_noise_type": "noise_type_map_fbm",
+      "post_mix_method": "blending_method_map"
+    },
+    "ValleyWidth": {
+      "post_mix_method": "blending_method_map"
     },
     "Vorolines": {
+      "post_mix_method": "blending_method_map",
       "return_type": "voronoi_return_type_map"
     },
     "VorolinesFbm": {
+      "post_mix_method": "blending_method_map",
       "return_type": "voronoi_return_type_map"
     },
     "Voronoi": {
+      "post_mix_method": "blending_method_map",
       "return_type": "voronoi_return_type_map"
     },
     "VoronoiFbm": {
+      "post_mix_method": "blending_method_map",
       "return_type": "voronoi_return_type_map"
+    },
+    "Voronoise": {
+      "post_mix_method": "blending_method_map"
     },
     "Vororand": {
+      "post_mix_method": "blending_method_map",
       "return_type": "voronoi_return_type_map"
     },
+    "Warp": {
+      "post_mix_method": "blending_method_map"
+    },
+    "WaterMask": {
+      "post_mix_method": "blending_method_map"
+    },
+    "WatershedRidge": {
+      "dn_noise_type": "noise_type_map_fbm",
+      "post_mix_method": "blending_method_map"
+    },
+    "WaveDune": {
+      "post_mix_method": "blending_method_map"
+    },
+    "WaveSine": {
+      "post_mix_method": "blending_method_map"
+    },
+    "WaveSquare": {
+      "post_mix_method": "blending_method_map"
+    },
+    "WaveTriangular": {
+      "post_mix_method": "blending_method_map"
+    },
+    "WaveletNoise": {
+      "post_mix_method": "blending_method_map"
+    },
+    "White": {
+      "post_mix_method": "blending_method_map"
+    },
+    "WhiteDensityMap": {
+      "post_mix_method": "blending_method_map"
+    },
+    "WhiteSparse": {
+      "post_mix_method": "blending_method_map"
+    },
     "ZeroedEdges": {
-      "distance_function": "distance_function_map"
+      "distance_function": "distance_function_map",
+      "post_mix_method": "blending_method_map"
     }
   }
 }
