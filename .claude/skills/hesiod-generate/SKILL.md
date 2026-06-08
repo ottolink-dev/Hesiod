@@ -162,6 +162,7 @@ Verified ready-to-run specs in [`reference/specs/`](reference/specs/):
 | `heightmap_export.json` | Minimal noise → erosion → heightmap export |
 | `colour_fork.json` | Fork to both `ExportHeightmap` and colourised `ExportTexture` |
 | `tiled_large.json` | 4096 × 4096 map, 4 × 4 tiling, 0.25 overlap |
+| `fmg_globe.json` | 4096 × 2048 equirectangular planet heightmap for Azgaar's FMG (3 continents, ocean borders, polar ice caps, X-only tiling) |
 
 Run a recipe directly:
 

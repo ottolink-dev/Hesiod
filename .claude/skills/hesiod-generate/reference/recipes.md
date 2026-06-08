@@ -137,3 +137,82 @@ PYTHONPATH=scripts python3 -m hsd make \
   .claude/skills/hesiod-generate/reference/specs/tiled_large.json \
   -o out.hsd --run --shape 512,512 --tiling 2,2 --overlap 0.25
 ```
+
+---
+
+## fmg_globe.json — tiled equirectangular planet heightmap for Azgaar's Fantasy Map Generator
+
+A 31-node graph producing a 2:1 equirectangular (4096 × 2048) planet heightmap for use as a
+globe import in [Azgaar's Fantasy Map Generator (FMG)](https://azgaar.github.io/Fantasy-Map-Generator/).
+The map features three distinct continents separated by two carved ocean straits, guaranteed ocean
+at all four borders (so FMG sees a complete sphere with no land bleeding across the antimeridian),
+symmetric hard-edged polar ice caps that sit above the continental elevation (so FMG's
+height→temperature mapping puts them in the glacier zone with no states), and X-only periodicity
+for clean longitude tileability. Spec: [`reference/specs/fmg_globe.json`](specs/fmg_globe.json).
+
+### Technique summary (hard-won pattern)
+
+- **Erode first, mask second.** `HydraulicParticle` outputs all-zero when fed a heightmap with
+  large exact-zero regions. Always erode the full-domain noise first, then multiply by the land
+  mask.
+- **Ocean borders via full-domain `Bump` multiply.** A `Bump` centered at (0.5, 0.5) with high
+  `gain` acts as a smooth window that drives all four borders to zero without any per-edge
+  handling. `gain` controls how tightly land may approach the edge.
+- **Vertical straits via paired `Step(angle=0)`.** `Step(angle=0)` is a vertical (x-axis)
+  escarpment. A "notch keep-mask" = `max(stepFalling@x1, stepRising@x2)` punches a clean ocean
+  channel between two x positions. Wire the keep-mask into the continent field *before* the Warp
+  so strait coasts become irregular rather than perfectly straight.
+- **`Blend` arithmetic methods are unreliable.** `substract` (and likely `add`) does not produce
+  `a − b`; default post-processing corrupts the result. Use only `multiply` and `maximum` for
+  mask math. For a notch: `max(falling_step, rising_step)` = land-outside-the-gap, which you
+  then multiply into the continent field.
+- **Symmetric polar caps via mirrored `Slope`s.** `WaveSine` latitude bands are asymmetric about
+  the domain centre. Build caps as `max(Slope(angle=90), Slope(angle=90, post_inverse=true))` →
+  tight `Clamp` (e.g. `[0.835, 0.845]`, `remap=true`) → flat max-elevation plateau with a hard
+  cliff edge and no slope strip.
+- **Caps must be higher than continents.** In FMG, height drives temperature → glacier state. If
+  caps sit at the same elevation as land, FMG forms a ring of states around the pole and draws a
+  visible seam line at the globe pole. Force cap elevation strictly above the continental range.
+- **`MakePeriodic` (X-only) as the final step.** Place it immediately before `ExportHeightmap`
+  so the longitude seam is guaranteed to match without affecting the height range or cap symmetry.
+- **Verify numerically, not by eye.** The TERRAIN colour preview misleads on flat high plateaus
+  (they look "thin" on the colourmap). Use `hsd inspect <png> --edges --landfrac` to confirm
+  border columns = 0 and cap symmetry numerically.
+
+### Run commands
+
+Smoke test at low resolution (keeps the 2:1 ratio):
+
+```bash
+HESIOD_BIN=/home/barrulus/dev/Hesiod/build/bin/hesiod \
+QT_QPA_PLATFORM=offscreen \
+PYTHONPATH=scripts python3 -m hsd make \
+  .claude/skills/hesiod-generate/reference/specs/fmg_globe.json \
+  -o /tmp/fmg.hsd --run --shape 256,128 --tiling 1,1
+```
+
+Full production render (matches the spec's `config` block):
+
+```bash
+HESIOD_BIN=/home/barrulus/dev/Hesiod/build/bin/hesiod \
+QT_QPA_PLATFORM=offscreen \
+PYTHONPATH=scripts python3 -m hsd make \
+  .claude/skills/hesiod-generate/reference/specs/fmg_globe.json \
+  -o fmg_globe.hsd --run --shape 4096,2048 --tiling 4,2 --overlap 0.25
+```
+
+Files written: `output/fmg_globe_heightmap_4096x2048.png` (16-bit grayscale) and
+`output/fmg_globe_heightmap_4096x2048_preview.png` (TERRAIN colourmap + hillshade).
+
+### Verification
+
+After rendering, verify borders are ocean and caps are symmetric:
+
+```bash
+PYTHONPATH=scripts python3 -m hsd inspect output/fmg_globe_heightmap_4096x2048.png \
+  --edges --landfrac
+```
+
+The `--edges` report should show the far E/W columns at 0.000 at all mid-latitudes. The colour
+preview alone is not sufficient — a flat max-elevation plateau reads as a "thin" band on the
+TERRAIN colourmap and can look asymmetric even when perfectly balanced.
