@@ -1,0 +1,29 @@
+{
+  "_provenance": "Integer values of HighMap C++ enums, captured authoritatively from the HighMap source (static_cast<int> of each enumerator). Regenerate from HighMap when enum definitions change. Combined with Hesiod/include/hesiod/app/enum_mappings.hpp (choice->symbol) and the Hesiod-local enums in base_node.hpp to resolve enum parameter strings to the integers Hesiod serializes.",
+  "DomainBoundary": {"BOUNDARY_LEFT": 0, "BOUNDARY_RIGHT": 1, "BOUNDARY_TOP": 2, "BOUNDARY_BOTTOM": 3},
+  "ClampMode": {"POSITIVE_ONLY": 0, "NEGATIVE_ONLY": 1, "BOTH": 2, "NONE": 3},
+  "Cmap": {"BONE": 0, "GRAY": 1, "HOT": 2, "INFERNO": 3, "JET": 4, "MAGMA": 5, "NIPY_SPECTRAL": 6, "SEISMIC": 7, "TERRAIN": 8, "TURBO": 9, "VIRIDIS": 10, "WHITE_UNIFORM": 11},
+  "CurvatureType": {"CT_MIN": 0, "CT_MAX": 1, "CT_MEAN": 2, "CT_GAUSSIAN": 3, "CT_PROFILE": 4, "CT_CONTOUR": 5, "CT_TANGENTIAL": 6, "CT_ACCUMULATION": 7, "CT_SHAPE_INDEX": 8, "CT_UNSPHERICITY": 9, "CT_RING": 10, "CT_ROTOR": 11},
+  "DistanceFunction": {"CHEBYSHEV": 0, "EUCLIDIAN": 1, "EUCLISHEV": 2, "MANHATTAN": 3},
+  "DistanceFunctionAxis": {"DFA_X": 0, "DFA_Y": 1, "DFA_XY": 2},
+  "DistanceTransformType": {"DT_EXACT": 0, "DT_APPROX": 1, "DT_MANHATTAN": 2, "DT_JFA": 3},
+  "ErosionProfile": {"EP_COSINE": 0, "EP_COSINE_BULK": 1, "EP_COSINE_PEAK": 2, "EP_PARABOL": 3, "EP_SAW_SHARP": 4, "EP_SAW_SMOOTH": 5, "EP_SHARP_VALLEYS": 6, "EP_SQRT": 7, "EP_TRIANGLE_GRENIER": 8, "EP_TRIANGLE_SHARP": 9, "EP_TRIANGLE_SMOOTH": 10},
+  "FlowDirectionMethod": {"FDM_D8": 0, "FDM_PRIORITY_FLOOD": 1},
+  "InterpolationMethod2D": {"ITP2D_DELAUNAY": 0, "ITP2D_NEAREST": 1, "ITP2D_IDW": 2, "ITP2D_GAUSSIAN": 3, "ITP2D_NNI": 4, "ITP2D_DELAUNAY_GRADIENT": 5},
+  "KernelType": {"BIWEIGHT": 0, "CUBIC_PULSE": 1, "CONE": 2, "CONE_SMOOTH": 3, "DISK": 4, "LORENTZIAN": 5, "SMOOTH_COSINE": 6, "SQUARE": 7, "TRICUBE": 8, "CUPOLA": 9},
+  "LocalMetrics": {"LM_LOCAL_ASPECT_VARIANCE": 0, "LM_LOCAL_MAX": 1, "LM_LOCAL_MEDIAN_DEVIATION": 2, "LM_LOCAL_MIN": 3, "LM_LOCAL_RELIEF": 4, "LM_LOCAL_VARIANCE": 5, "LM_LOCAL_MEAN": 6, "LM_LOCAL_SKEWNESS": 7, "LM_LOCAL_Z_SCORE": 8, "LM_TOPOGRAPHIC_POSITION_INDEX": 9, "LM_RELATIVE_ELEVATION": 10, "LM_RUGGEDNESS": 11, "LM_RUGOSITY_CONCAVE": 12, "LM_RUGOSITY_CONVEX": 13},
+  "MorphologyOperation": {"MO_BORDER": 0, "MO_CLOSING": 1, "MO_DILATION": 2, "MO_EROSION": 3, "MO_OPENING": 4, "MO_BLACK_HAT": 5, "MO_TOP_HAT": 6, "MO_GRADIENT": 7, "MO_LAPLACIAN": 8, "MO_CLOSING_BY_RECONSTRUCTION": 9, "MO_OPENING_BY_RECONSTRUCTION": 10},
+  "NoiseType": {"PARBERRY": 0, "PERLIN": 1, "PERLIN_BILLOW": 2, "PERLIN_HALF": 3, "SIMPLEX2": 4, "SIMPLEX2S": 5, "VALUE": 6, "VALUE_CUBIC": 7, "VALUE_DELAUNAY": 8, "VALUE_LINEAR": 9, "WORLEY": 10, "WORLEY_DOUBLE": 11, "WORLEY_VALUE": 12},
+  "PeriodicityType": {"PERIODICITY_X": 0, "PERIODICITY_Y": 1, "PERIODICITY_XY": 2},
+  "PhasorProfile": {"PP_COSINE_BULKY": 0, "PP_COSINE_PEAKY": 1, "PP_COSINE_SQUARE": 2, "PP_COSINE_STD": 3, "PP_TRIANGLE": 4, "PP_DUNE": 5},
+  "PrimitiveType": {"PRIM_BIQUAD_PULSE": 0, "PRIM_BUMP": 1, "PRIM_CONE": 2, "PRIM_CONE_SMOOTH": 3, "PRIM_CUBIC_PULSE": 4, "PRIM_SMOOTH_COSINE": 5},
+  "RadialProfile": {"RP_GAIN": 0, "RP_LINEAR": 1, "RP_POW": 2, "RP_SMOOTHSTEP": 3, "RP_SMOOTHSTEP_UPPER": 4, "RP_FLAT_BOTTOM": 5, "RP_SQRT": 6},
+  "StampingBlendMethod": {"ADD": 0, "MAXIMUM": 1, "MAXIMUM_SMOOTH": 2, "MINIMUM": 3, "MINIMUM_SMOOTH": 4, "MULTIPLY": 5, "SUBSTRACT": 6},
+  "VoronoiReturnType": {"F1_SQUARED": 0, "F2_SQUARED": 1, "F1TF2_SQUARED": 2, "F1DF2_SQUARED": 3, "F2MF1_SQUARED": 4, "EDGE_DISTANCE_EXP": 5, "EDGE_DISTANCE_SQUARED": 6, "CONSTANT": 7, "CONSTANT_F2MF1_SQUARED": 8},
+  "_HesiodLocal": {
+    "_note": "These enums are defined in Hesiod/include/hesiod/model/nodes/base_node.hpp, not HighMap. Sequential from 0.",
+    "BlendingMethod": {"ADD": 0, "EXCLUSION_BLEND": 1, "GRADIENTS": 2, "MAXIMUM": 3, "MAXIMUM_SMOOTH": 4, "MINIMUM": 5, "MINIMUM_SMOOTH": 6, "MULTIPLY": 7, "MULTIPLY_ADD": 8, "NEGATE": 9, "OVERLAY": 10, "REPLACE": 11, "SOFT": 12, "SUBSTRACT": 13},
+    "ExportFormat": {"PNG8BIT": 0, "PNG16BIT": 1, "RAW16BIT": 2, "EXR32BIT": 3},
+    "MaskCombineMethod": {"UNION": 0, "INTERSECTION": 1, "EXCLUSION": 2}
+  }
+}
