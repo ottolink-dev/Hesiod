@@ -25,9 +25,14 @@ void setup_wave_triangular_node(BaseNode &node)
 
   // attribute(s)
   node.add_attr<FloatAttribute>("kw", "kw", 2.f, 0.01f, FLT_MAX);
-  node.add_attr<FloatAttribute>("angle", "angle", 0.f, 0.f, 180.f);
+  node.add_attr<FloatAttribute>("angle", "angle", 0.f, 0.f, 180.f, "{:.1f}°");
   node.add_attr<FloatAttribute>("slant_ratio", "slant_ratio", 0.2f, 0.f, 1.f);
-  node.add_attr<FloatAttribute>("phase_shift", "phase_shift", 0.f, -1.f, 1.f);
+  node.add_attr<FloatAttribute>("phase_shift",
+                                "phase_shift",
+                                0.f,
+                                -180.f,
+                                180.f,
+                                "{:.1f}°");
   node.add_attr<Vec2FloatAttribute>("center", "center");
 
   // attribute(s) order
@@ -46,9 +51,12 @@ void compute_wave_triangular_node(BaseNode &node)
   hmap::VirtualArray *p_env = node.get_value_ref<hmap::VirtualArray>("envelope");
   hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>("output");
 
+  const float phase_rad = node.get_attr<FloatAttribute>("phase_shift") *
+                          float(M_PI / 180.0);
+
   hmap::for_each_tile(
       {p_out, p_dr},
-      [&node](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &region)
+      [&](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &region)
       {
         hmap::Array *pa_out = p_arrays[0];
         hmap::Array *pa_dr = p_arrays[1];
@@ -57,7 +65,7 @@ void compute_wave_triangular_node(BaseNode &node)
                                         node.get_attr<FloatAttribute>("kw"),
                                         node.get_attr<FloatAttribute>("angle"),
                                         node.get_attr<FloatAttribute>("slant_ratio"),
-                                        node.get_attr<FloatAttribute>("phase_shift"),
+                                        phase_rad,
                                         pa_dr,
                                         nullptr,
                                         nullptr,
