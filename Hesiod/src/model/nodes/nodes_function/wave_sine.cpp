@@ -25,6 +25,7 @@ constexpr const char *P_OUT = "output";
 constexpr const char *A_KW = "kw";
 constexpr const char *A_ANGLE = "angle";
 constexpr const char *A_PHASE_SHIFT = "phase_shift";
+constexpr const char *A_CENTER = "center";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -50,6 +51,7 @@ void setup_wave_sine_node(BaseNode &node)
                                 -180.f,
                                 180.f,
                                 "{:.1f}°");
+  node.add_attr<Vec2FloatAttribute>(A_CENTER, "center");
 
   // --- Attribute(s) order
 
@@ -58,6 +60,7 @@ void setup_wave_sine_node(BaseNode &node)
       A_KW,
       A_ANGLE,
       A_PHASE_SHIFT,
+      A_CENTER,
       "_GROUPBOX_END_",
   });
 
@@ -88,6 +91,7 @@ void compute_wave_sine_node(BaseNode &node)
   const auto kw          = node.get_attr<FloatAttribute>(A_KW);
   const auto angle       = node.get_attr<FloatAttribute>(A_ANGLE);
   const auto phase_shift = node.get_attr<FloatAttribute>(A_PHASE_SHIFT);
+  const auto center      = node.get_attr<Vec2FloatAttribute>(A_CENTER);
   // clang-format on
 
   // phase_shift slider is in degrees (range -180..180, matching `angle`);
@@ -113,6 +117,7 @@ void compute_wave_sine_node(BaseNode &node)
                                   pa_dr,
                                   nullptr,
                                   nullptr,
+                                  center,
                                   region.bbox);
       },
       node.cfg().cm_cpu);

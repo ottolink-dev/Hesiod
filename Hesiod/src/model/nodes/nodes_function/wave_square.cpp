@@ -27,9 +27,10 @@ void setup_wave_square_node(BaseNode &node)
   node.add_attr<FloatAttribute>("kw", "kw", 2.f, 0.01f, FLT_MAX);
   node.add_attr<FloatAttribute>("angle", "angle", 0.f, 0.f, 180.f);
   node.add_attr<FloatAttribute>("phase_shift", "phase_shift", 0.f, -1.f, 1.f);
+  node.add_attr<Vec2FloatAttribute>("center", "center");
 
   // attribute(s) order
-  node.set_attr_ordered_key({"kw", "angle", "phase_shift"});
+  node.set_attr_ordered_key({"kw", "angle", "phase_shift", "center"});
 
   setup_post_process_heightmap_attributes(node,
                                           {.add_mix = true, .remap_active_state = true});
@@ -58,6 +59,7 @@ void compute_wave_square_node(BaseNode &node)
                                     pa_dr,
                                     nullptr,
                                     nullptr,
+                                    node.get_attr<Vec2FloatAttribute>("center"),
                                     region.bbox);
       },
       node.cfg().cm_cpu);

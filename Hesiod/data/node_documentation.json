@@ -23000,6 +23000,12 @@
                 "label": "angle",
                 "type": "Float"
             },
+            "center": {
+                "description": "Reference center for the wave pattern within the heightmap.",
+                "key": "center",
+                "label": "center",
+                "type": "Vec2Float"
+            },
             "kw": {
                 "description": "Base spatial frequencies in the X and Y directions. The frequencies are defined with respect to the entire domain: for example, kw = 2 produces two full oscillations across the domain width (and similarly for the Y direction).",
                 "key": "kw",
@@ -23105,6 +23111,12 @@
                 "label": "angle",
                 "type": "Float"
             },
+            "center": {
+                "description": "Reference center for the wave pattern within the heightmap.",
+                "key": "center",
+                "label": "center",
+                "type": "Vec2Float"
+            },
             "kw": {
                 "description": "Base spatial frequencies in the X and Y directions. The frequencies are defined with respect to the entire domain: for example, kw = 2 produces two full oscillations across the domain width (and similarly for the Y direction). Wavenumber in cycles across the unit domain (applied to both X and Y).",
                 "key": "kw",
@@ -23198,6 +23210,12 @@
                 "label": "angle",
                 "type": "Float"
             },
+            "center": {
+                "description": "Reference center for the wave pattern within the heightmap.",
+                "key": "center",
+                "label": "center",
+                "type": "Vec2Float"
+            },
             "kw": {
                 "description": "Base spatial frequencies in the X and Y directions. The frequencies are defined with respect to the entire domain: for example, kw = 2 produces two full oscillations across the domain width (and similarly for the Y direction).",
                 "key": "kw",
@@ -23290,6 +23308,12 @@
                 "key": "angle",
                 "label": "angle",
                 "type": "Float"
+            },
+            "center": {
+                "description": "Reference center for the wave pattern within the heightmap.",
+                "key": "center",
+                "label": "center",
+                "type": "Vec2Float"
             },
             "kw": {
                 "description": "Base spatial frequencies in the X and Y directions. The frequencies are defined with respect to the entire domain: for example, kw = 2 produces two full oscillations across the domain width (and similarly for the Y direction).",

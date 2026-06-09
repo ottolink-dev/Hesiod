@@ -29,9 +29,11 @@ void setup_wave_dune_node(BaseNode &node)
   node.add_attr<FloatAttribute>("xtop", "xtop", 0.7f, 0.f, 1.f);
   node.add_attr<FloatAttribute>("xbottom", "xbottom", 0.9f, 0.f, 1.f);
   node.add_attr<FloatAttribute>("phase_shift", "phase_shift", 0.f, -180.f, 180.f);
+  node.add_attr<Vec2FloatAttribute>("center", "center");
 
   // attribute(s) order
-  node.set_attr_ordered_key({"kw", "angle", "xtop", "xbottom", "phase_shift"});
+  node.set_attr_ordered_key(
+      {"kw", "angle", "xtop", "xbottom", "phase_shift", "center"});
 
   setup_post_process_heightmap_attributes(node,
                                           {.add_mix = true, .remap_active_state = true});
@@ -62,6 +64,7 @@ void compute_wave_dune_node(BaseNode &node)
                                   pa_dr,
                                   nullptr,
                                   nullptr,
+                                  node.get_attr<Vec2FloatAttribute>("center"),
                                   region.bbox);
       },
       node.cfg().cm_cpu);
