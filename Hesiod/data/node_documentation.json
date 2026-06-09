@@ -11803,6 +11803,12 @@
                 "label": "Type",
                 "type": "Enumeration"
             },
+            "periodic": {
+                "description": "When enabled the noise is made tileable: the lattice is wrapped at a period derived from kw, and kw is snapped to integer cells so the wrap aligns with the noise frequency. Applies to lattice noise types only (no effect on Simplex); seamless fbm tiling additionally requires an integer lacunarity (the default 2).",
+                "key": "periodic",
+                "label": "periodic",
+                "type": "Bool"
+            },
             "post_gain": {
                 "description": "Mid-centered gain transformation applied to the elevation values. This is a non-linear recurve operator centered around the mid elevation (typically 0.5). Increasing the gain pushes values toward the minimum and maximum elevations, creating flatter low/high regions with a steeper transition around the midpoint.",
                 "key": "post_gain",
@@ -11901,6 +11907,12 @@
                 "key": "octaves",
                 "label": "Octaves",
                 "type": "Integer"
+            },
+            "periodic": {
+                "description": "When enabled the noise is made tileable: the lattice is wrapped at a period derived from kw, and kw is snapped to integer cells so the wrap aligns with the noise frequency. Applies to lattice noise types only (no effect on Simplex); seamless fbm tiling additionally requires an integer lacunarity (the default 2).",
+                "key": "periodic",
+                "label": "periodic",
+                "type": "Bool"
             },
             "persistence": {
                 "description": "The amplitude scaling factor for subsequent noise octaves. Lower values reduce the contribution of higher octaves.",

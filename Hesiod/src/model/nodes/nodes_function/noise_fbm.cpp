@@ -35,10 +35,17 @@ void setup_noise_fbm_node(BaseNode &node)
   node.add_attr<FloatAttribute>("weight", "Weight", 0.7f, 0.f, 1.f);
   node.add_attr<FloatAttribute>("persistence", "Persistence", 0.5f, 0.f, 1.f);
   node.add_attr<FloatAttribute>("lacunarity", "Lacunarity", 2.f, 0.01f, 4.f);
+  node.add_attr<BoolAttribute>("periodic", "Periodic (tileable)", false);
 
   // attribute(s) order
-  node.set_attr_ordered_key(
-      {"noise_type", "kw", "seed", "octaves", "weight", "persistence", "lacunarity"});
+  node.set_attr_ordered_key({"noise_type",
+                             "kw",
+                             "seed",
+                             "octaves",
+                             "weight",
+                             "persistence",
+                             "lacunarity",
+                             "periodic"});
 
   setup_post_process_heightmap_attributes(node,
                                           {.add_mix = false, .remap_active_state = true});
@@ -61,10 +68,20 @@ void compute_noise_fbm_node(BaseNode &node)
       {
         auto [pa_out, pa_dx, pa_dy, pa_ctrl] = unpack<4>(p_arrays);
 
+        // when periodic, snap kw to integer cells so the lattice wrap (period)
+        // aligns with the noise frequency and the result tiles seamlessly
+        glm::vec2  kw = node.get_attr<WaveNbAttribute>("kw");
+        glm::ivec2 period(-1, -1);
+        if (node.get_attr<BoolAttribute>("periodic"))
+        {
+          kw = glm::vec2((float)(int)(kw.x + 0.5f), (float)(int)(kw.y + 0.5f));
+          period = glm::ivec2((int)kw.x, (int)kw.y);
+        }
+
         *pa_out = hmap::gpu::noise_fbm(
             (hmap::NoiseType)node.get_attr<EnumAttribute>("noise_type"),
             region.shape,
-            node.get_attr<WaveNbAttribute>("kw"),
+            kw,
             node.get_attr<SeedAttribute>("seed"),
             node.get_attr<IntAttribute>("octaves"),
             node.get_attr<FloatAttribute>("weight"),
@@ -74,7 +91,8 @@ void compute_noise_fbm_node(BaseNode &node)
             pa_dx,
             pa_dy,
             nullptr,
-            region.bbox);
+            region.bbox,
+            period);
       },
       node.cfg().cm_gpu);
 

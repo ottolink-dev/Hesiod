@@ -31,9 +31,11 @@ void setup_noise_node(BaseNode &node)
   node.add_attr<EnumAttribute>("noise_type", "Type", enum_mappings.noise_type_map);
   node.add_attr<WaveNbAttribute>("kw", "Spatial Frequency");
   node.add_attr<SeedAttribute>("seed", "Seed");
+  node.add_attr<BoolAttribute>("periodic", "Periodic (tileable)", false);
 
   // attribute(s) order
-  node.set_attr_ordered_key({"noise_type", "_SEPARATOR_", "kw", "seed"});
+  node.set_attr_ordered_key(
+      {"noise_type", "_SEPARATOR_", "kw", "seed", "periodic"});
 
   setup_post_process_heightmap_attributes(node,
                                           {.add_mix = false, .remap_active_state = true});
@@ -55,15 +57,26 @@ void compute_noise_node(BaseNode &node)
       {
         auto [pa_out, pa_dx, pa_dy] = unpack<3>(p_arrays);
 
+        // when periodic, snap kw to integer cells so the lattice wrap (period)
+        // aligns with the noise frequency and the result tiles seamlessly
+        glm::vec2  kw = node.get_attr<WaveNbAttribute>("kw");
+        glm::ivec2 period(-1, -1);
+        if (node.get_attr<BoolAttribute>("periodic"))
+        {
+          kw = glm::vec2((float)(int)(kw.x + 0.5f), (float)(int)(kw.y + 0.5f));
+          period = glm::ivec2((int)kw.x, (int)kw.y);
+        }
+
         *pa_out = hmap::gpu::noise(
             (hmap::NoiseType)node.get_attr<EnumAttribute>("noise_type"),
             region.shape,
-            node.get_attr<WaveNbAttribute>("kw"),
+            kw,
             node.get_attr<SeedAttribute>("seed"),
             pa_dx,
             pa_dy,
             nullptr,
-            region.bbox);
+            region.bbox,
+            period);
       },
       node.cfg().cm_gpu);
 
