@@ -8,7 +8,7 @@ from hsd.spec import Spec
 from hsd.compile import compile_spec
 from hsd.params import ParamError
 from hsd.enums import EnumError
-from hsd.validate import validate_spec, lint_file
+from hsd.validate import validate_spec, lint_file, blocking
 from hsd.run import run_batch
 from hsd.png import read_png
 from hsd.inspect import stats, edges, landfrac, profile
@@ -16,8 +16,9 @@ from hsd.inspect import stats, edges, landfrac, profile
 
 def _print_errors(errors):
     for e in errors:
+        gid = f" ({e['graph_id']})" if e.get("graph_id") else ""
         loc = f" [{e['node_id']}]" if e.get("node_id") else ""
-        sys.stderr.write(f"{e['level']}{loc}: {e['problem']}\n")
+        sys.stderr.write(f"{e['level']}{gid}{loc}: {e['problem']}\n")
         if e.get("suggestion"):
             sys.stderr.write(f"      -> {e['suggestion']}\n")
 
@@ -27,7 +28,8 @@ def _cmd_build(args, cat):
     errors = validate_spec(spec, cat)
     if errors:
         _print_errors(errors)
-        return 1
+        if blocking(errors):
+            return 1
     try:
         hsd = compile_spec(spec, cat).to_hsd()
     except (ParamError, EnumError) as exc:
@@ -43,7 +45,8 @@ def _cmd_validate(args, cat):
     errors = validate_spec(Spec.from_file(args.spec), cat)
     if errors:
         _print_errors(errors)
-        return 1
+        if blocking(errors):
+            return 1
     print("ok")
     return 0
 
