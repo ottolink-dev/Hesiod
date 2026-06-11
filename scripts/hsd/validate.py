@@ -30,7 +30,7 @@ def validate_spec(spec, catalog):
     for gs in spec.graphs:
         if gs.id in by_id:
             errors.append(_err("L3", f"duplicate graph id '{gs.id}'", graph_id=gs.id))
-        by_id[gs.id] = gs
+        by_id.setdefault(gs.id, gs)
         if gs.cell is not None and (gs.origin is not None or gs.size is not None):
             errors.append(_err(
                 "L3", f"graph '{gs.id}' sets both 'cell' and 'origin'/'size'",
@@ -68,9 +68,21 @@ def validate_spec(spec, catalog):
     for bc in spec.broadcasts:
         if bc.src_graph not in by_id:
             errors.append(_err("L3", f"broadcast source graph '{bc.src_graph}' does not exist"))
-            continue
+            # still check dst side below
         if bc.dst_graph not in by_id:
             errors.append(_err("L3", f"broadcast destination graph '{bc.dst_graph}' does not exist"))
+            continue
+        if bc.src_graph == bc.dst_graph:
+            errors.append(_err(
+                "L3", f"broadcast source and destination are the same graph '{bc.src_graph}'",
+                "use a direct link instead; same-graph broadcasts have no defined update order",
+                graph_id=bc.src_graph))
+        if bc.recv_name in {n.id for n in by_id[bc.dst_graph].nodes}:
+            errors.append(_err(
+                "L3", f"receive name '{bc.recv_name}' collides with a declared node "
+                      f"in graph '{bc.dst_graph}'",
+                graph_id=bc.dst_graph))
+        if bc.src_graph not in by_id:
             continue
         src_types = {n.id: n.type for n in by_id[bc.src_graph].nodes}
         if bc.src_node not in src_types:
@@ -91,11 +103,6 @@ def validate_spec(spec, catalog):
                 "L3", f"broadcast source '{bc.src_node}.{bc.src_port}' is "
                       f"{port['data_type']}; broadcasts carry VirtualArray only",
                 graph_id=bc.src_graph))
-        if bc.recv_name in {n.id for n in by_id[bc.dst_graph].nodes}:
-            errors.append(_err(
-                "L3", f"receive name '{bc.recv_name}' collides with a declared node "
-                      f"in graph '{bc.dst_graph}'",
-                graph_id=bc.dst_graph))
 
     # --- L3: broadcast cycles -------------------------------------------------
     needs = {gs.id: set() for gs in spec.graphs}
@@ -125,7 +132,7 @@ def validate_spec(spec, catalog):
     for gs in spec.graphs:
         try:
             frames[gs.id] = placement(gs, spec.grid)
-        except (KeyError, TypeError, ZeroDivisionError):
+        except (KeyError, TypeError, ValueError, ZeroDivisionError, IndexError):
             pass   # malformed grid/cell already reported above
 
     def _overlaps(fa, fb):
@@ -147,7 +154,7 @@ def validate_spec(spec, catalog):
         ys = [o[1] for o, s in frames.values()] + [o[1] + s[1] for o, s in frames.values()]
         world_w, world_h = max(xs) - min(xs), max(ys) - min(ys)
         sx, sy = spec.flatten.shape
-        if world_w > 0 and world_h > 0 and abs(sx / sy - world_w / world_h) > 1e-6:
+        if world_w > 0 and world_h > 0 and sy > 0 and abs(sx / sy - world_w / world_h) > 1e-6:
             errors.append(_err(
                 "W", f"export shape {sx}x{sy} does not match the world bbox aspect "
                      f"({world_w:g}x{world_h:g}); the engine stretches with no "
@@ -230,7 +237,8 @@ def _validate_graph(gs, catalog, enum_catalog, extra_nodes):
                         f"(run `hsd nodes --show {node.type}` to inspect it)",
                         node_id=node.id, graph_id=gs.id))
 
-    ids.update(extra_nodes)
+    for k, v in extra_nodes.items():
+        ids.setdefault(k, v)
 
     # L2: links resolve + datatype compatibility
     known = {nid for nid, ntype in ids.items() if catalog.has_node(ntype)}

@@ -6,6 +6,19 @@ class SpecError(Exception):
     pass
 
 
+def _vec2(name, value, *, integer=False, positive=False):
+    """Validate a 2-element numeric list; returns it as a plain list."""
+    num_types = (int,) if integer else (int, float)
+    if (not isinstance(value, (list, tuple)) or len(value) != 2
+            or not all(isinstance(v, num_types) and not isinstance(v, bool)
+                       for v in value)):
+        kind = "2 integers" if integer else "2 numbers"
+        raise SpecError(f"'{name}' must be a list of {kind}, got: {value!r}")
+    if positive and not all(v > 0 for v in value):
+        raise SpecError(f"'{name}' components must be > 0, got: {value!r}")
+    return list(value)
+
+
 @dataclass
 class NodeSpec:
     id: str
@@ -77,10 +90,9 @@ class Spec:
         if grid is not None:
             if not isinstance(grid, dict):
                 raise SpecError(f"grid must be an object, got: {grid!r}")
-            for key in ("dims", "extent"):
-                if (not isinstance(grid.get(key), (list, tuple))
-                        or len(grid[key]) != 2):
-                    raise SpecError(f"grid must have 2-element '{key}'")
+            dims = _vec2("grid.dims", grid.get("dims"), integer=True, positive=True)
+            extent = _vec2("grid.extent", grid.get("extent"), positive=True)
+            grid = {"dims": dims, "extent": extent}
 
         graphs = [cls._graph_spec(raw) for raw in d.get("graphs", []) or []]
         if not graphs:
@@ -108,9 +120,13 @@ class Spec:
                     raise SpecError(
                         f"export id must be [graph, node, port], got: {triple!r}")
                 ids.append(tuple(triple))
+            raw_shape = export.get("shape")
+            shape = _vec2("export.shape", raw_shape, integer=True, positive=True) if raw_shape is not None else None
+            raw_tiling = export.get("tiling")
+            tiling = _vec2("export.tiling", raw_tiling, integer=True, positive=True) if raw_tiling is not None else None
             flatten = FlattenSpec(export["path"], ids,
-                                  shape=export.get("shape"),
-                                  tiling=export.get("tiling"),
+                                  shape=shape,
+                                  tiling=tiling,
                                   overlap=export.get("overlap"))
 
         return cls(config, graphs, broadcasts, flatten,
@@ -160,9 +176,26 @@ class Spec:
                 raise SpecError(f"link must be a [from, to] pair, got: {entry!r}")
             a, b = entry
             links.append((*_endpoint(a), *_endpoint(b)))
-        return GraphSpec(raw["id"], nodes, links,
-                         origin=raw.get("origin"), size=raw.get("size"),
-                         cell=raw.get("cell"), config=raw.get("config", {}) or {})
+        gid = raw["id"]
+        pfx = f"graph '{gid}': "
+
+        raw_origin = raw.get("origin")
+        origin = _vec2(f"{pfx}origin", raw_origin) if raw_origin is not None else None
+
+        raw_size = raw.get("size")
+        size = _vec2(f"{pfx}size", raw_size, positive=True) if raw_size is not None else None
+
+        raw_cell = raw.get("cell")
+        if raw_cell is not None:
+            cell = _vec2(f"{pfx}cell", raw_cell, integer=True)
+            if any(v < 0 for v in cell):
+                raise SpecError(f"{pfx}'cell' components must be >= 0, got: {raw_cell!r}")
+        else:
+            cell = None
+
+        return GraphSpec(gid, nodes, links,
+                         origin=origin, size=size,
+                         cell=cell, config=raw.get("config", {}) or {})
 
 
 def _endpoint(s):
