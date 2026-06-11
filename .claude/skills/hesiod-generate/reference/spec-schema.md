@@ -268,7 +268,8 @@ Rules (validator-enforced):
   its rectangle overlaps the source graph's rectangle — a non-overlapping receive yields
   zeros (the validator warns). For a shared base, make the base graph's `size` span all
   regions.
-- `.` is reserved (endpoint separator) and cannot appear in graph or node ids.
+- avoid `.` in graph and node ids — it is the endpoint separator, so dotted ids
+  cannot be referenced from `links` or `broadcasts`.
 
 ### Flatten export (object form)
 

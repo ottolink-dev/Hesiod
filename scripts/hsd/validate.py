@@ -49,6 +49,16 @@ def validate_spec(spec, catalog):
                         "L3", f"graph '{gs.id}' cell {gs.cell} is outside grid dims {dims}",
                         graph_id=gs.id))
 
+    # --- L3: graph_order override must list every graph exactly once -----
+    if spec.graph_order is not None:
+        declared = {gs.id for gs in spec.graphs}
+        missing = sorted(declared - set(spec.graph_order))
+        unknown = sorted(set(spec.graph_order) - declared)
+        if missing or unknown or len(spec.graph_order) != len(declared):
+            errors.append(_err(
+                "L3", "graph_order must list every graph exactly once; "
+                      f"missing={missing} unknown={unknown}"))
+
     # --- receive nodes injected by broadcasts, per destination graph -----
     recv_by_graph = {}
     for bc in spec.broadcasts:
@@ -86,9 +96,16 @@ def validate_spec(spec, catalog):
             continue
         src_types = {n.id: n.type for n in by_id[bc.src_graph].nodes}
         if bc.src_node not in src_types:
-            errors.append(_err(
-                "L3", f"broadcast source node '{bc.src_graph}.{bc.src_node}' does not exist",
-                graph_id=bc.src_graph))
+            if bc.src_node in recv_by_graph.get(bc.src_graph, set()):
+                errors.append(_err(
+                    "L3", f"broadcast source '{bc.src_graph}.{bc.src_node}' is an "
+                          "injected Receive; chaining broadcasts is not supported",
+                    "broadcast from the original source graph instead",
+                    graph_id=bc.src_graph))
+            else:
+                errors.append(_err(
+                    "L3", f"broadcast source node '{bc.src_graph}.{bc.src_node}' does not exist",
+                    graph_id=bc.src_graph))
             continue
         ntype = src_types[bc.src_node]
         if not catalog.has_node(ntype):

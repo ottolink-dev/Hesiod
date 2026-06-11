@@ -19,6 +19,28 @@ def _vec2(name, value, *, integer=False, positive=False):
     return list(value)
 
 
+def _num(name, value):
+    if not isinstance(value, (int, float)) or isinstance(value, bool):
+        raise SpecError(f"'{name}' must be a number, got: {value!r}")
+    return value
+
+
+def _config_dict(name, value):
+    """Validate a compute-config dict (shape/tiling/overlap typed correctly)."""
+    if value is None:
+        return {}
+    if not isinstance(value, dict):
+        raise SpecError(f"'{name}' must be an object, got: {value!r}")
+    out = dict(value)
+    if "shape" in out:
+        out["shape"] = _vec2(f"{name}.shape", out["shape"], integer=True, positive=True)
+    if "tiling" in out:
+        out["tiling"] = _vec2(f"{name}.tiling", out["tiling"], integer=True, positive=True)
+    if "overlap" in out:
+        _num(f"{name}.overlap", out["overlap"])
+    return out
+
+
 @dataclass
 class NodeSpec:
     id: str
@@ -72,7 +94,7 @@ class Spec:
 
     @classmethod
     def from_dict(cls, d):
-        config = d.get("config", {}) or {}
+        config = _config_dict("config", d.get("config"))
         if "graphs" in d:
             return cls._from_multi(d, config)
         return cls._from_flat(d, config)
@@ -124,13 +146,23 @@ class Spec:
             shape = _vec2("export.shape", raw_shape, integer=True, positive=True) if raw_shape is not None else None
             raw_tiling = export.get("tiling")
             tiling = _vec2("export.tiling", raw_tiling, integer=True, positive=True) if raw_tiling is not None else None
+            raw_overlap = export.get("overlap")
+            if raw_overlap is not None:
+                _num("export.overlap", raw_overlap)
             flatten = FlattenSpec(export["path"], ids,
                                   shape=shape,
                                   tiling=tiling,
-                                  overlap=export.get("overlap"))
+                                  overlap=raw_overlap)
+
+        graph_order = d.get("graph_order")
+        if graph_order is not None:
+            if (not isinstance(graph_order, list)
+                    or not all(isinstance(g, str) for g in graph_order)):
+                raise SpecError(
+                    f"'graph_order' must be a list of graph ids, got: {graph_order!r}")
 
         return cls(config, graphs, broadcasts, flatten,
-                   grid=grid, graph_order=d.get("graph_order"))
+                   grid=grid, graph_order=graph_order)
 
     # --- flat (single-graph, backward-compatible) form -----------------------
     @classmethod
@@ -195,7 +227,8 @@ class Spec:
 
         return GraphSpec(gid, nodes, links,
                          origin=origin, size=size,
-                         cell=cell, config=raw.get("config", {}) or {})
+                         cell=cell,
+                         config=_config_dict(f"{pfx}config", raw.get("config")))
 
 
 def _endpoint(s):

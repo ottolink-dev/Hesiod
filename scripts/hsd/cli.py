@@ -7,6 +7,7 @@ from hsd.enums import EnumCatalog
 from hsd.spec import Spec
 from hsd.compile import compile_spec
 from hsd.params import ParamError
+from hsd.builder import BuilderError
 from hsd.enums import EnumError
 from hsd.validate import validate_spec, lint_file, blocking
 from hsd.run import run_batch
@@ -32,7 +33,7 @@ def _cmd_build(args, cat):
             return 1
     try:
         hsd = compile_spec(spec, cat).to_hsd()
-    except (ParamError, EnumError) as exc:
+    except (ParamError, EnumError, BuilderError) as exc:
         sys.stderr.write(f"error: {exc}\n")
         return 1
     with open(args.output, "w") as f:
