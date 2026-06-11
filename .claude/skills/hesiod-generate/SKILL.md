@@ -197,6 +197,7 @@ Verified ready-to-run specs in [`reference/specs/`](reference/specs/):
 | `colour_fork.json` | Fork to both `ExportHeightmap` and colourised `ExportTexture` |
 | `tiled_large.json` | 4096 × 4096 map, 4 × 4 tiling, 0.25 overlap |
 | `fmg_globe.json` | 4096 × 2048 equirectangular planet heightmap for Azgaar's FMG (3 continents, ocean borders, polar ice caps, X-only tiling) |
+| `multi_graph_world.json` | 2 × 2 region graphs over a broadcast base continent, single flattened export |
 
 Run a recipe directly:
 
@@ -272,7 +273,7 @@ for seed in seeds:
 # Then drive rendering via subprocess: hsd run <path> --shape ...
 ```
 
-`compile_spec(spec, catalog)` returns a `Graph`; call `.to_hsd()` to get the JSON dict ready for `json.dump`. Validate the spec first with `hsd.validate` (or `hsd validate` CLI) — `compile_spec` assumes a valid spec and raises `KeyError` on bad node types.
+`compile_spec(spec, catalog)` returns a `Project`; call `.to_hsd()` to get the JSON dict ready for `json.dump`. Validate the spec first with `hsd.validate` (or `hsd validate` CLI) — `compile_spec` assumes a valid spec and raises `KeyError` on bad node types.
 
 ### Large maps with tiling
 
@@ -289,6 +290,27 @@ baked into the `.hsd` at build time; to change the output file dimensions, updat
 `config.shape` in the spec and rebuild.
 
 A verified 4096 × 4096, 4 × 4 tiled spec is at `reference/specs/tiled_large.json`.
+
+### Multi-graph regional maps
+
+Tiling scales **resolution**; multi-graph scales **variety**. When different parts of a
+large map need different pipelines (mountain erosion here, dune fields there) while
+sharing one underlying continent shape, describe the map as a project of spatially-placed
+graphs instead of one big graph:
+
+- a top-level `graphs` array, each graph placed by `origin`/`size` or by `cell` on a
+  `grid` (the world is **y-up**: row 0 = south);
+- `broadcasts` entries (`["base.noise.output", "region.recv"]`) share heightmaps across
+  graphs — the compiler inserts and wires the Broadcast/Receive nodes and tags for you;
+  the destination graph uses `recv.output` like any local port. Frames must overlap:
+  a Receive only gets data where its rectangle intersects the source graph's;
+- one object-form `export` flattens selected outputs from all regions into a single
+  image (keep its `shape` proportional to the world bbox — there is no aspect
+  correction).
+
+Full format: [`reference/spec-schema.md`](reference/spec-schema.md) §Multi-graph specs.
+Verified example: `reference/specs/multi_graph_world.json` (recipe + recorded numbers in
+[`reference/recipes.md`](reference/recipes.md)).
 
 ---
 

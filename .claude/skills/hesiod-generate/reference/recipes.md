@@ -210,3 +210,36 @@ PYTHONPATH=scripts python3 -m hsd inspect output/fmg_globe_heightmap_4096x2048.p
 The `--edges` report should show the far E/W columns at 0.000 at all mid-latitudes. The colour
 preview alone is not sufficient — a flat max-elevation plateau reads as a "thin" band on the
 TERRAIN colourmap and can look asymmetric even when perfectly balanced.
+
+---
+
+## Multi-graph world (regions + shared base)
+
+`reference/specs/multi_graph_world.json` — a 2×2 grid of regional graphs over one
+base-continent graph. The base graph (`NoiseFbm`, spanning the full 2×2 world) is
+broadcast into four cell-placed region graphs; each region erodes its slice
+independently (`HydraulicParticle`); a flatten export composites all four into a single
+1024×1024 sheet. Demonstrates: `grid`/`cell` placement, broadcast fan-out, object-form
+export, and that region pipelines can differ freely while sharing one base terrain.
+
+```bash
+QT_QPA_PLATFORM=offscreen \
+PYTHONPATH=scripts python3 -m hsd make \
+  .claude/skills/hesiod-generate/reference/specs/multi_graph_world.json \
+  -o /tmp/mg_world.hsd --run
+```
+
+Writes `world.png` + `world_preview.png` (relative to cwd).
+
+### Verification (recorded 2026-06-11)
+
+```bash
+PYTHONPATH=scripts python3 -m hsd inspect world.png
+```
+
+- 1024 × 1024, 16-bit, 1 channel; min 0.0, max 1.0, mean ≈ 0.206.
+- All four image quadrants non-flat (regional means ≈ NW 0.090 / NE 0.143 /
+  SW 0.468 / SE 0.125) — i.e. every region received the broadcast base and the
+  flatten composited every `ids` entry. A flat-zero quadrant means a Receive got
+  no data (check frame overlap with the base graph).
+- Remember the world is y-up: `cell [0,0]` (`sw`) is the BOTTOM-left image quadrant.

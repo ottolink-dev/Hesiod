@@ -208,3 +208,81 @@ gradient. `ColorizeSolid` also outputs a `VirtualTexture` but renders a uniform 
 `level` input); use it when you want a flat tint, not a gradient map.
 
 For the full explanation with port tables and a fork diagram, see `SKILL.md §4`.
+
+---
+
+## Multi-graph specs
+
+A spec may describe a whole **project** of several spatially-placed graphs instead of one
+graph: a top-level `graphs` array replaces the flat `nodes`/`links` form (the flat form
+stays valid and is shorthand for a one-graph project). Each graph is an independent node
+pipeline placed in a shared world; data crosses graphs only via `broadcasts`; one flattened
+export composites the regions into a single image. Verified example:
+`reference/specs/multi_graph_world.json`.
+
+```json
+{
+  "config": {"shape": [256, 256]},
+  "grid":   {"dims": [2, 2], "extent": [2.0, 2.0]},
+  "graphs": [
+    {"id": "base", "origin": [0.0, 0.0], "size": [2.0, 2.0],
+     "nodes": [{"id": "noise", "type": "NoiseFbm", "params": {"kw": [4, 4]}}],
+     "links": []},
+    {"id": "sw", "cell": [0, 0],
+     "nodes": [{"id": "ero", "type": "HydraulicParticle"}],
+     "links": [["recv.output", "ero.input"]]}
+  ],
+  "broadcasts": [["base.noise.output", "sw.recv"]],
+  "export": {"path": "world.png", "shape": [1024, 1024],
+             "ids": [["sw", "ero", "output"]]}
+}
+```
+
+### Placement (origin / size / grid)
+
+Each graph occupies a rectangle in world coordinates: `origin` is the **lower-left corner**,
+`size` its extent. Defaults: `origin [0,0]`, `size [1,1]`. Alternatively `cell: [col, row]`
+places the graph on the top-level `grid {dims, extent}`: the compiler derives
+`origin = cell * (extent/dims)` and `size = extent/dims`. `cell` and `origin`/`size` on the
+same graph is a validation error.
+
+**The world is y-up** (verified empirically): row 0 of the grid is the SOUTH edge of the
+exported map; increasing `row` moves north (up in the image). Columns increase eastward
+(right in the image).
+
+Per-graph `config` overrides the top-level compute defaults (`shape`/`tiling`/`overlap`)
+for that graph only.
+
+### Broadcasts (cross-graph wiring)
+
+`["srcGraph.node.port", "dstGraph.receiveName"]` — the compiler inserts a `Broadcast` node
+in the source graph wired from `node.port`, generates the engine tag, and inserts a
+`Receive` node named `receiveName` in the destination graph. Use `receiveName.output` as a
+normal link endpoint there. Never write tags by hand; never declare Broadcast/Receive nodes
+yourself.
+
+Rules (validator-enforced):
+- Broadcasts carry `VirtualArray` only (no textures).
+- Source and destination must be different graphs; cycles between graphs are errors.
+- **Receive resamples in world coordinates**: the destination graph only receives data where
+  its rectangle overlaps the source graph's rectangle — a non-overlapping receive yields
+  zeros (the validator warns). For a shared base, make the base graph's `size` span all
+  regions.
+- `.` is reserved (endpoint separator) and cannot appear in graph or node ids.
+
+### Flatten export (object form)
+
+```json
+"export": {"path": "world.png", "shape": [1024, 1024], "tiling": [2, 2],
+           "overlap": 0.25, "ids": [["sw", "ero", "output"], ...]}
+```
+
+One image: the engine computes the union bounding box of **all** graphs, composites every
+`ids` entry into it through each graph's coordinate frame, and stretches it to `shape`
+with **no aspect correction** — keep `shape` proportional to the world bbox (the validator
+warns otherwise). Per-region files are still possible with ordinary `ExportHeightmap` /
+`ExportTexture` nodes inside any graph. The legacy list export form is only valid in flat
+single-graph specs.
+
+`graph_order` (optional top-level list) overrides the evaluation order; the default is a
+topological order where broadcasters run before their receivers.
