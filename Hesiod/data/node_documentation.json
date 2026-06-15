@@ -344,6 +344,159 @@
             }
         }
     },
+    "Band": {
+        "category": "Primitive/Function",
+        "description": "Band generates a bounded capsule-shaped mask: the value is 1 on a core segment defined by the center, angle and length, and falls off to 0 at the given width following the chosen radial profile. A zero length degenerates to a radial bump; lengths larger than the domain give an infinite strip, so placing the center on or beyond a domain edge produces latitude bands / polar caps.",
+        "label": "Band",
+        "parameters": {
+            "angle": {
+                "description": "Orientation angle of the band axis in degrees.",
+                "key": "angle",
+                "label": "Angle",
+                "type": "Float"
+            },
+            "center": {
+                "description": "Band center in normalized coordinates (the Y coordinate is measured from the bottom).",
+                "key": "center",
+                "label": "Center",
+                "type": "Vec2Float"
+            },
+            "dn_add_default_noise": {
+                "description": "Enables or disables the built-in drainage noise. If an external noise input is provided, it overrides this default noise.",
+                "key": "dn_add_default_noise",
+                "label": "Activate",
+                "type": "Bool"
+            },
+            "dn_kw": {
+                "description": "Base spatial frequencies in the X and Y directions.",
+                "key": "dn_kw",
+                "label": "Spatial Frequency",
+                "type": "Float"
+            },
+            "dn_noise_amp": {
+                "description": "Noise amplitude.",
+                "key": "dn_noise_amp",
+                "label": "Amplitude",
+                "type": "Float"
+            },
+            "dn_noise_type": {
+                "description": "Noise type.",
+                "key": "dn_noise_type",
+                "label": "Type",
+                "type": "Enumeration"
+            },
+            "dn_seed": {
+                "description": "Random seed number. The random seed is an offset to the randomized process. A different seed will produce a new result.",
+                "key": "dn_seed",
+                "label": "Seed",
+                "type": "Random seed number"
+            },
+            "dn_smoothness": {
+                "description": "Controls the resulting smoothness of the fractal layering process.",
+                "key": "dn_smoothness",
+                "label": "Smoothness",
+                "type": "Float"
+            },
+            "length": {
+                "description": "Core segment length in normalized domain units. A zero length degenerates to a radial bump; lengths larger than the domain give an infinite strip (latitude band / polar cap).",
+                "key": "length",
+                "label": "Length",
+                "type": "Float"
+            },
+            "post_gain": {
+                "description": "Mid-centered gain transformation applied to the elevation values. This is a non-linear recurve operator centered around the mid elevation (typically 0.5). Increasing the gain pushes values toward the minimum and maximum elevations, creating flatter low/high regions with a steeper transition around the midpoint.",
+                "key": "post_gain",
+                "label": "Gain",
+                "type": "Float"
+            },
+            "post_gamma": {
+                "description": "Standard gamma correction applied to the elevation values. This is a monotonic power-law remapping that shifts emphasis toward low or high elevations, making the overall shape sharper or bulkier without changing its ordering.",
+                "key": "post_gamma",
+                "label": "Gamma",
+                "type": "Float"
+            },
+            "post_inverse": {
+                "description": "Inverts the output values after processing, flipping low and high values across the midrange.",
+                "key": "post_inverse",
+                "label": "Invert Output",
+                "type": "Bool"
+            },
+            "post_mix": {
+                "description": "Mixing factor for blending input and output values. A value of 0 uses only the input, 1 uses only the output, and intermediate values perform a linear interpolation.",
+                "key": "post_mix",
+                "label": "Mix Factor",
+                "type": "Float"
+            },
+            "post_mix_method": {
+                "description": "Method used to combine input and output values. Options include linear interpolation (default), min, max, smooth min, smooth max, add, and subtract.",
+                "key": "post_mix_method",
+                "label": "Mix Method",
+                "type": "Enumeration"
+            },
+            "post_remap": {
+                "description": "Linearly remaps the output values to a specified target range (default is [0, 1]).",
+                "key": "post_remap",
+                "label": "Remap Range",
+                "type": "Value range"
+            },
+            "post_saturate": {
+                "description": "Modifies the amplitude of elevations by first clamping them to a given interval and then scaling them so that the restricted interval matches the original input range. This enhances contrast in elevation variations while maintaining overall structure.",
+                "key": "post_saturate",
+                "label": "Saturation Range",
+                "type": "Value range"
+            },
+            "post_smoothing_radius": {
+                "description": "Defines the radius for post-processing smoothing, determining the size of the neighborhood used to average local values and reduce high-frequency detail. A radius of 0 disables smoothing.",
+                "key": "post_smoothing_radius",
+                "label": "Smoothing Radius",
+                "type": "Float"
+            },
+            "profile": {
+                "description": "Radial profile used for the falloff.",
+                "key": "profile",
+                "label": "Profile",
+                "type": "Enumeration"
+            },
+            "profile_param": {
+                "description": "Additional sharpness parameter for the radial profile.",
+                "key": "profile_param",
+                "label": "Profile Sharpness",
+                "type": "Float"
+            },
+            "width": {
+                "description": "Falloff half-width in normalized domain units.",
+                "key": "width",
+                "label": "Width",
+                "type": "Float"
+            }
+        },
+        "ports": {
+            "dr": {
+                "caption": "dr",
+                "data_type": "VirtualArray",
+                "description": "Optional noise field used to locally modulate the band falloff distance (edge displacement).",
+                "type": "input"
+            },
+            "envelope": {
+                "caption": "envelope",
+                "data_type": "VirtualArray",
+                "description": "Heightmap used as a post-process amplitude multiplier for the generated noise.",
+                "type": "input"
+            },
+            "offset": {
+                "caption": "offset",
+                "data_type": "VirtualArray",
+                "description": "Optional noise field used to locally offset the band axis position.",
+                "type": "input"
+            },
+            "output": {
+                "caption": "output",
+                "data_type": "VirtualArray",
+                "description": "Generated band mask.",
+                "type": "output"
+            }
+        }
+    },
     "BasaltField": {
         "category": "Primitive/Geological",
         "description": "Generates a synthetic procedural terrain inspired by basaltic landforms. Credit: Ian Fontova.",
@@ -9221,6 +9374,153 @@
                 "data_type": "VirtualArray",
                 "description": "Output water depth map representing flooded areas.",
                 "type": "output"
+            }
+        }
+    },
+    "IslandChain": {
+        "category": "Primitive/Geological",
+        "description": "IslandChain scatters a series of islands along an input path, each an fbm-perturbed radial blob (the same construction as IslandLandMask), with a signed size falloff along the path. The output is a land mask suitable as input to the Island node.",
+        "label": "IslandChain",
+        "parameters": {
+            "displacement": {
+                "description": "Amplitude of the fbm perturbation applied to each island boundary.",
+                "key": "displacement",
+                "label": "Displacement",
+                "type": "Float"
+            },
+            "island_count": {
+                "description": "Number of islands spawned along the path.",
+                "key": "island_count",
+                "label": "Islands",
+                "type": "Integer"
+            },
+            "island_radius": {
+                "description": "Base island radius in normalized domain units.",
+                "key": "island_radius",
+                "label": "Radius",
+                "type": "Float"
+            },
+            "kw": {
+                "description": "Base spatial frequencies in the X and Y directions. The frequencies are defined with respect to the entire domain: for example, kw = 2 produces two full oscillations across the domain width (and similarly for the Y direction).",
+                "key": "kw",
+                "label": "kw",
+                "type": "Float"
+            },
+            "lacunarity": {
+                "description": "The frequency scaling factor for successive noise octaves. Higher values increase the frequency of each successive octave.",
+                "key": "lacunarity",
+                "label": "Lacunarity",
+                "type": "Float"
+            },
+            "noise_type": {
+                "description": "Noise type used for the island boundary perturbation.",
+                "key": "noise_type",
+                "label": "Type",
+                "type": "Enumeration"
+            },
+            "octaves": {
+                "description": "The number of octaves for fractal noise generation. More octaves add finer details to the terrain.",
+                "key": "octaves",
+                "label": "Octaves",
+                "type": "Integer"
+            },
+            "persistence": {
+                "description": "The amplitude scaling factor for subsequent noise octaves. Lower values reduce the contribution of higher octaves.",
+                "key": "persistence",
+                "label": "Persistence",
+                "type": "Float"
+            },
+            "post_gain": {
+                "description": "Mid-centered gain transformation applied to the elevation values. This is a non-linear recurve operator centered around the mid elevation (typically 0.5). Increasing the gain pushes values toward the minimum and maximum elevations, creating flatter low/high regions with a steeper transition around the midpoint.",
+                "key": "post_gain",
+                "label": "Gain",
+                "type": "Float"
+            },
+            "post_gamma": {
+                "description": "Standard gamma correction applied to the elevation values. This is a monotonic power-law remapping that shifts emphasis toward low or high elevations, making the overall shape sharper or bulkier without changing its ordering.",
+                "key": "post_gamma",
+                "label": "Gamma",
+                "type": "Float"
+            },
+            "post_inverse": {
+                "description": "Inverts the output values after processing, flipping low and high values across the midrange.",
+                "key": "post_inverse",
+                "label": "Invert Output",
+                "type": "Bool"
+            },
+            "post_mix": {
+                "description": "Mixing factor for blending input and output values. A value of 0 uses only the input, 1 uses only the output, and intermediate values perform a linear interpolation.",
+                "key": "post_mix",
+                "label": "Mix Factor",
+                "type": "Float"
+            },
+            "post_mix_method": {
+                "description": "Method used to combine input and output values. Options include linear interpolation (default), min, max, smooth min, smooth max, add, and subtract.",
+                "key": "post_mix_method",
+                "label": "Mix Method",
+                "type": "Enumeration"
+            },
+            "post_remap": {
+                "description": "Linearly remaps the output values to a specified target range (default is [0, 1]).",
+                "key": "post_remap",
+                "label": "Remap Range",
+                "type": "Value range"
+            },
+            "post_saturate": {
+                "description": "Modifies the amplitude of elevations by first clamping them to a given interval and then scaling them so that the restricted interval matches the original input range. This enhances contrast in elevation variations while maintaining overall structure.",
+                "key": "post_saturate",
+                "label": "Saturation Range",
+                "type": "Value range"
+            },
+            "post_smoothing_radius": {
+                "description": "Defines the radius for post-processing smoothing, determining the size of the neighborhood used to average local values and reduce high-frequency detail. A radius of 0 disables smoothing.",
+                "key": "post_smoothing_radius",
+                "label": "Smoothing Radius",
+                "type": "Float"
+            },
+            "scatter": {
+                "description": "Random island displacement along and across the path.",
+                "key": "scatter",
+                "label": "Scatter",
+                "type": "Float"
+            },
+            "seed": {
+                "description": "Random seed number. The random seed is an offset to the randomized process. A different seed will produce a new result.",
+                "key": "seed",
+                "label": "Seed",
+                "type": "Random seed number"
+            },
+            "size_falloff": {
+                "description": "Signed size falloff along the path, in [-1, 1]: 0 keeps island sizes uniform, +1 shrinks islands toward the path end (largest island at the head), -1 shrinks them toward the start.",
+                "key": "size_falloff",
+                "label": "Size Falloff",
+                "type": "Float"
+            },
+            "size_jitter": {
+                "description": "Per-island random radius variation ratio.",
+                "key": "size_jitter",
+                "label": "Size Jitter",
+                "type": "Float"
+            },
+            "weight": {
+                "description": "Controls how much higher FBM octaves contribute to the noise based on local elevation. A higher weight suppresses high-frequency octaves at low elevations and increases their influence at higher elevations, producing terrain where fine details appear mainly near peaks while lower areas remain smoother.",
+                "key": "weight",
+                "label": "Weight",
+                "type": "Float"
+            }
+        },
+        "ports": {
+            "out": {
+                "caption": "out",
+                "data_type": "VirtualArray",
+                "description": "Generated island-chain land mask.",
+                "type": "output"
+            },
+            "path": {
+                "caption": "path",
+                "data_type": "Path",
+                "description": "Input path along which the islands are scattered (at least two points, in normalized domain coordinates).",
+                "type": "input"
             }
         }
     },
