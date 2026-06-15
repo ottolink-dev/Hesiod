@@ -144,6 +144,7 @@ std::map<std::string, std::string> get_node_inventory()
       {"AccumulationCurvature", "WIP/DEPRECATED"},
       {"AreaRemove", "Terrain Features/Morphology"},
       {"Badlands", "Primitive/Geological"},
+      {"Band", "Primitive/Function"},
       {"BasaltField", "Primitive/Geological"},
       {"Blend", "Operator/Blend"},
       {"Blend3", "Operator/Blend"},
@@ -257,6 +258,7 @@ std::map<std::string, std::string> get_node_inventory()
       {"ImportTexture", "Export"},
       {"Inverse", "Math/Base"},
       {"Island", "Primitive/Geological"},
+      {"IslandChain", "Primitive/Geological"},
       {"IslandLandMask", "Primitive/Geological"},
       {"KernelCupola", "Primitive/Kernel"},
       {"KernelDiskSmooth", "Primitive/Kernel"},
@@ -487,6 +489,7 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
     SETUP_NODE(AccumulationCurvature, accumulation_curvature);
     SETUP_NODE(AreaRemove, area_remove);
     SETUP_NODE(Badlands, badlands);
+    SETUP_NODE(Band, band);
     SETUP_NODE(BasaltField, basalt_field);
     SETUP_NODE(Blend, blend);
     SETUP_NODE(Blend3, blend3);
@@ -594,6 +597,7 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
     SETUP_NODE(ImportTexture, import_texture);
     SETUP_NODE(Inverse, inverse);
     SETUP_NODE(Island, island);
+    SETUP_NODE(IslandChain, island_chain);
     SETUP_NODE(IslandLandMask, island_land_mask);
     SETUP_NODE(KernelCupola, kernel_cupola);
     SETUP_NODE(KernelDiskSmooth, kernel_disk_smooth);
