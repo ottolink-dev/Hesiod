@@ -76,9 +76,8 @@ void setup_band_node(BaseNode &node)
   setup_default_noise(
       node,
       {.noise_amp = 1.8f, .kw = 4.f, .smoothness = 0.5f, .noise_type = "Perlin"});
-  setup_post_process_heightmap_attributes(
-      node,
-      {.add_mix = true, .remap_active_state = true});
+  setup_post_process_heightmap_attributes(node,
+                                          {.add_mix = true, .remap_active_state = true});
 }
 
 // -----------------------------------------------------------------------------
@@ -101,12 +100,14 @@ void compute_band_node(BaseNode &node)
 
   // --- Params
 
-  const auto angle = node.get_attr<FloatAttribute>(A_ANGLE);
-  const auto length = node.get_attr<FloatAttribute>(A_LENGTH);
-  const auto width = node.get_attr<FloatAttribute>(A_WIDTH);
-  const auto profile = hmap::RadialProfile(node.get_attr<EnumAttribute>(A_PROFILE));
+  // clang-format off
+  const auto angle         = node.get_attr<FloatAttribute>(A_ANGLE);
+  const auto length        = node.get_attr<FloatAttribute>(A_LENGTH);
+  const auto width         = node.get_attr<FloatAttribute>(A_WIDTH);
+  const auto profile       = hmap::RadialProfile(node.get_attr<EnumAttribute>(A_PROFILE));
   const auto profile_param = node.get_attr<FloatAttribute>(A_PROFILE_PARAM);
-  const auto center = node.get_attr<Vec2FloatAttribute>(A_CENTER);
+  const auto center        = node.get_attr<Vec2FloatAttribute>(A_CENTER);
+  // clang-format on
 
   // --- Resolve default noise
 
