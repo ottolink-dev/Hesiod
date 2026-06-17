@@ -178,7 +178,7 @@ Always run `hsd nodes --show TYPE` before wiring a node — port names are not a
 ### Worked example
 
 The verified spec at
-`.claude/skills/hesiod-generate/reference/specs/heightmap_export.json`:
+`bridges/Claude/.claude/skills/hesiod-generate/reference/specs/heightmap_export.json`:
 
 ```json
 {
@@ -201,13 +201,13 @@ Validate, then build and run at a small test resolution:
 ```bash
 # validate first — prints "ok" or structured errors
 PYTHONPATH=scripts python3 -m hsd validate \
-  .claude/skills/hesiod-generate/reference/specs/heightmap_export.json
+  bridges/Claude/.claude/skills/hesiod-generate/reference/specs/heightmap_export.json
 
 # compile + render at 256×256 for a quick sanity check
 HESIOD_BIN=/path/to/hesiod \
 QT_QPA_PLATFORM=offscreen \
 PYTHONPATH=scripts python3 -m hsd make \
-  .claude/skills/hesiod-generate/reference/specs/heightmap_export.json \
+  bridges/Claude/.claude/skills/hesiod-generate/reference/specs/heightmap_export.json \
   -o /tmp/test.hsd --run --shape 256,256 --tiling 1,1
 ```
 
@@ -221,7 +221,7 @@ On success the toolkit writes files at the path set in the spec's `export[].path
 To change the output file dimensions, update `config.shape` in the spec and rebuild — the
 exported PNG resolution is baked into the `.hsd` at build time; `--shape` overrides the
 compute config only. A verified 4096 × 4096 tiled spec (4 × 4 tiles, 0.25 overlap) is at
-`.claude/skills/hesiod-generate/reference/specs/tiled_large.json`.
+`bridges/Claude/.claude/skills/hesiod-generate/reference/specs/tiled_large.json`.
 
 ---
 
@@ -230,7 +230,7 @@ compute config only. A verified 4096 × 4096 tiled spec (4 × 4 tiles, 0.25 over
 - [LLM-driven procedural generation](llm-procedural-generation.md) — using the `hsd`
   toolkit with an LLM for seed sweeps, biome exploration, and large-map pipelines.
 - The `hesiod-generate` Claude Code skill lives at
-  `.claude/skills/hesiod-generate/SKILL.md` — load it when you want Claude to author and
+  `bridges/Claude/.claude/skills/hesiod-generate/SKILL.md` — load it when you want Claude to author and
   validate specs for you.
 - [Bake and Export](../user_manual/bake_and_export/bake_and_export.md) — the GUI
   counterpart to batch mode; covers export directory structure and variants.

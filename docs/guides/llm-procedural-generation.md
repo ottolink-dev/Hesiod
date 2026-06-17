@@ -37,9 +37,14 @@ needs more than one correction pass before it validates cleanly.
 
 ## The `hesiod-generate` skill
 
-The `hesiod-generate` Claude Code skill lives in `.claude/skills/hesiod-generate/` in
-this repository. When you open this repo in Claude Code, the skill is auto-discovered and
-available immediately — no configuration needed.
+The `hesiod-generate` Claude Code skill ships as a **bridge** under
+`bridges/Claude/.claude/skills/hesiod-generate/` in this repository — packaged separately
+from the provider-neutral `scripts/hsd` toolkit so Hesiod itself stays tool-agnostic.
+To use it, install the skill into your agent's skill directory (for Claude Code: copy or
+symlink it into `.claude/skills/` for this project, or `~/.claude/skills/` for all
+projects). See [`bridges/Claude/README.md`](https://github.com/otto-link/Hesiod/blob/dev/bridges/Claude/README.md)
+for the per-provider install table. The skill drives the same `scripts/hsd` commands
+documented above, so it expects to run from the Hesiod repository root.
 
 The skill encodes:
 
@@ -49,7 +54,7 @@ The skill encodes:
   (RGBA) are incompatible; the skill knows the bridge nodes (`ColorizeGradient`,
   `ColorizeSolid`) and confirmed port names for every export node.
 - **Verified recipes** — ready-to-run specs for common patterns (minimal heightmap export,
-  colour fork, 4096 × 4096 tiled map) in `.claude/skills/hesiod-generate/reference/specs/`.
+  colour fork, 4096 × 4096 tiled map) in `bridges/Claude/.claude/skills/hesiod-generate/reference/specs/`.
 
 Invoke it by asking Claude to generate or refine a terrain graph. Claude will validate
 before rendering and show you the structured error output if validation fails.
@@ -117,5 +122,5 @@ omitted parameters (defaulting silently) but rejects structurally invalid graphs
   setup, and worked examples.
 - **Tiling concepts** — [Tiling and Overlap](../core_concepts/tiling-overlap.md) explains
   how tile boundaries are blended and what the overlap ratio controls.
-- **The skill** — `.claude/skills/hesiod-generate/SKILL.md` has the complete workflow,
+- **The skill** — `bridges/Claude/.claude/skills/hesiod-generate/SKILL.md` has the complete workflow,
   the port data-type rule, all verified recipes, and the Python API for tighter loops.

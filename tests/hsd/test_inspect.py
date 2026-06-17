@@ -287,12 +287,17 @@ class TestProfile:
 # Optional binary-gated integration test
 # ---------------------------------------------------------------------------
 
-HESIOD_BIN = "/home/barrulus/dev/Hesiod/build/bin/hesiod"
+_REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+
+HESIOD_BIN = os.environ.get("HESIOD_BIN") or os.path.join(
+    _REPO_ROOT, "build", "bin", "hesiod"
+)
 HESIOD_AVAILABLE = os.path.isfile(HESIOD_BIN) and os.access(HESIOD_BIN, os.X_OK)
 
-SPEC_PATH = (
-    "/home/barrulus/dev/Hesiod/.claude/worktrees/hsd-toolkit-foundation"
-    "/.claude/skills/hesiod-generate/reference/specs/heightmap_export.json"
+SPEC_PATH = os.path.join(
+    _REPO_ROOT,
+    "bridges", "Claude", ".claude", "skills", "hesiod-generate",
+    "reference", "specs", "heightmap_export.json",
 )
 SPEC_AVAILABLE = os.path.isfile(SPEC_PATH)
 
@@ -320,10 +325,7 @@ def test_real_16bit_heightmap_decode():
             "HESIOD_BIN": HESIOD_BIN,
             "QT_QPA_PLATFORM": "offscreen",
         }
-        scripts_dir = os.path.join(
-            "/home/barrulus/dev/Hesiod/.claude/worktrees/hsd-toolkit-foundation",
-            "scripts",
-        )
+        scripts_dir = os.path.join(_REPO_ROOT, "scripts")
         # Write a tiny spec with shape=64,64 so we don't depend on the
         # reference spec's baked-in shape (the binary CLI --shape flag is
         # advisory and may be overridden by the .hsd config).

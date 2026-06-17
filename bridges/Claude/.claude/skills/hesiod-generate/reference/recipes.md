@@ -33,7 +33,7 @@ Run command:
 ```bash
 QT_QPA_PLATFORM=offscreen \
 PYTHONPATH=scripts python3 -m hsd make \
-  .claude/skills/hesiod-generate/reference/specs/heightmap_export.json \
+  bridges/Claude/.claude/skills/hesiod-generate/reference/specs/heightmap_export.json \
   -o out.hsd --run
 ```
 
@@ -76,7 +76,7 @@ Run command:
 ```bash
 QT_QPA_PLATFORM=offscreen \
 PYTHONPATH=scripts python3 -m hsd make \
-  .claude/skills/hesiod-generate/reference/specs/colour_fork.json \
+  bridges/Claude/.claude/skills/hesiod-generate/reference/specs/colour_fork.json \
   -o out.hsd --run
 ```
 
@@ -118,7 +118,7 @@ Run command:
 ```bash
 QT_QPA_PLATFORM=offscreen \
 PYTHONPATH=scripts python3 -m hsd make \
-  .claude/skills/hesiod-generate/reference/specs/tiled_large.json \
+  bridges/Claude/.claude/skills/hesiod-generate/reference/specs/tiled_large.json \
   -o out.hsd --run
 ```
 
@@ -130,7 +130,7 @@ To test at reduced resolution without editing the spec:
 ```bash
 QT_QPA_PLATFORM=offscreen \
 PYTHONPATH=scripts python3 -m hsd make \
-  .claude/skills/hesiod-generate/reference/specs/tiled_large.json \
+  bridges/Claude/.claude/skills/hesiod-generate/reference/specs/tiled_large.json \
   -o out.hsd --run --shape 512,512 --tiling 2,2 --overlap 0.25
 ```
 
@@ -182,7 +182,7 @@ Smoke test at low resolution (keeps the 2:1 ratio):
 ```bash
 QT_QPA_PLATFORM=offscreen \
 PYTHONPATH=scripts python3 -m hsd make \
-  .claude/skills/hesiod-generate/reference/specs/fmg_globe.json \
+  bridges/Claude/.claude/skills/hesiod-generate/reference/specs/fmg_globe.json \
   -o /tmp/fmg.hsd --run --shape 256,128 --tiling 1,1
 ```
 
@@ -191,7 +191,7 @@ Full production render (matches the spec's `config` block):
 ```bash
 QT_QPA_PLATFORM=offscreen \
 PYTHONPATH=scripts python3 -m hsd make \
-  .claude/skills/hesiod-generate/reference/specs/fmg_globe.json \
+  bridges/Claude/.claude/skills/hesiod-generate/reference/specs/fmg_globe.json \
   -o fmg_globe.hsd --run --shape 4096,2048 --tiling 4,2 --overlap 0.25
 ```
 
@@ -225,7 +225,7 @@ export, and that region pipelines can differ freely while sharing one base terra
 ```bash
 QT_QPA_PLATFORM=offscreen \
 PYTHONPATH=scripts python3 -m hsd make \
-  .claude/skills/hesiod-generate/reference/specs/multi_graph_world.json \
+  bridges/Claude/.claude/skills/hesiod-generate/reference/specs/multi_graph_world.json \
   -o /tmp/mg_world.hsd --run
 ```
 

@@ -204,7 +204,7 @@ Run a recipe directly:
 ```bash
 QT_QPA_PLATFORM=offscreen \
 PYTHONPATH=scripts python3 -m hsd make \
-  .claude/skills/hesiod-generate/reference/specs/heightmap_export.json \
+  bridges/Claude/.claude/skills/hesiod-generate/reference/specs/heightmap_export.json \
   -o /tmp/recipe_test.hsd --run
 ```
 
