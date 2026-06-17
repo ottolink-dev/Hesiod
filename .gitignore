@@ -11,3 +11,5 @@ __pycache__/
 *.pyc
 site/
 docs/superpowers/
+.pytest_cache/
+output/
