@@ -21,10 +21,10 @@ _vertex_buffer = None
 _mesh_width = None
 _mesh_height = None
 
-
 # ============================================================
 # SAFE GETTERS
 # ============================================================
+
 
 def get_z_scale():
     return bpy.context.scene.hesiod_z_scale
@@ -33,6 +33,7 @@ def get_z_scale():
 # ============================================================
 # NETWORKING
 # ============================================================
+
 
 def recv_all(sock, size):
     data = b""
@@ -62,7 +63,8 @@ def stream_loop(port):
                 break
 
             raw = zlib.decompress(compressed)
-            heightmap = np.frombuffer(raw, dtype=np.float32).reshape((height, width))
+            heightmap = np.frombuffer(raw, dtype=np.float32).reshape(
+                (height, width))
 
             bpy.app.timers.register(lambda hm=heightmap: update_mesh(hm))
 
@@ -76,6 +78,7 @@ def stream_loop(port):
 # ============================================================
 # MESH
 # ============================================================
+
 
 def create_grid(width, height):
     global _vertex_buffer, _mesh_width, _mesh_height
@@ -114,7 +117,9 @@ def create_grid(width, height):
     _mesh_width = width
     _mesh_height = height
 
-    print(f"[Hesiod] Created grid {width}x{height} ({len(mesh.vertices)} vertices)")
+    print(
+        f"[Hesiod] Created grid {width}x{height} ({len(mesh.vertices)} vertices)"
+    )
 
     return obj
 
@@ -156,6 +161,7 @@ def update_mesh(heightmap):
 # STREAM CONTROL
 # ============================================================
 
+
 def start_stream(port):
     global _thread
 
@@ -163,7 +169,7 @@ def start_stream(port):
         print("[Hesiod] Already running")
         return
 
-    _thread = threading.Thread(target=stream_loop, args=(port,), daemon=True)
+    _thread = threading.Thread(target=stream_loop, args=(port, ), daemon=True)
     _thread.start()
 
     print(f"[Hesiod] Stream started on port {port}")
@@ -172,6 +178,7 @@ def start_stream(port):
 # ============================================================
 # UI OPERATOR
 # ============================================================
+
 
 class HESIOD_OT_start_stream(bpy.types.Operator):
     bl_idname = "hesiod.start_stream"
@@ -186,6 +193,7 @@ class HESIOD_OT_start_stream(bpy.types.Operator):
 # ============================================================
 # UI PANEL
 # ============================================================
+
 
 class HESIOD_PT_panel(bpy.types.Panel):
     bl_label = "Hesiod Stream"
@@ -216,19 +224,15 @@ def register():
     for cls in classes:
         bpy.utils.register_class(cls)
 
-    bpy.types.Scene.hesiod_z_scale = bpy.props.FloatProperty(
-        name="Z Scale",
-        default=0.2,
-        min=0.0,
-        max=1.0
-    )
+    bpy.types.Scene.hesiod_z_scale = bpy.props.FloatProperty(name="Z Scale",
+                                                             default=0.2,
+                                                             min=0.0,
+                                                             max=1.0)
 
-    bpy.types.Scene.hesiod_port = bpy.props.IntProperty(
-        name="Port",
-        default=9001,
-        min=1024,
-        max=65535
-    )
+    bpy.types.Scene.hesiod_port = bpy.props.IntProperty(name="Port",
+                                                        default=9001,
+                                                        min=1024,
+                                                        max=65535)
 
 
 def unregister():

@@ -7,7 +7,9 @@ mv tmp.json Hesiod/data/node_documentation.json
 
 echo "- python"
 
-for D in "scripts"; do
+DIRS="scripts bridges/Blender/streamer_addon"
+
+for D in ${DIRS}; do
     for F in `find ${D}/. -type f \( -iname \*.py \)`; do
 	echo ${F}
 	yapf -i ${F}
@@ -18,7 +20,6 @@ echo "- clang-format"
 
 # directories to be formatted (recursive search)
 DIRS="Hesiod/include Hesiod/src Hesiod/app"
-# FORMAT_CMD="clang-format --style=LLVM -i {}"
 FORMAT_CMD="clang-format -style=file:scripts/clang_style -i"
 
 for D in ${DIRS}; do

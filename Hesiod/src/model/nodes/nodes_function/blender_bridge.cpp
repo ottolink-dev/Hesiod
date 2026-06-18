@@ -35,8 +35,8 @@ void setup_blender_bridge_node(BaseNode &node)
   // --- Attributes
 
   int current_port = int(HSD_APP->get_blender_streamer().get_port());
-  
-  // clang-format off  
+
+  // clang-format off
   node.add_attr<IntAttribute>(A_PORT, "Communication Port", current_port, 1024, 65535);
   // clang-format on
 
