@@ -29,7 +29,8 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
 
 // nodes functions
 
-// minimal set of dev / debug
+// minimal set of dev / debug (/!\ also add the node source file in the cmake)
+DECLARE_NODE(blender_bridge)
 DECLARE_NODE(broadcast)
 DECLARE_NODE(debug)
 DECLARE_NODE(export_heightmap)

@@ -21,6 +21,7 @@ if(HESIOD_MINIMAL_NODE_SET)
 
   file(GLOB ALL_NODE_SOURCES "${NODES_FCT_DIR}/*.cpp")
   set(MINIMAL_NODE_SET_SOURCES
+      "${NODES_FCT_DIR}/blender_bridge.cpp"
       "${NODES_FCT_DIR}/broadcast.cpp"
       "${NODES_FCT_DIR}/debug.cpp"
       "${NODES_FCT_DIR}/flooding_uniform_level.cpp"
@@ -85,7 +86,8 @@ target_link_libraries(
           Qt6::OpenGLWidgets
           Qt6::WebEngineWidgets
           qterrain-renderer
-          qtexture_downloader)
+          qtexture_downloader
+          ZLIB::ZLIB)
 
 # ------------------------------
 # Copy data folder

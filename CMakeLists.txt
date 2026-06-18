@@ -42,6 +42,7 @@ find_package(spdlog REQUIRED)
 find_package(Qt6 REQUIRED COMPONENTS Core Widgets OpenGL OpenGLWidgets
                                      WebEngineWidgets)
 find_package(nlohmann_json REQUIRED)
+find_package(ZLIB REQUIRED)
 
 add_compile_definitions(
   CL_HPP_MINIMUM_OPENCL_VERSION=120 CL_HPP_TARGET_OPENCL_VERSION=120

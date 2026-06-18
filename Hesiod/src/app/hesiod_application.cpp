@@ -144,6 +144,11 @@ void HesiodApplication::cleanup()
     this->context.project_model->cleanup();
 }
 
+BlenderStreamer &HesiodApplication::get_blender_streamer()
+{
+  return this->blender_streamer;
+}
+
 AppContext &HesiodApplication::get_context() { return this->context; }
 
 const AppContext &HesiodApplication::get_context() const { return this->context; }
