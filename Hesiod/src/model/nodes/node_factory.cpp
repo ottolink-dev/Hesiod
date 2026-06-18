@@ -148,6 +148,7 @@ std::map<std::string, std::string> get_node_inventory()
       {"BasaltField", "Primitive/Geological"},
       {"Blend", "Operator/Blend"},
       {"Blend3", "Operator/Blend"},
+      {"BlenderBridge", "Bridges"},
       {"BlendPoissonBf", "Operator/Blend"},
       {"Border", "WIP/DEPRECATED"},
       {"Brush", "Primitive/Authoring"},
@@ -471,6 +472,7 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
 
   switch (str2int(node_type.c_str()))
   {
+    SETUP_NODE(BlenderBridge, blender_bridge);
     SETUP_NODE(Debug, debug);
     SETUP_NODE(ExportHeightmap, export_heightmap);
     SETUP_NODE(FloodingUniformLevel, flooding_uniform_level);

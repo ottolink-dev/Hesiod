@@ -11,6 +11,7 @@
 #include "nlohmann/json.hpp"
 
 #include "hesiod/app/app_context.hpp"
+#include "hesiod/bridges/blender/blender_streamer.hpp"
 #include "hesiod/gui/widgets/app_settings_window.hpp"
 #include "hesiod/gui/widgets/graph_config_widgets/bake_config_dialog.hpp"
 #include "hesiod/gui/widgets/main_window.hpp"
@@ -49,6 +50,7 @@ public:
   AppContext       &get_context();
   const AppContext &get_context() const;
   ProjectUI        *get_project_ui_ref();
+  BlenderStreamer  &get_blender_streamer();
 
 private slots:
   // --- User actions
@@ -78,6 +80,8 @@ private:
   MainWindow                *main_window;
   std::unique_ptr<ProjectUI> project_ui;          // because top-level UI
   AppSettingsWindow         *app_settings_window; // owned by MainWindow
+
+  BlenderStreamer blender_streamer;
 
   bool headless = false;
 };
