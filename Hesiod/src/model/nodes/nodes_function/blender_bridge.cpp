@@ -17,6 +17,7 @@ namespace hesiod
 // -----------------------------------------------------------------------------
 
 constexpr const char *P_IN = "elevation";
+constexpr const char *P_TEX = "texture";
 
 constexpr const char *A_PORT = "port";
 
@@ -31,6 +32,7 @@ void setup_blender_bridge_node(BaseNode &node)
   // --- Ports
 
   node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_IN);
+  node.add_port<hmap::VirtualTexture>(gnode::PortType::IN, P_TEX);
 
   // --- Attributes
 
@@ -57,6 +59,7 @@ void compute_blender_bridge_node(BaseNode &node)
   // --- Inputs / Outputs
 
   auto *p_in = node.get_value_ref<hmap::VirtualArray>(P_IN);
+  auto *p_tex = node.get_value_ref<hmap::VirtualTexture>(P_TEX);
 
   if (!p_in)
     return;
@@ -69,15 +72,28 @@ void compute_blender_bridge_node(BaseNode &node)
 
   // --- Compute
 
+  BlenderStreamer &streamer = HSD_APP->get_blender_streamer();
+
   // only restart if the port is changed
-  HSD_APP->get_blender_streamer().start(port);
+  streamer.start(port);
 
   hmap::Array z = p_in->to_array(node.cfg().cm_cpu);
   hmap::remap(z);
 
-  HSD_APP->get_blender_streamer().send_heightmap(z.vector.data(),
-                                                 node.cfg().shape.x,
-                                                 node.cfg().shape.y);
+  if (!p_tex)
+  {
+    streamer.send_heightmap(z.vector.data(), node.cfg().shape.x, node.cfg().shape.y);
+    return;
+  }
+  else
+  {
+    std::vector<float> raw_tex = p_tex->to_raw(node.cfg().cm_cpu);
+
+    streamer.send_heightmap_and_texture(z.vector.data(),
+                                        raw_tex.data(),
+                                        node.cfg().shape.x,
+                                        node.cfg().shape.y);
+  }
 }
 
 } // namespace hesiod

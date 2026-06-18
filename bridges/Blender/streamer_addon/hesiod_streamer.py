@@ -15,6 +15,8 @@ import threading
 
 HOST = "127.0.0.1"
 PLANE_NAME = "HeightPlane"
+IMAGE_NAME = "HesiodTexture"
+MATERIAL_NAME = "HesiodMat"
 
 _thread = None
 _vertex_buffer = None
@@ -47,32 +49,118 @@ def recv_all(sock, size):
 
 def stream_loop(port):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
     try:
         sock.connect((HOST, port))
         print(f"[Hesiod] Connected on port {port}")
 
         while True:
-            header = recv_all(sock, 12)
+
+            # ------------------------
+            # HEADER
+            # ------------------------
+
+            header = recv_all(sock, 16)
             if not header:
                 break
 
-            width, height, compressed_size = struct.unpack("III", header)
+            width, height, hm_size, has_texture = struct.unpack("IIII", header)
 
-            compressed = recv_all(sock, compressed_size)
-            if compressed is None:
+            # ------------------------
+            # HEIGHTMAP
+            # ------------------------
+
+            compressed_hm = recv_all(sock, hm_size)
+            if compressed_hm is None:
                 break
 
-            raw = zlib.decompress(compressed)
-            heightmap = np.frombuffer(raw, dtype=np.float32).reshape(
+            raw_hm = zlib.decompress(compressed_hm)
+
+            heightmap = np.frombuffer(raw_hm, dtype=np.float32).reshape(
                 (height, width))
 
-            bpy.app.timers.register(lambda hm=heightmap: update_mesh(hm))
+            rgba = None
+
+            # ------------------------
+            # TEXTURE
+            # ------------------------
+
+            if has_texture:
+
+                tex_size_bytes = recv_all(sock, 4)
+                if tex_size_bytes is None:
+                    break
+
+                tex_size = struct.unpack("I", tex_size_bytes)[0]
+
+                compressed_rgba = recv_all(sock, tex_size)
+                if compressed_rgba is None:
+                    break
+
+                raw_rgba = zlib.decompress(compressed_rgba)
+
+                rgba = np.frombuffer(raw_rgba, dtype=np.float32).reshape(
+                    (height, width, 4))
+
+            bpy.app.timers.register(
+                lambda hm=heightmap, c=rgba: update_mesh(hm, c))
 
     except Exception as e:
         print("[Hesiod] Socket error:", e)
+
     finally:
         sock.close()
         print("[Hesiod] Disconnected")
+
+
+# ============================================================
+# MATERIAL / TEXTURE
+# ============================================================
+
+
+def ensure_material(obj, width, height):
+    mat = bpy.data.materials.get(MATERIAL_NAME)
+
+    if mat is None:
+        mat = bpy.data.materials.new(name=MATERIAL_NAME)
+        mat.use_nodes = True
+
+        nodes = mat.node_tree.nodes
+        links = mat.node_tree.links
+        nodes.clear()
+
+        output = nodes.new("ShaderNodeOutputMaterial")
+        bsdf = nodes.new("ShaderNodeBsdfPrincipled")
+        tex = nodes.new("ShaderNodeTexImage")
+        tex.name = "HesiodTexNode"
+
+        links.new(tex.outputs["Color"], bsdf.inputs["Base Color"])
+        links.new(bsdf.outputs["BSDF"], output.inputs["Surface"])
+
+    if obj.data.materials:
+        obj.data.materials[0] = mat
+    else:
+        obj.data.materials.append(mat)
+
+    img = bpy.data.images.get(IMAGE_NAME)
+    if img is None or img.size[0] != width or img.size[1] != height:
+        if img is not None:
+            bpy.data.images.remove(img)
+        img = bpy.data.images.new(IMAGE_NAME,
+                                  width=width,
+                                  height=height,
+                                  alpha=True)
+        img.colorspace_settings.name = 'sRGB'
+
+    mat.node_tree.nodes["HesiodTexNode"].image = img
+
+    return img
+
+
+def update_texture(img, rgba):
+    flat = rgba.reshape(-1)
+    img.pixels.foreach_set(flat)
+    img.update()
 
 
 # ============================================================
@@ -124,14 +212,13 @@ def create_grid(width, height):
     return obj
 
 
-def update_mesh(heightmap):
+def update_mesh(heightmap, rgba=None):
     global _vertex_buffer, _mesh_width, _mesh_height
 
     height, width = heightmap.shape
     aspect = width / height
 
     obj = bpy.data.objects.get(PLANE_NAME)
-
     if obj is None or _mesh_width != width or _mesh_height != height:
         obj = create_grid(width, height)
 
@@ -142,7 +229,6 @@ def update_mesh(heightmap):
 
     mesh = obj.data
     z_scale = get_z_scale()
-
     heights = heightmap.flatten().astype(np.float32) * z_scale
 
     expected_vertices = len(mesh.vertices)
@@ -153,6 +239,10 @@ def update_mesh(heightmap):
     _vertex_buffer[2::3] = heights
     mesh.vertices.foreach_set("co", _vertex_buffer)
     mesh.update()
+
+    if rgba is not None:
+        img = ensure_material(obj, width, height)
+        update_texture(img, rgba)
 
     return None
 
