@@ -17,5 +17,5 @@
 ## Bridges
 
 - [Bridges](../../bridges/README.md)
-  - - [Blender](../../bridges/Blender/README.md)
-  - - [Claude](../../bridges/Claude/README.md)
+  - [Blender](../../bridges/Blender/README.md)
+  - [Claude](../../bridges/Claude/README.md)
