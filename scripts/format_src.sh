@@ -7,7 +7,7 @@ mv tmp.json Hesiod/data/node_documentation.json
 
 echo "- python"
 
-DIRS="scripts bridges/Blender/streamer_addon"
+DIRS="bridges/Blender/streamer_addon"
 
 for D in ${DIRS}; do
     for F in `find ${D}/. -type f \( -iname \*.py \)`; do
