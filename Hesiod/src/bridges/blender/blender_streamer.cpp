@@ -48,7 +48,7 @@ void BlenderStreamer::start(std::uint16_t port)
   this->current_port = port;
 }
 
-void BlenderStreamer::send_heightmap(const float *data, int width, int height)
+void BlenderStreamer::send_heightmap(const float *data, int width, int height, int id)
 {
   if (!this->started)
     this->start();
@@ -78,12 +78,14 @@ void BlenderStreamer::send_heightmap(const float *data, int width, int height)
 
   struct Header
   {
+    uint32_t id;
     uint32_t width;
     uint32_t height;
     uint32_t hm_size;
     uint32_t has_texture;
   } header;
 
+  header.id = static_cast<uint32_t>(id);
   header.width = static_cast<uint32_t>(width);
   header.height = static_cast<uint32_t>(height);
   header.hm_size = static_cast<uint32_t>(compressed.size());
@@ -101,7 +103,8 @@ void BlenderStreamer::send_heightmap(const float *data, int width, int height)
 void BlenderStreamer::send_heightmap_and_texture(const float *h_data,
                                                  const float *rgba_data,
                                                  int          width,
-                                                 int          height)
+                                                 int          height,
+                                                 int          id)
 {
   if (!this->started)
     this->start();
@@ -153,12 +156,14 @@ void BlenderStreamer::send_heightmap_and_texture(const float *h_data,
 
   struct Header
   {
+    uint32_t id;
     uint32_t width;
     uint32_t height;
     uint32_t hm_size;
     uint32_t has_texture;
   } header;
 
+  header.id = static_cast<uint32_t>(id);
   header.width = static_cast<uint32_t>(width);
   header.height = static_cast<uint32_t>(height);
   header.hm_size = static_cast<uint32_t>(hm_compressed.size());

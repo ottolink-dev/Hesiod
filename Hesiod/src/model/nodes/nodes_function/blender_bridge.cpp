@@ -1,6 +1,8 @@
 /* Copyright (c) 2023 Otto Link. Distributed under the terms of the GNU General
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
+#include <string>
+
 #include "attributes.hpp"
 
 #include "hesiod/app/hesiod_application.hpp"
@@ -82,7 +84,10 @@ void compute_blender_bridge_node(BaseNode &node)
 
   if (!p_tex)
   {
-    streamer.send_heightmap(z.vector.data(), node.cfg().shape.x, node.cfg().shape.y);
+    streamer.send_heightmap(z.vector.data(),
+                            node.cfg().shape.x,
+                            node.cfg().shape.y,
+                            std::stoi(node.get_id()));
     return;
   }
   else
@@ -92,7 +97,8 @@ void compute_blender_bridge_node(BaseNode &node)
     streamer.send_heightmap_and_texture(z.vector.data(),
                                         raw_tex.data(),
                                         node.cfg().shape.x,
-                                        node.cfg().shape.y);
+                                        node.cfg().shape.y,
+                                        std::stoi(node.get_id()));
   }
 }
 

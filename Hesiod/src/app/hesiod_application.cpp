@@ -75,6 +75,9 @@ HesiodApplication::HesiodApplication(int &argc, char **argv) : QApplication(argc
   // for colormaps loading
   hesiod::ColorGradientManager::get_instance();
 
+  // Blender streamer
+  this->blender_streamer.start();
+
   // --- Batch CLI mode if requested
 
   args::ArgumentParser parser("Hesiod.");

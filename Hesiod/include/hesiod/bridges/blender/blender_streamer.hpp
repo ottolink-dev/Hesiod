@@ -19,11 +19,12 @@ public:
 
   std::uint16_t get_port() const;
 
-  void send_heightmap(const float *data, int width, int height);
+  void send_heightmap(const float *data, int width, int height, int id);
   void send_heightmap_and_texture(const float *h_data,
                                   const float *rgba_data,
                                   int          width,
-                                  int          height);
+                                  int          height,
+                                  int          id);
 
 private:
   bool          started = false;
