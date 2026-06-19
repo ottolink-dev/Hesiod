@@ -1,6 +1,6 @@
 # Blender Bridge
 
-![img](../../Hesiod/data/hesiod_icon_64.png) ![img](images/blender_logo_64.png)
+![img](images/hesiod_icon_64.png) ![img](images/blender_logo_64.png)
 
 The Blender Bridge allows Hesiod to stream terrain data directly into Blender for visualization and further editing. This tutorial explains how to install the Blender add-on and establish a connection between Hesiod and Blender.
 
