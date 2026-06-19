@@ -13,3 +13,9 @@
 ## Guides
 
 - [Building a "patch of graphs" (tiled equirectangular worlds)](patch-of-graphs.md)
+
+## Bridges
+
+- [Bridges](../../bridges/README.md)
+  - - [Blender](../../bridges/Blender/README.md)
+  - - [Claude](../../bridges/Claude/README.md)
