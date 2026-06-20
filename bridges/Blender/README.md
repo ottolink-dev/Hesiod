@@ -59,3 +59,14 @@ The connection between Hesiod and Blender is preserved when saving and reopening
 
 After loading a scene, it is recommended to verify that all bridge connections have been restored correctly before continuing to work.
 
+## Performance
+
+The current implementation prioritizes simplicity over rendering performance. At the moment, the entire terrain mesh is streamed from Hesiod to Blender at full resolution whenever the graph is updated. No mesh optimization (tessellation) is currently applied during the transfer.
+
+These features are planned for future versions of the Blender Bridge. Work is already underway to improve performance through optimized mesh streaming, support for normal maps, and more efficient terrain representation techniques.
+
+## Reporting Issues
+
+The Blender Bridge is still under active development and your feedback is greatly appreciated.
+
+If you encounter bugs, connection problems, unexpected behavior, or have suggestions for improvements, please report them on the Hesiod issue tracker: [GitHub Issues](https://github.com/otto-link/Hesiod/issues).
