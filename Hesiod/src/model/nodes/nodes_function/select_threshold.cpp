@@ -39,17 +39,15 @@ void setup_select_threshold_node(BaseNode &node)
 
   // --- Attributes
 
+  // clang-format off
   node.add_attr<FloatAttribute>(A_X0, "Value", 0.5f, -1.f, 2.f);
   node.add_attr<FloatAttribute>(A_WIDTH, "Tolerance", 0.1f, 0.f, 0.3f);
+  // clang-format on
 
   // --- Attribute(s) order
 
-  node.set_attr_ordered_key({
-      "_GROUPBOX_BEGIN_Main Parameters",
-      A_X0,
-      A_WIDTH,
-      "_GROUPBOX_END_",
-  });
+  node.set_attr_ordered_key(
+      {"_GROUPBOX_BEGIN_Main Parameters", A_X0, A_WIDTH, "_GROUPBOX_END_"});
 
   setup_post_process_heightmap_attributes(node,
                                           {.add_mix = true, .remap_active_state = true});
@@ -83,9 +81,9 @@ void compute_select_threshold_node(BaseNode &node)
   hmap::for_each_tile(
       {p_in},
       {p_out},
-      [width, x0](std::vector<const hmap::Array *> in,
-                  std::vector<hmap::Array *>       out,
-                  const hmap::TileRegion &)
+      [&](std::vector<const hmap::Array *> in,
+          std::vector<hmap::Array *>       out,
+          const hmap::TileRegion &)
       {
         auto [pa_in] = unpack<1>(in);
         auto [pa_out] = unpack<1>(out);
