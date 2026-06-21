@@ -367,7 +367,6 @@ std::map<std::string, std::string> get_node_inventory()
       {"SelectInwardOutward", "Terrain Features/Selector"},
       {"SelectMidrange", "Terrain Features/Selector"},
       {"SelectMultiband3", "Terrain Features/Selector"},
-      {"SelectPulse", "Terrain Features/Selector"},
       {"SelectRivers", "Terrain Features/Selector"},
       {"SelectSlope", "Terrain Features/Selector"},
       {"SelectSoilFlow", "Terrain Features/ForTexturing"},
@@ -376,6 +375,7 @@ std::map<std::string, std::string> get_node_inventory()
       {"SelectThreshold", "Terrain Features/Selector"},
       {"SelectTransitions", "Terrain Features/Selector"},
       {"SelectValley", "Terrain Features/Selector"},
+      {"SelectValue", "Terrain Features/Selector"},
       {"SetAlpha", "Texture"},
       {"SetBorders", "Boundaries"},
       {"ShapeIndex", "WIP/DEPRECATED"},
@@ -704,7 +704,6 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
     SETUP_NODE(SelectInwardOutward, select_inward_outward);
     SETUP_NODE(SelectMultiband3, select_multiband3);
     SETUP_NODE(SelectMidrange, select_midrange);
-    SETUP_NODE(SelectPulse, select_pulse);
     SETUP_NODE(SelectRivers, select_rivers);
     SETUP_NODE(SelectSlope, select_slope);
     SETUP_NODE(SelectSoilFlow, select_soil_flow);
@@ -713,6 +712,7 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
     SETUP_NODE(SelectThreshold, select_threshold);
     SETUP_NODE(SelectTransitions, select_transitions);
     SETUP_NODE(SelectValley, select_valley);
+    SETUP_NODE(SelectValue, select_value);
     SETUP_NODE(SetAlpha, set_alpha);
     SETUP_NODE(SetBorders, set_borders);
     SETUP_NODE(ShapeIndex, shape_index);
