@@ -17585,75 +17585,6 @@
             }
         }
     },
-    "SelectPulse": {
-        "category": "Terrain Features/Selector",
-        "description": "SelectPulse is a thresholding operator. It selects values within a specified range defined by the shape of a Gaussian pulse.",
-        "label": "SelectPulse",
-        "parameters": {
-            "post_gain": {
-                "description": "Mid-centered gain transformation applied to the elevation values. This is a non-linear recurve operator centered around the mid elevation (typically 0.5). Increasing the gain pushes values toward the minimum and maximum elevations, creating flatter low/high regions with a steeper transition around the midpoint.",
-                "key": "post_gain",
-                "label": "Gain",
-                "type": "Float"
-            },
-            "post_gamma": {
-                "description": "Standard gamma correction applied to the elevation values. This is a monotonic power-law remapping that shifts emphasis toward low or high elevations, making the overall shape sharper or bulkier without changing its ordering.",
-                "key": "post_gamma",
-                "label": "Gamma",
-                "type": "Float"
-            },
-            "post_inverse": {
-                "description": "Inverts the output values after processing, flipping low and high values across the midrange.",
-                "key": "post_inverse",
-                "label": "Invert Output",
-                "type": "Bool"
-            },
-            "post_remap": {
-                "description": "Linearly remaps the output values to a specified target range (default is [0, 1]).",
-                "key": "post_remap",
-                "label": "Remap Range",
-                "type": "Value range"
-            },
-            "post_saturate": {
-                "description": "Modifies the amplitude of elevations by first clamping them to a given interval and then scaling them so that the restricted interval matches the original input range. This enhances contrast in elevation variations while maintaining overall structure.",
-                "key": "post_saturate",
-                "label": "Saturation Range",
-                "type": "Value range"
-            },
-            "post_smoothing_radius": {
-                "description": "Defines the radius for post-processing smoothing, determining the size of the neighborhood used to average local values and reduce high-frequency detail. A radius of 0 disables smoothing.",
-                "key": "post_smoothing_radius",
-                "label": "Smoothing Radius",
-                "type": "Float"
-            },
-            "sigma": {
-                "description": "Selection half-width.",
-                "key": "sigma",
-                "label": "sigma",
-                "type": "Float"
-            },
-            "value": {
-                "description": "Selection center value.",
-                "key": "value",
-                "label": "value",
-                "type": "Float"
-            }
-        },
-        "ports": {
-            "input": {
-                "caption": "input",
-                "data_type": "VirtualArray",
-                "description": "Input heightmap.",
-                "type": "input"
-            },
-            "output": {
-                "caption": "output",
-                "data_type": "VirtualArray",
-                "description": "Mask heightmap (in [0, 1]).",
-                "type": "output"
-            }
-        }
-    },
     "SelectRivers": {
         "category": "Terrain Features/Selector",
         "description": "SelectRivers is a thresholding operator. It creates a mask for river systems based on a flow accumulation threshold.",
@@ -18310,6 +18241,81 @@
                 "caption": "output",
                 "data_type": "VirtualArray",
                 "description": "A mask representing the relative width of the valley. The value is 1 at the valley center and decreases to 0 at the edges of the valley.",
+                "type": "output"
+            }
+        }
+    },
+    "SelectValue": {
+        "category": "Terrain Features/Selector",
+        "description": "No description available",
+        "label": "SelectValue",
+        "parameters": {
+            "post_gain": {
+                "description": "No description",
+                "key": "post_gain",
+                "label": "Gain",
+                "type": "Float"
+            },
+            "post_gamma": {
+                "description": "No description",
+                "key": "post_gamma",
+                "label": "Gamma",
+                "type": "Float"
+            },
+            "post_inverse": {
+                "description": "No description",
+                "key": "post_inverse",
+                "label": "Invert Output",
+                "type": "Bool"
+            },
+            "post_remap": {
+                "description": "No description",
+                "key": "post_remap",
+                "label": "Remap Range",
+                "type": "Value range"
+            },
+            "post_saturate": {
+                "description": "No description",
+                "key": "post_saturate",
+                "label": "Saturation Range",
+                "type": "Value range"
+            },
+            "post_smoothing_radius": {
+                "description": "No description",
+                "key": "post_smoothing_radius",
+                "label": "Smoothing Radius",
+                "type": "Float"
+            },
+            "smoothing": {
+                "description": "No description",
+                "key": "smoothing",
+                "label": "Smoothing",
+                "type": "Float"
+            },
+            "value": {
+                "description": "No description",
+                "key": "value",
+                "label": "Value",
+                "type": "Float"
+            },
+            "width": {
+                "description": "No description",
+                "key": "width",
+                "label": "Width",
+                "type": "Float"
+            }
+        },
+        "ports": {
+            "input": {
+                "caption": "input",
+                "data_type": "VirtualArray",
+                "description": "No description",
+                "type": "input"
+            },
+            "output": {
+                "caption": "output",
+                "data_type": "VirtualArray",
+                "description": "No description",
                 "type": "output"
             }
         }

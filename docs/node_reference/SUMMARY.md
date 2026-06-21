@@ -275,12 +275,12 @@
         * [SelectInwardOutward](nodes/SelectInwardOutward.md)
         * [SelectMidrange](nodes/SelectMidrange.md)
         * [SelectMultiband3](nodes/SelectMultiband3.md)
-        * [SelectPulse](nodes/SelectPulse.md)
         * [SelectRivers](nodes/SelectRivers.md)
         * [SelectSlope](nodes/SelectSlope.md)
         * [SelectThreshold](nodes/SelectThreshold.md)
         * [SelectTransitions](nodes/SelectTransitions.md)
         * [SelectValley](nodes/SelectValley.md)
+        * [SelectValue](nodes/SelectValue.md)
 * Texture
     * [ColorAdjust](nodes/ColorAdjust.md)
     * [ColorizeGradient](nodes/ColorizeGradient.md)

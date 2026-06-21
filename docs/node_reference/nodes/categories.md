@@ -43,6 +43,6 @@ Node Categories
 |Terrain Features|Landform|ValleyWidth|
 |Terrain Features|Mask Operations|CombineMask, ScanMask|
 |Terrain Features|Morphology|AreaRemove, DistanceTransform, MakeBinary, RelativeDistanceFromSkeleton, Skeleton|
-|Terrain Features|Selector|SelectAngle, SelectBlobLog, SelectCavities, SelectInterval, SelectInwardOutward, SelectMidrange, SelectMultiband3, SelectPulse, SelectRivers, SelectSlope, SelectThreshold, SelectTransitions, SelectValley|
+|Terrain Features|Selector|SelectAngle, SelectBlobLog, SelectCavities, SelectInterval, SelectInwardOutward, SelectMidrange, SelectMultiband3, SelectRivers, SelectSlope, SelectThreshold, SelectTransitions, SelectValley, SelectValue|
 |Texture||ColorAdjust, ColorizeGradient, ColorizeSolid, MixNormalMap, MixTexture, SetAlpha, TextureAdvectionParticle, TextureQuiltingExpand, TextureQuiltingShuffle, TextureSelectColor, TextureSplitChannels, TextureToHeightmap, TextureUvChecker|
 |WIP|DEPRECATED|AccumulationCurvature, Border, Closing, CurvatureMean, Dilation, Erosion, MorphologicalGradient, MorphologicalTopHat, Opening, PathBezier, PathBezierRound, PathBspline, PathDecasteljau, RelativeElevation, Ruggedness, ShapeIndex, Terrace, TextureAdvectionWarp, Unsphericity|
