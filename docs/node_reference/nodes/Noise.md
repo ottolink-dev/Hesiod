@@ -34,6 +34,7 @@ Primitive/Coherent
 | :--- | :--- | :--- |
 |Spatial Frequency|Wavenumber|Base spatial frequencies in the X and Y directions. The frequencies are defined with respect to the entire domain: for example, kw = 2 produces two full oscillations across the domain width (and similarly for the Y direction).|
 |Type|Enumeration|Base primitive noise. Available values: OpenSimplex2, OpenSimplex2S, Perlin, Perlin (billow), Perlin (half), Value, Value (cubic), Value (delaunay), Value (linear), Worley, Worley (doube), Worley (value).|
+|Periodic (tileable)|Bool|When enabled the noise is made tileable: the lattice is wrapped at a period derived from kw, and kw is snapped to integer cells so the wrap aligns with the noise frequency. Applies to lattice noise types only (no effect on Simplex); seamless fbm tiling additionally requires an integer lacunarity (the default 2).|
 |Gain|Float|Mid-centered gain transformation applied to the elevation values. This is a non-linear recurve operator centered around the mid elevation (typically 0.5). Increasing the gain pushes values toward the minimum and maximum elevations, creating flatter low/high regions with a steeper transition around the midpoint.|
 |Gamma|Float|Standard gamma correction applied to the elevation values. This is a monotonic power-law remapping that shifts emphasis toward low or high elevations, making the overall shape sharper or bulkier without changing its ordering.|
 |Invert Output|Bool|Inverts the output values after processing, flipping low and high values across the midrange.|
@@ -46,4 +47,4 @@ Primitive/Coherent
 
 
 !!! note "No example yet"
-    No example available for this node.
+    No example available for this node.  

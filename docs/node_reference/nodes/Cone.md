@@ -33,7 +33,7 @@ Primitive/Function
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |apex_elevation|Float|Apex elevation.|
-|center|Vec2Float|Center position of the cone in world coordinate space.|
+|center|Vec2Float|Center position of the cone in world coordinate space. Coordinates are in domain units; center.y is measured from the bottom of the map (y increases upward).|
 |Gain|Float|Mid-centered gain transformation applied to the elevation values. This is a non-linear recurve operator centered around the mid elevation (typically 0.5). Increasing the gain pushes values toward the minimum and maximum elevations, creating flatter low/high regions with a steeper transition around the midpoint.|
 |Gamma|Float|Standard gamma correction applied to the elevation values. This is a monotonic power-law remapping that shifts emphasis toward low or high elevations, making the overall shape sharper or bulkier without changing its ordering.|
 |Invert Output|Bool|Inverts the output values after processing, flipping low and high values across the midrange.|
@@ -49,4 +49,4 @@ Primitive/Function
 
 
 !!! note "No example yet"
-    No example available for this node.
+    No example available for this node.  

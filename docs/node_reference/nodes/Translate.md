@@ -32,11 +32,11 @@ Operator/Transform
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
-|center|Vec2Float|No description|
+|center|Vec2Float|No description Coordinates are in domain units; center.y is measured from the bottom of the map (y increases upward).|
 |periodic|Bool|If set to `true`, the translation is periodic, meaning that elements that move out of one side of the array reappear on the opposite side.|
 
 ## Example
 
 
 !!! note "No example yet"
-    No example available for this node.
+    No example available for this node.  

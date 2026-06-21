@@ -33,10 +33,10 @@ Primitive/Geological
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |add_deposition|Bool|No description|
-|angle|Float|No description|
+|angle|Float|Expressed in degrees.|
 |base_noise_amp|Float|No description|
 |bulk_amp|Float|No description|
-|center|Vec2Float|No description|
+|center|Vec2Float|No description Coordinates are in domain units; center.y is measured from the bottom of the map (y increases upward).|
 |elevation|Float|No description|
 |gamma|Float|No description|
 |k_smoothing|Float|No description|
@@ -65,7 +65,7 @@ Corresponding Hesiod file: [MountainInselberg.hsd](../../examples/MountainInselb
     Example files are kept up-to-date with the latest version of [Hesiod](https://github.com/otto-link/Hesiod).
     If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).
 
-
+  
 # Screenshots
 
 ![img](../../images/nodes/MountainInselberg_wiki0.png)

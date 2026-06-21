@@ -32,10 +32,10 @@ Primitive/Geological
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
-|angle|Float|No description|
-|base_noise_amp|Float|No description|
-|elevation|Float|No description|
-|k_smoothing|Float|No description|
+|Noise Angle|Float|Expressed in degrees.|
+|Noise Amplitude|Float|No description|
+|Elevation|Float|No description|
+|Transition Smoothness|Float|No description|
 |Spatial Frequency|Wavenumber|Base spatial frequencies in the X and Y directions. The frequencies are defined with respect to the entire domain: for example, kw = 2 produces two full oscillations across the domain width (and similarly for the Y direction).|
 |Octaves|Integer|The number of octaves for fractal noise generation. More octaves add finer details to the terrain.|
 |Gain|Float|Mid-centered gain transformation applied to the elevation values. This is a non-linear recurve operator centered around the mid elevation (typically 0.5). Increasing the gain pushes values toward the minimum and maximum elevations, creating flatter low/high regions with a steeper transition around the midpoint.|
@@ -44,7 +44,7 @@ Primitive/Geological
 |Remap Range|Value range|Linearly remaps the output values to a specified target range (default is [0, 1]).|
 |Saturation Range|Value range|Modifies the amplitude of elevations by first clamping them to a given interval and then scaling them so that the restricted interval matches the original input range. This enhances contrast in elevation variations while maintaining overall structure.|
 |Smoothing Radius|Float|Defines the radius for post-processing smoothing, determining the size of the neighborhood used to average local values and reduce high-frequency detail. A radius of 0 disables smoothing.|
-|rugosity|Float|No description|
+|Smoothness|Float|No description|
 |Seed|Random seed number|Random seed number. The random seed is an offset to the randomized process. A different seed will produce a new result.|
 
 ## Example
@@ -58,7 +58,7 @@ Corresponding Hesiod file: [Badlands.hsd](../../examples/Badlands.hsd). Use [Ctr
     Example files are kept up-to-date with the latest version of [Hesiod](https://github.com/otto-link/Hesiod).
     If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).
 
-
+  
 # Screenshots
 
 ![img](../../images/nodes/Badlands_wiki0.png)

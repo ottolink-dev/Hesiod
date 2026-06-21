@@ -32,7 +32,7 @@ Primitive/Coherent
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
-|angle|Float|No description|
+|angle|Float|Expressed in degrees.|
 |angle_span|Float|No description|
 |density|Float|No description|
 |exp_sigma|Float|No description|
@@ -58,4 +58,4 @@ Corresponding Hesiod file: [Vorolines.hsd](../../examples/Vorolines.hsd). Use [C
     Example files are kept up-to-date with the latest version of [Hesiod](https://github.com/otto-link/Hesiod).
     If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).
 
-
+  

@@ -32,7 +32,7 @@ Primitive/Coherent
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
-|angle|Float|No description|
+|angle|Float|Expressed in degrees.|
 |angle_span|Float|No description|
 |density|Float|No description|
 |exp_sigma|Float|No description|
@@ -55,4 +55,4 @@ Primitive/Coherent
 
 
 !!! note "No example yet"
-    No example available for this node.
+    No example available for this node.  

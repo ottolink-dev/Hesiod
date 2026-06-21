@@ -33,11 +33,11 @@ Primitive/Geological
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |add_deposition|Bool|No description|
-|angle|Float|No description|
+|angle|Float|Expressed in degrees.|
 |angle_spread_ratio|Float|No description|
 |base_noise_amp|Float|No description|
 |bulk_amp|Float|No description|
-|center|Vec2Float|No description|
+|center|Vec2Float|No description Coordinates are in domain units; center.y is measured from the bottom of the map (y increases upward).|
 |elevation|Float|No description|
 |gamma|Float|No description|
 |Octaves|Integer|The number of octaves for fractal noise generation. More octaves add finer details to the terrain.|
@@ -58,4 +58,4 @@ Primitive/Geological
 
 
 !!! note "No example yet"
-    No example available for this node.
+    No example available for this node.  

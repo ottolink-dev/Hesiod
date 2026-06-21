@@ -30,8 +30,8 @@ Filter/Range
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
-|Angle|Float|Angle of the oblique plane, defining its orientation.|
-|Center|Vec2Float|Center point of the oblique plane used for clamping.|
+|Angle|Float|Angle of the oblique plane, defining its orientation. Expressed in degrees.|
+|Center|Vec2Float|Center point of the oblique plane used for clamping. Coordinates are in domain units; center.y is measured from the bottom of the map (y increases upward).|
 |Smoothing|Float|Smoothness factor controlling the softness of the clamp (0 for a sharp clamp).|
 |Gain|Float|Mid-centered gain transformation applied to the elevation values. This is a non-linear recurve operator centered around the mid elevation (typically 0.5). Increasing the gain pushes values toward the minimum and maximum elevations, creating flatter low/high regions with a steeper transition around the midpoint.|
 |Gamma|Float|Standard gamma correction applied to the elevation values. This is a monotonic power-law remapping that shifts emphasis toward low or high elevations, making the overall shape sharper or bulkier without changing its ordering.|
@@ -56,4 +56,4 @@ Corresponding Hesiod file: [ClampOblique.hsd](../../examples/ClampOblique.hsd). 
     Example files are kept up-to-date with the latest version of [Hesiod](https://github.com/otto-link/Hesiod).
     If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).
 
-
+  

@@ -7,6 +7,7 @@ Node Categories
 |Primary|Secondary|Nodes|
 | :--- | :--- | :--- |
 |Boundaries||Bulkify, Falloff, SetBorders, ZeroedEdges|
+|Bridges||BlenderBridge|
 |Converter||HeightmapToKernel, HeightmapToMask, HeightmapToNormalMap, HeightmapToRGBA|
 |Debug||Compare, Debug, Preview|
 |Erosion|Deposition|DepositionFillHoles, DepressionFilling, Thermal, ThermalFlatten, ThermalScree, ValleyFill|
@@ -31,8 +32,8 @@ Node Categories
 |Operator|Transform|Rotate, Translate, Warp, Zoom|
 |Primitive|Authoring|Brush, Ridgelines|
 |Primitive|Coherent|GaborWaveFbm, Gavoronoise, HemisphereFieldFbm, Noise, NoiseFbm, NoiseIq, NoiseJordan, NoiseParberry, NoisePingpong, NoiseRidged, NoiseSwiss, Phasor, PolygonField, PolygonFieldFbm, Stamping, Vorolines, VorolinesFbm, Voronoi, VoronoiFbm, Voronoise, Vororand, WaveletNoise|
-|Primitive|Function|Bump, BumpLorentzian, Cone, ConeComplex, ConeSigmoid, Constant, GaussianPulse, Paraboloid, Slope, Step, WaveDune, WaveSine, WaveSquare, WaveTriangular|
-|Primitive|Geological|Badlands, BasaltField, Crater, Island, IslandLandMask, MountainCone, MountainInselberg, MountainStump, MountainTibesti, Multisteps, Plates, Rift, ShatteredPeak|
+|Primitive|Function|Band, Bump, BumpLorentzian, Cone, ConeComplex, ConeSigmoid, Constant, GaussianPulse, Paraboloid, PolarShape, Slope, Step, WaveDune, WaveSine, WaveSquare, WaveTriangular|
+|Primitive|Geological|Badlands, BasaltField, Crater, Island, IslandChain, IslandLandMask, MountainCone, MountainInselberg, MountainStump, MountainTibesti, Multisteps, Plates, Rift, ShatteredPeak|
 |Primitive|Kernel|KernelCupola, KernelDiskSmooth, KernelGabor, KernelPrim|
 |Primitive|Random|White, WhiteDensityMap, WhiteSparse|
 |Routing||Broadcast, Receive, Thru, Toggle|
@@ -42,6 +43,6 @@ Node Categories
 |Terrain Features|Landform|ValleyWidth|
 |Terrain Features|Mask Operations|CombineMask, ScanMask|
 |Terrain Features|Morphology|AreaRemove, DistanceTransform, MakeBinary, RelativeDistanceFromSkeleton, Skeleton|
-|Terrain Features|Selector|SelectAngle, SelectBlobLog, SelectCavities, SelectGt, SelectInterval, SelectInwardOutward, SelectMidrange, SelectMultiband3, SelectPulse, SelectRivers, SelectSlope, SelectTransitions, SelectValley|
+|Terrain Features|Selector|SelectAngle, SelectBlobLog, SelectCavities, SelectInterval, SelectInwardOutward, SelectMidrange, SelectMultiband3, SelectPulse, SelectRivers, SelectSlope, SelectThreshold, SelectTransitions, SelectValley|
 |Texture||ColorAdjust, ColorizeGradient, ColorizeSolid, MixNormalMap, MixTexture, SetAlpha, TextureAdvectionParticle, TextureQuiltingExpand, TextureQuiltingShuffle, TextureSelectColor, TextureSplitChannels, TextureToHeightmap, TextureUvChecker|
 |WIP|DEPRECATED|AccumulationCurvature, Border, Closing, CurvatureMean, Dilation, Erosion, MorphologicalGradient, MorphologicalTopHat, Opening, PathBezier, PathBezierRound, PathBspline, PathDecasteljau, RelativeElevation, Ruggedness, ShapeIndex, Terrace, TextureAdvectionWarp, Unsphericity|

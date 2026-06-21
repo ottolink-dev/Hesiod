@@ -31,7 +31,7 @@ WIP
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
-|angle|Float|TODO|
+|angle|Float|TODO Expressed in degrees.|
 |dt|Float|TODO|
 |iterations|Integer|TODO|
 |radius|Float|TODO|
@@ -40,4 +40,4 @@ WIP
 
 
 !!! note "No example yet"
-    No example available for this node.
+    No example available for this node.  

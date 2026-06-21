@@ -32,7 +32,7 @@ WIP
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |amplitude|Float|TODO|
-|angle|Float|TODO|
+|angle|Float|TODO Expressed in degrees.|
 |gain|Float|TODO|
 |radius|Float|TODO|
 |talus_global|Float|TODO|
@@ -41,4 +41,4 @@ WIP
 
 
 !!! note "No example yet"
-    No example available for this node.
+    No example available for this node.  

@@ -235,25 +235,25 @@
             "angle": {
                 "description": "Expressed in degrees.",
                 "key": "angle",
-                "label": "angle",
+                "label": "Noise Angle",
                 "type": "Float"
             },
             "base_noise_amp": {
                 "description": "No description",
                 "key": "base_noise_amp",
-                "label": "base_noise_amp",
+                "label": "Noise Amplitude",
                 "type": "Float"
             },
             "elevation": {
                 "description": "No description",
                 "key": "elevation",
-                "label": "elevation",
+                "label": "Elevation",
                 "type": "Float"
             },
             "k_smoothing": {
                 "description": "No description",
                 "key": "k_smoothing",
-                "label": "k_smoothing",
+                "label": "Transition Smoothness",
                 "type": "Float"
             },
             "kw": {
@@ -307,7 +307,7 @@
             "rugosity": {
                 "description": "No description",
                 "key": "rugosity",
-                "label": "rugosity",
+                "label": "Smoothness",
                 "type": "Float"
             },
             "seed": {
@@ -980,6 +980,33 @@
                 "data_type": "VirtualArray",
                 "description": "Resulting heightmap after Poisson blending.",
                 "type": "output"
+            }
+        }
+    },
+    "BlenderBridge": {
+        "category": "Bridges",
+        "description": "No description available",
+        "label": "BlenderBridge",
+        "parameters": {
+            "port": {
+                "description": "No description",
+                "key": "port",
+                "label": "Communication Port",
+                "type": "Integer"
+            }
+        },
+        "ports": {
+            "elevation": {
+                "caption": "elevation",
+                "data_type": "VirtualArray",
+                "description": "No description",
+                "type": "input"
+            },
+            "texture": {
+                "caption": "texture",
+                "data_type": "VirtualTexture",
+                "description": "No description",
+                "type": "input"
             }
         }
     },
@@ -9022,6 +9049,12 @@
                 "label": "Clip Range",
                 "type": "Bool"
             },
+            "dequantize": {
+                "description": "No description",
+                "key": "dequantize",
+                "label": "Enable Dequantize",
+                "type": "Bool"
+            },
             "flip_y": {
                 "description": "No description",
                 "key": "flip_y",
@@ -9033,6 +9066,12 @@
                 "key": "fname",
                 "label": "Filename",
                 "type": "Filename"
+            },
+            "iterations": {
+                "description": "No description",
+                "key": "iterations",
+                "label": "Iterations",
+                "type": "Integer"
             },
             "post_gain": {
                 "description": "Mid-centered gain transformation applied to the elevation values. This is a non-linear recurve operator centered around the mid elevation (typically 0.5). Increasing the gain pushes values toward the minimum and maximum elevations, creating flatter low/high regions with a steeper transition around the midpoint.",
@@ -12106,7 +12145,7 @@
             "periodic": {
                 "description": "When enabled the noise is made tileable: the lattice is wrapped at a period derived from kw, and kw is snapped to integer cells so the wrap aligns with the noise frequency. Applies to lattice noise types only (no effect on Simplex); seamless fbm tiling additionally requires an integer lacunarity (the default 2).",
                 "key": "periodic",
-                "label": "periodic",
+                "label": "Periodic (tileable)",
                 "type": "Bool"
             },
             "post_gain": {
@@ -12211,7 +12250,7 @@
             "periodic": {
                 "description": "When enabled the noise is made tileable: the lattice is wrapped at a period derived from kw, and kw is snapped to integer cells so the wrap aligns with the noise frequency. Applies to lattice noise types only (no effect on Simplex); seamless fbm tiling additionally requires an integer lacunarity (the default 2).",
                 "key": "periodic",
-                "label": "periodic",
+                "label": "Periodic (tileable)",
                 "type": "Bool"
             },
             "persistence": {
@@ -14398,6 +14437,147 @@
             }
         }
     },
+    "PolarShape": {
+        "category": "Primitive/Function",
+        "description": "No description available",
+        "label": "PolarShape",
+        "parameters": {
+            "angle": {
+                "description": "No description",
+                "key": "angle",
+                "label": "Angle",
+                "type": "Float"
+            },
+            "aspect_ratio": {
+                "description": "No description",
+                "key": "aspect_ratio",
+                "label": "Aspect Ratio",
+                "type": "Float"
+            },
+            "center": {
+                "description": "No description",
+                "key": "center",
+                "label": "Center",
+                "type": "Vec2Float"
+            },
+            "kr_border": {
+                "description": "No description",
+                "key": "kr_border",
+                "label": "Wavenumber (border)",
+                "type": "Float"
+            },
+            "kr_border_ratio": {
+                "description": "No description",
+                "key": "kr_border_ratio",
+                "label": "Border Variations",
+                "type": "Float"
+            },
+            "kt_value": {
+                "description": "No description",
+                "key": "kt_value",
+                "label": "Wavenumber (value)",
+                "type": "Float"
+            },
+            "post_gain": {
+                "description": "No description",
+                "key": "post_gain",
+                "label": "Gain",
+                "type": "Float"
+            },
+            "post_gamma": {
+                "description": "No description",
+                "key": "post_gamma",
+                "label": "Gamma",
+                "type": "Float"
+            },
+            "post_inverse": {
+                "description": "No description",
+                "key": "post_inverse",
+                "label": "Invert Output",
+                "type": "Bool"
+            },
+            "post_remap": {
+                "description": "No description",
+                "key": "post_remap",
+                "label": "Remap Range",
+                "type": "Value range"
+            },
+            "post_saturate": {
+                "description": "No description",
+                "key": "post_saturate",
+                "label": "Saturation Range",
+                "type": "Value range"
+            },
+            "post_smoothing_radius": {
+                "description": "No description",
+                "key": "post_smoothing_radius",
+                "label": "Smoothing Radius",
+                "type": "Float"
+            },
+            "rmax": {
+                "description": "No description",
+                "key": "rmax",
+                "label": "Outer Radius",
+                "type": "Float"
+            },
+            "rmin": {
+                "description": "No description",
+                "key": "rmin",
+                "label": "Inner Radius",
+                "type": "Float"
+            },
+            "sector_angle": {
+                "description": "No description",
+                "key": "sector_angle",
+                "label": "Sector Angle",
+                "type": "Float"
+            },
+            "smoothing_width": {
+                "description": "No description",
+                "key": "smoothing_width",
+                "label": "Smoothing Width",
+                "type": "Float"
+            },
+            "square_base": {
+                "description": "No description",
+                "key": "square_base",
+                "label": "Enable Square Base",
+                "type": "Bool"
+            },
+            "vmin": {
+                "description": "No description",
+                "key": "vmin",
+                "label": "Lower Value",
+                "type": "Float"
+            }
+        },
+        "ports": {
+            "envelope": {
+                "caption": "envelope",
+                "data_type": "VirtualArray",
+                "description": "No description",
+                "type": "input"
+            },
+            "noise_r": {
+                "caption": "noise_r",
+                "data_type": "VirtualArray",
+                "description": "No description",
+                "type": "input"
+            },
+            "noise_theta": {
+                "caption": "noise_theta",
+                "data_type": "VirtualArray",
+                "description": "No description",
+                "type": "input"
+            },
+            "output": {
+                "caption": "output",
+                "data_type": "VirtualArray",
+                "description": "No description",
+                "type": "output"
+            }
+        }
+    },
     "PolygonField": {
         "category": "Primitive/Coherent",
         "description": "No description available",
@@ -16054,6 +16234,12 @@
                 "label": "Bottom Extent",
                 "type": "Float"
             },
+            "bottom_force_minimum_depth": {
+                "description": "No description",
+                "key": "bottom_force_minimum_depth",
+                "label": "Ensure Minimum Depth",
+                "type": "Bool"
+            },
             "bottom_profile": {
                 "description": "Profile function used to shape the bottom region of the rift.",
                 "key": "bottom_profile",
@@ -16182,6 +16368,12 @@
             }
         },
         "ports": {
+            "bottom_mask": {
+                "caption": "bottom_mask",
+                "data_type": "VirtualArray",
+                "description": "No description",
+                "type": "output"
+            },
             "dr": {
                 "caption": "dr",
                 "data_type": "VirtualArray",
@@ -17093,69 +17285,6 @@
             }
         }
     },
-    "SelectGt": {
-        "category": "Terrain Features/Selector",
-        "description": "SelectGt is a thresholding operator. It transforms an input heightmap into a binary heightmap, where each pixel is assigned either a value of 0 or 1, depending on whether its intensity value surpasses a specified threshold value.",
-        "label": "SelectGt",
-        "parameters": {
-            "post_gain": {
-                "description": "Mid-centered gain transformation applied to the elevation values. This is a non-linear recurve operator centered around the mid elevation (typically 0.5). Increasing the gain pushes values toward the minimum and maximum elevations, creating flatter low/high regions with a steeper transition around the midpoint.",
-                "key": "post_gain",
-                "label": "Gain",
-                "type": "Float"
-            },
-            "post_gamma": {
-                "description": "Standard gamma correction applied to the elevation values. This is a monotonic power-law remapping that shifts emphasis toward low or high elevations, making the overall shape sharper or bulkier without changing its ordering.",
-                "key": "post_gamma",
-                "label": "Gamma",
-                "type": "Float"
-            },
-            "post_inverse": {
-                "description": "Inverts the output values after processing, flipping low and high values across the midrange.",
-                "key": "post_inverse",
-                "label": "Invert Output",
-                "type": "Bool"
-            },
-            "post_remap": {
-                "description": "Linearly remaps the output values to a specified target range (default is [0, 1]).",
-                "key": "post_remap",
-                "label": "Remap Range",
-                "type": "Value range"
-            },
-            "post_saturate": {
-                "description": "Modifies the amplitude of elevations by first clamping them to a given interval and then scaling them so that the restricted interval matches the original input range. This enhances contrast in elevation variations while maintaining overall structure.",
-                "key": "post_saturate",
-                "label": "Saturation Range",
-                "type": "Value range"
-            },
-            "post_smoothing_radius": {
-                "description": "Defines the radius for post-processing smoothing, determining the size of the neighborhood used to average local values and reduce high-frequency detail. A radius of 0 disables smoothing.",
-                "key": "post_smoothing_radius",
-                "label": "Smoothing Radius",
-                "type": "Float"
-            },
-            "value": {
-                "description": "Selection value.",
-                "key": "value",
-                "label": "value",
-                "type": "Float"
-            }
-        },
-        "ports": {
-            "input": {
-                "caption": "input",
-                "data_type": "VirtualArray",
-                "description": "Input heightmap.",
-                "type": "input"
-            },
-            "output": {
-                "caption": "output",
-                "data_type": "VirtualArray",
-                "description": "Mask heightmap (in [0, 1]).",
-                "type": "output"
-            }
-        }
-    },
     "SelectInterval": {
         "category": "Terrain Features/Selector",
         "description": "SelectInterval is a thresholding operator. It transforms an input heightmap into a binary heightmap, where each pixel is assigned either a value of 0 or 1, depending on whether its intensity value is within an interval of values.",
@@ -17200,13 +17329,19 @@
             "value1": {
                 "description": "Selection value, lower bound.",
                 "key": "value1",
-                "label": "value1",
+                "label": "Lower Bound",
                 "type": "Float"
             },
             "value2": {
                 "description": "Selection value, upper bound.",
                 "key": "value2",
-                "label": "value2",
+                "label": "Upper Bound",
+                "type": "Float"
+            },
+            "width": {
+                "description": "No description",
+                "key": "width",
+                "label": "Width",
                 "type": "Float"
             }
         },
@@ -17960,6 +18095,87 @@
             }
         }
     },
+    "SelectThreshold": {
+        "category": "Terrain Features/Selector",
+        "description": "No description available",
+        "label": "SelectThreshold",
+        "parameters": {
+            "post_gain": {
+                "description": "No description",
+                "key": "post_gain",
+                "label": "Gain",
+                "type": "Float"
+            },
+            "post_gamma": {
+                "description": "No description",
+                "key": "post_gamma",
+                "label": "Gamma",
+                "type": "Float"
+            },
+            "post_inverse": {
+                "description": "No description",
+                "key": "post_inverse",
+                "label": "Invert Output",
+                "type": "Bool"
+            },
+            "post_mix": {
+                "description": "No description",
+                "key": "post_mix",
+                "label": "Mix Factor",
+                "type": "Float"
+            },
+            "post_mix_method": {
+                "description": "No description",
+                "key": "post_mix_method",
+                "label": "Mix Method",
+                "type": "Enumeration"
+            },
+            "post_remap": {
+                "description": "No description",
+                "key": "post_remap",
+                "label": "Remap Range",
+                "type": "Value range"
+            },
+            "post_saturate": {
+                "description": "No description",
+                "key": "post_saturate",
+                "label": "Saturation Range",
+                "type": "Value range"
+            },
+            "post_smoothing_radius": {
+                "description": "No description",
+                "key": "post_smoothing_radius",
+                "label": "Smoothing Radius",
+                "type": "Float"
+            },
+            "width": {
+                "description": "No description",
+                "key": "width",
+                "label": "Tolerance",
+                "type": "Float"
+            },
+            "x0": {
+                "description": "No description",
+                "key": "x0",
+                "label": "Value",
+                "type": "Float"
+            }
+        },
+        "ports": {
+            "input": {
+                "caption": "input",
+                "data_type": "VirtualArray",
+                "description": "No description",
+                "type": "input"
+            },
+            "output": {
+                "caption": "output",
+                "data_type": "VirtualArray",
+                "description": "No description",
+                "type": "output"
+            }
+        }
+    },
     "SelectTransitions": {
         "category": "Terrain Features/Selector",
         "description": "SelectTransitions returns a mask filled with 1 at the blending transition between two heightmaps, and 0 elsewhere.",
@@ -18157,68 +18373,68 @@
             "radius": {
                 "description": "TODO",
                 "key": "radius",
-                "label": "radius",
+                "label": "Radius",
                 "type": "Float"
             },
-            "unique_border_value": {
-                "description": "TODO",
-                "key": "unique_border_value",
-                "label": "unique_border_value",
+            "radius_east": {
+                "description": "East-edge buffer thickness (fraction of width).",
+                "key": "radius_east",
+                "label": "East",
+                "type": "Float"
+            },
+            "radius_north": {
+                "description": "North (top) edge buffer thickness (fraction of height).",
+                "key": "radius_north",
+                "label": "North",
+                "type": "Float"
+            },
+            "radius_south": {
+                "description": "South (bottom) edge buffer thickness (fraction of height).",
+                "key": "radius_south",
+                "label": "South",
+                "type": "Float"
+            },
+            "radius_west": {
+                "description": "West-edge buffer thickness (fraction of width).",
+                "key": "radius_west",
+                "label": "West",
+                "type": "Float"
+            },
+            "uniform_radius": {
+                "description": "No description",
+                "key": "uniform_radius",
+                "label": "Uniform Radius",
+                "type": "Bool"
+            },
+            "uniform_value": {
+                "description": "No description",
+                "key": "uniform_value",
+                "label": "Uniform Value",
                 "type": "Bool"
             },
             "value_east": {
                 "description": "TODO",
                 "key": "value_east",
-                "label": "value_east",
+                "label": "East",
                 "type": "Float"
             },
             "value_north": {
                 "description": "TODO",
                 "key": "value_north",
-                "label": "value_north",
+                "label": "North",
                 "type": "Float"
             },
             "value_south": {
                 "description": "TODO",
                 "key": "value_south",
-                "label": "value_south",
+                "label": "South",
                 "type": "Float"
             },
             "value_west": {
                 "description": "TODO",
                 "key": "value_west",
-                "label": "value_west",
+                "label": "West",
                 "type": "Float"
-            },
-            "radius_west": {
-                "key": "radius_west",
-                "label": "radius_west",
-                "type": "Float",
-                "description": "West-edge buffer thickness (fraction of width)."
-            },
-            "radius_east": {
-                "key": "radius_east",
-                "label": "radius_east",
-                "type": "Float",
-                "description": "East-edge buffer thickness (fraction of width)."
-            },
-            "radius_north": {
-                "key": "radius_north",
-                "label": "radius_north",
-                "type": "Float",
-                "description": "North (top) edge buffer thickness (fraction of height)."
-            },
-            "radius_south": {
-                "key": "radius_south",
-                "label": "radius_south",
-                "type": "Float",
-                "description": "South (bottom) edge buffer thickness (fraction of height)."
-            },
-            "unique_border_radius": {
-                "key": "unique_border_radius",
-                "label": "unique_border_radius",
-                "type": "Bool",
-                "description": "When true, use the single `radius` for all edges; when false, use the per-edge radii. N/S buffers scale by map height, E/W by width."
             }
         },
         "ports": {
@@ -24098,10 +24314,28 @@
         "description": "An operator that enforces values close to zero at the domain edges.",
         "label": "ZeroedEdges",
         "parameters": {
+            "amount": {
+                "description": "No description",
+                "key": "amount",
+                "label": "Amount",
+                "type": "Float"
+            },
+            "center": {
+                "description": "No description",
+                "key": "center",
+                "label": "Center",
+                "type": "Vec2Float"
+            },
+            "distance_axis": {
+                "description": "No description",
+                "key": "distance_axis",
+                "label": "Distance Axis",
+                "type": "Enumeration"
+            },
             "distance_function": {
                 "description": "Determines the method used for distance calculation. Options: Chebyshev, Euclidean, Euclidean/Chebyshev, Manhattan.",
                 "key": "distance_function",
-                "label": "Distance Function:",
+                "label": "Distance Function",
                 "type": "Enumeration"
             },
             "post_gain": {
@@ -24152,10 +24386,22 @@
                 "label": "Smoothing Radius",
                 "type": "Float"
             },
-            "sigma": {
-                "description": "Controls the shape power law.",
-                "key": "sigma",
-                "label": "Falloff Exponent",
+            "profile_param": {
+                "description": "No description",
+                "key": "profile_param",
+                "label": "Profile Parameter",
+                "type": "Float"
+            },
+            "radial_profile": {
+                "description": "No description",
+                "key": "radial_profile",
+                "label": "Radial Profile",
+                "type": "Enumeration"
+            },
+            "radius": {
+                "description": "No description",
+                "key": "radius",
+                "label": "Radius",
                 "type": "Float"
             }
         },

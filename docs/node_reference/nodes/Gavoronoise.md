@@ -35,7 +35,7 @@ Primitive/Coherent
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |amplitude|Float|Controls the overall intensity of the noise function.|
-|angle|Float|Sets the primary orientation of the wave structures in the noise.|
+|angle|Float|Sets the primary orientation of the wave structures in the noise. Expressed in degrees.|
 |angle_spread_ratio|Float|Determines the degree of variation in the angle of the wave structures. Lower values create more aligned structures.|
 |branch_strength|Float|Controls the prominence of branch-like features in the generated noise.|
 |Spatial Frequency|Wavenumber|Base spatial frequencies in the X and Y directions. The frequencies are defined with respect to the entire domain: for example, kw = 2 produces two full oscillations across the domain width (and similarly for the Y direction).|
@@ -58,4 +58,4 @@ Primitive/Coherent
 
 
 !!! note "No example yet"
-    No example available for this node.
+    No example available for this node.  

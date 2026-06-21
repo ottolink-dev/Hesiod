@@ -37,7 +37,7 @@ Primitive/Function
 |bias_amp|Float|Amplitude of the directional bias effect.|
 |bias_angle|Float|Direction of the slope bias in degrees.|
 |bias_exponent|Float|Controls how bias strength varies with radius.|
-|center|Vec2Float|Center position of the cone in world coordinate space.|
+|center|Vec2Float|Center position of the cone in world coordinate space. Coordinates are in domain units; center.y is measured from the bottom of the map (y increases upward).|
 |erosion_delta|Float|Smoothing parameter for the erosion profile function.|
 |erosion_profile|Enumeration|Erosion profile type used to shape the valley cross-sections.|
 |Gain|Float|Mid-centered gain transformation applied to the elevation values. This is a non-linear recurve operator centered around the mid elevation (typically 0.5). Increasing the gain pushes values toward the minimum and maximum elevations, creating flatter low/high regions with a steeper transition around the midpoint.|
@@ -50,7 +50,7 @@ Primitive/Function
 |Smoothing Radius|Float|Defines the radius for post-processing smoothing, determining the size of the neighborhood used to average local values and reduce high-frequency detail. A radius of 0 disables smoothing.|
 |radial_waviness_amp|Float|Amplitude of radial sinusoidal perturbations (coastal waviness).|
 |radial_waviness_kw|Float|Frequency multiplier controlling the rate of radial waviness.|
-|radius|Float|Effective radius of the cone in coordinate space units.|
+|radius|Float|Effective radius of the cone in coordinate space units. Specified in domain units (same scale as center); on a non-square map the footprint is therefore elliptical, since x and y span different physical extents.|
 |smooth_profile|Bool|No description|
 |valley_amp|Float|Global amplitude of valley depressions.|
 |valley_angle0|Float|Angular offset of the first valley in degrees.|
@@ -61,4 +61,4 @@ Primitive/Function
 
 
 !!! note "No example yet"
-    No example available for this node.
+    No example available for this node.  

@@ -32,9 +32,9 @@ Primitive/Geological
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
-|Rotation Angle|Float|No description|
+|Rotation Angle|Float|Expressed in degrees.|
 |Asymmetry Ratio|Float|No description|
-|Center|Vec2Float|Reference center within the heightmap.|
+|Center|Vec2Float|Reference center within the heightmap. Coordinates are in domain units; center.y is measured from the bottom of the map (y increases upward).|
 |Central Peak Extent|Float|No description|
 |Central Peak Height|Float|No description|
 |Activate|Bool|Enables or disables the built-in drainage noise. If an external noise input is provided, it overrides this default noise.|
@@ -56,7 +56,7 @@ Primitive/Geological
 |Remap Range|Value range|Linearly remaps the output values to a specified target range (default is [0, 1]).|
 |Saturation Range|Value range|Modifies the amplitude of elevations by first clamping them to a given interval and then scaling them so that the restricted interval matches the original input range. This enhances contrast in elevation variations while maintaining overall structure.|
 |Smoothing Radius|Float|Defines the radius for post-processing smoothing, determining the size of the neighborhood used to average local values and reduce high-frequency detail. A radius of 0 disables smoothing.|
-|Crater Radius|Float|Crater radius.|
+|Crater Radius|Float|Crater radius. Specified in domain units (same scale as center); on a non-square map the footprint is therefore elliptical, since x and y span different physical extents.|
 |Terrace Sharpness|Float|No description|
 |Terrace Extent|Float|No description|
 |Terrace Persistence|Float|No description|
@@ -65,4 +65,4 @@ Primitive/Geological
 
 
 !!! note "No example yet"
-    No example available for this node.
+    No example available for this node.  

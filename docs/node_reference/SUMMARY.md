@@ -4,6 +4,8 @@
     * [Falloff](nodes/Falloff.md)
     * [SetBorders](nodes/SetBorders.md)
     * [ZeroedEdges](nodes/ZeroedEdges.md)
+* Bridges
+    * [BlenderBridge](nodes/BlenderBridge.md)
 * Converter
     * [HeightmapToKernel](nodes/HeightmapToKernel.md)
     * [HeightmapToMask](nodes/HeightmapToMask.md)
@@ -196,6 +198,7 @@
         * [Vororand](nodes/Vororand.md)
         * [WaveletNoise](nodes/WaveletNoise.md)
     * Function
+        * [Band](nodes/Band.md)
         * [Bump](nodes/Bump.md)
         * [BumpLorentzian](nodes/BumpLorentzian.md)
         * [Cone](nodes/Cone.md)
@@ -204,6 +207,7 @@
         * [Constant](nodes/Constant.md)
         * [GaussianPulse](nodes/GaussianPulse.md)
         * [Paraboloid](nodes/Paraboloid.md)
+        * [PolarShape](nodes/PolarShape.md)
         * [Slope](nodes/Slope.md)
         * [Step](nodes/Step.md)
         * [WaveDune](nodes/WaveDune.md)
@@ -215,6 +219,7 @@
         * [BasaltField](nodes/BasaltField.md)
         * [Crater](nodes/Crater.md)
         * [Island](nodes/Island.md)
+        * [IslandChain](nodes/IslandChain.md)
         * [IslandLandMask](nodes/IslandLandMask.md)
         * [MountainCone](nodes/MountainCone.md)
         * [MountainInselberg](nodes/MountainInselberg.md)
@@ -266,7 +271,6 @@
         * [SelectAngle](nodes/SelectAngle.md)
         * [SelectBlobLog](nodes/SelectBlobLog.md)
         * [SelectCavities](nodes/SelectCavities.md)
-        * [SelectGt](nodes/SelectGt.md)
         * [SelectInterval](nodes/SelectInterval.md)
         * [SelectInwardOutward](nodes/SelectInwardOutward.md)
         * [SelectMidrange](nodes/SelectMidrange.md)
@@ -274,6 +278,7 @@
         * [SelectPulse](nodes/SelectPulse.md)
         * [SelectRivers](nodes/SelectRivers.md)
         * [SelectSlope](nodes/SelectSlope.md)
+        * [SelectThreshold](nodes/SelectThreshold.md)
         * [SelectTransitions](nodes/SelectTransitions.md)
         * [SelectValley](nodes/SelectValley.md)
 * Texture

@@ -31,11 +31,11 @@ Math
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
-|center|Vec2Float|Reference center within the heightmap.|
+|center|Vec2Float|Reference center within the heightmap. Coordinates are in domain units; center.y is measured from the bottom of the map (y increases upward).|
 |smoothing|Float|Smoothing parameter to avoid discontinuity at the origin.|
 
 ## Example
 
 
 !!! note "No example yet"
-    No example available for this node.
+    No example available for this node.  

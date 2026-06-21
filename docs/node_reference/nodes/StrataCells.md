@@ -35,7 +35,7 @@ Erosion/Stratify
 | :--- | :--- | :--- |
 |Use Absolute Displacement|Bool|No description|
 |Strata Strength|Float|No description|
-|Orientation Angle|Float|No description|
+|Orientation Angle|Float|Expressed in degrees.|
 |Enable Base Noise|Bool|No description|
 |Longitudinal Sharpness|Float|No description|
 |Lateral Sharpness|Float|No description|
@@ -71,4 +71,4 @@ Corresponding Hesiod file: [StrataCells.hsd](../../examples/StrataCells.hsd). Us
     Example files are kept up-to-date with the latest version of [Hesiod](https://github.com/otto-link/Hesiod).
     If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).
 
-
+  

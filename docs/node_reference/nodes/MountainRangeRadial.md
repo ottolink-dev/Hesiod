@@ -35,7 +35,7 @@ WIP
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |angle_spread_ratio|Float|Controls the angular spread of the mountain range. Lower values create more concentrated ridges, while higher values distribute them more evenly.|
-|center|Vec2Float|The center point of the radial mountain range as normalized coordinates within [0, 1].|
+|center|Vec2Float|The center point of the radial mountain range as normalized coordinates within [0, 1]. Coordinates are in domain units; center.y is measured from the bottom of the map (y increases upward).|
 |core_size_ratio|Float|Determines the relative size of the core mountain region before tapering begins.|
 |half_width|Float|Defines the half-width of the radial mountain range, controlling its spread.|
 |kw|Wavenumber|Base spatial frequencies in the X and Y directions. The frequencies are defined with respect to the entire domain: for example, kw = 2 produces two full oscillations across the domain width (and similarly for the Y direction).|
@@ -55,4 +55,4 @@ WIP
 
 
 !!! note "No example yet"
-    No example available for this node.
+    No example available for this node.  

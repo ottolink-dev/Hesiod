@@ -34,9 +34,9 @@ Erosion/Hydraulic
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |amplitude|Float|No description|
-|angle|Float|No description|
+|angle|Float|Expressed in degrees.|
 |apply_mask|Bool|No description|
-|center|Vec2Float|No description|
+|center|Vec2Float|No description Coordinates are in domain units; center.y is measured from the bottom of the map (y increases upward).|
 |clamp_vmin|Float|No description|
 |Activate|Bool|Enables or disables the built-in drainage noise. If an external noise input is provided, it overrides this default noise.|
 |Spatial Frequency|Float|Base spatial frequencies in the X and Y directions.|
@@ -79,7 +79,7 @@ Corresponding Hesiod file: [Rifts.hsd](../../examples/Rifts.hsd). Use [Ctrl+I] i
     Example files are kept up-to-date with the latest version of [Hesiod](https://github.com/otto-link/Hesiod).
     If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).
 
-
+  
 # Screenshots
 
 Before/after:

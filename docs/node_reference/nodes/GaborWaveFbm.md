@@ -34,7 +34,7 @@ Primitive/Coherent
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
-|angle|Float|Controls the base orientation of the Gabor wavelets, influencing the dominant direction of the noise pattern.|
+|angle|Float|Controls the base orientation of the Gabor wavelets, influencing the dominant direction of the noise pattern. Expressed in degrees.|
 |angle_spread_ratio|Float|Determines how much the local angle of the Gabor kernel can vary. A low value results in straighter structures, while a high value introduces more directional variation.|
 |Spatial Frequency|Wavenumber|Base spatial frequencies in the X and Y directions. The frequencies are defined with respect to the entire domain: for example, kw = 2 produces two full oscillations across the domain width (and similarly for the Y direction).|
 |Lacunarity|Float|The frequency scaling factor for successive noise octaves. Higher values increase the frequency of each successive octave.|
@@ -55,4 +55,4 @@ Primitive/Coherent
 
 
 !!! note "No example yet"
-    No example available for this node.
+    No example available for this node.  

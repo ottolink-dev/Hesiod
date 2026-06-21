@@ -32,7 +32,7 @@ Operator/Transform
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
-|center|Vec2Float|Reference center within the heightmap.|
+|center|Vec2Float|Reference center within the heightmap. Coordinates are in domain units; center.y is measured from the bottom of the map (y increases upward).|
 |periodic|Bool|If set to `true`, the zoom is periodic.|
 |remap|Bool|Remap the operator's output to a specified range, defaulting to [0, 1].|
 |zoom_factor|Float|The factor by which to zoom the heightmap.|
@@ -41,4 +41,4 @@ Operator/Transform
 
 
 !!! note "No example yet"
-    No example available for this node.
+    No example available for this node.  

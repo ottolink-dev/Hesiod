@@ -33,9 +33,9 @@ Primitive/Geological
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |add_deposition|Bool|No description|
-|angle|Float|No description|
+|angle|Float|Expressed in degrees.|
 |base_noise_amp|Float|No description|
-|center|Vec2Float|No description|
+|center|Vec2Float|No description Coordinates are in domain units; center.y is measured from the bottom of the map (y increases upward).|
 |elevation|Float|No description|
 |gamma|Float|No description|
 |k_smoothing|Float|No description|
@@ -56,4 +56,4 @@ Primitive/Geological
 
 
 !!! note "No example yet"
-    No example available for this node.
+    No example available for this node.  

@@ -31,7 +31,7 @@ Erosion/Stratify
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
-|angle|Float|No description|
+|angle|Float|Expressed in degrees.|
 |apply_elevation_mask|Bool|No description|
 |apply_ridge_mask|Bool|No description|
 |enable_ridge_noise|Bool|No description|
@@ -76,7 +76,7 @@ Corresponding Hesiod file: [Strata.hsd](../../examples/Strata.hsd). Use [Ctrl+I]
     Example files are kept up-to-date with the latest version of [Hesiod](https://github.com/otto-link/Hesiod).
     If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).
 
-
+  
 # Screenshots
 
 Before/after:

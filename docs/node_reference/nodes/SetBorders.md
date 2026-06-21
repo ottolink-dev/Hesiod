@@ -30,15 +30,20 @@ Boundaries
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
-|radius|Float|TODO|
-|unique_border_value|Bool|TODO|
-|value_east|Float|TODO|
-|value_north|Float|TODO|
-|value_south|Float|TODO|
-|value_west|Float|TODO|
+|Radius|Float|TODO|
+|East|Float|East-edge buffer thickness (fraction of width).|
+|North|Float|North (top) edge buffer thickness (fraction of height).|
+|South|Float|South (bottom) edge buffer thickness (fraction of height).|
+|West|Float|West-edge buffer thickness (fraction of width).|
+|Uniform Radius|Bool|No description|
+|Uniform Value|Bool|No description|
+|East|Float|TODO|
+|North|Float|TODO|
+|South|Float|TODO|
+|West|Float|TODO|
 
 ## Example
 
 
 !!! note "No example yet"
-    No example available for this node.
+    No example available for this node.  

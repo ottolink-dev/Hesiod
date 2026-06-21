@@ -30,11 +30,11 @@ Operator/Transform
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
-|angle|Float|No description|
+|angle|Float|Expressed in degrees.|
 |zoom_in|Bool|No description|
 
 ## Example
 
 
 !!! note "No example yet"
-    No example available for this node.
+    No example available for this node.  

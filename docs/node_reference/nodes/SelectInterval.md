@@ -36,11 +36,12 @@ Terrain Features/Selector
 |Remap Range|Value range|Linearly remaps the output values to a specified target range (default is [0, 1]).|
 |Saturation Range|Value range|Modifies the amplitude of elevations by first clamping them to a given interval and then scaling them so that the restricted interval matches the original input range. This enhances contrast in elevation variations while maintaining overall structure.|
 |Smoothing Radius|Float|Defines the radius for post-processing smoothing, determining the size of the neighborhood used to average local values and reduce high-frequency detail. A radius of 0 disables smoothing.|
-|value1|Float|Selection value, lower bound.|
-|value2|Float|Selection value, upper bound.|
+|Lower Bound|Float|Selection value, lower bound.|
+|Upper Bound|Float|Selection value, upper bound.|
+|Width|Float|No description|
 
 ## Example
 
 
 !!! note "No example yet"
-    No example available for this node.
+    No example available for this node.  

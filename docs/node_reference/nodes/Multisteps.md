@@ -34,7 +34,7 @@ Primitive/Geological
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |Rotation Angle|Float|Rotation angle (in degrees) that orients the step axis within the domain.|
-|Center|Vec2Float|2D center point of the rotated step axis, expressed in normalized domain coordinates.|
+|Center|Vec2Float|2D center point of the rotated step axis, expressed in normalized domain coordinates. Coordinates are in domain units; center.y is measured from the bottom of the map (y increases upward).|
 |Elevation Exponent|Float|Exponent controlling the vertical shaping of each step. Values greater than 1 sharpen heights, while values below 1 soften them.|
 |Spatial Frequency|Wavenumber|Base spatial frequencies in the X and Y directions. The frequencies are defined with respect to the entire domain: for example, kw = 2 produces two full oscillations across the domain width (and similarly for the Y direction).|
 |Amplitude|Float|Amplitude of the noise modulation applied along the step axis. Higher values increase deformation intensity.|
@@ -59,4 +59,4 @@ Primitive/Geological
 
 
 !!! note "No example yet"
-    No example available for this node.
+    No example available for this node.  

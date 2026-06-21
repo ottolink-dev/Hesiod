@@ -26,6 +26,7 @@ Primitive/Geological
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
+|bottom_mask|VirtualArray|No description|
 |output|VirtualArray|Generated rift heightmap.|
 |rift_mask|VirtualArray|Mask representing the spatial extent and influence of the rift structure.|
 
@@ -37,9 +38,10 @@ Primitive/Geological
 |Axial Slope|Float|Longitudinal slope applied along the rift axis.|
 |Bottom Depth|Float|Additional depth contribution applied to the inner bottom region of the rift.|
 |Bottom Extent|Float|Relative width of the inner bottom region inside the rift.|
+|Ensure Minimum Depth|Bool|No description|
 |Bottom Profile|Enumeration|Profile function used to shape the bottom region of the rift.|
 |Bottom Profile Sharpness|Float|Additional shaping parameter associated with the selected bottom profile.|
-|Center|Vec2Float|Reference center within the heightmap.|
+|Center|Vec2Float|Reference center within the heightmap. Coordinates are in domain units; center.y is measured from the bottom of the map (y increases upward).|
 |Depth|Float|Overall depth amplitude of the rift.|
 |Activate|Bool|Enables or disables the built-in drainage noise. If an external noise input is provided, it overrides this default noise.|
 |Spatial Frequency|Float|Base spatial frequencies in the X and Y directions.|
@@ -56,11 +58,11 @@ Primitive/Geological
 |Smoothing Radius|Float|Defines the radius for post-processing smoothing, determining the size of the neighborhood used to average local values and reduce high-frequency detail. A radius of 0 disables smoothing.|
 |Profile|Enumeration|Profile function used to shape the outer rift cross-section.|
 |Profile Sharpness|Float|Additional shaping parameter associated with the selected outer profile.|
-|Radius|Float|Half-width of the rift in normalized domain units.|
+|Radius|Float|Half-width of the rift in normalized domain units. Specified in domain units (same scale as center); on a non-square map the footprint is therefore elliptical, since x and y span different physical extents.|
 |Scale Radius with Depth|Bool|If enabled, the rift radius and related features scale proportionally with the depth value.|
 
 ## Example
 
 
 !!! note "No example yet"
-    No example available for this node.
+    No example available for this node.  
