@@ -40,5 +40,12 @@ Operator/Transform
 ## Example
 
 
-!!! note "No example yet"
-    No example available for this node.  
+![img](../../images/nodes/Zoom_hsd_example.png)
+
+Corresponding Hesiod file: [Zoom.hsd](../../examples/Zoom.hsd). Use [Ctrl+I] in the node editor to import a hsd file within your current project.
+
+!!! note
+    Example files are kept up-to-date with the latest version of [Hesiod](https://github.com/otto-link/Hesiod).
+    If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).
+
+

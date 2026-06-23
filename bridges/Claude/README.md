@@ -62,5 +62,5 @@ skill elsewhere, run the commands from a Hesiod checkout and adjust those spec p
 accordingly.
 
 See also the user-facing guides:
-[LLM-driven procedural generation](../../docs/guides/llm-procedural-generation.md) and
-[Batch & headless](../../docs/guides/batch-headless.md).
+[LLM-driven procedural generation](https://github.com/otto-link/Hesiod/blob/dev/docs/guides/llm-procedural-generation.md)
+and [Batch & headless](https://github.com/otto-link/Hesiod/blob/dev/docs/guides/batch-headless.md).
