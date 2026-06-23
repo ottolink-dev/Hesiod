@@ -334,8 +334,9 @@ void GraphNodeWidget::json_from(nlohmann::json const &json)
   GraphViewer::json_from(json);
   this->set_block_graph_model_updates(false);
 
-  // viewers
-  if (json.contains("viewers") && json["viewers"].is_array())
+  // viewers (skipped in headless CLI modes, e.g. --snapshot: no 3D viewer is
+  // created there, so there is nothing to restore state into)
+  if (!HSD_CTX.headless && json.contains("viewers") && json["viewers"].is_array())
   {
     for (const auto &viewer_json : json["viewers"])
     {
@@ -1234,6 +1235,11 @@ void GraphNodeWidget::on_nodes_paste_request()
 void GraphNodeWidget::on_viewport_request()
 {
   Logger::log()->trace("GraphNodeWidget::on_viewport_request");
+
+  // no independent 3D viewer window in headless CLI modes (e.g. --snapshot):
+  // it would receive paint events and crash without a real GUI window context
+  if (HSD_CTX.headless)
+    return;
 
   auto gno = this->p_graph_node.lock();
   if (!gno)

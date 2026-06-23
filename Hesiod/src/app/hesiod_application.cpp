@@ -182,10 +182,14 @@ void HesiodApplication::load_project_model_and_ui(const std::string &fname,
   // --- UI
 
   // remove first old central widget (if any) so it doesn't linger
-  if (QWidget *old = this->main_window->takeCentralWidget())
+  // (main_window is null in headless CLI modes: --snapshot / --inventory)
+  if (this->main_window)
   {
-    old->setParent(nullptr);
-    old->deleteLater();
+    if (QWidget *old = this->main_window->takeCentralWidget())
+    {
+      old->setParent(nullptr);
+      old->deleteLater();
+    }
   }
 
   this->project_ui = std::make_unique<ProjectUI>();
@@ -193,7 +197,8 @@ void HesiodApplication::load_project_model_and_ui(const std::string &fname,
   this->project_ui->initialize(this->context.project_model.get());
   this->project_ui->load_ui_state(actual_fname);
 
-  this->main_window->setCentralWidget(this->project_ui->get_widget());
+  if (this->main_window)
+    this->main_window->setCentralWidget(this->project_ui->get_widget());
 
   // reset other visibility state
   this->project_ui->get_graph_manager_widget_ref()->setVisible(
@@ -230,7 +235,8 @@ void HesiodApplication::load_project_model_and_ui(const std::string &fname,
   { this->on_project_name_changed(); };
 
   // Project model and UI -> MainWindow
-  this->main_window->setup_connections_with_project();
+  if (this->main_window)
+    this->main_window->setup_connections_with_project();
 
   // rename whether fname is empty or not
   if (keep_name)
@@ -242,7 +248,8 @@ void HesiodApplication::load_project_model_and_ui(const std::string &fname,
 void HesiodApplication::notify(const std::string &msg, int timeout)
 {
   Logger::log()->trace("HesiodApplication::notify: {}", msg);
-  this->main_window->notify(msg, timeout);
+  if (this->main_window)
+    this->main_window->notify(msg, timeout);
 }
 
 void HesiodApplication::on_application_settings_action()
@@ -460,7 +467,8 @@ void HesiodApplication::on_project_name_changed()
   if (this->context.project_model->get_is_dirty())
     title += "*";
 
-  this->main_window->setWindowTitle(title.c_str());
+  if (this->main_window)
+    this->main_window->setWindowTitle(title.c_str());
 }
 
 void HesiodApplication::on_project_settings()

@@ -37,6 +37,10 @@ public:
   // --- Data
   void load_node_documentation();
 
+  // runtime flag: true in headless CLI modes (e.g. --snapshot) so GUI-only,
+  // window/OpenGL-dependent widgets (3D viewer) are skipped
+  bool headless = false;
+
   // global settings
   AppSettings    app_settings;
   StyleSettings  style_settings;

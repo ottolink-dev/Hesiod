@@ -143,10 +143,17 @@ void GraphEditorWidget::setup_layout()
     splitter->setChildrenCollapsible(false);
 
     this->graph_node_widget = new GraphNodeWidget(gno->get_shared());
-    this->viewer = new Viewer3D(this->graph_node_widget);
-    this->viewer->setMinimumHeight(32);
 
-    splitter->addWidget(this->viewer);
+    // skip the 3D viewer (OpenGL) in headless CLI modes (e.g. --snapshot): it
+    // would receive paint events and crash without a real GUI window context.
+    // get_viewer() stays null and every caller already null-guards it.
+    if (!HSD_CTX.headless)
+    {
+      this->viewer = new Viewer3D(this->graph_node_widget);
+      this->viewer->setMinimumHeight(32);
+      splitter->addWidget(this->viewer);
+    }
+
     splitter->addWidget(this->graph_node_widget);
 
     layout->addWidget(splitter, 0, row_offset);
