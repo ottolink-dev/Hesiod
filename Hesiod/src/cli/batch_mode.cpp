@@ -174,13 +174,24 @@ void run_snapshot_generation()
 
   auto *app = static_cast<hesiod::HesiodApplication *>(QCoreApplication::instance());
 
-  // deactivate viewport and node settings pan in graph viewer
-  const bool bckp_snsp = app->get_context()
-                             .app_settings.node_editor.show_node_settings_pan;
-  const bool bckp_sw = app->get_context().app_settings.node_editor.show_viewer;
+  // headless: skip GUI-only / OpenGL widgets (3D viewer) when building the graph UI
+  app->get_context().headless = true;
 
-  app->get_context().app_settings.node_editor.show_node_settings_pan = false;
-  app->get_context().app_settings.node_editor.show_viewer = false;
+  // strip everything but the node graph from the snapshot: deactivate the node
+  // settings pan, the per-graph 3D viewer, the node library panel (so the graph
+  // gets the full frame width), and the WebEngine texture downloader.
+  auto &ne = app->get_context().app_settings.node_editor;
+  auto &iface = app->get_context().app_settings.interface;
+
+  const bool bckp_snsp = ne.show_node_settings_pan;
+  const bool bckp_sw = ne.show_viewer;
+  const bool bckp_lib = ne.show_node_library_pan;
+  const bool bckp_txd = iface.enable_texture_downloader;
+
+  ne.show_node_settings_pan = false;
+  ne.show_viewer = false;
+  ne.show_node_library_pan = false;
+  iface.enable_texture_downloader = false;
 
   for (auto &[node_type, _] : inventory)
   {
@@ -190,36 +201,51 @@ void run_snapshot_generation()
     {
       Logger::log()->trace("- default file exists: {}", fname);
 
-      app->load_project_model_and_ui(fname);
-
-      GraphTabsWidget *p_gtw = app->get_project_ui_ref()->get_graph_tabs_widget_ref();
-
-      if (p_gtw)
+      // a single broken example (e.g. a stale port name in the .hsd) must not
+      // abort the whole batch: log and skip it
+      try
       {
-        p_gtw->zoom_to_content();
+        app->load_project_model_and_ui(fname);
 
-        // TODO refit again, not working...
-        auto post_render_callback = [&]() { return; };
+        GraphTabsWidget *p_gtw = app->get_project_ui_ref()->get_graph_tabs_widget_ref();
 
-        QWidget *widget = dynamic_cast<QWidget *>(p_gtw);
+        if (p_gtw)
+        {
+          QWidget *widget = dynamic_cast<QWidget *>(p_gtw);
 
-        render_widget_screenshot(widget,
-                                 node_type + "_hsd_example.png",
-                                 size,
-                                 post_render_callback);
+          // size the widget to the final render size FIRST, then fit the graph
+          // to it: zoom_to_content() must run against the actual 512x512
+          // viewport, otherwise the fit is computed at the pre-render size and
+          // the graph is cropped (the old "TODO refit" problem).
+          widget->setFixedSize(size);
+          QCoreApplication::processEvents();
+          p_gtw->zoom_to_content();
+          QCoreApplication::processEvents();
 
-        QCoreApplication::processEvents();
+          render_widget_screenshot(widget, node_type + "_hsd_example.png", size);
 
-        // to avoid Qt panicking...
-        QEventLoop loop;
-        QTimer::singleShot(50, &loop, &QEventLoop::quit);
-        loop.exec();
+          QCoreApplication::processEvents();
+
+          // to avoid Qt panicking...
+          QEventLoop loop;
+          QTimer::singleShot(50, &loop, &QEventLoop::quit);
+          loop.exec();
+        }
+      }
+      catch (const std::exception &e)
+      {
+        Logger::log()->error("snapshot generation failed for '{}', skipping: {}",
+                             fname,
+                             e.what());
       }
     }
   }
 
-  app->get_context().app_settings.node_editor.show_node_settings_pan = bckp_snsp;
-  app->get_context().app_settings.node_editor.show_viewer = bckp_sw;
+  ne.show_node_settings_pan = bckp_snsp;
+  ne.show_viewer = bckp_sw;
+  ne.show_node_library_pan = bckp_lib;
+  iface.enable_texture_downloader = bckp_txd;
+  app->get_context().headless = false;
 }
 
 } // namespace hesiod::cli
