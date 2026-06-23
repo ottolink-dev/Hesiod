@@ -1,0 +1,103 @@
+{
+    "Hesiod version": "v0.5.2",
+    "graph_manager": {
+        "export_param": {
+            "export_path": "",
+            "ids": [],
+            "overlap": 0.0,
+            "shape.x": 512,
+            "shape.y": 512,
+            "tiling.x": 1,
+            "tiling.y": 1
+        },
+        "graph_nodes": {
+            "graph": {
+                "id": "graph",
+                "id_count": 3,
+                "links": [
+                    {
+                        "node_id_from": "1",
+                        "port_id_from": "cloud",
+                        "node_id_to": "2",
+                        "port_id_to": "cloud"
+                    }
+                ],
+                "model_config": {
+                    "hmap_transform_mode_cpu": 0,
+                    "hmap_transform_mode_gpu": 2,
+                    "overlap": 0.0,
+                    "shape.x": 512,
+                    "shape.y": 512,
+                    "tiling.x": 1,
+                    "tiling.y": 1
+                },
+                "nodes": [
+                    {
+                        "id": "1",
+                        "label": "CloudLattice"
+                    },
+                    {
+                        "id": "2",
+                        "label": "CloudToVectors"
+                    }
+                ],
+                "origin": [
+                    0.0,
+                    0.0
+                ],
+                "rotation_angle": 0.0,
+                "size": [
+                    1.0,
+                    1.0
+                ]
+            }
+        },
+        "graph_order": [
+            "graph"
+        ],
+        "id_count": 0
+    },
+    "graph_manager_widget": {
+        "frames": {
+            "graph": {
+                "current_bg_tag": "NONE"
+            }
+        }
+    },
+    "graph_tabs_widget": {
+        "graph_node_widgets": {
+            "graph": {
+                "comments": [],
+                "current_link_type": 2,
+                "groups": [],
+                "id": "graph",
+                "links": [
+                    {
+                        "link_type": 2,
+                        "node_out_id": "1",
+                        "port_out_id": "cloud",
+                        "node_in_id": "2",
+                        "port_in_id": "cloud"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "caption": "CloudLattice",
+                        "id": "1",
+                        "is_widget_visible": true,
+                        "scene_position.x": 0.0,
+                        "scene_position.y": 0.0
+                    },
+                    {
+                        "caption": "CloudToVectors",
+                        "id": "2",
+                        "is_widget_visible": true,
+                        "scene_position.x": 320.0,
+                        "scene_position.y": 0.0
+                    }
+                ]
+            }
+        }
+    },
+    "saved_at": "1970-01-01_00:00:00"
+}
