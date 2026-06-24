@@ -47,7 +47,7 @@
                     },
                     {
                         "id": "2",
-                        "label": "Broadcast"
+                        "label": "GradientNorm"
                     }
                 ],
                 "origin": [
@@ -98,7 +98,7 @@
                         "scene_position.y": 0.0
                     },
                     {
-                        "caption": "Broadcast",
+                        "caption": "GradientNorm",
                         "id": "2",
                         "is_widget_visible": true,
                         "scene_position.x": 320.0,
