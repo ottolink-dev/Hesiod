@@ -1,220 +1,54 @@
 {
-    "Hesiod version": "v0.5.0",
-    "bake_config": {
-        "force_auto_export": true,
-        "force_distributed": true,
-        "nvariants": 0,
-        "rename_export_files": true,
-        "resolution": 1024
-    },
-    "comment": "",
+    "Hesiod version": "v0.5.2",
     "graph_manager": {
         "export_param": {
             "export_path": "",
             "ids": [],
-            "overlap": 0.5,
-            "shape.x": 1024,
-            "shape.y": 1024,
-            "tiling.x": 4,
-            "tiling.y": 4
+            "overlap": 0.0,
+            "shape.x": 512,
+            "shape.y": 512,
+            "tiling.x": 1,
+            "tiling.y": 1
         },
         "graph_nodes": {
             "graph": {
                 "id": "graph",
-                "id_count": 13,
+                "id_count": 4,
                 "links": [
                     {
-                        "node_id_from": "8",
-                        "node_id_to": "9",
+                        "node_id_from": "1",
                         "port_id_from": "cloud",
+                        "node_id_to": "2",
                         "port_id_to": "cloud"
                     },
                     {
-                        "node_id_from": "9",
-                        "node_id_to": "11",
+                        "node_id_from": "2",
                         "port_id_from": "path",
-                        "port_id_to": "input"
-                    },
-                    {
-                        "node_id_from": "11",
-                        "node_id_to": "10",
-                        "port_id_from": "output",
-                        "port_id_to": "input"
-                    },
-                    {
-                        "node_id_from": "10",
-                        "node_id_to": "12",
-                        "port_id_from": "output",
+                        "node_id_to": "3",
                         "port_id_to": "input"
                     }
                 ],
                 "model_config": {
-                    "overlap": 0.5,
-                    "shape.x": 1024,
-                    "shape.y": 1024,
-                    "tiling.x": 4,
-                    "tiling.y": 4
+                    "hmap_transform_mode_cpu": 0,
+                    "hmap_transform_mode_gpu": 2,
+                    "overlap": 0.0,
+                    "shape.x": 512,
+                    "shape.y": 512,
+                    "tiling.x": 1,
+                    "tiling.y": 1
                 },
                 "nodes": [
                     {
-                        "comment": "",
-                        "id": "10",
-                        "label": "PathDecimate",
-                        "npoints": {
-                            "label": "npoints",
-                            "type": 10,
-                            "type_string": "Integer",
-                            "value": 8,
-                            "vmax": 32,
-                            "vmin": 2
-                        },
-                        "runtime_info": {
-                            "eval_count": 7,
-                            "time_creation": 1765642215842,
-                            "time_last_update": 1765642234926,
-                            "update_time": 0.02574799954891205
-                        }
+                        "id": "1",
+                        "label": "CloudLattice"
                     },
                     {
-                        "comment": "",
-                        "id": "11",
-                        "iterations": {
-                            "label": "iterations",
-                            "type": 10,
-                            "type_string": "Integer",
-                            "value": 4,
-                            "vmax": 10,
-                            "vmin": 1
-                        },
-                        "label": "PathFractalize",
-                        "orientation": {
-                            "label": "orientation",
-                            "type": 10,
-                            "type_string": "Integer",
-                            "value": 0,
-                            "vmax": 1,
-                            "vmin": 0
-                        },
-                        "persistence": {
-                            "label": "Persistence",
-                            "log_scale": false,
-                            "type": 6,
-                            "type_string": "Float",
-                            "value": 1.0,
-                            "vmax": 4.0,
-                            "vmin": 0.009999999776482582
-                        },
-                        "runtime_info": {
-                            "eval_count": 2,
-                            "time_creation": 1765642231584,
-                            "time_last_update": 1765642233060,
-                            "update_time": 0.02855999954044819
-                        },
-                        "seed": {
-                            "label": "Seed",
-                            "type": 12,
-                            "type_string": "Random seed number",
-                            "value": 0
-                        },
-                        "sigma": {
-                            "label": "sigma",
-                            "log_scale": false,
-                            "type": 6,
-                            "type_string": "Float",
-                            "value": 0.30000001192092896,
-                            "vmax": 1.0,
-                            "vmin": 0.0
-                        }
+                        "id": "2",
+                        "label": "CloudToPath"
                     },
                     {
-                        "comment": "",
-                        "edge_divisions": {
-                            "label": "edge_divisions",
-                            "type": 10,
-                            "type_string": "Integer",
-                            "value": 10,
-                            "vmax": 32,
-                            "vmin": 1
-                        },
-                        "id": "12",
-                        "label": "PathBspline",
-                        "runtime_info": {
-                            "eval_count": 2,
-                            "time_creation": 1765642251984,
-                            "time_last_update": 1765642255950,
-                            "update_time": 0.012140999548137188
-                        }
-                    },
-                    {
-                        "comment": "",
-                        "id": "8",
-                        "label": "CloudRandom",
-                        "method": {
-                            "choice": "Latin Hypercube Sampling",
-                            "label": "method",
-                            "type": 4,
-                            "type_string": "Enumeration",
-                            "value": 3
-                        },
-                        "npoints": {
-                            "label": "npoints",
-                            "type": 10,
-                            "type_string": "Integer",
-                            "value": 5,
-                            "vmax": 2147483647,
-                            "vmin": 1
-                        },
-                        "remap": {
-                            "is_active": true,
-                            "label": "remap",
-                            "type": 11,
-                            "type_string": "Value range",
-                            "value": [
-                                0.0,
-                                1.0
-                            ],
-                            "vmax": 2.0,
-                            "vmin": -1.0
-                        },
-                        "runtime_info": {
-                            "eval_count": 6,
-                            "time_creation": 1765642187131,
-                            "time_last_update": 1765642225695,
-                            "update_time": 0.12359300255775452
-                        },
-                        "seed": {
-                            "label": "Seed",
-                            "type": 12,
-                            "type_string": "Random seed number",
-                            "value": 0
-                        }
-                    },
-                    {
-                        "closed": {
-                            "label": "closed",
-                            "label_false": "",
-                            "label_true": "",
-                            "type": 0,
-                            "type_string": "Bool",
-                            "value": false
-                        },
-                        "comment": "",
-                        "id": "9",
-                        "label": "CloudToPath",
-                        "reorder_nns": {
-                            "label": "reorder_nns",
-                            "label_false": "",
-                            "label_true": "",
-                            "type": 0,
-                            "type_string": "Bool",
-                            "value": true
-                        },
-                        "runtime_info": {
-                            "eval_count": 8,
-                            "time_creation": 1765642197730,
-                            "time_last_update": 1765642225860,
-                            "update_time": 0.011132000014185905
-                        }
+                        "id": "3",
+                        "label": "PathDecimate"
                     }
                 ],
                 "origin": [
@@ -245,298 +79,49 @@
             "graph": {
                 "comments": [],
                 "current_link_type": 2,
-                "graph_editor_widget.viewer3d": {
-                    "current_node_id": "12",
-                    "height": 512,
-                    "is_node_pinned": false,
-                    "label": "3D Renderer",
-                    "renderer": {
-                        "add_ambiant_occlusion": true,
-                        "add_atmospheric_scattering": false,
-                        "add_fog": false,
-                        "add_water_foam": true,
-                        "add_water_waves": true,
-                        "alpha_x": 0.4955557584762573,
-                        "alpha_y": -7.061106204986572,
-                        "ambiant_occlusion_radius": 0.029999999329447746,
-                        "ambiant_occlusion_strength": 0.8009999990463257,
-                        "angle_spread_ratio": 0.0,
-                        "animate_waves": false,
-                        "apply_tonemap": false,
-                        "auto_rotate_camera": false,
-                        "auto_rotate_light": false,
-                        "bypass_shadow_map": false,
-                        "bypass_texture_albedo": false,
-                        "camera": {
-                            "far_plane": 100.0,
-                            "fov": 0.7850000262260437,
-                            "near_plane": 0.10000000149011612,
-                            "position": {
-                                "x": -1.703220009803772,
-                                "y": 1.199934482574463,
-                                "z": 1.5821748971939087
-                            },
-                            "target": {
-                                "x": -0.07334604859352112,
-                                "y": -0.05544000118970871,
-                                "z": -0.07225731015205383
-                            },
-                            "up": {
-                                "x": 0.0,
-                                "y": 1.0,
-                                "z": 0.0
-                            }
-                        },
-                        "color_deep_water": {
-                            "x": 0.0,
-                            "y": 0.15000000596046448,
-                            "z": 0.3499999940395355
-                        },
-                        "color_shallow_water": {
-                            "x": 0.25,
-                            "y": 0.8500000238418579,
-                            "z": 0.800000011920929
-                        },
-                        "distance": 2.6399998664855957,
-                        "foam_color": {
-                            "x": 1.0,
-                            "y": 1.0,
-                            "z": 1.0
-                        },
-                        "foam_depth": 0.004999999888241291,
-                        "fog_color": {
-                            "x": 1.0,
-                            "y": 1.0,
-                            "z": 1.0
-                        },
-                        "fog_density": 50.0,
-                        "fog_height": 0.10000000149011612,
-                        "fog_scattering_ratio": 0.699999988079071,
-                        "fog_strength": 0.5,
-                        "gamma_correction": 2.0,
-                        "height": 512,
-                        "hmap_h": 0.4000000059604645,
-                        "hmap_h0": 0.0,
-                        "hmap_w": 2.0,
-                        "light": {
-                            "position": {
-                                "x": -6.122223854064941,
-                                "y": 4.997701168060303,
-                                "z": 6.127100467681885
-                            },
-                            "target": {
-                                "x": 0.0,
-                                "y": 0.0,
-                                "z": 0.0
-                            }
-                        },
-                        "light_distance": 10.0,
-                        "light_phi": -0.7850000262260437,
-                        "light_theta": 0.5233333706855774,
-                        "mie_color": {
-                            "x": 1.0,
-                            "y": 0.800000011920929,
-                            "z": 0.699999988079071
-                        },
-                        "normal_map_scaling": 1.0,
-                        "normal_visualization": false,
-                        "pan_offset": {
-                            "x": -0.1029599979519844,
-                            "y": -0.05544000118970871
-                        },
-                        "rayleigh_color": {
-                            "x": 0.4000000059604645,
-                            "y": 0.6000000238418579,
-                            "z": 1.0
-                        },
-                        "render_hmap": true,
-                        "render_path": true,
-                        "render_plane": true,
-                        "render_points": true,
-                        "render_rocks": true,
-                        "render_trees": true,
-                        "render_type": 1,
-                        "render_water": true,
-                        "scale_h": 1.0,
-                        "scattering_density": 0.10000000149011612,
-                        "shadow_strength": 0.8999999761581421,
-                        "target": {
-                            "x": 0.0,
-                            "y": 0.0,
-                            "z": 0.0
-                        },
-                        "title": "",
-                        "viewer2d_settings.cmap": 3,
-                        "viewer2d_settings.hillshading": true,
-                        "viewer2d_settings.offset": {
-                            "x": 0.0,
-                            "y": 0.0
-                        },
-                        "viewer2d_settings.sun_azimuth": 1.5700000524520874,
-                        "viewer2d_settings.sun_zenith": 1.0466667413711548,
-                        "viewer2d_settings.zoom": 0.8999999761581421,
-                        "water_color_depth": 0.014999999664723873,
-                        "water_spec_strength": 0.5,
-                        "waves_alpha": 0.5233333706855774,
-                        "waves_amplitude": 0.004999999888241291,
-                        "waves_kw": 256.0,
-                        "waves_normal_amplitude": 0.019999999552965164,
-                        "waves_speed": 0.20000000298023224,
-                        "width": 1523,
-                        "wireframe_mode": false,
-                        "x": 2,
-                        "y": 0
-                    },
-                    "view_param_map": {
-                        "10": {
-                            "color": "",
-                            "elevation": "",
-                            "normal_map": "",
-                            "path": "output",
-                            "points": "",
-                            "water_depth": ""
-                        },
-                        "11": {
-                            "color": "",
-                            "elevation": "",
-                            "normal_map": "",
-                            "path": "output",
-                            "points": "",
-                            "water_depth": ""
-                        },
-                        "12": {
-                            "color": "",
-                            "elevation": "",
-                            "normal_map": "",
-                            "path": "output",
-                            "points": "",
-                            "water_depth": ""
-                        },
-                        "3": {
-                            "color": "texture",
-                            "elevation": "elevation",
-                            "normal_map": "normal map",
-                            "path": "path",
-                            "points": "cloud",
-                            "water_depth": "water_depth"
-                        },
-                        "5": {
-                            "color": "",
-                            "elevation": "output",
-                            "normal_map": "",
-                            "path": "",
-                            "points": "",
-                            "water_depth": ""
-                        },
-                        "6": {
-                            "color": "",
-                            "elevation": "output",
-                            "normal_map": "",
-                            "path": "",
-                            "points": "",
-                            "water_depth": ""
-                        },
-                        "7": {
-                            "color": "",
-                            "elevation": "output",
-                            "normal_map": "",
-                            "path": "",
-                            "points": "",
-                            "water_depth": ""
-                        },
-                        "8": {
-                            "color": "",
-                            "elevation": "",
-                            "normal_map": "",
-                            "path": "",
-                            "points": "cloud",
-                            "water_depth": ""
-                        },
-                        "9": {
-                            "color": "",
-                            "elevation": "",
-                            "normal_map": "",
-                            "path": "path",
-                            "points": "cloud",
-                            "water_depth": ""
-                        }
-                    },
-                    "viewer_type": 0,
-                    "width": 1527,
-                    "x": 0,
-                    "y": 0
-                },
                 "groups": [],
                 "id": "graph",
                 "links": [
                     {
                         "link_type": 2,
-                        "node_in_id": "12",
-                        "node_out_id": "10",
-                        "port_in_id": "input",
-                        "port_out_id": "output"
+                        "node_out_id": "1",
+                        "port_out_id": "cloud",
+                        "node_in_id": "2",
+                        "port_in_id": "cloud"
                     },
                     {
                         "link_type": 2,
-                        "node_in_id": "10",
-                        "node_out_id": "11",
-                        "port_in_id": "input",
-                        "port_out_id": "output"
-                    },
-                    {
-                        "link_type": 2,
-                        "node_in_id": "11",
-                        "node_out_id": "9",
-                        "port_in_id": "input",
-                        "port_out_id": "path"
-                    },
-                    {
-                        "link_type": 2,
-                        "node_in_id": "9",
-                        "node_out_id": "8",
-                        "port_in_id": "cloud",
-                        "port_out_id": "cloud"
+                        "node_out_id": "2",
+                        "port_out_id": "path",
+                        "node_in_id": "3",
+                        "port_in_id": "input"
                     }
                 ],
                 "nodes": [
                     {
-                        "caption": "PathBspline",
-                        "id": "12",
+                        "caption": "CloudLattice",
+                        "id": "1",
                         "is_widget_visible": true,
-                        "scene_position.x": 251.55755415698673,
-                        "scene_position.y": -335.4732860839084
-                    },
-                    {
-                        "caption": "PathFractalize",
-                        "id": "11",
-                        "is_widget_visible": true,
-                        "scene_position.x": -176.99713501411787,
-                        "scene_position.y": -360.69240958515735
-                    },
-                    {
-                        "caption": "PathDecimate",
-                        "id": "10",
-                        "is_widget_visible": true,
-                        "scene_position.x": 52.87176195213621,
-                        "scene_position.y": -348.7644454804181
+                        "scene_position.x": 0.0,
+                        "scene_position.y": 0.0
                     },
                     {
                         "caption": "CloudToPath",
-                        "id": "9",
+                        "id": "2",
                         "is_widget_visible": true,
-                        "scene_position.x": -391.0325210927455,
-                        "scene_position.y": -355.90759245462255
+                        "scene_position.x": 320.0,
+                        "scene_position.y": 0.0
                     },
                     {
-                        "caption": "CloudRandom",
-                        "id": "8",
+                        "caption": "PathDecimate",
+                        "id": "3",
                         "is_widget_visible": true,
-                        "scene_position.x": -620.5789393325822,
-                        "scene_position.y": -344.6192566429559
+                        "scene_position.x": 640.0,
+                        "scene_position.y": 0.0
                     }
                 ]
             }
         }
     },
-    "saved_at": "2025-12-13_17-11-01"
+    "saved_at": "1970-01-01_00:00:00"
 }
