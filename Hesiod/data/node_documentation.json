@@ -20527,6 +20527,12 @@
         "description": "No description available",
         "label": "StrataTerrace",
         "parameters": {
+            "angle": {
+                "description": "No description",
+                "key": "angle",
+                "label": "Angle",
+                "type": "Float"
+            },
             "gamma": {
                 "description": "No description",
                 "key": "gamma",
@@ -20634,6 +20640,12 @@
                 "key": "seed",
                 "label": "Seed",
                 "type": "Random seed number"
+            },
+            "slope": {
+                "description": "No description",
+                "key": "slope",
+                "label": "Slope",
+                "type": "Float"
             }
         },
         "ports": {

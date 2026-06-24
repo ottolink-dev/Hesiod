@@ -32,6 +32,7 @@ Erosion/Stratify
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
+|Angle|Float|No description|
 |Profile Gamma|Float|No description|
 |Gamma Noise Influence|Float|No description|
 |Number of Strata|Float|No description|
@@ -50,6 +51,7 @@ Erosion/Stratify
 |Saturation Range|Value range|Modifies the amplitude of elevations by first clamping them to a given interval and then scaling them so that the restricted interval matches the original input range. This enhances contrast in elevation variations while maintaining overall structure.|
 |Smoothing Radius|Float|Defines the radius for post-processing smoothing, determining the size of the neighborhood used to average local values and reduce high-frequency detail. A radius of 0 disables smoothing.|
 |Seed|Random seed number|Random seed number. The random seed is an offset to the randomized process. A different seed will produce a new result.|
+|Slope|Float|No description|
 
 ## Example
 
@@ -62,4 +64,4 @@ Corresponding Hesiod file: [StrataTerrace.hsd](../../examples/StrataTerrace.hsd)
     Example files are kept up-to-date with the latest version of [Hesiod](https://github.com/otto-link/Hesiod).
     If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).
 
-
+  

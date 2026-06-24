@@ -174,24 +174,19 @@ void run_snapshot_generation()
 
   auto *app = static_cast<hesiod::HesiodApplication *>(QCoreApplication::instance());
 
+  AppContext &ctx = app->get_context();
+  ctx.save_state();
+
   // headless: skip GUI-only / OpenGL widgets (3D viewer) when building the graph UI
-  app->get_context().headless = true;
+  ctx.headless = true;
 
   // strip everything but the node graph from the snapshot: deactivate the node
   // settings pan, the per-graph 3D viewer, the node library panel (so the graph
   // gets the full frame width), and the WebEngine texture downloader.
-  auto &ne = app->get_context().app_settings.node_editor;
-  auto &iface = app->get_context().app_settings.interface;
-
-  const bool bckp_snsp = ne.show_node_settings_pan;
-  const bool bckp_sw = ne.show_viewer;
-  const bool bckp_lib = ne.show_node_library_pan;
-  const bool bckp_txd = iface.enable_texture_downloader;
-
-  ne.show_node_settings_pan = false;
-  ne.show_viewer = false;
-  ne.show_node_library_pan = false;
-  iface.enable_texture_downloader = false;
+  ctx.app_settings.node_editor.show_node_settings_pan = false;
+  ctx.app_settings.node_editor.show_viewer = false;
+  ctx.app_settings.node_editor.show_node_library_pan = false;
+  ctx.app_settings.interface.enable_texture_downloader = false;
 
   for (auto &[node_type, _] : inventory)
   {
@@ -241,11 +236,7 @@ void run_snapshot_generation()
     }
   }
 
-  ne.show_node_settings_pan = bckp_snsp;
-  ne.show_viewer = bckp_sw;
-  ne.show_node_library_pan = bckp_lib;
-  iface.enable_texture_downloader = bckp_txd;
-  app->get_context().headless = false;
+  ctx.restore_state();
 }
 
 } // namespace hesiod::cli

@@ -64,4 +64,4 @@ Corresponding Hesiod file: [Band.hsd](../../examples/Band.hsd). Use [Ctrl+I] in 
     Example files are kept up-to-date with the latest version of [Hesiod](https://github.com/otto-link/Hesiod).
     If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).
 
-
+  

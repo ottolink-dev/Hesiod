@@ -88,6 +88,22 @@ void AppContext::reset_settings()
   this->style_settings = StyleSettings();
 }
 
+void AppContext::restore_state()
+{
+  if (this->saved_state.is_null() || this->saved_state.empty())
+    return;
+
+  try
+  {
+    this->settings_json_from(this->saved_state);
+  }
+  catch (const std::exception &e)
+  {
+    Logger::log()->error("Failed to restore state: {}", e.what());
+    return;
+  }
+}
+
 void AppContext::save_project_model(const std::string &fname) const
 {
   Logger::log()->trace("AppContext::save_project_model: {}", fname);
@@ -95,6 +111,8 @@ void AppContext::save_project_model(const std::string &fname) const
   nlohmann::json json = this->project_model->json_to();
   json_to_file(json, fname, /* merge_with_existing_content */ true);
 }
+
+void AppContext::save_state() const { this->saved_state = this->settings_json_to(); }
 
 void AppContext::save_settings() const
 {

@@ -29,6 +29,9 @@ public:
   void           save_settings() const;
   void           reset_settings();
 
+  void save_state() const;
+  void restore_state();
+
   // --- Project management
   void new_project();
   void load_project_model(const std::string &fname);
@@ -48,6 +51,9 @@ public:
 
   // project
   std::unique_ptr<ProjectModel> project_model;
+
+private:
+  mutable nlohmann::json saved_state;
 };
 
 // helpers
