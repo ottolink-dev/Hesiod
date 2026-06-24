@@ -77,9 +77,9 @@ private:
 
   // --- Members (respect order for deletion)
   AppContext                 context;
-  MainWindow                *main_window = nullptr;  // null in headless CLI modes
-  std::unique_ptr<ProjectUI> project_ui;          // because top-level UI
-  AppSettingsWindow         *app_settings_window; // owned by MainWindow
+  MainWindow                *main_window = nullptr; // null in headless CLI modes
+  std::unique_ptr<ProjectUI> project_ui;            // because top-level UI
+  AppSettingsWindow         *app_settings_window;   // owned by MainWindow
 
   BlenderStreamer blender_streamer;
 
