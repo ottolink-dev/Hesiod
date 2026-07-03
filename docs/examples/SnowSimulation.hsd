@@ -57,12 +57,12 @@
                         "node_id_from": "11",
                         "node_id_to": "16",
                         "port_id_from": "texture",
-                        "port_id_to": "texture in"
+                        "port_id_to": "texture_in"
                     },
                     {
                         "node_id_from": "16",
                         "node_id_to": "3",
-                        "port_id_from": "texture out",
+                        "port_id_from": "texture_out",
                         "port_id_to": "texture"
                     },
                     {
@@ -1334,7 +1334,7 @@
                         "link_type": 2,
                         "node_in_id": "16",
                         "node_out_id": "11",
-                        "port_in_id": "texture in",
+                        "port_in_id": "texture_in",
                         "port_out_id": "texture"
                     },
                     {
@@ -1342,7 +1342,7 @@
                         "node_in_id": "3",
                         "node_out_id": "16",
                         "port_in_id": "texture",
-                        "port_out_id": "texture out"
+                        "port_out_id": "texture_out"
                     }
                 ],
                 "nodes": [
@@ -1385,7 +1385,7 @@
                         "caption": "MixTexture",
                         "id": "11",
                         "is_widget_visible": true,
-                        "scene_position.x": 639.6065063476563,
+                        "scene_position.x": 639.6065063476562,
                         "scene_position.y": -340.32293701171875
                     },
                     {
@@ -1407,7 +1407,7 @@
                         "id": "14",
                         "is_widget_visible": true,
                         "scene_position.x": 475.1641845703125,
-                        "scene_position.y": -70.18630981445313
+                        "scene_position.y": -70.18630981445312
                     },
                     {
                         "caption": "PostProcess",
