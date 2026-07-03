@@ -214,6 +214,14 @@ void run_snapshot_generation()
           // the graph is cropped (the old "TODO refit" problem).
           widget->setFixedSize(size);
           QCoreApplication::processEvents();
+
+          // the widget tree is never shown in headless mode, so the resize
+          // stays pending and child layouts (incl. the graph view viewport)
+          // keep their stale pre-load geometry until the first render. grab()
+          // flushes pending resize/layout the same way render() does, so the
+          // viewport has its final size before the fit is computed.
+          widget->grab();
+
           p_gtw->zoom_to_content();
           QCoreApplication::processEvents();
 
