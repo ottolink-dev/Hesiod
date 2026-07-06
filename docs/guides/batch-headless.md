@@ -14,6 +14,34 @@ into valid `.hsd` files and drives the binary programmatically.
 
 ---
 
+## Opening a project from the command line
+
+Independently of batch mode, the binary accepts a project file to open **in the GUI** —
+useful for shell aliases, file-manager associations, and scripted workflows that end with
+a visual check:
+
+```
+hesiod myproject.hsd
+hesiod -f myproject.hsd
+hesiod --file myproject.hsd
+```
+
+The three forms are equivalent; `-f`/`--file` is easier to keep unambiguous in scripts
+that pass several flags. The example-selector dialog is skipped and the file behaves as
+a regularly opened project (Ctrl+S saves back to it, and it is added to the
+**File → Open Recent** menu).
+
+- If the positional argument and `-f/--file` are both given **with different values**,
+  Hesiod prints an error explaining the conflict and exits with a non-zero status.
+- If the file does not exist, a warning is logged and startup continues as if no file
+  had been given.
+
+The **Open Recent** list is stored in the settings JSON (`~/.config/hesiod/hesiod.json`
+on Linux) under `global.recent_files`; its length is capped by `global.max_recent_files`
+(default 10).
+
+---
+
 ## Built-in batch mode
 
 The Hesiod binary accepts a `--batch` flag that loads a `.hsd` graph file and renders it
