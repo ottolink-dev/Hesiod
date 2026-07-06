@@ -41,5 +41,5 @@ int main(int argc, char *argv[])
     return app.exec();
   }
 
-  return 0;
+  return app.get_exit_code();
 }

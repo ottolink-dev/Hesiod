@@ -24,7 +24,13 @@ static std::istream &operator>>(std::istream &is, glm::ivec2 &vec2)
 namespace hesiod::cli
 {
 
-int parse_args(args::ArgumentParser &parser, int argc, char *argv[]);
+// returns -1 to continue with the GUI (startup_file is filled if a project
+// file was requested on the command line), or a process exit code (>= 0) if
+// the invocation was fully handled here (batch modes, --help, parse errors)
+int parse_args(args::ArgumentParser &parser,
+               int                   argc,
+               char                 *argv[],
+               std::string          &startup_file);
 
 void run_batch_mode(const std::string &filename,
                     const glm::ivec2  &shape,

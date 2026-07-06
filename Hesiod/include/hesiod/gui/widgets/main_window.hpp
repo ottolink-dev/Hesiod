@@ -1,6 +1,7 @@
 /* Copyright (c) 2025 Otto Link. Distributed under the terms of the GNU General Public
    License. The full license is in the file LICENSE, distributed with this software. */
 #pragma once
+#include <QCloseEvent>
 #include <QMainWindow>
 #include <QProgressBar>
 
@@ -19,6 +20,11 @@ public:
   void restore_geometry();
   void save_geometry() const;
   void setup_connections_with_project();
+
+protected:
+  // settings are otherwise only saved through File > Quit; make sure they also
+  // persist when the window is closed by the window manager
+  void closeEvent(QCloseEvent *event) override;
 
 private:
   void setup_progress_bar();

@@ -1,6 +1,7 @@
 /* Copyright (c) 2025 Otto Link. Distributed under the terms of the GNU General
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
+#include <algorithm>
 #include <format>
 #include <fstream>
 #include <iostream>
@@ -81,12 +82,14 @@ HesiodApplication::HesiodApplication(int &argc, char **argv) : QApplication(argc
   // --- Batch CLI mode if requested
 
   args::ArgumentParser parser("Hesiod.");
-  int                  ret = cli::parse_args(parser, argc, argv);
+  std::string          startup_file;
+  int                  ret = cli::parse_args(parser, argc, argv, startup_file);
 
   if (ret >= 0)
   {
     // stop here, skip the rest
     this->headless = true;
+    this->headless_exit_code = ret;
     return;
   }
 
@@ -109,8 +112,26 @@ HesiodApplication::HesiodApplication(int &argc, char **argv) : QApplication(argc
   splash->show_message("Loading project...");
 
   std::string fname = "";
+  bool        keep_name = false; // project name not kept (examples, default project)
 
-  if (this->context.app_settings.interface.enable_example_selector_at_startup)
+  if (!startup_file.empty())
+  {
+    if (fs::exists(startup_file))
+    {
+      fname = fs::absolute(fs::path(startup_file)).lexically_normal().string();
+      keep_name = true; // opened as a regular project, saving writes back to it
+    }
+    else
+    {
+      Logger::log()->warn("HesiodApplication::HesiodApplication: project file "
+                          "requested on the command line does not exist, falling back "
+                          "to normal startup: {}",
+                          startup_file);
+    }
+  }
+
+  if (fname.empty() &&
+      this->context.app_settings.interface.enable_example_selector_at_startup)
   {
     std::string path = this->context.app_settings.global.ready_made_path;
     auto       *ex_dialog = new ExampleSelectorDialog(QString::fromStdString(path));
@@ -120,8 +141,10 @@ HesiodApplication::HesiodApplication(int &argc, char **argv) : QApplication(argc
       fname = ex_dialog->selected_file().toStdString();
   }
 
-  bool keep_name = false; // project name not kept
   this->load_project_model_and_ui(fname, keep_name);
+
+  if (keep_name)
+    this->add_recent_file(fname);
 
   // others
   splash->show_message("Opening UI...");
@@ -135,6 +158,56 @@ HesiodApplication::HesiodApplication(int &argc, char **argv) : QApplication(argc
 }
 
 HesiodApplication::~HesiodApplication() = default;
+
+void HesiodApplication::rebuild_recent_files_menu()
+{
+  Logger::log()->trace("HesiodApplication::rebuild_recent_files_menu");
+
+  this->recent_files_menu->clear();
+
+  const std::vector<std::string> recent_files = this->context.app_settings.global
+                                                    .recent_files;
+
+  if (recent_files.empty())
+  {
+    QAction *empty_action = this->recent_files_menu->addAction("(no recent files)");
+    empty_action->setEnabled(false);
+    return;
+  }
+
+  for (const std::string &fname : recent_files)
+  {
+    QAction *action = this->recent_files_menu->addAction(QString::fromStdString(fname));
+    this->connect(action,
+                  &QAction::triggered,
+                  this,
+                  [this, fname]() { this->on_open_recent(fname); });
+  }
+
+  this->recent_files_menu->addSeparator();
+
+  QAction *clear_action = this->recent_files_menu->addAction("Clear Recent Files");
+  this->connect(clear_action,
+                &QAction::triggered,
+                this,
+                [this]() { this->context.app_settings.global.recent_files.clear(); });
+}
+
+void HesiodApplication::add_recent_file(const std::string &fname)
+{
+  Logger::log()->trace("HesiodApplication::add_recent_file: {}", fname);
+
+  auto &global = this->context.app_settings.global;
+
+  const std::string abs_path = fs::absolute(fs::path(fname)).lexically_normal().string();
+
+  auto &list = global.recent_files;
+  list.erase(std::remove(list.begin(), list.end(), abs_path), list.end());
+  list.insert(list.begin(), abs_path);
+
+  if (static_cast<int>(list.size()) > global.max_recent_files)
+    list.resize(std::max(global.max_recent_files, 0));
+}
 
 void HesiodApplication::cleanup()
 {
@@ -161,6 +234,8 @@ ProjectUI *HesiodApplication::get_project_ui_ref() { return this->project_ui.get
 QApplication &HesiodApplication::get_qapp() { return *static_cast<QApplication *>(this); }
 
 bool HesiodApplication::is_headless() const { return this->headless; }
+
+int HesiodApplication::get_exit_code() const { return this->headless_exit_code; }
 
 void HesiodApplication::load_project_model_and_ui(const std::string &fname,
                                                   bool               keep_name)
@@ -417,7 +492,31 @@ void HesiodApplication::on_load()
                                                     "Hesiod files (*.hsd)");
 
   if (!load_fname.isNull() && !load_fname.isEmpty())
+  {
     this->load_project_model_and_ui(load_fname.toStdString());
+    this->add_recent_file(load_fname.toStdString());
+  }
+}
+
+void HesiodApplication::on_open_recent(const std::string &fname)
+{
+  Logger::log()->trace("HesiodApplication::on_open_recent: {}", fname);
+
+  if (!fs::exists(fname))
+  {
+    QMessageBox::warning(
+        this->main_window,
+        "Open Recent",
+        QString("This file no longer exists and has been removed from the list:\n%1")
+            .arg(fname.c_str()));
+
+    auto &list = this->context.app_settings.global.recent_files;
+    list.erase(std::remove(list.begin(), list.end(), fname), list.end());
+    return;
+  }
+
+  this->load_project_model_and_ui(fname);
+  this->add_recent_file(fname);
 }
 
 void HesiodApplication::on_load_ready_made()
@@ -507,6 +606,7 @@ void HesiodApplication::on_save()
   {
     this->save_project_model_and_ui(path.string());
     this->context.project_model->set_path(path);
+    this->add_recent_file(path.string());
   }
 }
 
@@ -531,6 +631,7 @@ void HesiodApplication::on_save_as()
 
     this->save_project_model_and_ui(clean_path.string());
     this->context.project_model->set_path(clean_path.string());
+    this->add_recent_file(clean_path.string());
   }
 }
 
@@ -672,6 +773,8 @@ void HesiodApplication::setup_menu_bar()
   load_action->setShortcut(tr("Ctrl+O"));
   file_menu->addAction(load_action);
 
+  this->recent_files_menu = file_menu->addMenu("Open Recent");
+
   auto *rmade_action = new QAction("Open Ready-made Example", this);
   rmade_action->setIcon(HSD_ICON("landscape"));
   file_menu->addAction(rmade_action);
@@ -782,6 +885,10 @@ void HesiodApplication::setup_menu_bar()
 
   this->connect(new_action, &QAction::triggered, this, &HesiodApplication::on_new);
   this->connect(load_action, &QAction::triggered, this, &HesiodApplication::on_load);
+  this->connect(this->recent_files_menu,
+                &QMenu::aboutToShow,
+                this,
+                &HesiodApplication::rebuild_recent_files_menu);
   this->connect(rmade_action,
                 &QAction::triggered,
                 this,

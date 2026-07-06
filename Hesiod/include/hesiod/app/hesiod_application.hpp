@@ -5,6 +5,7 @@
 
 #include <QApplication>
 #include <QCoreApplication>
+#include <QMenu>
 #include <QProgressBar>
 #include <QStandardPaths>
 
@@ -38,6 +39,7 @@ public:
   ~HesiodApplication();
 
   bool is_headless() const;
+  int  get_exit_code() const;
   void load_project_model_and_ui(const std::string &fname = "", bool keep_name = true);
   void save_project_model_and_ui(const std::string &fname);
   void save_backup(const std::string &fname);
@@ -62,6 +64,7 @@ private slots:
   void on_online_help();
   void on_project_settings();
   void on_quit();
+  void on_open_recent(const std::string &fname);
   void on_save();
   void on_save_as();
   void on_save_copy();
@@ -72,7 +75,9 @@ private slots:
   void on_project_name_changed();
 
 private:
+  void add_recent_file(const std::string &fname);
   void cleanup();
+  void rebuild_recent_files_menu();
   void setup_menu_bar();
 
   // --- Members (respect order for deletion)
@@ -81,9 +86,12 @@ private:
   std::unique_ptr<ProjectUI> project_ui;            // because top-level UI
   AppSettingsWindow         *app_settings_window;   // owned by MainWindow
 
+  QMenu *recent_files_menu = nullptr; // owned by the menu bar
+
   BlenderStreamer blender_streamer;
 
   bool headless = false;
+  int  headless_exit_code = 0;
 };
 
 } // namespace hesiod

@@ -18,9 +18,22 @@
 namespace hesiod::cli
 {
 
-int parse_args(args::ArgumentParser &parser, int argc, char *argv[])
+int parse_args(args::ArgumentParser &parser,
+               int                   argc,
+               char                 *argv[],
+               std::string          &startup_file)
 {
   args::HelpFlag help(parser, "help", "Display this help menu", {'h', "help"});
+
+  args::ValueFlag<std::string> file_flag(parser,
+                                         "hsd file",
+                                         "Project file (.hsd) to open at startup",
+                                         {'f', "file"});
+
+  args::Positional<std::string> file_positional(
+      parser,
+      "file",
+      "Project file (.hsd) to open at startup");
 
   args::Group group(parser,
                     "This group is all exclusive:",
@@ -78,6 +91,21 @@ int parse_args(args::ArgumentParser &parser, int argc, char *argv[])
       run_node_inventory();
       return 0;
     }
+
+    if (file_flag && file_positional &&
+        args::get(file_flag) != args::get(file_positional))
+    {
+      std::cerr << "Error: conflicting project files requested: positional argument is "
+                << "'" << args::get(file_positional) << "' but -f/--file is "
+                << "'" << args::get(file_flag) << "'. "
+                << "Provide only one of them (or make them identical)." << std::endl;
+      return 1;
+    }
+
+    if (file_flag)
+      startup_file = args::get(file_flag);
+    else if (file_positional)
+      startup_file = args::get(file_positional);
   }
   catch (const args::Help &help)
   {

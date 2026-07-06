@@ -72,6 +72,10 @@ struct AppSettings
     std::string ready_made_path = "data/bootstraps";
     bool        save_backup_file = true;
     std::string online_help_url = "https://hesioddoc.readthedocs.io/en/latest/";
+
+    // recently opened/saved project files, most recent first
+    std::vector<std::string> recent_files = {};
+    int                      max_recent_files = 10;
   } global;
 
   struct Interface

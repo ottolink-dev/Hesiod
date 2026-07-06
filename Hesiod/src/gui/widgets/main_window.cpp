@@ -19,6 +19,16 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
   this->setup_progress_bar();
 }
 
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+  Logger::log()->trace("MainWindow::closeEvent");
+
+  this->save_geometry();
+  HSD_CTX.save_settings();
+
+  QMainWindow::closeEvent(event);
+}
+
 void MainWindow::notify(const std::string &msg, int timeout)
 {
   this->statusBar()->showMessage(msg.c_str(), timeout);

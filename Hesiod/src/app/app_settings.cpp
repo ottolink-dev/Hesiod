@@ -121,6 +121,8 @@ void AppSettings::json_from(nlohmann::json const &json)
                 "global.default_startup_project_file",
                 global.default_startup_project_file);
   json_safe_get(json, "global.save_backup_file", global.save_backup_file);
+  json_safe_get(json, "global.recent_files", global.recent_files);
+  json_safe_get(json, "global.max_recent_files", global.max_recent_files);
 
   json_safe_get(json,
                 "interface.enable_data_preview_in_node_body",
@@ -236,6 +238,8 @@ nlohmann::json AppSettings::json_to() const
   json["global.icon_path"] = global.icon_path;
   json["global.default_startup_project_file"] = global.default_startup_project_file;
   json["global.save_backup_file"] = global.save_backup_file;
+  json["global.recent_files"] = global.recent_files;
+  json["global.max_recent_files"] = global.max_recent_files;
 
   json["interface.enable_data_preview_in_node_body"] =
       interface.enable_data_preview_in_node_body;
