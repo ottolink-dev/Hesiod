@@ -14,6 +14,7 @@
 #include <QMessageBox>
 #include <QProgressDialog>
 #include <QStatusBar>
+#include <QTimer>
 #include <QUrl>
 
 #include <omp.h>
@@ -1019,6 +1020,19 @@ void HesiodApplication::show()
 {
   Logger::log()->trace("HesiodApplication::show");
   this->main_window->show();
+
+  // the zoom-to-content deferred while deserializing the project fires before
+  // the main window is shown, so it fits against a not-yet-laid-out viewport
+  // and the graph can end up off-screen; refit once geometries are final
+  QTimer::singleShot(0,
+                     this,
+                     [this]()
+                     {
+                       if (this->project_ui &&
+                           this->project_ui->get_graph_tabs_widget_ref())
+                         this->project_ui->get_graph_tabs_widget_ref()
+                             ->zoom_to_content();
+                     });
 }
 
 void HesiodApplication::show_about()
