@@ -5968,6 +5968,93 @@
             }
         }
     },
+    "FlowAccumulationStochastic": {
+        "category": "Hydrology",
+        "description": "Monte-Carlo (stochastic) flow accumulation. Particles are spawned uniformly, advected down the gradient with exact voxel traversal, optionally attenuated by a decay term, and deposit flux into every cell they cross. Produces a smooth, artifact-free river/water flux compared with D8 accumulation.",
+        "label": "FlowAccumulationStochastic",
+        "parameters": {
+            "log_scale": {
+                "description": "Apply log10(flux + 1) so the orders-of-magnitude flux reads as a usable river/water mask.",
+                "key": "log_scale",
+                "label": "Log Scale",
+                "type": "Bool"
+            },
+            "n_samples": {
+                "description": "Number of Monte-Carlo particles; higher reduces per-cell variance (~1/N).",
+                "key": "n_samples",
+                "label": "Samples",
+                "type": "Integer"
+            },
+            "post_gain": {
+                "description": "Mid-centered gain transformation applied to the elevation values. This is a non-linear recurve operator centered around the mid elevation (typically 0.5). Increasing the gain pushes values toward the minimum and maximum elevations, creating flatter low/high regions with a steeper transition around the midpoint.",
+                "key": "post_gain",
+                "label": "Gain",
+                "type": "Float"
+            },
+            "post_gamma": {
+                "description": "Standard gamma correction applied to the elevation values. This is a monotonic power-law remapping that shifts emphasis toward low or high elevations, making the overall shape sharper or bulkier without changing its ordering.",
+                "key": "post_gamma",
+                "label": "Gamma",
+                "type": "Float"
+            },
+            "post_inverse": {
+                "description": "Inverts the output values after processing, flipping low and high values across the midrange.",
+                "key": "post_inverse",
+                "label": "Invert Output",
+                "type": "Bool"
+            },
+            "post_remap": {
+                "description": "Linearly remaps the output values to a specified target range (default is [0, 1]).",
+                "key": "post_remap",
+                "label": "Remap Range",
+                "type": "Value range"
+            },
+            "post_saturate": {
+                "description": "Modifies the amplitude of elevations by first clamping them to a given interval and then scaling them so that the restricted interval matches the original input range. This enhances contrast in elevation variations while maintaining overall structure.",
+                "key": "post_saturate",
+                "label": "Saturation Range",
+                "type": "Value range"
+            },
+            "post_smoothing_radius": {
+                "description": "Defines the radius for post-processing smoothing, determining the size of the neighborhood used to average local values and reduce high-frequency detail. A radius of 0 disables smoothing.",
+                "key": "post_smoothing_radius",
+                "label": "Smoothing Radius",
+                "type": "Float"
+            },
+            "seed": {
+                "description": "Random seed number. The random seed is an offset to the randomized process. A different seed will produce a new result.",
+                "key": "seed",
+                "label": "Seed",
+                "type": "Random seed number"
+            }
+        },
+        "ports": {
+            "decay": {
+                "caption": "decay",
+                "data_type": "VirtualArray",
+                "description": "Optional per-cell decay rate (default: 0, pure accumulation).",
+                "type": "input"
+            },
+            "flux": {
+                "caption": "flux",
+                "data_type": "VirtualArray",
+                "description": "Steady-state flux, usable as a river/water mask.",
+                "type": "output"
+            },
+            "input": {
+                "caption": "input",
+                "data_type": "VirtualArray",
+                "description": "Input heightmap.",
+                "type": "input"
+            },
+            "source": {
+                "caption": "source",
+                "data_type": "VirtualArray",
+                "description": "Optional per-cell source term (default: uniform 1).",
+                "type": "input"
+            }
+        }
+    },
     "FlowSimulation": {
         "category": "Hydrology",
         "description": "No description available",
