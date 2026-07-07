@@ -7868,6 +7868,213 @@
             }
         }
     },
+    "HydraulicMcDonald": {
+        "category": "Erosion/Hydraulic",
+        "description": "Flow-coupled particle hydraulic erosion (McDonald model, GPU only). Persistent per-cell discharge and momentum fields couple particles through the mean local flow, carving coherent drainage networks, with a bank-stability debris flow against a separate sediment layer. Physically parameterized: the terrain is a world_extent_km square with a z_scale_km height range. Single-scale diverges at high resolution past a few hundred steps; enable Multiscale for high-res terrain.",
+        "label": "HydraulicMcDonald",
+        "parameters": {
+            "multiscale": {
+                "description": "Erode on a halving-resolution ladder (coarsest first); the stable path at high resolution.",
+                "key": "multiscale",
+                "label": "Multiscale",
+                "type": "Bool"
+            },
+            "steps_per_level": {
+                "description": "Per-level iteration counts (coarsest first) when Multiscale is on.",
+                "key": "steps_per_level",
+                "label": "Steps Per Level",
+                "type": "Vector of integers"
+            },
+            "steps": {
+                "description": "Number of erosion iterations when Multiscale is off.",
+                "key": "steps",
+                "label": "Steps",
+                "type": "Integer"
+            },
+            "seed": {
+                "description": "Random seed.",
+                "key": "seed",
+                "label": "Seed",
+                "type": "Random seed number"
+            },
+            "world_extent_km": {
+                "description": "Physical domain edge length [km].",
+                "key": "world_extent_km",
+                "label": "World Extent [km]",
+                "type": "Float"
+            },
+            "z_scale_km": {
+                "description": "Physical height range of the [0,1] elevation span [km].",
+                "key": "z_scale_km",
+                "label": "Height Scale [km]",
+                "type": "Float"
+            },
+            "samples": {
+                "description": "Particles per iteration.",
+                "key": "samples",
+                "label": "Samples",
+                "type": "Integer"
+            },
+            "maxage": {
+                "description": "Maximum particle age / trajectory length.",
+                "key": "maxage",
+                "label": "Max Particle Age",
+                "type": "Integer"
+            },
+            "lrate": {
+                "description": "Exponential filter rate for the flow fields.",
+                "key": "lrate",
+                "label": "Flow Filter Rate",
+                "type": "Float"
+            },
+            "time_step": {
+                "description": "Geological time step [y].",
+                "key": "time_step",
+                "label": "Time Step [y]",
+                "type": "Float"
+            },
+            "rainfall": {
+                "description": "Rainfall rate [m/y].",
+                "key": "rainfall",
+                "label": "Rainfall [m/y]",
+                "type": "Float"
+            },
+            "evap_rate": {
+                "description": "Evaporation rate.",
+                "key": "evap_rate",
+                "label": "Evaporation Rate",
+                "type": "Float"
+            },
+            "gravity": {
+                "description": "Gravity [m/s^2].",
+                "key": "gravity",
+                "label": "Gravity [m/s2]",
+                "type": "Float"
+            },
+            "viscosity": {
+                "description": "Kinematic viscosity / flow-coupling strength.",
+                "key": "viscosity",
+                "label": "Viscosity",
+                "type": "Float"
+            },
+            "bed_shear": {
+                "description": "Bed shear coefficient.",
+                "key": "bed_shear",
+                "label": "Bed Shear",
+                "type": "Float"
+            },
+            "exit_slope": {
+                "description": "Boundary exit slope [m/m].",
+                "key": "exit_slope",
+                "label": "Exit Slope",
+                "type": "Float"
+            },
+            "crit_slope": {
+                "description": "Critical (stable bank) slope [m/m].",
+                "key": "crit_slope",
+                "label": "Critical Slope",
+                "type": "Float"
+            },
+            "settle_rate": {
+                "description": "Debris settling rate.",
+                "key": "settle_rate",
+                "label": "Settle Rate",
+                "type": "Float"
+            },
+            "thermal_rate": {
+                "description": "Thermal erosion rate.",
+                "key": "thermal_rate",
+                "label": "Thermal Rate",
+                "type": "Float"
+            },
+            "deposition_rate": {
+                "description": "Fluvial deposition rate.",
+                "key": "deposition_rate",
+                "label": "Deposition Rate",
+                "type": "Float"
+            },
+            "suspension_rate": {
+                "description": "Fluvial suspension rate.",
+                "key": "suspension_rate",
+                "label": "Suspension Rate",
+                "type": "Float"
+            },
+            "post_mix": {
+                "description": "Mixing factor for blending input and output values. A value of 0 uses only the input, 1 uses only the output, and intermediate values perform a linear interpolation.",
+                "key": "post_mix",
+                "label": "Mix Factor",
+                "type": "Float"
+            },
+            "post_mix_method": {
+                "description": "Method used to combine input and output values. Options include linear interpolation (default), min, max, smooth min, smooth max, add, and subtract.",
+                "key": "post_mix_method",
+                "label": "Mix Method",
+                "type": "Enumeration"
+            },
+            "post_inverse": {
+                "description": "Inverts the output values after processing, flipping low and high values across the midrange.",
+                "key": "post_inverse",
+                "label": "Invert Output",
+                "type": "Bool"
+            },
+            "post_gamma": {
+                "description": "Standard gamma correction applied to the elevation values. This is a monotonic power-law remapping that shifts emphasis toward low or high elevations, making the overall shape sharper or bulkier without changing its ordering.",
+                "key": "post_gamma",
+                "label": "Gamma",
+                "type": "Float"
+            },
+            "post_gain": {
+                "description": "Mid-centered gain transformation applied to the elevation values. This is a non-linear recurve operator centered around the mid elevation (typically 0.5). Increasing the gain pushes values toward the minimum and maximum elevations, creating flatter low/high regions with a steeper transition around the midpoint.",
+                "key": "post_gain",
+                "label": "Gain",
+                "type": "Float"
+            },
+            "post_smoothing_radius": {
+                "description": "Defines the radius for post-processing smoothing, determining the size of the neighborhood used to average local values and reduce high-frequency detail. A radius of 0 disables smoothing.",
+                "key": "post_smoothing_radius",
+                "label": "Smoothing Radius",
+                "type": "Float"
+            },
+            "post_remap": {
+                "description": "Linearly remaps the output values to a specified target range (default is [0, 1]).",
+                "key": "post_remap",
+                "label": "Remap Range",
+                "type": "Value range"
+            },
+            "post_saturate": {
+                "description": "Modifies the amplitude of elevations by first clamping them to a given interval and then scaling them so that the restricted interval matches the original input range. This enhances contrast in elevation variations while maintaining overall structure.",
+                "key": "post_saturate",
+                "label": "Saturation Range",
+                "type": "Value range"
+            }
+        },
+        "ports": {
+            "input": {
+                "caption": "input",
+                "data_type": "VirtualArray",
+                "description": "Input bedrock heightmap.",
+                "type": "input"
+            },
+            "output": {
+                "caption": "output",
+                "data_type": "VirtualArray",
+                "description": "Eroded surface (bedrock + sediment).",
+                "type": "output"
+            },
+            "sediment": {
+                "caption": "sediment",
+                "data_type": "VirtualArray",
+                "description": "Final sediment layer.",
+                "type": "output"
+            },
+            "discharge": {
+                "caption": "discharge",
+                "data_type": "VirtualArray",
+                "description": "Water discharge field, usable as a river/water mask.",
+                "type": "output"
+            }
+        }
+    },
     "HydraulicMusgrave": {
         "category": "WIP",
         "description": "TODO",
