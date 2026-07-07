@@ -225,6 +225,7 @@ std::map<std::string, std::string> get_node_inventory()
       {"FloodingFromPoint", "Hydrology"},
       {"FloodingLakeSystem", "Hydrology"},
       {"FloodingUniformLevel", "Hydrology"},
+      {"FlowAccumulationStochastic", "Hydrology"},
       {"FlowSimulation", "Hydrology"},
       {"FlowSimulationViscous", "Hydrology"},
       {"FlowStream", "WIP"}, // Hydrology
@@ -567,6 +568,7 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
     SETUP_NODE(FloodingFromBoundaries, flooding_from_boundaries);
     SETUP_NODE(FloodingFromPoint, flooding_from_point);
     SETUP_NODE(FloodingLakeSystem, flooding_lake_system);
+    SETUP_NODE(FlowAccumulationStochastic, flow_accumulation_stochastic);
     SETUP_NODE(FlowSimulation, flow_simulation);
     SETUP_NODE(FlowSimulationViscous, flow_simulation_viscous);
     SETUP_NODE(FlowStream, flow_stream);
