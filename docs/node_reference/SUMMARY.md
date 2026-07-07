@@ -24,6 +24,7 @@
         * [ThermalScree](nodes/ThermalScree.md)
         * [ValleyFill](nodes/ValleyFill.md)
     * Hydraulic
+        * [HydraulicMcDonald](nodes/HydraulicMcDonald.md)
         * [HydraulicParticle](nodes/HydraulicParticle.md)
         * [HydraulicProcedural](nodes/HydraulicProcedural.md)
         * [HydraulicSaleve](nodes/HydraulicSaleve.md)
@@ -124,6 +125,7 @@
     * [FloodingFromPoint](nodes/FloodingFromPoint.md)
     * [FloodingLakeSystem](nodes/FloodingLakeSystem.md)
     * [FloodingUniformLevel](nodes/FloodingUniformLevel.md)
+    * [FlowAccumulationStochastic](nodes/FlowAccumulationStochastic.md)
     * [FlowSimulation](nodes/FlowSimulation.md)
     * [FlowSimulationViscous](nodes/FlowSimulationViscous.md)
     * [MergeWaterDepths](nodes/MergeWaterDepths.md)
