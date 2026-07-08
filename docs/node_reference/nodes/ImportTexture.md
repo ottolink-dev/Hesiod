@@ -26,6 +26,7 @@ Export
 | :--- | :--- | :--- |
 |flip_y|Bool|No description|
 |fname|Filename|TODO|
+|keep_aspect_ratio|Bool|No description|
 
 ## Example
 

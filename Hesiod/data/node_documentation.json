@@ -9141,6 +9141,12 @@
                 "key": "fname",
                 "label": "fname",
                 "type": "Filename"
+            },
+            "keep_aspect_ratio": {
+                "description": "No description",
+                "key": "keep_aspect_ratio",
+                "label": "keep_aspect_ratio",
+                "type": "Bool"
             }
         },
         "ports": {
