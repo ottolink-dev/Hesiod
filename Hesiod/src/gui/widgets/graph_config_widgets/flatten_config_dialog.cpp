@@ -40,7 +40,7 @@ FlattenConfigDialog::FlattenConfigDialog(FlattenConfig &export_param, QWidget *p
   this->connect(
       button,
       &QPushButton::released,
-      [this]()
+      [this, button]()
       {
         std::filesystem::path path = this->export_param.export_path.parent_path();
 
@@ -59,6 +59,8 @@ FlattenConfigDialog::FlattenConfigDialog(FlattenConfig &export_param, QWidget *p
           if (selected.extension().empty())
             selected.replace_extension(".png");
           this->export_param.export_path = selected;
+
+          button->setText(this->export_param.export_path.string().c_str());
         }
       });
 

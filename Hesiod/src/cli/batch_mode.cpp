@@ -30,10 +30,9 @@ int parse_args(args::ArgumentParser &parser,
                                          "Project file (.hsd) to open at startup",
                                          {'f', "file"});
 
-  args::Positional<std::string> file_positional(
-      parser,
-      "file",
-      "Project file (.hsd) to open at startup");
+  args::Positional<std::string> file_positional(parser,
+                                                "file",
+                                                "Project file (.hsd) to open at startup");
 
   args::Group group(parser,
                     "This group is all exclusive:",
@@ -96,8 +95,8 @@ int parse_args(args::ArgumentParser &parser,
         args::get(file_flag) != args::get(file_positional))
     {
       std::cerr << "Error: conflicting project files requested: positional argument is "
-                << "'" << args::get(file_positional) << "' but -f/--file is "
-                << "'" << args::get(file_flag) << "'. "
+                << "'" << args::get(file_positional) << "' but -f/--file is " << "'"
+                << args::get(file_flag) << "'. "
                 << "Provide only one of them (or make them identical)." << std::endl;
       return 1;
     }

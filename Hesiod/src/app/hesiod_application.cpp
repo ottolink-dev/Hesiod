@@ -1030,8 +1030,7 @@ void HesiodApplication::show()
                      {
                        if (this->project_ui &&
                            this->project_ui->get_graph_tabs_widget_ref())
-                         this->project_ui->get_graph_tabs_widget_ref()
-                             ->zoom_to_content();
+                         this->project_ui->get_graph_tabs_widget_ref()->zoom_to_content();
                      });
 }
 
