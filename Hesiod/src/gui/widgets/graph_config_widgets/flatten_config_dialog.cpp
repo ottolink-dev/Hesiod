@@ -52,7 +52,14 @@ FlattenConfigDialog::FlattenConfigDialog(FlattenConfig &export_param, QWidget *p
                                              "*.png");
 
         if (!fname.isNull() && !fname.isEmpty())
-          this->export_param.export_path = fname.toStdString();
+        {
+          // enforce a .png extension so the chosen filename matches the actual
+          // output (the "*.png" filter above is only a hint, not enforcement)
+          std::filesystem::path selected = fname.toStdString();
+          if (selected.extension().empty())
+            selected.replace_extension(".png");
+          this->export_param.export_path = selected;
+        }
       });
 
   // --- shape
