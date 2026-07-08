@@ -29,6 +29,8 @@ private:
   QPointer<GraphNodeWidget> p_graph_node_widget; // own by GraphManagerWidget
   QVBoxLayout              *attr_layout;
   std::vector<std::string>  pinned_node_ids;
+  std::vector<std::string>  last_selected_ids; // kept so the pane does not blank
+                                               // out when nodes are deselected
 };
 
 } // namespace hesiod

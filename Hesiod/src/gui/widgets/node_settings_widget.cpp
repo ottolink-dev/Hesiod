@@ -101,7 +101,18 @@ void NodeSettingsWidget::update_content()
   // refill based on selected nodes (and pinned nodes)
   std::vector<std::string> selected_ids = this->p_graph_node_widget
                                               ->get_selected_node_ids();
-  std::vector<std::string> all_ids = merge_unique(this->pinned_node_ids, selected_ids);
+
+  // remember the last non-empty selection so that deselecting every node does
+  // not blank out the settings pane: keep showing the last selected node(s)
+  if (!selected_ids.empty())
+    this->last_selected_ids = selected_ids;
+
+  const std::vector<std::string> &effective_selected = selected_ids.empty()
+                                                           ? this->last_selected_ids
+                                                           : selected_ids;
+
+  std::vector<std::string> all_ids = merge_unique(this->pinned_node_ids,
+                                                  effective_selected);
 
   for (auto &node_id : all_ids)
   {
