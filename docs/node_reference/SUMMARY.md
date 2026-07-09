@@ -124,6 +124,7 @@
     * [FloodingFromPoint](nodes/FloodingFromPoint.md)
     * [FloodingLakeSystem](nodes/FloodingLakeSystem.md)
     * [FloodingUniformLevel](nodes/FloodingUniformLevel.md)
+    * [FlowAccumulationStochastic](nodes/FlowAccumulationStochastic.md)
     * [FlowSimulation](nodes/FlowSimulation.md)
     * [FlowSimulationViscous](nodes/FlowSimulationViscous.md)
     * [MergeWaterDepths](nodes/MergeWaterDepths.md)
