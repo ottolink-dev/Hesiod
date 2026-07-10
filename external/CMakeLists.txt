@@ -23,6 +23,14 @@ add_subdirectory(HighMap)
 set(ATTRIBUTES_ENABLE_TESTS OFF)
 add_subdirectory(Attributes)
 
+# Meta (transitional: built alongside Attributes)
+set(META_ENABLE_TESTS OFF)
+set(META_ENABLE_GLM_TYPES ON)
+set(META_ENABLE_COLOR_GRADIENT_TYPES ON)
+set(META_ENABLE_QT_UI ON)
+set(META_ENABLE_FTXUI_UI OFF)
+add_subdirectory(Meta)
+
 # QTerrainRenderer
 add_subdirectory(QTerrainRenderer)
 

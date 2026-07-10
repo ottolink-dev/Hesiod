@@ -80,6 +80,8 @@ target_link_libraries(
           gnode
           gnodegui
           attributes
+          meta
+          meta_qt
           Qt6::Core
           Qt6::OpenGL
           Qt6::Widgets
