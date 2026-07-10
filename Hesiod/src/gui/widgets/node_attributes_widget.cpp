@@ -214,8 +214,13 @@ void NodeAttributesWidget::setup_layout()
                                                            meta::qt::ContainerRenderOptions{},
                                                            this);
 
+    // Recompute on edit_ended (commit/drag-release), NOT the continuous
+    // value_changed: the panel is rebuilt on update_finished, so recomputing on
+    // every value_changed would destroy a live-dragged widget mid-drag. All
+    // widget types emit edit_ended (discrete edits emit it alongside
+    // value_changed; drags emit it on release), so no edit is missed.
     this->connect(meta_widget,
-                  &meta::qt::MetaWidget::value_changed,
+                  &meta::qt::MetaWidget::edit_ended,
                   this,
                   [this]()
                   {
