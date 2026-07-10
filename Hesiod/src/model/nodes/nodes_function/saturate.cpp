@@ -48,8 +48,8 @@ void setup_saturate_node(BaseNode &node)
   {
     auto *a = c.add<glm::vec2>(A_RANGE, glm::vec2(0.f, 1.f));
     a->metadata().try_add(meta::keys::ui::widget_type, std::string("RangeBar"));
-    a->metadata().try_add(meta::keys::constraints::min, 0.f);
-    a->metadata().try_add(meta::keys::constraints::max, 1.f);
+    a->metadata().try_add(meta::keys::constraints::min, -1.f); // legacy RangeAttribute domain
+    a->metadata().try_add(meta::keys::constraints::max, 2.f);
     a->metadata().try_add(meta::keys::ui::category, std::string("Main"));
     a->metadata().try_add(meta::keys::ui::tooltip, std::string("<b>Saturation range</b>"));
     a->metadata().try_add(
@@ -73,7 +73,11 @@ void setup_saturate_node(BaseNode &node)
               const float sb = -vmin / (vmax - vmin) * (nbins - 1);
               for (int j = 0; j < arr.shape.y; ++j)
                 for (int i = 0; i < arr.shape.x; ++i)
-                  d.series_y[static_cast<int>(sa * arr(i, j) + sb)] += 1.f;
+                {
+                  int bin = static_cast<int>(sa * arr(i, j) + sb);
+                  bin = bin < 0 ? 0 : (bin >= nbins ? nbins - 1 : bin);
+                  d.series_y[bin] += 1.f;
+                }
               return d;
             }});
   }
