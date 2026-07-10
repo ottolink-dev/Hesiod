@@ -7,6 +7,8 @@
 
 #include "attributes.hpp"
 
+#include "meta/metadata/keys.hpp"
+
 #include "hesiod/app/enum_mappings.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
@@ -48,26 +50,46 @@ void setup_noise_node(BaseNode &node)
 
   // --- Attributes
 
-  // clang-format off
-  node.add_attr<EnumAttribute>(A_NOISE_TYPE, "Type", enum_mappings.noise_type_map);
-  node.add_attr<WaveNbAttribute>(A_KW, "Spatial Frequency");
-  node.add_attr<SeedAttribute>(A_SEED, "Seed");
-  node.add_attr<BoolAttribute>(A_PERIODIC, "Periodic (tileable)", false);
-  // clang-format on
+  auto &c = node.meta_group().current();
 
-  // --- Attribute(s) order
+  // noise_type: int-backed enum dropdown
+  {
+    auto *a = c.add<int>(A_NOISE_TYPE, 0);
+    a->metadata().try_add(meta::keys::ui::label, std::string("Type"));
+    a->metadata().try_add(meta::keys::ui::widget_type, std::string("EnumComboBox"));
+    a->metadata().try_add(meta::keys::ui::category, std::string("Main Parameters"));
+    std::vector<std::pair<int, std::string>> items;
+    for (const auto &[name, val] : enum_mappings.noise_type_map)
+      items.emplace_back(val, name);
+    a->metadata().try_add(meta::keys::constraints::enum_items, items);
+  }
 
-  node.set_attr_ordered_key({
-      "_GROUPBOX_BEGIN_Main Parameters",
-      A_NOISE_TYPE,
-      A_KW,
-      A_SEED,
-      "_GROUPBOX_END_",
-      //
-      "_GROUPBOX_BEGIN_Tiling",
-      A_PERIODIC,
-      "_GROUPBOX_END_",
-  });
+  // kw: 2D wavenumber with X/Y lock
+  {
+    auto *a = c.add<glm::vec2>(A_KW, glm::vec2(2.f, 2.f));
+    a->metadata().try_add(meta::keys::ui::label, std::string("Spatial Frequency"));
+    a->metadata().try_add(meta::keys::ui::widget_type, std::string("LinkedSliders"));
+    a->metadata().try_add(std::string("ui.locked_xy"), true);
+    a->metadata().try_add(meta::keys::constraints::min, 0.f);
+    a->metadata().try_add(meta::keys::constraints::max, 64.f);
+    a->metadata().try_add(meta::keys::ui::category, std::string("Main Parameters"));
+  }
+
+  // seed
+  {
+    auto *a = c.add<int>(A_SEED, 1);
+    a->metadata().try_add(meta::keys::ui::label, std::string("Seed"));
+    a->metadata().try_add(meta::keys::constraints::min, 0);
+    a->metadata().try_add(meta::keys::ui::category, std::string("Main Parameters"));
+  }
+
+  // periodic
+  {
+    auto *a = c.add<bool>(A_PERIODIC, false);
+    a->metadata().try_add(meta::keys::ui::label, std::string("Periodic (tileable)"));
+    a->metadata().try_add(meta::keys::ui::widget_type, std::string("Checkbox"));
+    a->metadata().try_add(meta::keys::ui::category, std::string("Tiling"));
+  }
 
   setup_post_process_heightmap_attributes(node,
                                           {.add_mix = false, .remap_active_state = true});
@@ -93,11 +115,13 @@ void compute_noise_node(BaseNode &node)
 
   // --- Params
 
+  auto &c = node.meta_group().current();
+
   // clang-format off
-  const auto noise_type = hmap::NoiseType(node.get_attr<EnumAttribute>(A_NOISE_TYPE));
-  const auto kw         = node.get_attr<WaveNbAttribute>(A_KW);
-  const auto seed       = node.get_attr<SeedAttribute>(A_SEED);
-  const auto periodic   = node.get_attr<BoolAttribute>(A_PERIODIC);
+  const auto      noise_type = hmap::NoiseType(c.value<int>(A_NOISE_TYPE));
+  const glm::vec2 kw         = c.value<glm::vec2>(A_KW);
+  const auto      seed       = static_cast<uint>(c.value<int>(A_SEED));
+  const auto      periodic   = c.value<bool>(A_PERIODIC);
   // clang-format on
 
   // --- Compute
