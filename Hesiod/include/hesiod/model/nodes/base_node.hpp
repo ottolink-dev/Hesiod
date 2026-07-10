@@ -12,6 +12,7 @@
 #include "gnodegui/node_proxy.hpp"
 
 #include "attributes/abstract_attribute.hpp"
+#include "meta/core/container_group.hpp"
 
 #include "hesiod/model/graph/graph_config.hpp"
 #include "hesiod/model/nodes/node_runtime_info.hpp"
@@ -107,6 +108,10 @@ public:
   std::map<std::string, std::unique_ptr<attr::AbstractAttribute>> *get_attributes_ref();
   void set_attr_ordered_key(const std::vector<std::string> &new_attr_ordered_key);
 
+  bool                        uses_meta() const;
+  meta::ContainerGroup       &meta_group();       // lazily creates group + "main" container
+  const meta::ContainerGroup &meta_group() const;
+
   void reseed(bool backward);
 
   // --- Callbacks - "signals" equivalent
@@ -116,6 +121,7 @@ public:
 private:
   // --- Members ---
   std::map<std::string, std::unique_ptr<attr::AbstractAttribute>> attr = {};
+  std::unique_ptr<meta::ContainerGroup> meta_group_; // opt-in Meta storage (nullptr = legacy attr map)
 
   std::vector<std::string>            attr_ordered_key = {};
   std::string                         category;

@@ -104,6 +104,21 @@ std::vector<std::string> *BaseNode::get_attr_ordered_key_ref()
   return &this->attr_ordered_key;
 };
 
+bool BaseNode::uses_meta() const { return this->meta_group_ != nullptr; }
+
+meta::ContainerGroup &BaseNode::meta_group()
+{
+  if (!this->meta_group_)
+  {
+    this->meta_group_ = std::make_unique<meta::ContainerGroup>();
+    this->meta_group_->add("main");
+    this->meta_group_->set_current("main");
+  }
+  return *this->meta_group_;
+}
+
+const meta::ContainerGroup &BaseNode::meta_group() const { return *this->meta_group_; }
+
 std::string BaseNode::get_category() const { return this->category; }
 
 std::shared_ptr<const GraphConfig> BaseNode::get_config_ref() const
