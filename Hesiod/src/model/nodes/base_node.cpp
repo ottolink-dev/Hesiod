@@ -412,6 +412,22 @@ void BaseNode::json_from(nlohmann::json const &json)
       else
         Logger::log()->warn("Missing JSON key for attribute: {}, using default", key);
     }
+
+    if (this->uses_meta())
+    {
+      if (json.contains("_meta"))
+      {
+        this->meta_group().current().json_from(json["_meta"]);
+      }
+      else
+      {
+        Logger::log()->error(
+            "BaseNode::json_from: node '{}' uses Meta storage but the '_meta' key "
+            "is absent from the JSON — Meta parameters were NOT restored (refusing "
+            "to silently load defaults)",
+            this->get_id());
+      }
+    }
   }
   catch (const nlohmann::json::exception &e)
   {
@@ -433,6 +449,9 @@ nlohmann::json BaseNode::json_to() const
     json["label"] = this->get_label();
     json["comment"] = this->get_comment();
     json["runtime_info"] = this->runtime_info.json_to();
+
+    if (this->uses_meta())
+      json["_meta"] = this->meta_group().current().json_to();
   }
   catch (const std::exception &e)
   {
