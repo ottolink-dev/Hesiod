@@ -54,7 +54,7 @@ void setup_noise_node(BaseNode &node)
 
   // noise_type: int-backed enum dropdown
   {
-    auto *a = c.add<int>(A_NOISE_TYPE, 0);
+    auto *a = c.add<int>(A_NOISE_TYPE, static_cast<int>(hmap::NoiseType::SIMPLEX2));
     a->metadata().try_add(meta::keys::ui::label, std::string("Type"));
     a->metadata().try_add(meta::keys::ui::widget_type, std::string("EnumComboBox"));
     a->metadata().try_add(meta::keys::ui::category, std::string("Main Parameters"));
