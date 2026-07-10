@@ -19,3 +19,6 @@
 [submodule "external/QTextureDownloader"]
 	path = external/QTextureDownloader
 	url = git@github.com:otto-link/QTextureDownloader.git
+[submodule "external/Meta"]
+	path = external/Meta
+	url = git@github.com:otto-link/Meta.git
