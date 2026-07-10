@@ -100,21 +100,24 @@ QWidget *NodeAttributesWidget::create_toolbar()
                     this->p_graph_node_widget->on_node_info(this->node_id);
                 });
 
+  // These state/preset buttons operate on the legacy AttributesWidget, which is
+  // null for meta-backed nodes; guard against a null deref (meta nodes use Meta's
+  // own snapshot/preset system, wired separately later).
   this->connect(bckp_btn,
                 &QToolButton::pressed,
-                [this]() { this->attributes_widget->on_save_state(); });
+                [this]() { if (this->attributes_widget) this->attributes_widget->on_save_state(); });
   this->connect(revert_btn,
                 &QToolButton::pressed,
-                [this]() { this->attributes_widget->on_restore_save_state(); });
+                [this]() { if (this->attributes_widget) this->attributes_widget->on_restore_save_state(); });
   this->connect(load_btn,
                 &QToolButton::pressed,
-                [this]() { this->attributes_widget->on_load_preset(); });
+                [this]() { if (this->attributes_widget) this->attributes_widget->on_load_preset(); });
   this->connect(save_btn,
                 &QToolButton::pressed,
-                [this]() { this->attributes_widget->on_save_preset(); });
+                [this]() { if (this->attributes_widget) this->attributes_widget->on_save_preset(); });
   this->connect(reset_btn,
                 &QToolButton::pressed,
-                [this]() { this->attributes_widget->on_restore_initial_state(); });
+                [this]() { if (this->attributes_widget) this->attributes_widget->on_restore_initial_state(); });
 
   this->connect(help_btn,
                 &QToolButton::pressed,
