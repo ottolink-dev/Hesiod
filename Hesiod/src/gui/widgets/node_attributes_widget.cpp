@@ -6,6 +6,8 @@
 #include <QStyle>
 #include <QToolButton>
 
+#include "meta_qt/container_group_widget.hpp"
+
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/widgets/documentation_popup.hpp"
 #include "hesiod/gui/widgets/node_attributes_widget.hpp"
@@ -199,6 +201,35 @@ void NodeAttributesWidget::setup_layout()
   BaseNode *p_node = gno->get_node_ref_by_id<BaseNode>(this->node_id);
   if (!p_node)
     return;
+
+  if (p_node->uses_meta())
+  {
+    // Meta-backed node: render with meta_qt, skip the legacy AttributesWidget path.
+    this->attributes_widget = nullptr; // so setup_connections() skips the legacy wiring
+
+    auto *meta_widget = new meta::qt::ContainerGroupWidget(p_node->meta_group(),
+                                                           meta::qt::ContainerRenderOptions{},
+                                                           this);
+
+    this->connect(meta_widget,
+                  &meta::qt::MetaWidget::value_changed,
+                  this,
+                  [this]()
+                  {
+                    auto gno = this->p_graph_node.lock();
+                    if (!gno)
+                      return;
+                    gno->update(this->node_id);
+                  });
+
+    QVBoxLayout *main_layout = new QVBoxLayout(this);
+    main_layout->setSpacing(4);
+    main_layout->setContentsMargins(0, 0, 0, 0);
+    if (this->add_toolbar)
+      main_layout->addWidget(this->create_toolbar());
+    main_layout->addWidget(meta_widget);
+    return;
+  }
 
   // generate a fresh widget
   bool        add_save_reset_state_buttons = false;
