@@ -10,7 +10,7 @@
 
 ## Global Constraints
 
-- Meta edits are committed on `external/Meta`'s `feature/meta-migration` branch (created off the frozen pin `e71e798`), pushed to `otto-link/Meta`. Meta `main`/`dev` are never touched. Hesiod edits stay on Hesiod's `feature/meta-migration`. No PR/merge to any `dev`/`main` without explicit request. No CI.
+- Meta edits are committed on `external/Meta`'s `feature/meta-migration` branch (created off the frozen pin `e71e798`) and kept **local/unpushed** for now (do NOT push to `otto-link/Meta` yet). Meta `main`/`dev` are never touched. Hesiod edits stay on Hesiod's `feature/meta-migration`. No PR/merge to any `dev`/`main` without explicit request. No CI.
 - Storage = non-serializable metadata attribute under key `ui.data_provider` (Approach A). Return type = the neutral `meta::ProviderData` struct; one general `DataProvider = std::function<ProviderData()>`.
 - The `DataProvider` metadata entry MUST be omitted from serialization (`json_to`), and `json_from` must never try to reconstruct it. Targeted skip for the `DataProvider` type only — NOT the broad `_meta` values-only trim (deferred).
 - Tooltips are HTML, applied centrally (one place), not per-renderer.
@@ -39,7 +39,7 @@
 ```bash
 cd /home/barrulus/dev/Hesiod/external/Meta
 git switch -c feature/meta-migration   # created off current HEAD = pinned e71e798
-git push -u origin feature/meta-migration
+# NOTE: keep this branch LOCAL — do NOT push to otto-link/Meta yet (per user).
 git branch --show-current              # expect: feature/meta-migration
 ```
 
