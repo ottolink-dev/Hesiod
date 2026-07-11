@@ -1,14 +1,18 @@
 /* Copyright (c) 2023 Otto Link. Distributed under the terms of the GNU General
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
-#include "highmap/geometry/cloud.hpp"
+#include <algorithm>
 
-#include "attributes.hpp"
+#include "highmap/colorize.hpp"
+#include "highmap/geometry/cloud.hpp"
+#include "highmap/operator.hpp"
+#include "highmap/virtual_array/virtual_array.hpp"
+
+#include "meta/core/data_provider.hpp"
+#include "meta/metadata/keys.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
-
-using namespace attr;
 
 namespace hesiod
 {
@@ -36,14 +40,39 @@ void setup_cloud_node(BaseNode &node)
   node.add_port<hmap::Cloud>(gnode::PortType::OUT, P_OUT);
 
   // --- Attributes
-  node.add_attr<CloudAttribute>(A_CLOUD, "Cloud");
 
-  // --- Attribute(s) order
+  auto &c = node.meta_group().current();
 
-  node.set_attr_ordered_key(
-      {"_GROUPBOX_BEGIN_Main Parameters", A_CLOUD, "_GROUPBOX_END_"});
-
-  setup_background_image_for_cloud_attribute(node, A_CLOUD, P_BACKGROUND);
+  auto *a = c.add<std::vector<glm::vec3>>(A_CLOUD, {});
+  a->metadata().try_add(meta::keys::ui::label, std::string("Cloud"));
+  a->metadata().try_add(meta::keys::ui::widget_type, std::string("PointsEditor"));
+  a->metadata().try_add(meta::keys::ui::category, std::string("Main"));
+  a->metadata().try_add(
+      meta::keys::ui::data_provider,
+      meta::DataProvider{
+          [&node, port_id = std::string(P_BACKGROUND)]() -> meta::ProviderData
+          {
+            meta::ProviderData d;
+            hmap::VirtualArray *p_in = node.get_value_ref<hmap::VirtualArray>(port_id);
+            if (!p_in)
+              return d;
+            const glm::ivec2 shape(256, 256);
+            hmap::Array array = p_in->to_array(shape, node.cfg().cm_cpu);
+            std::vector<uint8_t> img =
+                hmap::colorize(array, array.min(), array.max(), hmap::Cmap::MAGMA, false)
+                    .to_img_8bit();
+            d.image_width = shape.x;
+            d.image_height = shape.y;
+            d.image_channels = 3; // to_img_8bit() -> RGB
+            // vertical flip so the thumbnail origin matches the canvas (legacy mirrored(false,true))
+            const int stride = shape.x * 3;
+            d.image_pixels.resize(img.size());
+            for (int y = 0; y < shape.y; ++y)
+              std::copy_n(img.data() + (shape.y - 1 - y) * stride,
+                          stride,
+                          d.image_pixels.data() + y * stride);
+            return d;
+          }});
 }
 
 // -----------------------------------------------------------------------------
@@ -60,7 +89,8 @@ void compute_cloud_node(BaseNode &node)
 
   // --- Params
 
-  const auto cloud_attr = node.get_attr<CloudAttribute>(A_CLOUD);
+  const auto cloud_attr =
+      node.meta_group().current().value<std::vector<glm::vec3>>(A_CLOUD);
 
   // --- Compute
 
