@@ -5,6 +5,7 @@
 #include <QVBoxLayout>
 
 #include "hesiod/gui/widgets/graph_node_widget.hpp"
+#include "hesiod/gui/widgets/node_attributes_widget.hpp"
 
 namespace hesiod
 {
@@ -24,6 +25,7 @@ private:
   void setup_connections();
   void setup_layout();
   void update_content();
+  void sync_content();
 
   // --- Members ---
   QPointer<GraphNodeWidget> p_graph_node_widget; // own by GraphManagerWidget
@@ -31,6 +33,7 @@ private:
   std::vector<std::string>  pinned_node_ids;
   std::vector<std::string>  last_selected_ids; // kept so the pane does not blank
                                                // out when nodes are deselected
+  std::vector<QPointer<NodeAttributesWidget>> attr_widgets;
 };
 
 } // namespace hesiod

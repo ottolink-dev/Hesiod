@@ -49,7 +49,7 @@ void NodeSettingsWidget::setup_connections()
   this->connect(this->p_graph_node_widget,
                 &GraphNodeWidget::update_finished,
                 this,
-                &NodeSettingsWidget::update_content);
+                &NodeSettingsWidget::sync_content);
 }
 
 void NodeSettingsWidget::setup_layout()
@@ -90,6 +90,7 @@ void NodeSettingsWidget::update_content()
     return;
 
   clear_layout(this->attr_layout);
+  this->attr_widgets.clear();
 
   // lifetime safe getter
   GraphNode *p_gno = this->p_graph_node_widget->get_p_graph_node();
@@ -163,9 +164,34 @@ void NodeSettingsWidget::update_content()
 
     this->attr_layout->addWidget(attr_widget);
     this->attr_layout->addWidget(new QLabel()); // space
+
+    this->attr_widgets.push_back(attr_widget);
   }
 
   this->attr_layout->addStretch();
+}
+
+void NodeSettingsWidget::sync_content()
+{
+  Logger::log()->trace("NodeSettingsWidget::sync_content");
+
+  // Rebuild if the panel is empty or contains any legacy (non-meta) widget.
+  if (this->attr_widgets.empty())
+  {
+    this->update_content();
+    return;
+  }
+  for (const auto &w : this->attr_widgets)
+    if (!w || !w->is_meta_backed())
+    {
+      this->update_content();
+      return;
+    }
+
+  // Pure-meta panel: sync in place, no teardown.
+  for (const auto &w : this->attr_widgets)
+    if (w)
+      w->sync_from_model();
 }
 
 } // namespace hesiod
