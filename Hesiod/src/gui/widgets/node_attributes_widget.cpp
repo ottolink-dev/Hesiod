@@ -163,6 +163,15 @@ attr::AttributesWidget *NodeAttributesWidget::get_attributes_widget_ref()
   return this->attributes_widget;
 }
 
+void NodeAttributesWidget::sync_from_model()
+{
+  if (this->meta_widget)
+    this->meta_widget->on_sync_meta_widgets_from_model();
+  // legacy attr::AttributesWidget: values are the source of truth, no model sync needed.
+}
+
+bool NodeAttributesWidget::is_meta_backed() const { return this->meta_widget != nullptr; }
+
 void NodeAttributesWidget::setup_connections()
 {
   Logger::log()->trace("NodeAttributesWidget::setup_connections");
@@ -210,17 +219,16 @@ void NodeAttributesWidget::setup_layout()
     // Meta-backed node: render with meta_qt, skip the legacy AttributesWidget path.
     this->attributes_widget = nullptr; // so setup_connections() skips the legacy wiring
 
-    auto *meta_widget = new meta::qt::ContainerGroupWidget(p_node->meta_group(),
+    this->meta_widget = new meta::qt::ContainerGroupWidget(p_node->meta_group(),
                                                            meta::qt::ContainerRenderOptions{},
                                                            this);
 
-    // Recompute on edit_ended (commit/drag-release), NOT the continuous
-    // value_changed: the panel is rebuilt on update_finished, so recomputing on
-    // every value_changed would destroy a live-dragged widget mid-drag. All
-    // widget types emit edit_ended (discrete edits emit it alongside
-    // value_changed; drags emit it on release), so no edit is missed.
-    this->connect(meta_widget,
-                  &meta::qt::MetaWidget::edit_ended,
+    // Recompute continuously on value_changed: the panel now syncs from the
+    // model (sync_from_model()) instead of being rebuilt on update_finished, so
+    // recomputing on every value_changed no longer destroys a live-dragged
+    // widget mid-drag.
+    this->connect(this->meta_widget,
+                  &meta::qt::MetaWidget::value_changed,
                   this,
                   [this]()
                   {
@@ -235,7 +243,7 @@ void NodeAttributesWidget::setup_layout()
     main_layout->setContentsMargins(0, 0, 0, 0);
     if (this->add_toolbar)
       main_layout->addWidget(this->create_toolbar());
-    main_layout->addWidget(meta_widget);
+    main_layout->addWidget(this->meta_widget);
     return;
   }
 

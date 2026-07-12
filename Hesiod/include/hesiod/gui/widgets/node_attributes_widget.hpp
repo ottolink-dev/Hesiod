@@ -4,6 +4,7 @@
 #include <memory>
 
 #include "attributes/widgets/attributes_widget.hpp"
+#include "meta_qt/container_group_widget.hpp"
 
 #include "hesiod/gui/widgets/graph_node_widget.hpp"
 #include "hesiod/model/graph/graph_node.hpp"
@@ -30,6 +31,9 @@ public:
 
   attr::AttributesWidget *get_attributes_widget_ref();
 
+  void sync_from_model();
+  bool is_meta_backed() const;
+
 private:
   QWidget *create_toolbar();
   void     setup_connections();
@@ -40,7 +44,8 @@ private:
   QPointer<GraphNodeWidget> p_graph_node_widget;
   bool                      add_toolbar;
 
-  attr::AttributesWidget *attributes_widget;
+  attr::AttributesWidget            *attributes_widget;
+  meta::qt::ContainerGroupWidget    *meta_widget = nullptr;
 };
 
 } // namespace hesiod
