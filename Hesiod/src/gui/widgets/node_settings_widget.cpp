@@ -175,20 +175,17 @@ void NodeSettingsWidget::sync_content()
 {
   Logger::log()->trace("NodeSettingsWidget::sync_content");
 
-  // Rebuild if the panel is empty or contains any legacy (non-meta) widget.
+  // Nothing built yet (e.g. no selection): do the initial build.
   if (this->attr_widgets.empty())
   {
     this->update_content();
     return;
   }
-  for (const auto &w : this->attr_widgets)
-    if (!w || !w->is_meta_backed())
-    {
-      this->update_content();
-      return;
-    }
 
-  // Pure-meta panel: sync in place, no teardown.
+  // Sync every widget in place, never tearing the panel down on recompute:
+  // meta widgets refresh from the model; legacy widgets no-op (their values are
+  // the source of truth). Because there is no teardown, a live-dragged widget is
+  // never destroyed mid-drag, even in a mixed meta+legacy panel.
   for (const auto &w : this->attr_widgets)
     if (w)
       w->sync_from_model();
