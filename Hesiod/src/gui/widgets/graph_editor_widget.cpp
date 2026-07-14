@@ -137,16 +137,22 @@ void GraphEditorWidget::setup_layout()
     row_offset++;
   }
 
-  // left pan with splitter
+  // graph area: viewer/graph vertical splitter + toolbar, wrapped so it can be
+  // one pane of the horizontal splitter below.
+  QWidget     *graph_container = new QWidget();
+  QVBoxLayout *graph_layout = new QVBoxLayout(graph_container);
+  graph_layout->setContentsMargins(0, 0, 0, 0);
+  graph_layout->setSpacing(0);
+
   {
     QSplitter *splitter = new QSplitter(Qt::Vertical);
     splitter->setChildrenCollapsible(false);
 
     this->graph_node_widget = new GraphNodeWidget(gno->get_shared());
+    this->graph_node_widget->setMinimumWidth(50); // let the graph pane shrink so the
+                                                  // settings pane can be dragged wider
 
-    // skip the 3D viewer (OpenGL) in headless CLI modes (e.g. --snapshot): it
-    // would receive paint events and crash without a real GUI window context.
-    // get_viewer() stays null and every caller already null-guards it.
+    // skip the 3D viewer (OpenGL) in headless CLI modes (e.g. --snapshot).
     if (!HSD_CTX.headless)
     {
       this->viewer = new Viewer3D(this->graph_node_widget);
@@ -155,29 +161,38 @@ void GraphEditorWidget::setup_layout()
     }
 
     splitter->addWidget(this->graph_node_widget);
-
-    layout->addWidget(splitter, 0, row_offset);
+    graph_layout->addWidget(splitter);
   }
 
-  // right pan
   {
-    this->node_settings_widget = new NodeSettingsWidget(this->graph_node_widget);
+    auto *graph_toolbar = new GraphToolbar(this->graph_node_widget);
+    graph_layout->addWidget(graph_toolbar);
+  }
 
+  // settings panel (created after graph_node_widget, which it takes).
+  this->node_settings_widget = new NodeSettingsWidget(this->graph_node_widget);
+  {
     std::string color = HSD_CTX.app_settings.colors.border.name().toStdString();
     set_style(this->node_settings_widget,
               std::format("border-left: 1px solid {};", color));
-
-    layout->addWidget(this->node_settings_widget, 0, row_offset + 1, 2, 1);
-
     this->node_settings_widget->setVisible(
         HSD_CTX.app_settings.node_editor.show_node_settings_pan);
   }
 
-  // bottom toolbar
-  {
-    auto *graph_toolbar = new GraphToolbar(this->graph_node_widget);
-    layout->addWidget(graph_toolbar, 1, row_offset);
-  }
+  // horizontal splitter: [ graph area | settings ] — user-resizable.
+  QSplitter *h_splitter = new QSplitter(Qt::Horizontal);
+  h_splitter->setChildrenCollapsible(false);
+  h_splitter->addWidget(graph_container);
+  h_splitter->addWidget(this->node_settings_widget);
+  h_splitter->setStretchFactor(0, 1); // graph area absorbs window resizing
+  h_splitter->setStretchFactor(1, 0); // settings keeps its width
+  h_splitter->setSizes({650, 500});   // default: settings opens wide enough for paired sliders
+
+  layout->addWidget(h_splitter, 0, row_offset, 2, 1);
+
+  // Give the graph/settings splitter column the window's spare width so it always
+  // has room to drag (otherwise the split only widens when the whole window grows).
+  layout->setColumnStretch(row_offset, 1);
 
   // --- Connection(s)
 
