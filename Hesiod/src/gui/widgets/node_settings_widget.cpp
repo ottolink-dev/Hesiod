@@ -25,7 +25,7 @@ NodeSettingsWidget::NodeSettingsWidget(QPointer<GraphNodeWidget> p_graph_node_wi
   if (!this->p_graph_node_widget)
     return;
 
-  this->setMinimumWidth(360); // floor so single-value widgets fit; splitter governs actual width
+  this->setMinimumWidth(240); // low floor so the pane is freely narrowable; wide content scrolls
 
   this->setup_layout();
   this->setup_connections();

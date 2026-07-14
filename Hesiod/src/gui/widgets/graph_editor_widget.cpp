@@ -149,6 +149,8 @@ void GraphEditorWidget::setup_layout()
     splitter->setChildrenCollapsible(false);
 
     this->graph_node_widget = new GraphNodeWidget(gno->get_shared());
+    this->graph_node_widget->setMinimumWidth(50); // let the graph pane shrink so the
+                                                  // settings pane can be dragged wider
 
     // skip the 3D viewer (OpenGL) in headless CLI modes (e.g. --snapshot).
     if (!HSD_CTX.headless)
