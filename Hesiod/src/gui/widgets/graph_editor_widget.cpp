@@ -184,9 +184,13 @@ void GraphEditorWidget::setup_layout()
   h_splitter->addWidget(this->node_settings_widget);
   h_splitter->setStretchFactor(0, 1); // graph area absorbs window resizing
   h_splitter->setStretchFactor(1, 0); // settings keeps its width
-  h_splitter->setSizes({900, 400});   // default: graph large, settings ~400px
+  h_splitter->setSizes({650, 500});   // default: settings opens wide enough for paired sliders
 
   layout->addWidget(h_splitter, 0, row_offset, 2, 1);
+
+  // Give the graph/settings splitter column the window's spare width so it always
+  // has room to drag (otherwise the split only widens when the whole window grows).
+  layout->setColumnStretch(row_offset, 1);
 
   // --- Connection(s)
 
