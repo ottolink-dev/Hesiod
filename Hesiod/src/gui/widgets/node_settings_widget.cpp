@@ -25,8 +25,7 @@ NodeSettingsWidget::NodeSettingsWidget(QPointer<GraphNodeWidget> p_graph_node_wi
   if (!this->p_graph_node_widget)
     return;
 
-  this->setMinimumWidth(360); // TODO fix this
-  this->setMaximumWidth(360);
+  this->setMinimumWidth(320); // splitter governs the actual width; never collapses below this
 
   this->setup_layout();
   this->setup_connections();
@@ -72,7 +71,7 @@ void NodeSettingsWidget::setup_layout()
     this->attr_layout->setSpacing(2);
 
     auto *scroll = new QScrollArea();
-    scroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    scroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     scroll->setWidget(container);
     scroll->setWidgetResizable(true);
     scroll->setFrameShape(QFrame::NoFrame);
