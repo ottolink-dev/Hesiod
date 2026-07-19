@@ -109,7 +109,8 @@ inline void safe_get(const nlohmann::json &j, const char *field, V &out,
 inline glm::vec2 vec2_from_json(const nlohmann::json &j, const char *field,
                                 glm::vec2 fallback, const std::string &key)
 {
-  if (j.contains(field) && j.at(field).is_array() && j.at(field).size() == 2)
+  if (j.contains(field) && j.at(field).is_array() && j.at(field).size() == 2 &&
+      j.at(field)[0].is_number() && j.at(field)[1].is_number())
     return {j.at(field)[0].get<float>(), j.at(field)[1].get<float>()};
   hesiod::Logger::log()->warn("compat decode: key '{}' bad/missing vec2 field '{}'", key,
                               field);
@@ -276,16 +277,29 @@ template <> struct legacy_traits<EnumAttribute>
     {
       std::string choice;
       safe_get(j, "choice", choice, key);
-      if (items)
+      if (items && !items->empty())
+      {
         for (const auto &[value, name] : *items)
           if (name == choice)
           {
             a.set_from_any(value);
             return;
           }
+        hesiod::Logger::log()->warn(
+            "compat enum decode: key '{}' choice '{}' not found, keeping default", key,
+            choice);
+        return;
+      }
+
+      // enum_items metadata unavailable: fall back to the raw "value" int
+      // rather than giving up entirely (rare path; enum_items is normally set).
       hesiod::Logger::log()->warn(
-          "compat enum decode: key '{}' choice '{}' not found, keeping default", key,
-          choice);
+          "compat enum decode: key '{}' enum_items unavailable, falling back to raw "
+          "'value'",
+          key);
+      int v = a.value();
+      safe_get(j, "value", v, key);
+      a.set_from_any(v);
       return;
     }
 
@@ -641,10 +655,20 @@ template <> struct legacy_traits<ColorGradientAttribute>
       // mirror legacy contains() guards: skip malformed stops
       if (js.contains("position") && js.contains("color"))
       {
-        meta::Stop s;
-        s.position = js.at("position").get<float>();
-        s.color = js.at("color").get<std::array<float, 4>>();
-        stops.push_back(s);
+        try
+        {
+          meta::Stop s;
+          s.position = js.at("position").get<float>();
+          s.color = js.at("color").get<std::array<float, 4>>();
+          stops.push_back(s);
+        }
+        catch (const std::exception &e)
+        {
+          hesiod::Logger::log()->warn(
+              "compat gradient decode: key '{}' malformed stop (position/color): {}", key,
+              e.what());
+          continue;
+        }
       }
     }
 
