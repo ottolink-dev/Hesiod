@@ -1,6 +1,7 @@
 /* Copyright (c) 2023 Otto Link. Distributed under the terms of the GNU General
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
+#include <algorithm>
 #include <format>
 #include <fstream>
 #include <unordered_map>
@@ -393,6 +394,60 @@ std::shared_ptr<BaseNode> BaseNode::get_shared()
   }
 }
 
+void BaseNode::finalize_attributes()
+{
+  if (!this->uses_meta())
+    return;
+
+  auto &c = this->meta_group().current();
+
+  // 1) _GROUPBOX_ sentinels in the ordered-key list -> ui.category metadata
+  //    + build the sanitized display order
+  std::vector<std::string> order;
+  std::string              category = "";
+
+  for (const auto &key : this->attr_ordered_key)
+  {
+    if (key.starts_with("_GROUPBOX_BEGIN_"))
+    {
+      category = key.substr(std::string("_GROUPBOX_BEGIN_").size());
+      continue;
+    }
+    if (key.starts_with("_GROUPBOX_END"))
+    {
+      category = "";
+      continue;
+    }
+    auto *p = c.find(key);
+    if (!p)
+    {
+      Logger::log()->warn("finalize_attributes: node {}: ordered key '{}' not found",
+                          this->get_label(),
+                          key);
+      continue;
+    }
+    if (!category.empty())
+      p->metadata().try_add(std::string(meta::keys::ui::category),
+                            std::string(category))
+          ->value() = category;
+    order.push_back(key);
+  }
+
+  // 2) render order = legacy ordered-key order, unlisted keys appended
+  if (!order.empty())
+  {
+    for (const auto &key : c.insertion_order())
+      if (std::find(order.begin(), order.end(), key) == order.end())
+        order.push_back(key);
+    if (!c.set_insertion_order(order))
+      Logger::log()->warn("finalize_attributes: node {}: set_insertion_order rejected",
+                          this->get_label());
+  }
+
+  // 3) initial state for toolbar Reset
+  this->initial_meta_state_ = c.json_to();
+}
+
 void BaseNode::json_from(nlohmann::json const &json)
 {
   try
@@ -419,12 +474,26 @@ void BaseNode::json_from(nlohmann::json const &json)
       {
         this->meta_group().current().json_from(json["_meta"]);
       }
+      else if (!this->legacy_decoders_.empty())
+      {
+        // legacy-format file: decode per-key values written by the old
+        // Attributes library into the Meta container
+        Logger::log()->info(
+            "BaseNode::json_from: node '{}' loading legacy-format parameters",
+            this->get_id());
+        for (const auto &[key, decoder] : this->legacy_decoders_)
+        {
+          if (json.contains(key))
+            decoder(json[key]);
+          else
+            Logger::log()->warn("Missing JSON key for attribute: {}, using default", key);
+        }
+      }
       else
       {
         Logger::log()->error(
-            "BaseNode::json_from: node '{}' uses Meta storage but the '_meta' key "
-            "is absent from the JSON — Meta parameters were NOT restored (refusing "
-            "to silently load defaults)",
+            "BaseNode::json_from: node '{}' uses Meta storage but neither '_meta' nor "
+            "legacy decoders are available — parameters NOT restored",
             this->get_id());
       }
     }
@@ -506,6 +575,27 @@ nlohmann::json BaseNode::node_parameters_to_json() const
 
       params_json[key] = param_info;
     }
+
+    if (this->uses_meta())
+      for (const auto &key : this->meta_group().current().insertion_order())
+      {
+        const auto *p = this->meta_group().current().find(key);
+        if (!p)
+          continue;
+        nlohmann::json param_info;
+        param_info["key"] = key;
+        const std::string *lbl = p->metadata().try_value<std::string>(
+            meta::keys::ui::label);
+        param_info["label"] = lbl ? *lbl : key;
+        const std::string *lt = p->metadata().try_value<std::string>(
+            "compat.legacy_type");
+        param_info["type"] = lt ? *lt : std::string(p->type().name());
+        auto json_ptr = nlohmann::json::json_pointer("/parameters/" + key +
+                                                     "/description");
+        param_info["description"] = this->documentation.value(json_ptr, "No description");
+        params_json[key] = param_info;
+      }
+
     json["parameters"] = params_json;
   }
   catch (const std::exception &e)
@@ -576,6 +666,23 @@ void BaseNode::reseed(bool backward)
         int increment = backward ? -1 : 1;
         p_seed->set_value(p_seed->get_value() + increment);
       }
+
+  if (this->uses_meta())
+  {
+    for (const auto &key : this->meta_group().current().insertion_order())
+    {
+      auto *p = this->meta_group().current().find(key);
+      if (!p)
+        continue;
+      if (const bool *is_seed = p->metadata().try_value<bool>("compat.seed");
+          is_seed && *is_seed)
+        if (auto *typed = p->try_cast<meta::Attribute<int>>())
+        {
+          int increment = backward ? -1 : 1;
+          typed->set_from_any(typed->value() + increment);
+        }
+    }
+  }
 }
 
 void BaseNode::set_attr_ordered_key(const std::vector<std::string> &new_attr_ordered_key)
@@ -628,6 +735,44 @@ void BaseNode::update_attributes_tool_tip()
         description += "</div>";
 
         sp_attr->set_description(description);
+      }
+    }
+
+  if (this->uses_meta())
+    for (const auto &key : this->meta_group().current().insertion_order())
+    {
+      auto *p = this->meta_group().current().find(key);
+      if (!p)
+        continue;
+
+      const std::string *lbl = p->metadata().try_value<std::string>(
+          meta::keys::ui::label);
+      std::string label = lbl ? *lbl : key;
+
+      if (this->documentation.contains("parameters") &&
+          this->documentation["parameters"].contains(key))
+      {
+        std::string description = "<div><font size=\"+1\"><b>" +
+                                  remove_trailing_char(label, ':') + "</font></b><br>";
+
+        description += "<font color='COLOR_TEXT_SECONDARY'>";
+
+        replace_all(description,
+                    "COLOR_TEXT_SECONDARY",
+                    HSD_CTX.app_settings.colors.text_secondary.name().toStdString());
+
+        if (this->documentation["parameters"][key].contains("description"))
+        {
+          std::string base_desc = this->documentation["parameters"][key]["description"];
+          base_desc = wrap_text(base_desc, width);
+          description += base_desc;
+        }
+
+        description += "</div>";
+
+        p->metadata()
+            .try_add(std::string(meta::keys::ui::tooltip), std::string(description))
+            ->value() = description;
       }
     }
 }

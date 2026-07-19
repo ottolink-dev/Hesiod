@@ -23,6 +23,7 @@
     setup_##node_type##_node(*sptr);                                                     \
     sptr->set_compute_fct(&compute_##node_type##_node);                                  \
     sptr->update_attributes_tool_tip();                                                  \
+    sptr->finalize_attributes();                                                         \
     break;
 
 namespace hesiod
@@ -456,6 +457,7 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
     auto sptr = std::make_shared<hesiod::BroadcastNode>(node_type, config);
     setup_broadcast_node(*sptr);
     sptr->set_compute_fct(&compute_broadcast_node);
+    sptr->finalize_attributes();
     return sptr;
   }
   else if (node_type == "Receive")
@@ -463,6 +465,7 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
     auto sptr = std::make_shared<hesiod::ReceiveNode>(node_type, config);
     setup_receive_node(*sptr);
     sptr->set_compute_fct(&compute_receive_node);
+    sptr->finalize_attributes();
     return sptr;
   }
 

@@ -15,6 +15,7 @@
 #include "meta/core/container_group.hpp"
 
 #include "hesiod/model/graph/graph_config.hpp"
+#include "hesiod/model/nodes/compat/legacy_compat.hpp"
 #include "hesiod/model/nodes/node_runtime_info.hpp"
 
 // clang-format off
@@ -86,22 +87,64 @@ public:
   std::string     get_tool_tip_text();
 
   // --- Attribute Management ---
+  // Two storage backends coexist during the Meta migration:
+  //  - real attr::* types (is_base_of AbstractAttribute) -> legacy this->attr map (Brush)
+  //  - hsd::compat tags -> Meta container via legacy_traits (everything else)
   template <typename T, typename... Args>
   void add_attr(const std::string &key, Args &&...args)
   {
-    this->attr[key] = std::make_unique<T>(std::forward<Args>(args)...);
+    if constexpr (std::is_base_of_v<attr::AbstractAttribute, T>)
+    {
+      this->attr[key] = std::make_unique<T>(std::forward<Args>(args)...);
+    }
+    else
+    {
+      static_assert(hsd::compat::CompatTag<T>,
+                    "add_attr<T>: T is neither a legacy attribute nor a compat tag");
+      auto &a = hsd::compat::legacy_traits<T>::create(this->meta_group().current(),
+                                                      key,
+                                                      std::forward<Args>(args)...);
+      this->legacy_decoders_[key] = [&a, key](const nlohmann::json &j)
+      { hsd::compat::legacy_traits<T>::decode(a, j, key); };
+    }
   }
 
   template <typename T> auto get_attr(const std::string &key) const -> decltype(auto)
   {
-    if (!this->attr.contains(key))
-      std::invalid_argument("unknown attribute key: " + key);
-    return this->attr.at(key)->get_ref<T>()->get_value();
+    if constexpr (std::is_base_of_v<attr::AbstractAttribute, T>)
+    {
+      if (!this->attr.contains(key))
+        throw std::invalid_argument("unknown attribute key: " + key); // was silently not thrown
+      return this->attr.at(key)->get_ref<T>()->get_value();
+    }
+    else
+    {
+      static_assert(hsd::compat::CompatTag<T>);
+      using traits = hsd::compat::legacy_traits<T>;
+      return traits::to_legacy(
+          this->meta_group().current().value<typename traits::storage>(key));
+    }
   }
 
-  template <typename T> T *get_attr_ref(const std::string &key) const
+  template <typename T> auto get_attr_ref(const std::string &key) const
   {
-    return this->attr.at(key)->get_ref<T>();
+    if constexpr (std::is_base_of_v<attr::AbstractAttribute, T>)
+    {
+      return this->attr.at(key)->get_ref<T>();
+    }
+    else
+    {
+      using storage = typename hsd::compat::legacy_traits<T>::storage;
+      // legacy get_attr_ref was const-returning-mutable; mirror that
+      auto &c = const_cast<BaseNode *>(this)->meta_group().current();
+      auto *p = c.find(key);
+      if (!p)
+        throw std::invalid_argument("unknown attribute key: " + key);
+      auto *typed = p->template try_cast<meta::Attribute<storage>>();
+      if (!typed)
+        throw std::runtime_error("wrong attribute type for key: " + key);
+      return typename hsd::compat::handle_of<T>::type(typed);
+    }
   }
 
   std::vector<std::string> *get_attr_ordered_key_ref();
@@ -111,6 +154,9 @@ public:
   bool                        uses_meta() const;
   meta::ContainerGroup       &meta_group();       // lazily creates group + "main" container
   const meta::ContainerGroup &meta_group() const;
+
+  void                  finalize_attributes();
+  const nlohmann::json &initial_meta_state() const { return this->initial_meta_state_; }
 
   void reseed(bool backward);
 
@@ -122,6 +168,11 @@ private:
   // --- Members ---
   std::map<std::string, std::unique_ptr<attr::AbstractAttribute>> attr = {};
   std::unique_ptr<meta::ContainerGroup> meta_group_; // opt-in Meta storage (nullptr = legacy attr map)
+
+  // legacy-json fallback decoders, registered by add_attr (compat tags only)
+  std::map<std::string, std::function<void(const nlohmann::json &)>> legacy_decoders_;
+  // container state captured at finalize time; toolbar "Reset Settings" restores it
+  nlohmann::json initial_meta_state_;
 
   std::vector<std::string>            attr_ordered_key = {};
   std::string                         category;
