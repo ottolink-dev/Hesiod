@@ -6,6 +6,9 @@
 
 #include "attributes.hpp"
 
+#include "meta/core/data_provider.hpp"
+#include "meta/metadata/keys.hpp"
+
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 
@@ -19,6 +22,47 @@ void setup_histogram_for_range_attribute(BaseNode          &node,
                                          const std::string &port_id)
 {
   Logger::log()->trace("setup_histogram_for_range_slider: node {}", node.get_label());
+
+  if (node.uses_meta())
+  {
+    auto provider = [&node, port_id]() -> meta::ProviderData
+    {
+      meta::ProviderData d;
+      hmap::VirtualArray *p_in = node.get_value_ref<hmap::VirtualArray>(port_id);
+      if (!p_in)
+        return d;
+      float vmin = p_in->min(node.cfg().cm_cpu);
+      float vmax = p_in->max(node.cfg().cm_cpu);
+      if (vmin == vmax)
+        return d;
+      const int   nbins = 256;
+      hmap::Array arr = p_in->to_array({256, 256}, node.cfg().cm_cpu);
+      d.series_x = hmap::linspace(vmin, vmax, nbins, false);
+      d.series_y.assign(nbins, 0.f);
+      const float sa = 1.f / (vmax - vmin) * (nbins - 1);
+      const float sb = -vmin / (vmax - vmin) * (nbins - 1);
+      for (int j = 0; j < arr.shape.y; ++j)
+        for (int i = 0; i < arr.shape.x; ++i)
+        {
+          int bin = static_cast<int>(sa * arr(i, j) + sb);
+          bin = bin < 0 ? 0 : (bin >= nbins ? nbins - 1 : bin);
+          d.series_y[bin] += 1.f;
+        }
+      return d;
+    };
+
+    auto &c = node.meta_group().current();
+    auto *p = c.find(attribute_key);
+    if (!p)
+    {
+      Logger::log()->error("setup_histogram_for_range_attribute: meta key '{}' not found",
+                           attribute_key);
+      return;
+    }
+    p->metadata().try_add(std::string(meta::keys::ui::data_provider),
+                          meta::DataProvider(provider));
+    return;
+  }
 
   // function to compute the histogram
   auto lambda = [&node, port_id]()
