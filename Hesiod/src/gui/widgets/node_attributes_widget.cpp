@@ -1,7 +1,10 @@
 /* Copyright (c) 2025 Otto Link. Distributed under the terms of the GNU General
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
+#include <fstream>
+
 #include <QDesktopServices>
+#include <QFileDialog>
 #include <QLayout>
 #include <QStyle>
 #include <QToolButton>
@@ -101,23 +104,155 @@ QWidget *NodeAttributesWidget::create_toolbar()
                 });
 
   // These state/preset buttons operate on the legacy AttributesWidget, which is
-  // null for meta-backed nodes; guard against a null deref (meta nodes use Meta's
-  // own snapshot/preset system, wired separately later).
-  this->connect(bckp_btn,
-                &QToolButton::pressed,
-                [this]() { if (this->attributes_widget) this->attributes_widget->on_save_state(); });
-  this->connect(revert_btn,
-                &QToolButton::pressed,
-                [this]() { if (this->attributes_widget) this->attributes_widget->on_restore_save_state(); });
-  this->connect(load_btn,
-                &QToolButton::pressed,
-                [this]() { if (this->attributes_widget) this->attributes_widget->on_load_preset(); });
-  this->connect(save_btn,
-                &QToolButton::pressed,
-                [this]() { if (this->attributes_widget) this->attributes_widget->on_save_preset(); });
-  this->connect(reset_btn,
-                &QToolButton::pressed,
-                [this]() { if (this->attributes_widget) this->attributes_widget->on_restore_initial_state(); });
+  // null for meta-backed nodes; those take an else-path onto the Meta container
+  // json (snapshot manager for state, json_to/json_from for presets).
+  //
+  // meta-backed nodes: state/preset operate on the Meta container json
+  auto meta_container = [this]() -> meta::AttributeContainer *
+  {
+    auto gno = this->p_graph_node.lock();
+    if (!gno)
+      return nullptr;
+    BaseNode *p_node = gno->get_node_ref_by_id<BaseNode>(this->node_id);
+    if (!p_node || !p_node->uses_meta())
+      return nullptr;
+    return &p_node->meta_group().current();
+  };
+
+  this->connect(
+      bckp_btn,
+      &QToolButton::pressed,
+      [this, meta_container]()
+      {
+        if (this->attributes_widget)
+          this->attributes_widget->on_save_state();
+        else if (auto *c = meta_container())
+          c->snapshot_manager().save("user_state", c->json_to());
+      });
+
+  this->connect(
+      revert_btn,
+      &QToolButton::pressed,
+      [this, meta_container]()
+      {
+        if (this->attributes_widget)
+          this->attributes_widget->on_restore_save_state();
+        else if (auto *c = meta_container())
+        {
+          if (c->snapshot_manager().has("user_state"))
+          {
+            c->json_from(c->snapshot_manager().load("user_state"), true);
+            this->sync_from_model();
+            if (auto gno = this->p_graph_node.lock())
+              gno->update(this->node_id);
+          }
+        }
+      });
+
+  this->connect(
+      load_btn,
+      &QToolButton::pressed,
+      [this, meta_container]()
+      {
+        if (this->attributes_widget)
+        {
+          this->attributes_widget->on_load_preset();
+          return;
+        }
+
+        auto *c = meta_container();
+        if (!c)
+          return;
+
+        QString fname = QFileDialog::getOpenFileName(nullptr,
+                                                     "preset.json",
+                                                     ".",
+                                                     "json file (*.json)");
+
+        if (!fname.isNull() && !fname.isEmpty())
+        {
+          std::ifstream file(fname.toStdString());
+
+          if (file.is_open())
+          {
+            nlohmann::json json;
+            file >> json;
+            file.close();
+            Logger::log()->trace("JSON successfully loaded from {}",
+                                 fname.toStdString());
+
+            c->json_from(json, true);
+            this->sync_from_model();
+            if (auto gno = this->p_graph_node.lock())
+              gno->update(this->node_id);
+          }
+          else
+            Logger::log()->error("Could not open file {} to load JSON",
+                                 fname.toStdString());
+        }
+      });
+
+  this->connect(
+      save_btn,
+      &QToolButton::pressed,
+      [this, meta_container]()
+      {
+        if (this->attributes_widget)
+        {
+          this->attributes_widget->on_save_preset();
+          return;
+        }
+
+        auto *c = meta_container();
+        if (!c)
+          return;
+
+        QString fname = QFileDialog::getSaveFileName(nullptr,
+                                                     "preset.json",
+                                                     ".",
+                                                     "json file (*.json)");
+
+        if (!fname.isNull() && !fname.isEmpty())
+        {
+          std::ofstream file(fname.toStdString());
+
+          if (file.is_open())
+          {
+            file << c->json_to().dump(4);
+            file.close();
+          }
+          else
+            Logger::log()->error("Could not open file {} to save JSON",
+                                 fname.toStdString());
+        }
+      });
+
+  this->connect(
+      reset_btn,
+      &QToolButton::pressed,
+      [this, meta_container]()
+      {
+        if (this->attributes_widget)
+        {
+          this->attributes_widget->on_restore_initial_state();
+          return;
+        }
+
+        auto gno = this->p_graph_node.lock();
+        if (!gno)
+          return;
+        BaseNode *p_node = gno->get_node_ref_by_id<BaseNode>(this->node_id);
+        if (!p_node || !p_node->uses_meta())
+          return;
+
+        auto *c = meta_container();
+        if (c && !p_node->initial_meta_state().empty())
+        {
+          c->json_from(p_node->initial_meta_state(), true);
+          this->sync_from_model();
+          gno->update(this->node_id);
+        }
+      });
 
   this->connect(help_btn,
                 &QToolButton::pressed,

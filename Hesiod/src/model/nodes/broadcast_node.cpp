@@ -1,7 +1,7 @@
 /* Copyright (c) 2025 Otto Link. Distributed under the terms of the GNU General
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
-#include "attributes.hpp"
+#include "hesiod/model/nodes/compat_attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/broadcast_node.hpp"
@@ -21,8 +21,7 @@ void BroadcastNode::generate_broadcast_tag()
 
   // set the attribute value accordingly so that the tag is visible in the GUI for the
   // user
-  this->get_attributes_ref()->at("tag")->get_ref<attr::StringAttribute>()->set_value(
-      this->broadcast_tag);
+  this->get_attr_ref<attr::StringAttribute>("tag")->set_value(this->broadcast_tag);
 }
 
 std::string BroadcastNode::get_broadcast_tag()
