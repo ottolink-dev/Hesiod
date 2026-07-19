@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <format>
 #include <fstream>
+#include <optional>
 #include <unordered_map>
 
 #include <QCoreApplication>
@@ -606,6 +607,146 @@ nlohmann::json BaseNode::node_parameters_to_json() const
   }
 
   return json;
+}
+
+nlohmann::json BaseNode::attribute_parity_record() const
+{
+  nlohmann::json           record;
+  std::vector<std::string> order;
+
+  // Single place where the normalized entry shape lives, so the two backends
+  // cannot drift: is_active folding, bounds shape and the field set are all
+  // decided here.
+  auto make_entry = [](const std::string        &type_string,
+                       const std::string        &label,
+                       const nlohmann::json      &value_json,
+                       const std::optional<bool> &is_active,
+                       const nlohmann::json      &bounds, // array [min,max] or null
+                       const std::string         &category) -> nlohmann::json
+  {
+    nlohmann::json e;
+    e["type"] = type_string;
+    e["label"] = label;
+    // Range folds its is_active toggle into the value so the two backends
+    // (legacy json "is_active" vs Meta "ui.active" metadata) look identical.
+    if (is_active.has_value())
+      e["value"] = {{"value", value_json}, {"is_active", *is_active}};
+    else
+      e["value"] = value_json;
+    e["bounds"] = bounds; // already null or [min, max]
+    e["category"] = category;
+    return e;
+  };
+
+  if (!this->uses_meta())
+  {
+    // ---- legacy backend (attr map) ----
+
+    // Derive per-key category + sanitized order by walking the ordered-key
+    // groupbox sentinels EXACTLY as finalize_attributes() does, so the legacy
+    // and Meta category fields agree.
+    std::map<std::string, std::string> category_of;
+    std::string                        category = "";
+
+    for (const auto &key : this->attr_ordered_key)
+    {
+      if (key.starts_with("_GROUPBOX_BEGIN_"))
+      {
+        category = key.substr(std::string("_GROUPBOX_BEGIN_").size());
+        continue;
+      }
+      if (key.starts_with("_GROUPBOX_END"))
+      {
+        category = "";
+        continue;
+      }
+      if (!this->attr.contains(key))
+        continue;
+      category_of[key] = category;
+      order.push_back(key);
+    }
+
+    // append attr-map keys not listed in the ordered-key list (matches the
+    // finalize_attributes() "unlisted keys appended" behaviour)
+    for (const auto &[key, attr] : this->attr)
+      if (std::find(order.begin(), order.end(), key) == order.end())
+        order.push_back(key);
+
+    for (const auto &[key, attr] : this->attr)
+    {
+      const nlohmann::json j = attr->json_to();
+
+      const std::string type_string = attr::attribute_type_map.at(attr->get_type());
+      const std::string label = attr->get_label();
+
+      const nlohmann::json value_json = j.contains("value") ? j["value"]
+                                                            : nlohmann::json();
+
+      std::optional<bool> is_active;
+      if (attr->get_type() == attr::AttributeType::RANGE && j.contains("is_active"))
+        is_active = j["is_active"].get<bool>();
+
+      nlohmann::json bounds; // null
+      if (j.contains("vmin") && j.contains("vmax"))
+        bounds = nlohmann::json::array({j["vmin"], j["vmax"]});
+
+      const std::string cat = category_of.count(key) ? category_of.at(key) : "";
+
+      record[key] = make_entry(type_string, label, value_json, is_active, bounds, cat);
+    }
+  }
+  else
+  {
+    // ---- Meta backend (container group) ----
+    const auto &c = this->meta_group().current();
+    order = c.insertion_order();
+
+    for (const auto &key : order)
+    {
+      const auto *p = c.find(key);
+      if (!p)
+        continue;
+
+      const nlohmann::json j = p->json_to();
+
+      // legacy_type metadata restores the legacy type string; native Meta
+      // nodes without it fall back to the C++ type name (no legacy form).
+      const std::string *lt = p->metadata().try_value<std::string>(
+          "compat.legacy_type");
+      const std::string type_string = lt ? *lt : std::string(p->type().name());
+
+      const std::string *lbl = p->metadata().try_value<std::string>(
+          meta::keys::ui::label);
+      const std::string label = lbl ? *lbl : key;
+
+      const nlohmann::json value_json = j.contains("value") ? j["value"]
+                                                            : nlohmann::json();
+
+      std::optional<bool> is_active;
+      if (const bool *m = p->metadata().try_value<bool>("ui.active"))
+        is_active = *m;
+
+      nlohmann::json bounds; // null
+      const auto    *p_min = p->metadata().find(meta::keys::constraints::min);
+      const auto    *p_max = p->metadata().find(meta::keys::constraints::max);
+      if (p_min && p_max)
+        bounds = nlohmann::json::array(
+            {p_min->json_to()["value"], p_max->json_to()["value"]});
+
+      const std::string *cat = p->metadata().try_value<std::string>(
+          meta::keys::ui::category);
+
+      record[key] = make_entry(type_string,
+                               label,
+                               value_json,
+                               is_active,
+                               bounds,
+                               cat ? *cat : std::string(""));
+    }
+  }
+
+  record["__order"] = order;
+  return record;
 }
 
 void BaseNode::propagate_config_change()

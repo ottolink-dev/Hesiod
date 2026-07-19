@@ -42,6 +42,11 @@ int parse_args(args::ArgumentParser &parser,
 
   args::Flag node_inventory(group, "", "Node inventory output", {"inventory"});
 
+  args::ValueFlag<std::string> parity_dump(group,
+                                           "file",
+                                           "dump attribute parity records",
+                                           {"parity-dump"});
+
   args::ValueFlag<std::string> batch(group,
                                      "hsd file",
                                      "Execute Hesiod in batch mode",
@@ -88,6 +93,12 @@ int parse_args(args::ArgumentParser &parser,
     else if (node_inventory)
     {
       run_node_inventory();
+      return 0;
+    }
+    else if (parity_dump)
+    {
+      auto config = std::make_shared<hesiod::GraphConfig>();
+      hesiod::dump_node_attribute_parity(args::get(parity_dump), config);
       return 0;
     }
 

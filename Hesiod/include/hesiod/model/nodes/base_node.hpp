@@ -69,6 +69,12 @@ public:
   virtual nlohmann::json json_to() const;
   nlohmann::json         node_parameters_to_json() const;
 
+  // Backend-agnostic, normalized attribute snapshot used by the Meta-migration
+  // parity tooling. Both the legacy (attr map) and Meta (container group)
+  // backends are folded into ONE identical record shape so a node flipped from
+  // legacy to Meta diffs to zero against its captured legacy reference.
+  nlohmann::json attribute_parity_record() const;
+
   // --- Documentation ---
   nlohmann::json get_documentation() const;
   std::string    get_documentation_html() const;
