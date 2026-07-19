@@ -4,9 +4,7 @@
 Usage: compat_parity_diff.py ref.json new.json
 Exit 0 = parity (allowed conversions only), 1 = differences found.
 """
-import json, math, sys
-
-ALLOWED_TYPE_CHANGES = {}  # facade must emit identical type strings
+import json, sys
 
 def norm(v):
     if isinstance(v, float):

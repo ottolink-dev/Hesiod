@@ -733,6 +733,14 @@ nlohmann::json BaseNode::attribute_parity_record() const
         bounds = nlohmann::json::array(
             {p_min->json_to()["value"], p_max->json_to()["value"]});
 
+      // legacy SeedAttribute has no vmin/vmax -> bounds is null there; force
+      // the facade-backed seed preset (which attaches constraints.min/max)
+      // to match, so seed nodes don't false-positive on bounds in the
+      // legacy/meta parity diff.
+      if (const bool *is_seed = p->metadata().try_value<bool>("compat.seed");
+          is_seed && *is_seed)
+        bounds = nlohmann::json();
+
       const std::string *cat = p->metadata().try_value<std::string>(
           meta::keys::ui::category);
 
