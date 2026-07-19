@@ -24,6 +24,111 @@
 namespace hesiod
 {
 
+// --- parity helper
+
+// Fold glm-object values to fixed-order arrays so the two parity backends
+// compare equal. glm::vec2/vec3/vec4 serialize (Meta side) as
+// {"x":..} / {"x","y","z"} / {"x","y","z","w"}; legacy Hesiod attributes
+// serialize the SAME values as JSON arrays ([x,y] / [r,g,b,a]). This transform
+// is faithful and value-preserving: identical numbers, emitted in the fixed
+// component order (x,y,z,w). Applied recursively so nested occurrences (e.g.
+// glm values inside a compound value) are folded too. Applied symmetrically to
+// both backends: legacy arrays pass through unchanged; Meta objects collapse to
+// the same array shape.
+namespace
+{
+nlohmann::json canonicalize_parity_value(const nlohmann::json &v)
+{
+  if (v.is_array())
+  {
+    nlohmann::json out = nlohmann::json::array();
+    for (const auto &e : v)
+      out.push_back(canonicalize_parity_value(e));
+    return out;
+  }
+
+  if (v.is_object())
+  {
+    static const std::vector<std::vector<std::string>> glm_key_sets = {
+        {"x", "y"},
+        {"x", "y", "z"},
+        {"x", "y", "z", "w"}};
+
+    for (const auto &keys : glm_key_sets)
+    {
+      if (v.size() != keys.size())
+        continue;
+      bool match = true;
+      for (const auto &k : keys)
+        if (!v.contains(k))
+        {
+          match = false;
+          break;
+        }
+      if (match)
+      {
+        nlohmann::json arr = nlohmann::json::array();
+        for (const auto &k : keys)
+          arr.push_back(canonicalize_parity_value(v.at(k)));
+        return arr;
+      }
+    }
+
+    // generic object (e.g. a ColorGradient stop {"position":.., "color":[..]}):
+    // recurse into the values, keep the keys.
+    nlohmann::json out = nlohmann::json::object();
+    for (auto it = v.begin(); it != v.end(); ++it)
+      out[it.key()] = canonicalize_parity_value(it.value());
+    return out;
+  }
+
+  return v;
+}
+
+// Type-aware value normalization shared by both parity backends, so they cannot
+// drift. Keyed on the legacy type string -- identical on both backends: the
+// legacy attribute_type_map string on the legacy path, and compat.legacy_type
+// on the Meta (facade) path. This gating is deliberate: it reconciles a compat
+// facade node's Meta output with its LEGACY reference. Nodes migrated NATIVELY
+// to Meta (no compat.legacy_type -> a mangled C++ type name like
+// "N3glm3vec...") are self-referential -- their fixture entry IS their own Meta
+// output -- so they are left completely untouched here and stay byte-identical
+// to the fixture.
+nlohmann::json normalize_parity_value(const std::string    &type_string,
+                                      const nlohmann::json &value_in)
+{
+  // Cloud: legacy CloudAttribute::json_to serializes parallel x/y/values arrays
+  // and NO "value" key, so the parity record (which reads j["value"]) genuinely
+  // captures null. Null the facade side so the Meta points array cannot
+  // false-positive -- cloud point contents are out of scope for this record on
+  // BOTH backends (round-trip is verified separately by the compat decoders).
+  if (type_string == "Cloud")
+    return nlohmann::json();
+
+  // ColorGradient: legacy emits the stop array directly under "value"; the Meta
+  // ColorGradient::json_to nests its own {"value": [...]} inside the Attribute's
+  // "value", double-wrapping it. Unwrap to the inner array so the stop lists
+  // compare equal (empty gradient -> null, matching legacy's missing "value").
+  if (type_string == "Color gradient")
+  {
+    nlohmann::json value_json = value_in;
+    if (value_json.is_object())
+      value_json = value_json.contains("value") ? value_json["value"]
+                                                : nlohmann::json();
+    return canonicalize_parity_value(value_json);
+  }
+
+  // glm-backed compat legacy types: Meta serializes glm::vec2/vec4 as
+  // {"x":..} objects; legacy serializes the same values as arrays. Fold the
+  // object to a fixed-order array so they match.
+  if (type_string == "Wavenumber" || type_string == "Value range" ||
+      type_string == "Vec2Float" || type_string == "Color")
+    return canonicalize_parity_value(value_in);
+
+  return value_in;
+}
+} // namespace
+
 // --- helper
 
 std::string map_type_name(const std::string &typeid_name)
@@ -679,8 +784,8 @@ nlohmann::json BaseNode::attribute_parity_record() const
       const std::string type_string = attr::attribute_type_map.at(attr->get_type());
       const std::string label = attr->get_label();
 
-      const nlohmann::json value_json = j.contains("value") ? j["value"]
-                                                            : nlohmann::json();
+      nlohmann::json value_json = j.contains("value") ? j["value"] : nlohmann::json();
+      value_json = normalize_parity_value(type_string, value_json);
 
       std::optional<bool> is_active;
       if (attr->get_type() == attr::AttributeType::RANGE && j.contains("is_active"))
@@ -719,8 +824,8 @@ nlohmann::json BaseNode::attribute_parity_record() const
           meta::keys::ui::label);
       const std::string label = lbl ? *lbl : key;
 
-      const nlohmann::json value_json = j.contains("value") ? j["value"]
-                                                            : nlohmann::json();
+      nlohmann::json value_json = j.contains("value") ? j["value"] : nlohmann::json();
+      value_json = normalize_parity_value(type_string, value_json);
 
       std::optional<bool> is_active;
       if (const bool *m = p->metadata().try_value<bool>("ui.active"))
@@ -732,6 +837,27 @@ nlohmann::json BaseNode::attribute_parity_record() const
       if (p_min && p_max)
         bounds = nlohmann::json::array(
             {p_min->json_to()["value"], p_max->json_to()["value"]});
+
+      // Vec2Float: legacy Vec2FloatAttribute::json_to emits xmin/xmax/ymin/ymax
+      // (NOT vmin/vmax) -> legacy parity bounds is null. The compat `xy` preset
+      // stashes constraints.min/max (the x-axis range) for the current XYCanvas
+      // widget, which would otherwise surface as a non-null bound. Null it so
+      // bounds matches legacy.
+      if (type_string == "Vec2Float")
+        bounds = nlohmann::json();
+
+      // VecFloat: legacy emits vmin/vmax -> bounds [vmin,vmax]. The compat
+      // `curve` preset stores the y-range under ui.min_y/ui.max_y (not
+      // constraints.min/max), so the constraints lookup above leaves bounds
+      // null. Source it from ui.min_y/ui.max_y so it equals legacy [vmin,vmax].
+      if (type_string == "Vector of floats")
+      {
+        const auto *p_miny = p->metadata().find(std::string("ui.min_y"));
+        const auto *p_maxy = p->metadata().find(std::string("ui.max_y"));
+        if (p_miny && p_maxy)
+          bounds = nlohmann::json::array(
+              {p_miny->json_to()["value"], p_maxy->json_to()["value"]});
+      }
 
       // legacy SeedAttribute has no vmin/vmax -> bounds is null there; force
       // the facade-backed seed preset (which attaches constraints.min/max)
