@@ -4,7 +4,7 @@
 #include <QGridLayout>
 #include <QLabel>
 
-#include "attributes/bool_attribute.hpp"
+#include "hesiod/model/nodes/compat_attributes.hpp"
 
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/widgets/data_preview.hpp"
