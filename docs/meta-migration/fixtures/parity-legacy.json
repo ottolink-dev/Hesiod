@@ -1483,7 +1483,6 @@
     },
     "Brush": {
         "__order": [
-            "hmap",
             "post_mix_method",
             "post_mix",
             "post_inverse",
@@ -1493,13 +1492,6 @@
             "post_remap",
             "post_saturate"
         ],
-        "hmap": {
-            "bounds": null,
-            "category": "",
-            "label": "Heightmap",
-            "type": "Array",
-            "value": null
-        },
         "post_gain": {
             "bounds": [
                 0.009999999776482582,
@@ -15341,6 +15333,12 @@
     },
     "Noise": {
         "__order": [
+            "post_inverse",
+            "post_gamma",
+            "post_gain",
+            "post_smoothing_radius",
+            "post_remap",
+            "post_saturate",
             "noise_type",
             "kw",
             "seed",
@@ -15372,6 +15370,75 @@
             "label": "Periodic (tileable)",
             "type": "b",
             "value": false
+        },
+        "post_gain": {
+            "bounds": [
+                0.009999999776482582,
+                10.0
+            ],
+            "category": "Post-Processing",
+            "label": "Gain",
+            "type": "Float",
+            "value": 1.0
+        },
+        "post_gamma": {
+            "bounds": [
+                0.009999999776482582,
+                10.0
+            ],
+            "category": "Post-Processing",
+            "label": "Gamma",
+            "type": "Float",
+            "value": 1.0
+        },
+        "post_inverse": {
+            "bounds": null,
+            "category": "Post-Processing",
+            "label": "Invert Output",
+            "type": "Bool",
+            "value": false
+        },
+        "post_remap": {
+            "bounds": [
+                -1.0,
+                2.0
+            ],
+            "category": "Post-Processing",
+            "label": "Remap Range",
+            "type": "Value range",
+            "value": {
+                "is_active": true,
+                "value": [
+                    0.0,
+                    1.0
+                ]
+            }
+        },
+        "post_saturate": {
+            "bounds": [
+                -1.0,
+                2.0
+            ],
+            "category": "Post-Processing",
+            "label": "Saturation Range",
+            "type": "Value range",
+            "value": {
+                "is_active": false,
+                "value": [
+                    0.0,
+                    1.0
+                ]
+            }
+        },
+        "post_smoothing_radius": {
+            "bounds": [
+                0.0,
+                0.05000000074505806
+            ],
+            "category": "Post-Processing",
+            "label": "Smoothing Radius",
+            "type": "Float",
+            "value": 0.0
         },
         "seed": {
             "bounds": null,
@@ -20935,6 +21002,14 @@
     },
     "Saturate": {
         "__order": [
+            "post_mix_method",
+            "post_mix",
+            "post_inverse",
+            "post_gamma",
+            "post_gain",
+            "post_smoothing_radius",
+            "post_remap",
+            "post_saturate",
             "k_smoothing",
             "range"
         ],
@@ -20947,6 +21022,92 @@
             "label": "k_smoothing",
             "type": "f",
             "value": 0.10000000149011612
+        },
+        "post_gain": {
+            "bounds": [
+                0.009999999776482582,
+                10.0
+            ],
+            "category": "Post-Processing",
+            "label": "Gain",
+            "type": "Float",
+            "value": 1.0
+        },
+        "post_gamma": {
+            "bounds": [
+                0.009999999776482582,
+                10.0
+            ],
+            "category": "Post-Processing",
+            "label": "Gamma",
+            "type": "Float",
+            "value": 1.0
+        },
+        "post_inverse": {
+            "bounds": null,
+            "category": "Post-Processing",
+            "label": "Invert Output",
+            "type": "Bool",
+            "value": false
+        },
+        "post_mix": {
+            "bounds": [
+                0.0,
+                1.0
+            ],
+            "category": "Post-Processing",
+            "label": "Mix Factor",
+            "type": "Float",
+            "value": 1.0
+        },
+        "post_mix_method": {
+            "bounds": null,
+            "category": "Post-Processing",
+            "label": "Mix Method",
+            "type": "Enumeration",
+            "value": 11
+        },
+        "post_remap": {
+            "bounds": [
+                -1.0,
+                2.0
+            ],
+            "category": "Post-Processing",
+            "label": "Remap Range",
+            "type": "Value range",
+            "value": {
+                "is_active": false,
+                "value": [
+                    0.0,
+                    1.0
+                ]
+            }
+        },
+        "post_saturate": {
+            "bounds": [
+                -1.0,
+                2.0
+            ],
+            "category": "Post-Processing",
+            "label": "Saturation Range",
+            "type": "Value range",
+            "value": {
+                "is_active": false,
+                "value": [
+                    0.0,
+                    1.0
+                ]
+            }
+        },
+        "post_smoothing_radius": {
+            "bounds": [
+                0.0,
+                0.05000000074505806
+            ],
+            "category": "Post-Processing",
+            "label": "Smoothing Radius",
+            "type": "Float",
+            "value": 0.0
         },
         "range": {
             "bounds": [
