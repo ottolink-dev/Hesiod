@@ -5,7 +5,7 @@
 #include "highmap/operator.hpp"
 #include "highmap/range.hpp"
 
-#include "attributes.hpp"
+#include "hesiod/model/nodes/compat_attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"

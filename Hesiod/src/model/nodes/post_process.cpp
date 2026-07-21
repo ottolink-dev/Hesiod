@@ -7,7 +7,7 @@
 #include "highmap/range.hpp"
 #include "highmap/virtual_array/virtual_array.hpp"
 
-#include "attributes.hpp"
+#include "hesiod/model/nodes/compat_attributes.hpp"
 
 #include "hesiod/app/enum_mappings.hpp"
 #include "hesiod/model/nodes/base_node.hpp"

@@ -5,7 +5,7 @@
 #include "highmap/primitives.hpp"
 #include "highmap/virtual_array/virtual_array.hpp"
 
-#include "attributes.hpp"
+#include "hesiod/model/nodes/compat_attributes.hpp"
 
 #include "meta/metadata/keys.hpp"
 
