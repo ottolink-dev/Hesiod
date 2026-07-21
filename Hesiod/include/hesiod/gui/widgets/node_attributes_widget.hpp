@@ -44,7 +44,7 @@ private:
   QPointer<GraphNodeWidget> p_graph_node_widget;
   bool                      add_toolbar;
 
-  attr::AttributesWidget            *attributes_widget;
+  attr::AttributesWidget            *attributes_widget = nullptr;
   meta::qt::ContainerGroupWidget    *meta_widget = nullptr;
 };
 
