@@ -527,6 +527,11 @@ void BaseNode::finalize_attributes()
     auto *p = c.find(key);
     if (!p)
     {
+      // Mixed-backend nodes (Brush): some ordered keys (e.g. "hmap") live in the
+      // legacy attr map, not the Meta container. Skip the Meta ordering + warning
+      // for those instead of emitting a spurious "not found" on every load.
+      if (this->attr.find(key) != this->attr.end())
+        continue;
       Logger::log()->warn("finalize_attributes: node {}: ordered key '{}' not found",
                           this->get_label(),
                           key);

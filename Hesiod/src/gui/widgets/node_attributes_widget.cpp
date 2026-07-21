@@ -124,9 +124,10 @@ QWidget *NodeAttributesWidget::create_toolbar()
       &QToolButton::pressed,
       [this, meta_container]()
       {
+        // Mixed-backend (Brush): cover BOTH backends independently, not else-if.
         if (this->attributes_widget)
           this->attributes_widget->on_save_state();
-        else if (auto *c = meta_container())
+        if (auto *c = meta_container())
           c->snapshot_manager().save("user_state", c->json_to());
       });
 
@@ -135,9 +136,10 @@ QWidget *NodeAttributesWidget::create_toolbar()
       &QToolButton::pressed,
       [this, meta_container]()
       {
+        // Mixed-backend (Brush): cover BOTH backends independently, not else-if.
         if (this->attributes_widget)
           this->attributes_widget->on_restore_save_state();
-        else if (auto *c = meta_container())
+        if (auto *c = meta_container())
         {
           if (c->snapshot_manager().has("user_state"))
           {
@@ -149,6 +151,10 @@ QWidget *NodeAttributesWidget::create_toolbar()
         }
       });
 
+  // Preset Save/Load stay exclusive (legacy-first, early return) on purpose:
+  // each pops a file dialog, so running both backends would show two dialogs.
+  // For mixed Brush this covers the legacy "hmap" only; post_* preset is an
+  // accepted minor gap (state Backup/Revert/Reset DO cover post_*).
   this->connect(
       load_btn,
       &QToolButton::pressed,
@@ -232,11 +238,9 @@ QWidget *NodeAttributesWidget::create_toolbar()
       &QToolButton::pressed,
       [this, meta_container]()
       {
+        // Mixed-backend (Brush): cover BOTH backends independently, not else-if.
         if (this->attributes_widget)
-        {
           this->attributes_widget->on_restore_initial_state();
-          return;
-        }
 
         auto gno = this->p_graph_node.lock();
         if (!gno)
@@ -349,11 +353,64 @@ void NodeAttributesWidget::setup_layout()
   if (!p_node)
     return;
 
-  if (p_node->uses_meta())
-  {
-    // Meta-backed node: render with meta_qt, skip the legacy AttributesWidget path.
-    this->attributes_widget = nullptr; // so setup_connections() skips the legacy wiring
+  // Mixed-backend aware: a node may have legacy attributes AND/OR a Meta
+  // container. Brush is the one mixed node (legacy "hmap" paint canvas + Meta
+  // post_* attributes). Pure-meta nodes have an empty legacy attr map; pure-
+  // legacy nodes have uses_meta()==false. Build whichever backend(s) are present
+  // (legacy panel first so the canvas sits above the post_* Meta panel).
+  const bool has_meta = p_node->uses_meta();
+  const bool has_legacy = !p_node->get_attributes_ref()->empty();
 
+  // --- main layout (built once)
+  QVBoxLayout *main_layout = new QVBoxLayout(this);
+  main_layout->setSpacing(4);
+  main_layout->setContentsMargins(0, 0, 0, 0);
+
+  if (this->add_toolbar)
+    main_layout->addWidget(this->create_toolbar());
+
+  // --- legacy AttributesWidget (canvas / classic attributes)
+  if (has_legacy)
+  {
+    bool        add_save_reset_state_buttons = false;
+    std::string window_title = "";
+    QWidget    *parent = this;
+
+    this->attributes_widget = new attr::AttributesWidget(
+        p_node->get_attributes_ref(),
+        p_node->get_attr_ordered_key_ref(),
+        window_title,
+        add_save_reset_state_buttons,
+        parent);
+
+    // change the attribute widget layout spacing a posteriori
+    QLayout *retrieved_layout = attributes_widget->layout();
+    if (retrieved_layout)
+    {
+      retrieved_layout->setSpacing(4);
+      retrieved_layout->setContentsMargins(4, 0, 4, 0);
+
+      for (int i = 0; i < retrieved_layout->count(); ++i)
+      {
+        QWidget *child = retrieved_layout->itemAt(i)->widget();
+        if (!child)
+          continue;
+
+        if (auto *inner_layout = child->layout())
+        {
+          inner_layout->setSpacing(4);
+          inner_layout->setContentsMargins(4, 0, 4, 0);
+        }
+      }
+    }
+
+    main_layout->addWidget(this->attributes_widget);
+  }
+  // else: this->attributes_widget stays nullptr (setup_connections() skips it)
+
+  // --- Meta ContainerGroupWidget (post_* / native Meta attributes)
+  if (has_meta)
+  {
     this->meta_widget = new meta::qt::ContainerGroupWidget(p_node->meta_group(),
                                                            meta::qt::ContainerRenderOptions{},
                                                            this);
@@ -373,56 +430,9 @@ void NodeAttributesWidget::setup_layout()
                     gno->update(this->node_id);
                   });
 
-    QVBoxLayout *main_layout = new QVBoxLayout(this);
-    main_layout->setSpacing(4);
-    main_layout->setContentsMargins(0, 0, 0, 0);
-    if (this->add_toolbar)
-      main_layout->addWidget(this->create_toolbar());
     main_layout->addWidget(this->meta_widget);
-    return;
   }
-
-  // generate a fresh widget
-  bool        add_save_reset_state_buttons = false;
-  std::string window_title = "";
-  QWidget    *parent = this;
-
-  this->attributes_widget = new attr::AttributesWidget(p_node->get_attributes_ref(),
-                                                       p_node->get_attr_ordered_key_ref(),
-                                                       window_title,
-                                                       add_save_reset_state_buttons,
-                                                       parent);
-
-  // change the attribute widget layout spacing a posteriori
-  QLayout *retrieved_layout = attributes_widget->layout();
-  if (retrieved_layout)
-  {
-    retrieved_layout->setSpacing(4);
-    retrieved_layout->setContentsMargins(4, 0, 4, 0);
-
-    for (int i = 0; i < retrieved_layout->count(); ++i)
-    {
-      QWidget *child = retrieved_layout->itemAt(i)->widget();
-      if (!child)
-        continue;
-
-      if (auto *inner_layout = child->layout())
-      {
-        inner_layout->setSpacing(4);
-        inner_layout->setContentsMargins(4, 0, 4, 0);
-      }
-    }
-  }
-
-  // --- main layout
-  QVBoxLayout *main_layout = new QVBoxLayout(this);
-  main_layout->setSpacing(4);
-  main_layout->setContentsMargins(0, 0, 0, 0);
-
-  if (this->add_toolbar)
-    main_layout->addWidget(this->create_toolbar());
-
-  main_layout->addWidget(this->attributes_widget);
+  // else: this->meta_widget stays nullptr
 }
 
 } // namespace hesiod
