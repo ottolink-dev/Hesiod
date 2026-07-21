@@ -27,8 +27,20 @@ void ProjectUI::cleanup()
 {
   Logger::log()->trace("ProjectUI::cleanup");
 
-  this->graph_manager_widget->deleteLater();
-  this->graph_tabs_widget->deleteLater();
+  // Destroy the graph-bearing widgets SYNCHRONOUSLY (not deleteLater). Their
+  // node / settings-panel sub-widgets hold meta::EventConnection subscriptions
+  // to attribute value_changed Events. HesiodApplication::cleanup() resets the
+  // model — destroying those Events — immediately after this returns, so the
+  // connections must unsubscribe NOW, while the Events are still alive. A
+  // deferred delete would let the widgets outlive the Events and disconnect
+  // against freed memory (use-after-free). Null the raw pointers so the later
+  // ProjectUI destruction (and any repeated cleanup, e.g. the double call from
+  // on_new -> load_project_model_and_ui) does not double-delete.
+  delete this->graph_tabs_widget;
+  this->graph_tabs_widget = nullptr;
+
+  delete this->graph_manager_widget;
+  this->graph_manager_widget = nullptr;
 
   if (this->texture_downloader)
     this->texture_downloader->deleteLater();
