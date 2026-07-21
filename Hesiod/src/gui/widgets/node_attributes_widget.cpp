@@ -181,16 +181,25 @@ QWidget *NodeAttributesWidget::create_toolbar()
 
           if (file.is_open())
           {
-            nlohmann::json json;
-            file >> json;
-            file.close();
-            Logger::log()->trace("JSON successfully loaded from {}",
-                                 fname.toStdString());
+            try
+            {
+              nlohmann::json json;
+              file >> json;
+              file.close();
+              Logger::log()->trace("JSON successfully loaded from {}",
+                                   fname.toStdString());
 
-            c->json_from(json, true);
-            this->sync_from_model();
-            if (auto gno = this->p_graph_node.lock())
-              gno->update(this->node_id);
+              c->json_from(json, true);
+              this->sync_from_model();
+              if (auto gno = this->p_graph_node.lock())
+                gno->update(this->node_id);
+            }
+            catch (const std::exception &e)
+            {
+              Logger::log()->error("Failed to load preset {}: {}",
+                                   fname.toStdString(),
+                                   e.what());
+            }
           }
           else
             Logger::log()->error("Could not open file {} to load JSON",
