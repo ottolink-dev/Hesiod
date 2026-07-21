@@ -47,6 +47,12 @@ int parse_args(args::ArgumentParser &parser,
                                            "dump attribute parity records",
                                            {"parity-dump"});
 
+  args::ValueFlag<std::string> compat_check(group,
+                                            "dir",
+                                            "verify legacy .hsd corpus decodes + "
+                                            "round-trips through _meta",
+                                            {"compat-check"});
+
   args::ValueFlag<std::string> batch(group,
                                      "hsd file",
                                      "Execute Hesiod in batch mode",
@@ -100,6 +106,10 @@ int parse_args(args::ArgumentParser &parser,
       auto config = std::make_shared<hesiod::GraphConfig>();
       hesiod::dump_node_attribute_parity(args::get(parity_dump), config);
       return 0;
+    }
+    else if (compat_check)
+    {
+      return run_compat_check(args::get(compat_check));
     }
 
     if (file_flag && file_positional &&

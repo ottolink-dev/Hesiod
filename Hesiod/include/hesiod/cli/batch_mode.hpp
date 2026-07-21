@@ -40,4 +40,14 @@ void run_batch_mode(const std::string &filename,
 void run_node_inventory();
 void run_snapshot_generation();
 
+// Verify every legacy .hsd under `dir` decodes correctly through the compat
+// decoders, and that each decoded node round-trips through its `_meta`
+// serialization. Returns a process exit code (0 = all good, 1 = failures).
+int run_compat_check(const std::string &dir);
+
+// True iff `decoded` (a parity-record value) matches the legacy per-key json.
+bool values_equivalent(const nlohmann::json &decoded,
+                       const nlohmann::json &legacy_attr,
+                       const std::string    &type);
+
 } // namespace hesiod::cli
