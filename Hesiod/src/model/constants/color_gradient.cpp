@@ -14,19 +14,19 @@ ColorGradientManager::ColorGradientManager()
   this->update_data();
 }
 
-std::vector<attr::Preset> ColorGradientManager::get_as_attr_presets() const
+std::vector<meta::Preset> ColorGradientManager::get_as_attr_presets() const
 {
-  std::vector<attr::Preset> presets;
+  std::vector<meta::Preset> presets;
 
   for (auto &data : this->gradient_data)
   {
-    attr::Preset preset;
+    meta::Preset preset;
     preset.name = data.name;
     preset.stops = {};
 
     for (size_t k = 0; k < data.positions.size(); ++k)
     {
-      attr::Stop stop;
+      meta::Stop stop;
       stop.position = data.positions[k];
       stop.color = data.colors[k];
       preset.stops.push_back(stop);

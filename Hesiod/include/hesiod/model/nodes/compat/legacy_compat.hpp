@@ -852,6 +852,10 @@ public:
   {
     p_->metadata().try_add(std::string("ui.active"), v)->value() = v;
   }
+  // Legacy per-attribute reset snapshot. In the Meta model the whole container
+  // is snapshotted at finalize_attributes() (after setup, so after any
+  // set_is_active() here), which supersedes this per-attribute call: no-op.
+  void save_initial_state() {}
 
 private:
   meta::Attribute<glm::vec2> *p_;
@@ -916,6 +920,24 @@ private:
   meta::Attribute<bool> *p_;
 };
 
+class ColorGradientHandle
+{
+public:
+  explicit ColorGradientHandle(meta::Attribute<meta::ColorGradient> *p) : p_(p) {}
+  ColorGradientHandle *operator->() { return this; }
+
+  // legacy set_presets: the ColorGradientManager hands meta::Preset lists.
+  void set_presets(const std::vector<meta::Preset> &presets)
+  {
+    meta::ColorGradient g = p_->value();
+    g.set_presets(presets);
+    p_->set_from_any(g);
+  }
+
+private:
+  meta::Attribute<meta::ColorGradient> *p_;
+};
+
 // which handle a tag's get_attr_ref returns
 template <typename T> struct handle_of; // undefined by default
 template <> struct handle_of<RangeAttribute>    { using type = RangeHandle; };
@@ -923,5 +945,6 @@ template <> struct handle_of<ChoiceAttribute>   { using type = ChoiceHandle; };
 template <> struct handle_of<StringAttribute>   { using type = StringHandle; };
 template <> struct handle_of<FilenameAttribute> { using type = FilenameHandle; };
 template <> struct handle_of<BoolAttribute>     { using type = BoolHandle; };
+template <> struct handle_of<ColorGradientAttribute> { using type = ColorGradientHandle; };
 
 } // namespace hsd::compat

@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 
-#include "attributes/color_gradient_attribute.hpp"
+#include "meta/ext/color_gradient/color_gradient.hpp"
 
 #define HSD_COLOR_GRADIENT_FILE "data/color_gradient.json"
 #define HSD_COLOR_GRADIENTS_PATH "data/color_gradients"
@@ -30,7 +30,7 @@ public:
     return instance;
   }
 
-  std::vector<attr::Preset> get_as_attr_presets() const;
+  std::vector<meta::Preset> get_as_attr_presets() const;
   void                      update_data(bool append = false);
 
 private:

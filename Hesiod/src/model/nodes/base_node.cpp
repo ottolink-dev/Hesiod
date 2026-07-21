@@ -539,15 +539,39 @@ void BaseNode::finalize_attributes()
     order.push_back(key);
   }
 
-  // 2) render order = legacy ordered-key order, unlisted keys appended
-  if (!order.empty())
+  // 2) render order = legacy ordered-key order, then unlisted keys appended.
+  //    The legacy backend keeps attributes in a std::map, so its *unlisted*
+  //    keys render in alphabetical order. To preserve display + parity order,
+  //    sort the unlisted tail alphabetically when it is entirely compat-backed
+  //    (every unlisted key carries compat.legacy_type metadata). Native Meta
+  //    attributes have no legacy std::map counterpart, so their insertion order
+  //    is left untouched (mixed native+post_* nodes keep insertion order).
   {
+    std::vector<std::string> unlisted;
     for (const auto &key : c.insertion_order())
       if (std::find(order.begin(), order.end(), key) == order.end())
-        order.push_back(key);
-    if (!c.set_insertion_order(order))
-      Logger::log()->warn("finalize_attributes: node {}: set_insertion_order rejected",
-                          this->get_label());
+        unlisted.push_back(key);
+
+    bool all_compat = !unlisted.empty();
+    for (const auto &key : unlisted)
+    {
+      const auto *p = c.find(key);
+      if (!p || !p->metadata().try_value<std::string>("compat.legacy_type"))
+      {
+        all_compat = false;
+        break;
+      }
+    }
+    if (all_compat)
+      std::sort(unlisted.begin(), unlisted.end());
+
+    for (const auto &key : unlisted)
+      order.push_back(key);
+
+    if (!order.empty() && order != c.insertion_order())
+      if (!c.set_insertion_order(order))
+        Logger::log()->warn("finalize_attributes: node {}: set_insertion_order rejected",
+                            this->get_label());
   }
 
   // 3) initial state for toolbar Reset
