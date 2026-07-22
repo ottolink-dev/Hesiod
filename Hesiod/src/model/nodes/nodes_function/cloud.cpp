@@ -13,6 +13,7 @@
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
+#include "hesiod/model/nodes/compat_attributes.hpp"
 
 namespace hesiod
 {
@@ -47,6 +48,8 @@ void setup_cloud_node(BaseNode &node)
   a->metadata().try_add(meta::keys::ui::label, std::string("Cloud"));
   a->metadata().try_add(meta::keys::ui::widget_type, std::string("PointsEditor"));
   a->metadata().try_add(meta::keys::ui::category, std::string("Main"));
+  a->metadata().try_add(std::string(hsd::compat::keys::type_label),
+                         std::string("Cloud"));
   a->metadata().try_add(
       meta::keys::ui::data_provider,
       meta::DataProvider{

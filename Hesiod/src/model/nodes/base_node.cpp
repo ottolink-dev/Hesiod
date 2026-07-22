@@ -724,7 +724,9 @@ nlohmann::json BaseNode::node_parameters_to_json() const
         param_info["label"] = lbl ? *lbl : key;
         const std::string *lt = p->metadata().try_value<std::string>(
             hsd::compat::keys::legacy_type);
-        param_info["type"] = lt ? *lt : std::string(p->type().name());
+        const std::string *tl = p->metadata().try_value<std::string>(
+            hsd::compat::keys::type_label);
+        param_info["type"] = lt ? *lt : (tl ? *tl : std::string(p->type().name()));
         auto json_ptr = nlohmann::json::json_pointer("/parameters/" + key +
                                                      "/description");
         param_info["description"] = this->documentation.value(json_ptr, "No description");

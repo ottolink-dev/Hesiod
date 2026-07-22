@@ -42,6 +42,8 @@ void setup_saturate_node(BaseNode &node)
     a->metadata().try_add(meta::keys::constraints::min, 0.01f);
     a->metadata().try_add(meta::keys::constraints::max, 1.f);
     a->metadata().try_add(meta::keys::ui::category, std::string("Main"));
+    a->metadata().try_add(std::string(hsd::compat::keys::type_label),
+                           std::string("Float"));
   }
 
   // range
@@ -52,6 +54,8 @@ void setup_saturate_node(BaseNode &node)
     a->metadata().try_add(meta::keys::constraints::max, 2.f);
     a->metadata().try_add(meta::keys::ui::category, std::string("Main"));
     a->metadata().try_add(meta::keys::ui::tooltip, std::string("<b>Saturation range</b>"));
+    a->metadata().try_add(std::string(hsd::compat::keys::type_label),
+                           std::string("Value range"));
     a->metadata().try_add(
         meta::keys::ui::data_provider,
         meta::DataProvider{

@@ -51,6 +51,12 @@ namespace keys
 // to the former string literals so a typo is a compile error, not a silent break.
 inline constexpr char legacy_type[] = "compat.legacy_type";
 inline constexpr char seed[]        = "compat.seed";
+
+// Docs-only human-readable parameter type label. Used when a node is native-Meta
+// (built directly with c.add<T>(...)) and therefore has no compat.legacy_type.
+// Read only by the docs emitter (node_parameters_to_json) — must NOT be read by
+// parity or finalize_attributes.
+inline constexpr char type_label[] = "ui.type_label";
 } // namespace keys
 
 /// Legacy color-gradient stop (field-compatible with attr::Stop and meta::Stop).
