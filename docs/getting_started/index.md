@@ -132,7 +132,7 @@ coloured version as a quick visual reference.
 
 - **[Core Concepts](../core_concepts/index.md)** — the ideas behind what you just did
   (heightmaps, masks, tiling, broadcast).
-- **[Node reference](../node_reference/)** — every node, with its input/output ports
+- **[Node reference](../node_reference/categories.md)** — every node, with its input/output ports
   and parameters.
 - **[Building a "patch of graphs"](../user_manual/patch-of-graphs.md)** — the advanced
   worldbuilding track: stitching several graphs into one large world.

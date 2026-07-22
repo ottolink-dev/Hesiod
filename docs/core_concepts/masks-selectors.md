@@ -32,5 +32,5 @@ union (per-cell maximum), or exclusion (the difference) — so you can build up
 
 ## See also
 
-- [Node reference → selector nodes](../node_reference/) — the full `Select…` family.
+- [Node reference → selector nodes](../node_reference/categories.md) — the full `Select…` family.
 - [Heightmaps & virtual arrays](heightmaps.md) — a mask *is* a heightmap.
