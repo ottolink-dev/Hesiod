@@ -51,3 +51,14 @@ bool values_equivalent(const nlohmann::json &decoded,
                        const std::string    &type);
 
 } // namespace hesiod::cli
+
+namespace hesiod
+{
+
+/**
+ * @brief Verify the drag-to-create port rules (offer rule, port selection,
+ * and docs/live agreement). Returns 0 when every invariant holds.
+ */
+int run_check_port_links();
+
+} // namespace hesiod

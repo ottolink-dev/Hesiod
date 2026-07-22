@@ -53,6 +53,11 @@ int parse_args(args::ArgumentParser &parser,
                                             "round-trips through _meta",
                                             {"compat-check"});
 
+  args::Flag check_port_links(group,
+                              "check-port-links",
+                              "verify drag-to-create port rules",
+                              {"check-port-links"});
+
   args::ValueFlag<std::string> batch(group,
                                      "hsd file",
                                      "Execute Hesiod in batch mode",
@@ -110,6 +115,10 @@ int parse_args(args::ArgumentParser &parser,
     else if (compat_check)
     {
       return run_compat_check(args::get(compat_check));
+    }
+    else if (check_port_links)
+    {
+      return hesiod::run_check_port_links();
     }
 
     if (file_flag && file_positional &&
