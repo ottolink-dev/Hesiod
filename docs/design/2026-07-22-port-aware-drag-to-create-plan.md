@@ -501,7 +501,7 @@ git commit -m "feat(gui): select_port picks the connect target from the live nod
 - Modify: `Hesiod/src/gui/widgets/graph_node_widget.cpp` (`on_connection_dropped`)
 
 **Interfaces:**
-- Consumes: Task 1 `PortCatalog::from_documentation`, `is_offerable`; Task 2 `select_port`; `get_node_inventory()` (`Hesiod/include/hesiod/model/nodes/node_factory.hpp`, returns `std::map<std::string,std::string>` of node type → category); `GraphViewer::set_node_inventory(const std::map<std::string,std::string>&)`; `GraphViewer::execute_new_node_context_menu()` (blocking — it ends in `menu->exec()`).
+- Consumes: Task 1 `PortCatalog::from_documentation`, `is_offerable`; Task 2 `select_port`; `hesiod::map_type_name(const std::string&)` (declared `Hesiod/include/hesiod/model/nodes/base_node.hpp:32`) — converts a mangled `get_data_type()` result into the friendly name the catalog uses; `get_node_inventory()` (`Hesiod/include/hesiod/model/nodes/node_factory.hpp`, returns `std::map<std::string,std::string>` of node type → category); `GraphViewer::set_node_inventory(const std::map<std::string,std::string>&)`; `GraphViewer::execute_new_node_context_menu()` (blocking — it ends in `menu->exec()`).
 - Produces: nothing consumed by later tasks.
 
 - [ ] **Step 1: Replace `on_connection_dropped`.** In `Hesiod/src/gui/widgets/graph_node_widget.cpp`, replace the whole existing `void GraphNodeWidget::on_connection_dropped(...)` function body with:
@@ -523,8 +523,15 @@ void GraphNodeWidget::on_connection_dropped(const std::string &node_id,
 
   // --- what was dragged, and what would we need on the other end?
 
-  const int         from_index = p_node_from->get_port_index(port_id);
-  const std::string dragged_type = p_node_from->get_data_type(from_index);
+  const int from_index = p_node_from->get_port_index(port_id);
+
+  // NOTE: get_data_type() returns a MANGLED typeid name (e.g.
+  // "N4hmap12VirtualArrayE"). The catalog and select_port both speak the
+  // friendly name the documentation uses ("VirtualArray") — the documentation
+  // is literally built with map_type_name(get_data_type(k)) (base_node.cpp).
+  // Convert once, here at the boundary.
+  const std::string dragged_type = map_type_name(p_node_from->get_data_type(from_index));
+
   const gngui::PortType dragged_dir = p_node_from->get_port_type(from_index);
   const gngui::PortType wanted_dir = (dragged_dir == gngui::PortType::OUT)
                                          ? gngui::PortType::IN
