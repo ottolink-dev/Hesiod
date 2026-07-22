@@ -1,7 +1,7 @@
 # Guides
 
 Task-oriented walkthroughs that sit between the [Core Concepts](../core_concepts/index.md)
-vocabulary and the exhaustive [Node Reference](../node_reference/). Each guide
+vocabulary and the exhaustive [Node Reference](../node_reference/categories.md). Each guide
 answers a specific "how do I…" and points you at the right nodes.
 
 - [Erosion — thermal vs hydraulic](erosion.md) — carve and smooth terrain.

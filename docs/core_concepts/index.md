@@ -1,7 +1,7 @@
 # Core Concepts
 
 Hesiod builds terrain by connecting **nodes** into a **graph**. Before diving into
-the [node reference](../node_reference/) or the [user manual](../user_manual/index.md),
+the [node reference](../node_reference/categories.md) or the [user manual](../user_manual/index.md),
 it helps to know a handful of ideas that everything else is built on. Each page
 below is short and links down to the deeper documentation when you want detail.
 
