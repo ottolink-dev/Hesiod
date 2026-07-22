@@ -3,8 +3,11 @@
  * this software. */
 #include "hesiod/model/nodes/port_catalog.hpp"
 
+#include <cctype>
+
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/logger.hpp"
+#include "hesiod/model/nodes/base_node.hpp"
 
 namespace hesiod
 {
@@ -24,7 +27,9 @@ PortCatalog PortCatalog::from_documentation()
 
     for (auto &[port_name, port] : entry["ports"].items())
     {
-      if (!port.is_object() || !port.contains("data_type") || !port.contains("type"))
+      if (!port.is_object() || !port.contains("data_type") ||
+          !port["data_type"].is_string() || !port.contains("type") ||
+          !port["type"].is_string())
         continue;
 
       PortInfo info;
@@ -62,6 +67,52 @@ bool PortCatalog::is_offerable(const std::string &node_type,
       return true;
 
   return false;
+}
+
+namespace
+{
+
+bool is_conventional_name(const std::string &name, gngui::PortType direction)
+{
+  std::string lower;
+  lower.reserve(name.size());
+  for (char c : name)
+    lower += static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
+
+  if (direction == gngui::PortType::IN)
+    return lower == "input" || lower == "in";
+
+  return lower == "output" || lower == "out";
+}
+
+} // namespace
+
+std::optional<std::string> select_port(const BaseNode    &node,
+                                       const std::string &data_type,
+                                       gngui::PortType    wanted_direction)
+{
+  std::optional<std::string> first_match;
+
+  for (int k = 0; k < node.get_nports(); ++k)
+  {
+    if (node.get_port_type(k) != wanted_direction)
+      continue;
+
+    if (map_type_name(node.get_data_type(k)) != data_type)
+      continue;
+
+    const std::string label = node.get_port_label(k);
+
+    // a conventionally-named port wins immediately
+    if (is_conventional_name(label, wanted_direction))
+      return label;
+
+    // otherwise remember the first declared match
+    if (!first_match)
+      first_match = label;
+  }
+
+  return first_match;
 }
 
 } // namespace hesiod
