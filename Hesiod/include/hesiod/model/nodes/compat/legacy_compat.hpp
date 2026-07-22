@@ -44,6 +44,15 @@
 namespace hsd::compat
 {
 
+namespace keys
+{
+// Hesiod-only facade markers: written by add_compat_markers() below and read by
+// the base_node parity/reseed/serialization consumers. Values are byte-identical
+// to the former string literals so a typo is a compile error, not a silent break.
+inline constexpr char legacy_type[] = "compat.legacy_type";
+inline constexpr char seed[]        = "compat.seed";
+} // namespace keys
+
 /// Legacy color-gradient stop (field-compatible with attr::Stop and meta::Stop).
 struct Stop
 {
@@ -78,9 +87,9 @@ concept CompatTag = requires { typename legacy_traits<T>::storage; };
 inline void add_compat_markers(meta::AbstractAttribute &a, const char *type_string,
                                bool is_seed = false)
 {
-  a.metadata().try_add(std::string("compat.legacy_type"), std::string(type_string));
+  a.metadata().try_add(std::string(keys::legacy_type), std::string(type_string));
   if (is_seed)
-    a.metadata().try_add(std::string("compat.seed"), true);
+    a.metadata().try_add(std::string(keys::seed), true);
 }
 
 // tolerant field read (legacy json_safe_get parity: warn + keep default)
@@ -384,11 +393,11 @@ template <> struct legacy_traits<RangeAttribute>
   {
     glm::vec2 v = vec2_from_json(j, "value", a.value(), key);
     bool      is_active = true;
-    if (const bool *m = a.metadata().try_value<bool>("ui.active"))
+    if (const bool *m = a.metadata().try_value<bool>(meta::keys::ui::active))
       is_active = *m;
     safe_get(j, "is_active", is_active, key);
     // metadata first, then one notify covers the value change
-    a.metadata().try_add(std::string("ui.active"), is_active)->value() = is_active;
+    a.metadata().try_add(std::string(meta::keys::ui::active), is_active)->value() = is_active;
     a.set_from_any(v);
   }
 };
@@ -434,10 +443,10 @@ template <> struct legacy_traits<WaveNbAttribute>
   {
     glm::vec2 v = vec2_from_json(j, "value", a.value(), key);
     bool      link_xy = true;
-    if (const bool *m = a.metadata().try_value<bool>("ui.locked_xy"))
+    if (const bool *m = a.metadata().try_value<bool>(meta::keys::ui::locked_xy))
       link_xy = *m;
     safe_get(j, "link_xy", link_xy, key);
-    a.metadata().try_add(std::string("ui.locked_xy"), link_xy)->value() = link_xy;
+    a.metadata().try_add(std::string(meta::keys::ui::locked_xy), link_xy)->value() = link_xy;
     a.set_from_any(v);
   }
 };
@@ -501,7 +510,7 @@ template <> struct legacy_traits<CloudAttribute>
                                           bool               are_points_connected)
   {
     auto &a = meta::presets::points(c, key, label);
-    a.metadata().try_add(std::string("ui.closed"), are_points_connected)->value() =
+    a.metadata().try_add(std::string(meta::keys::ui::closed), are_points_connected)->value() =
         are_points_connected;
     add_compat_markers(a, type_string);
     return a;
@@ -844,13 +853,13 @@ public:
 
   bool get_is_active() const
   {
-    if (const auto *m = p_->metadata().try_value<bool>("ui.active"))
+    if (const auto *m = p_->metadata().try_value<bool>(meta::keys::ui::active))
       return *m;
     return true;
   }
   void set_is_active(bool v)
   {
-    p_->metadata().try_add(std::string("ui.active"), v)->value() = v;
+    p_->metadata().try_add(std::string(meta::keys::ui::active), v)->value() = v;
   }
   // Legacy per-attribute reset snapshot. In the Meta model the whole container
   // is snapshotted at finalize_attributes() (after setup, so after any

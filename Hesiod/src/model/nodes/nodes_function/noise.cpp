@@ -69,7 +69,7 @@ void setup_noise_node(BaseNode &node)
     auto *a = c.add<glm::vec2>(A_KW, glm::vec2(2.f, 2.f));
     a->metadata().try_add(meta::keys::ui::label, std::string("Spatial Frequency"));
     a->metadata().try_add(meta::keys::ui::widget_type, std::string("LinkedSliders"));
-    a->metadata().try_add(std::string("ui.locked_xy"), true);
+    a->metadata().try_add(std::string(meta::keys::ui::locked_xy), true);
     a->metadata().try_add(meta::keys::constraints::min, 0.f);
     a->metadata().try_add(meta::keys::constraints::max, 64.f);
     a->metadata().try_add(meta::keys::ui::category, std::string("Main Parameters"));

@@ -561,7 +561,7 @@ void BaseNode::finalize_attributes()
     for (const auto &key : unlisted)
     {
       const auto *p = c.find(key);
-      if (!p || !p->metadata().try_value<std::string>("compat.legacy_type"))
+      if (!p || !p->metadata().try_value<std::string>(hsd::compat::keys::legacy_type))
       {
         all_compat = false;
         break;
@@ -723,7 +723,7 @@ nlohmann::json BaseNode::node_parameters_to_json() const
             meta::keys::ui::label);
         param_info["label"] = lbl ? *lbl : key;
         const std::string *lt = p->metadata().try_value<std::string>(
-            "compat.legacy_type");
+            hsd::compat::keys::legacy_type);
         param_info["type"] = lt ? *lt : std::string(p->type().name());
         auto json_ptr = nlohmann::json::json_pointer("/parameters/" + key +
                                                      "/description");
@@ -846,7 +846,7 @@ nlohmann::json BaseNode::attribute_parity_record() const
       // legacy_type metadata restores the legacy type string; native Meta
       // nodes without it fall back to the C++ type name (no legacy form).
       const std::string *lt = p->metadata().try_value<std::string>(
-          "compat.legacy_type");
+          hsd::compat::keys::legacy_type);
       const std::string type_string = lt ? *lt : std::string(p->type().name());
 
       const std::string *lbl = p->metadata().try_value<std::string>(
@@ -857,7 +857,7 @@ nlohmann::json BaseNode::attribute_parity_record() const
       value_json = normalize_parity_value(type_string, value_json);
 
       std::optional<bool> is_active;
-      if (const bool *m = p->metadata().try_value<bool>("ui.active"))
+      if (const bool *m = p->metadata().try_value<bool>(meta::keys::ui::active))
         is_active = *m;
 
       nlohmann::json bounds; // null
@@ -881,8 +881,8 @@ nlohmann::json BaseNode::attribute_parity_record() const
       // null. Source it from ui.min_y/ui.max_y so it equals legacy [vmin,vmax].
       if (type_string == "Vector of floats")
       {
-        const auto *p_miny = p->metadata().find(std::string("ui.min_y"));
-        const auto *p_maxy = p->metadata().find(std::string("ui.max_y"));
+        const auto *p_miny = p->metadata().find(std::string(meta::keys::ui::min_y));
+        const auto *p_maxy = p->metadata().find(std::string(meta::keys::ui::max_y));
         if (p_miny && p_maxy)
           bounds = nlohmann::json::array(
               {p_miny->json_to()["value"], p_maxy->json_to()["value"]});
@@ -892,7 +892,7 @@ nlohmann::json BaseNode::attribute_parity_record() const
       // the facade-backed seed preset (which attaches constraints.min/max)
       // to match, so seed nodes don't false-positive on bounds in the
       // legacy/meta parity diff.
-      if (const bool *is_seed = p->metadata().try_value<bool>("compat.seed");
+      if (const bool *is_seed = p->metadata().try_value<bool>(hsd::compat::keys::seed);
           is_seed && *is_seed)
         bounds = nlohmann::json();
 
@@ -978,7 +978,7 @@ void BaseNode::reseed(bool backward)
       auto *p = this->meta_group().current().find(key);
       if (!p)
         continue;
-      if (const bool *is_seed = p->metadata().try_value<bool>("compat.seed");
+      if (const bool *is_seed = p->metadata().try_value<bool>(hsd::compat::keys::seed);
           is_seed && *is_seed)
         if (auto *typed = p->try_cast<meta::Attribute<int>>())
         {
