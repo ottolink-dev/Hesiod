@@ -21,9 +21,12 @@
   nix develop ~/quixote#cpp-qt-desktop -c bash -c 'cd /home/barrulus/dev/Hesiod && cmake --build build -j4 --target hesiod 2>&1 | tail -20; echo BUILD_EXIT=${PIPESTATUS[0]}'
   ```
   Success: `Linking CXX executable ... bin/hesiod`, `BUILD_EXIT=0`.
-- **RUN-CHECK** (headless; the binary SIGABRTs without the offscreen platform):
+- **RUN-CHECK** (headless; the binary SIGABRTs without the offscreen platform). Run from
+  `Hesiod/` — **not** `Hesiod/data/`: the node documentation is loaded from the relative path
+  `data/node_documentation.json`, so a deeper cwd resolves it wrong and the catalog builds empty
+  (the `size() == 0` guard reports this rather than silently passing):
   ```bash
-  nix develop ~/quixote#cpp-qt-desktop -c bash -c 'cd /home/barrulus/dev/Hesiod/Hesiod/data && QT_QPA_PLATFORM=offscreen ../../build/bin/hesiod --check-port-links 2>&1 | tail -25; echo CHECK_EXIT=${PIPESTATUS[0]}'
+  nix develop ~/quixote#cpp-qt-desktop -c bash -c 'cd /home/barrulus/dev/Hesiod/Hesiod && QT_QPA_PLATFORM=offscreen ../build/bin/hesiod --check-port-links 2>&1 | tail -25; echo CHECK_EXIT=${PIPESTATUS[0]}'
   ```
 - There is **no C++ unit-test harness** in this repo (`tests/` is Python and unwired from CMake). The `--check-port-links` subcommand IS the test vehicle, following the existing `--parity-dump` / `--compat-check` pattern. "Write the failing test" means "write the check assertion first and watch it fail".
 - GUI behaviour is **user-verified**. Never claim a GUI outcome yourself.
