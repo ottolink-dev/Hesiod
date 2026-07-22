@@ -2,6 +2,7 @@
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
 #include <exception>
+#include <optional>
 
 #include <QApplication>
 #include <QFileDialog>
@@ -32,6 +33,7 @@
 #include "hesiod/model/graph/graph_node.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/node_factory.hpp"
+#include "hesiod/model/nodes/port_catalog.hpp"
 #include "hesiod/model/utils.hpp"
 
 namespace hesiod
@@ -481,54 +483,103 @@ void GraphNodeWidget::on_connection_dropped(const std::string &node_id,
   if (!gno)
     return;
 
-  bool ret = this->execute_new_node_context_menu();
+  BaseNode *p_node_from = gno->get_node_ref_by_id<BaseNode>(node_id);
+  if (!p_node_from)
+    return;
 
-  // if a node has indeed being created, arbitrarily connect the first
-  // output with the same type has the output from which the link has
-  // been emitted
-  if (ret)
+  // --- what was dragged, and what would we need on the other end?
+
+  const int from_index = p_node_from->get_port_index(port_id);
+
+  // NOTE: get_data_type() returns a MANGLED typeid name (e.g.
+  // "N4hmap12VirtualArrayE"). The catalog and select_port both speak the
+  // friendly name the documentation uses ("VirtualArray") — the documentation
+  // is literally built with map_type_name(get_data_type(k)) (base_node.cpp).
+  // Convert once, here at the boundary.
+  const std::string dragged_type = map_type_name(p_node_from->get_data_type(from_index));
+
+  const gngui::PortType dragged_dir = p_node_from->get_port_type(from_index);
+  const gngui::PortType wanted_dir = (dragged_dir == gngui::PortType::OUT)
+                                         ? gngui::PortType::IN
+                                         : gngui::PortType::OUT;
+
+  // --- offer only node types that can actually connect
+  //
+  // The menu is built by GraphViewer from its node inventory, so filtering is
+  // done by swapping the inventory around the (blocking) menu call and putting
+  // the full one back afterwards.
+
+  const std::map<std::string, std::string> full_inventory = get_node_inventory();
+  const PortCatalog                        catalog = PortCatalog::from_documentation();
+
+  std::map<std::string, std::string> filtered;
+  for (const auto &[node_type, category] : full_inventory)
+    if (catalog.is_offerable(node_type, dragged_type, wanted_dir))
+      filtered[node_type] = category;
+
+  // if nothing accepts this type, fall back to the full list rather than
+  // opening an empty menu
+  const bool use_filtered = !filtered.empty();
+
+  if (use_filtered)
+    this->set_node_inventory(filtered);
+
+  const bool created = this->execute_new_node_context_menu();
+
+  if (use_filtered)
+    this->set_node_inventory(full_inventory);
+
+  if (!created)
+    return;
+
+  // --- connect the node that was just created
+
+  const std::string node_to = this->last_node_created_id;
+  BaseNode         *p_node_to = gno->get_node_ref_by_id<BaseNode>(node_to);
+
+  if (!p_node_to)
   {
-    Logger::log()->trace("GraphNodeWidget::on_connection_dropped: auto-connecting nodes");
-
-    const std::string node_to = this->last_node_created_id;
-
-    BaseNode *p_node_from = gno->get_node_ref_by_id<BaseNode>(node_id);
-    BaseNode *p_node_to = gno->get_node_ref_by_id<BaseNode>(node_to);
-
-    if (p_node_to)
-    {
-      int         from_port_index = p_node_from->get_port_index(port_id);
-      std::string from_type = p_node_from->get_data_type(from_port_index);
-
-      Logger::log()->trace("GraphNodeWidget::on_connection_dropped: from_type: {}",
-                           from_type);
-
-      // connect to the first input that has the same type, if any
-      for (int k = 0; k < p_node_to->get_nports(); ++k)
-      {
-        std::string to_type = p_node_to->get_data_type(k);
-
-        if (to_type == from_type)
-        {
-          std::string port_to_id = p_node_to->get_port_label(k);
-
-          // GUI
-          this->add_link(node_id, port_id, node_to, port_to_id);
-
-          // model
-          gno->new_link(node_id, port_id, node_to, port_to_id);
-          gno->update(node_to);
-
-          break;
-        }
-      }
-    }
-    else
-    {
-      Logger::log()->trace(
-          "GraphNodeWidget::on_connection_dropped: p_node_to is nullptr");
-    }
+    Logger::log()->trace("GraphNodeWidget::on_connection_dropped: p_node_to is nullptr");
+    return;
   }
+
+  const std::optional<std::string> port_to = select_port(*p_node_to,
+                                                         dragged_type,
+                                                         wanted_dir);
+
+  if (!port_to)
+  {
+    Logger::log()->trace(
+        "GraphNodeWidget::on_connection_dropped: node '{}' has no {} port of type {}, "
+        "leaving it unconnected",
+        node_to,
+        wanted_dir == gngui::PortType::IN ? "input" : "output",
+        dragged_type);
+    return;
+  }
+
+  // order the operands so that 'from' is always the OUTPUT side
+  const bool dragged_is_output = (dragged_dir == gngui::PortType::OUT);
+
+  const std::string id_out = dragged_is_output ? node_id : node_to;
+  const std::string port_out = dragged_is_output ? port_id : *port_to;
+  const std::string id_in = dragged_is_output ? node_to : node_id;
+  const std::string port_in = dragged_is_output ? *port_to : port_id;
+
+  // model first: only draw the GUI link if the model accepted it
+  try
+  {
+    gno->new_link(id_out, port_out, id_in, port_in);
+  }
+  catch (const std::exception &e)
+  {
+    Logger::log()->error("GraphNodeWidget::on_connection_dropped: link refused: {}",
+                         e.what());
+    return;
+  }
+
+  this->add_link(id_out, port_out, id_in, port_in);
+  gno->update(node_to);
 }
 
 void GraphNodeWidget::on_connection_finished(const std::string &id_out,
