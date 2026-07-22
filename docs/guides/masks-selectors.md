@@ -16,9 +16,9 @@ see [Masks & Selectors (concepts)](../core_concepts/masks-selectors.md).
 Each picks out a feature as a mask (`Terrain Features/Selector`):
 
 - **`SelectSlope`** — steep vs flat. **`SelectAngle`** — facing direction.
-- **`SelectGt`** / **`SelectInterval`** / **`SelectMidrange`** — by elevation
+- **`SelectThreshold`** / **`SelectInterval`** / **`SelectMidrange`** — by elevation
   threshold / band / mid-range.
-- **`SelectPulse`**, **`SelectCavities`**, **`SelectTransitions`**,
+- **`SelectValue`**, **`SelectCavities`**, **`SelectTransitions`**,
   **`SelectValley`**, **`SelectRivers`**, **`SelectInwardOutward`**,
   **`SelectBlobLog`**, **`SelectMultiband3`** — feature-specific selectors.
 

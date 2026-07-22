@@ -10,7 +10,7 @@ apply here", `0` means "leave untouched", and values in between blend.
 A **selector** is a node that *builds* a mask by looking at a property of the
 terrain — slope, elevation, curvature, distance — and emitting high values where
 the property matches. Hesiod's selector nodes are the `Select…` family
-(`SelectSlope`, `SelectGt`, `SelectInterval`, `SelectRivers`, `SelectValley`, …),
+(`SelectSlope`, `SelectThreshold`, `SelectInterval`, `SelectRivers`, `SelectValley`, …),
 and masks can be combined with `CombineMask`.
 
 ## How Hesiod handles it

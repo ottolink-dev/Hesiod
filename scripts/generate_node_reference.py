@@ -29,7 +29,10 @@ def load_node_data():
 
 def generate_categories_markdown(data):
     """Generate markdown documentation for node categories."""
-    md_file = MdUtils(file_name=os.path.join(NODE_MARKDOWN_PATH, "categories"),
+    # NODE_REFERENCE_PATH, not NODE_MARKDOWN_PATH: SUMMARY.md links this page as
+    # "categories.md" relative to itself, i.e. at the section root. Writing it into
+    # nodes/ left the served copy frozen and grew a stray duplicate.
+    md_file = MdUtils(file_name=os.path.join(NODE_REFERENCE_PATH, "categories"),
                       title="Node Categories")
     md_file.new_header(level=1, title="Categories")
 
@@ -82,7 +85,10 @@ def build_nav_summary(data):
         cat_tree.setdefault(primary, {}).setdefault(secondary,
                                                     []).append(node_type)
 
-    lines = ["* [Categories](categories.md)"]
+    # index.md first so mkdocs-material's navigation.indexes makes it the section
+    # landing page -- otherwise /node_reference/ itself is a 404. Its prose is
+    # hand-maintained; only this nav entry is generated.
+    lines = ["* [Node Reference](index.md)", "* [Categories](categories.md)"]
     for primary in sorted(cat_tree):
         lines.append("* {}".format(primary))
         sub = cat_tree[primary]
