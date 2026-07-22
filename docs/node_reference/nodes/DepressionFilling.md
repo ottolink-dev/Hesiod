@@ -31,7 +31,16 @@ Erosion/Deposition
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
-|remap fill map|Bool|Remap to [0, 1] the filling map.|
+|Gain|Float|No description|
+|Gamma|Float|No description|
+|Invert Output|Bool|No description|
+|Mix Factor|Float|No description|
+|Mix Method|Enumeration|No description|
+|Remap Range|Value range|No description|
+|Saturation Range|Value range|No description|
+|Smoothing Radius|Float|No description|
+|Remap Fill Map|Bool|Remap to [0, 1] the filling map.|
+|Smoothing|Bool|No description|
 
 ## Example
 
@@ -44,4 +53,4 @@ Corresponding Hesiod file: [DepressionFilling.hsd](../../examples/DepressionFill
     Example files are kept up-to-date with the latest version of [Hesiod](https://github.com/otto-link/Hesiod).
     If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).
 
-  
+
