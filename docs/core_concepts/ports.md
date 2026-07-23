@@ -79,6 +79,11 @@ inputs are ready before it runs. A change near the end of a graph is cheap; a ch
 at the very start ripples through everything after it. Nodes that are not downstream
 of the change are left exactly as they were.
 
+Ports are only half the story: they carry the data, but what *happens* to it — how a
+value travels the graph, what a split means, and why a heightmap, a water-depth field
+and a path are each handled differently on arrival — is covered in
+**[How data is processed](data-processing.md)**.
+
 ## Common ports
 
 Most ports are named for their role, and the same names recur across many nodes with
