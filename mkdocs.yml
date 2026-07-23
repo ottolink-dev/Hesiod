@@ -47,6 +47,7 @@ nav:
   - 'Core Concepts':
     - 'core_concepts/index.md'
     - 'core_concepts/heightmaps.md'
+    - 'core_concepts/ports.md'
     - 'core_concepts/masks-selectors.md'
     - 'core_concepts/broadcast-receive.md'
     - 'core_concepts/tiling-overlap.md'

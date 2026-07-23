@@ -21,6 +21,10 @@ operation applies. See [Masks & selectors](masks-selectors.md).
 **Normalized space** — the unit square `[0,1] × [0,1]` all coordinates use until
 export. See [Coordinate system](../user_manual/coordinate_system/index.md).
 
+**Port** — a connection point on a node's edge: **inputs** on the left receive data,
+**outputs** on the right produce it. A wire runs output → input. See
+[Ports & data flow](ports.md).
+
 **Overlap** — a shared margin between tiles that prevents seams. See
 [Tiling & overlap](tiling-overlap.md).
 

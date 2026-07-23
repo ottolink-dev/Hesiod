@@ -14,6 +14,8 @@ produces. Everything in these pages is about what flows through that graph.
 
 - **[Heightmaps & virtual arrays](heightmaps.md)** — the data every node reads and
   writes: a grid of elevation values.
+- **[Ports & data flow](ports.md)** — how that data travels between nodes, and why
+  some inputs are optional.
 - **[Masks & selectors](masks-selectors.md)** — how you restrict an operation to
   *part* of the terrain (steep slopes, low ground, river beds…).
 - **[Broadcast & Receive](broadcast-receive.md)** — how terrain moves between

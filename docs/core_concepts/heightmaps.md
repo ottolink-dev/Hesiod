@@ -31,6 +31,7 @@ that consumes it.
 
 ## See also
 
+- [Ports & data flow](ports.md) — how these values travel between nodes.
 - [Node reference](../node_reference/categories.md) — every node's input/output heightmap ports.
 - [Tiling & overlap](tiling-overlap.md) — how a heightmap is computed in pieces.
 - [Coordinate system](../user_manual/coordinate_system/index.md) — the normalized domain.
