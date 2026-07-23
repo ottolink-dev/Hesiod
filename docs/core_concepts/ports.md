@@ -109,6 +109,8 @@ other data types mean.
 
 ## See also
 
+- [How data is processed](data-processing.md) — the journey of a value through the
+  graph, and how each kind of data behaves when a node receives it.
 - [Heightmaps & virtual arrays](heightmaps.md) — the data types that flow through ports.
 - [Masks & selectors](masks-selectors.md) — how the `mask` input scopes an operation.
 - [Node reference](../node_reference/categories.md) — every node's exact ports.

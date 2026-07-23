@@ -16,6 +16,8 @@ produces. Everything in these pages is about what flows through that graph.
   writes: a grid of elevation values.
 - **[Ports & data flow](ports.md)** — how that data travels between nodes, and why
   some inputs are optional.
+- **[How data is processed](data-processing.md)** — a value's journey through the
+  graph: splitting, merging, and how each kind of data behaves on arrival.
 - **[Masks & selectors](masks-selectors.md)** — how you restrict an operation to
   *part* of the terrain (steep slopes, low ground, river beds…).
 - **[Broadcast & Receive](broadcast-receive.md)** — how terrain moves between
