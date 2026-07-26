@@ -124,6 +124,9 @@ private:
   void backup_selected_ids();
   void reselect_backup_ids();
 
+  void restore_viewers_sequentially(std::vector<nlohmann::json> viewer_jsons,
+                                    std::size_t                 index);
+
   // --- Members ---
   std::weak_ptr<GraphNode>       p_graph_node; // own by GraphManager
   std::vector<QPointer<QWidget>> data_viewers;

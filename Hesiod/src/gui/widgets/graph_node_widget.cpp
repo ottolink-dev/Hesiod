@@ -335,30 +335,22 @@ void GraphNodeWidget::json_from(nlohmann::json const &json)
   this->set_block_graph_model_updates(false);
 
   // viewers (skipped in headless CLI modes, e.g. --snapshot: no 3D viewer is
-  // created there, so there is nothing to restore state into)
+  // created there, so there is nothing to restore state into). Creation is
+  // staggered, one viewport per event-loop turn: creating several GL windows
+  // synchronously during load crashes on some Windows drivers (issue #537)
   if (!HSD_CTX.headless && json.contains("viewers") && json["viewers"].is_array())
   {
-    for (const auto &viewer_json : json["viewers"])
-    {
-      ViewerType viewer_type = viewer_json["viewer_type"].get<ViewerType>();
+    std::vector<nlohmann::json> viewer_jsons(json["viewers"].begin(),
+                                             json["viewers"].end());
 
-      Logger::log()->trace("GraphNodeWidget::json_from: viewer_type: {}",
-                           viewer_type_as_string.at(viewer_type));
-
-      // TODO add viewer-type specific handling
-      this->on_viewport_request();
-
-      if (auto *p_viewer = dynamic_cast<Viewer3D *>(this->data_viewers.back().get()))
-      {
-        // defer to let OpenGL context settle
-        QTimer::singleShot(0,
-                           [p_viewer, viewer_json]()
-                           { p_viewer->json_from(viewer_json); });
-      }
-      else
-        Logger::log()->error(
-            "GraphNodeWidget::json_from: could not retrieve viewer reference");
-    }
+    QTimer::singleShot(0,
+                       this,
+                       [this, viewer_jsons = std::move(viewer_jsons)]() mutable
+                       {
+                         this->restore_viewers_sequentially(
+                             std::move(viewer_jsons),
+                             0);
+                       });
   }
 
   // defer
@@ -1274,6 +1266,58 @@ void GraphNodeWidget::on_viewport_request()
 
   if (selected_ids.size())
     p_viewer->on_node_selected(selected_ids.back());
+}
+
+void GraphNodeWidget::restore_viewers_sequentially(
+    std::vector<nlohmann::json> viewer_jsons,
+    std::size_t                 index)
+{
+  if (index >= viewer_jsons.size())
+    return;
+
+  ViewerType viewer_type = viewer_jsons[index]["viewer_type"].get<ViewerType>();
+
+  Logger::log()->trace(
+      "GraphNodeWidget::restore_viewers_sequentially: {}/{}, viewer_type: {}",
+      index + 1,
+      viewer_jsons.size(),
+      viewer_type_as_string.at(viewer_type));
+
+  // TODO add viewer-type specific handling
+  const std::size_t count_before = this->data_viewers.size();
+  this->on_viewport_request();
+
+  if (this->data_viewers.size() == count_before)
+  {
+    Logger::log()->error(
+        "GraphNodeWidget::restore_viewers_sequentially: viewport was not "
+        "created, aborting viewer state restore");
+    return;
+  }
+
+  QPointer<Viewer3D> p_viewer(
+      dynamic_cast<Viewer3D *>(this->data_viewers.back().get()));
+
+  if (!p_viewer)
+  {
+    Logger::log()->error(
+        "GraphNodeWidget::restore_viewers_sequentially: could not retrieve "
+        "viewer reference");
+    return;
+  }
+
+  // next event-loop turn: the new window's GL context has settled; restore
+  // its state, then create the next saved viewport (if any)
+  QTimer::singleShot(
+      0,
+      this,
+      [this, viewer_jsons = std::move(viewer_jsons), index, p_viewer]() mutable
+      {
+        if (p_viewer)
+          p_viewer->json_from(viewer_jsons[index]);
+
+        this->restore_viewers_sequentially(std::move(viewer_jsons), index + 1);
+      });
 }
 
 void GraphNodeWidget::reselect_backup_ids()
