@@ -942,11 +942,16 @@ public:
   ColorGradientHandle *operator->() { return this; }
 
   // legacy set_presets: the ColorGradientManager hands meta::Preset lists.
+  // Presets are host configuration, not value state: they live in attribute
+  // metadata (ui.presets, non-serializable) so a value decode cannot clobber
+  // the library installed here.
   void set_presets(const std::vector<meta::Preset> &presets)
   {
-    meta::ColorGradient g = p_->value();
-    g.set_presets(presets);
-    p_->set_from_any(g);
+    auto &m = p_->metadata();
+    if (auto *pp = m.try_value<meta::GradientPresets>(meta::keys::ui::presets))
+      pp->presets = presets;
+    else
+      m.add(meta::keys::ui::presets, meta::GradientPresets{presets});
   }
 
 private:
