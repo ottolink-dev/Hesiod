@@ -331,6 +331,7 @@ void Viewer::setup_connections()
   // graph update
   this->connect(this->p_graph_node_widget,
                 &GraphNodeWidget::compute_finished,
+                this,
                 [this](const std::string &id)
                 {
                   if (id == this->current_node_id)
