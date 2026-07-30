@@ -29,14 +29,19 @@ HeightmapperWidget::HeightmapperWidget(QWidget *parent) : QWidget(parent)
   this->setWindowTitle(
       "Hesiod - Tangram Heightmapper (https://tangrams.github.io/heightmapper)");
 
+  // The view is created before the profile on purpose: QObject destroys its
+  // children in creation order, and QtWebEngine requires the profile to
+  // outlive every page and view using it. The page is parented to the view for
+  // the same reason, so that view and page go together, ahead of the profile.
+  // See ~HeightmapperWidget.
+  this->view = new QWebEngineView(this);
+
   // use an off-the-record profile so the page can still make
   // network requests, but nothing is written to disk by Qt itself.
   this->profile = new QWebEngineProfile(this);
   this->profile->setHttpCacheType(QWebEngineProfile::MemoryHttpCache);
 
-  auto *page = new QWebEnginePage(this->profile, this->profile);
-  this->view = new QWebEngineView(this);
-  this->view->setPage(page);
+  this->view->setPage(new QWebEnginePage(this->profile, this->view));
 
   this->setMinimumSize(QSize(768, 768));
 
@@ -63,6 +68,23 @@ HeightmapperWidget::HeightmapperWidget(QWidget *parent) : QWidget(parent)
   this->view->load(QUrl(source_urls.first().second));
 
   this->restore_window_state();
+}
+
+HeightmapperWidget::~HeightmapperWidget()
+{
+  Logger::log()->trace("HeightmapperWidget::~HeightmapperWidget");
+
+  // Delete the view (and with it its page) before the profile, which is what
+  // QtWebEngine requires and what construction order already arranges. Doing it
+  // explicitly keeps the guarantee if those lines are ever reordered.
+  //
+  // Get it wrong and QWebEngineProfile's destructor releases the profile with a
+  // live page attached: it logs "Release of profile requested but WebEnginePage
+  // still not deleted. Expect troubles !", and when the page owns a live render
+  // process the profile's cleanup - run from qt_call_post_routines inside
+  // ~QApplication - blocks in WaitForSingleObject and the process never exits.
+  delete this->view;
+  this->view = nullptr;
 }
 
 void HeightmapperWidget::closeEvent(QCloseEvent *event)

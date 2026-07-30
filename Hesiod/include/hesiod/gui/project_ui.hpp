@@ -28,6 +28,9 @@ class ProjectUI : public QWidget
 public:
   explicit ProjectUI(QWidget *parent = nullptr);
 
+  /// Deletes the parentless top-level windows - see the definition.
+  ~ProjectUI() override;
+
   void load_ui_state(const std::string &fname);
   void save_ui_state(const std::string &fname) const;
 

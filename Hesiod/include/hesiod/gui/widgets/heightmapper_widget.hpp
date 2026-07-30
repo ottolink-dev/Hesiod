@@ -33,7 +33,9 @@ public:
 
   // --- Ctor
   explicit HeightmapperWidget(QWidget *parent = nullptr);
-  ~HeightmapperWidget() override = default;
+
+  /// Tears the web view down before the profile - see the definition.
+  ~HeightmapperWidget() override;
 
 signals:
   // --- Downloads management

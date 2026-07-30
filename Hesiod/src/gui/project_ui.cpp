@@ -23,6 +23,26 @@ ProjectUI::ProjectUI(QWidget *parent) : QWidget(parent)
   this->setAttribute(Qt::WA_DeleteOnClose);
 }
 
+ProjectUI::~ProjectUI()
+{
+  Logger::log()->trace("ProjectUI::~ProjectUI");
+
+  // The texture downloader and the heightmapper are top-level windows created
+  // without a parent and held in non-owning QPointers, so nothing else ever
+  // deletes them. cleanup() does it on a project switch, but cleanup() is not
+  // called on exit - so without this they outlive us, and the heightmapper's
+  // QtWebEngine profile and page are still alive when ~QApplication runs its
+  // post routines. That warns ("Release of profile requested but WebEnginePage
+  // still not deleted"), and once the page owns a render process the profile
+  // release blocks in WaitForSingleObject and the process never exits.
+  //
+  // Delete outright rather than deleteLater(): by this point the event loop has
+  // returned and no one will drain the deferred-delete queue. Both QPointers
+  // are already null if cleanup() ran, and deleting null is a no-op.
+  delete this->heightmapper_widget.data();
+  delete this->texture_downloader.data();
+}
+
 void ProjectUI::cleanup()
 {
   Logger::log()->trace("ProjectUI::cleanup");
