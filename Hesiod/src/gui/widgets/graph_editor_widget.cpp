@@ -141,13 +141,19 @@ void GraphEditorWidget::setup_layout()
   // collapsible left pan for the node library: a thin full-height arrow
   // strip (column 0) toggles the library widget (column 1)
   {
-    this->node_library_toggle_button = new QToolButton();
-    this->node_library_toggle_button->setAutoRaise(true);
-    this->node_library_toggle_button->setFixedWidth(16);
-    this->node_library_toggle_button->setSizePolicy(QSizePolicy::Fixed,
-                                                    QSizePolicy::Expanding);
-    this->node_library_toggle_button->setToolTip("Show/hide the node library panel");
-    layout->addWidget(this->node_library_toggle_button, 0, 0, 2, 1);
+    // no strip in headless CLI modes (e.g. --snapshot): it would eat 16px of
+    // frame width in the rendered doc screenshots, which disable the library
+    // pan precisely to get the full frame for the graph
+    if (!HSD_CTX.headless)
+    {
+      this->node_library_toggle_button = new QToolButton();
+      this->node_library_toggle_button->setAutoRaise(true);
+      this->node_library_toggle_button->setFixedWidth(16);
+      this->node_library_toggle_button->setSizePolicy(QSizePolicy::Fixed,
+                                                      QSizePolicy::Expanding);
+      this->node_library_toggle_button->setToolTip("Show/hide the node library panel");
+      layout->addWidget(this->node_library_toggle_button, 0, 0, 2, 1);
+    }
 
     this->node_library_widget = new NodeLibraryWidget();
     layout->addWidget(this->node_library_widget, 0, 1, 2, 1);
@@ -221,10 +227,11 @@ void GraphEditorWidget::setup_layout()
                   this->graph_node_widget,
                   &GraphNodeWidget::on_new_node_request_replace);
 
-    this->connect(this->node_library_toggle_button,
-                  &QToolButton::clicked,
-                  this,
-                  [this]() { Q_EMIT this->node_library_toggle_requested(); });
+    if (this->node_library_toggle_button)
+      this->connect(this->node_library_toggle_button,
+                    &QToolButton::clicked,
+                    this,
+                    [this]() { Q_EMIT this->node_library_toggle_requested(); });
   }
 }
 
