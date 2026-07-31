@@ -120,6 +120,11 @@ void AppSettings::json_from(nlohmann::json const &json)
   json_safe_get(json,
                 "global.default_startup_project_file",
                 global.default_startup_project_file);
+  // configs written before the blank-startup change persisted the old
+  // compiled default on every exit; those users expect the new blank
+  // startup, not a pinned default file
+  if (global.default_startup_project_file == "data/default.hsd")
+    global.default_startup_project_file = "";
   json_safe_get(json, "global.save_backup_file", global.save_backup_file);
   json_safe_get(json, "global.recent_files", global.recent_files);
   json_safe_get(json, "global.max_recent_files", global.max_recent_files);

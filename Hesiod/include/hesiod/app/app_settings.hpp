@@ -65,7 +65,9 @@ struct AppSettings
   {
     int         omp_num_threads = 8;
     std::string icon_path = "data/hesiod_icon.png";
-    std::string default_startup_project_file = "data/default.hsd";
+    // empty = start with a blank project; set to a .hsd path to load that
+    // file at startup instead
+    std::string default_startup_project_file = "";
     std::string quick_start_html_file = "data/quick_start.html";
     std::string node_documentation_path = "data/node_documentation.json";
     std::string git_version_file = "data/git_version.txt";
