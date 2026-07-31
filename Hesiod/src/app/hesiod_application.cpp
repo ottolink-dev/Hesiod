@@ -303,6 +303,11 @@ void HesiodApplication::load_project_model_and_ui(const std::string &fname,
                 &GraphTabsWidget::has_changed,
                 [this]() { this->context.project_model->on_has_changed(); });
 
+  this->connect(this->project_ui->get_graph_tabs_widget_ref(),
+                &GraphTabsWidget::node_library_toggle_requested,
+                this,
+                &HesiodApplication::on_toggle_node_library_pan);
+
   // Project -> HesiodApplication
   this->context.project_model->project_name_changed = [this]()
   { this->on_project_name_changed(); };
@@ -575,6 +580,18 @@ void HesiodApplication::on_project_settings()
 {
   auto *dialog = new ProjectSettingsDialog(this->context.project_model.get());
   dialog->exec();
+}
+
+void HesiodApplication::on_toggle_node_library_pan()
+{
+  bool new_state = !this->context.app_settings.node_editor.show_node_library_pan;
+  this->context.app_settings.node_editor.show_node_library_pan = new_state;
+
+  if (this->show_node_library_pan_action)
+    this->show_node_library_pan_action->setChecked(new_state);
+
+  if (this->project_ui)
+    this->project_ui->get_graph_tabs_widget_ref()->set_show_node_library_pan(new_state);
 }
 
 void HesiodApplication::on_quit()
@@ -874,12 +891,20 @@ void HesiodApplication::setup_menu_bar()
     view_menu->addAction(show_viewer_action);
   }
 
-  auto *show_node_settings_pan_action = new QAction("Show Node Settings Pan", this);
+  auto *show_node_settings_pan_action = new QAction("Show Node Settings Panel", this);
   show_node_settings_pan_action->setCheckable(true);
   {
     bool state = this->context.app_settings.node_editor.show_node_settings_pan;
     show_node_settings_pan_action->setChecked(state);
     view_menu->addAction(show_node_settings_pan_action);
+  }
+
+  this->show_node_library_pan_action = new QAction("Show Node Library Panel", this);
+  this->show_node_library_pan_action->setCheckable(true);
+  {
+    bool state = this->context.app_settings.node_editor.show_node_library_pan;
+    this->show_node_library_pan_action->setChecked(state);
+    view_menu->addAction(this->show_node_library_pan_action);
   }
 
   // --- connections
@@ -951,6 +976,11 @@ void HesiodApplication::setup_menu_bar()
         this->project_ui->get_graph_tabs_widget_ref()->set_show_node_settings_widget(
             new_state);
       });
+
+  this->connect(this->show_node_library_pan_action,
+                &QAction::triggered,
+                this,
+                &HesiodApplication::on_toggle_node_library_pan);
 
   this->connect(
       show_layout_manager,

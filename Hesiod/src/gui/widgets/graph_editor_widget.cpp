@@ -3,6 +3,7 @@
  * this software. */
 #include <QGridLayout>
 #include <QSplitter>
+#include <QToolButton>
 #include <QTimer>
 
 #include "hesiod/app/hesiod_application.hpp"
@@ -44,6 +45,17 @@ NodeSettingsWidget *GraphEditorWidget::get_node_settings_widget() const
 }
 
 Viewer3D *GraphEditorWidget::get_viewer() const { return this->viewer; }
+
+void GraphEditorWidget::set_node_library_visible(bool new_state)
+{
+  if (this->node_library_widget)
+    this->node_library_widget->setVisible(new_state);
+
+  // arrow points at the panel's collapse direction
+  if (this->node_library_toggle_button)
+    this->node_library_toggle_button->setArrowType(new_state ? Qt::LeftArrow
+                                                             : Qt::RightArrow);
+}
 
 void GraphEditorWidget::json_from(nlohmann::json const &json)
 {
@@ -126,15 +138,22 @@ void GraphEditorWidget::setup_layout()
   layout->setSpacing(0);
   this->setLayout(layout);
 
-  // optional left pan for node library
-  bool show_lib = HSD_CTX.app_settings.node_editor.show_node_library_pan;
-  int  row_offset = 0;
-
-  if (show_lib)
+  // collapsible left pan for the node library: a thin full-height arrow
+  // strip (column 0) toggles the library widget (column 1)
   {
+    this->node_library_toggle_button = new QToolButton();
+    this->node_library_toggle_button->setAutoRaise(true);
+    this->node_library_toggle_button->setFixedWidth(16);
+    this->node_library_toggle_button->setSizePolicy(QSizePolicy::Fixed,
+                                                    QSizePolicy::Expanding);
+    this->node_library_toggle_button->setToolTip("Show/hide the node library panel");
+    layout->addWidget(this->node_library_toggle_button, 0, 0, 2, 1);
+
     this->node_library_widget = new NodeLibraryWidget();
-    layout->addWidget(node_library_widget, 0, 0, 2, 1);
-    row_offset++;
+    layout->addWidget(this->node_library_widget, 0, 1, 2, 1);
+
+    this->set_node_library_visible(
+        HSD_CTX.app_settings.node_editor.show_node_library_pan);
   }
 
   // left pan with splitter
@@ -156,7 +175,7 @@ void GraphEditorWidget::setup_layout()
 
     splitter->addWidget(this->graph_node_widget);
 
-    layout->addWidget(splitter, 0, row_offset);
+    layout->addWidget(splitter, 0, 2);
   }
 
   // right pan
@@ -167,7 +186,7 @@ void GraphEditorWidget::setup_layout()
     set_style(this->node_settings_widget,
               std::format("border-left: 1px solid {};", color));
 
-    layout->addWidget(this->node_settings_widget, 0, row_offset + 1, 2, 1);
+    layout->addWidget(this->node_settings_widget, 0, 3, 2, 1);
 
     this->node_settings_widget->setVisible(
         HSD_CTX.app_settings.node_editor.show_node_settings_pan);
@@ -176,7 +195,7 @@ void GraphEditorWidget::setup_layout()
   // bottom toolbar
   {
     auto *graph_toolbar = new GraphToolbar(this->graph_node_widget);
-    layout->addWidget(graph_toolbar, 1, row_offset);
+    layout->addWidget(graph_toolbar, 1, 2);
   }
 
   // --- Connection(s)
@@ -201,6 +220,11 @@ void GraphEditorWidget::setup_layout()
                   &NodeLibraryWidget::node_type_selected_ctrl,
                   this->graph_node_widget,
                   &GraphNodeWidget::on_new_node_request_replace);
+
+    this->connect(this->node_library_toggle_button,
+                  &QToolButton::clicked,
+                  this,
+                  [this]() { Q_EMIT this->node_library_toggle_requested(); });
   }
 }
 

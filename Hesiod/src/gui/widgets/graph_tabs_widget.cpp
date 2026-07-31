@@ -207,6 +207,13 @@ void GraphTabsWidget::set_show_viewer(bool new_state)
   }
 }
 
+void GraphTabsWidget::set_show_node_library_pan(bool new_state)
+{
+  for (auto &[id, gew] : this->graph_editor_widget_map)
+    if (gew)
+      gew->set_node_library_visible(new_state);
+}
+
 void GraphTabsWidget::set_selected_tab(const std::string &graph_id)
 {
   for (int i = 0; i < this->tab_widget->count(); ++i)
@@ -354,6 +361,10 @@ void GraphTabsWidget::update_tab_widget()
                   &GraphNodeWidget::update_finished,
                   this,
                   [this]() { emit update_finished(); });
+    this->connect(editor_widget,
+                  &GraphEditorWidget::node_library_toggle_requested,
+                  this,
+                  &GraphTabsWidget::node_library_toggle_requested);
 
     // Create tab container
     QWidget *tab = new QWidget();

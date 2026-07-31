@@ -6,6 +6,8 @@
 #include "hesiod/gui/widgets/node_library_widget.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 
+class QToolButton;
+
 namespace hesiod
 {
 
@@ -32,6 +34,10 @@ public:
   GraphNodeWidget    *get_graph_node_widget() const;
   NodeSettingsWidget *get_node_settings_widget() const;
   Viewer3D           *get_viewer() const;
+  void               set_node_library_visible(bool new_state);
+
+signals:
+  void node_library_toggle_requested();
 
 private:
   void setup_connections();
@@ -42,6 +48,7 @@ private:
   NodeSettingsWidget      *node_settings_widget = nullptr;
   NodeLibraryWidget       *node_library_widget = nullptr;
   Viewer3D                *viewer = nullptr;
+  QToolButton             *node_library_toggle_button = nullptr;
 };
 
 } // namespace hesiod

@@ -6,6 +6,7 @@
 #include <QApplication>
 #include <QCoreApplication>
 #include <QMenu>
+#include <QPointer>
 #include <QProgressBar>
 #include <QStandardPaths>
 
@@ -63,6 +64,7 @@ private slots:
   void on_new();
   void on_online_help();
   void on_project_settings();
+  void on_toggle_node_library_pan();
   void on_quit();
   void on_open_recent(const std::string &fname);
   void on_save();
@@ -87,6 +89,7 @@ private:
   AppSettingsWindow         *app_settings_window;   // owned by MainWindow
 
   QMenu *recent_files_menu = nullptr; // owned by the menu bar
+  QPointer<QAction> show_node_library_pan_action; // owned by the menu bar
 
   BlenderStreamer blender_streamer;
 
