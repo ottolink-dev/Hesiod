@@ -275,7 +275,29 @@ void HesiodApplication::load_project_model_and_ui(const std::string &fname,
 
   // --- model
 
-  this->context.load_project_model(actual_fname);
+  // a missing file must fall back to the blank project too: load_project_model
+  // would return without creating a model and the UI would dereference null
+  const bool blank_startup = actual_fname.empty() || !fs::exists(actual_fname);
+
+  if (blank_startup)
+  {
+    if (!actual_fname.empty())
+      Logger::log()->warn("HesiodApplication::load_project_model_and_ui: project "
+                          "file does not exist, starting with a blank project: {}",
+                          actual_fname);
+
+    // no startup file: blank project with a single empty graph, ready to use
+    this->context.new_project();
+
+    auto config = std::make_shared<GraphConfig>();
+    auto graph = std::make_shared<GraphNode>("graph", config);
+    this->context.project_model->get_graph_manager_ref()->add_graph_node(graph,
+                                                                         "graph");
+  }
+  else
+  {
+    this->context.load_project_model(actual_fname);
+  }
 
   // --- UI
 
@@ -293,7 +315,9 @@ void HesiodApplication::load_project_model_and_ui(const std::string &fname,
   this->project_ui = std::make_unique<ProjectUI>();
 
   this->project_ui->initialize(this->context.project_model.get());
-  this->project_ui->load_ui_state(actual_fname);
+
+  if (!blank_startup)
+    this->project_ui->load_ui_state(actual_fname);
 
   if (this->main_window)
     this->main_window->setCentralWidget(this->project_ui->get_widget());
