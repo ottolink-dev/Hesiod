@@ -48,6 +48,10 @@ public:
 
   void notify(const std::string &msg = "", int timeout = 5000);
 
+  // returns true when the caller may discard the current project (clean,
+  // saved on request, or explicitly discarded); false aborts the action
+  bool confirm_discard_unsaved_changes(const QString &action_title);
+
   // --- Context
   QApplication     &get_qapp();
   AppContext       &get_context();

@@ -23,6 +23,12 @@ void MainWindow::closeEvent(QCloseEvent *event)
 {
   Logger::log()->trace("MainWindow::closeEvent");
 
+  if (!HSD_APP->confirm_discard_unsaved_changes("Quit"))
+  {
+    event->ignore();
+    return;
+  }
+
   this->save_geometry();
   HSD_CTX.save_settings();
 
