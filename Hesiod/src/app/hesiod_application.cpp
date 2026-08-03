@@ -221,6 +221,28 @@ void HesiodApplication::cleanup()
     this->context.project_model->cleanup();
 }
 
+bool HesiodApplication::confirm_discard_unsaved_changes(const QString &action_title)
+{
+  if (!this->context.project_model || !this->context.project_model->get_is_dirty())
+    return true;
+
+  QMessageBox::StandardButton reply = QMessageBox::warning(
+      this->main_window,
+      action_title,
+      "The project has unsaved changes.",
+      QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel,
+      QMessageBox::Save);
+
+  if (reply == QMessageBox::Save)
+  {
+    this->on_save();
+    // still dirty means the user backed out of the save-as dialog
+    return !this->context.project_model->get_is_dirty();
+  }
+
+  return reply == QMessageBox::Discard;
+}
+
 BlenderStreamer &HesiodApplication::get_blender_streamer()
 {
   return this->blender_streamer;
@@ -253,7 +275,28 @@ void HesiodApplication::load_project_model_and_ui(const std::string &fname,
 
   // --- model
 
-  this->context.load_project_model(actual_fname);
+  // a missing file must fall back to the blank project too: load_project_model
+  // would return without creating a model and the UI would dereference null
+  const bool blank_startup = actual_fname.empty() || !fs::exists(actual_fname);
+
+  if (blank_startup)
+  {
+    if (!actual_fname.empty())
+      Logger::log()->warn("HesiodApplication::load_project_model_and_ui: project "
+                          "file does not exist, starting with a blank project: {}",
+                          actual_fname);
+
+    // no startup file: blank project with a single empty graph, ready to use
+    this->context.new_project();
+
+    auto config = std::make_shared<GraphConfig>();
+    auto graph = std::make_shared<GraphNode>("graph", config);
+    this->context.project_model->get_graph_manager_ref()->add_graph_node(graph, "graph");
+  }
+  else
+  {
+    this->context.load_project_model(actual_fname);
+  }
 
   // --- UI
 
@@ -271,7 +314,9 @@ void HesiodApplication::load_project_model_and_ui(const std::string &fname,
   this->project_ui = std::make_unique<ProjectUI>();
 
   this->project_ui->initialize(this->context.project_model.get());
-  this->project_ui->load_ui_state(actual_fname);
+
+  if (!blank_startup)
+    this->project_ui->load_ui_state(actual_fname);
 
   if (this->main_window)
     this->main_window->setCentralWidget(this->project_ui->get_widget());
@@ -302,6 +347,11 @@ void HesiodApplication::load_project_model_and_ui(const std::string &fname,
   this->connect(this->project_ui->get_graph_tabs_widget_ref(),
                 &GraphTabsWidget::has_changed,
                 [this]() { this->context.project_model->on_has_changed(); });
+
+  this->connect(this->project_ui->get_graph_tabs_widget_ref(),
+                &GraphTabsWidget::node_library_toggle_requested,
+                this,
+                &HesiodApplication::on_toggle_node_library_pan);
 
   // Project -> HesiodApplication
   this->context.project_model->project_name_changed = [this]()
@@ -485,6 +535,9 @@ void HesiodApplication::on_load()
 {
   Logger::log()->trace("HesiodApplication::on_load");
 
+  if (!this->confirm_discard_unsaved_changes("Load"))
+    return;
+
   fs::path path = this->context.project_model->get_path();
 
   QString load_fname = QFileDialog::getOpenFileName(this->main_window,
@@ -516,6 +569,9 @@ void HesiodApplication::on_open_recent(const std::string &fname)
     return;
   }
 
+  if (!this->confirm_discard_unsaved_changes("Open Recent"))
+    return;
+
   this->load_project_model_and_ui(fname);
   this->add_recent_file(fname);
 }
@@ -523,6 +579,9 @@ void HesiodApplication::on_open_recent(const std::string &fname)
 void HesiodApplication::on_load_ready_made()
 {
   Logger::log()->trace("HesiodApplication::on_load_ready_made");
+
+  if (!this->confirm_discard_unsaved_changes("Open Ready-made Example"))
+    return;
 
   std::string path = this->context.app_settings.global.ready_made_path;
   auto       *ex_dialog = new ExampleSelectorDialog(QString::fromStdString(path));
@@ -540,17 +599,11 @@ void HesiodApplication::on_new()
 {
   Logger::log()->trace("HesiodApplication::on_new");
 
-  QMessageBox::StandardButton reply;
-  reply = QMessageBox::question(nullptr,
-                                "New",
-                                "Clear everything, are you sure?",
-                                QMessageBox::Yes | QMessageBox::No);
+  if (!this->confirm_discard_unsaved_changes("New"))
+    return;
 
-  if (reply == QMessageBox::Yes)
-  {
-    this->cleanup();
-    this->load_project_model_and_ui();
-  }
+  this->cleanup();
+  this->load_project_model_and_ui();
 }
 
 void HesiodApplication::on_online_help()
@@ -581,18 +634,12 @@ void HesiodApplication::on_quit()
 {
   Logger::log()->trace("HesiodApplication::on_quit");
 
-  QMessageBox::StandardButton reply;
-  reply = QMessageBox::question(nullptr,
-                                "Quit",
-                                "Quitting the application, are you sure?",
-                                QMessageBox::Yes | QMessageBox::No);
+  if (!this->confirm_discard_unsaved_changes("Quit"))
+    return;
 
-  if (reply == QMessageBox::Yes)
-  {
-    QApplication::quit();
-    this->main_window->save_geometry();
-    this->context.save_settings();
-  }
+  QApplication::quit();
+  this->main_window->save_geometry();
+  this->context.save_settings();
 }
 
 void HesiodApplication::on_save()
@@ -651,6 +698,18 @@ void HesiodApplication::on_save_copy()
     fs::path fname = insert_before_extension(path, "_" + timestamp());
     this->save_project_model_and_ui(fname.string());
   }
+}
+
+void HesiodApplication::on_toggle_node_library_pan()
+{
+  bool new_state = !this->context.app_settings.node_editor.show_node_library_pan;
+  this->context.app_settings.node_editor.show_node_library_pan = new_state;
+
+  if (this->show_node_library_pan_action)
+    this->show_node_library_pan_action->setChecked(new_state);
+
+  if (this->project_ui)
+    this->project_ui->get_graph_tabs_widget_ref()->set_show_node_library_pan(new_state);
 }
 
 void HesiodApplication::save_backup(const std::string &fname)
@@ -874,12 +933,20 @@ void HesiodApplication::setup_menu_bar()
     view_menu->addAction(show_viewer_action);
   }
 
-  auto *show_node_settings_pan_action = new QAction("Show Node Settings Pan", this);
+  auto *show_node_settings_pan_action = new QAction("Show Node Settings Panel", this);
   show_node_settings_pan_action->setCheckable(true);
   {
     bool state = this->context.app_settings.node_editor.show_node_settings_pan;
     show_node_settings_pan_action->setChecked(state);
     view_menu->addAction(show_node_settings_pan_action);
+  }
+
+  this->show_node_library_pan_action = new QAction("Show Node Library Panel", this);
+  this->show_node_library_pan_action->setCheckable(true);
+  {
+    bool state = this->context.app_settings.node_editor.show_node_library_pan;
+    this->show_node_library_pan_action->setChecked(state);
+    view_menu->addAction(this->show_node_library_pan_action);
   }
 
   // --- connections
@@ -951,6 +1018,11 @@ void HesiodApplication::setup_menu_bar()
         this->project_ui->get_graph_tabs_widget_ref()->set_show_node_settings_widget(
             new_state);
       });
+
+  this->connect(this->show_node_library_pan_action,
+                &QAction::triggered,
+                this,
+                &HesiodApplication::on_toggle_node_library_pan);
 
   this->connect(
       show_layout_manager,

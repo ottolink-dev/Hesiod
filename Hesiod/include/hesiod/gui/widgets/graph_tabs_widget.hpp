@@ -30,6 +30,7 @@ public:
   void clear();
   void set_show_node_settings_widget(bool new_state);
   void set_show_viewer(bool new_state);
+  void set_show_node_library_pan(bool new_state);
 
   // --- Serialization ---
   void           json_from(nlohmann::json const &json);
@@ -45,6 +46,7 @@ signals:
   void has_changed();
   void new_node_created(const std::string &graph_id, const std::string &id);
   void node_deleted(const std::string &graph_id, const std::string &id);
+  void node_library_toggle_requested();
 
   // --- Graph
   void update_started();
