@@ -3,8 +3,8 @@
  * this software. */
 #include <QGridLayout>
 #include <QSplitter>
-#include <QToolButton>
 #include <QTimer>
+#include <QToolButton>
 
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/widgets/graph_editor_widget.hpp"
@@ -45,17 +45,6 @@ NodeSettingsWidget *GraphEditorWidget::get_node_settings_widget() const
 }
 
 Viewer3D *GraphEditorWidget::get_viewer() const { return this->viewer; }
-
-void GraphEditorWidget::set_node_library_visible(bool new_state)
-{
-  if (this->node_library_widget)
-    this->node_library_widget->setVisible(new_state);
-
-  // arrow points at the panel's collapse direction
-  if (this->node_library_toggle_button)
-    this->node_library_toggle_button->setArrowType(new_state ? Qt::LeftArrow
-                                                             : Qt::RightArrow);
-}
 
 void GraphEditorWidget::json_from(nlohmann::json const &json)
 {
@@ -111,6 +100,17 @@ nlohmann::json GraphEditorWidget::json_to() const
   }
 
   return json;
+}
+
+void GraphEditorWidget::set_node_library_visible(bool new_state)
+{
+  if (this->node_library_widget)
+    this->node_library_widget->setVisible(new_state);
+
+  // arrow points at the panel's collapse direction
+  if (this->node_library_toggle_button)
+    this->node_library_toggle_button->setArrowType(new_state ? Qt::LeftArrow
+                                                             : Qt::RightArrow);
 }
 
 void GraphEditorWidget::setup_connections()

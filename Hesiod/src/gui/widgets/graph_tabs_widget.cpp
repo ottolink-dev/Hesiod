@@ -183,6 +183,13 @@ void GraphTabsWidget::on_node_deleted(const std::string &graph_id, const std::st
   Q_EMIT this->has_changed();
 }
 
+void GraphTabsWidget::set_show_node_library_pan(bool new_state)
+{
+  for (auto &[id, gew] : this->graph_editor_widget_map)
+    if (gew)
+      gew->set_node_library_visible(new_state);
+}
+
 void GraphTabsWidget::set_show_node_settings_widget(bool new_state)
 {
   this->show_node_settings_widget = new_state;
@@ -205,13 +212,6 @@ void GraphTabsWidget::set_show_viewer(bool new_state)
     if (gew && gew->get_viewer())
       gew->get_viewer()->setVisible(show_viewer);
   }
-}
-
-void GraphTabsWidget::set_show_node_library_pan(bool new_state)
-{
-  for (auto &[id, gew] : this->graph_editor_widget_map)
-    if (gew)
-      gew->set_node_library_visible(new_state);
 }
 
 void GraphTabsWidget::set_selected_tab(const std::string &graph_id)

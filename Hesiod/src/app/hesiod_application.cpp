@@ -607,18 +607,6 @@ void HesiodApplication::on_project_settings()
   dialog->exec();
 }
 
-void HesiodApplication::on_toggle_node_library_pan()
-{
-  bool new_state = !this->context.app_settings.node_editor.show_node_library_pan;
-  this->context.app_settings.node_editor.show_node_library_pan = new_state;
-
-  if (this->show_node_library_pan_action)
-    this->show_node_library_pan_action->setChecked(new_state);
-
-  if (this->project_ui)
-    this->project_ui->get_graph_tabs_widget_ref()->set_show_node_library_pan(new_state);
-}
-
 void HesiodApplication::on_quit()
 {
   Logger::log()->trace("HesiodApplication::on_quit");
@@ -687,6 +675,18 @@ void HesiodApplication::on_save_copy()
     fs::path fname = insert_before_extension(path, "_" + timestamp());
     this->save_project_model_and_ui(fname.string());
   }
+}
+
+void HesiodApplication::on_toggle_node_library_pan()
+{
+  bool new_state = !this->context.app_settings.node_editor.show_node_library_pan;
+  this->context.app_settings.node_editor.show_node_library_pan = new_state;
+
+  if (this->show_node_library_pan_action)
+    this->show_node_library_pan_action->setChecked(new_state);
+
+  if (this->project_ui)
+    this->project_ui->get_graph_tabs_widget_ref()->set_show_node_library_pan(new_state);
 }
 
 void HesiodApplication::save_backup(const std::string &fname)

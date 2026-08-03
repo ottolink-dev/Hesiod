@@ -53,11 +53,12 @@ public:
   bool confirm_discard_unsaved_changes(const QString &action_title);
 
   // --- Context
-  QApplication     &get_qapp();
+  QApplication &get_qapp();
+
+  BlenderStreamer  &get_blender_streamer();
   AppContext       &get_context();
   const AppContext &get_context() const;
   ProjectUI        *get_project_ui_ref();
-  BlenderStreamer  &get_blender_streamer();
 
 private slots:
   // --- User actions
@@ -68,12 +69,12 @@ private slots:
   void on_new();
   void on_online_help();
   void on_project_settings();
-  void on_toggle_node_library_pan();
   void on_quit();
   void on_open_recent(const std::string &fname);
   void on_save();
   void on_save_as();
   void on_save_copy();
+  void on_toggle_node_library_pan();
   void show_about();
   void show_quick_help();
 
@@ -92,7 +93,7 @@ private:
   std::unique_ptr<ProjectUI> project_ui;            // because top-level UI
   AppSettingsWindow         *app_settings_window;   // owned by MainWindow
 
-  QMenu *recent_files_menu = nullptr; // owned by the menu bar
+  QMenu            *recent_files_menu = nullptr;  // owned by the menu bar
   QPointer<QAction> show_node_library_pan_action; // owned by the menu bar
 
   BlenderStreamer blender_streamer;

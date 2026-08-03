@@ -34,7 +34,7 @@ public:
   GraphNodeWidget    *get_graph_node_widget() const;
   NodeSettingsWidget *get_node_settings_widget() const;
   Viewer3D           *get_viewer() const;
-  void               set_node_library_visible(bool new_state);
+  void                set_node_library_visible(bool new_state);
 
 signals:
   void node_library_toggle_requested();
