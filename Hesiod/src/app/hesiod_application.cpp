@@ -221,6 +221,28 @@ void HesiodApplication::cleanup()
     this->context.project_model->cleanup();
 }
 
+bool HesiodApplication::confirm_discard_unsaved_changes(const QString &action_title)
+{
+  if (!this->context.project_model || !this->context.project_model->get_is_dirty())
+    return true;
+
+  QMessageBox::StandardButton reply = QMessageBox::warning(
+      this->main_window,
+      action_title,
+      "The project has unsaved changes.",
+      QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel,
+      QMessageBox::Save);
+
+  if (reply == QMessageBox::Save)
+  {
+    this->on_save();
+    // still dirty means the user backed out of the save-as dialog
+    return !this->context.project_model->get_is_dirty();
+  }
+
+  return reply == QMessageBox::Discard;
+}
+
 BlenderStreamer &HesiodApplication::get_blender_streamer()
 {
   return this->blender_streamer;
@@ -485,6 +507,9 @@ void HesiodApplication::on_load()
 {
   Logger::log()->trace("HesiodApplication::on_load");
 
+  if (!this->confirm_discard_unsaved_changes("Load"))
+    return;
+
   fs::path path = this->context.project_model->get_path();
 
   QString load_fname = QFileDialog::getOpenFileName(this->main_window,
@@ -516,6 +541,9 @@ void HesiodApplication::on_open_recent(const std::string &fname)
     return;
   }
 
+  if (!this->confirm_discard_unsaved_changes("Open Recent"))
+    return;
+
   this->load_project_model_and_ui(fname);
   this->add_recent_file(fname);
 }
@@ -523,6 +551,9 @@ void HesiodApplication::on_open_recent(const std::string &fname)
 void HesiodApplication::on_load_ready_made()
 {
   Logger::log()->trace("HesiodApplication::on_load_ready_made");
+
+  if (!this->confirm_discard_unsaved_changes("Open Ready-made Example"))
+    return;
 
   std::string path = this->context.app_settings.global.ready_made_path;
   auto       *ex_dialog = new ExampleSelectorDialog(QString::fromStdString(path));
@@ -540,17 +571,11 @@ void HesiodApplication::on_new()
 {
   Logger::log()->trace("HesiodApplication::on_new");
 
-  QMessageBox::StandardButton reply;
-  reply = QMessageBox::question(nullptr,
-                                "New",
-                                "Clear everything, are you sure?",
-                                QMessageBox::Yes | QMessageBox::No);
+  if (!this->confirm_discard_unsaved_changes("New"))
+    return;
 
-  if (reply == QMessageBox::Yes)
-  {
-    this->cleanup();
-    this->load_project_model_and_ui();
-  }
+  this->cleanup();
+  this->load_project_model_and_ui();
 }
 
 void HesiodApplication::on_online_help()
@@ -581,18 +606,12 @@ void HesiodApplication::on_quit()
 {
   Logger::log()->trace("HesiodApplication::on_quit");
 
-  QMessageBox::StandardButton reply;
-  reply = QMessageBox::question(nullptr,
-                                "Quit",
-                                "Quitting the application, are you sure?",
-                                QMessageBox::Yes | QMessageBox::No);
+  if (!this->confirm_discard_unsaved_changes("Quit"))
+    return;
 
-  if (reply == QMessageBox::Yes)
-  {
-    QApplication::quit();
-    this->main_window->save_geometry();
-    this->context.save_settings();
-  }
+  QApplication::quit();
+  this->main_window->save_geometry();
+  this->context.save_settings();
 }
 
 void HesiodApplication::on_save()
