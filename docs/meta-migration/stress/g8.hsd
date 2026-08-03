@@ -1,0 +1,2319 @@
+{
+    "Hesiod version": "v0.5.2",
+    "bake_config": {
+        "force_auto_export": true,
+        "force_distributed": true,
+        "nvariants": 0,
+        "rename_export_files": true,
+        "resolution": 1024
+    },
+    "comment": "",
+    "graph_manager": {
+        "export_param": {
+            "export_path": "",
+            "ids": [],
+            "overlap": 0.5,
+            "shape.x": 1024,
+            "shape.y": 1024,
+            "tiling.x": 4,
+            "tiling.y": 4
+        },
+        "graph_nodes": {
+            "graph": {
+                "id": "graph",
+                "id_count": 22,
+                "links": [
+                    {
+                        "node_id_from": "16",
+                        "node_id_to": "14",
+                        "port_id_from": "cloud",
+                        "port_id_to": "cloud"
+                    },
+                    {
+                        "node_id_from": "17",
+                        "node_id_to": "14",
+                        "port_id_from": "path",
+                        "port_id_to": "path"
+                    },
+                    {
+                        "node_id_from": "17",
+                        "node_id_to": "18",
+                        "port_id_from": "path",
+                        "port_id_to": "path"
+                    },
+                    {
+                        "node_id_from": "18",
+                        "node_id_to": "14",
+                        "port_id_from": "heightmap",
+                        "port_id_to": "scalar"
+                    },
+                    {
+                        "node_id_from": "16",
+                        "node_id_to": "19",
+                        "port_id_from": "cloud",
+                        "port_id_to": "cloud"
+                    },
+                    {
+                        "node_id_from": "19",
+                        "node_id_to": "20",
+                        "port_id_from": "heightmap",
+                        "port_id_to": "input"
+                    },
+                    {
+                        "node_id_from": "20",
+                        "node_id_to": "14",
+                        "port_id_from": "normal map",
+                        "port_id_to": "normal map"
+                    },
+                    {
+                        "node_id_from": "21",
+                        "node_id_to": "14",
+                        "port_id_from": "texture",
+                        "port_id_to": "texture"
+                    }
+                ],
+                "model_config": {
+                    "overlap": 0.5,
+                    "shape.x": 2048,
+                    "shape.y": 2048,
+                    "tiling.x": 4,
+                    "tiling.y": 4
+                },
+                "nodes": [
+                    {
+                        "comment": "",
+                        "id": "14",
+                        "label": "Preview",
+                        "runtime_info": {
+                            "eval_count": 57,
+                            "time_creation": 1785426032671,
+                            "time_last_update": 1785780807618,
+                            "update_time": 0.018200000748038292
+                        }
+                    },
+                    {
+                        "_meta": {
+                            "method": {
+                                "metadata": {
+                                    "compat.legacy_type": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "Enumeration"
+                                    },
+                                    "constraints.enum_items": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::vector<std::pair<int, std::string>>",
+                                        "value": [
+                                            {
+                                                "label": "Halton sequence",
+                                                "value": 1
+                                            },
+                                            {
+                                                "label": "Hammersley sequence",
+                                                "value": 2
+                                            },
+                                            {
+                                                "label": "Latin Hypercube Sampling",
+                                                "value": 3
+                                            },
+                                            {
+                                                "label": "Random",
+                                                "value": 0
+                                            }
+                                        ]
+                                    },
+                                    "snapshot_manager": {
+                                        "snapshots": {}
+                                    },
+                                    "ui.label": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "method"
+                                    },
+                                    "ui.tooltip": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "<div><font size=\"+1\"><b>method</font></b><br><font color='#949495'>Generation method.</div>"
+                                    },
+                                    "ui.widget_type": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "EnumComboBox"
+                                    }
+                                },
+                                "type": "int",
+                                "value": 3
+                            },
+                            "npoints": {
+                                "metadata": {
+                                    "compat.legacy_type": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "Integer"
+                                    },
+                                    "constraints.max": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "int",
+                                        "value": 2147483647
+                                    },
+                                    "constraints.min": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "int",
+                                        "value": 1
+                                    },
+                                    "snapshot_manager": {
+                                        "snapshots": {}
+                                    },
+                                    "ui.format": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "{}"
+                                    },
+                                    "ui.label": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "npoints"
+                                    },
+                                    "ui.tooltip": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "<div><font size=\"+1\"><b>npoints</font></b><br><font color='#949495'>Number of points.</div>"
+                                    },
+                                    "ui.widget_type": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "SliderInt"
+                                    }
+                                },
+                                "type": "int",
+                                "value": 50
+                            },
+                            "remap": {
+                                "metadata": {
+                                    "compat.legacy_type": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "Value range"
+                                    },
+                                    "constraints.max": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "float",
+                                        "value": 2.0
+                                    },
+                                    "constraints.min": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "float",
+                                        "value": -1.0
+                                    },
+                                    "snapshot_manager": {
+                                        "snapshots": {}
+                                    },
+                                    "ui.active": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "bool",
+                                        "value": true
+                                    },
+                                    "ui.format": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "{:.3f}"
+                                    },
+                                    "ui.has_active_toggle": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "bool",
+                                        "value": true
+                                    },
+                                    "ui.label": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "remap"
+                                    },
+                                    "ui.tooltip": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "<div><font size=\"+1\"><b>remap</font></b><br><font color='#949495'>Remap the point values to a specified range, defaulting to [0,\n1].</div>"
+                                    },
+                                    "ui.widget_type": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "RangeBar"
+                                    }
+                                },
+                                "type": "glm::vec2",
+                                "value": {
+                                    "x": 0.0,
+                                    "y": 1.0
+                                }
+                            },
+                            "seed": {
+                                "metadata": {
+                                    "compat.legacy_type": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "Random seed number"
+                                    },
+                                    "compat.seed": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "bool",
+                                        "value": true
+                                    },
+                                    "constraints.max": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "int",
+                                        "value": 2147483647
+                                    },
+                                    "constraints.min": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "int",
+                                        "value": 0
+                                    },
+                                    "constraints.step": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "int",
+                                        "value": 1
+                                    },
+                                    "snapshot_manager": {
+                                        "snapshots": {}
+                                    },
+                                    "ui.label": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "Seed"
+                                    },
+                                    "ui.tooltip": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "<div><font size=\"+1\"><b>Seed</font></b><br><font color='#949495'>Random seed number. The random seed is an offset to the\nrandomized process. A different seed will produce a new result.</div>"
+                                    },
+                                    "ui.widget_type": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "Input"
+                                    }
+                                },
+                                "type": "int",
+                                "value": 0
+                            },
+                            "snapshot_manager": {
+                                "snapshots": {}
+                            }
+                        },
+                        "comment": "",
+                        "id": "16",
+                        "label": "CloudRandom",
+                        "runtime_info": {
+                            "eval_count": 2,
+                            "time_creation": 1785426497028,
+                            "time_last_update": 1785780784116,
+                            "update_time": 0.08709999918937683
+                        }
+                    },
+                    {
+                        "_meta": {
+                            "closed": {
+                                "metadata": {
+                                    "compat.legacy_type": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "Bool"
+                                    },
+                                    "snapshot_manager": {
+                                        "snapshots": {}
+                                    },
+                                    "ui.category": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "Main Parameters"
+                                    },
+                                    "ui.label": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "Closed Path"
+                                    },
+                                    "ui.tooltip": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "<div><font size=\"+1\"><b>Closed Path</font></b><br><font color='#949495'>No description</div>"
+                                    },
+                                    "ui.widget_type": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "Checkbox"
+                                    }
+                                },
+                                "type": "bool",
+                                "value": false
+                            },
+                            "path": {
+                                "metadata": {
+                                    "compat.legacy_type": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "Cloud"
+                                    },
+                                    "snapshot_manager": {
+                                        "snapshots": {}
+                                    },
+                                    "ui.category": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "Main Parameters"
+                                    },
+                                    "ui.closed": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "bool",
+                                        "value": true
+                                    },
+                                    "ui.label": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "Path"
+                                    },
+                                    "ui.tooltip": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "<div><font size=\"+1\"><b>Path</font></b><br><font color='#949495'>The sequence of points defining the path. Each point consists of\ncoordinates (x, y) and an elevation (z).</div>"
+                                    },
+                                    "ui.widget_type": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "PointsEditor"
+                                    }
+                                },
+                                "type": "std::vector<glm::vec3>",
+                                "value": [
+                                    {
+                                        "x": 0.09534883499145508,
+                                        "y": 0.2750000059604645,
+                                        "z": 1.0
+                                    },
+                                    {
+                                        "x": 0.2488372027873993,
+                                        "y": 0.2549999952316284,
+                                        "z": 1.0
+                                    },
+                                    {
+                                        "x": 0.5186046361923218,
+                                        "y": 0.2549999952316284,
+                                        "z": 1.0
+                                    },
+                                    {
+                                        "x": 0.7093023061752319,
+                                        "y": 0.3400000035762787,
+                                        "z": 1.0
+                                    },
+                                    {
+                                        "x": 0.8348837494850159,
+                                        "y": 0.48500001430511475,
+                                        "z": 1.0
+                                    },
+                                    {
+                                        "x": 0.9186046719551086,
+                                        "y": 0.675000011920929,
+                                        "z": 1.0
+                                    },
+                                    {
+                                        "x": 0.960465133190155,
+                                        "y": 0.8450000286102295,
+                                        "z": 1.0
+                                    }
+                                ]
+                            },
+                            "snapshot_manager": {
+                                "snapshots": {}
+                            }
+                        },
+                        "comment": "",
+                        "id": "17",
+                        "label": "Path",
+                        "runtime_info": {
+                            "eval_count": 19,
+                            "time_creation": 1785426505878,
+                            "time_last_update": 1785780784116,
+                            "update_time": 0.013899999670684338
+                        }
+                    },
+                    {
+                        "_meta": {
+                            "filled": {
+                                "metadata": {
+                                    "compat.legacy_type": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "Bool"
+                                    },
+                                    "snapshot_manager": {
+                                        "snapshots": {}
+                                    },
+                                    "ui.label": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "filled"
+                                    },
+                                    "ui.tooltip": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "<div><font size=\"+1\"><b>filled</font></b><br><font color='#949495'>Whether the resulting path contour is filled (input Path needs\nto be closed).</div>"
+                                    },
+                                    "ui.widget_type": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "Checkbox"
+                                    }
+                                },
+                                "type": "bool",
+                                "value": false
+                            },
+                            "post_gain": {
+                                "metadata": {
+                                    "compat.legacy_type": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "Float"
+                                    },
+                                    "constraints.max": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "float",
+                                        "value": 10.0
+                                    },
+                                    "constraints.min": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "float",
+                                        "value": 0.009999999776482582
+                                    },
+                                    "snapshot_manager": {
+                                        "snapshots": {}
+                                    },
+                                    "ui.category": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "Post-Processing"
+                                    },
+                                    "ui.format": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "{:.3f}"
+                                    },
+                                    "ui.label": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "Gain"
+                                    },
+                                    "ui.tooltip": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "<div><font size=\"+1\"><b>Gain</font></b><br><font color='#949495'>Mid-centered gain transformation applied to the elevation\nvalues. This is a non-linear recurve operator centered around\nthe mid elevation (typically 0.5). Increasing the gain pushes\nvalues toward the minimum and maximum elevations, creating\nflatter low/high regions with a steeper transition around the\nmidpoint.</div>"
+                                    },
+                                    "ui.widget_type": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "SliderFloat"
+                                    }
+                                },
+                                "type": "float",
+                                "value": 1.0
+                            },
+                            "post_gamma": {
+                                "metadata": {
+                                    "compat.legacy_type": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "Float"
+                                    },
+                                    "constraints.max": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "float",
+                                        "value": 10.0
+                                    },
+                                    "constraints.min": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "float",
+                                        "value": 0.009999999776482582
+                                    },
+                                    "snapshot_manager": {
+                                        "snapshots": {}
+                                    },
+                                    "ui.category": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "Post-Processing"
+                                    },
+                                    "ui.format": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "{:.3f}"
+                                    },
+                                    "ui.label": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "Gamma"
+                                    },
+                                    "ui.tooltip": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "<div><font size=\"+1\"><b>Gamma</font></b><br><font color='#949495'>Standard gamma correction applied to the elevation values. This\nis a monotonic power-law remapping that shifts emphasis toward\nlow or high elevations, making the overall shape sharper or\nbulkier without changing its ordering.</div>"
+                                    },
+                                    "ui.widget_type": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "SliderFloat"
+                                    }
+                                },
+                                "type": "float",
+                                "value": 1.0
+                            },
+                            "post_inverse": {
+                                "metadata": {
+                                    "compat.legacy_type": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "Bool"
+                                    },
+                                    "snapshot_manager": {
+                                        "snapshots": {}
+                                    },
+                                    "ui.category": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "Post-Processing"
+                                    },
+                                    "ui.label": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "Invert Output"
+                                    },
+                                    "ui.tooltip": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "<div><font size=\"+1\"><b>Invert Output</font></b><br><font color='#949495'>Inverts the output values after processing, flipping low and\nhigh values across the midrange.</div>"
+                                    },
+                                    "ui.widget_type": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "Checkbox"
+                                    }
+                                },
+                                "type": "bool",
+                                "value": false
+                            },
+                            "post_remap": {
+                                "metadata": {
+                                    "compat.legacy_type": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "Value range"
+                                    },
+                                    "constraints.max": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "float",
+                                        "value": 2.0
+                                    },
+                                    "constraints.min": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "float",
+                                        "value": -1.0
+                                    },
+                                    "snapshot_manager": {
+                                        "snapshots": {}
+                                    },
+                                    "ui.active": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "bool",
+                                        "value": true
+                                    },
+                                    "ui.category": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "Post-Processing"
+                                    },
+                                    "ui.format": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "{:.3f}"
+                                    },
+                                    "ui.has_active_toggle": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "bool",
+                                        "value": true
+                                    },
+                                    "ui.label": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "Remap Range"
+                                    },
+                                    "ui.state": {
+                                        "metadata": {
+                                            "RangeBar.locked_xy": {
+                                                "metadata": {
+                                                    "snapshot_manager": {
+                                                        "snapshots": {}
+                                                    }
+                                                },
+                                                "type": "bool",
+                                                "value": false
+                                            },
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            },
+                                            "ui.widget_type": {
+                                                "metadata": {
+                                                    "snapshot_manager": {
+                                                        "snapshots": {}
+                                                    }
+                                                },
+                                                "type": "std::string",
+                                                "value": "None"
+                                            }
+                                        },
+                                        "type": "bool",
+                                        "value": true
+                                    },
+                                    "ui.tooltip": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "<div><font size=\"+1\"><b>Remap Range</font></b><br><font color='#949495'>Linearly remaps the output values to a specified target range\n(default is [0, 1]).</div>"
+                                    },
+                                    "ui.widget_type": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "RangeBar"
+                                    }
+                                },
+                                "type": "glm::vec2",
+                                "value": {
+                                    "x": 0.0,
+                                    "y": 1.0
+                                }
+                            },
+                            "post_saturate": {
+                                "metadata": {
+                                    "compat.legacy_type": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "Value range"
+                                    },
+                                    "constraints.max": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "float",
+                                        "value": 2.0
+                                    },
+                                    "constraints.min": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "float",
+                                        "value": -1.0
+                                    },
+                                    "snapshot_manager": {
+                                        "snapshots": {}
+                                    },
+                                    "ui.active": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "bool",
+                                        "value": false
+                                    },
+                                    "ui.category": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "Post-Processing"
+                                    },
+                                    "ui.format": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "{:.3f}"
+                                    },
+                                    "ui.has_active_toggle": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "bool",
+                                        "value": true
+                                    },
+                                    "ui.label": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "Saturation Range"
+                                    },
+                                    "ui.state": {
+                                        "metadata": {
+                                            "RangeBar.locked_xy": {
+                                                "metadata": {
+                                                    "snapshot_manager": {
+                                                        "snapshots": {}
+                                                    }
+                                                },
+                                                "type": "bool",
+                                                "value": false
+                                            },
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            },
+                                            "ui.widget_type": {
+                                                "metadata": {
+                                                    "snapshot_manager": {
+                                                        "snapshots": {}
+                                                    }
+                                                },
+                                                "type": "std::string",
+                                                "value": "None"
+                                            }
+                                        },
+                                        "type": "bool",
+                                        "value": true
+                                    },
+                                    "ui.tooltip": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "<div><font size=\"+1\"><b>Saturation Range</font></b><br><font color='#949495'>Modifies the amplitude of elevations by first clamping them to a\ngiven interval and then scaling them so that the restricted\ninterval matches the original input range. This enhances\ncontrast in elevation variations while maintaining overall\nstructure.</div>"
+                                    },
+                                    "ui.widget_type": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "RangeBar"
+                                    }
+                                },
+                                "type": "glm::vec2",
+                                "value": {
+                                    "x": 0.0,
+                                    "y": 1.0
+                                }
+                            },
+                            "post_smoothing_radius": {
+                                "metadata": {
+                                    "compat.legacy_type": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "Float"
+                                    },
+                                    "constraints.max": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "float",
+                                        "value": 0.05000000074505806
+                                    },
+                                    "constraints.min": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "float",
+                                        "value": 0.0
+                                    },
+                                    "snapshot_manager": {
+                                        "snapshots": {}
+                                    },
+                                    "ui.category": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "Post-Processing"
+                                    },
+                                    "ui.format": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "{:.3f}"
+                                    },
+                                    "ui.label": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "Smoothing Radius"
+                                    },
+                                    "ui.tooltip": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "<div><font size=\"+1\"><b>Smoothing Radius</font></b><br><font color='#949495'>Defines the radius for post-processing smoothing, determining\nthe size of the neighborhood used to average local values and\nreduce high-frequency detail. A radius of 0 disables smoothing.</div>"
+                                    },
+                                    "ui.widget_type": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "SliderFloat"
+                                    }
+                                },
+                                "type": "float",
+                                "value": 0.0
+                            },
+                            "snapshot_manager": {
+                                "snapshots": {}
+                            },
+                            "ui.state": {
+                                "metadata": {
+                                    "snapshot_manager": {
+                                        "snapshots": {}
+                                    },
+                                    "ui.widget_type": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "None"
+                                    }
+                                },
+                                "type": "bool",
+                                "value": true
+                            }
+                        },
+                        "comment": "",
+                        "id": "18",
+                        "label": "PathToHeightmap",
+                        "runtime_info": {
+                            "eval_count": 20,
+                            "time_creation": 1785426549731,
+                            "time_last_update": 1785780793989,
+                            "update_time": 20.51799964904785
+                        }
+                    },
+                    {
+                        "_meta": {
+                            "itp_method": {
+                                "metadata": {
+                                    "compat.legacy_type": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "Enumeration"
+                                    },
+                                    "constraints.enum_items": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::vector<std::pair<int, std::string>>",
+                                        "value": [
+                                            {
+                                                "label": "Delaunay",
+                                                "value": 0
+                                            },
+                                            {
+                                                "label": "Gaussian Weighting",
+                                                "value": 3
+                                            },
+                                            {
+                                                "label": "Inverse Weighting Distance",
+                                                "value": 2
+                                            },
+                                            {
+                                                "label": "Nearest",
+                                                "value": 1
+                                            }
+                                        ]
+                                    },
+                                    "snapshot_manager": {
+                                        "snapshots": {}
+                                    },
+                                    "ui.label": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "Interpolation Method"
+                                    },
+                                    "ui.tooltip": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "<div><font size=\"+1\"><b>Interpolation Method</font></b><br><font color='#949495'>No description</div>"
+                                    },
+                                    "ui.widget_type": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "EnumComboBox"
+                                    }
+                                },
+                                "type": "int",
+                                "value": 3
+                            },
+                            "snapshot_manager": {
+                                "snapshots": {}
+                            }
+                        },
+                        "comment": "",
+                        "id": "19",
+                        "label": "CloudToArrayInterp",
+                        "runtime_info": {
+                            "eval_count": 4,
+                            "time_creation": 1785426616762,
+                            "time_last_update": 1785780793968,
+                            "update_time": 9594.1181640625
+                        }
+                    },
+                    {
+                        "comment": "",
+                        "id": "20",
+                        "label": "HeightmapToNormalMap",
+                        "runtime_info": {
+                            "eval_count": 4,
+                            "time_creation": 1785426667585,
+                            "time_last_update": 1785780794736,
+                            "update_time": 747.8609008789063
+                        }
+                    },
+                    {
+                        "_meta": {
+                            "clamp_alpha": {
+                                "metadata": {
+                                    "compat.legacy_type": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "Bool"
+                                    },
+                                    "snapshot_manager": {
+                                        "snapshots": {}
+                                    },
+                                    "ui.label": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "clamp_alpha"
+                                    },
+                                    "ui.tooltip": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "<div><font size=\"+1\"><b>clamp_alpha</font></b><br><font color='#949495'>Clamp to [0, 1] to input alpha map.</div>"
+                                    },
+                                    "ui.widget_type": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "Checkbox"
+                                    }
+                                },
+                                "type": "bool",
+                                "value": true
+                            },
+                            "gradient": {
+                                "metadata": {
+                                    "compat.legacy_type": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "Color gradient"
+                                    },
+                                    "snapshot_manager": {
+                                        "snapshots": {}
+                                    },
+                                    "ui.label": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "gradient"
+                                    },
+                                    "ui.tooltip": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "<div><font size=\"+1\"><b>gradient</font></b><br><font color='#949495'>Colormap as a manually defined color gradient.</div>"
+                                    },
+                                    "ui.widget_type": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "GradientEditor"
+                                    }
+                                },
+                                "type": "meta::ColorGradient",
+                                "value": {
+                                    "value": [
+                                        {
+                                            "color": [
+                                                0.572549045085907,
+                                                0.3764705955982208,
+                                                0.34117648005485535,
+                                                1.0
+                                            ],
+                                            "position": 0.0
+                                        },
+                                        {
+                                            "color": [
+                                                0.7058823704719543,
+                                                0.6078431606292725,
+                                                0.5803921818733215,
+                                                1.0
+                                            ],
+                                            "position": 0.06666667014360428
+                                        },
+                                        {
+                                            "color": [
+                                                0.43921568989753723,
+                                                0.3019607961177826,
+                                                0.32156863808631897,
+                                                1.0
+                                            ],
+                                            "position": 0.13333334028720856
+                                        },
+                                        {
+                                            "color": [
+                                                0.572549045085907,
+                                                0.3490196168422699,
+                                                0.45098039507865906,
+                                                1.0
+                                            ],
+                                            "position": 0.20000000298023224
+                                        },
+                                        {
+                                            "color": [
+                                                0.7490196228027344,
+                                                0.48627451062202454,
+                                                0.3686274588108063,
+                                                1.0
+                                            ],
+                                            "position": 0.2666666805744171
+                                        },
+                                        {
+                                            "color": [
+                                                0.7490196228027344,
+                                                0.29411765933036804,
+                                                0.3333333432674408,
+                                                1.0
+                                            ],
+                                            "position": 0.3333333432674408
+                                        },
+                                        {
+                                            "color": [
+                                                0.3529411852359772,
+                                                0.3176470696926117,
+                                                0.4901960790157318,
+                                                1.0
+                                            ],
+                                            "position": 0.4000000059604645
+                                        },
+                                        {
+                                            "color": [
+                                                0.6941176652908325,
+                                                0.4313725531101227,
+                                                0.46666666865348816,
+                                                1.0
+                                            ],
+                                            "position": 0.46666666865348816
+                                        },
+                                        {
+                                            "color": [
+                                                0.5764706134796143,
+                                                0.5921568870544434,
+                                                0.6313725709915161,
+                                                1.0
+                                            ],
+                                            "position": 0.5333333611488342
+                                        },
+                                        {
+                                            "color": [
+                                                0.5568627715110779,
+                                                0.27450981736183167,
+                                                0.32549020648002625,
+                                                1.0
+                                            ],
+                                            "position": 0.6000000238418579
+                                        },
+                                        {
+                                            "color": [
+                                                0.8117647171020508,
+                                                0.4941176474094391,
+                                                0.48235294222831726,
+                                                1.0
+                                            ],
+                                            "position": 0.6666666865348816
+                                        },
+                                        {
+                                            "color": [
+                                                0.7058823704719543,
+                                                0.5529412031173706,
+                                                0.46666666865348816,
+                                                1.0
+                                            ],
+                                            "position": 0.7333333492279053
+                                        },
+                                        {
+                                            "color": [
+                                                0.6000000238418579,
+                                                0.4745098054409027,
+                                                0.45098039507865906,
+                                                1.0
+                                            ],
+                                            "position": 0.800000011920929
+                                        },
+                                        {
+                                            "color": [
+                                                0.3960784375667572,
+                                                0.20000000298023224,
+                                                0.2549019753932953,
+                                                1.0
+                                            ],
+                                            "position": 0.8666666746139526
+                                        },
+                                        {
+                                            "color": [
+                                                0.8156862854957581,
+                                                0.6313725709915161,
+                                                0.4745098054409027,
+                                                1.0
+                                            ],
+                                            "position": 0.9333333373069763
+                                        },
+                                        {
+                                            "color": [
+                                                0.8196078538894653,
+                                                0.6549019813537598,
+                                                0.6078431606292725,
+                                                1.0
+                                            ],
+                                            "position": 1.0
+                                        }
+                                    ]
+                                }
+                            },
+                            "reverse_alpha": {
+                                "metadata": {
+                                    "compat.legacy_type": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "Bool"
+                                    },
+                                    "snapshot_manager": {
+                                        "snapshots": {}
+                                    },
+                                    "ui.label": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "reverse_alpha"
+                                    },
+                                    "ui.tooltip": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "<div><font size=\"+1\"><b>reverse_alpha</font></b><br><font color='#949495'>Reverse the input alpha map.</div>"
+                                    },
+                                    "ui.widget_type": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "Checkbox"
+                                    }
+                                },
+                                "type": "bool",
+                                "value": false
+                            },
+                            "reverse_colormap": {
+                                "metadata": {
+                                    "compat.legacy_type": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "Bool"
+                                    },
+                                    "snapshot_manager": {
+                                        "snapshots": {}
+                                    },
+                                    "ui.label": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "reverse_colormap"
+                                    },
+                                    "ui.tooltip": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "<div><font size=\"+1\"><b>reverse_colormap</font></b><br><font color='#949495'>Reverse the colormap range.</div>"
+                                    },
+                                    "ui.widget_type": {
+                                        "metadata": {
+                                            "snapshot_manager": {
+                                                "snapshots": {}
+                                            }
+                                        },
+                                        "type": "std::string",
+                                        "value": "Checkbox"
+                                    }
+                                },
+                                "type": "bool",
+                                "value": false
+                            },
+                            "snapshot_manager": {
+                                "snapshots": {}
+                            }
+                        },
+                        "comment": "",
+                        "id": "21",
+                        "label": "ColorizeGradient",
+                        "runtime_info": {
+                            "eval_count": 6,
+                            "time_creation": 1785426756564,
+                            "time_last_update": 1785780807136,
+                            "update_time": 0.05269999802112579
+                        }
+                    }
+                ],
+                "origin": [
+                    0.0,
+                    0.0
+                ],
+                "rotation_angle": 0.0,
+                "size": [
+                    1.0,
+                    1.0
+                ]
+            }
+        },
+        "graph_order": [
+            "graph"
+        ],
+        "id_count": 0
+    },
+    "graph_manager_widget": {
+        "frames": {
+            "graph": {
+                "current_bg_tag": "NONE"
+            }
+        }
+    },
+    "graph_tabs_widget": {
+        "graph_node_widgets": {
+            "graph": {
+                "comments": [],
+                "current_link_type": 2,
+                "graph_editor_widget.node_library_widget": {
+                    "Boundaries": {
+                        "children": {},
+                        "expanded": false
+                    },
+                    "Bridges": {
+                        "children": {},
+                        "expanded": false
+                    },
+                    "Converter": {
+                        "children": {},
+                        "expanded": false
+                    },
+                    "Debug": {
+                        "children": {},
+                        "expanded": false
+                    },
+                    "Erosion": {
+                        "children": {
+                            "Deposition": {
+                                "children": {},
+                                "expanded": false
+                            },
+                            "Hydraulic": {
+                                "children": {},
+                                "expanded": true
+                            },
+                            "Stratify": {
+                                "children": {},
+                                "expanded": false
+                            },
+                            "Water": {
+                                "children": {},
+                                "expanded": false
+                            }
+                        },
+                        "expanded": true
+                    },
+                    "Export": {
+                        "children": {},
+                        "expanded": false
+                    },
+                    "Filter": {
+                        "children": {
+                            "Advanced Filters": {
+                                "children": {},
+                                "expanded": false
+                            },
+                            "Range": {
+                                "children": {},
+                                "expanded": false
+                            },
+                            "Recast": {
+                                "children": {},
+                                "expanded": false
+                            },
+                            "Recurve": {
+                                "children": {},
+                                "expanded": false
+                            },
+                            "Smoothing": {
+                                "children": {},
+                                "expanded": false
+                            }
+                        },
+                        "expanded": false
+                    },
+                    "Geometry": {
+                        "children": {
+                            "Cloud": {
+                                "children": {},
+                                "expanded": false
+                            },
+                            "Path": {
+                                "children": {},
+                                "expanded": false
+                            }
+                        },
+                        "expanded": false
+                    },
+                    "Hydrology": {
+                        "children": {},
+                        "expanded": false
+                    },
+                    "Math": {
+                        "children": {
+                            "Base": {
+                                "children": {},
+                                "expanded": false
+                            },
+                            "Convolution": {
+                                "children": {},
+                                "expanded": false
+                            },
+                            "Gradient": {
+                                "children": {},
+                                "expanded": false
+                            }
+                        },
+                        "expanded": false
+                    },
+                    "Operator": {
+                        "children": {
+                            "Blend": {
+                                "children": {},
+                                "expanded": false
+                            },
+                            "Resynthesis": {
+                                "children": {},
+                                "expanded": false
+                            },
+                            "Tiling": {
+                                "children": {},
+                                "expanded": false
+                            },
+                            "Transform": {
+                                "children": {},
+                                "expanded": false
+                            }
+                        },
+                        "expanded": false
+                    },
+                    "Primitive": {
+                        "children": {
+                            "Authoring": {
+                                "children": {},
+                                "expanded": false
+                            },
+                            "Coherent": {
+                                "children": {},
+                                "expanded": false
+                            },
+                            "Function": {
+                                "children": {},
+                                "expanded": false
+                            },
+                            "Geological": {
+                                "children": {},
+                                "expanded": false
+                            },
+                            "Kernel": {
+                                "children": {},
+                                "expanded": false
+                            },
+                            "Random": {
+                                "children": {},
+                                "expanded": false
+                            }
+                        },
+                        "expanded": false
+                    },
+                    "Routing": {
+                        "children": {},
+                        "expanded": false
+                    },
+                    "Terrain Features": {
+                        "children": {
+                            "Advanced": {
+                                "children": {},
+                                "expanded": false
+                            },
+                            "Clustering": {
+                                "children": {},
+                                "expanded": false
+                            },
+                            "ForTexturing": {
+                                "children": {},
+                                "expanded": false
+                            },
+                            "Landform": {
+                                "children": {},
+                                "expanded": false
+                            },
+                            "Mask Operations": {
+                                "children": {},
+                                "expanded": false
+                            },
+                            "Morphology": {
+                                "children": {},
+                                "expanded": false
+                            },
+                            "Selector": {
+                                "children": {},
+                                "expanded": false
+                            }
+                        },
+                        "expanded": false
+                    },
+                    "Texture": {
+                        "children": {},
+                        "expanded": false
+                    },
+                    "WIP": {
+                        "children": {
+                            "DEPRECATED": {
+                                "children": {},
+                                "expanded": false
+                            }
+                        },
+                        "expanded": true
+                    }
+                },
+                "graph_editor_widget.viewer3d": {
+                    "current_node_id": "21",
+                    "height": 458,
+                    "is_node_pinned": false,
+                    "label": "3D Renderer",
+                    "renderer": {
+                        "add_ambiant_occlusion": true,
+                        "add_atmospheric_scattering": false,
+                        "add_fog": false,
+                        "add_water_foam": true,
+                        "add_water_waves": true,
+                        "alpha_x": 0.7700898051261902,
+                        "alpha_y": 6.313894748687744,
+                        "ambiant_occlusion_radius": 0.029999999329447746,
+                        "ambiant_occlusion_strength": 0.8009999990463257,
+                        "angle_spread_ratio": 0.0,
+                        "animate_waves": false,
+                        "apply_tonemap": false,
+                        "auto_rotate_camera": false,
+                        "auto_rotate_light": false,
+                        "bypass_shadow_map": false,
+                        "bypass_texture_albedo": false,
+                        "camera": {
+                            "far_plane": 100.0,
+                            "fov": 0.7850000262260437,
+                            "near_plane": 0.10000000149011612,
+                            "position": {
+                                "x": 0.3352581858634949,
+                                "y": 1.8142071962356567,
+                                "z": 1.8857141733169556
+                            },
+                            "target": {
+                                "x": 0.2770693004131317,
+                                "y": -0.0237599927932024,
+                                "z": -0.008511318825185299
+                            },
+                            "up": {
+                                "x": 0.0,
+                                "y": 1.0,
+                                "z": 0.0
+                            }
+                        },
+                        "color_deep_water": {
+                            "x": 0.0,
+                            "y": 0.15000000596046448,
+                            "z": 0.3499999940395355
+                        },
+                        "color_shallow_water": {
+                            "x": 0.25,
+                            "y": 0.8500000238418579,
+                            "z": 0.800000011920929
+                        },
+                        "distance": 2.6399998664855957,
+                        "foam_color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        },
+                        "foam_depth": 0.004999999888241291,
+                        "fog_color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        },
+                        "fog_density": 50.0,
+                        "fog_height": 0.10000000149011612,
+                        "fog_scattering_ratio": 0.699999988079071,
+                        "fog_strength": 0.5,
+                        "gamma_correction": 2.0,
+                        "height": 458,
+                        "hmap_h": 0.4000000059604645,
+                        "hmap_h0": 0.0,
+                        "hmap_wx": 2.0,
+                        "hmap_wy": 2.0,
+                        "light": {
+                            "position": {
+                                "x": -6.122223854064941,
+                                "y": 4.997701168060303,
+                                "z": 6.127100467681885
+                            },
+                            "target": {
+                                "x": 0.0,
+                                "y": 0.0,
+                                "z": 0.0
+                            }
+                        },
+                        "light_distance": 10.0,
+                        "light_phi": -0.7850000262260437,
+                        "light_theta": 0.5233333706855774,
+                        "mie_color": {
+                            "x": 1.0,
+                            "y": 0.800000011920929,
+                            "z": 0.699999988079071
+                        },
+                        "normal_map_scaling": 1.0,
+                        "normal_visualization": false,
+                        "pan_offset": {
+                            "x": 0.27719998359680176,
+                            "y": -0.0237599927932024
+                        },
+                        "rayleigh_color": {
+                            "x": 0.4000000059604645,
+                            "y": 0.6000000238418579,
+                            "z": 1.0
+                        },
+                        "render_hmap": true,
+                        "render_path": true,
+                        "render_plane": true,
+                        "render_points": true,
+                        "render_rocks": true,
+                        "render_trees": true,
+                        "render_type": 1,
+                        "render_water": true,
+                        "scale_h": 1.0,
+                        "scattering_density": 0.10000000149011612,
+                        "shadow_strength": 0.8999999761581421,
+                        "target": {
+                            "x": 0.0,
+                            "y": 0.0,
+                            "z": 0.0
+                        },
+                        "title": "",
+                        "viewer2d_settings.cmap": 3,
+                        "viewer2d_settings.hillshading": true,
+                        "viewer2d_settings.offset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "viewer2d_settings.sun_azimuth": 1.5700000524520874,
+                        "viewer2d_settings.sun_zenith": 1.0466667413711548,
+                        "viewer2d_settings.zoom": 0.8999999761581421,
+                        "water_color_depth": 0.014999999664723873,
+                        "water_spec_strength": 0.5,
+                        "waves_alpha": 0.5233333706855774,
+                        "waves_amplitude": 0.004999999888241291,
+                        "waves_kw": 256.0,
+                        "waves_normal_amplitude": 0.019999999552965164,
+                        "waves_speed": 0.20000000298023224,
+                        "width": 508,
+                        "wireframe_mode": false,
+                        "x": 2,
+                        "y": 0
+                    },
+                    "view_param_map": {
+                        "10": {
+                            "color": "mask",
+                            "elevation": "output",
+                            "normal_map": "",
+                            "path": "",
+                            "points": "",
+                            "water_depth": ""
+                        },
+                        "11": {
+                            "color": "output",
+                            "elevation": "input",
+                            "normal_map": "",
+                            "path": "",
+                            "points": "",
+                            "water_depth": ""
+                        },
+                        "12": {
+                            "color": "texture",
+                            "elevation": "level",
+                            "normal_map": "",
+                            "path": "",
+                            "points": "",
+                            "water_depth": ""
+                        },
+                        "13": {
+                            "color": "",
+                            "elevation": "input",
+                            "normal_map": "",
+                            "path": "",
+                            "points": "",
+                            "water_depth": ""
+                        },
+                        "14": {
+                            "color": "texture",
+                            "elevation": "elevation",
+                            "normal_map": "normal map",
+                            "path": "path",
+                            "points": "cloud",
+                            "water_depth": "water_depth"
+                        },
+                        "15": {
+                            "color": "",
+                            "elevation": "output",
+                            "normal_map": "",
+                            "path": "",
+                            "points": "",
+                            "water_depth": ""
+                        },
+                        "16": {
+                            "color": "",
+                            "elevation": "",
+                            "normal_map": "",
+                            "path": "",
+                            "points": "cloud",
+                            "water_depth": ""
+                        },
+                        "17": {
+                            "color": "",
+                            "elevation": "background",
+                            "normal_map": "",
+                            "path": "path",
+                            "points": "",
+                            "water_depth": ""
+                        },
+                        "18": {
+                            "color": "",
+                            "elevation": "heightmap",
+                            "normal_map": "",
+                            "path": "path",
+                            "points": "",
+                            "water_depth": ""
+                        },
+                        "19": {
+                            "color": "",
+                            "elevation": "heightmap",
+                            "normal_map": "",
+                            "path": "",
+                            "points": "cloud",
+                            "water_depth": ""
+                        },
+                        "20": {
+                            "color": "",
+                            "elevation": "input",
+                            "normal_map": "normal map",
+                            "path": "",
+                            "points": "",
+                            "water_depth": ""
+                        },
+                        "21": {
+                            "color": "texture",
+                            "elevation": "level",
+                            "normal_map": "",
+                            "path": "",
+                            "points": "",
+                            "water_depth": ""
+                        },
+                        "3": {
+                            "color": "texture",
+                            "elevation": "elevation",
+                            "normal_map": "normal map",
+                            "path": "path",
+                            "points": "cloud",
+                            "water_depth": "water_depth"
+                        },
+                        "4": {
+                            "color": "",
+                            "elevation": "input",
+                            "normal_map": "",
+                            "path": "",
+                            "points": "",
+                            "water_depth": "water_depth"
+                        },
+                        "5": {
+                            "color": "",
+                            "elevation": "output",
+                            "normal_map": "",
+                            "path": "",
+                            "points": "",
+                            "water_depth": ""
+                        },
+                        "6": {
+                            "color": "",
+                            "elevation": "output",
+                            "normal_map": "",
+                            "path": "",
+                            "points": "",
+                            "water_depth": ""
+                        },
+                        "7": {
+                            "color": "",
+                            "elevation": "output",
+                            "normal_map": "",
+                            "path": "",
+                            "points": "",
+                            "water_depth": ""
+                        },
+                        "8": {
+                            "color": "mask",
+                            "elevation": "output",
+                            "normal_map": "",
+                            "path": "",
+                            "points": "",
+                            "water_depth": ""
+                        },
+                        "9": {
+                            "color": "",
+                            "elevation": "output",
+                            "normal_map": "",
+                            "path": "",
+                            "points": "",
+                            "water_depth": ""
+                        }
+                    },
+                    "viewer_type": 0,
+                    "width": 512,
+                    "x": 0,
+                    "y": 0
+                },
+                "groups": [],
+                "id": "graph",
+                "links": [
+                    {
+                        "link_type": 2,
+                        "node_in_id": "14",
+                        "node_out_id": "16",
+                        "port_in_id": "cloud",
+                        "port_out_id": "cloud"
+                    },
+                    {
+                        "link_type": 2,
+                        "node_in_id": "14",
+                        "node_out_id": "17",
+                        "port_in_id": "path",
+                        "port_out_id": "path"
+                    },
+                    {
+                        "link_type": 2,
+                        "node_in_id": "18",
+                        "node_out_id": "17",
+                        "port_in_id": "path",
+                        "port_out_id": "path"
+                    },
+                    {
+                        "link_type": 2,
+                        "node_in_id": "14",
+                        "node_out_id": "18",
+                        "port_in_id": "scalar",
+                        "port_out_id": "heightmap"
+                    },
+                    {
+                        "link_type": 2,
+                        "node_in_id": "19",
+                        "node_out_id": "16",
+                        "port_in_id": "cloud",
+                        "port_out_id": "cloud"
+                    },
+                    {
+                        "link_type": 2,
+                        "node_in_id": "20",
+                        "node_out_id": "19",
+                        "port_in_id": "input",
+                        "port_out_id": "heightmap"
+                    },
+                    {
+                        "link_type": 2,
+                        "node_in_id": "14",
+                        "node_out_id": "20",
+                        "port_in_id": "normal map",
+                        "port_out_id": "normal map"
+                    },
+                    {
+                        "link_type": 2,
+                        "node_in_id": "14",
+                        "node_out_id": "21",
+                        "port_in_id": "texture",
+                        "port_out_id": "texture"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "caption": "Preview",
+                        "id": "14",
+                        "is_widget_visible": true,
+                        "scene_position.x": 748.9768676757813,
+                        "scene_position.y": -531.1641235351563
+                    },
+                    {
+                        "caption": "CloudRandom",
+                        "id": "16",
+                        "is_widget_visible": true,
+                        "scene_position.x": 23.030061721801758,
+                        "scene_position.y": -382.0450439453125
+                    },
+                    {
+                        "caption": "Path",
+                        "id": "17",
+                        "is_widget_visible": true,
+                        "scene_position.x": -136.14541625976563,
+                        "scene_position.y": -525.5748901367188
+                    },
+                    {
+                        "caption": "PathToHeightmap",
+                        "id": "18",
+                        "is_widget_visible": true,
+                        "scene_position.x": 214.12429809570313,
+                        "scene_position.y": -685.5811538055164
+                    },
+                    {
+                        "caption": "CloudToArrayInterp",
+                        "id": "19",
+                        "is_widget_visible": true,
+                        "scene_position.x": 231.06675720214844,
+                        "scene_position.y": -317.99835205078125
+                    },
+                    {
+                        "caption": "HeightmapToNormalMap",
+                        "id": "20",
+                        "is_widget_visible": true,
+                        "scene_position.x": 424.29449462890625,
+                        "scene_position.y": -304.7372131347656
+                    },
+                    {
+                        "caption": "ColorizeGradient",
+                        "id": "21",
+                        "is_widget_visible": true,
+                        "scene_position.x": 540.2921523406726,
+                        "scene_position.y": -836.318077151515
+                    }
+                ]
+            }
+        }
+    },
+    "saved_at": "2026-08-03_19-14-00"
+}
