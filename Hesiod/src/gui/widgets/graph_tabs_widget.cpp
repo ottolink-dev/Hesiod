@@ -183,6 +183,13 @@ void GraphTabsWidget::on_node_deleted(const std::string &graph_id, const std::st
   Q_EMIT this->has_changed();
 }
 
+void GraphTabsWidget::set_show_node_library_pan(bool new_state)
+{
+  for (auto &[id, gew] : this->graph_editor_widget_map)
+    if (gew)
+      gew->set_node_library_visible(new_state);
+}
+
 void GraphTabsWidget::set_show_node_settings_widget(bool new_state)
 {
   this->show_node_settings_widget = new_state;
@@ -354,6 +361,10 @@ void GraphTabsWidget::update_tab_widget()
                   &GraphNodeWidget::update_finished,
                   this,
                   [this]() { emit update_finished(); });
+    this->connect(editor_widget,
+                  &GraphEditorWidget::node_library_toggle_requested,
+                  this,
+                  &GraphTabsWidget::node_library_toggle_requested);
 
     // Create tab container
     QWidget *tab = new QWidget();

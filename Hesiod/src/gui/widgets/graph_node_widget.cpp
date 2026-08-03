@@ -8,6 +8,7 @@
 #include <QFileDialog>
 #include <QMenu>
 #include <QMessageBox>
+#include <QPointer>
 #include <QScreen>
 #include <QTimer>
 #include <QToolButton>
@@ -339,10 +340,17 @@ void GraphNodeWidget::json_from(nlohmann::json const &json)
 
       if (auto *p_viewer = dynamic_cast<Viewer3D *>(this->data_viewers.back().get()))
       {
-        // defer to let OpenGL context settle
+        // defer to let OpenGL context settle. The viewer can be destroyed
+        // before the timer fires - closing the viewport, or another load
+        // replacing the viewers - so hold it through a QPointer and give the
+        // timer a context object, otherwise this fires into freed memory
         QTimer::singleShot(0,
-                           [p_viewer, viewer_json]()
-                           { p_viewer->json_from(viewer_json); });
+                           this,
+                           [viewer = QPointer<Viewer3D>(p_viewer), viewer_json]()
+                           {
+                             if (viewer)
+                               viewer->json_from(viewer_json);
+                           });
       }
       else
         Logger::log()->error(

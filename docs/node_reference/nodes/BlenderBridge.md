@@ -39,3 +39,8 @@ Corresponding Hesiod file: [BlenderBridge.hsd](../../examples/BlenderBridge.hsd)
     If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).
 
   
+# Blender bridge
+
+See the [Blender Bridge documentation](../../user_manual/bridges/Blender/README.md)
+for how to install the Blender add-on and stream terrain data from Hesiod into
+Blender.
