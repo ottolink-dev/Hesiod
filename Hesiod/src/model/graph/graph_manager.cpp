@@ -1,6 +1,9 @@
 /* Copyright (c) 2023 Otto Link. Distributed under the terms of the GNU General
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
+#include <new>
+#include <string>
+
 #include "nlohmann/json.hpp"
 
 #include "highmap/coord_frame.hpp"
@@ -434,8 +437,43 @@ void GraphManager::update()
 {
   Logger::log()->trace("GraphManager::update()");
 
-  for (auto &graph_id : this->graph_order)
-    this->graph_nodes.at(graph_id)->update();
+  // BaseNode::compute contains per-node failures; what reaches here is a
+  // condition that makes continuing pointless (memory exhaustion above all).
+  // Abandon the update and report it - never let it escape into the event loop,
+  // where it would terminate the application.
+  std::string failure;
+
+  try
+  {
+    for (auto &graph_id : this->graph_order)
+      this->graph_nodes.at(graph_id)->update();
+  }
+  catch (const std::bad_alloc &)
+  {
+    failure = "Out of memory: the graph update was abandoned. Lower the "
+              "resolution and try again.";
+  }
+  catch (const std::exception &e)
+  {
+    failure = std::string("The graph update was abandoned: ") + e.what();
+  }
+  catch (...)
+  {
+    failure = "The graph update was abandoned after an unknown error.";
+  }
+
+  if (failure.empty())
+    return;
+
+  Logger::log()->critical("GraphManager::update: {}", failure);
+
+  // clear the progress bar, which would otherwise sit at whatever percentage
+  // the update died on
+  if (this->update_progress)
+    this->update_progress(100.f);
+
+  if (this->update_failed)
+    this->update_failed(failure);
 }
 
 } // namespace hesiod
