@@ -1,6 +1,7 @@
 /* Copyright (c) 2025 Otto Link. Distributed under the terms of the GNU General
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
+#include <QMessageBox>
 #include <QStatusBar>
 
 #include "hesiod/app/hesiod_application.hpp"
@@ -96,6 +97,19 @@ void MainWindow::setup_connections_with_project()
 
     this->progress_bar->setTextVisible(true);
     this->progress_bar->setValue(static_cast<int>(progress));
+  };
+
+  ctx.project_model->get_graph_manager_ref()->update_failed =
+      [this](const std::string &message)
+  {
+    this->progress_bar->setValue(0);
+    this->progress_bar->setTextVisible(false);
+
+    this->notify(message);
+
+    QMessageBox::warning(this,
+                         tr("Graph update failed"),
+                         QString::fromStdString(message));
   };
 }
 

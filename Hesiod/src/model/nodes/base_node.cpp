@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <format>
 #include <fstream>
+#include <new>
 #include <optional>
 #include <unordered_map>
 
@@ -188,16 +189,55 @@ const GraphConfig &BaseNode::cfg() const
 void BaseNode::compute()
 {
   if (this->compute_started)
-    this->compute_finished(this->get_id());
+    this->compute_started(this->get_id());
 
   this->update_runtime_info(NodeRuntimeStep::NRS_UPDATE_START);
 
-  this->compute_fct(*this);
+  // A node's compute can throw: out-of-memory at high resolution, an OpenCL
+  // error, a bad parameter combination. Unguarded, that unwinds out of the Qt
+  // event loop and terminates the process. Contain it here so one failing node
+  // cannot take the application down.
+  bool out_of_memory = false;
+
+  try
+  {
+    this->compute_fct(*this);
+  }
+  catch (const std::bad_alloc &)
+  {
+    Logger::log()->critical("BaseNode::compute: out of memory computing node '{}' "
+                            "({}); abandoning this graph update - lower the "
+                            "resolution and try again",
+                            this->get_id(),
+                            this->get_node_type());
+    out_of_memory = true;
+  }
+  catch (const std::exception &e)
+  {
+    Logger::log()->critical("BaseNode::compute: node '{}' ({}) failed: {}",
+                            this->get_id(),
+                            this->get_node_type(),
+                            e.what());
+  }
+  catch (...)
+  {
+    Logger::log()->critical("BaseNode::compute: node '{}' ({}) failed with an "
+                            "unknown exception",
+                            this->get_id(),
+                            this->get_node_type());
+  }
 
   this->update_runtime_info(NodeRuntimeStep::NRS_UPDATE_END);
 
   if (this->compute_finished)
     this->compute_finished(this->get_id());
+
+  // Memory exhaustion is not a per-node problem: pressing on would thrash
+  // through every remaining node and fail again. Abandon the whole update, but
+  // only after this node's own bookkeeping has run, so the UI is not left
+  // showing it as still computing.
+  if (out_of_memory)
+    throw std::bad_alloc();
 }
 
 std::map<std::string, std::unique_ptr<attr::AbstractAttribute>> *BaseNode::

@@ -63,6 +63,10 @@ public:
   std::function<void(const std::string &tag)> remove_broadcast_tag;
   std::function<void(float progress)>         update_progress;
 
+  // reports a graph update that was abandoned because it threw, so the GUI can
+  // tell the user instead of the failure being visible only in the log
+  std::function<void(const std::string &message)> update_failed;
+
 private:
   // --- Intergraph interactions ---
   void on_broadcast_node_updated(const std::string &graph_id, const std::string &tag);

@@ -16,6 +16,11 @@ std::shared_ptr<spdlog::logger> &Logger::log()
     instance = spdlog::stdout_color_mt("console_hesiod");
     instance->set_pattern("[hesiod] [%H:%M:%S] [%^---%L---%$] %v");
     instance->set_level(spdlog::level::trace);
+
+    // flush every record: redirected to a file the sink is block-buffered, so
+    // an abnormal exit (abort, fast-fail) would otherwise discard the very
+    // lines that explain it
+    instance->flush_on(spdlog::level::trace);
   }
   return instance;
 }
