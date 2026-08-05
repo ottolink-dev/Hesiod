@@ -36,8 +36,13 @@
 #include "meta/core/attribute_container.hpp"
 #include "meta/ext/color_gradient/color_gradient.hpp"
 #include "meta/metadata/keys.hpp"
-#include "meta/presets/compat.hpp"
+#include "meta/presets/choice.hpp"
+#include "meta/presets/color_gradient.hpp"
+#include "meta/presets/curve.hpp"
+#include "meta/presets/file.hpp"
+#include "meta/presets/glm.hpp"
 #include "meta/presets/numeric.hpp"
+#include "meta/presets/text.hpp"
 
 #include "hesiod/logger.hpp"
 

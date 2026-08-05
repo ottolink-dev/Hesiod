@@ -10,6 +10,7 @@
 
 #include "meta/core/data_provider.hpp"
 #include "meta/metadata/keys.hpp"
+#include "meta_qt/widgets/points_canvas.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
@@ -53,27 +54,27 @@ void setup_cloud_node(BaseNode &node)
   a->metadata().try_add(
       meta::keys::ui::data_provider,
       meta::DataProvider{
-          [&node, port_id = std::string(P_BACKGROUND)]() -> meta::ProviderData
+          [&node, port_id = std::string(P_BACKGROUND)]() -> meta::Any
           {
-            meta::ProviderData d;
             hmap::VirtualArray *p_in = node.get_value_ref<hmap::VirtualArray>(port_id);
             if (!p_in)
-              return d;
+              return {};
             const glm::ivec2 shape(256, 256);
             hmap::Array array = p_in->to_array(shape, node.cfg().cm_cpu);
             std::vector<uint8_t> img =
                 hmap::colorize(array, array.min(), array.max(), hmap::Cmap::MAGMA, false)
                     .to_img_8bit();
-            d.image_width = shape.x;
-            d.image_height = shape.y;
-            d.image_channels = 3; // to_img_8bit() -> RGB
+            meta::qt::ImageData d;
+            d.width = shape.x;
+            d.height = shape.y;
+            d.channels = 3; // to_img_8bit() -> RGB
             // vertical flip so the thumbnail origin matches the canvas (legacy mirrored(false,true))
             const int stride = shape.x * 3;
-            d.image_pixels.resize(img.size());
+            d.pixels.resize(img.size());
             for (int y = 0; y < shape.y; ++y)
               std::copy_n(img.data() + (shape.y - 1 - y) * stride,
                           stride,
-                          d.image_pixels.data() + y * stride);
+                          d.pixels.data() + y * stride);
             return d;
           }});
 }
