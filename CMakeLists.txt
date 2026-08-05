@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.12)
-project(hesiod-root VERSION 0.5.2)
+project(hesiod-root VERSION 0.6.0)
 
 if(APPLE)
   message(FATAL_ERROR "macOS is NOT supported by this project.")
@@ -11,7 +11,9 @@ set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
 add_compile_definitions(
   HESIOD_VERSION_MAJOR=${hesiod-root_VERSION_MAJOR}
   HESIOD_VERSION_MINOR=${hesiod-root_VERSION_MINOR}
-  HESIOD_VERSION_PATCH=${hesiod-root_VERSION_PATCH})
+  HESIOD_VERSION_PATCH=${hesiod-root_VERSION_PATCH}
+  $<$<CONFIG:Release,RelWithDebInfo>:RELEASE_BUILD>
+  $<$<CONFIG:Debug>:DEBUG_BUILD>)
 
 # ------------------------------
 # Options
