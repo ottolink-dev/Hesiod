@@ -153,6 +153,15 @@ public:
     }
   }
 
+  // Native-Meta nodes (no compat tag) can register a hand-written decoder
+  // for a key written by the legacy Attributes serializer, so old .hsd
+  // files keep loading after the node stops using add_attr<LegacyType>.
+  void register_legacy_decoder(const std::string                           &key,
+                               std::function<void(const nlohmann::json &)> fn)
+  {
+    this->legacy_decoders_[key] = std::move(fn);
+  }
+
   std::vector<std::string> *get_attr_ordered_key_ref();
   std::map<std::string, std::unique_ptr<attr::AbstractAttribute>> *get_attributes_ref();
   void set_attr_ordered_key(const std::vector<std::string> &new_attr_ordered_key);

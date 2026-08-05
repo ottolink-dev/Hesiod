@@ -608,6 +608,12 @@ void BaseNode::json_from(nlohmann::json const &json)
       if (json.contains("_meta"))
       {
         this->meta_group().current().json_from(json["_meta"]);
+        // mixed-era files carry a legacy top-level key (e.g. Brush "hmap")
+        // alongside a _meta blob that does not contain it; new-format files
+        // store everything inside _meta and never hit these decoders
+        for (const auto &[key, decoder] : this->legacy_decoders_)
+          if (json.contains(key))
+            decoder(json[key]);
       }
       else if (!this->legacy_decoders_.empty())
       {
