@@ -1,15 +1,14 @@
 /* Copyright (c) 2023 Otto Link. Distributed under the terms of the GNU General
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
-#include "highmap/colorize.hpp"
-
-#include "attributes.hpp"
+#include "meta/core/data_provider.hpp"
+#include "meta/ext/array/array.hpp"
+#include "meta/metadata/keys.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
+#include "hesiod/model/nodes/compat_attributes.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
-
-using namespace attr;
 
 namespace hesiod
 {
@@ -23,57 +22,49 @@ void setup_brush_node(BaseNode &node)
   node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, "out", CONFIG(node));
 
   // attribute(s)
-  node.add_attr<ArrayAttribute>("hmap", "Heightmap", glm::ivec2(512, 512));
+  auto &c = node.meta_group().current();
 
-  // attribute(s) order
-  node.set_attr_ordered_key({"hmap"});
+  auto *a = c.add<meta::Array>(
+      "hmap",
+      meta::Array{glm::ivec2(512, 512), std::vector<float>(512 * 512, 0.f)});
+  a->metadata().try_add(meta::keys::ui::label, std::string("Heightmap"));
+  a->metadata().try_add(meta::keys::ui::category, std::string("Main"));
+  a->metadata().try_add(meta::keys::ui::width, 256);
+  a->metadata().try_add(meta::keys::ui::height, 256);
+  a->metadata().try_add(std::string(hsd::compat::keys::type_label),
+                        std::string("Array"));
+
+  // legacy .hsd files store the painting as attr::ArrayAttribute json:
+  // {"shape.x": int, "shape.y": int, "vector": [float...]}
+  node.register_legacy_decoder("hmap",
+                               [a](const nlohmann::json &j)
+                               {
+                                 a->value().shape = glm::ivec2(
+                                     j.at("shape.x").get<int>(),
+                                     j.at("shape.y").get<int>());
+                                 a->value().vector =
+                                     j.at("vector").get<std::vector<float>>();
+                               });
 
   setup_post_process_heightmap_attributes(node,
                                           {.add_mix = true, .remap_active_state = true});
 
-  // set background image callback
-  std::string port_id = "background";
-
-  auto lambda = [&node, port_id]()
-  {
-    hmap::VirtualArray *p_in = node.get_value_ref<hmap::VirtualArray>(port_id);
-
-    if (!p_in)
-      return QImage();
-
-    // generate a preview of the heightmap
-    glm::ivec2  shape_preview = glm::ivec2(256, 256);
-    hmap::Array array = p_in->to_array(shape_preview, node.cfg().cm_cpu);
-
-    std::vector<uint8_t> img(shape_preview.x * shape_preview.y);
-
-    img = hmap::colorize(array, array.min(), array.max(), hmap::Cmap::MAGMA, false)
-              .to_img_8bit();
-
-    QImage tmp_image = QImage(img.data(),
-                              shape_preview.x,
-                              shape_preview.y,
-                              QImage::Format_RGB888);
-    return tmp_image.copy().mirrored(false, true);
-  };
-
-  // assign function to attr
-  node.get_attr_ref<ArrayAttribute>("hmap")->set_background_image_fct(lambda);
+  // background thumbnail behind the paint canvas (ImageData data_provider;
+  // helper's meta path is attribute-generic despite the cloud name)
+  setup_background_image_for_cloud_attribute(node, "hmap", "background");
 }
 
 void compute_brush_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  // base noise function
   hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>("out");
 
   // retrieve raw data and convert them to an hmap::Array
-  std::vector<float> data = node.get_attr_ref<ArrayAttribute>("hmap")->get_value();
-  glm::vec2          shape = node.get_attr_ref<ArrayAttribute>("hmap")->get_shape();
+  const auto arr = node.meta_group().current().value<meta::Array>("hmap");
 
-  hmap::Array array(shape);
-  array.vector = std::move(data);
+  hmap::Array array(arr.shape);
+  array.vector = arr.vector;
   array = array.resample_to_shape_bilinear(node.get_config_ref()->shape);
 
   // Array -> VirtualArray
