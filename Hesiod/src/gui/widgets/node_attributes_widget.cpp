@@ -33,7 +33,6 @@ NodeAttributesWidget::NodeAttributesWidget(std::weak_ptr<GraphNode>  p_graph_nod
   this->setAttribute(Qt::WA_DeleteOnClose);
 
   this->setup_layout();
-  this->setup_connections();
 }
 
 QWidget *NodeAttributesWidget::create_toolbar()
@@ -103,11 +102,8 @@ QWidget *NodeAttributesWidget::create_toolbar()
                     this->p_graph_node_widget->on_node_info(this->node_id);
                 });
 
-  // These state/preset buttons operate on the legacy AttributesWidget, which is
-  // null for meta-backed nodes; those take an else-path onto the Meta container
-  // json (snapshot manager for state, json_to/json_from for presets).
-  //
-  // meta-backed nodes: state/preset operate on the Meta container json
+  // State/preset buttons operate on the Meta container json (snapshot manager
+  // for state, json_to/json_from for presets).
   auto meta_container = [this]() -> meta::AttributeContainer *
   {
     auto gno = this->p_graph_node.lock();
@@ -124,9 +120,6 @@ QWidget *NodeAttributesWidget::create_toolbar()
       &QToolButton::pressed,
       [this, meta_container]()
       {
-        // Mixed-backend (Brush): cover BOTH backends independently, not else-if.
-        if (this->attributes_widget)
-          this->attributes_widget->on_save_state();
         if (auto *c = meta_container())
           c->snapshot_manager().save("user_state", c->json_to());
       });
@@ -136,9 +129,6 @@ QWidget *NodeAttributesWidget::create_toolbar()
       &QToolButton::pressed,
       [this, meta_container]()
       {
-        // Mixed-backend (Brush): cover BOTH backends independently, not else-if.
-        if (this->attributes_widget)
-          this->attributes_widget->on_restore_save_state();
         if (auto *c = meta_container())
         {
           if (c->snapshot_manager().has("user_state"))
@@ -151,21 +141,11 @@ QWidget *NodeAttributesWidget::create_toolbar()
         }
       });
 
-  // Preset Save/Load stay exclusive (legacy-first, early return) on purpose:
-  // each pops a file dialog, so running both backends would show two dialogs.
-  // For mixed Brush this covers the legacy "hmap" only; post_* preset is an
-  // accepted minor gap (state Backup/Revert/Reset DO cover post_*).
   this->connect(
       load_btn,
       &QToolButton::pressed,
       [this, meta_container]()
       {
-        if (this->attributes_widget)
-        {
-          this->attributes_widget->on_load_preset();
-          return;
-        }
-
         auto *c = meta_container();
         if (!c)
           return;
@@ -212,12 +192,6 @@ QWidget *NodeAttributesWidget::create_toolbar()
       &QToolButton::pressed,
       [this, meta_container]()
       {
-        if (this->attributes_widget)
-        {
-          this->attributes_widget->on_save_preset();
-          return;
-        }
-
         auto *c = meta_container();
         if (!c)
           return;
@@ -247,10 +221,6 @@ QWidget *NodeAttributesWidget::create_toolbar()
       &QToolButton::pressed,
       [this, meta_container]()
       {
-        // Mixed-backend (Brush): cover BOTH backends independently, not else-if.
-        if (this->attributes_widget)
-          this->attributes_widget->on_restore_initial_state();
-
         auto gno = this->p_graph_node.lock();
         if (!gno)
           return;
@@ -306,49 +276,13 @@ QWidget *NodeAttributesWidget::create_toolbar()
   return toolbar;
 }
 
-attr::AttributesWidget *NodeAttributesWidget::get_attributes_widget_ref()
-{
-  return this->attributes_widget;
-}
-
 void NodeAttributesWidget::sync_from_model()
 {
   if (this->meta_widget)
     this->meta_widget->on_sync_meta_widgets_from_model();
-  // legacy attr::AttributesWidget: values are the source of truth, no model sync needed.
 }
 
 bool NodeAttributesWidget::is_meta_backed() const { return this->meta_widget != nullptr; }
-
-void NodeAttributesWidget::setup_connections()
-{
-  Logger::log()->trace("NodeAttributesWidget::setup_connections");
-
-  if (!this->attributes_widget)
-    return;
-
-  this->connect(this->attributes_widget,
-                &attr::AttributesWidget::value_changed,
-                [this]()
-                {
-                  auto gno = this->p_graph_node.lock();
-                  if (!gno)
-                    return;
-
-                  gno->update(this->node_id);
-                });
-
-  this->connect(this->attributes_widget,
-                &attr::AttributesWidget::update_button_released,
-                [this]()
-                {
-                  auto gno = this->p_graph_node.lock();
-                  if (!gno)
-                    return;
-
-                  gno->update(this->node_id);
-                });
-}
 
 void NodeAttributesWidget::setup_layout()
 {
@@ -362,13 +296,10 @@ void NodeAttributesWidget::setup_layout()
   if (!p_node)
     return;
 
-  // Mixed-backend aware: a node may have legacy attributes AND/OR a Meta
-  // container. Brush is the one mixed node (legacy "hmap" paint canvas + Meta
-  // post_* attributes). Pure-meta nodes have an empty legacy attr map; pure-
-  // legacy nodes have uses_meta()==false. Build whichever backend(s) are present
-  // (legacy panel first so the canvas sits above the post_* Meta panel).
+  // The settings panel is Meta-only: every node's parameters live in its Meta
+  // container now (Brush, the last mixed legacy/Meta node, moved fully onto
+  // Meta).
   const bool has_meta = p_node->uses_meta();
-  const bool has_legacy = !p_node->get_attributes_ref()->empty();
 
   // --- main layout (built once)
   QVBoxLayout *main_layout = new QVBoxLayout(this);
@@ -377,45 +308,6 @@ void NodeAttributesWidget::setup_layout()
 
   if (this->add_toolbar)
     main_layout->addWidget(this->create_toolbar());
-
-  // --- legacy AttributesWidget (canvas / classic attributes)
-  if (has_legacy)
-  {
-    bool        add_save_reset_state_buttons = false;
-    std::string window_title = "";
-    QWidget    *parent = this;
-
-    this->attributes_widget = new attr::AttributesWidget(
-        p_node->get_attributes_ref(),
-        p_node->get_attr_ordered_key_ref(),
-        window_title,
-        add_save_reset_state_buttons,
-        parent);
-
-    // change the attribute widget layout spacing a posteriori
-    QLayout *retrieved_layout = attributes_widget->layout();
-    if (retrieved_layout)
-    {
-      retrieved_layout->setSpacing(4);
-      retrieved_layout->setContentsMargins(4, 0, 4, 0);
-
-      for (int i = 0; i < retrieved_layout->count(); ++i)
-      {
-        QWidget *child = retrieved_layout->itemAt(i)->widget();
-        if (!child)
-          continue;
-
-        if (auto *inner_layout = child->layout())
-        {
-          inner_layout->setSpacing(4);
-          inner_layout->setContentsMargins(4, 0, 4, 0);
-        }
-      }
-    }
-
-    main_layout->addWidget(this->attributes_widget);
-  }
-  // else: this->attributes_widget stays nullptr (setup_connections() skips it)
 
   // --- Meta ContainerGroupWidget (post_* / native Meta attributes)
   if (has_meta)

@@ -3,7 +3,6 @@
 #pragma once
 #include <memory>
 
-#include "attributes/widgets/attributes_widget.hpp"
 #include "meta_qt/container_group_widget.hpp"
 
 #include "hesiod/gui/widgets/graph_node_widget.hpp"
@@ -29,14 +28,11 @@ public:
                        bool                      add_toolbar = false,
                        QWidget                  *parent = nullptr);
 
-  attr::AttributesWidget *get_attributes_widget_ref();
-
   void sync_from_model();
   bool is_meta_backed() const;
 
 private:
   QWidget *create_toolbar();
-  void     setup_connections();
   void     setup_layout();
 
   std::weak_ptr<GraphNode>  p_graph_node;
@@ -44,7 +40,6 @@ private:
   QPointer<GraphNodeWidget> p_graph_node_widget;
   bool                      add_toolbar;
 
-  attr::AttributesWidget            *attributes_widget = nullptr;
   meta::qt::ContainerGroupWidget    *meta_widget = nullptr;
 };
 

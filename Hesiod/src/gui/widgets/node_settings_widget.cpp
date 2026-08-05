@@ -182,10 +182,9 @@ void NodeSettingsWidget::sync_content()
     return;
   }
 
-  // Sync every widget in place, never tearing the panel down on recompute:
-  // meta widgets refresh from the model; legacy widgets no-op (their values are
-  // the source of truth). Because there is no teardown, a live-dragged widget is
-  // never destroyed mid-drag, even in a mixed meta+legacy panel.
+  // Sync every widget in place, never tearing the panel down on recompute: the
+  // Meta widgets refresh from the model. Because there is no teardown, a
+  // live-dragged widget is never destroyed mid-drag.
   for (const auto &w : this->attr_widgets)
     if (w)
       w->sync_from_model();
