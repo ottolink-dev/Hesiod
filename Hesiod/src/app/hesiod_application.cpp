@@ -634,12 +634,10 @@ void HesiodApplication::on_quit()
 {
   Logger::log()->trace("HesiodApplication::on_quit");
 
-  if (!this->confirm_discard_unsaved_changes("Quit"))
-    return;
-
+  // QApplication::quit() first closes every top-level window (Qt >= 6.1), so
+  // the unsaved-changes prompt and the geometry/settings save both run once in
+  // MainWindow::closeEvent, which aborts the quit if the user declines.
   QApplication::quit();
-  this->main_window->save_geometry();
-  this->context.save_settings();
 }
 
 void HesiodApplication::on_save()
