@@ -4,9 +4,6 @@
 #include <QVBoxLayout>
 
 #include "gnode/graph.hpp"
-
-#include "attributes/widgets/attributes_widget.hpp"
-
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"

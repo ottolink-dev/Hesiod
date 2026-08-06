@@ -5,8 +5,6 @@
 
 #include "gnodegui/style.hpp"
 
-#include "qsx/config.hpp"
-
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/utils.hpp"
@@ -90,18 +88,6 @@ void apply_global_style(QApplication &app)
     p_style->viewer.color_bg = ctx.app_settings.colors.bg_primary;
     p_style->viewer.disable_during_update = ctx.app_settings.node_editor
                                                 .disable_during_update;
-  }
-
-  // QSliderX style
-  {
-    qsx::Config *p_cfg = qsx::Config::get_config().get();
-
-    p_cfg->global.color_text = ctx.app_settings.colors.text_primary;
-    p_cfg->global.color_border = ctx.app_settings.colors.border;
-    p_cfg->global.color_hovered = ctx.app_settings.colors.hover;
-    p_cfg->global.color_selected = ctx.app_settings.colors.accent;
-    p_cfg->global.color_faded = ctx.app_settings.colors.text_disabled;
-    p_cfg->global.color_bg = ctx.app_settings.colors.bg_secondary;
   }
 }
 

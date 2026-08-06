@@ -79,7 +79,6 @@ target_link_libraries(
           highmap
           gnode
           gnodegui
-          attributes
           meta
           meta_qt
           Qt6::Core

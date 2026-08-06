@@ -4,9 +4,6 @@
 #include <QGridLayout>
 #include <QLabel>
 #include <QPushButton>
-
-#include "attributes/bool_attribute.hpp"
-
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/widgets/data_preview.hpp"
 #include "hesiod/gui/widgets/graph_node_widget.hpp"
@@ -14,8 +11,6 @@
 #include "hesiod/gui/widgets/node_widget.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/utils.hpp"
-
-using namespace attr;
 
 namespace hesiod
 {

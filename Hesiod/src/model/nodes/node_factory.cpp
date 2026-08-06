@@ -3,9 +3,6 @@
  * this software. */
 #include <fstream>
 #include <stdexcept>
-
-#include "attributes/widgets/attributes_widget.hpp"
-
 #include "meta_qt/container_group_widget.hpp"
 
 #include "hesiod/logger.hpp"
@@ -150,14 +147,9 @@ void dump_node_settings_screenshots()
     std::shared_ptr<gnode::Node> p_node = node_factory(name, config);
     hesiod::BaseNode *p_base_node = dynamic_cast<hesiod::BaseNode *>(p_node.get());
 
-    QWidget *widget = nullptr;
-    if (p_base_node->uses_meta())
-      widget = new meta::qt::ContainerGroupWidget(p_base_node->meta_group(),
-                                                  meta::qt::ContainerRenderOptions{},
-                                                  nullptr);
-    else
-      widget = new attr::AttributesWidget(p_base_node->get_attributes_ref(),
-                                          p_base_node->get_attr_ordered_key_ref());
+    QWidget *widget = new meta::qt::ContainerGroupWidget(p_base_node->meta_group(),
+                                                         meta::qt::ContainerRenderOptions{},
+                                                         nullptr);
 
     render_widget_screenshot(widget,
                              p_base_node->get_label() + "_settings.png",

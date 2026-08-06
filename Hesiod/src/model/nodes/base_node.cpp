@@ -13,9 +13,6 @@
 #include "highmap/geometry/cloud.hpp"
 #include "highmap/geometry/path.hpp"
 #include "highmap/virtual_array/virtual_array.hpp"
-
-#include "attributes/seed_attribute.hpp"
-
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
@@ -240,18 +237,10 @@ void BaseNode::compute()
     throw std::bad_alloc();
 }
 
-std::map<std::string, std::unique_ptr<attr::AbstractAttribute>> *BaseNode::
-    get_attributes_ref()
-{
-  return &this->attr;
-};
-
 std::vector<std::string> *BaseNode::get_attr_ordered_key_ref()
 {
   return &this->attr_ordered_key;
 };
-
-bool BaseNode::uses_meta() const { return this->meta_group_ != nullptr; }
 
 meta::ContainerGroup &BaseNode::meta_group()
 {
@@ -542,9 +531,6 @@ std::shared_ptr<BaseNode> BaseNode::get_shared()
 
 void BaseNode::finalize_attributes()
 {
-  if (!this->uses_meta())
-    return;
-
   auto &c = this->meta_group().current();
 
   // 1) _GROUPBOX_ sentinels in the ordered-key list -> ui.category metadata
@@ -567,11 +553,6 @@ void BaseNode::finalize_attributes()
     auto *p = c.find(key);
     if (!p)
     {
-      // Mixed-backend nodes (Brush): some ordered keys (e.g. "hmap") live in the
-      // legacy attr map, not the Meta container. Skip the Meta ordering + warning
-      // for those instead of emitting a spurious "not found" on every load.
-      if (this->attr.find(key) != this->attr.end())
-        continue;
       Logger::log()->warn("finalize_attributes: node {}: ordered key '{}' not found",
                           this->get_label(),
                           key);
@@ -635,48 +616,37 @@ void BaseNode::json_from(nlohmann::json const &json)
     if (json.contains("runtime_info"))
       this->runtime_info.json_from(json["runtime_info"]);
 
-    for (auto &[key, attr] : this->attr)
+    if (json.contains("_meta"))
     {
-      if (json.contains(key))
-        attr->json_from(json[key]);
-      else
-        Logger::log()->warn("Missing JSON key for attribute: {}, using default", key);
+      this->meta_group().current().json_from(json["_meta"]);
+      // mixed-era files carry a legacy top-level key (e.g. Brush "hmap")
+      // alongside a _meta blob that does not contain it; new-format files
+      // store everything inside _meta and never hit these decoders
+      for (const auto &[key, decoder] : this->legacy_decoders_)
+        if (json.contains(key))
+          decoder(json[key]);
     }
-
-    if (this->uses_meta())
+    else if (!this->legacy_decoders_.empty())
     {
-      if (json.contains("_meta"))
+      // legacy-format file: decode per-key values written by the old
+      // Attributes library into the Meta container
+      Logger::log()->info(
+          "BaseNode::json_from: node '{}' loading legacy-format parameters",
+          this->get_id());
+      for (const auto &[key, decoder] : this->legacy_decoders_)
       {
-        this->meta_group().current().json_from(json["_meta"]);
-        // mixed-era files carry a legacy top-level key (e.g. Brush "hmap")
-        // alongside a _meta blob that does not contain it; new-format files
-        // store everything inside _meta and never hit these decoders
-        for (const auto &[key, decoder] : this->legacy_decoders_)
-          if (json.contains(key))
-            decoder(json[key]);
+        if (json.contains(key))
+          decoder(json[key]);
+        else
+          Logger::log()->warn("Missing JSON key for attribute: {}, using default", key);
       }
-      else if (!this->legacy_decoders_.empty())
-      {
-        // legacy-format file: decode per-key values written by the old
-        // Attributes library into the Meta container
-        Logger::log()->info(
-            "BaseNode::json_from: node '{}' loading legacy-format parameters",
-            this->get_id());
-        for (const auto &[key, decoder] : this->legacy_decoders_)
-        {
-          if (json.contains(key))
-            decoder(json[key]);
-          else
-            Logger::log()->warn("Missing JSON key for attribute: {}, using default", key);
-        }
-      }
-      else
-      {
-        Logger::log()->error(
-            "BaseNode::json_from: node '{}' uses Meta storage but neither '_meta' nor "
-            "legacy decoders are available — parameters NOT restored",
-            this->get_id());
-      }
+    }
+    else
+    {
+      Logger::log()->error(
+          "BaseNode::json_from: node '{}' uses Meta storage but neither '_meta' nor "
+          "legacy decoders are available — parameters NOT restored",
+          this->get_id());
     }
   }
   catch (const nlohmann::json::exception &e)
@@ -691,17 +661,11 @@ nlohmann::json BaseNode::json_to() const
 
   try
   {
-    for (const auto &[key, attr] : this->attr)
-    {
-      json[key] = attr->json_to();
-    }
     json["id"] = this->get_id();
     json["label"] = this->get_label();
     json["comment"] = this->get_comment();
     json["runtime_info"] = this->runtime_info.json_to();
-
-    if (this->uses_meta())
-      json["_meta"] = this->meta_group().current().json_to();
+    json["_meta"] = this->meta_group().current().json_to();
   }
   catch (const std::exception &e)
   {
@@ -744,40 +708,27 @@ nlohmann::json BaseNode::node_parameters_to_json() const
 
     // Attribute information
     nlohmann::json params_json;
-    for (const auto &[key, attr] : this->attr)
+
+    for (const auto &key : this->meta_group().current().insertion_order())
     {
+      const auto *p = this->meta_group().current().find(key);
+      if (!p)
+        continue;
       nlohmann::json param_info;
       param_info["key"] = key;
-      param_info["label"] = attr->get_label();
-      param_info["type"] = attr::attribute_type_map.at(attr->get_type());
-
-      auto json_ptr = nlohmann::json::json_pointer("/parameters/" + key + "/description");
+      const std::string *lbl = p->metadata().try_value<std::string>(
+          meta::keys::ui::label);
+      param_info["label"] = lbl ? *lbl : key;
+      const std::string *lt = p->metadata().try_value<std::string>(
+          hsd::compat::keys::legacy_type);
+      const std::string *tl = p->metadata().try_value<std::string>(
+          hsd::compat::keys::type_label);
+      param_info["type"] = lt ? *lt : (tl ? *tl : std::string(p->type().name()));
+      auto json_ptr = nlohmann::json::json_pointer("/parameters/" + key +
+                                                   "/description");
       param_info["description"] = this->documentation.value(json_ptr, "No description");
-
       params_json[key] = param_info;
     }
-
-    if (this->uses_meta())
-      for (const auto &key : this->meta_group().current().insertion_order())
-      {
-        const auto *p = this->meta_group().current().find(key);
-        if (!p)
-          continue;
-        nlohmann::json param_info;
-        param_info["key"] = key;
-        const std::string *lbl = p->metadata().try_value<std::string>(
-            meta::keys::ui::label);
-        param_info["label"] = lbl ? *lbl : key;
-        const std::string *lt = p->metadata().try_value<std::string>(
-            hsd::compat::keys::legacy_type);
-        const std::string *tl = p->metadata().try_value<std::string>(
-            hsd::compat::keys::type_label);
-        param_info["type"] = lt ? *lt : (tl ? *tl : std::string(p->type().name()));
-        auto json_ptr = nlohmann::json::json_pointer("/parameters/" + key +
-                                                     "/description");
-        param_info["description"] = this->documentation.value(json_ptr, "No description");
-        params_json[key] = param_info;
-      }
 
     json["parameters"] = params_json;
   }
@@ -820,140 +771,80 @@ nlohmann::json BaseNode::attribute_parity_record() const
     return e;
   };
 
-  if (!this->uses_meta())
+  // ---- Meta backend (container group) ----
+  const auto &c = this->meta_group().current();
+  order = c.insertion_order();
+
+  for (const auto &key : order)
   {
-    // ---- legacy backend (attr map) ----
+    const auto *p = c.find(key);
+    if (!p)
+      continue;
 
-    // Derive per-key category + sanitized order by walking the ordered-key
-    // groupbox sentinels EXACTLY as finalize_attributes() does, so the legacy
-    // and Meta category fields agree.
-    std::map<std::string, std::string> category_of;
-    std::string                        category = "";
+    const nlohmann::json j = p->json_to();
 
-    for (const auto &key : this->attr_ordered_key)
+    // legacy_type metadata restores the legacy type string; native Meta
+    // nodes without it fall back to the C++ type name (no legacy form).
+    const std::string *lt = p->metadata().try_value<std::string>(
+        hsd::compat::keys::legacy_type);
+    const std::string type_string = lt ? *lt : std::string(p->type().name());
+
+    const std::string *lbl = p->metadata().try_value<std::string>(
+        meta::keys::ui::label);
+    const std::string label = lbl ? *lbl : key;
+
+    nlohmann::json value_json = j.contains("value") ? j["value"] : nlohmann::json();
+    value_json = normalize_parity_value(type_string, value_json);
+
+    std::optional<bool> is_active;
+    if (const bool *m = p->metadata().try_value<bool>(meta::keys::ui::active))
+      is_active = *m;
+
+    nlohmann::json bounds; // null
+    const auto    *p_min = p->metadata().find(meta::keys::constraints::min);
+    const auto    *p_max = p->metadata().find(meta::keys::constraints::max);
+    if (p_min && p_max)
+      bounds = nlohmann::json::array(
+          {p_min->json_to()["value"], p_max->json_to()["value"]});
+
+    // Vec2Float: legacy Vec2FloatAttribute::json_to emits xmin/xmax/ymin/ymax
+    // (NOT vmin/vmax) -> legacy parity bounds is null. The compat `xy` preset
+    // stashes constraints.min/max (the x-axis range) for the current XYCanvas
+    // widget, which would otherwise surface as a non-null bound. Null it so
+    // bounds matches legacy.
+    if (type_string == "Vec2Float")
+      bounds = nlohmann::json();
+
+    // VecFloat: legacy emits vmin/vmax -> bounds [vmin,vmax]. The compat
+    // `curve` preset stores the y-range under ui.min_y/ui.max_y (not
+    // constraints.min/max), so the constraints lookup above leaves bounds
+    // null. Source it from ui.min_y/ui.max_y so it equals legacy [vmin,vmax].
+    if (type_string == "Vector of floats")
     {
-      if (key.starts_with("_GROUPBOX_BEGIN_"))
-      {
-        category = key.substr(std::string("_GROUPBOX_BEGIN_").size());
-        continue;
-      }
-      if (key.starts_with("_GROUPBOX_END"))
-      {
-        category = "";
-        continue;
-      }
-      if (!this->attr.contains(key))
-        continue;
-      category_of[key] = category;
-      order.push_back(key);
-    }
-
-    // append attr-map keys not listed in the ordered-key list (matches the
-    // finalize_attributes() "unlisted keys appended" behaviour)
-    for (const auto &[key, attr] : this->attr)
-      if (std::find(order.begin(), order.end(), key) == order.end())
-        order.push_back(key);
-
-    for (const auto &[key, attr] : this->attr)
-    {
-      const nlohmann::json j = attr->json_to();
-
-      const std::string type_string = attr::attribute_type_map.at(attr->get_type());
-      const std::string label = attr->get_label();
-
-      nlohmann::json value_json = j.contains("value") ? j["value"] : nlohmann::json();
-      value_json = normalize_parity_value(type_string, value_json);
-
-      std::optional<bool> is_active;
-      if (attr->get_type() == attr::AttributeType::RANGE && j.contains("is_active"))
-        is_active = j["is_active"].get<bool>();
-
-      nlohmann::json bounds; // null
-      if (j.contains("vmin") && j.contains("vmax"))
-        bounds = nlohmann::json::array({j["vmin"], j["vmax"]});
-
-      const std::string cat = category_of.count(key) ? category_of.at(key) : "";
-
-      record[key] = make_entry(type_string, label, value_json, is_active, bounds, cat);
-    }
-  }
-  else
-  {
-    // ---- Meta backend (container group) ----
-    const auto &c = this->meta_group().current();
-    order = c.insertion_order();
-
-    for (const auto &key : order)
-    {
-      const auto *p = c.find(key);
-      if (!p)
-        continue;
-
-      const nlohmann::json j = p->json_to();
-
-      // legacy_type metadata restores the legacy type string; native Meta
-      // nodes without it fall back to the C++ type name (no legacy form).
-      const std::string *lt = p->metadata().try_value<std::string>(
-          hsd::compat::keys::legacy_type);
-      const std::string type_string = lt ? *lt : std::string(p->type().name());
-
-      const std::string *lbl = p->metadata().try_value<std::string>(
-          meta::keys::ui::label);
-      const std::string label = lbl ? *lbl : key;
-
-      nlohmann::json value_json = j.contains("value") ? j["value"] : nlohmann::json();
-      value_json = normalize_parity_value(type_string, value_json);
-
-      std::optional<bool> is_active;
-      if (const bool *m = p->metadata().try_value<bool>(meta::keys::ui::active))
-        is_active = *m;
-
-      nlohmann::json bounds; // null
-      const auto    *p_min = p->metadata().find(meta::keys::constraints::min);
-      const auto    *p_max = p->metadata().find(meta::keys::constraints::max);
-      if (p_min && p_max)
+      const auto *p_miny = p->metadata().find(std::string(meta::keys::ui::min_y));
+      const auto *p_maxy = p->metadata().find(std::string(meta::keys::ui::max_y));
+      if (p_miny && p_maxy)
         bounds = nlohmann::json::array(
-            {p_min->json_to()["value"], p_max->json_to()["value"]});
-
-      // Vec2Float: legacy Vec2FloatAttribute::json_to emits xmin/xmax/ymin/ymax
-      // (NOT vmin/vmax) -> legacy parity bounds is null. The compat `xy` preset
-      // stashes constraints.min/max (the x-axis range) for the current XYCanvas
-      // widget, which would otherwise surface as a non-null bound. Null it so
-      // bounds matches legacy.
-      if (type_string == "Vec2Float")
-        bounds = nlohmann::json();
-
-      // VecFloat: legacy emits vmin/vmax -> bounds [vmin,vmax]. The compat
-      // `curve` preset stores the y-range under ui.min_y/ui.max_y (not
-      // constraints.min/max), so the constraints lookup above leaves bounds
-      // null. Source it from ui.min_y/ui.max_y so it equals legacy [vmin,vmax].
-      if (type_string == "Vector of floats")
-      {
-        const auto *p_miny = p->metadata().find(std::string(meta::keys::ui::min_y));
-        const auto *p_maxy = p->metadata().find(std::string(meta::keys::ui::max_y));
-        if (p_miny && p_maxy)
-          bounds = nlohmann::json::array(
-              {p_miny->json_to()["value"], p_maxy->json_to()["value"]});
-      }
-
-      // legacy SeedAttribute has no vmin/vmax -> bounds is null there; force
-      // the facade-backed seed preset (which attaches constraints.min/max)
-      // to match, so seed nodes don't false-positive on bounds in the
-      // legacy/meta parity diff.
-      if (const bool *is_seed = p->metadata().try_value<bool>(hsd::compat::keys::seed);
-          is_seed && *is_seed)
-        bounds = nlohmann::json();
-
-      const std::string *cat = p->metadata().try_value<std::string>(
-          meta::keys::ui::category);
-
-      record[key] = make_entry(type_string,
-                               label,
-                               value_json,
-                               is_active,
-                               bounds,
-                               cat ? *cat : std::string(""));
+            {p_miny->json_to()["value"], p_maxy->json_to()["value"]});
     }
+
+    // legacy SeedAttribute has no vmin/vmax -> bounds is null there; force
+    // the facade-backed seed preset (which attaches constraints.min/max)
+    // to match, so seed nodes don't false-positive on bounds in the
+    // legacy/meta parity diff.
+    if (const bool *is_seed = p->metadata().try_value<bool>(hsd::compat::keys::seed);
+        is_seed && *is_seed)
+      bounds = nlohmann::json();
+
+    const std::string *cat = p->metadata().try_value<std::string>(
+        meta::keys::ui::category);
+
+    record[key] = make_entry(type_string,
+                             label,
+                             value_json,
+                             is_active,
+                             bounds,
+                             cat ? *cat : std::string(""));
   }
 
   record["__order"] = order;
@@ -1007,33 +898,18 @@ void BaseNode::propagate_config_change()
 
 void BaseNode::reseed(bool backward)
 {
-  for (const auto &[key, attr] : this->attr)
-    if (attr && attr->get_type() == attr::AttributeType::SEED)
-      if (auto p_seed = attr->get_ref<attr::SeedAttribute>())
-      {
-        Logger::log()->trace("BaseNode::reseed: reseeding node {}_{}",
-                             this->get_label(),
-                             this->get_id());
-
-        int increment = backward ? -1 : 1;
-        p_seed->set_value(p_seed->get_value() + increment);
-      }
-
-  if (this->uses_meta())
+  for (const auto &key : this->meta_group().current().insertion_order())
   {
-    for (const auto &key : this->meta_group().current().insertion_order())
-    {
-      auto *p = this->meta_group().current().find(key);
-      if (!p)
-        continue;
-      if (const bool *is_seed = p->metadata().try_value<bool>(hsd::compat::keys::seed);
-          is_seed && *is_seed)
-        if (auto *typed = p->try_cast<meta::Attribute<int>>())
-        {
-          int increment = backward ? -1 : 1;
-          typed->set_from_any(typed->value() + increment);
-        }
-    }
+    auto *p = this->meta_group().current().find(key);
+    if (!p)
+      continue;
+    if (const bool *is_seed = p->metadata().try_value<bool>(hsd::compat::keys::seed);
+        is_seed && *is_seed)
+      if (auto *typed = p->try_cast<meta::Attribute<int>>())
+      {
+        int increment = backward ? -1 : 1;
+        typed->set_from_any(typed->value() + increment);
+      }
   }
 }
 
@@ -1060,73 +936,42 @@ void BaseNode::update_attributes_tool_tip()
 
   size_t width = 64;
 
-  for (auto &[key, sp_attr] : this->attr)
-    if (sp_attr)
+  for (const auto &key : this->meta_group().current().insertion_order())
+  {
+    auto *p = this->meta_group().current().find(key);
+    if (!p)
+      continue;
+
+    const std::string *lbl = p->metadata().try_value<std::string>(
+        meta::keys::ui::label);
+    std::string label = lbl ? *lbl : key;
+
+    if (this->documentation.contains("parameters") &&
+        this->documentation["parameters"].contains(key))
     {
-      std::string label = sp_attr->get_label();
+      std::string description = "<div><font size=\"+1\"><b>" +
+                                remove_trailing_char(label, ':') + "</font></b><br>";
 
-      if (this->documentation.contains("parameters") &&
-          this->documentation["parameters"].contains(key))
+      description += "<font color='COLOR_TEXT_SECONDARY'>";
+
+      replace_all(description,
+                  "COLOR_TEXT_SECONDARY",
+                  HSD_CTX.app_settings.colors.text_secondary.name().toStdString());
+
+      if (this->documentation["parameters"][key].contains("description"))
       {
-        std::string description = "<div><font size=\"+1\"><b>" +
-                                  remove_trailing_char(label, ':') + "</font></b><br>";
-
-        description += "<font color='COLOR_TEXT_SECONDARY'>";
-
-        replace_all(description,
-                    "COLOR_TEXT_SECONDARY",
-                    HSD_CTX.app_settings.colors.text_secondary.name().toStdString());
-
-        if (this->documentation["parameters"][key].contains("description"))
-        {
-          std::string base_desc = this->documentation["parameters"][key]["description"];
-          base_desc = wrap_text(base_desc, width);
-          description += base_desc;
-        }
-
-        description += "</div>";
-
-        sp_attr->set_description(description);
+        std::string base_desc = this->documentation["parameters"][key]["description"];
+        base_desc = wrap_text(base_desc, width);
+        description += base_desc;
       }
+
+      description += "</div>";
+
+      p->metadata()
+          .try_add(std::string(meta::keys::ui::tooltip), std::string(description))
+          ->value() = description;
     }
-
-  if (this->uses_meta())
-    for (const auto &key : this->meta_group().current().insertion_order())
-    {
-      auto *p = this->meta_group().current().find(key);
-      if (!p)
-        continue;
-
-      const std::string *lbl = p->metadata().try_value<std::string>(
-          meta::keys::ui::label);
-      std::string label = lbl ? *lbl : key;
-
-      if (this->documentation.contains("parameters") &&
-          this->documentation["parameters"].contains(key))
-      {
-        std::string description = "<div><font size=\"+1\"><b>" +
-                                  remove_trailing_char(label, ':') + "</font></b><br>";
-
-        description += "<font color='COLOR_TEXT_SECONDARY'>";
-
-        replace_all(description,
-                    "COLOR_TEXT_SECONDARY",
-                    HSD_CTX.app_settings.colors.text_secondary.name().toStdString());
-
-        if (this->documentation["parameters"][key].contains("description"))
-        {
-          std::string base_desc = this->documentation["parameters"][key]["description"];
-          base_desc = wrap_text(base_desc, width);
-          description += base_desc;
-        }
-
-        description += "</div>";
-
-        p->metadata()
-            .try_add(std::string(meta::keys::ui::tooltip), std::string(description))
-            ->value() = description;
-      }
-    }
+  }
 }
 
 void BaseNode::update_runtime_info(NodeRuntimeStep step)

@@ -14,12 +14,6 @@
 #include <QToolButton>
 #include <QVBoxLayout>
 #include <QWidgetAction>
-
-#include "attributes/widgets/abstract_widget.hpp"
-#include "attributes/widgets/attributes_widget.hpp"
-#include "attributes/widgets/bool_widget.hpp"
-#include "attributes/widgets/filename_widget.hpp"
-
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/widgets/custom_qmenu.hpp"
 #include "hesiod/gui/widgets/graph_config_widgets/graph_config_dialog.hpp"
