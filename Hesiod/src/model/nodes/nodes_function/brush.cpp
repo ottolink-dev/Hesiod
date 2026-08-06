@@ -7,7 +7,7 @@
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
-#include "hesiod/model/nodes/compat_attributes.hpp"
+#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
 namespace hesiod

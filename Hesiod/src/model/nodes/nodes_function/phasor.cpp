@@ -5,7 +5,7 @@
 #include "highmap/primitives.hpp"
 #include "highmap/virtual_array/virtual_array.hpp"
 
-#include "hesiod/model/nodes/compat_attributes.hpp"
+#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
 
 #include "hesiod/app/enum_mappings.hpp"
 #include "hesiod/logger.hpp"

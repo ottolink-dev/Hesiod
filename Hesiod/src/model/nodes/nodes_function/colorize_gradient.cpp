@@ -4,7 +4,7 @@
 #include "highmap/colorize.hpp"
 #include "highmap/range.hpp"
 
-#include "hesiod/model/nodes/compat_attributes.hpp"
+#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/constants/color_gradient.hpp"

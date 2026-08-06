@@ -5,7 +5,7 @@
 // Compile-only exercise of the (otherwise dormant) compat layer. Instantiates
 // every legacy_traits specialization's create() overloads plus a handle, so the
 // header is type-checked by the build even though no node includes it yet.
-#include "hesiod/model/nodes/legacy_attributes.hpp"
+#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
 
 namespace hesiod::legacy_check
 {

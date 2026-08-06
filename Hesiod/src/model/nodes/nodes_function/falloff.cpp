@@ -3,7 +3,7 @@
  * p_node software. */
 #include "highmap/boundary.hpp"
 
-#include "hesiod/model/nodes/compat_attributes.hpp"
+#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
 
 #include "hesiod/app/enum_mappings.hpp"
 #include "hesiod/logger.hpp"

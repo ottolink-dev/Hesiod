@@ -4,7 +4,7 @@
 #include <QLabel>
 #include <QPushButton>
 
-#include "hesiod/model/nodes/compat_attributes.hpp"
+#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
 
 #include "hesiod/gui/widgets/data_preview.hpp"
 #include "hesiod/gui/widgets/graph_node_widget.hpp"

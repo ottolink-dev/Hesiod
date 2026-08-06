@@ -4,7 +4,7 @@
 #include "highmap/filters.hpp"
 #include "highmap/operator.hpp"
 
-#include "hesiod/model/nodes/compat_attributes.hpp"
+#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
 
 #include "meta/core/data_provider.hpp"
 #include "meta/metadata/keys.hpp"
