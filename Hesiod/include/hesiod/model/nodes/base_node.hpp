@@ -95,9 +95,14 @@ public:
   void add_attr(const std::string &key, Args &&...args)
   {
     static_assert(hsd::legacy::CompatTag<T>, "add_attr<T>: T is not a compat tag");
-    hsd::legacy::legacy_traits<T>::create(this->get_meta_group().current(),
-                                          key,
-                                          std::forward<Args>(args)...);
+    auto &a = hsd::legacy::legacy_traits<T>::create(this->get_meta_group().current(),
+                                                    key,
+                                                    std::forward<Args>(args)...);
+    if (!this->current_category.empty())
+    {
+      a.metadata().try_add(std::string(meta::keys::ui::category),
+                           std::string(this->current_category));
+    }
   }
 
   template <typename T> auto get_attr(const std::string &key) const -> decltype(auto)
@@ -127,6 +132,7 @@ public:
 
   meta::ContainerGroup       &get_meta_group(); // lazily creates group + "main" container
   const meta::ContainerGroup &get_meta_group() const;
+  void                        set_current_category(const std::string &category);
 
   void                  finalize_attributes();
   const nlohmann::json &iinitial_meta_state() const { return this->initial_meta_state; }
@@ -140,6 +146,7 @@ public:
 private:
   // --- Members ---
   std::unique_ptr<meta::ContainerGroup> meta_group; // attribute storage
+  std::string                           current_category;
 
   // container state captured at finalize time; toolbar "Reset Settings" restores it
   nlohmann::json initial_meta_state;

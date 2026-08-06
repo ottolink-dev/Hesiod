@@ -274,7 +274,7 @@ QWidget *NodeAttributesWidget::create_toolbar()
 void NodeAttributesWidget::sync_from_model()
 {
   if (this->meta_widget)
-    this->meta_widget->on_sync_meta_widgets_from_model();
+    this->meta_widget->on_sync_widget_from_model();
 }
 
 bool NodeAttributesWidget::is_meta_backed() const { return this->meta_widget != nullptr; }
@@ -299,12 +299,16 @@ void NodeAttributesWidget::setup_layout()
   if (this->add_toolbar)
     main_layout->addWidget(this->create_toolbar());
 
-  // --- Meta ContainerGroupWidget (post_* / native Meta attributes)
+  // --- Meta ContainerGroupWidget
 
-  this->meta_widget = new meta::qt::ContainerGroupWidget(
-      p_node->get_meta_group(),
-      meta::qt::ContainerRenderOptions{},
-      this);
+  auto options = meta::qt::ContainerRenderOptions{
+      .category_policy = meta::qt::CategoryPolicy::CP_MERGED,
+      .root_category_name = std::string{}};
+
+  this->meta_widget = meta::qt::render(p_node->get_meta_group(),
+                                       options,
+                                       this,
+                                       /* render_single_group_as_a_container */ true);
 
   // Recompute on value_changed or edit_ended depending on app settings.
   auto signal = HSD_CTX.app_settings.node_editor.live_update

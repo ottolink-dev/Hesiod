@@ -255,6 +255,11 @@ meta::ContainerGroup &BaseNode::get_meta_group()
 
 const meta::ContainerGroup &BaseNode::get_meta_group() const { return *this->meta_group; }
 
+void BaseNode::set_current_category(const std::string &category)
+{
+  this->current_category = category;
+}
+
 std::string BaseNode::get_category() const { return this->category; }
 
 std::shared_ptr<const GraphConfig> BaseNode::get_config_ref() const
@@ -533,72 +538,73 @@ void BaseNode::finalize_attributes()
 {
   auto &c = this->get_meta_group().current();
 
-  // 1) _GROUPBOX_ sentinels in the ordered-key list -> ui.category metadata
-  //    + build the sanitized display order
-  std::vector<std::string> order;
-  std::string              category = "";
+  // // 1) _GROUPBOX_ sentinels in the ordered-key list -> ui.category metadata
+  // //    + build the sanitized display order
+  // std::vector<std::string> order;
+  // std::string              category = "";
 
-  for (const auto &key : this->attr_ordered_key)
-  {
-    if (key.starts_with("_GROUPBOX_BEGIN_"))
-    {
-      category = key.substr(std::string("_GROUPBOX_BEGIN_").size());
-      continue;
-    }
-    if (key.starts_with("_GROUPBOX_END"))
-    {
-      category = "";
-      continue;
-    }
-    auto *p = c.find(key);
-    if (!p)
-    {
-      Logger::log()->warn("finalize_attributes: node {}: ordered key '{}' not found",
-                          this->get_label(),
-                          key);
-      continue;
-    }
-    if (!category.empty())
-      p->metadata()
-          .try_add(std::string(meta::keys::ui::category), std::string(category))
-          ->value() = category;
-    order.push_back(key);
-  }
+  // for (const auto &key : this->attr_ordered_key)
+  // {
+  //   if (key.starts_with("_GROUPBOX_BEGIN_"))
+  //   {
+  //     category = key.substr(std::string("_GROUPBOX_BEGIN_").size());
+  //     continue;
+  //   }
+  //   if (key.starts_with("_GROUPBOX_END"))
+  //   {
+  //     category = "";
+  //     continue;
+  //   }
+  //   auto *p = c.find(key);
+  //   if (!p)
+  //   {
+  //     Logger::log()->warn("finalize_attributes: node {}: ordered key '{}' not found",
+  //                         this->get_label(),
+  //                         key);
+  //     continue;
+  //   }
+  //   if (!category.empty())
+  //     p->metadata()
+  //         .try_add(std::string(meta::keys::ui::category), std::string(category))
+  //         ->value() = category;
+  //   order.push_back(key);
+  // }
 
-  // 2) render order = legacy ordered-key order, then unlisted keys appended.
-  //    The legacy backend keeps attributes in a std::map, so its *unlisted*
-  //    keys render in alphabetical order. To preserve display + parity order,
-  //    sort the unlisted tail alphabetically when it is entirely compat-backed
-  //    (every unlisted key carries compat.legacy_type metadata). Native Meta
-  //    attributes have no legacy std::map counterpart, so their insertion order
-  //    is left untouched (mixed native+post_* nodes keep insertion order).
-  {
-    std::vector<std::string> unlisted;
-    for (const auto &key : c.insertion_order())
-      if (std::find(order.begin(), order.end(), key) == order.end())
-        unlisted.push_back(key);
+  // // 2) render order = legacy ordered-key order, then unlisted keys appended.
+  // //    The legacy backend keeps attributes in a std::map, so its *unlisted*
+  // //    keys render in alphabetical order. To preserve display + parity order,
+  // //    sort the unlisted tail alphabetically when it is entirely compat-backed
+  // //    (every unlisted key carries compat.legacy_type metadata). Native Meta
+  // //    attributes have no legacy std::map counterpart, so their insertion order
+  // //    is left untouched (mixed native+post_* nodes keep insertion order).
+  // {
+  //   std::vector<std::string> unlisted;
+  //   for (const auto &key : c.insertion_order())
+  //     if (std::find(order.begin(), order.end(), key) == order.end())
+  //       unlisted.push_back(key);
 
-    bool all_compat = !unlisted.empty();
-    for (const auto &key : unlisted)
-    {
-      const auto *p = c.find(key);
-      if (!p || !p->metadata().try_value<std::string>(hsd::legacy::keys::type_label))
-      {
-        all_compat = false;
-        break;
-      }
-    }
-    if (all_compat)
-      std::sort(unlisted.begin(), unlisted.end());
+  //   bool all_compat = !unlisted.empty();
+  //   for (const auto &key : unlisted)
+  //   {
+  //     const auto *p = c.find(key);
+  //     if (!p || !p->metadata().try_value<std::string>(hsd::legacy::keys::type_label))
+  //     {
+  //       all_compat = false;
+  //       break;
+  //     }
+  //   }
+  //   if (all_compat)
+  //     std::sort(unlisted.begin(), unlisted.end());
 
-    for (const auto &key : unlisted)
-      order.push_back(key);
+  //   for (const auto &key : unlisted)
+  //     order.push_back(key);
 
-    if (!order.empty() && order != c.insertion_order())
-      if (!c.set_insertion_order(order))
-        Logger::log()->warn("finalize_attributes: node {}: set_insertion_order rejected",
-                            this->get_label());
-  }
+  //   if (!order.empty() && order != c.insertion_order())
+  //     if (!c.set_insertion_order(order))
+  //       Logger::log()->warn("finalize_attributes: node {}: set_insertion_order
+  //       rejected",
+  //                           this->get_label());
+  // }
 
   // 3) initial state for toolbar Reset
   this->initial_meta_state = c.json_to();

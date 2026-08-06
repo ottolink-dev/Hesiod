@@ -234,7 +234,7 @@ template <> struct legacy_traits<BoolAttribute>
                                        const std::string        &label,
                                        bool                      value)
   {
-    auto &a = meta::presets::checkbox(c, key, label, value);
+    auto &a = meta::presets::toggle_button(c, key, label, value);
     add_compat_markers(a, type_string);
     return a;
   }

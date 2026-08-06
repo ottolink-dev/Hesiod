@@ -203,6 +203,8 @@ void setup_post_process_heightmap_attributes(BaseNode                   &node,
                        node.get_node_type(),
                        node.get_id());
 
+  node.set_current_category("Post-Processing");
+
   if (options.add_mix)
   {
     node.add_attr<EnumAttribute>("post_mix_method",
@@ -223,23 +225,23 @@ void setup_post_process_heightmap_attributes(BaseNode                   &node,
   node.add_attr<RangeAttribute>("post_remap", "Remap Range", options.remap_active_state);
   node.add_attr<RangeAttribute>("post_saturate", "Saturation Range", false);
 
-  std::vector<std::string> *p_keys = node.get_attr_ordered_key_ref();
+  // std::vector<std::string> *p_keys = node.get_attr_ordered_key_ref();
 
-  p_keys->push_back("_GROUPBOX_BEGIN_Post-Processing");
+  // p_keys->push_back("_GROUPBOX_BEGIN_Post-Processing");
 
-  if (options.add_mix)
-  {
-    p_keys->push_back("post_mix_method");
-    p_keys->push_back("post_mix");
-  }
+  // if (options.add_mix)
+  // {
+  //   p_keys->push_back("post_mix_method");
+  //   p_keys->push_back("post_mix");
+  // }
 
-  p_keys->push_back("post_inverse");
-  p_keys->push_back("post_gamma");
-  p_keys->push_back("post_gain");
-  p_keys->push_back("post_smoothing_radius");
-  p_keys->push_back("post_remap");
-  p_keys->push_back("post_saturate");
-  p_keys->push_back("_GROUPBOX_END_");
+  // p_keys->push_back("post_inverse");
+  // p_keys->push_back("post_gamma");
+  // p_keys->push_back("post_gain");
+  // p_keys->push_back("post_smoothing_radius");
+  // p_keys->push_back("post_remap");
+  // p_keys->push_back("post_saturate");
+  // p_keys->push_back("_GROUPBOX_END_");
 }
 
 } // namespace hesiod

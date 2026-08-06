@@ -28,33 +28,26 @@ void setup_gabor_wave_fbm_node(BaseNode &node)
   node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, "output", CONFIG(node));
 
   // attribute(s)
+  node.set_current_category("Settings/Frequency");
+
   node.add_attr<WaveNbAttribute>("kw", "Spatial Frequency");
-  node.add_attr<SeedAttribute>("seed", "Seed");
-  node.add_attr<FloatAttribute>("angle", "angle", 0.f, -180.f, 180.f);
+
+  node.set_current_category("Settings/Angle");
+
+  node.add_attr<FloatAttribute>("angle", "Angle", 0.f, -180.f, 180.f, "{:.1f}°");
   node.add_attr<FloatAttribute>("angle_spread_ratio",
-                                "angle_spread_ratio",
+                                "Angle Spread Ratio",
                                 1.f,
                                 0.f,
                                 1.f);
+
+  node.set_current_category("Settings/Fbm Layers");
+
+  node.add_attr<SeedAttribute>("seed", "Seed");
   node.add_attr<IntAttribute>("octaves", "Octaves", 8, 0, 32);
   node.add_attr<FloatAttribute>("weight", "Weight", 0.7f, 0.f, 1.f);
   node.add_attr<FloatAttribute>("persistence", "Persistence", 0.5f, 0.f, 1.f);
   node.add_attr<FloatAttribute>("lacunarity", "Lacunarity", 2.f, 0.01f, 4.f);
-
-  // attribute(s) order
-  node.set_attr_ordered_key({"_GROUPBOX_BEGIN_Main Parameters",
-                             "_TEXT_Frequency",
-                             "kw",
-                             "_TEXT_Orientation",
-                             "angle",
-                             "angle_spread_ratio",
-                             "_TEXT_FBM layers",
-                             "seed",
-                             "octaves",
-                             "weight",
-                             "persistence",
-                             "lacunarity",
-                             "_GROUPBOX_END_"});
 
   setup_post_process_heightmap_attributes(node,
                                           {.add_mix = true, .remap_active_state = true});
