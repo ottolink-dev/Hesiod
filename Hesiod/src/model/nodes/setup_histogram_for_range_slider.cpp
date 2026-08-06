@@ -46,7 +46,7 @@ void setup_histogram_for_range_attribute(BaseNode          &node,
     return d;
   };
 
-  auto &c = node.meta_group().current();
+  auto &c = node.get_meta_group().current();
   auto *p = c.find(attribute_key);
   if (!p)
   {

@@ -22,7 +22,7 @@ void setup_brush_node(BaseNode &node)
   node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, "out", CONFIG(node));
 
   // attribute(s)
-  auto &c = node.meta_group().current();
+  auto &c = node.get_meta_group().current();
 
   auto *a = c.add<meta::Array>(
       "hmap",
@@ -48,7 +48,7 @@ void compute_brush_node(BaseNode &node)
   hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>("out");
 
   // retrieve raw data and convert them to an hmap::Array
-  const auto arr = node.meta_group().current().value<meta::Array>("hmap");
+  const auto arr = node.get_meta_group().current().value<meta::Array>("hmap");
 
   hmap::Array array(arr.shape);
   array.vector = arr.vector;

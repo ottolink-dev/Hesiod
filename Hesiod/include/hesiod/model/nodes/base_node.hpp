@@ -95,7 +95,7 @@ public:
   void add_attr(const std::string &key, Args &&...args)
   {
     static_assert(hsd::legacy::CompatTag<T>, "add_attr<T>: T is not a compat tag");
-    hsd::legacy::legacy_traits<T>::create(this->meta_group().current(),
+    hsd::legacy::legacy_traits<T>::create(this->get_meta_group().current(),
                                           key,
                                           std::forward<Args>(args)...);
   }
@@ -105,14 +105,14 @@ public:
     static_assert(hsd::legacy::CompatTag<T>);
     using traits = hsd::legacy::legacy_traits<T>;
     return traits::to_legacy(
-        this->meta_group().current().value<typename traits::storage>(key));
+        this->get_meta_group().current().value<typename traits::storage>(key));
   }
 
   template <typename T> auto get_attr_ref(const std::string &key) const
   {
     using storage = typename hsd::legacy::legacy_traits<T>::storage;
     // legacy get_attr_ref was const-returning-mutable; mirror that
-    auto &c = const_cast<BaseNode *>(this)->meta_group().current();
+    auto &c = const_cast<BaseNode *>(this)->get_meta_group().current();
     auto *p = c.find(key);
     if (!p)
       throw std::invalid_argument("unknown attribute key: " + key);
@@ -125,11 +125,11 @@ public:
   std::vector<std::string> *get_attr_ordered_key_ref();
   void set_attr_ordered_key(const std::vector<std::string> &new_attr_ordered_key);
 
-  meta::ContainerGroup       &meta_group(); // lazily creates group + "main" container
-  const meta::ContainerGroup &meta_group() const;
+  meta::ContainerGroup       &get_meta_group(); // lazily creates group + "main" container
+  const meta::ContainerGroup &get_meta_group() const;
 
   void                  finalize_attributes();
-  const nlohmann::json &initial_meta_state() const { return this->initial_meta_state_; }
+  const nlohmann::json &iinitial_meta_state() const { return this->initial_meta_state; }
 
   void reseed(bool backward);
 
@@ -139,10 +139,10 @@ public:
 
 private:
   // --- Members ---
-  std::unique_ptr<meta::ContainerGroup> meta_group_; // attribute storage
+  std::unique_ptr<meta::ContainerGroup> meta_group; // attribute storage
 
   // container state captured at finalize time; toolbar "Reset Settings" restores it
-  nlohmann::json initial_meta_state_;
+  nlohmann::json initial_meta_state;
 
   std::vector<std::string>            attr_ordered_key = {};
   std::string                         category;

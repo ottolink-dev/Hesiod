@@ -43,7 +43,7 @@ void setup_cloud_node(BaseNode &node)
 
   // --- Attributes
 
-  auto &c = node.meta_group().current();
+  auto &c = node.get_meta_group().current();
 
   auto *a = c.add<std::vector<glm::vec3>>(A_CLOUD, {});
   a->metadata().try_add(meta::keys::ui::label, std::string("Cloud"));
@@ -96,7 +96,7 @@ void compute_cloud_node(BaseNode &node)
 
   // --- Params
 
-  const auto cloud_attr = node.meta_group().current().value<std::vector<glm::vec3>>(
+  const auto cloud_attr = node.get_meta_group().current().value<std::vector<glm::vec3>>(
       A_CLOUD);
 
   // --- Compute

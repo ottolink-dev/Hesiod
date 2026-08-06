@@ -112,7 +112,7 @@ QWidget *NodeAttributesWidget::create_toolbar()
     BaseNode *p_node = gno->get_node_ref_by_id<BaseNode>(this->node_id);
     if (!p_node)
       return nullptr;
-    return &p_node->meta_group().current();
+    return &p_node->get_meta_group().current();
   };
 
   this->connect(bckp_btn,
@@ -224,9 +224,9 @@ QWidget *NodeAttributesWidget::create_toolbar()
                     return;
 
                   auto *c = meta_container();
-                  if (c && !p_node->initial_meta_state().empty())
+                  if (c && !p_node->iinitial_meta_state().empty())
                   {
-                    c->json_from(p_node->initial_meta_state(), true);
+                    c->json_from(p_node->iinitial_meta_state(), true);
                     this->sync_from_model();
                     gno->update(this->node_id);
                   }
@@ -302,7 +302,7 @@ void NodeAttributesWidget::setup_layout()
   // --- Meta ContainerGroupWidget (post_* / native Meta attributes)
 
   this->meta_widget = new meta::qt::ContainerGroupWidget(
-      p_node->meta_group(),
+      p_node->get_meta_group(),
       meta::qt::ContainerRenderOptions{},
       this);
 

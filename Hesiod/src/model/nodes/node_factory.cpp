@@ -148,7 +148,7 @@ void dump_node_settings_screenshots()
     hesiod::BaseNode *p_base_node = dynamic_cast<hesiod::BaseNode *>(p_node.get());
 
     QWidget *widget = new meta::qt::ContainerGroupWidget(
-        p_base_node->meta_group(),
+        p_base_node->get_meta_group(),
         meta::qt::ContainerRenderOptions{},
         nullptr);
 

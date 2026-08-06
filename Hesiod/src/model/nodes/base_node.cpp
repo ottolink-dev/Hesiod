@@ -242,18 +242,18 @@ std::vector<std::string> *BaseNode::get_attr_ordered_key_ref()
   return &this->attr_ordered_key;
 };
 
-meta::ContainerGroup &BaseNode::meta_group()
+meta::ContainerGroup &BaseNode::get_meta_group()
 {
-  if (!this->meta_group_)
+  if (!this->meta_group)
   {
-    this->meta_group_ = std::make_unique<meta::ContainerGroup>();
-    this->meta_group_->add("main");
-    this->meta_group_->set_current("main");
+    this->meta_group = std::make_unique<meta::ContainerGroup>();
+    this->meta_group->add("main");
+    this->meta_group->set_current("main");
   }
-  return *this->meta_group_;
+  return *this->meta_group;
 }
 
-const meta::ContainerGroup &BaseNode::meta_group() const { return *this->meta_group_; }
+const meta::ContainerGroup &BaseNode::get_meta_group() const { return *this->meta_group; }
 
 std::string BaseNode::get_category() const { return this->category; }
 
@@ -531,7 +531,7 @@ std::shared_ptr<BaseNode> BaseNode::get_shared()
 
 void BaseNode::finalize_attributes()
 {
-  auto &c = this->meta_group().current();
+  auto &c = this->get_meta_group().current();
 
   // 1) _GROUPBOX_ sentinels in the ordered-key list -> ui.category metadata
   //    + build the sanitized display order
@@ -601,7 +601,7 @@ void BaseNode::finalize_attributes()
   }
 
   // 3) initial state for toolbar Reset
-  this->initial_meta_state_ = c.json_to();
+  this->initial_meta_state = c.json_to();
 }
 
 void BaseNode::json_from(nlohmann::json const &json)
@@ -623,7 +623,7 @@ void BaseNode::json_from(nlohmann::json const &json)
     }
 
     // Centralized JSON Normalization: Translate top-level legacy keys to _meta
-    auto &container = this->meta_group().current();
+    auto &container = this->get_meta_group().current();
     for (const auto &key : container.insertion_order())
     {
       auto *attr = container.find(key);
@@ -655,7 +655,7 @@ nlohmann::json BaseNode::json_to() const
     json["label"] = this->get_label();
     json["comment"] = this->get_comment();
     json["runtime_info"] = this->runtime_info.json_to();
-    auto meta_json = this->meta_group().current().json_to();
+    auto meta_json = this->get_meta_group().current().json_to();
     for (auto &[key, val] : meta_json.items())
     {
       json[key] = val;
@@ -703,9 +703,9 @@ nlohmann::json BaseNode::node_parameters_to_json() const
     // Attribute information
     nlohmann::json params_json;
 
-    for (const auto &key : this->meta_group().current().insertion_order())
+    for (const auto &key : this->get_meta_group().current().insertion_order())
     {
-      const auto *p = this->meta_group().current().find(key);
+      const auto *p = this->get_meta_group().current().find(key);
       if (!p)
         continue;
       nlohmann::json param_info;
@@ -763,7 +763,7 @@ nlohmann::json BaseNode::attribute_parity_record() const
   };
 
   // ---- Meta backend (container group) ----
-  const auto &c = this->meta_group().current();
+  const auto &c = this->get_meta_group().current();
   order = c.insertion_order();
 
   for (const auto &key : order)
@@ -888,9 +888,9 @@ void BaseNode::propagate_config_change()
 
 void BaseNode::reseed(bool backward)
 {
-  for (const auto &key : this->meta_group().current().insertion_order())
+  for (const auto &key : this->get_meta_group().current().insertion_order())
   {
-    auto *p = this->meta_group().current().find(key);
+    auto *p = this->get_meta_group().current().find(key);
     if (!p)
       continue;
     if (const bool *is_seed = p->metadata().try_value<bool>(hsd::legacy::keys::seed);
@@ -926,9 +926,9 @@ void BaseNode::update_attributes_tool_tip()
 
   size_t width = 64;
 
-  for (const auto &key : this->meta_group().current().insertion_order())
+  for (const auto &key : this->get_meta_group().current().insertion_order())
   {
-    auto *p = this->meta_group().current().find(key);
+    auto *p = this->get_meta_group().current().find(key);
     if (!p)
       continue;
 

@@ -50,7 +50,7 @@ void setup_noise_node(BaseNode &node)
 
   // --- Attributes
 
-  auto &c = node.meta_group().current();
+  auto &c = node.get_meta_group().current();
 
   // noise_type: int-backed enum dropdown
   {
@@ -123,7 +123,7 @@ void compute_noise_node(BaseNode &node)
 
   // --- Params
 
-  auto &c = node.meta_group().current();
+  auto &c = node.get_meta_group().current();
 
   // clang-format off
   const auto      noise_type = hmap::NoiseType(c.value<int>(A_NOISE_TYPE));

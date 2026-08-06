@@ -34,7 +34,7 @@ void setup_saturate_node(BaseNode &node)
   node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_OUT, CONFIG(node));
 
   // attribute(s)
-  auto &c = node.meta_group().current();
+  auto &c = node.get_meta_group().current();
 
   // k_smoothing
   {
@@ -106,7 +106,7 @@ void compute_saturate_node(BaseNode &node)
     float hmin = p_in->min(node.cfg().cm_cpu);
     float hmax = p_in->max(node.cfg().cm_cpu);
 
-    auto &c = node.meta_group().current();
+    auto &c = node.get_meta_group().current();
 
     const glm::vec2 range = c.value<glm::vec2>(A_RANGE);
     const float     k = c.value<float>(A_K_SMOOTHING);
