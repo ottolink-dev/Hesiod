@@ -58,7 +58,7 @@ void setup_noise_node(BaseNode &node)
     a->metadata().try_add(meta::keys::ui::label, std::string("Type"));
     a->metadata().try_add(meta::keys::ui::widget_type, std::string("EnumComboBox"));
     a->metadata().try_add(meta::keys::ui::category, std::string("Main Parameters"));
-    a->metadata().try_add(std::string(hsd::compat::keys::type_label),
+    a->metadata().try_add(std::string(hsd::legacy::keys::type_label),
                           std::string("Enumeration"));
     std::vector<std::pair<int, std::string>> items;
     for (const auto &[name, val] : enum_mappings.noise_type_map)
@@ -75,7 +75,7 @@ void setup_noise_node(BaseNode &node)
     a->metadata().try_add(meta::keys::constraints::min, 0.f);
     a->metadata().try_add(meta::keys::constraints::max, 64.f);
     a->metadata().try_add(meta::keys::ui::category, std::string("Main Parameters"));
-    a->metadata().try_add(std::string(hsd::compat::keys::type_label),
+    a->metadata().try_add(std::string(hsd::legacy::keys::type_label),
                           std::string("Wavenumber"));
   }
 
@@ -85,7 +85,7 @@ void setup_noise_node(BaseNode &node)
     a->metadata().try_add(meta::keys::ui::label, std::string("Seed"));
     a->metadata().try_add(meta::keys::constraints::min, 0);
     a->metadata().try_add(meta::keys::ui::category, std::string("Main Parameters"));
-    a->metadata().try_add(std::string(hsd::compat::keys::type_label),
+    a->metadata().try_add(std::string(hsd::legacy::keys::type_label),
                           std::string("Random seed number"));
   }
 
@@ -95,7 +95,7 @@ void setup_noise_node(BaseNode &node)
     a->metadata().try_add(meta::keys::ui::label, std::string("Periodic (tileable)"));
     a->metadata().try_add(meta::keys::ui::widget_type, std::string("Checkbox"));
     a->metadata().try_add(meta::keys::ui::category, std::string("Tiling"));
-    a->metadata().try_add(std::string(hsd::compat::keys::type_label),
+    a->metadata().try_add(std::string(hsd::legacy::keys::type_label),
                           std::string("Bool"));
   }
 

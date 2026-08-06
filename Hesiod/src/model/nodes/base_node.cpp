@@ -13,6 +13,7 @@
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
+#include "hesiod/model/nodes/legacy/legacy_converter.hpp"
 #include "hesiod/model/nodes/node_factory.hpp"
 #include "hesiod/model/utils.hpp"
 #include "highmap/geometry/cloud.hpp"
@@ -581,7 +582,7 @@ void BaseNode::finalize_attributes()
     for (const auto &key : unlisted)
     {
       const auto *p = c.find(key);
-      if (!p || !p->metadata().try_value<std::string>(hsd::compat::keys::legacy_type))
+      if (!p || !p->metadata().try_value<std::string>(hsd::legacy::keys::legacy_type))
       {
         all_compat = false;
         break;
@@ -615,38 +616,45 @@ void BaseNode::json_from(nlohmann::json const &json)
     if (json.contains("runtime_info"))
       this->runtime_info.json_from(json["runtime_info"]);
 
-    if (json.contains("_meta"))
+    nlohmann::json meta_json = nlohmann::json::object();
+    if (json.contains("_meta") && json["_meta"].is_object())
     {
-      this->meta_group().current().json_from(json["_meta"]);
-      // mixed-era files carry a legacy top-level key (e.g. Brush "hmap")
-      // alongside a _meta blob that does not contain it; new-format files
-      // store everything inside _meta and never hit these decoders
-      for (const auto &[key, decoder] : this->legacy_decoders_)
-        if (json.contains(key))
-          decoder(json[key]);
+      meta_json = json["_meta"];
     }
-    else if (!this->legacy_decoders_.empty())
+
+    // Centralized JSON Normalization: Translate top-level legacy keys to _meta
+    auto &container = this->meta_group().current();
+    for (const auto &key : container.insertion_order())
     {
-      // legacy-format file: decode per-key values written by the old
-      // Attributes library into the Meta container
-      Logger::log()->info(
-          "BaseNode::json_from: node '{}' loading legacy-format parameters",
-          this->get_id());
-      for (const auto &[key, decoder] : this->legacy_decoders_)
+      auto *attr = container.find(key);
+      std::string legacy_type = "";
+      if (attr)
       {
-        if (json.contains(key))
-          decoder(json[key]);
-        else
-          Logger::log()->warn("Missing JSON key for attribute: {}, using default", key);
+        if (const auto *m = attr->metadata().try_value<std::string>("compat.legacy_type"))
+          legacy_type = *m;
+      }
+      
+      // Fallback: extract type_string from loaded JSON if metadata is not set
+      if (legacy_type.empty() && json.contains(key) && json[key].is_object() && json[key].contains("type_string"))
+      {
+        legacy_type = json[key]["type_string"].get<std::string>();
+      }
+      if (legacy_type.empty() && meta_json.contains(key) && meta_json[key].is_object() && meta_json[key].contains("type_string"))
+      {
+        legacy_type = meta_json[key]["type_string"].get<std::string>();
+      }
+
+      if (json.contains(key) && !meta_json.contains(key))
+      {
+        meta_json[key] = convert_legacy_attribute_json(legacy_type, json[key]);
+      }
+      else if (meta_json.contains(key))
+      {
+        meta_json[key] = convert_legacy_attribute_json(legacy_type, meta_json[key]);
       }
     }
-    else
-    {
-      Logger::log()->error(
-          "BaseNode::json_from: node '{}' uses Meta storage but neither '_meta' nor "
-          "legacy decoders are available — parameters NOT restored",
-          this->get_id());
-    }
+
+    container.json_from(meta_json);
   }
   catch (const nlohmann::json::exception &e)
   {
@@ -664,7 +672,11 @@ nlohmann::json BaseNode::json_to() const
     json["label"] = this->get_label();
     json["comment"] = this->get_comment();
     json["runtime_info"] = this->runtime_info.json_to();
-    json["_meta"] = this->meta_group().current().json_to();
+    auto meta_json = this->meta_group().current().json_to();
+    for (auto &[key, val] : meta_json.items())
+    {
+      json[key] = val;
+    }
   }
   catch (const std::exception &e)
   {
@@ -719,9 +731,9 @@ nlohmann::json BaseNode::node_parameters_to_json() const
           meta::keys::ui::label);
       param_info["label"] = lbl ? *lbl : key;
       const std::string *lt = p->metadata().try_value<std::string>(
-          hsd::compat::keys::legacy_type);
+          hsd::legacy::keys::legacy_type);
       const std::string *tl = p->metadata().try_value<std::string>(
-          hsd::compat::keys::type_label);
+          hsd::legacy::keys::type_label);
       param_info["type"] = lt ? *lt : (tl ? *tl : std::string(p->type().name()));
       auto json_ptr = nlohmann::json::json_pointer("/parameters/" + key + "/description");
       param_info["description"] = this->documentation.value(json_ptr, "No description");
@@ -784,7 +796,7 @@ nlohmann::json BaseNode::attribute_parity_record() const
     // legacy_type metadata restores the legacy type string; native Meta
     // nodes without it fall back to the C++ type name (no legacy form).
     const std::string *lt = p->metadata().try_value<std::string>(
-        hsd::compat::keys::legacy_type);
+        hsd::legacy::keys::legacy_type);
     const std::string type_string = lt ? *lt : std::string(p->type().name());
 
     const std::string *lbl = p->metadata().try_value<std::string>(meta::keys::ui::label);
@@ -829,7 +841,7 @@ nlohmann::json BaseNode::attribute_parity_record() const
     // the facade-backed seed preset (which attaches constraints.min/max)
     // to match, so seed nodes don't false-positive on bounds in the
     // legacy/meta parity diff.
-    if (const bool *is_seed = p->metadata().try_value<bool>(hsd::compat::keys::seed);
+    if (const bool *is_seed = p->metadata().try_value<bool>(hsd::legacy::keys::seed);
         is_seed && *is_seed)
       bounds = nlohmann::json();
 
@@ -900,7 +912,7 @@ void BaseNode::reseed(bool backward)
     auto *p = this->meta_group().current().find(key);
     if (!p)
       continue;
-    if (const bool *is_seed = p->metadata().try_value<bool>(hsd::compat::keys::seed);
+    if (const bool *is_seed = p->metadata().try_value<bool>(hsd::legacy::keys::seed);
         is_seed && *is_seed)
       if (auto *typed = p->try_cast<meta::Attribute<int>>())
       {

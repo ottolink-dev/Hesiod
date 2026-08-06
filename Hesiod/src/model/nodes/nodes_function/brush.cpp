@@ -31,18 +31,7 @@ void setup_brush_node(BaseNode &node)
   a->metadata().try_add(meta::keys::ui::category, std::string("Main"));
   a->metadata().try_add(meta::keys::ui::width, 256);
   a->metadata().try_add(meta::keys::ui::height, 256);
-  a->metadata().try_add(std::string(hsd::compat::keys::type_label), std::string("Array"));
-
-  // legacy .hsd files store the painting as attr::ArrayAttribute json:
-  // {"shape.x": int, "shape.y": int, "vector": [float...]}
-  node.register_legacy_decoder(
-      "hmap",
-      [a](const nlohmann::json &j)
-      {
-        a->value().shape = glm::ivec2(j.at("shape.x").get<int>(),
-                                      j.at("shape.y").get<int>());
-        a->value().vector = j.at("vector").get<std::vector<float>>();
-      });
+  a->metadata().try_add(std::string(hsd::legacy::keys::type_label), std::string("Array"));
 
   setup_post_process_heightmap_attributes(node,
                                           {.add_mix = true, .remap_active_state = true});

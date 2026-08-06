@@ -46,7 +46,7 @@
 
 #include "hesiod/logger.hpp"
 
-namespace hsd::compat
+namespace hsd::legacy
 {
 
 namespace keys
@@ -54,11 +54,11 @@ namespace keys
 // Hesiod-only facade markers: written by add_compat_markers() below and read by
 // the base_node parity/reseed/serialization consumers. Values are byte-identical
 // to the former string literals so a typo is a compile error, not a silent break.
-inline constexpr char legacy_type[] = "compat.legacy_type";
-inline constexpr char seed[] = "compat.seed";
+inline constexpr char legacy_type[] = "legacy.type";
+inline constexpr char seed[] = "legacy.seed";
 
 // Docs-only human-readable parameter type label. Used when a node is native-Meta
-// (built directly with c.add<T>(...)) and therefore has no compat.legacy_type.
+// (built directly with c.add<T>(...)) and therefore has no legacy.type.
 // Read only by the docs emitter (node_parameters_to_json) — must NOT be read by
 // parity or finalize_attributes.
 inline constexpr char type_label[] = "ui.type_label";
@@ -207,14 +207,7 @@ template <> struct legacy_traits<FloatAttribute>
 
   static legacy_value to_legacy(const storage &v) { return v; }
 
-  static void decode(meta::Attribute<float> &a,
-                     const nlohmann::json   &j,
-                     const std::string      &key)
-  {
-    float v = a.value();
-    safe_get(j, "value", v, key);
-    a.set_from_any(v); // fires value_changed so any open widgets sync
-  }
+  
 };
 
 // ---------------------------------------------------------------- Int
@@ -239,14 +232,7 @@ template <> struct legacy_traits<IntAttribute>
 
   static legacy_value to_legacy(const storage &v) { return v; }
 
-  static void decode(meta::Attribute<int> &a,
-                     const nlohmann::json &j,
-                     const std::string    &key)
-  {
-    int v = a.value();
-    safe_get(j, "value", v, key);
-    a.set_from_any(v);
-  }
+  
 };
 
 // ---------------------------------------------------------------- Bool
@@ -285,14 +271,7 @@ template <> struct legacy_traits<BoolAttribute>
 
   static legacy_value to_legacy(const storage &v) { return v; }
 
-  static void decode(meta::Attribute<bool> &a,
-                     const nlohmann::json  &j,
-                     const std::string     &key)
-  {
-    bool v = a.value();
-    safe_get(j, "value", v, key);
-    a.set_from_any(v);
-  }
+  
 };
 
 // ---------------------------------------------------------------- Enum
@@ -349,51 +328,7 @@ template <> struct legacy_traits<EnumAttribute>
 
   static legacy_value to_legacy(const storage &v) { return v; }
 
-  static void decode(meta::Attribute<int> &a,
-                     const nlohmann::json &j,
-                     const std::string    &key)
-  {
-    const auto *items = a.metadata().try_value<std::vector<std::pair<int, std::string>>>(
-        meta::keys::constraints::enum_items);
-
-    // Prefer the "choice" string mapped through enum_items (legacy stored both
-    // "choice" and "value"; the string is the stable identity).
-    if (j.contains("choice"))
-    {
-      std::string choice;
-      safe_get(j, "choice", choice, key);
-      if (items && !items->empty())
-      {
-        for (const auto &[value, name] : *items)
-          if (name == choice)
-          {
-            a.set_from_any(value);
-            return;
-          }
-        hesiod::Logger::log()->warn(
-            "compat enum decode: key '{}' choice '{}' not found, keeping default",
-            key,
-            choice);
-        return;
-      }
-
-      // enum_items metadata unavailable: fall back to the raw "value" int
-      // rather than giving up entirely (rare path; enum_items is normally set).
-      hesiod::Logger::log()->warn(
-          "compat enum decode: key '{}' enum_items unavailable, falling back to raw "
-          "'value'",
-          key);
-      int v = a.value();
-      safe_get(j, "value", v, key);
-      a.set_from_any(v);
-      return;
-    }
-
-    // Fallback: raw int value.
-    int v = a.value();
-    safe_get(j, "value", v, key);
-    a.set_from_any(v);
-  }
+  
 };
 
 // ---------------------------------------------------------------- Seed
@@ -420,14 +355,7 @@ template <> struct legacy_traits<SeedAttribute>
 
   static legacy_value to_legacy(const storage &v) { return static_cast<unsigned int>(v); }
 
-  static void decode(meta::Attribute<int> &a,
-                     const nlohmann::json &j,
-                     const std::string    &key)
-  {
-    unsigned int v = static_cast<unsigned int>(a.value());
-    safe_get(j, "value", v, key);
-    a.set_from_any(static_cast<int>(v));
-  }
+  
 };
 
 // ---------------------------------------------------------------- Range
@@ -483,21 +411,7 @@ template <> struct legacy_traits<RangeAttribute>
 
   static legacy_value to_legacy(const storage &v) { return v; }
 
-  static void decode(meta::Attribute<glm::vec2> &a,
-                     const nlohmann::json       &j,
-                     const std::string          &key)
-  {
-    glm::vec2 v = vec2_from_json(j, "value", a.value(), key);
-    bool      is_active = true;
-    if (const bool *m = a.metadata().try_value<bool>(meta::keys::ui::active))
-      is_active = *m;
-    safe_get(j, "is_active", is_active, key);
-    // metadata first, then one notify covers the value change
-    a.metadata()
-        .try_add(std::string(meta::keys::ui::active), is_active)
-        ->value() = is_active;
-    a.set_from_any(v);
-  }
+  
 };
 
 // ---------------------------------------------------------------- WaveNb
@@ -545,20 +459,7 @@ template <> struct legacy_traits<WaveNbAttribute>
 
   static legacy_value to_legacy(const storage &v) { return v; }
 
-  static void decode(meta::Attribute<glm::vec2> &a,
-                     const nlohmann::json       &j,
-                     const std::string          &key)
-  {
-    glm::vec2 v = vec2_from_json(j, "value", a.value(), key);
-    bool      link_xy = true;
-    if (const bool *m = a.metadata().try_value<bool>(meta::keys::ui::locked_xy))
-      link_xy = *m;
-    safe_get(j, "link_xy", link_xy, key);
-    a.metadata()
-        .try_add(std::string(meta::keys::ui::locked_xy), link_xy)
-        ->value() = link_xy;
-    a.set_from_any(v);
-  }
+  
 };
 
 // ---------------------------------------------------------------- Vec2Float
@@ -594,13 +495,7 @@ template <> struct legacy_traits<Vec2FloatAttribute>
 
   static legacy_value to_legacy(const storage &v) { return v; }
 
-  static void decode(meta::Attribute<glm::vec2> &a,
-                     const nlohmann::json       &j,
-                     const std::string          &key)
-  {
-    glm::vec2 v = vec2_from_json(j, "value", a.value(), key);
-    a.set_from_any(v);
-  }
+  
 };
 
 // ---------------------------------------------------------------- Cloud
@@ -644,45 +539,7 @@ template <> struct legacy_traits<CloudAttribute>
 
   static legacy_value to_legacy(const storage &v) { return v; }
 
-  static void decode(meta::Attribute<storage> &a,
-                     const nlohmann::json     &j,
-                     const std::string        &key)
-  {
-    if (!(j.contains("x") && j.contains("y") && j.contains("values")))
-    {
-      hesiod::Logger::log()->warn(
-          "compat cloud decode: key '{}' missing x/y/values, keeping default",
-          key);
-      return;
-    }
-
-    std::vector<float> x, y, v;
-    try
-    {
-      x = j.at("x").get<std::vector<float>>();
-      y = j.at("y").get<std::vector<float>>();
-      v = j.at("values").get<std::vector<float>>();
-    }
-    catch (const std::exception &e)
-    {
-      hesiod::Logger::log()->warn("compat cloud decode: key '{}': {}", key, e.what());
-      return;
-    }
-
-    if (x.size() != y.size() || x.size() != v.size())
-    {
-      hesiod::Logger::log()->warn(
-          "compat cloud decode: key '{}' x/y/values length mismatch, keeping default",
-          key);
-      return;
-    }
-
-    storage points;
-    points.reserve(x.size());
-    for (size_t k = 0; k < x.size(); ++k)
-      points.push_back({x[k], y[k], v[k]});
-    a.set_from_any(points);
-  }
+  
 };
 
 // ---------------------------------------------------------------- Color
@@ -720,15 +577,7 @@ template <> struct legacy_traits<ColorAttribute>
 
   static legacy_value to_legacy(const storage &v) { return {v.x, v.y, v.z, v.w}; }
 
-  static void decode(meta::Attribute<glm::vec4> &a,
-                     const nlohmann::json       &j,
-                     const std::string          &key)
-  {
-    const glm::vec4      cur = a.value();
-    std::array<float, 4> arr = {cur.x, cur.y, cur.z, cur.w};
-    safe_get(j, "value", arr, key);
-    a.set_from_any(glm::vec4(arr[0], arr[1], arr[2], arr[3]));
-  }
+  
 };
 
 // ---------------------------------------------------------------- ColorGradient
@@ -773,46 +622,7 @@ template <> struct legacy_traits<ColorGradientAttribute>
     return out;
   }
 
-  static void decode(meta::Attribute<meta::ColorGradient> &a,
-                     const nlohmann::json                 &j,
-                     const std::string                    &key)
-  {
-    if (!j.contains("value"))
-    {
-      hesiod::Logger::log()->warn(
-          "compat gradient decode: key '{}' missing value, keeping default",
-          key);
-      return;
-    }
-
-    std::vector<meta::Stop> stops;
-    for (const auto &js : j.at("value"))
-    {
-      // mirror legacy contains() guards: skip malformed stops
-      if (js.contains("position") && js.contains("color"))
-      {
-        try
-        {
-          meta::Stop s;
-          s.position = js.at("position").get<float>();
-          s.color = js.at("color").get<std::array<float, 4>>();
-          stops.push_back(s);
-        }
-        catch (const std::exception &e)
-        {
-          hesiod::Logger::log()->warn(
-              "compat gradient decode: key '{}' malformed stop (position/color): {}",
-              key,
-              e.what());
-          continue;
-        }
-      }
-    }
-
-    meta::ColorGradient g = a.value();
-    g.set_value(stops);
-    a.set_from_any(g);
-  }
+  
 };
 
 // ---------------------------------------------------------------- Filename
@@ -837,14 +647,7 @@ template <> struct legacy_traits<FilenameAttribute>
 
   static legacy_value to_legacy(const storage &v) { return v; }
 
-  static void decode(meta::Attribute<std::filesystem::path> &a,
-                     const nlohmann::json                   &j,
-                     const std::string                      &key)
-  {
-    std::string s = a.value().string();
-    safe_get(j, "value", s, key);
-    a.set_from_any(std::filesystem::path(s));
-  }
+  
 };
 
 // ---------------------------------------------------------------- String
@@ -877,14 +680,7 @@ template <> struct legacy_traits<StringAttribute>
 
   static legacy_value to_legacy(const storage &v) { return v; }
 
-  static void decode(meta::Attribute<std::string> &a,
-                     const nlohmann::json         &j,
-                     const std::string            &key)
-  {
-    std::string s = a.value();
-    safe_get(j, "value", s, key);
-    a.set_from_any(s);
-  }
+  
 };
 
 // ---------------------------------------------------------------- Choice
@@ -927,27 +723,7 @@ template <> struct legacy_traits<ChoiceAttribute>
 
   static legacy_value to_legacy(const storage &v) { return v; }
 
-  static void decode(meta::Attribute<std::string> &a,
-                     const nlohmann::json         &j,
-                     const std::string            &key)
-  {
-    std::string s = a.value();
-    safe_get(j, "value", s, key);
-
-    if (const auto *allowed = a.metadata().try_value<std::vector<std::string>>(
-            meta::keys::constraints::allowed_values))
-    {
-      if (std::find(allowed->begin(), allowed->end(), s) == allowed->end())
-      {
-        hesiod::Logger::log()->warn(
-            "compat choice decode: key '{}' value '{}' not in list, keeping default",
-            key,
-            s);
-        return;
-      }
-    }
-    a.set_from_any(s);
-  }
+  
 };
 
 // ---------------------------------------------------------------- VecFloat
@@ -972,14 +748,7 @@ template <> struct legacy_traits<VecFloatAttribute>
 
   static legacy_value to_legacy(const storage &v) { return v; }
 
-  static void decode(meta::Attribute<storage> &a,
-                     const nlohmann::json     &j,
-                     const std::string        &key)
-  {
-    storage v = a.value();
-    safe_get(j, "value", v, key);
-    a.set_from_any(v);
-  }
+  
 };
 
 // --- handles: faithful stand-ins for the legacy get_attr_ref<T>() mutable pointers.
@@ -1119,4 +888,4 @@ template <> struct handle_of<ColorGradientAttribute>
   using type = ColorGradientHandle;
 };
 
-} // namespace hsd::compat
+} // namespace hsd::legacy

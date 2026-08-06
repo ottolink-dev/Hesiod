@@ -91,9 +91,9 @@ void GraphNodeWidget::add_import_heightmap_node(const QImage &img)
     save_heightmap(img, fpath, aspect_ratio);
 
     // adjust node parameter accordingly
-    p_node->get_attr_ref<hsd::compat::FilenameAttribute>("fname")->set_value(
+    p_node->get_attr_ref<hsd::legacy::FilenameAttribute>("fname")->set_value(
         fpath.string());
-    p_node->get_attr_ref<hsd::compat::BoolAttribute>("dequantize")->set_value(true);
+    p_node->get_attr_ref<hsd::legacy::BoolAttribute>("dequantize")->set_value(true);
 
     p_node->compute();
   }
@@ -127,7 +127,7 @@ void GraphNodeWidget::add_import_texture_nodes(
     BaseNode *p_node = gno->get_node_ref_by_id<BaseNode>(node_id);
     if (p_node)
     {
-      p_node->get_attr_ref<hsd::compat::FilenameAttribute>("fname")->set_value(fname);
+      p_node->get_attr_ref<hsd::legacy::FilenameAttribute>("fname")->set_value(fname);
 
       p_node->compute();
     }

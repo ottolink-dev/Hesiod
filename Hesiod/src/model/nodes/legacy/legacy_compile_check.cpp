@@ -5,13 +5,13 @@
 // Compile-only exercise of the (otherwise dormant) compat layer. Instantiates
 // every legacy_traits specialization's create() overloads plus a handle, so the
 // header is type-checked by the build even though no node includes it yet.
-#include "hesiod/model/nodes/compat_attributes.hpp"
+#include "hesiod/model/nodes/legacy_attributes.hpp"
 
-namespace hesiod::compat_check
+namespace hesiod::legacy_check
 {
 void compile_check(meta::AttributeContainer &c)
 {
-  using namespace hsd::compat;
+  using namespace hsd::legacy;
   legacy_traits<FloatAttribute>::create(c, "f", "F", 0.5f);
   legacy_traits<FloatAttribute>::create(c, "f2", "F", 0.5f, 0.f, 1.f, "{:.2f}", true);
   legacy_traits<IntAttribute>::create(c, "i", "I", 3);
@@ -80,4 +80,4 @@ void compile_check(meta::AttributeContainer &c)
   static_assert(CompatTag<FloatAttribute>);
   static_assert(CompatTag<ColorGradientAttribute>);
 }
-} // namespace hesiod::compat_check
+} // namespace hesiod::legacy_check
