@@ -11,20 +11,20 @@
 
 namespace attr
 {
-using hsd::compat::FloatAttribute;
-using hsd::compat::IntAttribute;
 using hsd::compat::BoolAttribute;
-using hsd::compat::EnumAttribute;
-using hsd::compat::SeedAttribute;
-using hsd::compat::RangeAttribute;
-using hsd::compat::WaveNbAttribute;
-using hsd::compat::Vec2FloatAttribute;
+using hsd::compat::ChoiceAttribute;
 using hsd::compat::CloudAttribute;
 using hsd::compat::ColorAttribute;
 using hsd::compat::ColorGradientAttribute;
+using hsd::compat::EnumAttribute;
 using hsd::compat::FilenameAttribute;
-using hsd::compat::StringAttribute;
-using hsd::compat::ChoiceAttribute;
-using hsd::compat::VecFloatAttribute;
+using hsd::compat::FloatAttribute;
+using hsd::compat::IntAttribute;
+using hsd::compat::RangeAttribute;
+using hsd::compat::SeedAttribute;
 using hsd::compat::Stop;
+using hsd::compat::StringAttribute;
+using hsd::compat::Vec2FloatAttribute;
+using hsd::compat::VecFloatAttribute;
+using hsd::compat::WaveNbAttribute;
 } // namespace attr

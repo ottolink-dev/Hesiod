@@ -10,14 +10,14 @@
 
 #include <QCoreApplication>
 
-#include "highmap/geometry/cloud.hpp"
-#include "highmap/geometry/path.hpp"
-#include "highmap/virtual_array/virtual_array.hpp"
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/node_factory.hpp"
 #include "hesiod/model/utils.hpp"
+#include "highmap/geometry/cloud.hpp"
+#include "highmap/geometry/path.hpp"
+#include "highmap/virtual_array/virtual_array.hpp"
 
 namespace hesiod
 {
@@ -111,8 +111,7 @@ nlohmann::json normalize_parity_value(const std::string    &type_string,
   {
     nlohmann::json value_json = value_in;
     if (value_json.is_object())
-      value_json = value_json.contains("value") ? value_json["value"]
-                                                : nlohmann::json();
+      value_json = value_json.contains("value") ? value_json["value"] : nlohmann::json();
     return canonicalize_parity_value(value_json);
   }
 
@@ -559,8 +558,8 @@ void BaseNode::finalize_attributes()
       continue;
     }
     if (!category.empty())
-      p->metadata().try_add(std::string(meta::keys::ui::category),
-                            std::string(category))
+      p->metadata()
+          .try_add(std::string(meta::keys::ui::category), std::string(category))
           ->value() = category;
     order.push_back(key);
   }
@@ -724,8 +723,7 @@ nlohmann::json BaseNode::node_parameters_to_json() const
       const std::string *tl = p->metadata().try_value<std::string>(
           hsd::compat::keys::type_label);
       param_info["type"] = lt ? *lt : (tl ? *tl : std::string(p->type().name()));
-      auto json_ptr = nlohmann::json::json_pointer("/parameters/" + key +
-                                                   "/description");
+      auto json_ptr = nlohmann::json::json_pointer("/parameters/" + key + "/description");
       param_info["description"] = this->documentation.value(json_ptr, "No description");
       params_json[key] = param_info;
     }
@@ -750,8 +748,8 @@ nlohmann::json BaseNode::attribute_parity_record() const
   // Single place where the normalized entry shape lives, so the two backends
   // cannot drift: is_active folding, bounds shape and the field set are all
   // decided here.
-  auto make_entry = [](const std::string        &type_string,
-                       const std::string        &label,
+  auto make_entry = [](const std::string         &type_string,
+                       const std::string         &label,
                        const nlohmann::json      &value_json,
                        const std::optional<bool> &is_active,
                        const nlohmann::json      &bounds, // array [min,max] or null
@@ -789,9 +787,8 @@ nlohmann::json BaseNode::attribute_parity_record() const
         hsd::compat::keys::legacy_type);
     const std::string type_string = lt ? *lt : std::string(p->type().name());
 
-    const std::string *lbl = p->metadata().try_value<std::string>(
-        meta::keys::ui::label);
-    const std::string label = lbl ? *lbl : key;
+    const std::string *lbl = p->metadata().try_value<std::string>(meta::keys::ui::label);
+    const std::string  label = lbl ? *lbl : key;
 
     nlohmann::json value_json = j.contains("value") ? j["value"] : nlohmann::json();
     value_json = normalize_parity_value(type_string, value_json);
@@ -942,9 +939,8 @@ void BaseNode::update_attributes_tool_tip()
     if (!p)
       continue;
 
-    const std::string *lbl = p->metadata().try_value<std::string>(
-        meta::keys::ui::label);
-    std::string label = lbl ? *lbl : key;
+    const std::string *lbl = p->metadata().try_value<std::string>(meta::keys::ui::label);
+    std::string        label = lbl ? *lbl : key;
 
     if (this->documentation.contains("parameters") &&
         this->documentation["parameters"].contains(key))

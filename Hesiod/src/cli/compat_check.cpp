@@ -83,14 +83,24 @@ bool int_eq(const nlohmann::json &a, const nlohmann::json &b)
 // value is never canonicalized to the legacy shape. Skip those.
 bool is_legacy_type(const std::string &type)
 {
-  static const std::set<std::string> legacy_types = {
-      "Bool",       "Choice",           "Color",
-      "Color gradient", "Enumeration",  "Filename",
-      "Float",      "Array",            "Cloud",
-      "Integer",    "Value range",      "Resolution (w x h)",
-      "Random seed number",             "String",
-      "Vector of floats", "Vector of integers",
-      "Vec2Float",  "Wavenumber"};
+  static const std::set<std::string> legacy_types = {"Bool",
+                                                     "Choice",
+                                                     "Color",
+                                                     "Color gradient",
+                                                     "Enumeration",
+                                                     "Filename",
+                                                     "Float",
+                                                     "Array",
+                                                     "Cloud",
+                                                     "Integer",
+                                                     "Value range",
+                                                     "Resolution (w x h)",
+                                                     "Random seed number",
+                                                     "String",
+                                                     "Vector of floats",
+                                                     "Vector of integers",
+                                                     "Vec2Float",
+                                                     "Wavenumber"};
   return legacy_types.count(type) > 0;
 }
 
@@ -116,10 +126,10 @@ bool values_equivalent(const nlohmann::json &decoded,
     const nlohmann::json dval = (decoded.is_object() && decoded.contains("value"))
                                     ? decoded["value"]
                                     : decoded;
-    const bool d_active = (decoded.is_object() && decoded.contains("is_active"))
-                              ? decoded["is_active"].get<bool>()
-                              : true;
-    const bool l_active = legacy_attr.value("is_active", true);
+    const bool           d_active = (decoded.is_object() && decoded.contains("is_active"))
+                                        ? decoded["is_active"].get<bool>()
+                                        : true;
+    const bool           l_active = legacy_attr.value("is_active", true);
     return norm(dval) == norm(lv) && d_active == l_active;
   }
 
@@ -147,8 +157,8 @@ bool values_equivalent(const nlohmann::json &decoded,
     const nlohmann::json &y = legacy_attr["y"];
     const nlohmann::json &vals = legacy_attr["values"];
 
-    if (!x.is_array() || !y.is_array() || !vals.is_array() ||
-        x.size() != y.size() || x.size() != vals.size())
+    if (!x.is_array() || !y.is_array() || !vals.is_array() || x.size() != y.size() ||
+        x.size() != vals.size())
       return false;
 
     if (!decoded.is_array() || decoded.size() != x.size())
@@ -205,8 +215,7 @@ int run_compat_check(const std::string &dir)
       continue;
     }
 
-    if (!root.contains("graph_manager") ||
-        !root["graph_manager"].contains("graph_nodes"))
+    if (!root.contains("graph_manager") || !root["graph_manager"].contains("graph_nodes"))
       continue;
 
     for (auto &[graph_id, graph] : root["graph_manager"]["graph_nodes"].items())
@@ -269,7 +278,7 @@ int run_compat_check(const std::string &dir)
 
         // 2) _meta round-trip: json_to writes "_meta", json_from reads it back
         //    through the Meta path (not the legacy decoders).
-        nlohmann::json saved = p_base->json_to();
+        nlohmann::json               saved = p_base->json_to();
         std::shared_ptr<gnode::Node> p_node2;
         try
         {

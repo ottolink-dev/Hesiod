@@ -29,8 +29,8 @@ void setup_histogram_for_range_attribute(BaseNode          &node,
     float vmax = p_in->max(node.cfg().cm_cpu);
     if (vmin == vmax)
       return {};
-    const int   nbins = 256;
-    hmap::Array arr = p_in->to_array({256, 256}, node.cfg().cm_cpu);
+    const int               nbins = 256;
+    hmap::Array             arr = p_in->to_array({256, 256}, node.cfg().cm_cpu);
     meta::qt::HistogramData d;
     d.x = hmap::linspace(vmin, vmax, nbins, false);
     d.y.assign(nbins, 0.f);

@@ -56,16 +56,17 @@ void expect_selected(const std::string &node_type,
   }
 
   const std::optional<std::string> got = hesiod::select_port(*p_base, data_type, wanted);
-  const std::string got_str = got ? *got : std::string("<none>");
+  const std::string                got_str = got ? *got : std::string("<none>");
 
   if (got_str != expected_port)
   {
-    Logger::log()->error("check-port-links: {} [{}, want {}]: selected '{}' expected '{}'",
-                         node_type,
-                         data_type,
-                         wanted == gngui::PortType::IN ? "IN" : "OUT",
-                         got_str,
-                         expected_port);
+    Logger::log()->error(
+        "check-port-links: {} [{}, want {}]: selected '{}' expected '{}'",
+        node_type,
+        data_type,
+        wanted == gngui::PortType::IN ? "IN" : "OUT",
+        got_str,
+        expected_port);
     failures++;
   }
 }
@@ -151,11 +152,14 @@ void sweep_all_node_types(const PortCatalog &catalog)
         std::optional<std::string> first_declared;
         for (int k = 0; k < p_base->get_nports(); ++k)
         {
-          if (p_base->get_port_type(k) != wanted) continue;
-          if (map_type_name(p_base->get_data_type(k)) != data_type) continue;
+          if (p_base->get_port_type(k) != wanted)
+            continue;
+          if (map_type_name(p_base->get_data_type(k)) != data_type)
+            continue;
 
           const std::string label = p_base->get_port_label(k);
-          if (!first_declared) first_declared = label;
+          if (!first_declared)
+            first_declared = label;
 
           std::string lower;
           for (char c : label)
@@ -168,7 +172,8 @@ void sweep_all_node_types(const PortCatalog &catalog)
             expected = label;
             break;
           }
-          if (!expected) expected = label;
+          if (!expected)
+            expected = label;
         }
 
         if (expected != selected)

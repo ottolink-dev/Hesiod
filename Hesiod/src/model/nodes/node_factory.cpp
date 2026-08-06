@@ -1,9 +1,9 @@
 /* Copyright (c) 2023 Otto Link. Distributed under the terms of the GNU General
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
+#include "meta_qt/container_group_widget.hpp"
 #include <fstream>
 #include <stdexcept>
-#include "meta_qt/container_group_widget.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/node_factory.hpp"
@@ -147,13 +147,12 @@ void dump_node_settings_screenshots()
     std::shared_ptr<gnode::Node> p_node = node_factory(name, config);
     hesiod::BaseNode *p_base_node = dynamic_cast<hesiod::BaseNode *>(p_node.get());
 
-    QWidget *widget = new meta::qt::ContainerGroupWidget(p_base_node->meta_group(),
-                                                         meta::qt::ContainerRenderOptions{},
-                                                         nullptr);
+    QWidget *widget = new meta::qt::ContainerGroupWidget(
+        p_base_node->meta_group(),
+        meta::qt::ContainerRenderOptions{},
+        nullptr);
 
-    render_widget_screenshot(widget,
-                             p_base_node->get_label() + "_settings.png",
-                             QSize());
+    render_widget_screenshot(widget, p_base_node->get_label() + "_settings.png", QSize());
   }
 }
 

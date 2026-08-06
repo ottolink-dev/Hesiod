@@ -44,19 +44,21 @@ void setup_saturate_node(BaseNode &node)
     a->metadata().try_add(meta::keys::constraints::max, 1.f);
     a->metadata().try_add(meta::keys::ui::category, std::string("Main"));
     a->metadata().try_add(std::string(hsd::compat::keys::type_label),
-                           std::string("Float"));
+                          std::string("Float"));
   }
 
   // range
   {
     auto *a = c.add<glm::vec2>(A_RANGE, glm::vec2(0.f, 1.f));
     a->metadata().try_add(meta::keys::ui::widget_type, std::string("RangeBar"));
-    a->metadata().try_add(meta::keys::constraints::min, -1.f); // legacy RangeAttribute domain
+    a->metadata().try_add(meta::keys::constraints::min,
+                          -1.f); // legacy RangeAttribute domain
     a->metadata().try_add(meta::keys::constraints::max, 2.f);
     a->metadata().try_add(meta::keys::ui::category, std::string("Main"));
-    a->metadata().try_add(meta::keys::ui::tooltip, std::string("<b>Saturation range</b>"));
+    a->metadata().try_add(meta::keys::ui::tooltip,
+                          std::string("<b>Saturation range</b>"));
     a->metadata().try_add(std::string(hsd::compat::keys::type_label),
-                           std::string("Value range"));
+                          std::string("Value range"));
     a->metadata().try_add(
         meta::keys::ui::data_provider,
         meta::DataProvider{
@@ -69,8 +71,8 @@ void setup_saturate_node(BaseNode &node)
               float vmax = p_in->max(node.cfg().cm_cpu);
               if (vmin == vmax)
                 return {};
-              const int   nbins = 256;
-              hmap::Array arr = p_in->to_array({256, 256}, node.cfg().cm_cpu);
+              const int               nbins = 256;
+              hmap::Array             arr = p_in->to_array({256, 256}, node.cfg().cm_cpu);
               meta::qt::HistogramData d;
               d.x = hmap::linspace(vmin, vmax, nbins, false);
               d.y.assign(nbins, 0.f);
@@ -107,22 +109,17 @@ void compute_saturate_node(BaseNode &node)
     auto &c = node.meta_group().current();
 
     const glm::vec2 range = c.value<glm::vec2>(A_RANGE);
-    const float      k     = c.value<float>(A_K_SMOOTHING);
+    const float     k = c.value<float>(A_K_SMOOTHING);
 
     hmap::for_each_tile(
         {p_out, p_in},
         [&node, &hmin, &hmax, &range, &k](std::vector<hmap::Array *> p_arrays,
-                              const hmap::TileRegion &)
+                                          const hmap::TileRegion &)
         {
           auto [pa_out, pa_in] = unpack<2>(p_arrays);
           *pa_out = *pa_in;
 
-          hmap::saturate(*pa_out,
-                         range[0],
-                         range[1],
-                         hmin,
-                         hmax,
-                         k);
+          hmap::saturate(*pa_out, range[0], range[1], hmin, hmax, k);
         },
         node.cfg().cm_cpu);
 

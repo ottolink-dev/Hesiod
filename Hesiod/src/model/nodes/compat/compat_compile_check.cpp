@@ -26,8 +26,14 @@ void compile_check(meta::AttributeContainer &c)
   legacy_traits<RangeAttribute>::create(c, "r2", "R", glm::vec2(0.f, 1.f), -1.f, 2.f);
   legacy_traits<WaveNbAttribute>::create(c, "w", "W", glm::vec2(2.f, 2.f), 0.f, 64.f);
   legacy_traits<Vec2FloatAttribute>::create(c, "v", "V");
-  legacy_traits<Vec2FloatAttribute>::create(c, "v2", "V", glm::vec2(0.5f, 0.5f), 0.f, 1.f,
-                                            0.f, 1.f);
+  legacy_traits<Vec2FloatAttribute>::create(c,
+                                            "v2",
+                                            "V",
+                                            glm::vec2(0.5f, 0.5f),
+                                            0.f,
+                                            1.f,
+                                            0.f,
+                                            1.f);
   legacy_traits<CloudAttribute>::create(c, "cl", "C");
   legacy_traits<CloudAttribute>::create(c, "cl2", "C", true);
   legacy_traits<CloudAttribute>::create(c, "cl3", "C", std::vector<glm::vec3>{});
@@ -38,12 +44,24 @@ void compile_check(meta::AttributeContainer &c)
   legacy_traits<FilenameAttribute>::create(c, "fn", "F", "out.png", "PNG (*.png)", true);
   legacy_traits<StringAttribute>::create(c, "st", "S", "hello");
   legacy_traits<StringAttribute>::create(c, "st2", "S", "hello", true);
-  legacy_traits<ChoiceAttribute>::create(c, "ch", "C", std::vector<std::string>{"x", "y"});
-  legacy_traits<ChoiceAttribute>::create(c, "ch2", "C", std::vector<std::string>{"x", "y"},
+  legacy_traits<ChoiceAttribute>::create(c,
+                                         "ch",
+                                         "C",
+                                         std::vector<std::string>{"x", "y"});
+  legacy_traits<ChoiceAttribute>::create(c,
+                                         "ch2",
+                                         "C",
+                                         std::vector<std::string>{"x", "y"},
                                          "y");
-  legacy_traits<ChoiceAttribute>::create(c, "ch3", std::vector<std::string>{"x", "y"},
+  legacy_traits<ChoiceAttribute>::create(c,
+                                         "ch3",
+                                         std::vector<std::string>{"x", "y"},
                                          "y");
-  legacy_traits<VecFloatAttribute>::create(c, "vf", "V", std::vector<float>(8, 0.5f), 0.f,
+  legacy_traits<VecFloatAttribute>::create(c,
+                                           "vf",
+                                           "V",
+                                           std::vector<float>(8, 0.5f),
+                                           0.f,
                                            1.f);
 
   // handles

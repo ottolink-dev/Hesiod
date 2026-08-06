@@ -35,8 +35,9 @@ PortCatalog PortCatalog::from_documentation()
       PortInfo info;
       info.name = port_name;
       info.data_type = port["data_type"].get<std::string>();
-      info.direction = (port["type"].get<std::string>() == "input") ? gngui::PortType::IN
-                                                                   : gngui::PortType::OUT;
+      info.direction = (port["type"].get<std::string>() == "input")
+                           ? gngui::PortType::IN
+                           : gngui::PortType::OUT;
       infos.push_back(std::move(info));
     }
 

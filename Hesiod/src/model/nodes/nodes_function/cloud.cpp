@@ -49,8 +49,7 @@ void setup_cloud_node(BaseNode &node)
   a->metadata().try_add(meta::keys::ui::label, std::string("Cloud"));
   a->metadata().try_add(meta::keys::ui::widget_type, std::string("PointsEditor"));
   a->metadata().try_add(meta::keys::ui::category, std::string("Main"));
-  a->metadata().try_add(std::string(hsd::compat::keys::type_label),
-                         std::string("Cloud"));
+  a->metadata().try_add(std::string(hsd::compat::keys::type_label), std::string("Cloud"));
   a->metadata().try_add(
       meta::keys::ui::data_provider,
       meta::DataProvider{
@@ -59,16 +58,20 @@ void setup_cloud_node(BaseNode &node)
             hmap::VirtualArray *p_in = node.get_value_ref<hmap::VirtualArray>(port_id);
             if (!p_in)
               return {};
-            const glm::ivec2 shape(256, 256);
-            hmap::Array array = p_in->to_array(shape, node.cfg().cm_cpu);
-            std::vector<uint8_t> img =
-                hmap::colorize(array, array.min(), array.max(), hmap::Cmap::MAGMA, false)
-                    .to_img_8bit();
+            const glm::ivec2     shape(256, 256);
+            hmap::Array          array = p_in->to_array(shape, node.cfg().cm_cpu);
+            std::vector<uint8_t> img = hmap::colorize(array,
+                                                      array.min(),
+                                                      array.max(),
+                                                      hmap::Cmap::MAGMA,
+                                                      false)
+                                           .to_img_8bit();
             meta::qt::ImageData d;
             d.width = shape.x;
             d.height = shape.y;
             d.channels = 3; // to_img_8bit() -> RGB
-            // vertical flip so the thumbnail origin matches the canvas (legacy mirrored(false,true))
+            // vertical flip so the thumbnail origin matches the canvas (legacy
+            // mirrored(false,true))
             const int stride = shape.x * 3;
             d.pixels.resize(img.size());
             for (int y = 0; y < shape.y; ++y)
@@ -93,8 +96,8 @@ void compute_cloud_node(BaseNode &node)
 
   // --- Params
 
-  const auto cloud_attr =
-      node.meta_group().current().value<std::vector<glm::vec3>>(A_CLOUD);
+  const auto cloud_attr = node.meta_group().current().value<std::vector<glm::vec3>>(
+      A_CLOUD);
 
   // --- Compute
 

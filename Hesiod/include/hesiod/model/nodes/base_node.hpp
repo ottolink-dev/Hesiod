@@ -95,8 +95,7 @@ public:
   template <typename T, typename... Args>
   void add_attr(const std::string &key, Args &&...args)
   {
-    static_assert(hsd::compat::CompatTag<T>,
-                  "add_attr<T>: T is not a compat tag");
+    static_assert(hsd::compat::CompatTag<T>, "add_attr<T>: T is not a compat tag");
     auto &a = hsd::compat::legacy_traits<T>::create(this->meta_group().current(),
                                                     key,
                                                     std::forward<Args>(args)...);
@@ -129,7 +128,7 @@ public:
   // Native-Meta nodes (no compat tag) can register a hand-written decoder
   // for a key written by the legacy Attributes serializer, so old .hsd
   // files keep loading after the node stops using add_attr<LegacyType>.
-  void register_legacy_decoder(const std::string                           &key,
+  void register_legacy_decoder(const std::string                          &key,
                                std::function<void(const nlohmann::json &)> fn)
   {
     this->legacy_decoders_[key] = std::move(fn);
@@ -138,7 +137,7 @@ public:
   std::vector<std::string> *get_attr_ordered_key_ref();
   void set_attr_ordered_key(const std::vector<std::string> &new_attr_ordered_key);
 
-  meta::ContainerGroup       &meta_group();       // lazily creates group + "main" container
+  meta::ContainerGroup       &meta_group(); // lazily creates group + "main" container
   const meta::ContainerGroup &meta_group() const;
 
   void                  finalize_attributes();
@@ -152,7 +151,8 @@ public:
 
 private:
   // --- Members ---
-  std::unique_ptr<meta::ContainerGroup> meta_group_; // opt-in Meta storage (nullptr = legacy attr map)
+  std::unique_ptr<meta::ContainerGroup>
+      meta_group_; // opt-in Meta storage (nullptr = legacy attr map)
 
   // legacy-json fallback decoders, registered by add_attr (compat tags only)
   std::map<std::string, std::function<void(const nlohmann::json &)>> legacy_decoders_;

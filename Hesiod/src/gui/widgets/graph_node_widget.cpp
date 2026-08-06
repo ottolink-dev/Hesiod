@@ -4,16 +4,6 @@
 #include <exception>
 #include <optional>
 
-#include <QApplication>
-#include <QFileDialog>
-#include <QMenu>
-#include <QMessageBox>
-#include <QPointer>
-#include <QScreen>
-#include <QTimer>
-#include <QToolButton>
-#include <QVBoxLayout>
-#include <QWidgetAction>
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/widgets/custom_qmenu.hpp"
 #include "hesiod/gui/widgets/graph_config_widgets/graph_config_dialog.hpp"
@@ -30,6 +20,16 @@
 #include "hesiod/model/nodes/node_factory.hpp"
 #include "hesiod/model/nodes/port_catalog.hpp"
 #include "hesiod/model/utils.hpp"
+#include <QApplication>
+#include <QFileDialog>
+#include <QMenu>
+#include <QMessageBox>
+#include <QPointer>
+#include <QScreen>
+#include <QTimer>
+#include <QToolButton>
+#include <QVBoxLayout>
+#include <QWidgetAction>
 
 namespace hesiod
 {

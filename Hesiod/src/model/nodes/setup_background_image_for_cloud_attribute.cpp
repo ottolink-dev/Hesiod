@@ -29,11 +29,14 @@ void setup_background_image_for_cloud_attribute(BaseNode          &node,
     hmap::VirtualArray *p_in = node.get_value_ref<hmap::VirtualArray>(port_id);
     if (!p_in)
       return {};
-    const glm::ivec2 shape(256, 256);
-    hmap::Array array = p_in->to_array(shape, node.cfg().cm_cpu);
-    std::vector<uint8_t> img =
-        hmap::colorize(array, array.min(), array.max(), hmap::Cmap::MAGMA, false)
-            .to_img_8bit();
+    const glm::ivec2     shape(256, 256);
+    hmap::Array          array = p_in->to_array(shape, node.cfg().cm_cpu);
+    std::vector<uint8_t> img = hmap::colorize(array,
+                                              array.min(),
+                                              array.max(),
+                                              hmap::Cmap::MAGMA,
+                                              false)
+                                   .to_img_8bit();
     meta::qt::ImageData d;
     d.width = shape.x;
     d.height = shape.y;
