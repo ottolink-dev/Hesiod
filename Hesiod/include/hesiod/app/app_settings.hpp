@@ -109,6 +109,7 @@ struct AppSettings
     int         max_bake_resolution = 8192 * 4;
     bool        disable_during_update = false;
     bool        enable_node_groups = true;
+    bool        live_update = false;
   } node_editor;
 
   struct Viewer

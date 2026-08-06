@@ -40,7 +40,7 @@ private:
   QPointer<GraphNodeWidget> p_graph_node_widget;
   bool                      add_toolbar;
 
-  meta::qt::ContainerGroupWidget    *meta_widget = nullptr;
+  meta::qt::ContainerGroupWidget *meta_widget = nullptr;
 };
 
 } // namespace hesiod

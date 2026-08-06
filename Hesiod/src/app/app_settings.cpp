@@ -195,6 +195,7 @@ void AppSettings::json_from(nlohmann::json const &json)
                 "node_editor.disable_during_update",
                 node_editor.disable_during_update);
   json_safe_get(json, "node_editor.enable_node_groups", node_editor.enable_node_groups);
+  json_safe_get(json, "node_editor.live_update", node_editor.live_update);
 
   json_safe_get(json, "viewer.width", viewer.width);
   json_safe_get(json, "viewer.height", viewer.height);
@@ -274,6 +275,7 @@ nlohmann::json AppSettings::json_to() const
   json["node_editor.show_viewer"] = node_editor.show_viewer;
   json["node_editor.disable_during_update"] = node_editor.disable_during_update;
   json["node_editor.enable_node_groups"] = node_editor.enable_node_groups;
+  json["node_editor.live_update"] = node_editor.live_update;
 
   json["viewer.width"] = viewer.width;
   json["viewer.height"] = viewer.height;

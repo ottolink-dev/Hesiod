@@ -168,6 +168,8 @@ void AppSettingsWindow::setup_layout()
                   ctx.app_settings.node_editor.show_node_toolbar_in_settings_pan);
   this->bind_bool("Show node library pan",
                   ctx.app_settings.node_editor.show_node_library_pan);
+  this->bind_bool("Enable live update during editing",
+                  ctx.app_settings.node_editor.live_update);
 
   this->add_title("Viewport");
 
