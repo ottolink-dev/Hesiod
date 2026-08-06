@@ -51,16 +51,7 @@ namespace hsd::legacy
 
 namespace keys
 {
-// Hesiod-only facade markers: written by add_compat_markers() below and read by
-// the base_node parity/reseed/serialization consumers. Values are byte-identical
-// to the former string literals so a typo is a compile error, not a silent break.
-inline constexpr char legacy_type[] = "legacy.type";
 inline constexpr char seed[] = "legacy.seed";
-
-// Docs-only human-readable parameter type label. Used when a node is native-Meta
-// (built directly with c.add<T>(...)) and therefore has no legacy.type.
-// Read only by the docs emitter (node_parameters_to_json) — must NOT be read by
-// parity or finalize_attributes.
 inline constexpr char type_label[] = "ui.type_label";
 } // namespace keys
 
@@ -130,7 +121,7 @@ inline void add_compat_markers(meta::AbstractAttribute &a,
                                const char              *type_string,
                                bool                     is_seed = false)
 {
-  a.metadata().try_add(std::string(keys::legacy_type), std::string(type_string));
+  a.metadata().try_add(std::string(keys::type_label), std::string(type_string));
   if (is_seed)
     a.metadata().try_add(std::string(keys::seed), true);
 }

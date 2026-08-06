@@ -582,7 +582,7 @@ void BaseNode::finalize_attributes()
     for (const auto &key : unlisted)
     {
       const auto *p = c.find(key);
-      if (!p || !p->metadata().try_value<std::string>(hsd::legacy::keys::legacy_type))
+      if (!p || !p->metadata().try_value<std::string>(hsd::legacy::keys::type_label))
       {
         all_compat = false;
         break;
@@ -627,30 +627,13 @@ void BaseNode::json_from(nlohmann::json const &json)
     for (const auto &key : container.insertion_order())
     {
       auto *attr = container.find(key);
-      std::string legacy_type = "";
-      if (attr)
-      {
-        if (const auto *m = attr->metadata().try_value<std::string>("compat.legacy_type"))
-          legacy_type = *m;
-      }
-      
-      // Fallback: extract type_string from loaded JSON if metadata is not set
-      if (legacy_type.empty() && json.contains(key) && json[key].is_object() && json[key].contains("type_string"))
-      {
-        legacy_type = json[key]["type_string"].get<std::string>();
-      }
-      if (legacy_type.empty() && meta_json.contains(key) && meta_json[key].is_object() && meta_json[key].contains("type_string"))
-      {
-        legacy_type = meta_json[key]["type_string"].get<std::string>();
-      }
-
       if (json.contains(key) && !meta_json.contains(key))
       {
-        meta_json[key] = convert_legacy_attribute_json(legacy_type, json[key]);
+        meta_json[key] = convert_legacy_attribute_json(attr, json[key]);
       }
       else if (meta_json.contains(key))
       {
-        meta_json[key] = convert_legacy_attribute_json(legacy_type, meta_json[key]);
+        meta_json[key] = convert_legacy_attribute_json(attr, meta_json[key]);
       }
     }
 
@@ -730,11 +713,9 @@ nlohmann::json BaseNode::node_parameters_to_json() const
       const std::string *lbl = p->metadata().try_value<std::string>(
           meta::keys::ui::label);
       param_info["label"] = lbl ? *lbl : key;
-      const std::string *lt = p->metadata().try_value<std::string>(
-          hsd::legacy::keys::legacy_type);
       const std::string *tl = p->metadata().try_value<std::string>(
           hsd::legacy::keys::type_label);
-      param_info["type"] = lt ? *lt : (tl ? *tl : std::string(p->type().name()));
+      param_info["type"] = tl ? *tl : std::string(p->type().name());
       auto json_ptr = nlohmann::json::json_pointer("/parameters/" + key + "/description");
       param_info["description"] = this->documentation.value(json_ptr, "No description");
       params_json[key] = param_info;
@@ -795,9 +776,9 @@ nlohmann::json BaseNode::attribute_parity_record() const
 
     // legacy_type metadata restores the legacy type string; native Meta
     // nodes without it fall back to the C++ type name (no legacy form).
-    const std::string *lt = p->metadata().try_value<std::string>(
-        hsd::legacy::keys::legacy_type);
-    const std::string type_string = lt ? *lt : std::string(p->type().name());
+    const std::string *tl = p->metadata().try_value<std::string>(
+        hsd::legacy::keys::type_label);
+    const std::string type_string = tl ? *tl : std::string(p->type().name());
 
     const std::string *lbl = p->metadata().try_value<std::string>(meta::keys::ui::label);
     const std::string  label = lbl ? *lbl : key;
