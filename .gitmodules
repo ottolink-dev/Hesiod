@@ -10,9 +10,6 @@
 [submodule "external/GNode"]
 	path = external/GNode
 	url = git@github.com:otto-link/GNode.git
-[submodule "external/Attributes"]
-	path = external/Attributes
-	url = git@github.com:otto-link/Attributes.git
 [submodule "external/QTerrainRenderer"]
 	path = external/QTerrainRenderer
 	url = git@github.com:otto-link/QTerrainRenderer.git

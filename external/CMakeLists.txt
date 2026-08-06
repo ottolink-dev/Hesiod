@@ -19,10 +19,6 @@ set(HIGHMAP_ENABLE_EXAMPLES OFF)
 set(HIGHMAP_ENABLE_TESTS OFF)
 add_subdirectory(HighMap)
 
-# Attributes
-set(ATTRIBUTES_ENABLE_TESTS OFF)
-add_subdirectory(Attributes)
-
 # Meta (transitional: built alongside Attributes)
 set(META_ENABLE_TESTS OFF)
 set(META_ENABLE_GLM_TYPES ON)
