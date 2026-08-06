@@ -138,7 +138,6 @@ public:
   std::vector<std::string> *get_attr_ordered_key_ref();
   void set_attr_ordered_key(const std::vector<std::string> &new_attr_ordered_key);
 
-  bool                        uses_meta() const { return true; }
   meta::ContainerGroup       &meta_group();       // lazily creates group + "main" container
   const meta::ContainerGroup &meta_group() const;
 

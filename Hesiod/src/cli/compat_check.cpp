@@ -235,8 +235,8 @@ int run_compat_check(const std::string &dir)
         }
 
         auto *p_base = dynamic_cast<hesiod::BaseNode *>(p_node.get());
-        if (!p_base || !p_base->uses_meta())
-          continue; // Brush / non-meta native (Noise/Saturate/Cloud): out of scope
+        if (!p_base)
+          continue;
 
         p_base->json_from(node_json);
 

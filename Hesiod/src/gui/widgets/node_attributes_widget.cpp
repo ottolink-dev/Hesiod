@@ -110,7 +110,7 @@ QWidget *NodeAttributesWidget::create_toolbar()
     if (!gno)
       return nullptr;
     BaseNode *p_node = gno->get_node_ref_by_id<BaseNode>(this->node_id);
-    if (!p_node || !p_node->uses_meta())
+    if (!p_node)
       return nullptr;
     return &p_node->meta_group().current();
   };
@@ -225,7 +225,7 @@ QWidget *NodeAttributesWidget::create_toolbar()
         if (!gno)
           return;
         BaseNode *p_node = gno->get_node_ref_by_id<BaseNode>(this->node_id);
-        if (!p_node || !p_node->uses_meta())
+        if (!p_node)
           return;
 
         auto *c = meta_container();
@@ -299,7 +299,7 @@ void NodeAttributesWidget::setup_layout()
   // The settings panel is Meta-only: every node's parameters live in its Meta
   // container now (Brush, the last mixed legacy/Meta node, moved fully onto
   // Meta).
-  const bool has_meta = p_node->uses_meta();
+  const bool has_meta = true;
 
   // --- main layout (built once)
   QVBoxLayout *main_layout = new QVBoxLayout(this);
