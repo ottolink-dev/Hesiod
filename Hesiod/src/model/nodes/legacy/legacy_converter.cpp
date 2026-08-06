@@ -9,7 +9,7 @@ namespace hesiod
 {
 
 nlohmann::json convert_legacy_attribute_json(const meta::AbstractAttribute *attr,
-                                             const nlohmann::json &j)
+                                             const nlohmann::json          &j)
 {
   if (!j.is_object() || !attr)
     return j;
@@ -28,7 +28,7 @@ nlohmann::json convert_legacy_attribute_json(const meta::AbstractAttribute *attr
         auto v = j.at("values").get<std::vector<float>>();
 
         nlohmann::json val_arr = nlohmann::json::array();
-        size_t limit = std::min({x.size(), y.size(), v.size()});
+        size_t         limit = std::min({x.size(), y.size(), v.size()});
         for (size_t i = 0; i < limit; ++i)
         {
           val_arr.push_back({{"x", x[i]}, {"y", y[i]}, {"z", v[i]}});
@@ -36,7 +36,9 @@ nlohmann::json convert_legacy_attribute_json(const meta::AbstractAttribute *attr
         converted = nlohmann::json::object();
         converted["value"] = val_arr;
       }
-      catch (...) {}
+      catch (...)
+      {
+      }
     }
   }
   // 2. Range / Wavenumber / Vector 2D conversion: meta::Attribute<glm::vec2>
@@ -48,7 +50,9 @@ nlohmann::json convert_legacy_attribute_json(const meta::AbstractAttribute *attr
       {
         converted["value"] = {{"x", j["value"][0]}, {"y", j["value"][1]}};
       }
-      catch (...) {}
+      catch (...)
+      {
+      }
     }
   }
   // 3. Color conversion: meta::Attribute<glm::vec4>
@@ -58,14 +62,14 @@ nlohmann::json convert_legacy_attribute_json(const meta::AbstractAttribute *attr
     {
       try
       {
-        converted["value"] = {
-          {"x", j["value"][0]},
-          {"y", j["value"][1]},
-          {"z", j["value"][2]},
-          {"w", j["value"][3]}
-        };
+        converted["value"] = {{"x", j["value"][0]},
+                              {"y", j["value"][1]},
+                              {"z", j["value"][2]},
+                              {"w", j["value"][3]}};
       }
-      catch (...) {}
+      catch (...)
+      {
+      }
     }
   }
   // 4. Array conversion: meta::Attribute<meta::Array>
@@ -74,11 +78,9 @@ nlohmann::json convert_legacy_attribute_json(const meta::AbstractAttribute *attr
     if (j.contains("shape.x") && j.contains("shape.y") && j.contains("vector"))
     {
       converted = nlohmann::json::object();
-      converted["value"] = {
-        {"shape.x", j["shape.x"]},
-        {"shape.y", j["shape.y"]},
-        {"vector", j["vector"]}
-      };
+      converted["value"] = {{"shape.x", j["shape.x"]},
+                            {"shape.y", j["shape.y"]},
+                            {"vector", j["vector"]}};
     }
   }
 

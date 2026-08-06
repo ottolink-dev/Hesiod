@@ -122,8 +122,6 @@ public:
     return typename hsd::legacy::handle_of<T>::type(typed);
   }
 
-
-
   std::vector<std::string> *get_attr_ordered_key_ref();
   void set_attr_ordered_key(const std::vector<std::string> &new_attr_ordered_key);
 
@@ -141,9 +139,7 @@ public:
 
 private:
   // --- Members ---
-  std::unique_ptr<meta::ContainerGroup>
-      meta_group_; // opt-in Meta storage (nullptr = legacy attr map)
-
+  std::unique_ptr<meta::ContainerGroup> meta_group_; // attribute storage
 
   // container state captured at finalize time; toolbar "Reset Settings" restores it
   nlohmann::json initial_meta_state_;

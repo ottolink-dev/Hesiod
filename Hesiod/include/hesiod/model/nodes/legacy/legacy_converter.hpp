@@ -16,5 +16,5 @@ namespace hesiod
  * @return A Meta-compatible JSON representation of the attribute.
  */
 nlohmann::json convert_legacy_attribute_json(const meta::AbstractAttribute *attr,
-                                             const nlohmann::json &j);
+                                             const nlohmann::json          &j);
 } // namespace hesiod

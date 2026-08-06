@@ -197,8 +197,6 @@ template <> struct legacy_traits<FloatAttribute>
   }
 
   static legacy_value to_legacy(const storage &v) { return v; }
-
-  
 };
 
 // ---------------------------------------------------------------- Int
@@ -222,8 +220,6 @@ template <> struct legacy_traits<IntAttribute>
   }
 
   static legacy_value to_legacy(const storage &v) { return v; }
-
-  
 };
 
 // ---------------------------------------------------------------- Bool
@@ -261,8 +257,6 @@ template <> struct legacy_traits<BoolAttribute>
   }
 
   static legacy_value to_legacy(const storage &v) { return v; }
-
-  
 };
 
 // ---------------------------------------------------------------- Enum
@@ -318,8 +312,6 @@ template <> struct legacy_traits<EnumAttribute>
   }
 
   static legacy_value to_legacy(const storage &v) { return v; }
-
-  
 };
 
 // ---------------------------------------------------------------- Seed
@@ -345,8 +337,6 @@ template <> struct legacy_traits<SeedAttribute>
   }
 
   static legacy_value to_legacy(const storage &v) { return static_cast<unsigned int>(v); }
-
-  
 };
 
 // ---------------------------------------------------------------- Range
@@ -401,8 +391,6 @@ template <> struct legacy_traits<RangeAttribute>
   }
 
   static legacy_value to_legacy(const storage &v) { return v; }
-
-  
 };
 
 // ---------------------------------------------------------------- WaveNb
@@ -449,8 +437,6 @@ template <> struct legacy_traits<WaveNbAttribute>
   }
 
   static legacy_value to_legacy(const storage &v) { return v; }
-
-  
 };
 
 // ---------------------------------------------------------------- Vec2Float
@@ -485,8 +471,6 @@ template <> struct legacy_traits<Vec2FloatAttribute>
   }
 
   static legacy_value to_legacy(const storage &v) { return v; }
-
-  
 };
 
 // ---------------------------------------------------------------- Cloud
@@ -529,8 +513,6 @@ template <> struct legacy_traits<CloudAttribute>
   }
 
   static legacy_value to_legacy(const storage &v) { return v; }
-
-  
 };
 
 // ---------------------------------------------------------------- Color
@@ -567,8 +549,6 @@ template <> struct legacy_traits<ColorAttribute>
   }
 
   static legacy_value to_legacy(const storage &v) { return {v.x, v.y, v.z, v.w}; }
-
-  
 };
 
 // ---------------------------------------------------------------- ColorGradient
@@ -612,8 +592,6 @@ template <> struct legacy_traits<ColorGradientAttribute>
       out.push_back(Stop{s.position, s.color});
     return out;
   }
-
-  
 };
 
 // ---------------------------------------------------------------- Filename
@@ -637,8 +615,6 @@ template <> struct legacy_traits<FilenameAttribute>
   }
 
   static legacy_value to_legacy(const storage &v) { return v; }
-
-  
 };
 
 // ---------------------------------------------------------------- String
@@ -670,8 +646,6 @@ template <> struct legacy_traits<StringAttribute>
   }
 
   static legacy_value to_legacy(const storage &v) { return v; }
-
-  
 };
 
 // ---------------------------------------------------------------- Choice
@@ -713,8 +687,6 @@ template <> struct legacy_traits<ChoiceAttribute>
   }
 
   static legacy_value to_legacy(const storage &v) { return v; }
-
-  
 };
 
 // ---------------------------------------------------------------- VecFloat
@@ -738,8 +710,6 @@ template <> struct legacy_traits<VecFloatAttribute>
   }
 
   static legacy_value to_legacy(const storage &v) { return v; }
-
-  
 };
 
 // --- handles: faithful stand-ins for the legacy get_attr_ref<T>() mutable pointers.
