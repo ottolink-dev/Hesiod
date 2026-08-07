@@ -15,6 +15,16 @@ namespace hesiod
 {
 
 // -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
+
+constexpr const char *P_IN = "input";
+constexpr const char *P_OUT = "output";
+
+constexpr const char *A_RADIUS = "radius_limit";
+constexpr const char *A_BG_VALUE = "bg_value";
+
+// -----------------------------------------------------------------------------
 // Setup
 // -----------------------------------------------------------------------------
 
@@ -23,13 +33,13 @@ void setup_area_remove_node(BaseNode &node)
   Logger::log()->trace("setup node {}", node.get_label());
 
   // port(s)
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "input");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, "output", CONFIG(node));
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_IN);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_OUT, CONFIG(node));
 
   // attribute(s)
   node.set_current_category("Metric Choice");
-  add_float(node, "radius_limit", "Minimum Radius", 0.01f, 1e-3f, 0.5f, "{:.2e}", true);
-  add_float(node, "bg_value", "Background Value", 0.f, -1.f, 1.f);
+  add_float(node, A_RADIUS, "Minimum Radius", 0.01f, 1e-3f, 0.5f, "{:.2e}", true);
+  add_float(node, A_BG_VALUE, "Background Value", 0.f, -1.f, 1.f);
 }
 
 // -----------------------------------------------------------------------------
@@ -42,16 +52,16 @@ void compute_area_remove_node(BaseNode &node)
 
   // --- Inputs / Outputs
 
-  auto *p_in = node.get_value_ref<hmap::VirtualArray>("input");
-  auto *p_out = node.get_value_ref<hmap::VirtualArray>("output");
+  auto *p_in = node.get_value_ref<hmap::VirtualArray>(P_IN);
+  auto *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
   if (!p_in)
     return;
 
   // --- Params
 
-  const auto radius   = node.val<float>("radius_limit");
-  const auto bg_value = node.val<float>("bg_value");
+  const auto radius   = node.val<float>(A_RADIUS);
+  const auto bg_value = node.val<float>(A_BG_VALUE);
 
   const float area_pixels = M_PI * std::pow(radius * p_in->shape.x, 2);
 

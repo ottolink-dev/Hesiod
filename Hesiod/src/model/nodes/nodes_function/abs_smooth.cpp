@@ -11,32 +11,50 @@
 namespace hesiod
 {
 
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
+
+constexpr const char *P_IN = "input";
+constexpr const char *P_OUT = "output";
+
+constexpr const char *A_MU = "mu";
+constexpr const char *A_VSHIFT = "vshift";
+
+// -----------------------------------------------------------------------------
+// Setup
+// -----------------------------------------------------------------------------
+
 void setup_abs_smooth_node(BaseNode &node)
 {
   Logger::log()->trace("setup node {}", node.get_label());
 
   // port(s)
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "input");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, "output", CONFIG(node));
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_IN);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_OUT, CONFIG(node));
 
   // attribute(s)
   node.set_current_category("Main Parameters");
-  add_float(node, "mu", "mu", 0.05f, 0.001f, 0.4f);
-  add_float(node, "vshift", "vshift", 0.5f, 0.f, 1.f);
+  add_float(node, A_MU, "mu", 0.05f, 0.001f, 0.4f);
+  add_float(node, A_VSHIFT, "vshift", 0.5f, 0.f, 1.f);
 
   setup_post_process_heightmap_attributes(node,
                                           {.add_mix = true, .remap_active_state = false});
 }
 
+// -----------------------------------------------------------------------------
+// Compute
+// -----------------------------------------------------------------------------
+
 void compute_abs_smooth_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  hmap::VirtualArray *p_in = node.get_value_ref<hmap::VirtualArray>("input");
+  hmap::VirtualArray *p_in = node.get_value_ref<hmap::VirtualArray>(P_IN);
 
   if (p_in)
   {
-    hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>("output");
+    hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
     hmap::for_each_tile(
         {p_out, p_in},
@@ -44,9 +62,9 @@ void compute_abs_smooth_node(BaseNode &node)
         {
           auto [pa_out, pa_in] = unpack<2>(p_arrays);
           *pa_out = hmap::abs_smooth(*pa_in,
-                                     node.val<float>("mu"),
-                                     node.val<float>("vshift")) -
-                    node.val<float>("vshift");
+                                     node.val<float>(A_MU),
+                                     node.val<float>(A_VSHIFT)) -
+                    node.val<float>(A_VSHIFT);
         },
         node.cfg().cm_cpu);
 
