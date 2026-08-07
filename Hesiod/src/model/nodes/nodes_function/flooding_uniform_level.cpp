@@ -3,13 +3,10 @@
  * this software. */
 #include "highmap/hydrology/hydrology.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
-
 #include "hesiod/logger.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
-
-using namespace attr;
 
 namespace hesiod
 {
@@ -38,14 +35,8 @@ void setup_flooding_uniform_level_node(BaseNode &node)
 
   // --- Attributes
 
-  // clang-format off
-  node.add_attr<FloatAttribute>(A_ELEVATION, "Elevation", 0.2f, -1.f, 2.f);
-  // clang-format on
-
-  // --- Attribute(s) order
-
-  node.set_attr_ordered_key(
-      {"_GROUPBOX_BEGIN_Main Parameters", A_ELEVATION, "_GROUPBOX_END_"});
+  node.set_current_category("Main Parameters");
+  add_float(node, A_ELEVATION, "Elevation", 0.2f, -1.f, 2.f);
 }
 
 // -----------------------------------------------------------------------------
@@ -66,7 +57,7 @@ void compute_flooding_uniform_level_node(BaseNode &node)
 
   // --- Params
 
-  const auto elevation = node.get_attr<FloatAttribute>(A_ELEVATION);
+  const auto elevation = node.val<float>(A_ELEVATION);
 
   // --- Compute
 

@@ -1,16 +1,13 @@
 /* Copyright (c) 2023 Otto Link. Distributed under the terms of the GNU General
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
-
 #include "highmap/interpolate/interpolate_array.hpp"
 
 #include "hesiod/logger.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 #include "hesiod/model/nodes/receive_node.hpp"
-
-using namespace attr;
 
 namespace hesiod
 {
@@ -27,10 +24,7 @@ void setup_receive_node(BaseNode &node)
   // nothing by default, this is going to be updated and populated
   // automatically by the graph manager
   std::vector<std::string> choices = {"NO TAG AVAILABLE"};
-  node.add_attr<ChoiceAttribute>("tag", "tag", choices, choices.front());
-
-  // adjust corresponding widget
-  node.get_attr_ref<ChoiceAttribute>("tag")->set_use_combo_list(true);
+  add_choice(node, "tag", "tag", choices, choices.front());
 }
 
 void compute_receive_node(BaseNode &node)
@@ -38,7 +32,7 @@ void compute_receive_node(BaseNode &node)
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
   hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>("output");
-  std::string         tag = node.get_attr<ChoiceAttribute>("tag");
+  std::string         tag = node.val<std::string>("tag");
 
   // cast to specialized node
   ReceiveNode *p_receive_node = dynamic_cast<ReceiveNode *>(&node);

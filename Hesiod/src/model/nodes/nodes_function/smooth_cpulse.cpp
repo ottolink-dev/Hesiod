@@ -4,13 +4,10 @@
 #include "highmap/filters.hpp"
 #include "highmap/opencl/gpu_opencl.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
-
 #include "hesiod/logger.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
-
-using namespace attr;
 
 namespace hesiod
 {
@@ -39,10 +36,8 @@ void setup_smooth_cpulse_node(BaseNode &node)
   node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_OUTPUT, CONFIG(node));
 
   // attribute(s)
-  node.add_attr<FloatAttribute>(A_RADIUS, "Radius", 0.05f, 0.f, 0.2f);
-
-  // attribute(s) order
-  node.set_attr_ordered_key({A_RADIUS});
+  node.set_current_category("Main Parameters");
+  add_float(node, A_RADIUS, "Radius", 0.05f, 0.f, 0.2f);
 
   setup_pre_process_mask_attributes(node);
   setup_post_process_heightmap_attributes(node,
@@ -68,7 +63,7 @@ void compute_smooth_cpulse_node(BaseNode &node)
   // prepare mask
   std::shared_ptr<hmap::VirtualArray> sp_mask = pre_process_mask(node, p_mask, *p_in);
 
-  int ir = std::max(1, (int)(node.get_attr<FloatAttribute>(A_RADIUS) * p_out->shape.x));
+  int ir = std::max(1, (int)(node.val<float>(A_RADIUS) * p_out->shape.x));
 
   hmap::for_each_tile(
       {p_in, p_mask},

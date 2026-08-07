@@ -130,9 +130,86 @@ public:
   std::vector<std::string> *get_attr_ordered_key_ref();
   void set_attr_ordered_key(const std::vector<std::string> &new_attr_ordered_key);
 
+  // --- Native Meta Accessors & Helpers ---
+  template <typename T> decltype(auto) val(const std::string &key) const
+  {
+    return this->get_meta_group().current().value<T>(key);
+  }
+
+  template <typename T> meta::Attribute<T> *attr(const std::string &key)
+  {
+    auto *p = this->get_meta_group().current().find(key);
+    if (!p)
+      return nullptr;
+    return p->template try_cast<meta::Attribute<T>>();
+  }
+
+  meta::Attribute<float> &add_float(const std::string &key,
+                                    const std::string &label,
+                                    float              default_val,
+                                    float              vmin,
+                                    float              vmax,
+                                    const std::string &value_format = "{:.2f}",
+                                    bool               log_scale = false);
+
+  meta::Attribute<int> &add_int(const std::string &key,
+                                const std::string &label,
+                                int                default_val,
+                                int                vmin,
+                                int                vmax,
+                                const std::string &value_format = "{}");
+
+  meta::Attribute<int> &add_seed(const std::string &key,
+                                 const std::string &label = "Seed",
+                                 unsigned int       default_val = 0);
+
+  meta::Attribute<bool> &add_bool(const std::string &key,
+                                  const std::string &label,
+                                  bool               default_val = false);
+
+  meta::Attribute<glm::vec2> &add_range(const std::string &key,
+                                        const std::string &label,
+                                        const glm::vec2   &default_range,
+                                        float              vmin,
+                                        float              vmax,
+                                        bool               is_active = true,
+                                        const std::string &value_format = "{:.3f}");
+
+  meta::Attribute<int> &add_enum(const std::string                              &key,
+                                 const std::string                              &label,
+                                 const std::vector<std::pair<int, std::string>> &items,
+                                 int default_val);
+
+  meta::Attribute<int> &add_enum(const std::string                &key,
+                                 const std::string                &label,
+                                 const std::map<std::string, int> &enum_map,
+                                 const std::string                &default_choice = "");
+
+  meta::Attribute<glm::vec4> &add_color(const std::string &key,
+                                        const std::string &label,
+                                        const glm::vec4   &default_color);
+
+  meta::Attribute<glm::vec2> &add_wavenumber(
+      const std::string &key,
+      const std::string &label = "Spatial Frequency",
+      const glm::vec2   &default_val = {2.f, 2.f},
+      float              vmin = 0.f,
+      float              vmax = 64.f,
+      bool               link_xy = true,
+      const std::string &value_format = "{:.2f}");
+
+  meta::Attribute<glm::vec2> &add_xy(const std::string &key,
+                                     const std::string &label,
+                                     const glm::vec2   &default_val,
+                                     float              xmin,
+                                     float              xmax,
+                                     float              ymin,
+                                     float              ymax);
+
   meta::ContainerGroup       &get_meta_group(); // lazily creates group + "main" container
   const meta::ContainerGroup &get_meta_group() const;
   void                        set_current_category(const std::string &category);
+  const std::string &get_current_category() const { return this->current_category; }
 
   void                  finalize_attributes();
   const nlohmann::json &iinitial_meta_state() const { return this->initial_meta_state; }

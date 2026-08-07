@@ -49,8 +49,6 @@
 namespace hsd::legacy
 {
 
-
-
 /// Legacy color-gradient stop (field-compatible with attr::Stop and meta::Stop).
 struct Stop
 {
@@ -110,7 +108,6 @@ struct legacy_traits; // primary: undefined (unknown tag = compile error)
 
 template <typename T>
 concept CompatTag = requires { typename legacy_traits<T>::storage; };
-
 
 inline glm::vec2 vec2_from_json(const nlohmann::json &j,
                                 const char           *field,

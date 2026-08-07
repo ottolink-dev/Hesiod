@@ -4,13 +4,10 @@
 #include "highmap/filters.hpp"
 #include "highmap/range.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
-
 #include "hesiod/logger.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
-
-using namespace attr;
 
 namespace hesiod
 {
@@ -41,12 +38,8 @@ void setup_gain_node(BaseNode &node)
 
   // --- Attributes
 
-  node.add_attr<FloatAttribute>(A_GAIN, "Gain", 2.f, 0.01f, 10.f);
-
-  // --- Attribute(s) order
-
-  node.set_attr_ordered_key(
-      {"_GROUPBOX_BEGIN_Main Parameters", A_GAIN, "_GROUPBOX_END_"});
+  node.set_current_category("Main Parameters");
+  add_float(node, A_GAIN, "Gain", 2.f, 0.01f, 10.f);
 
   setup_pre_process_mask_attributes(node);
   setup_post_process_heightmap_attributes(node,
@@ -72,7 +65,7 @@ void compute_gain_node(BaseNode &node)
 
   // --- Params
 
-  const auto gain = node.get_attr<FloatAttribute>(A_GAIN);
+  const auto gain = node.val<float>(A_GAIN);
 
   // --- Prepare mask
 

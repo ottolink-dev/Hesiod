@@ -1,14 +1,11 @@
 /* Copyright (c) 2023 Otto Link. Distributed under the terms of the GNU General
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
-
 #include "hesiod/logger.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/broadcast_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
-
-using namespace attr;
 
 namespace hesiod
 {
@@ -23,8 +20,7 @@ void setup_broadcast_node(BaseNode &node)
 
   // attribute(s)
 
-  bool read_only = true; // tag is indeed set automatically
-  node.add_attr<StringAttribute>("tag", "tag", "UNDEFINED", read_only);
+  add_read_only_text(node, "tag", "tag", "UNDEFINED");
 }
 
 void compute_broadcast_node(BaseNode &node)

@@ -12,6 +12,7 @@
 
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/logger.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/legacy/legacy_converter.hpp"
 #include "hesiod/model/nodes/node_factory.hpp"
@@ -39,37 +40,53 @@ namespace
 std::string get_legacy_type_name(const meta::AbstractAttribute *p, const std::string &key)
 {
   std::type_index t = p->type();
-  if (t == std::type_index(typeid(float))) return "Float";
-  if (t == std::type_index(typeid(int))) {
+  if (t == std::type_index(typeid(float)))
+    return "Float";
+  if (t == std::type_index(typeid(int)))
+  {
     if (key == "seed")
       return "Random seed number";
-    const std::string *wt = p->metadata().try_value<std::string>(meta::keys::ui::widget_type);
+    const std::string *wt = p->metadata().try_value<std::string>(
+        meta::keys::ui::widget_type);
     if (wt && (*wt == "EnumComboBox" || *wt == "Enum"))
       return "Enum";
     return "Int";
   }
-  if (t == std::type_index(typeid(bool))) return "Bool";
-  if (t == std::type_index(typeid(std::string))) {
-    const std::string *wt = p->metadata().try_value<std::string>(meta::keys::ui::widget_type);
-    if (wt) {
-      if (*wt == "File") return "Filename";
-      if (*wt == "ComboBox" || *wt == "StringChoice") return "Choice";
+  if (t == std::type_index(typeid(bool)))
+    return "Bool";
+  if (t == std::type_index(typeid(std::string)))
+  {
+    const std::string *wt = p->metadata().try_value<std::string>(
+        meta::keys::ui::widget_type);
+    if (wt)
+    {
+      if (*wt == "File")
+        return "Filename";
+      if (*wt == "ComboBox" || *wt == "StringChoice")
+        return "Choice";
     }
     return "String";
   }
-  if (t == std::type_index(typeid(glm::vec2))) {
+  if (t == std::type_index(typeid(glm::vec2)))
+  {
     if (p->metadata().find(meta::keys::ui::active))
       return "Value range";
     return "Vec2Float";
   }
-  if (t == std::type_index(typeid(std::vector<glm::vec3>))) return "Cloud";
-  if (t == std::type_index(typeid(glm::vec4))) return "Color";
-  if (t == std::type_index(typeid(meta::ColorGradient))) return "Color gradient";
-  if (t == std::type_index(typeid(hmap::Array))) return "Array";
-  if (t == std::type_index(typeid(std::vector<float>))) return "Curve";
+  if (t == std::type_index(typeid(std::vector<glm::vec3>)))
+    return "Cloud";
+  if (t == std::type_index(typeid(glm::vec4)))
+    return "Color";
+  if (t == std::type_index(typeid(meta::ColorGradient)))
+    return "Color gradient";
+  if (t == std::type_index(typeid(hmap::Array)))
+    return "Array";
+  if (t == std::type_index(typeid(std::vector<float>)))
+    return "Curve";
 
   std::string name = t.name();
-  if (name.find("WaveNb") != std::string::npos) return "Wavenumber";
+  if (name.find("WaveNb") != std::string::npos)
+    return "Wavenumber";
 
   return name;
 }
@@ -1035,6 +1052,119 @@ void BaseNode::update_runtime_info(NodeRuntimeStep step)
   default:
     return;
   }
+}
+
+meta::Attribute<float> &BaseNode::add_float(const std::string &key,
+                                            const std::string &label,
+                                            float              default_val,
+                                            float              vmin,
+                                            float              vmax,
+                                            const std::string &value_format,
+                                            bool               log_scale)
+{
+  return hesiod::add_float(*this,
+                           key,
+                           label,
+                           default_val,
+                           vmin,
+                           vmax,
+                           value_format,
+                           log_scale);
+}
+
+meta::Attribute<int> &BaseNode::add_int(const std::string &key,
+                                        const std::string &label,
+                                        int                default_val,
+                                        int                vmin,
+                                        int                vmax,
+                                        const std::string &value_format)
+{
+  return hesiod::add_int(*this, key, label, default_val, vmin, vmax, value_format);
+}
+
+meta::Attribute<int> &BaseNode::add_seed(const std::string &key,
+                                         const std::string &label,
+                                         unsigned int       default_val)
+{
+  return hesiod::add_seed(*this, key, label, default_val);
+}
+
+meta::Attribute<bool> &BaseNode::add_bool(const std::string &key,
+                                          const std::string &label,
+                                          bool               default_val)
+{
+  return hesiod::add_bool(*this, key, label, default_val);
+}
+
+meta::Attribute<glm::vec2> &BaseNode::add_range(const std::string &key,
+                                                const std::string &label,
+                                                const glm::vec2   &default_range,
+                                                float              vmin,
+                                                float              vmax,
+                                                bool               is_active,
+                                                const std::string &value_format)
+{
+  return hesiod::add_range(*this,
+                           key,
+                           label,
+                           default_range,
+                           vmin,
+                           vmax,
+                           is_active,
+                           value_format);
+}
+
+meta::Attribute<int> &BaseNode::add_enum(
+    const std::string                              &key,
+    const std::string                              &label,
+    const std::vector<std::pair<int, std::string>> &items,
+    int                                             default_val)
+{
+  return hesiod::add_enum(*this, key, label, items, default_val);
+}
+
+meta::Attribute<int> &BaseNode::add_enum(const std::string                &key,
+                                         const std::string                &label,
+                                         const std::map<std::string, int> &enum_map,
+                                         const std::string                &default_choice)
+{
+  return hesiod::add_enum(*this, key, label, enum_map, default_choice);
+}
+
+meta::Attribute<glm::vec4> &BaseNode::add_color(const std::string &key,
+                                                const std::string &label,
+                                                const glm::vec4   &default_color)
+{
+  return hesiod::add_color(*this, key, label, default_color);
+}
+
+meta::Attribute<glm::vec2> &BaseNode::add_wavenumber(const std::string &key,
+                                                     const std::string &label,
+                                                     const glm::vec2   &default_val,
+                                                     float              vmin,
+                                                     float              vmax,
+                                                     bool               link_xy,
+                                                     const std::string &value_format)
+{
+  return hesiod::add_wavenumber(*this,
+                                key,
+                                label,
+                                default_val,
+                                vmin,
+                                vmax,
+                                link_xy,
+                                value_format);
+}
+
+meta::Attribute<glm::vec2> &BaseNode::add_xy(const std::string &key,
+                                             const std::string &label,
+                                             const glm::vec2   &default_val,
+                                             float              xmin,
+                                             float              xmax,
+                                             float              ymin,
+                                             float              ymax)
+{
+  return hesiod::add_xy(*this, key, label, default_val, xmin, xmax, ymin, ymax);
 }
 
 } // namespace hesiod

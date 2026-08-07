@@ -3,12 +3,9 @@
  * this software. */
 #include "highmap/filters.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
-
 #include "hesiod/logger.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
-
-using namespace attr;
 
 namespace hesiod
 {
@@ -23,10 +20,8 @@ void setup_toggle_node(BaseNode &node)
   node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, "output", CONFIG(node));
 
   // attribute(s)
-  node.add_attr<BoolAttribute>("toggle", "toggle", "A", "B", true);
-
-  // attribute(s) order
-  node.set_attr_ordered_key({"toggle"});
+  node.set_current_category("Main");
+  add_bool(node, "toggle", "toggle", "A", "B", true);
 }
 
 void compute_toggle_node(BaseNode &node)
@@ -49,7 +44,7 @@ void compute_toggle_node(BaseNode &node)
           hmap::Array *pa_in_a = p_arrays[1];
           hmap::Array *pa_in_b = p_arrays[2];
 
-          if (node.get_attr<BoolAttribute>("toggle"))
+          if (node.val<bool>("toggle"))
             *pa_out = *pa_in_a;
           else
             *pa_out = *pa_in_b;
