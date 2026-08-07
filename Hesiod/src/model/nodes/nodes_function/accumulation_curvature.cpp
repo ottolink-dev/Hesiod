@@ -32,15 +32,17 @@ void setup_accumulation_curvature_node(BaseNode &node)
 {
   Logger::log()->trace("setup node {}", node.get_label());
 
-  // port(s)
+  // --- Ports
+
   node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_IN);
   node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_OUT, CONFIG(node));
 
-  // attribute(s)
+  // --- Attributes
+
   node.set_current_category("Main Parameters");
-  add_float(node, A_RADIUS, "radius", 0.02f, 0.f, 0.2f);
-  add_bool(node, A_CLAMP_MAX, "clamp_max", false);
-  add_float(node, A_VC_MAX, "vc_max", 0.05f, 0.f, 0.2f);
+  add_float(node, A_RADIUS, "Radius", 0.02f, 0.f, 0.2f);
+  add_bool(node, A_CLAMP_MAX, "Clamp Maximum", false);
+  add_float(node, A_VC_MAX, "Max Curvature Value", 0.05f, 0.f, 0.2f);
 
   setup_post_process_heightmap_attributes(node,
                                           {.add_mix = true, .remap_active_state = true});
@@ -56,37 +58,48 @@ void compute_accumulation_curvature_node(BaseNode &node)
 
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  hmap::VirtualArray *p_in = node.get_value_ref<hmap::VirtualArray>(P_IN);
+  // --- Inputs / Outputs
 
-  if (p_in)
-  {
-    hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
+  auto *p_in = node.get_value_ref<hmap::VirtualArray>(P_IN);
+  auto *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
-    int ir = std::max(1, (int)(node.val<float>(A_RADIUS) * p_out->shape.x));
-    int nx = p_out->shape.x; // for gradient scaling
+  if (!p_in)
+    return;
 
-    hmap::for_each_tile(
-        {p_out, p_in},
-        [&node, ir, nx](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
-        {
-          auto [pa_out, pa_in] = unpack<2>(p_arrays);
-          // nx^2 is gradient scaling...
-          *pa_out = nx * nx *
-                    hmap::gpu::curvature_quadric(*pa_in,
-                                                 ir,
-                                                 hmap::CurvatureType::CT_ACCUMULATION);
+  // --- Params
 
-          // truncate high values if requested
-          if (node.val<bool>(A_CLAMP_MAX))
-            hmap::clamp_max(*pa_out, node.val<float>(A_VC_MAX));
-        },
-        node.cfg().cm_gpu);
+  const auto radius = node.val<float>(A_RADIUS);
+  const auto clamp_max = node.val<bool>(A_CLAMP_MAX);
+  const auto vc_max = node.val<float>(A_VC_MAX);
 
-    p_out->smooth_overlap_buffers();
+  const int ir = std::max(1, (int)(radius * p_out->shape.x));
+  const int nx = p_out->shape.x; // for gradient scaling
 
-    // post-process
-    post_process_heightmap(node, *p_out);
-  }
+  // --- Compute
+
+  hmap::for_each_tile(
+      {p_out, p_in},
+      [ir, nx, clamp_max, vc_max](std::vector<hmap::Array *> p_arrays,
+                                  const hmap::TileRegion &)
+      {
+        auto [pa_out, pa_in] = unpack<2>(p_arrays);
+        // nx^2 is gradient scaling...
+        *pa_out = nx * nx *
+                  hmap::gpu::curvature_quadric(*pa_in,
+                                               ir,
+                                               hmap::CurvatureType::CT_ACCUMULATION);
+
+        // truncate high values if requested
+        if (clamp_max)
+          hmap::clamp_max(*pa_out, vc_max);
+      },
+      node.cfg().cm_gpu);
+
+  p_out->smooth_overlap_buffers();
+
+  // --- Post-process
+
+  post_process_heightmap(node, *p_out);
 }
 
 } // namespace hesiod

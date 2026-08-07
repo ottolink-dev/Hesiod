@@ -242,7 +242,9 @@ meta::Attribute<std::string> &add_read_only_text(BaseNode          &node,
                                                  const std::string &default_val)
 {
   auto &a = add_string(node, key, label, default_val, /* read_only = */ true);
-  a.metadata().try_add(std::string(meta::keys::ui::widget_type), std::string("ReadOnlyText"))->value() = "ReadOnlyText";
+  a.metadata()
+      .try_add(std::string(meta::keys::ui::widget_type), std::string("ReadOnlyText"))
+      ->value() = "ReadOnlyText";
   return a;
 }
 

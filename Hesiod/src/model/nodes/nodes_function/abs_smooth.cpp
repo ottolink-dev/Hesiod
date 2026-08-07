@@ -29,14 +29,16 @@ void setup_abs_smooth_node(BaseNode &node)
 {
   Logger::log()->trace("setup node {}", node.get_label());
 
-  // port(s)
+  // --- Ports
+
   node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_IN);
   node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_OUT, CONFIG(node));
 
-  // attribute(s)
+  // --- Attributes
+
   node.set_current_category("Main Parameters");
-  add_float(node, A_MU, "mu", 0.05f, 0.001f, 0.4f);
-  add_float(node, A_VSHIFT, "vshift", 0.5f, 0.f, 1.f);
+  add_float(node, A_MU, "Smoothing Radius", 0.05f, 0.001f, 0.4f);
+  add_float(node, A_VSHIFT, "Vertical Shift", 0.5f, 0.f, 1.f);
 
   setup_post_process_heightmap_attributes(node,
                                           {.add_mix = true, .remap_active_state = false});
@@ -50,27 +52,33 @@ void compute_abs_smooth_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  hmap::VirtualArray *p_in = node.get_value_ref<hmap::VirtualArray>(P_IN);
+  // --- Inputs / Outputs
 
-  if (p_in)
-  {
-    hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
+  auto *p_in = node.get_value_ref<hmap::VirtualArray>(P_IN);
+  auto *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
-    hmap::for_each_tile(
-        {p_out, p_in},
-        [&node](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
-        {
-          auto [pa_out, pa_in] = unpack<2>(p_arrays);
-          *pa_out = hmap::abs_smooth(*pa_in,
-                                     node.val<float>(A_MU),
-                                     node.val<float>(A_VSHIFT)) -
-                    node.val<float>(A_VSHIFT);
-        },
-        node.cfg().cm_cpu);
+  if (!p_in)
+    return;
 
-    // post-process
-    post_process_heightmap(node, *p_out, p_in);
-  }
+  // --- Params
+
+  const auto mu = node.val<float>(A_MU);
+  const auto vshift = node.val<float>(A_VSHIFT);
+
+  // --- Compute
+
+  hmap::for_each_tile(
+      {p_out, p_in},
+      [mu, vshift](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
+      {
+        auto [pa_out, pa_in] = unpack<2>(p_arrays);
+        *pa_out = hmap::abs_smooth(*pa_in, mu, vshift) - vshift;
+      },
+      node.cfg().cm_cpu);
+
+  // --- Post-process
+
+  post_process_heightmap(node, *p_out, p_in);
 }
 
 } // namespace hesiod

@@ -60,7 +60,7 @@ void compute_area_remove_node(BaseNode &node)
 
   // --- Params
 
-  const auto radius   = node.val<float>(A_RADIUS);
+  const auto radius = node.val<float>(A_RADIUS);
   const auto bg_value = node.val<float>(A_BG_VALUE);
 
   const float area_pixels = M_PI * std::pow(radius * p_in->shape.x, 2);

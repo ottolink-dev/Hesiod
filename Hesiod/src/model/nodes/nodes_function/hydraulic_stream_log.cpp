@@ -58,8 +58,7 @@ void compute_hydraulic_stream_log_node(BaseNode &node)
         "deposition");
     hmap::VirtualArray *p_flow_map = node.get_value_ref<hmap::VirtualArray>("flow_map");
 
-    int deposition_ir = (int)(node.val<float>("deposition_radius") *
-                              p_out->shape.x);
+    int deposition_ir = (int)(node.val<float>("deposition_radius") * p_out->shape.x);
     int gradient_ir = (int)(node.val<float>("gradient_prefilter_radius") *
                             p_out->shape.x);
 
@@ -80,22 +79,21 @@ void compute_hydraulic_stream_log_node(BaseNode &node)
 
           *pa_out = *pa_in;
 
-          hmap::gpu::hydraulic_stream_log(
-              *pa_out,
-              node.val<float>("c_erosion"),
-              node.val<float>("talus_ref"),
-              pa_mask,
-              deposition_ir,
-              node.val<float>("deposition_scale_ratio"),
-              node.val<float>("gradient_power"),
-              node.val<float>("gradient_scaling_ratio"),
-              gradient_ir,
-              node.val<float>("saturation_ratio"),
-              /* p_bedrock */ nullptr,
-              /* p_moisture_map */ nullptr,
-              pa_erosion_map,
-              pa_deposition_map,
-              pa_flow_map);
+          hmap::gpu::hydraulic_stream_log(*pa_out,
+                                          node.val<float>("c_erosion"),
+                                          node.val<float>("talus_ref"),
+                                          pa_mask,
+                                          deposition_ir,
+                                          node.val<float>("deposition_scale_ratio"),
+                                          node.val<float>("gradient_power"),
+                                          node.val<float>("gradient_scaling_ratio"),
+                                          gradient_ir,
+                                          node.val<float>("saturation_ratio"),
+                                          /* p_bedrock */ nullptr,
+                                          /* p_moisture_map */ nullptr,
+                                          pa_erosion_map,
+                                          pa_deposition_map,
+                                          pa_flow_map);
         },
         node.cfg().cm_gpu);
 

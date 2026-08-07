@@ -82,9 +82,9 @@ void compute_noise_node(BaseNode &node)
   // --- Params
 
   const auto      noise_type = hmap::NoiseType(node.val<int>(A_NOISE_TYPE));
-  const glm::vec2 kw         = node.val<glm::vec2>(A_KW);
-  const auto      seed       = static_cast<uint>(node.val<int>(A_SEED));
-  const auto      periodic   = node.val<bool>(A_PERIODIC);
+  const glm::vec2 kw = node.val<glm::vec2>(A_KW);
+  const auto      seed = static_cast<uint>(node.val<int>(A_SEED));
+  const auto      periodic = node.val<bool>(A_PERIODIC);
 
   // --- Compute
 

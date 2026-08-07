@@ -46,7 +46,11 @@ void setup_export_heightmap_node(BaseNode &node)
   add_bool(node, A_ADD_PREFIX, "Add Project Name as Prefix", false);
 
   node.set_current_category("Export Parameters");
-  add_enum(node, A_FORMAT, "File Format", enum_mappings.heightmap_export_format_map, "png (16 bit)");
+  add_enum(node,
+           A_FORMAT,
+           "File Format",
+           enum_mappings.heightmap_export_format_map,
+           "png (16 bit)");
   add_bool(node, A_AUTO_EXPORT, "Auto Export on Node Update", false);
   add_choice(node, A_FORCE_SHAPE, "Force Export Shape", choices, "Unchanged");
 }
@@ -69,9 +73,9 @@ void compute_export_heightmap_node(BaseNode &node)
   // --- Params
 
   const auto auto_export = node.val<bool>(A_AUTO_EXPORT);
-  auto fname             = node.val<std::filesystem::path>(A_FILENAME);
-  const auto format      = node.val<int>(A_FORMAT);
-  const auto add_prefix  = node.val<bool>(A_ADD_PREFIX);
+  auto       fname = node.val<std::filesystem::path>(A_FILENAME);
+  const auto format = node.val<int>(A_FORMAT);
+  const auto add_prefix = node.val<bool>(A_ADD_PREFIX);
   const auto force_shape = node.val<std::string>(A_FORCE_SHAPE);
 
   if (!auto_export)
