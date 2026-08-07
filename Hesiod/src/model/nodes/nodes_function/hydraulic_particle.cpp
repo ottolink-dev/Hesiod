@@ -10,16 +10,18 @@
 #include "highmap/opencl/gpu_opencl.hpp"
 #include "highmap/range.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
 
 // -----------------------------------------------------------------------------
 // Ports & Attributes
@@ -72,65 +74,25 @@ void setup_hydraulic_particle_node(BaseNode &node)
 
   // attribute(s)
   // clang-format off
-  node.add_attr<SeedAttribute>(A_SEED, "Seed");
-  node.add_attr<FloatAttribute>(A_PARTICLE_DENSITY, "Particle Density", 0.5f, 0.f, 4.f);
-  node.add_attr<FloatAttribute>(A_C_CAPACITY, "Sediment Capacity", 5.f, 0.1f, 40.f);
-  node.add_attr<FloatAttribute>(A_C_EROSION, "Erosion Rate", 0.05f, 0.f, 0.3f);
-  node.add_attr<FloatAttribute>(A_C_DEPOSITION, "Deposition Rate", 0.2f, 0.f, 0.3f);
-  node.add_attr<FloatAttribute>(A_C_INERTIA, "Particle Inertia Factor", 0.2f, 0.f, 0.9f);
-  node.add_attr<FloatAttribute>(A_DRAG_RATE, "Velocity Drag Rate", 0.001f, 0.f, 0.02f);
-  node.add_attr<FloatAttribute>(A_EVAP_RATE, "Evaporation Rate", 0.001f, 0.f, 0.02f);
-  node.add_attr<BoolAttribute>(A_ENABLE_DIRECTIONAL_BIAS, "Enable Directional Bias", false);
-  node.add_attr<FloatAttribute>(A_ANGLE_BIAS, "Directional Bias Angle", 0.f, -180.f, 180.f, "{:.0f}°");
-  node.add_attr<BoolAttribute>(A_DEPOSITION_ONLY, "Deposition Only Mode", false);
-  node.add_attr<BoolAttribute>(A_ENABLE_DEFAULT_BEDROCK, "Enable Bedrock Resistance", true);
-  node.add_attr<FloatAttribute>(A_BD_ELEVATION_STRENGTH, "Bedrock Elevation Gap", 0.05f, 0.f, 1.f);
-  node.add_attr<FloatAttribute>(A_BD_SLOPE_STRENGTH, "Bedrock Slope Gap", 0.f, 0.f, 1.f);
-  node.add_attr<FloatAttribute>(A_BD_SLOPE, "Bedrock Slope Limit", 2.f, 0.f, FLT_MAX);
-  node.add_attr<BoolAttribute>(A_ENABLE_RIDGE_FORCING, "Enable Ridge Forcing", true);
-  node.add_attr<FloatAttribute>(A_RIDGE_SPATIAL_FREQUENCY, "Ridge Spatial Frequency", 32.f, 0.f, FLT_MAX);
-  node.add_attr<FloatAttribute>(A_RIDGE_ELEVATION_AMPLITUDE, "Ridge Height", 0.1f, 0.f, 1.f);
+  add_seed(node, A_SEED, "Seed");
+  add_float(node, A_PARTICLE_DENSITY, "Particle Density", 0.5f, 0.f, 4.f);
+  add_float(node, A_C_CAPACITY, "Sediment Capacity", 5.f, 0.1f, 40.f);
+  add_float(node, A_C_EROSION, "Erosion Rate", 0.05f, 0.f, 0.3f);
+  add_float(node, A_C_DEPOSITION, "Deposition Rate", 0.2f, 0.f, 0.3f);
+  add_float(node, A_C_INERTIA, "Particle Inertia Factor", 0.2f, 0.f, 0.9f);
+  add_float(node, A_DRAG_RATE, "Velocity Drag Rate", 0.001f, 0.f, 0.02f);
+  add_float(node, A_EVAP_RATE, "Evaporation Rate", 0.001f, 0.f, 0.02f);
+  add_bool(node, A_ENABLE_DIRECTIONAL_BIAS, "Enable Directional Bias", false);
+  add_float(node, A_ANGLE_BIAS, "Directional Bias Angle", 0.f, -180.f, 180.f, "{:.0f}°");
+  add_bool(node, A_DEPOSITION_ONLY, "Deposition Only Mode", false);
+  add_bool(node, A_ENABLE_DEFAULT_BEDROCK, "Enable Bedrock Resistance", true);
+  add_float(node, A_BD_ELEVATION_STRENGTH, "Bedrock Elevation Gap", 0.05f, 0.f, 1.f);
+  add_float(node, A_BD_SLOPE_STRENGTH, "Bedrock Slope Gap", 0.f, 0.f, 1.f);
+  add_float(node, A_BD_SLOPE, "Bedrock Slope Limit", 2.f, 0.f, FLT_MAX);
+  add_bool(node, A_ENABLE_RIDGE_FORCING, "Enable Ridge Forcing", true);
+  add_float(node, A_RIDGE_SPATIAL_FREQUENCY, "Ridge Spatial Frequency", 32.f, 0.f, FLT_MAX);
+  add_float(node, A_RIDGE_ELEVATION_AMPLITUDE, "Ridge Height", 0.1f, 0.f, 1.f);
   // clang-format on
-
-  // attribute(s) order
-  node.set_attr_ordered_key({"_GROUPBOX_BEGIN_Simulation",
-                             A_PARTICLE_DENSITY,
-                             A_SEED,
-                             "_GROUPBOX_END_",
-                             //
-                             "_GROUPBOX_BEGIN_Sediment Dynamics",
-                             A_C_CAPACITY,
-                             A_C_EROSION,
-                             A_C_DEPOSITION,
-                             A_C_INERTIA,
-                             "_GROUPBOX_END_",
-                             //
-                             "_GROUPBOX_BEGIN_Pre-Erosion Ridge Forcing",
-                             A_ENABLE_RIDGE_FORCING,
-                             A_RIDGE_SPATIAL_FREQUENCY,
-                             A_RIDGE_ELEVATION_AMPLITUDE,
-                             "_GROUPBOX_END_",
-                             //
-                             "_GROUPBOX_BEGIN_Bedrock Resistance",
-                             A_ENABLE_DEFAULT_BEDROCK,
-                             A_BD_ELEVATION_STRENGTH,
-                             A_BD_SLOPE_STRENGTH,
-                             A_BD_SLOPE,
-                             "_GROUPBOX_END_",
-                             //
-                             "_GROUPBOX_BEGIN_Deposition Mode",
-                             A_DEPOSITION_ONLY,
-                             "_GROUPBOX_END_",
-                             //
-                             "_GROUPBOX_BEGIN_Particle Behavior",
-                             A_DRAG_RATE,
-                             A_EVAP_RATE,
-                             "_GROUPBOX_END_",
-                             //
-                             "_GROUPBOX_BEGIN_Directional Control",
-                             A_ENABLE_DIRECTIONAL_BIAS,
-                             A_ANGLE_BIAS,
-                             "_GROUPBOX_END_"});
 
   setup_pre_process_mask_attributes(node);
   setup_post_process_heightmap_attributes(node,
@@ -184,31 +146,31 @@ void compute_hydraulic_particle_node(BaseNode &node)
     };
 
     const int   ncells     = p_out->shape.x * p_out->shape.y;
-    const float density    = node.get_attr<FloatAttribute>(A_PARTICLE_DENSITY);
+    const float density    = node.val<float>(A_PARTICLE_DENSITY);
     const int   nparticles = (int)(density * ncells);
-    const float bd_talus   = node.get_attr<FloatAttribute>(A_BD_SLOPE) / p_out->shape.x;
+    const float bd_talus   = node.val<float>(A_BD_SLOPE) / p_out->shape.x;
 
     // clang-format off
     return P{
-        .seed = node.get_attr<SeedAttribute>(A_SEED),
+        .seed = node.val<int>(A_SEED),
         .nparticles = nparticles,
-        .c_capacity = node.get_attr<FloatAttribute>(A_C_CAPACITY),
-        .c_erosion = node.get_attr<FloatAttribute>(A_C_EROSION),
-        .c_deposition = node.get_attr<FloatAttribute>(A_C_DEPOSITION),
-        .c_inertia = node.get_attr<FloatAttribute>(A_C_INERTIA),
+        .c_capacity = node.val<float>(A_C_CAPACITY),
+        .c_erosion = node.val<float>(A_C_EROSION),
+        .c_deposition = node.val<float>(A_C_DEPOSITION),
+        .c_inertia = node.val<float>(A_C_INERTIA),
         .c_gravity = 1.f,
-        .drag_rate = node.get_attr<FloatAttribute>(A_DRAG_RATE),
-        .evap_rate = node.get_attr<FloatAttribute>(A_EVAP_RATE),
-        .enable_directional_bias = node.get_attr<BoolAttribute>(A_ENABLE_DIRECTIONAL_BIAS),
-        .angle_bias = node.get_attr<FloatAttribute>(A_ANGLE_BIAS),
-        .deposition_only = node.get_attr<BoolAttribute>(A_DEPOSITION_ONLY),
-        .enable_default_bedrock = node.get_attr<BoolAttribute>(A_ENABLE_DEFAULT_BEDROCK),
-        .bd_elevation_strength = node.get_attr<FloatAttribute>(A_BD_ELEVATION_STRENGTH),
-        .bd_slope_strength = node.get_attr<FloatAttribute>(A_BD_SLOPE_STRENGTH),
+        .drag_rate = node.val<float>(A_DRAG_RATE),
+        .evap_rate = node.val<float>(A_EVAP_RATE),
+        .enable_directional_bias = node.val<bool>(A_ENABLE_DIRECTIONAL_BIAS),
+        .angle_bias = node.val<float>(A_ANGLE_BIAS),
+        .deposition_only = node.val<bool>(A_DEPOSITION_ONLY),
+        .enable_default_bedrock = node.val<bool>(A_ENABLE_DEFAULT_BEDROCK),
+        .bd_elevation_strength = node.val<float>(A_BD_ELEVATION_STRENGTH),
+        .bd_slope_strength = node.val<float>(A_BD_SLOPE_STRENGTH),
         .bd_talus = bd_talus,
-        .enable_ridge_forcing = node.get_attr<BoolAttribute>(A_ENABLE_RIDGE_FORCING),
-        .ridge_spatial_frequency = node.get_attr<FloatAttribute>(A_RIDGE_SPATIAL_FREQUENCY),
-        .ridge_elevation_amplitude = node.get_attr<FloatAttribute>(A_RIDGE_ELEVATION_AMPLITUDE)};
+        .enable_ridge_forcing = node.val<bool>(A_ENABLE_RIDGE_FORCING),
+        .ridge_spatial_frequency = node.val<float>(A_RIDGE_SPATIAL_FREQUENCY),
+        .ridge_elevation_amplitude = node.val<float>(A_RIDGE_ELEVATION_AMPLITUDE)};
     // clang-format on
   }();
 

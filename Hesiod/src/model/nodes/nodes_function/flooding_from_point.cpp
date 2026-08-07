@@ -3,43 +3,47 @@
  * this software. */
 #include "highmap/hydrology/hydrology.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
+constexpr const char *P_CLOUD       = "cloud";
+constexpr const char *P_ELEVATION   = "elevation";
+constexpr const char *P_WATER_DEPTH = "water_depth";
+
+constexpr const char *A_DEPTH_MIN = "depth_min";
 
 void setup_flooding_from_point_node(BaseNode &node)
 {
   Logger::log()->trace("setup node {}", node.get_label());
 
   // port(s)
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "elevation");
-  node.add_port<hmap::Cloud>(gnode::PortType::IN, "cloud");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, "water_depth", CONFIG(node));
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_ELEVATION);
+  node.add_port<hmap::Cloud>(gnode::PortType::IN, P_CLOUD);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_WATER_DEPTH, CONFIG(node));
 
   // attribute(s)
-  node.add_attr<FloatAttribute>("depth_min", "depth_min", 0.01f, 0.f, 1.f);
-
-  // attribute(s) order
-  node.set_attr_ordered_key({"depth_min"});
+  add_float(node, A_DEPTH_MIN, "depth_min", 0.01f, 0.f, 1.f);
 }
 
 void compute_flooding_from_point_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  hmap::VirtualArray *p_in    = node.get_value_ref<hmap::VirtualArray>("elevation");
-  hmap::Cloud        *p_cloud = node.get_value_ref<hmap::Cloud>("cloud");
+  hmap::VirtualArray *p_in    = node.get_value_ref<hmap::VirtualArray>(P_ELEVATION);
+  hmap::Cloud        *p_cloud = node.get_value_ref<hmap::Cloud>(P_CLOUD);
 
   if (p_in && p_cloud)
   {
-    hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>("water_depth");
+    hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>(P_WATER_DEPTH);
 
     hmap::for_each_tile(
         {p_out, p_in},
@@ -67,10 +71,7 @@ void compute_flooding_from_point_node(BaseNode &node)
             }
           }
 
-          *pa_out = hmap::flooding_from_point(*pa_in,
-                                              i,
-                                              j,
-                                              node.get_attr<FloatAttribute>("depth_min"));
+          *pa_out = hmap::flooding_from_point(*pa_in, i, j, node.val<float>(A_DEPTH_MIN));
         },
         node.cfg().cm_single_array); // forced, not tileable
   }

@@ -4,7 +4,7 @@
 #include "highmap/filters.hpp"
 #include "highmap/operator.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "meta/core/data_provider.hpp"
 #include "meta/metadata/keys.hpp"
@@ -14,10 +14,12 @@
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
 
 constexpr const char *P_IN  = "input";
 constexpr const char *P_OUT = "output";

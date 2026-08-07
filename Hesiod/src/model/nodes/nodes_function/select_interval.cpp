@@ -3,16 +3,18 @@
  * this software. */
 #include "highmap/math.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
 
 // -----------------------------------------------------------------------------
 // Ports & Attributes
@@ -41,15 +43,12 @@ void setup_select_interval_node(BaseNode &node)
   // --- Attributes
 
   // clang-format off
-  node.add_attr<FloatAttribute>(A_VALUE1, "Lower Bound", 0.f, -0.5f, 1.5f);
-  node.add_attr<FloatAttribute>(A_VALUE2, "Upper Bound", 0.5f, -0.5f, 1.5f);
-  node.add_attr<FloatAttribute>(A_WIDTH, "Width", 0.1f, 0.f, 0.3f);
+  add_float(node, A_VALUE1, "Lower Bound", 0.f, -0.5f, 1.5f);
+  add_float(node, A_VALUE2, "Upper Bound", 0.5f, -0.5f, 1.5f);
+  add_float(node, A_WIDTH, "Width", 0.1f, 0.f, 0.3f);
   // clang-format on
 
   // --- Attribute(s) order
-
-  node.set_attr_ordered_key(
-      {"_GROUPBOX_BEGIN_Main Parameters", A_VALUE1, A_VALUE2, A_WIDTH, "_GROUPBOX_END_"});
 
   setup_post_process_heightmap_attributes(node,
                                           {.add_mix = false, .remap_active_state = true});
@@ -74,9 +73,9 @@ void compute_select_interval_node(BaseNode &node)
   // --- Params
 
   // clang-format off
-  const auto value1 = node.get_attr<FloatAttribute>(A_VALUE1);
-  const auto value2 = node.get_attr<FloatAttribute>(A_VALUE2);
-  const auto width  = node.get_attr<FloatAttribute>(A_WIDTH);
+  const auto value1 = node.val<float>(A_VALUE1);
+  const auto value2 = node.val<float>(A_VALUE2);
+  const auto width  = node.val<float>(A_WIDTH);
   // clang-format on
 
   const float xmin = std::min(value1, value2);

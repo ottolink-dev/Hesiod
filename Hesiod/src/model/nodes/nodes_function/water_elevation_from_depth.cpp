@@ -3,16 +3,18 @@
  * this software. */
 #include "highmap/hydrology/hydrology.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
 
 // -----------------------------------------------------------------------------
 // Ports & Attributes
@@ -38,9 +40,6 @@ void setup_water_elevation_from_depth_node(BaseNode &node)
                                     CONFIG(node));
 
   // attribute(s)
-
-  // attribute(s) order
-  node.set_attr_ordered_key({});
 }
 
 // -----------------------------------------------------------------------------

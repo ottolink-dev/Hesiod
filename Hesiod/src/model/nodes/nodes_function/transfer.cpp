@@ -4,33 +4,39 @@
 #include "highmap/blending.hpp"
 #include "highmap/opencl/gpu_opencl.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
+constexpr const char *P_OUT    = "output";
+constexpr const char *P_SOURCE = "source";
+constexpr const char *P_TARGET = "target";
+
+constexpr const char *A_AMPLITUDE           = "amplitude";
+constexpr const char *A_RADIUS              = "radius";
+constexpr const char *A_TARGET_PREFILTERING = "target_prefiltering";
 
 void setup_transfer_node(BaseNode &node)
 {
   Logger::log()->trace("setup node {}", node.get_label());
 
   // port(s)
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "source");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "target");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, "output", CONFIG(node));
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_SOURCE);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_TARGET);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_OUT, CONFIG(node));
 
   // attribute(s)
-  node.add_attr<FloatAttribute>("radius", "radius", 0.05f, 0.f, 0.2f);
-  node.add_attr<FloatAttribute>("amplitude", "amplitude", 0.5f, -2.f, 4.f);
-  node.add_attr<BoolAttribute>("target_prefiltering", "target_prefiltering", false);
-
-  // attribute(s) order
-  node.set_attr_ordered_key({"radius", "amplitude", "target_prefiltering"});
+  add_float(node, A_RADIUS, "radius", 0.05f, 0.f, 0.2f);
+  add_float(node, A_AMPLITUDE, "amplitude", 0.5f, -2.f, 4.f);
+  add_bool(node, A_TARGET_PREFILTERING, "target_prefiltering", false);
 
   setup_pre_process_mask_attributes(node);
   setup_post_process_heightmap_attributes(
@@ -42,14 +48,14 @@ void compute_transfer_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  hmap::VirtualArray *p_s = node.get_value_ref<hmap::VirtualArray>("source");
-  hmap::VirtualArray *p_t = node.get_value_ref<hmap::VirtualArray>("target");
+  hmap::VirtualArray *p_s = node.get_value_ref<hmap::VirtualArray>(P_SOURCE);
+  hmap::VirtualArray *p_t = node.get_value_ref<hmap::VirtualArray>(P_TARGET);
 
   if (p_s && p_t)
   {
-    hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>("output");
+    hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
-    int ir = std::max(1, (int)(node.get_attr<FloatAttribute>("radius") * p_out->shape.x));
+    int ir = std::max(1, (int)(node.val<float>(A_RADIUS) * p_out->shape.x));
 
     hmap::for_each_tile(
         {p_out, p_s, p_t},
@@ -59,12 +65,11 @@ void compute_transfer_node(BaseNode &node)
           hmap::Array *pa_s   = p_arrays[1];
           hmap::Array *pa_t   = p_arrays[2];
 
-          *pa_out = hmap::gpu::transfer(
-              *pa_s,
-              *pa_t,
-              ir,
-              node.get_attr<FloatAttribute>("amplitude"),
-              node.get_attr<BoolAttribute>("target_prefiltering"));
+          *pa_out = hmap::gpu::transfer(*pa_s,
+                                        *pa_t,
+                                        ir,
+                                        node.val<float>(A_AMPLITUDE),
+                                        node.val<bool>(A_TARGET_PREFILTERING));
         },
         node.cfg().cm_gpu);
 

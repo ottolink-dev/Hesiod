@@ -4,70 +4,73 @@
 #include "highmap/erosion.hpp"
 #include "highmap/primitives.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
+constexpr const char *P_DEPOSITION = "deposition";
+constexpr const char *P_IN         = "input";
+constexpr const char *P_MASK       = "mask";
+constexpr const char *P_OUT        = "output";
+
+constexpr const char *A_DURATION                   = "duration";
+constexpr const char *A_MAX_DEPOSITION             = "max_deposition";
+constexpr const char *A_SCALE_TALUS_WITH_ELEVATION = "scale_talus_with_elevation";
+constexpr const char *A_SUBITERATIONS              = "subiterations";
+constexpr const char *A_TALUS_GLOBAL               = "talus_global";
 
 void setup_sediment_deposition_node(BaseNode &node)
 {
   Logger::log()->trace("setup node {}", node.get_label());
 
   // port(s)
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "input");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "mask");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, "output", CONFIG(node));
-  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, "deposition", CONFIG(node));
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_IN);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_MASK);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_OUT, CONFIG(node));
+  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_DEPOSITION, CONFIG(node));
 
   // attribute(s)
-  node.add_attr<FloatAttribute>("talus_global", "talus_global", 0.2f, 0.f, FLT_MAX);
-  node.add_attr<FloatAttribute>("max_deposition", "max_deposition", 0.001f, 0.f, 0.1f);
-  node.add_attr<FloatAttribute>("duration", "Duration", 0.3f, 0.05f, 6.f);
-  node.add_attr<BoolAttribute>("scale_talus_with_elevation",
-                               "scale_talus_with_elevation",
-                               true);
-  node.add_attr<IntAttribute>("subiterations", "subiterations", 10, 1, 50);
-
-  // attribute(s) order
-  node.set_attr_ordered_key({"talus_global",
-                             "max_deposition",
-                             "duration",
-                             "scale_talus_with_elevation",
-                             "subiterations"});
+  add_float(node, A_TALUS_GLOBAL, "talus_global", 0.2f, 0.f, FLT_MAX);
+  add_float(node, A_MAX_DEPOSITION, "max_deposition", 0.001f, 0.f, 0.1f);
+  add_float(node, A_DURATION, "Duration", 0.3f, 0.05f, 6.f);
+  add_bool(node, A_SCALE_TALUS_WITH_ELEVATION, "scale_talus_with_elevation", true);
+  add_int(node, A_SUBITERATIONS, "subiterations", 10, 1, 50);
 }
 
 void compute_sediment_deposition_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  hmap::VirtualArray *p_in = node.get_value_ref<hmap::VirtualArray>("input");
+  hmap::VirtualArray *p_in = node.get_value_ref<hmap::VirtualArray>(P_IN);
 
   if (p_in)
   {
-    hmap::VirtualArray *p_mask = node.get_value_ref<hmap::VirtualArray>("mask");
-    hmap::VirtualArray *p_out  = node.get_value_ref<hmap::VirtualArray>("output");
+    hmap::VirtualArray *p_mask           = node.get_value_ref<hmap::VirtualArray>(P_MASK);
+    hmap::VirtualArray *p_out            = node.get_value_ref<hmap::VirtualArray>(P_OUT);
     hmap::VirtualArray *p_deposition_map = node.get_value_ref<hmap::VirtualArray>(
-        "deposition");
+        P_DEPOSITION);
 
-    float talus = node.get_attr<FloatAttribute>("talus_global") / (float)p_out->shape.x;
+    float talus = node.val<float>(A_TALUS_GLOBAL) / (float)p_out->shape.x;
 
     hmap::VirtualArray talus_map = hmap::VirtualArray(CONFIG(node));
     talus_map.fill(talus, node.cfg().cm_cpu);
 
-    if (node.get_attr<BoolAttribute>("scale_talus_with_elevation"))
+    if (node.val<bool>(A_SCALE_TALUS_WITH_ELEVATION))
     {
       talus_map.copy_from(*p_in, node.cfg().cm_cpu);
       talus_map.remap(talus / 100.f, talus, node.cfg().cm_cpu);
     }
 
-    int iterations = int(node.get_attr<FloatAttribute>("duration") * p_out->shape.x /
-                         node.get_attr<IntAttribute>("subiterations"));
+    int iterations = int(node.val<float>(A_DURATION) * p_out->shape.x /
+                         node.val<int>(A_SUBITERATIONS));
 
     hmap::for_each_tile(
         {p_out, p_in, p_mask, &talus_map, p_deposition_map},
@@ -86,8 +89,8 @@ void compute_sediment_deposition_node(BaseNode &node)
                                          pa_mask,
                                          *pa_talus,
                                          pa_deposition_map,
-                                         node.get_attr<FloatAttribute>("max_deposition"),
-                                         node.get_attr<IntAttribute>("subiterations"),
+                                         node.val<float>(A_MAX_DEPOSITION),
+                                         node.val<int>(A_SUBITERATIONS),
                                          iterations);
         },
         node.cfg().cm_cpu);

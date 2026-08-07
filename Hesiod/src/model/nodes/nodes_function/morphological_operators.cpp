@@ -4,17 +4,20 @@
 #include "highmap/morphology.hpp"
 #include "highmap/opencl/gpu_opencl.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/app/enum_mappings.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
+
 // -----------------------------------------------------------------------------
 // Ports & Attributes
 // -----------------------------------------------------------------------------
@@ -40,17 +43,10 @@ void setup_morphological_operators_node(BaseNode &node)
 
   // attribute(s)
   // clang-format off
-  node.add_attr<FloatAttribute>(A_RADIUS, "radius", 0.01f, 0.f, 0.2f);
-  node.add_attr<EnumAttribute>(A_OPERATOR, "Operator", enum_mappings.morphology_operation_map, "Gradient");
-  node.add_attr<FloatAttribute>(A_SAT_RATIO, "Saturation Ratio", 2.f, 0.f, 20.f, "{:.0f}%");
+  add_float(node, A_RADIUS, "radius", 0.01f, 0.f, 0.2f);
+  add_enum(node, A_OPERATOR, "Operator", enum_mappings.morphology_operation_map, "Gradient");
+  add_float(node, A_SAT_RATIO, "Saturation Ratio", 2.f, 0.f, 20.f, "{:.0f}%");
   // clang-format on
-
-  // attribute(s) order
-  node.set_attr_ordered_key({"_GROUPBOX_BEGIN_Operator Choice",
-                             A_RADIUS,
-                             A_OPERATOR,
-                             A_SAT_RATIO,
-                             "_GROUPBOX_END_"});
 
   setup_post_process_heightmap_attributes(node,
                                           {.add_mix = false, .remap_active_state = true});
@@ -73,9 +69,9 @@ void compute_morphological_operators_node(BaseNode &node)
   // --- Params
 
   // clang-format off
-  const auto radius = node.get_attr<FloatAttribute>(A_RADIUS);
-  const auto op = hmap::MorphologyOperation(node.get_attr<EnumAttribute>(A_OPERATOR));
-  const auto sat_ratio = node.get_attr<FloatAttribute>(A_SAT_RATIO);
+  const auto radius = node.val<float>(A_RADIUS);
+  const auto op = hmap::MorphologyOperation(node.val<int>(A_OPERATOR));
+  const auto sat_ratio = node.val<float>(A_SAT_RATIO);
   //
   const int  ir     = std::max(1, (int)(radius * p_out->shape.x));
   const float satmax = (1.f - 0.01f * sat_ratio);

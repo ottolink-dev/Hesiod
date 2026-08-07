@@ -3,16 +3,18 @@
  * this software. */
 #include "highmap/primitives.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
 
 // -----------------------------------------------------------------------------
 // Ports & Attributes
@@ -43,26 +45,12 @@ void setup_wave_sine_node(BaseNode &node)
 
   // --- Attributes
 
-  node.add_attr<FloatAttribute>(A_KW, "kw", 2.f, 0.01f, FLT_MAX);
-  node.add_attr<FloatAttribute>(A_ANGLE, "angle", 0.f, -180.f, 180.f, "{:.1f}°");
-  node.add_attr<FloatAttribute>(A_PHASE_SHIFT,
-                                "phase_shift",
-                                0.f,
-                                -180.f,
-                                180.f,
-                                "{:.1f}°");
-  node.add_attr<Vec2FloatAttribute>(A_CENTER, "center");
+  add_float(node, A_KW, "kw", 2.f, 0.01f, FLT_MAX);
+  add_float(node, A_ANGLE, "angle", 0.f, -180.f, 180.f, "{:.1f}°");
+  add_float(node, A_PHASE_SHIFT, "phase_shift", 0.f, -180.f, 180.f, "{:.1f}°");
+  add_xy(node, A_CENTER, "center");
 
   // --- Attribute(s) order
-
-  node.set_attr_ordered_key({
-      "_GROUPBOX_BEGIN_Wave Parameters",
-      A_KW,
-      A_ANGLE,
-      A_PHASE_SHIFT,
-      A_CENTER,
-      "_GROUPBOX_END_",
-  });
 
   setup_post_process_heightmap_attributes(node,
                                           {.add_mix = true, .remap_active_state = true});
@@ -88,10 +76,10 @@ void compute_wave_sine_node(BaseNode &node)
   // --- Params
 
   // clang-format off
-  const auto kw          = node.get_attr<FloatAttribute>(A_KW);
-  const auto angle       = node.get_attr<FloatAttribute>(A_ANGLE);
-  const auto phase_shift = node.get_attr<FloatAttribute>(A_PHASE_SHIFT);
-  const auto center      = node.get_attr<Vec2FloatAttribute>(A_CENTER);
+  const auto kw          = node.val<float>(A_KW);
+  const auto angle       = node.val<float>(A_ANGLE);
+  const auto phase_shift = node.val<float>(A_PHASE_SHIFT);
+  const auto center      = node.val<glm::vec2>(A_CENTER);
   // clang-format on
 
   // phase_shift slider is in degrees (range -180..180, matching `angle`);

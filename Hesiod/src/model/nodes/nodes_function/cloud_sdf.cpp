@@ -1,26 +1,32 @@
 /* Copyright (c) 2023 Otto Link. Distributed under the terms of the GNU General
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
+constexpr const char *P_CLOUD = "cloud";
+constexpr const char *P_DX    = "dx";
+constexpr const char *P_DY    = "dy";
+constexpr const char *P_SDF   = "sdf";
 
 void setup_cloud_sdf_node(BaseNode &node)
 {
   Logger::log()->trace("setup node {}", node.get_label());
 
   // port(s)
-  node.add_port<hmap::Cloud>(gnode::PortType::IN, "cloud");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "dx");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "dy");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, "sdf", CONFIG(node));
+  node.add_port<hmap::Cloud>(gnode::PortType::IN, P_CLOUD);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_DX);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_DY);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_SDF, CONFIG(node));
 
   setup_post_process_heightmap_attributes(node,
                                           {.add_mix = false, .remap_active_state = true});
@@ -30,8 +36,8 @@ void compute_cloud_sdf_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  hmap::Cloud        *p_cloud = node.get_value_ref<hmap::Cloud>("cloud");
-  hmap::VirtualArray *p_out   = node.get_value_ref<hmap::VirtualArray>("sdf");
+  hmap::Cloud        *p_cloud = node.get_value_ref<hmap::Cloud>(P_CLOUD);
+  hmap::VirtualArray *p_out   = node.get_value_ref<hmap::VirtualArray>(P_SDF);
 
   if (!p_cloud || p_cloud->size() == 0)
   {
@@ -47,8 +53,8 @@ void compute_cloud_sdf_node(BaseNode &node)
   }
   else
   {
-    hmap::VirtualArray *p_dx = node.get_value_ref<hmap::VirtualArray>("dx");
-    hmap::VirtualArray *p_dy = node.get_value_ref<hmap::VirtualArray>("dy");
+    hmap::VirtualArray *p_dx = node.get_value_ref<hmap::VirtualArray>(P_DX);
+    hmap::VirtualArray *p_dy = node.get_value_ref<hmap::VirtualArray>(P_DY);
 
     hmap::for_each_tile(
         {p_out, p_dx, p_dy},

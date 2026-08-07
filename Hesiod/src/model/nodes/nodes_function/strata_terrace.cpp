@@ -6,17 +6,19 @@
 #include "highmap/primitives.hpp"
 #include "highmap/range.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 #include "hesiod/model/utils.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
 
 // -----------------------------------------------------------------------------
 // Ports & Attributes
@@ -53,30 +55,16 @@ void setup_strata_terrace_node(BaseNode &node)
   // --- Attributes
 
   // clang-format off
-  node.add_attr<FloatAttribute>(A_KZ, "Number of Strata", 8.f, 0.f, FLT_MAX);
-  node.add_attr<FloatAttribute>(A_GAMMA, "Profile Gamma", 0.5f, 0.01f, 2.f);
-  node.add_attr<SeedAttribute>(A_SEED, "Seed");
-  node.add_attr<BoolAttribute>(A_LINEAR_GAMMA, "Use Linear Terrace Profile", false);
-  node.add_attr<FloatAttribute>(A_GAMMA_NOISE_RATIO, "Gamma Noise Influence", 0.5f, 0.f, 1.f);
-  node.add_attr<FloatAttribute>(A_SLOPE, "Slope", 0.f, 0.f, 10.f);
-  node.add_attr<FloatAttribute>(A_ANGLE, "Angle", 0.f, -180.f, 180.f, "{:.1f}°");
+  add_float(node, A_KZ, "Number of Strata", 8.f, 0.f, FLT_MAX);
+  add_float(node, A_GAMMA, "Profile Gamma", 0.5f, 0.01f, 2.f);
+  add_seed(node, A_SEED, "Seed");
+  add_bool(node, A_LINEAR_GAMMA, "Use Linear Terrace Profile", false);
+  add_float(node, A_GAMMA_NOISE_RATIO, "Gamma Noise Influence", 0.5f, 0.f, 1.f);
+  add_float(node, A_SLOPE, "Slope", 0.f, 0.f, 10.f);
+  add_float(node, A_ANGLE, "Angle", 0.f, -180.f, 180.f, "{:.1f}°");
   // clang-format on
 
   // --- Attribute(s) order
-
-  node.set_attr_ordered_key({"_GROUPBOX_BEGIN_Strata Quantization",
-                             A_KZ,
-                             A_GAMMA,
-                             A_LINEAR_GAMMA,
-                             "_GROUPBOX_END_",
-                             "_GROUPBOX_BEGIN_Orientation / Rotation",
-                             A_SLOPE,
-                             A_ANGLE,
-                             "_GROUPBOX_END_",
-                             "_GROUPBOX_BEGIN_Profile Variation",
-                             A_SEED,
-                             A_GAMMA_NOISE_RATIO,
-                             "_GROUPBOX_END_"});
 
   setup_pre_process_mask_attributes(node);
   setup_post_process_heightmap_attributes(node,
@@ -104,13 +92,13 @@ void compute_strata_terrace_node(BaseNode &node)
   // --- Params
 
   // clang-format off
-  const auto kz                = node.get_attr<FloatAttribute>(A_KZ);
-  const auto gamma             = node.get_attr<FloatAttribute>(A_GAMMA);
-  const auto seed              = node.get_attr<SeedAttribute>(A_SEED);
-  const auto linear_gamma      = node.get_attr<BoolAttribute>(A_LINEAR_GAMMA);
-  const auto gamma_noise_ratio = node.get_attr<FloatAttribute>(A_GAMMA_NOISE_RATIO);
-  const auto slope             = node.get_attr<FloatAttribute>(A_SLOPE);
-  const auto angle             = node.get_attr<FloatAttribute>(A_ANGLE);
+  const auto kz                = node.val<float>(A_KZ);
+  const auto gamma             = node.val<float>(A_GAMMA);
+  const auto seed              = node.val<int>(A_SEED);
+  const auto linear_gamma      = node.val<bool>(A_LINEAR_GAMMA);
+  const auto gamma_noise_ratio = node.val<float>(A_GAMMA_NOISE_RATIO);
+  const auto slope             = node.val<float>(A_SLOPE);
+  const auto angle             = node.val<float>(A_ANGLE);
   // clang-format on
 
   // --- Prepare mask

@@ -3,16 +3,18 @@
  * this software. */
 #include "highmap/math.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
 
 // -----------------------------------------------------------------------------
 // Ports & Attributes
@@ -43,13 +45,10 @@ void setup_lerp_node(BaseNode &node)
 
   // --- Attributes
 
-  node.add_attr<FloatAttribute>(A_T, "Blend Factor 't' (a -> b)", 0.5f, 0.f, 1.f);
-  node.add_attr<BoolAttribute>(A_SWAP_INPUTS, "Swap Inputs", false);
+  add_float(node, A_T, "Blend Factor 't' (a -> b)", 0.5f, 0.f, 1.f);
+  add_bool(node, A_SWAP_INPUTS, "Swap Inputs", false);
 
   // --- Attribute(s) order
-
-  node.set_attr_ordered_key(
-      {"_GROUPBOX_BEGIN_Main Parameters", A_T, A_SWAP_INPUTS, "_GROUPBOX_END_"});
 
   setup_post_process_heightmap_attributes(node,
                                           {.add_mix = true, .remap_active_state = false});
@@ -76,8 +75,8 @@ void compute_lerp_node(BaseNode &node)
   // --- Params
 
   // clang-format off
-  const auto t_attr      = node.get_attr<FloatAttribute>(A_T);
-  const auto swap_inputs = node.get_attr<BoolAttribute>(A_SWAP_INPUTS);
+  const auto t_attr      = node.val<float>(A_T);
+  const auto swap_inputs = node.val<bool>(A_SWAP_INPUTS);
   // clang-format on
 
   if (swap_inputs)

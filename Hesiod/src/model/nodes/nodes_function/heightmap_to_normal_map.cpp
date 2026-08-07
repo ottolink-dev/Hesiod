@@ -4,41 +4,43 @@
 #include "highmap/gradient.hpp"
 #include "highmap/virtual_array/virtual_texture.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
+constexpr const char *P_IN         = "input";
+constexpr const char *P_NORMAL_MAP = "normal map";
 
 void setup_heightmap_to_normal_map_node(BaseNode &node)
 {
   Logger::log()->trace("setup node {}", node.get_label());
 
   // port(s)
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "input");
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_IN);
   node.add_port<hmap::VirtualTexture>(gnode::PortType::OUT,
-                                      "normal map",
+                                      P_NORMAL_MAP,
                                       CONFIG_TEX(node));
 
   // attribute(s)
-
-  // attribute(s) order
 }
 
 void compute_heightmap_to_normal_map_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  hmap::VirtualArray *p_in = node.get_value_ref<hmap::VirtualArray>("input");
+  hmap::VirtualArray *p_in = node.get_value_ref<hmap::VirtualArray>(P_IN);
 
   if (p_in)
   {
-    hmap::VirtualTexture *p_nmap = node.get_value_ref<hmap::VirtualTexture>("normal map");
+    hmap::VirtualTexture *p_nmap = node.get_value_ref<hmap::VirtualTexture>(P_NORMAL_MAP);
 
     hmap::Array  array = p_in->to_array(node.cfg().cm_cpu);
     hmap::Tensor tn    = hmap::normal_map(array);

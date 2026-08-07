@@ -3,15 +3,17 @@
  * this software. */
 #include "highmap/geometry/path.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
 
 // -----------------------------------------------------------------------------
 // Ports & Attributes
@@ -38,13 +40,13 @@ void setup_path_node(BaseNode &node)
 
   // --- Attributes
 
-  node.add_attr<CloudAttribute>(A_PATH, "Path", true);
-  node.add_attr<BoolAttribute>(A_CLOSED, "Closed Path", false);
+  auto &a_path_attr = add_cloud(node, A_PATH, "Path");
+  a_path_attr.metadata()
+      .try_add(std::string(meta::keys::ui::closed), true)
+      ->value() = true;
+  add_bool(node, A_CLOSED, "Closed Path", false);
 
   // --- Attribute(s) order
-
-  node.set_attr_ordered_key(
-      {"_GROUPBOX_BEGIN_Main Parameters", A_PATH, A_CLOSED, "_GROUPBOX_END_"});
 
   setup_background_image_for_cloud_attribute(node, A_PATH, P_BACKGROUND);
 }
@@ -63,8 +65,8 @@ void compute_path_node(BaseNode &node)
 
   // --- Params
 
-  const auto path_attr = node.get_attr<CloudAttribute>(A_PATH);
-  const auto closed    = node.get_attr<BoolAttribute>(A_CLOSED);
+  const auto path_attr = node.val<std::vector<glm::vec3>>(A_PATH);
+  const auto closed    = node.val<bool>(A_CLOSED);
 
   // --- Compute
 

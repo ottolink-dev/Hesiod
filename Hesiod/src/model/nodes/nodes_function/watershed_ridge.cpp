@@ -5,17 +5,19 @@
 #include "highmap/opencl/gpu_opencl.hpp"
 #include "highmap/primitives.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/app/enum_mappings.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
 
 // -----------------------------------------------------------------------------
 // Ports & Attributes
@@ -51,20 +53,11 @@ void setup_watershed_ridge_node(BaseNode &node)
   node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_OUTPUT, CONFIG(node));
 
   // attribute(s)
-  node.add_attr<FloatAttribute>(A_AMPLITUDE, "amplitude", 0.05f, 0.f, 1.f);
-  node.add_attr<FloatAttribute>(A_WIDTH, "width", 0.1f, 0.f, 0.5f);
-  node.add_attr<FloatAttribute>(A_EDT_EXPONENT, "edt_exponent", 0.5f, 0.01f, 2.f);
-  node.add_attr<FloatAttribute>(A_RADIUS, "Prefilter Radius", 0.2f, 0.f, 0.5f);
-  node.add_attr<BoolAttribute>(A_DEFAULT_SCALING, "Enable Default Scaling", true);
-
-  // attribute(s) order
-  node.set_attr_ordered_key({"_GROUPBOX_BEGIN_Parameters",
-                             A_AMPLITUDE,
-                             A_WIDTH,
-                             A_EDT_EXPONENT,
-                             A_RADIUS,
-                             A_DEFAULT_SCALING,
-                             "_GROUPBOX_END_"});
+  add_float(node, A_AMPLITUDE, "amplitude", 0.05f, 0.f, 1.f);
+  add_float(node, A_WIDTH, "width", 0.1f, 0.f, 0.5f);
+  add_float(node, A_EDT_EXPONENT, "edt_exponent", 0.5f, 0.01f, 2.f);
+  add_float(node, A_RADIUS, "Prefilter Radius", 0.2f, 0.f, 0.5f);
+  add_bool(node, A_DEFAULT_SCALING, "Enable Default Scaling", true);
 
   setup_default_noise(node, {.noise_amp = 0.05f, .kw = 8.f, .smoothness = 0.2f});
   setup_pre_process_mask_attributes(node);
@@ -105,15 +98,15 @@ void compute_watershed_ridge_node(BaseNode &node)
     };
 
     const int   nx     = p_out->shape.x;
-    const float width  = node.get_attr<FloatAttribute>(A_WIDTH);
-    const float radius = node.get_attr<FloatAttribute>(A_RADIUS);
+    const float width  = node.val<float>(A_WIDTH);
+    const float radius = node.val<float>(A_RADIUS);
     const int   ir     = int(radius * nx);
 
-    return P{.amplitude       = node.get_attr<FloatAttribute>(A_AMPLITUDE),
+    return P{.amplitude       = node.val<float>(A_AMPLITUDE),
              .width_pixels    = nx * width,
-             .edt_exponent    = node.get_attr<FloatAttribute>(A_EDT_EXPONENT),
+             .edt_exponent    = node.val<float>(A_EDT_EXPONENT),
              .ir              = ir,
-             .default_scaling = node.get_attr<BoolAttribute>(A_DEFAULT_SCALING)};
+             .default_scaling = node.val<bool>(A_DEFAULT_SCALING)};
   }();
 
   // --- prepare mask

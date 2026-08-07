@@ -5,58 +5,56 @@
 #include "highmap/opencl/gpu_opencl.hpp"
 #include "highmap/selector.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/app/enum_mappings.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
+constexpr const char *P_IN  = "input";
+constexpr const char *P_OUT = "output";
+
+constexpr const char *A_CURVATURE_CLAMP_MODE = "curvature_clamp_mode";
+constexpr const char *A_CURVATURE_CLAMPING   = "curvature_clamping";
+constexpr const char *A_CURVATURE_WEIGHT     = "curvature_weight";
+constexpr const char *A_GRADIENT_GAIN        = "gradient_gain";
+constexpr const char *A_GRADIENT_WEIGHT      = "gradient_weight";
+constexpr const char *A_RADIUS_CURVATURE     = "radius_curvature";
+constexpr const char *A_RADIUS_GRADIENT      = "radius_gradient";
 
 void setup_select_soil_weathered_node(BaseNode &node)
 {
   Logger::log()->trace("setup node {}", node.get_label());
 
   // port(s)
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "input");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, "output", CONFIG(node));
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_IN);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_OUT, CONFIG(node));
 
   // attribute(s)
-  node.add_attr<FloatAttribute>("radius_curvature", "Curvature Radius", 0.f, 0.f, 0.1f);
-  node.add_attr<FloatAttribute>("radius_gradient", "Gradient Radius", 0.005f, 0.f, 0.1f);
-  node.add_attr<FloatAttribute>("gradient_gain", "Gradient Gain", 1.f, 0.01f, 10.f);
-  node.add_attr<FloatAttribute>("curvature_weight", "Curvature Weight", 1.f, -1.f, 1.f);
-  node.add_attr<FloatAttribute>("gradient_weight", "Gradient Weight", 0.2f, -1.f, 1.f);
-  node.add_attr<EnumAttribute>("curvature_clamp_mode",
-                               "Curvature Clamp Mode",
-                               enum_mappings.clamping_mode_map,
-                               "Keep positive & clamp");
-  node.add_attr<FloatAttribute>("curvature_clamping",
-                                "Curvature Clamp Limit",
-                                1.f,
-                                0.f,
-                                FLT_MAX,
-                                "{:.4f}");
-
-  // attribute(s) order
-  node.set_attr_ordered_key({"_GROUPBOX_BEGIN_Main Parameters",
-                             "_TEXT_Weights",
-                             "curvature_weight",
-                             "gradient_weight",
-                             //
-                             "_TEXT_Curvature",
-                             "radius_curvature",
-                             "curvature_clamp_mode",
-                             "curvature_clamping",
-                             //
-                             "_TEXT_Slope",
-                             "radius_gradient",
-                             "gradient_gain",
-                             "_GROUPBOX_END_"});
+  add_float(node, A_RADIUS_CURVATURE, "Curvature Radius", 0.f, 0.f, 0.1f);
+  add_float(node, A_RADIUS_GRADIENT, "Gradient Radius", 0.005f, 0.f, 0.1f);
+  add_float(node, A_GRADIENT_GAIN, "Gradient Gain", 1.f, 0.01f, 10.f);
+  add_float(node, A_CURVATURE_WEIGHT, "Curvature Weight", 1.f, -1.f, 1.f);
+  add_float(node, A_GRADIENT_WEIGHT, "Gradient Weight", 0.2f, -1.f, 1.f);
+  add_enum(node,
+           A_CURVATURE_CLAMP_MODE,
+           "Curvature Clamp Mode",
+           enum_mappings.clamping_mode_map,
+           "Keep positive & clamp");
+  add_float(node,
+            A_CURVATURE_CLAMPING,
+            "Curvature Clamp Limit",
+            1.f,
+            0.f,
+            FLT_MAX,
+            "{:.4f}");
 
   setup_post_process_heightmap_attributes(node,
                                           {.add_mix = false, .remap_active_state = true});
@@ -66,16 +64,15 @@ void compute_select_soil_weathered_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  hmap::VirtualArray *p_in = node.get_value_ref<hmap::VirtualArray>("input");
+  hmap::VirtualArray *p_in = node.get_value_ref<hmap::VirtualArray>(P_IN);
 
   if (p_in)
   {
-    hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>("output");
+    hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
     int nx      = p_out->shape.x; // for gradient scaling
-    int ir_curv = (int)(node.get_attr<FloatAttribute>("radius_curvature") * nx);
-    int ir_grad = std::max(1,
-                           (int)(node.get_attr<FloatAttribute>("radius_gradient") * nx));
+    int ir_curv = (int)(node.val<float>(A_RADIUS_CURVATURE) * nx);
+    int ir_grad = std::max(1, (int)(node.val<float>(A_RADIUS_GRADIENT) * nx));
 
     // --- compute gradient norm
 
@@ -99,7 +96,7 @@ void compute_select_soil_weathered_node(BaseNode &node)
         {
           auto [pa_out] = unpack<1>(p_arrays);
 
-          hmap::gain(*pa_out, node.get_attr<FloatAttribute>("gradient_gain"));
+          hmap::gain(*pa_out, node.val<float>(A_GRADIENT_GAIN));
         },
         node.cfg().cm_cpu);
 
@@ -114,17 +111,16 @@ void compute_select_soil_weathered_node(BaseNode &node)
           hmap::Array *pa_in        = p_arrays[1];
           hmap::Array *pa_grad_norm = p_arrays[2];
 
-          auto mode = static_cast<hmap::ClampMode>(
-              node.get_attr<EnumAttribute>("curvature_clamp_mode"));
+          auto mode = static_cast<hmap::ClampMode>(node.val<int>(A_CURVATURE_CLAMP_MODE));
 
           *pa_out = hmap::gpu::select_soil_weathered(
               *pa_in,
               *pa_grad_norm,
               ir_curv,
               mode,
-              node.get_attr<FloatAttribute>("curvature_clamping"),
-              node.get_attr<FloatAttribute>("curvature_weight"),
-              node.get_attr<FloatAttribute>("gradient_weight"),
+              node.val<float>(A_CURVATURE_CLAMPING),
+              node.val<float>(A_CURVATURE_WEIGHT),
+              node.val<float>(A_GRADIENT_WEIGHT),
               (float)nx);
         },
         node.cfg().cm_gpu);

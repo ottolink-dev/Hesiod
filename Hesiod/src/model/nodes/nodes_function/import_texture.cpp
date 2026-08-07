@@ -8,52 +8,57 @@
 #include "highmap/tensor.hpp"
 #include "highmap/virtual_array/virtual_texture.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
+constexpr const char *P_TEXTURE = "texture";
+
+constexpr const char *A_FLIP_Y            = "flip_y";
+constexpr const char *A_FNAME             = "fname";
+constexpr const char *A_KEEP_ASPECT_RATIO = "keep_aspect_ratio";
 
 void setup_import_texture_node(BaseNode &node)
 {
   Logger::log()->trace("setup node {}", node.get_label());
 
   // port(s)
-  node.add_port<hmap::VirtualTexture>(gnode::PortType::OUT, "texture", CONFIG_TEX(node));
+  node.add_port<hmap::VirtualTexture>(gnode::PortType::OUT, P_TEXTURE, CONFIG_TEX(node));
 
   // attribute(s)
-  node.add_attr<FilenameAttribute>("fname",
-                                   "fname",
-                                   std::filesystem::path(""),
-                                   "Image files (*.bmp *.dib *.jpeg *.jpg *.png *.pbm "
-                                   "*.pgm *.ppm *.pxm *.pnm *.tiff *.tif *.hdr *.pic)",
-                                   false);
-  node.add_attr<BoolAttribute>("flip_y", "flip_y", true);
-  node.add_attr<BoolAttribute>("keep_aspect_ratio", "keep_aspect_ratio", false);
-
-  // attribute(s) order
-  node.set_attr_ordered_key({"fname", "flip_y", "keep_aspect_ratio"});
+  add_filename(node,
+               A_FNAME,
+               "fname",
+               std::filesystem::path(""),
+               "Image files (*.bmp *.dib *.jpeg *.jpg *.png *.pbm "
+               "*.pgm *.ppm *.pxm *.pnm *.tiff *.tif *.hdr *.pic)",
+               false);
+  add_bool(node, A_FLIP_Y, "flip_y", true);
+  add_bool(node, A_KEEP_ASPECT_RATIO, "keep_aspect_ratio", false);
 }
 
 void compute_import_texture_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  hmap::VirtualTexture *p_tex = node.get_value_ref<hmap::VirtualTexture>("texture");
+  hmap::VirtualTexture *p_tex = node.get_value_ref<hmap::VirtualTexture>(P_TEXTURE);
 
-  std::string fname = node.get_attr<FilenameAttribute>("fname").string();
+  std::string fname = node.val<std::filesystem::path>(A_FNAME).string();
 
   // if the file exists, keep going
   std::ifstream f(fname.c_str());
   if (f.good())
   {
     // load rgba data
-    hmap::Tensor tensor4(fname, node.get_attr<BoolAttribute>("flip_y"));
+    hmap::Tensor tensor4(fname, node.val<bool>(A_FLIP_Y));
 
     if (tensor4.shape.x * tensor4.shape.y == 0)
     {
@@ -63,7 +68,7 @@ void compute_import_texture_node(BaseNode &node)
 
     glm::ivec2 target = node.cfg().shape;
 
-    if (node.get_attr<BoolAttribute>("keep_aspect_ratio"))
+    if (node.val<bool>(A_KEEP_ASPECT_RATIO))
     {
       // fit the source within the target shape while preserving its aspect
       // ratio, then centre it with transparent padding (alpha = 0)

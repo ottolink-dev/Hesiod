@@ -4,16 +4,18 @@
 #include "highmap/colorize.hpp"
 #include "highmap/virtual_array/virtual_texture.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
 
 // -----------------------------------------------------------------------------
 // Ports & Attributes
@@ -49,35 +51,19 @@ void setup_color_adjust_node(BaseNode &node)
   // --- Attributes
 
   // clang-format off
-  node.add_attr<RangeAttribute>(A_LEVELS, "Levels");
-  node.add_attr<FloatAttribute>(A_EXPOSURE, "Exposure", 0.f, -10.f, 10.f);
-  node.add_attr<FloatAttribute>(A_CONTRAST, "Contrast", 1.f, 0.f, 4.f);
-  node.add_attr<FloatAttribute>(A_SATURATION, "Saturation", 1.f, 0.f, 4.f);
-  node.add_attr<FloatAttribute>(A_TEMPERATURE, "Temperature", 0.f, -1.f, 1.f);
-  node.add_attr<FloatAttribute>(A_GAMMA, "Gamma", 1.f, 0.1f, 4.f);
-  node.add_attr<FloatAttribute>(A_DITHER, "Dither Amplitude", 0.f, 0.f, 0.5f);
-  node.add_attr<BoolAttribute>(A_FILMIC, "Filmic Tonemap", false);
-  node.add_attr<BoolAttribute>(A_ACES, "ACES Tonemap", false);
-  node.add_attr<BoolAttribute>(A_AGX, "AGX Tonemap", false);
+  add_range(node, A_LEVELS, "Levels", {0.f, 1.f}, -1.f, 2.f, true);
+  add_float(node, A_EXPOSURE, "Exposure", 0.f, -10.f, 10.f);
+  add_float(node, A_CONTRAST, "Contrast", 1.f, 0.f, 4.f);
+  add_float(node, A_SATURATION, "Saturation", 1.f, 0.f, 4.f);
+  add_float(node, A_TEMPERATURE, "Temperature", 0.f, -1.f, 1.f);
+  add_float(node, A_GAMMA, "Gamma", 1.f, 0.1f, 4.f);
+  add_float(node, A_DITHER, "Dither Amplitude", 0.f, 0.f, 0.5f);
+  add_bool(node, A_FILMIC, "Filmic Tonemap", false);
+  add_bool(node, A_ACES, "ACES Tonemap", false);
+  add_bool(node, A_AGX, "AGX Tonemap", false);
   // clang-format on
 
   // --- Attribute(s) order
-
-  node.set_attr_ordered_key({"_GROUPBOX_BEGIN_Color",
-                             A_LEVELS,
-                             A_EXPOSURE,
-                             A_CONTRAST,
-                             A_SATURATION,
-                             A_TEMPERATURE,
-                             A_GAMMA,
-                             A_DITHER,
-                             "_GROUPBOX_END_",
-                             //
-                             "_GROUPBOX_BEGIN_Tonemapping",
-                             A_FILMIC,
-                             A_ACES,
-                             A_AGX,
-                             "_GROUPBOX_END_"});
 }
 
 // -----------------------------------------------------------------------------
@@ -99,16 +85,16 @@ void compute_color_adjust_node(BaseNode &node)
   // --- Params
 
   // clang-format off
-  const auto levels      = node.get_attr<RangeAttribute>(A_LEVELS);
-  const auto exposure    = node.get_attr<FloatAttribute>(A_EXPOSURE);
-  const auto contrast    = node.get_attr<FloatAttribute>(A_CONTRAST);
-  const auto saturation  = node.get_attr<FloatAttribute>(A_SATURATION);
-  const auto temperature = node.get_attr<FloatAttribute>(A_TEMPERATURE);
-  const auto gamma       = node.get_attr<FloatAttribute>(A_GAMMA);
-  const auto dither      = node.get_attr<FloatAttribute>(A_DITHER);
-  const auto filmic      = node.get_attr<BoolAttribute>(A_FILMIC);
-  const auto aces        = node.get_attr<BoolAttribute>(A_ACES);
-  const auto agx         = node.get_attr<BoolAttribute>(A_AGX);
+  const auto levels      = node.val<glm::vec2>(A_LEVELS);
+  const auto exposure    = node.val<float>(A_EXPOSURE);
+  const auto contrast    = node.val<float>(A_CONTRAST);
+  const auto saturation  = node.val<float>(A_SATURATION);
+  const auto temperature = node.val<float>(A_TEMPERATURE);
+  const auto gamma       = node.val<float>(A_GAMMA);
+  const auto dither      = node.val<float>(A_DITHER);
+  const auto filmic      = node.val<bool>(A_FILMIC);
+  const auto aces        = node.val<bool>(A_ACES);
+  const auto agx         = node.val<bool>(A_AGX);
   // clang-format on
 
   hmap::ColorAdjust param = {.in_min         = levels[0],

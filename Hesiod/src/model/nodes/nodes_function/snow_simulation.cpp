@@ -4,16 +4,18 @@
 #include "highmap/hydrology/hydrology.hpp"
 #include "highmap/range.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
 
 // -----------------------------------------------------------------------------
 // Ports & Attributes
@@ -58,52 +60,20 @@ void setup_snow_simulation_node(BaseNode &node)
 
   // attribute(s)
   // clang-format off
-  node.add_attr<FloatAttribute>(A_SNOW_DEPTH, "Snow Amount", 0.1f, 0.001f, 0.5f, "{:.2e}", /* log */ true);
-  node.add_attr<FloatAttribute>(A_TALUS_GLOBAL, "Base Repose Slope", 1.5f, 0.f, FLT_MAX);
-  node.add_attr<FloatAttribute>(A_DURATION, "Simulation Duration", 1.f, 0.f, 2.f);
-  node.add_attr<IntAttribute>(A_SOLVER_STRIDE, "Solver Stride", 4, 1, 32);
-  node.add_attr<EnumAttribute>(A_DMAP_TYPE, "Predefined Depth Map", DefaultMapOptions::type_map(), "Uniform");
-  node.add_attr<BoolAttribute>(A_POST_FILTER, "Enable Thermal Relaxation", true);
-  node.add_attr<FloatAttribute>(A_THERMAL_TALUS_RATIO, "Thermal Repose Ratio", 0.2f, 0.01f, 1.f);
-  node.add_attr<FloatAttribute>(A_K_SNOW, "Avalanche Strength", 0.5f, 0.f, 1.f);
-  node.add_attr<FloatAttribute>(A_K_VISC, "Thermal Creep Strength", 0.01f, 0.f, 0.2f);
-  node.add_attr<FloatAttribute>(A_K_MELT_FACTOR, "Melting Strength", 0.8f, 0.f, 1.f);
-  node.add_attr<FloatAttribute>(A_K_DEPTH_RATIO, "Depth Stiffening", 1.f, 0.f, 1.f);
-  node.add_attr<FloatAttribute>(A_K_DEPTH_SLOPE_RATIO, "Depth Repose Boost", 2.f, 0.f, 4.f);
-  node.add_attr<BoolAttribute>(A_SHIFT_TO_ZERO, "Rebase Snow to Zero", true);
+  add_float(node, A_SNOW_DEPTH, "Snow Amount", 0.1f, 0.001f, 0.5f, "{:.2e}", /* log */ true);
+  add_float(node, A_TALUS_GLOBAL, "Base Repose Slope", 1.5f, 0.f, FLT_MAX);
+  add_float(node, A_DURATION, "Simulation Duration", 1.f, 0.f, 2.f);
+  add_int(node, A_SOLVER_STRIDE, "Solver Stride", 4, 1, 32);
+  add_enum(node, A_DMAP_TYPE, "Predefined Depth Map", DefaultMapOptions::type_map(), "Uniform");
+  add_bool(node, A_POST_FILTER, "Enable Thermal Relaxation", true);
+  add_float(node, A_THERMAL_TALUS_RATIO, "Thermal Repose Ratio", 0.2f, 0.01f, 1.f);
+  add_float(node, A_K_SNOW, "Avalanche Strength", 0.5f, 0.f, 1.f);
+  add_float(node, A_K_VISC, "Thermal Creep Strength", 0.01f, 0.f, 0.2f);
+  add_float(node, A_K_MELT_FACTOR, "Melting Strength", 0.8f, 0.f, 1.f);
+  add_float(node, A_K_DEPTH_RATIO, "Depth Stiffening", 1.f, 0.f, 1.f);
+  add_float(node, A_K_DEPTH_SLOPE_RATIO, "Depth Repose Boost", 2.f, 0.f, 4.f);
+  add_bool(node, A_SHIFT_TO_ZERO, "Rebase Snow to Zero", true);
   // clang-format on
-
-  // attribute(s) order
-  node.set_attr_ordered_key({"_GROUPBOX_BEGIN_Snow Deposition",
-                             A_SNOW_DEPTH,
-                             A_DMAP_TYPE,
-                             A_TALUS_GLOBAL,
-                             A_DURATION,
-                             "_GROUPBOX_END_",
-                             //
-                             "_GROUPBOX_BEGIN_Snow Dynamics",
-                             A_K_SNOW,
-                             A_K_VISC,
-                             A_K_DEPTH_RATIO,
-                             A_K_DEPTH_SLOPE_RATIO,
-                             "_GROUPBOX_END_",
-                             //
-                             "_GROUPBOX_BEGIN_Melting",
-                             A_K_MELT_FACTOR,
-                             "_GROUPBOX_END_",
-                             //
-                             "_GROUPBOX_BEGIN_Thermal Relaxation",
-                             A_POST_FILTER,
-                             A_THERMAL_TALUS_RATIO,
-                             "_GROUPBOX_END_",
-                             //
-                             "_GROUPBOX_BEGIN_Output Conditioning",
-                             A_SHIFT_TO_ZERO,
-                             "_GROUPBOX_END_",
-                             //
-                             "_GROUPBOX_BEGIN_Solver",
-                             A_SOLVER_STRIDE,
-                             "_GROUPBOX_END_"});
 }
 
 // -----------------------------------------------------------------------------
@@ -145,23 +115,23 @@ void compute_snow_simulation_node(BaseNode &node)
     };
 
     const int   nx         = p_z->shape.x;
-    const int   stride     = node.get_attr<IntAttribute>(A_SOLVER_STRIDE);
-    const float duration   = node.get_attr<FloatAttribute>(A_DURATION);
+    const int   stride     = node.val<int>(A_SOLVER_STRIDE);
+    const float duration   = node.val<float>(A_DURATION);
     const int   nx_strided = int(float(nx) / stride);
     const int   iterations = int(duration * nx_strided);
-    const float talus      = node.get_attr<FloatAttribute>(A_TALUS_GLOBAL) / nx_strided;
+    const float talus      = node.val<float>(A_TALUS_GLOBAL) / nx_strided;
 
     return P{.solver_stride       = stride,
-             .dmap_type           = node.get_attr<EnumAttribute>(A_DMAP_TYPE),
-             .snow_depth          = node.get_attr<FloatAttribute>(A_SNOW_DEPTH),
-             .k_snow              = node.get_attr<FloatAttribute>(A_K_SNOW),
-             .k_visc              = node.get_attr<FloatAttribute>(A_K_VISC),
-             .k_melt_factor       = node.get_attr<FloatAttribute>(A_K_MELT_FACTOR),
-             .k_depth_ratio       = node.get_attr<FloatAttribute>(A_K_DEPTH_RATIO),
-             .k_depth_slope_ratio = node.get_attr<FloatAttribute>(A_K_DEPTH_SLOPE_RATIO),
-             .thermal_talus_ratio = node.get_attr<FloatAttribute>(A_THERMAL_TALUS_RATIO),
-             .post_filter         = node.get_attr<BoolAttribute>(A_POST_FILTER),
-             .shift_to_zero       = node.get_attr<BoolAttribute>(A_SHIFT_TO_ZERO),
+             .dmap_type           = node.val<int>(A_DMAP_TYPE),
+             .snow_depth          = node.val<float>(A_SNOW_DEPTH),
+             .k_snow              = node.val<float>(A_K_SNOW),
+             .k_visc              = node.val<float>(A_K_VISC),
+             .k_melt_factor       = node.val<float>(A_K_MELT_FACTOR),
+             .k_depth_ratio       = node.val<float>(A_K_DEPTH_RATIO),
+             .k_depth_slope_ratio = node.val<float>(A_K_DEPTH_SLOPE_RATIO),
+             .thermal_talus_ratio = node.val<float>(A_THERMAL_TALUS_RATIO),
+             .post_filter         = node.val<bool>(A_POST_FILTER),
+             .shift_to_zero       = node.val<bool>(A_SHIFT_TO_ZERO),
              //
              .nx_strided = nx_strided,
              .iterations = iterations,

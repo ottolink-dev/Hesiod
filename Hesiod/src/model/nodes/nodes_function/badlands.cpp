@@ -4,16 +4,18 @@
 #include "highmap/opencl/gpu_opencl.hpp"
 #include "highmap/primitives.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
 
 // -----------------------------------------------------------------------------
 // Ports & Attributes
@@ -51,31 +53,17 @@ void setup_badlands_node(BaseNode &node)
   // --- Attributes
 
   // clang-format off
-  node.add_attr<FloatAttribute>(A_ELEVATION, "Elevation", 0.4f, 0.f, 1.f);
-  node.add_attr<WaveNbAttribute>(A_KW, "Spatial Frequency");
-  node.add_attr<SeedAttribute>(A_SEED, "Seed");
-  node.add_attr<IntAttribute>(A_OCTAVES, "Octaves", 8, 0, 32);
-  node.add_attr<FloatAttribute>(A_RUGOSITY, "Smoothness", 0.2f, 0.f, 1.f);
-  node.add_attr<FloatAttribute>(A_ANGLE, "Noise Angle", 30.f, -180.f, 180.f);
-  node.add_attr<FloatAttribute>(A_K_SMOOTHING, "Transition Smoothness", 0.1f, 0.f, 1.f);
-  node.add_attr<FloatAttribute>(A_BASE_NOISE_AMP, "Noise Amplitude", 0.2f, 0.f, 1.f);
+  add_float(node, A_ELEVATION, "Elevation", 0.4f, 0.f, 1.f);
+  add_wavenumber(node, A_KW, "Spatial Frequency");
+  add_seed(node, A_SEED, "Seed");
+  add_int(node, A_OCTAVES, "Octaves", 8, 0, 32);
+  add_float(node, A_RUGOSITY, "Smoothness", 0.2f, 0.f, 1.f);
+  add_float(node, A_ANGLE, "Noise Angle", 30.f, -180.f, 180.f);
+  add_float(node, A_K_SMOOTHING, "Transition Smoothness", 0.1f, 0.f, 1.f);
+  add_float(node, A_BASE_NOISE_AMP, "Noise Amplitude", 0.2f, 0.f, 1.f);
   // clang-format on
 
   // --- Attribute(s) order
-
-  node.set_attr_ordered_key({"_GROUPBOX_BEGIN_Main Parameters",
-                             A_KW,
-                             A_ELEVATION,
-                             A_K_SMOOTHING,
-                             A_SEED,
-                             A_OCTAVES,
-                             "_GROUPBOX_END_",
-                             //
-                             "_GROUPBOX_BEGIN_Base Noise",
-                             A_BASE_NOISE_AMP,
-                             A_RUGOSITY,
-                             A_ANGLE,
-                             "_GROUPBOX_END_"});
 
   setup_post_process_heightmap_attributes(
       node,
@@ -103,14 +91,14 @@ void compute_badlands_node(BaseNode &node)
   // --- Params
 
   // clang-format off
-  const auto elevation      = node.get_attr<FloatAttribute>(A_ELEVATION);
-  const auto kw             = node.get_attr<WaveNbAttribute>(A_KW);
-  const auto seed           = node.get_attr<SeedAttribute>(A_SEED);
-  const auto octaves        = node.get_attr<IntAttribute>(A_OCTAVES);
-  const auto rugosity       = node.get_attr<FloatAttribute>(A_RUGOSITY);
-  const auto angle          = node.get_attr<FloatAttribute>(A_ANGLE);
-  const auto k_smoothing    = node.get_attr<FloatAttribute>(A_K_SMOOTHING);
-  const auto base_noise_amp = node.get_attr<FloatAttribute>(A_BASE_NOISE_AMP);
+  const auto elevation      = node.val<float>(A_ELEVATION);
+  const auto kw             = node.val<glm::vec2>(A_KW);
+  const auto seed           = node.val<int>(A_SEED);
+  const auto octaves        = node.val<int>(A_OCTAVES);
+  const auto rugosity       = node.val<float>(A_RUGOSITY);
+  const auto angle          = node.val<float>(A_ANGLE);
+  const auto k_smoothing    = node.val<float>(A_K_SMOOTHING);
+  const auto base_noise_amp = node.val<float>(A_BASE_NOISE_AMP);
   // clang-format on
 
   const float noise_amp_scaled = base_noise_amp * 2.f / std::max(kw.x, kw.y);

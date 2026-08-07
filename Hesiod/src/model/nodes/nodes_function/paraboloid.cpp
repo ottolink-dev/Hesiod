@@ -3,39 +3,49 @@
  * this software. */
 #include "highmap/primitives.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
+constexpr const char *P_DX       = "dx";
+constexpr const char *P_DY       = "dy";
+constexpr const char *P_ENVELOPE = "envelope";
+constexpr const char *P_OUT      = "output";
+
+constexpr const char *A_A         = "a";
+constexpr const char *A_ANGLE     = "angle";
+constexpr const char *A_B         = "b";
+constexpr const char *A_CENTER    = "center";
+constexpr const char *A_REVERSE_X = "reverse_x";
+constexpr const char *A_REVERSE_Y = "reverse_y";
+constexpr const char *A_V0        = "v0";
 
 void setup_paraboloid_node(BaseNode &node)
 {
   Logger::log()->trace("setup node {}", node.get_label());
 
   // port(s)
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "dx");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "dy");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "envelope");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, "output", CONFIG(node));
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_DX);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_DY);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_ENVELOPE);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_OUT, CONFIG(node));
 
   // attribute(s)
-  node.add_attr<FloatAttribute>("angle", "angle", 0.f, -180.f, 180.f);
-  node.add_attr<FloatAttribute>("a", "a", 1.f, 0.01f, 5.f);
-  node.add_attr<FloatAttribute>("b", "b", 1.f, 0.01f, 5.f);
-  node.add_attr<FloatAttribute>("v0", "v0", 0.f, -2.f, 2.f);
-  node.add_attr<BoolAttribute>("reverse_x", "reverse_x", false);
-  node.add_attr<BoolAttribute>("reverse_y", "reverse_y", false);
-  node.add_attr<Vec2FloatAttribute>("center", "center");
-  // attribute(s) order
-  node.set_attr_ordered_key(
-      {"angle", "a", "b", "v0", "reverse_x", "reverse_y", "center"});
-
+  add_float(node, A_ANGLE, "angle", 0.f, -180.f, 180.f);
+  add_float(node, A_A, "a", 1.f, 0.01f, 5.f);
+  add_float(node, A_B, "b", 1.f, 0.01f, 5.f);
+  add_float(node, A_V0, "v0", 0.f, -2.f, 2.f);
+  add_bool(node, A_REVERSE_X, "reverse_x", false);
+  add_bool(node, A_REVERSE_Y, "reverse_y", false);
+  add_xy(node, A_CENTER, "center");
   setup_post_process_heightmap_attributes(node,
                                           {.add_mix = false, .remap_active_state = true});
 }
@@ -45,10 +55,10 @@ void compute_paraboloid_node(BaseNode &node)
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
   // base noise function
-  hmap::VirtualArray *p_dx  = node.get_value_ref<hmap::VirtualArray>("dx");
-  hmap::VirtualArray *p_dy  = node.get_value_ref<hmap::VirtualArray>("dy");
-  hmap::VirtualArray *p_env = node.get_value_ref<hmap::VirtualArray>("envelope");
-  hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>("output");
+  hmap::VirtualArray *p_dx  = node.get_value_ref<hmap::VirtualArray>(P_DX);
+  hmap::VirtualArray *p_dy  = node.get_value_ref<hmap::VirtualArray>(P_DY);
+  hmap::VirtualArray *p_env = node.get_value_ref<hmap::VirtualArray>(P_ENVELOPE);
+  hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
   hmap::for_each_tile(
       {p_out, p_dx, p_dy},
@@ -57,16 +67,16 @@ void compute_paraboloid_node(BaseNode &node)
         auto [pa_out, pa_dx, pa_dy] = unpack<3>(p_arrays);
 
         *pa_out = hmap::paraboloid(region.shape,
-                                   node.get_attr<FloatAttribute>("angle"),
-                                   node.get_attr<FloatAttribute>("a"),
-                                   node.get_attr<FloatAttribute>("b"),
-                                   node.get_attr<FloatAttribute>("v0"),
-                                   node.get_attr<BoolAttribute>("reverse_x"),
-                                   node.get_attr<BoolAttribute>("reverse_y"),
+                                   node.val<float>(A_ANGLE),
+                                   node.val<float>(A_A),
+                                   node.val<float>(A_B),
+                                   node.val<float>(A_V0),
+                                   node.val<bool>(A_REVERSE_X),
+                                   node.val<bool>(A_REVERSE_Y),
                                    pa_dx,
                                    pa_dy,
                                    nullptr,
-                                   node.get_attr<Vec2FloatAttribute>("center"),
+                                   node.val<glm::vec2>(A_CENTER),
                                    region.bbox);
       },
       node.cfg().cm_cpu);

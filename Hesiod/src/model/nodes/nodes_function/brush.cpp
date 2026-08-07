@@ -6,20 +6,26 @@
 #include "meta/metadata/keys.hpp"
 
 #include "hesiod/logger.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
+constexpr const char *P_BACKGROUND = "background";
+constexpr const char *P_OUT        = "out";
 
 void setup_brush_node(BaseNode &node)
 {
   Logger::log()->trace("setup node {}", node.get_label());
 
   // port(s)
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "background");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, "out", CONFIG(node));
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_BACKGROUND);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_OUT, CONFIG(node));
 
   // attribute(s)
   auto &c = node.get_meta_group().current();
@@ -44,7 +50,7 @@ void compute_brush_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>("out");
+  hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
   // retrieve raw data and convert them to an hmap::Array
   const auto arr = node.get_meta_group().current().value<meta::Array>("hmap");

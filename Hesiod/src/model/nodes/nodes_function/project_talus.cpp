@@ -4,16 +4,18 @@
 #include "highmap/filters.hpp"
 #include "highmap/opencl/gpu_opencl.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
 
 // -----------------------------------------------------------------------------
 // Ports & Attributes
@@ -42,13 +44,10 @@ void setup_project_talus_node(BaseNode &node)
 
   // --- Attributes
 
-  node.add_attr<FloatAttribute>(A_SLOPE, "Slope", 1.f, 0.f, FLT_MAX);
-  node.add_attr<IntAttribute>(A_DIRECTION, "Propagation Direction (D8)", 0, 0, 7);
+  add_float(node, A_SLOPE, "Slope", 1.f, 0.f, FLT_MAX);
+  add_int(node, A_DIRECTION, "Propagation Direction (D8)", 0, 0, 7);
 
   // --- Attribute(s) order
-
-  node.set_attr_ordered_key(
-      {"_GROUPBOX_BEGIN_Main Parameters", A_SLOPE, A_DIRECTION, "_GROUPBOX_END_"});
 
   setup_pre_process_mask_attributes(node);
   setup_post_process_heightmap_attributes(node,
@@ -75,8 +74,8 @@ void compute_project_talus_node(BaseNode &node)
   // --- Params
 
   // clang-format off
-  const auto slope     = node.get_attr<FloatAttribute>(A_SLOPE);
-  const auto direction = node.get_attr<IntAttribute>(A_DIRECTION);
+  const auto slope     = node.val<float>(A_SLOPE);
+  const auto direction = node.val<int>(A_DIRECTION);
   // clang-format on
 
   float talus = slope / float(p_in->shape.x);

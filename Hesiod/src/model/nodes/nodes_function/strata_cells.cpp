@@ -5,16 +5,18 @@
 #include "highmap/opencl/gpu_opencl.hpp"
 #include "highmap/primitives.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
 
 // -----------------------------------------------------------------------------
 // Ports & Attributes
@@ -57,46 +59,20 @@ void setup_strata_cells_node(BaseNode &node)
 
   // attribute(s)
   // clang-format off
-  node.add_attr<WaveNbAttribute>(A_KW, "Spatial Frequency", glm::vec2(2.f, 6.f), 0.f, FLT_MAX, false);
-  node.add_attr<FloatAttribute>(A_AMP, "Strata Strength", 0.2f, 0.f, 1.f);
-  node.add_attr<SeedAttribute>(A_SEED, "Seed");
-  node.add_attr<FloatAttribute>(A_GAMMA, "Longitudinal Sharpness", 0.5f, 0.01f, 2.f);
-  node.add_attr<FloatAttribute>(A_GAMMA_LATERAL, "Lateral Sharpness", 0.4f, 0.01f, 2.f);
-  node.add_attr<FloatAttribute>(A_ANGLE, "Orientation Angle", 0.f, -180.f, 180.f, "{:.0f}°");
-  node.add_attr<BoolAttribute>(A_ENABLE_DEFAULT_NOISE, "Enable Base Noise", true);
-  node.add_attr<FloatAttribute>(A_NOISE_AMP, "Base Noise Amplitude", 0.05f, 0.f, 1.f);
-  node.add_attr<BoolAttribute>(A_ABSOLUTE_DISPLACEMENT, "Use Absolute Displacement", false);
-  node.add_attr<FloatAttribute>(A_OCCURENCE_PROBABILITY, "Feature Occurrence Probability", 1.f, 0.f, 1.f);
-  node.add_attr<IntAttribute>(A_OCTAVES, "Octaves", 6, 1, 32);
-  node.add_attr<FloatAttribute>(A_PERSISTENCE, "Persistence", 0.5f, 0.f, 1.f);
-  node.add_attr<FloatAttribute>(A_LACUNARITY, "Lacunarity", 2.2f, 0.01f, 4.f);
+  add_wavenumber(node, A_KW, "Spatial Frequency", glm::vec2(2.f, 6.f), 0.f, FLT_MAX, false);
+  add_float(node, A_AMP, "Strata Strength", 0.2f, 0.f, 1.f);
+  add_seed(node, A_SEED, "Seed");
+  add_float(node, A_GAMMA, "Longitudinal Sharpness", 0.5f, 0.01f, 2.f);
+  add_float(node, A_GAMMA_LATERAL, "Lateral Sharpness", 0.4f, 0.01f, 2.f);
+  add_float(node, A_ANGLE, "Orientation Angle", 0.f, -180.f, 180.f, "{:.0f}°");
+  add_bool(node, A_ENABLE_DEFAULT_NOISE, "Enable Base Noise", true);
+  add_float(node, A_NOISE_AMP, "Base Noise Amplitude", 0.05f, 0.f, 1.f);
+  add_bool(node, A_ABSOLUTE_DISPLACEMENT, "Use Absolute Displacement", false);
+  add_float(node, A_OCCURENCE_PROBABILITY, "Feature Occurrence Probability", 1.f, 0.f, 1.f);
+  add_int(node, A_OCTAVES, "Octaves", 6, 1, 32);
+  add_float(node, A_PERSISTENCE, "Persistence", 0.5f, 0.f, 1.f);
+  add_float(node, A_LACUNARITY, "Lacunarity", 2.2f, 0.01f, 4.f);
   // clang-format on
-
-  // attribute(s) order
-  node.set_attr_ordered_key({"_GROUPBOX_BEGIN_Wave Definition",
-                             A_KW,
-                             A_AMP,
-                             A_SEED,
-                             "_GROUPBOX_END_",
-                             //
-                             "_GROUPBOX_BEGIN_Shape Control",
-                             A_GAMMA,
-                             A_GAMMA_LATERAL,
-                             A_ANGLE,
-                             A_ABSOLUTE_DISPLACEMENT,
-                             A_OCCURENCE_PROBABILITY,
-                             "_GROUPBOX_END_",
-                             //
-                             "_GROUPBOX_BEGIN_Erosion Layers",
-                             A_OCTAVES,
-                             A_PERSISTENCE,
-                             A_LACUNARITY,
-                             "_GROUPBOX_END_",
-                             //
-                             "_GROUPBOX_BEGIN_Noise Modulation",
-                             A_ENABLE_DEFAULT_NOISE,
-                             A_NOISE_AMP,
-                             "_GROUPBOX_END_"});
 
   setup_pre_process_mask_attributes(node);
   setup_post_process_heightmap_attributes(node,
@@ -142,19 +118,19 @@ void compute_strata_cells_node(BaseNode &node)
     };
 
     return P{
-        .kw                    = node.get_attr<WaveNbAttribute>(A_KW),
-        .amp                   = node.get_attr<FloatAttribute>(A_AMP),
-        .seed                  = node.get_attr<SeedAttribute>(A_SEED),
-        .gamma                 = node.get_attr<FloatAttribute>(A_GAMMA),
-        .gamma_lateral         = node.get_attr<FloatAttribute>(A_GAMMA_LATERAL),
-        .angle                 = node.get_attr<FloatAttribute>(A_ANGLE),
-        .enable_default_noise  = node.get_attr<BoolAttribute>(A_ENABLE_DEFAULT_NOISE),
-        .noise_amp             = node.get_attr<FloatAttribute>(A_NOISE_AMP),
-        .absolute_displacement = node.get_attr<BoolAttribute>(A_ABSOLUTE_DISPLACEMENT),
-        .occurence_probability = node.get_attr<FloatAttribute>(A_OCCURENCE_PROBABILITY),
-        .octaves               = node.get_attr<IntAttribute>(A_OCTAVES),
-        .persistence           = node.get_attr<FloatAttribute>(A_PERSISTENCE),
-        .lacunarity            = node.get_attr<FloatAttribute>(A_LACUNARITY),
+        .kw                    = node.val<glm::vec2>(A_KW),
+        .amp                   = node.val<float>(A_AMP),
+        .seed                  = node.val<int>(A_SEED),
+        .gamma                 = node.val<float>(A_GAMMA),
+        .gamma_lateral         = node.val<float>(A_GAMMA_LATERAL),
+        .angle                 = node.val<float>(A_ANGLE),
+        .enable_default_noise  = node.val<bool>(A_ENABLE_DEFAULT_NOISE),
+        .noise_amp             = node.val<float>(A_NOISE_AMP),
+        .absolute_displacement = node.val<bool>(A_ABSOLUTE_DISPLACEMENT),
+        .occurence_probability = node.val<float>(A_OCCURENCE_PROBABILITY),
+        .octaves               = node.val<int>(A_OCTAVES),
+        .persistence           = node.val<float>(A_PERSISTENCE),
+        .lacunarity            = node.val<float>(A_LACUNARITY),
     };
   }();
 

@@ -3,48 +3,47 @@
  * this software. */
 #include "highmap/hydrology/hydrology.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
+constexpr const char *P_DEPTH       = "depth";
+constexpr const char *P_MASK        = "mask";
+constexpr const char *P_WATER_DEPTH = "water_depth";
+
+constexpr const char *A_DRY_OUT_RATIO = "dry_out_ratio";
 
 void setup_water_depth_dry_out_node(BaseNode &node)
 {
   Logger::log()->trace("setup node {}", node.get_label());
 
   // port(s)
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "depth");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "mask");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, "water_depth", CONFIG(node));
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_DEPTH);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_MASK);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_WATER_DEPTH, CONFIG(node));
 
   // attribute(s)
-  node.add_attr<FloatAttribute>("dry_out_ratio",
-                                "dry_out_ratio",
-                                0.1f,
-                                0.f,
-                                0.5f,
-                                "{:.4f}");
-
-  // attribute(s) order
-  node.set_attr_ordered_key({"dry_out_ratio"});
+  add_float(node, A_DRY_OUT_RATIO, "dry_out_ratio", 0.1f, 0.f, 0.5f, "{:.4f}");
 }
 
 void compute_water_depth_dry_out_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  hmap::VirtualArray *p_in = node.get_value_ref<hmap::VirtualArray>("depth");
+  hmap::VirtualArray *p_in = node.get_value_ref<hmap::VirtualArray>(P_DEPTH);
 
   if (p_in)
   {
-    hmap::VirtualArray *p_mask = node.get_value_ref<hmap::VirtualArray>("mask");
-    hmap::VirtualArray *p_out  = node.get_value_ref<hmap::VirtualArray>("water_depth");
+    hmap::VirtualArray *p_mask = node.get_value_ref<hmap::VirtualArray>(P_MASK);
+    hmap::VirtualArray *p_out  = node.get_value_ref<hmap::VirtualArray>(P_WATER_DEPTH);
 
     float depth_max = p_in->max(node.cfg().cm_cpu);
 
@@ -56,7 +55,7 @@ void compute_water_depth_dry_out_node(BaseNode &node)
           *pa_out                       = *pa_in;
 
           hmap::water_depth_dry_out(*pa_out,
-                                    node.get_attr<FloatAttribute>("dry_out_ratio"),
+                                    node.val<float>(A_DRY_OUT_RATIO),
                                     pa_mask,
                                     depth_max);
         },

@@ -5,16 +5,18 @@
 #include "highmap/primitives.hpp"
 #include "highmap/range.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
 
 // -----------------------------------------------------------------------------
 // Ports & Attributes
@@ -52,36 +54,15 @@ void setup_flow_simulation_viscous_node(BaseNode &node)
 
   // attribute(s)
   // clang-format off
-  node.add_attr<FloatAttribute>(A_INITIAL_DEPTH, "Initial Material Depth", 0.1f, 0.01f, 0.5f, "{:.2e}", /* log */ true);
-  node.add_attr<FloatAttribute>(A_DURATION, "Simulation Duration", 1.f, 0.f, FLT_MAX);
-  node.add_attr<FloatAttribute>(A_POWER, "Flow Power", 2.5f, 1.f, 4.f);
-  node.add_attr<IntAttribute>(A_SOLVER_STRIDE, "Solver Iteration Stride", 8, 1, 32);
-  node.add_attr<EnumAttribute>(A_DMAP_TYPE, "Predefined Depth Map", DefaultMapOptions::type_map());
-  node.add_attr<BoolAttribute>(A_POST_FILTER, "Enable Post Filtering", true);
-  node.add_attr<FloatAttribute>(A_FILTER_RADIUS, "Filter Radius", 0.05f, 0.f, 0.2f);
-  node.add_attr<BoolAttribute>(A_SHIFT_TO_ZERO, "Rebase Depth to Zero", true);
+  add_float(node, A_INITIAL_DEPTH, "Initial Material Depth", 0.1f, 0.01f, 0.5f, "{:.2e}", /* log */ true);
+  add_float(node, A_DURATION, "Simulation Duration", 1.f, 0.f, FLT_MAX);
+  add_float(node, A_POWER, "Flow Power", 2.5f, 1.f, 4.f);
+  add_int(node, A_SOLVER_STRIDE, "Solver Iteration Stride", 8, 1, 32);
+  add_enum(node, A_DMAP_TYPE, "Predefined Depth Map", DefaultMapOptions::type_map());
+  add_bool(node, A_POST_FILTER, "Enable Post Filtering", true);
+  add_float(node, A_FILTER_RADIUS, "Filter Radius", 0.05f, 0.f, 0.2f);
+  add_bool(node, A_SHIFT_TO_ZERO, "Rebase Depth to Zero", true);
   // clang-format on
-
-  // attribute(s) order
-  node.set_attr_ordered_key({"_GROUPBOX_BEGIN_Material Setup",
-                             A_INITIAL_DEPTH,
-                             A_DMAP_TYPE,
-                             A_DURATION,
-                             A_POWER,
-                             "_GROUPBOX_END_",
-                             //
-                             "_GROUPBOX_BEGIN_Post-filter",
-                             A_POST_FILTER,
-                             A_FILTER_RADIUS,
-                             "_GROUPBOX_END_",
-                             //
-                             "_GROUPBOX_BEGIN_Output Conditioning",
-                             A_SHIFT_TO_ZERO,
-                             "_GROUPBOX_END_",
-                             //
-                             "_GROUPBOX_BEGIN_Solver",
-                             A_SOLVER_STRIDE,
-                             "_GROUPBOX_END_"});
 }
 
 // -----------------------------------------------------------------------------
@@ -121,19 +102,19 @@ void compute_flow_simulation_viscous_node(BaseNode &node)
     };
 
     const int   nx         = p_depth_out->shape.x;
-    const int   stride     = node.get_attr<IntAttribute>(A_SOLVER_STRIDE);
-    const float radius     = node.get_attr<FloatAttribute>(A_FILTER_RADIUS);
-    const float duration   = node.get_attr<FloatAttribute>(A_DURATION);
+    const int   stride     = node.val<int>(A_SOLVER_STRIDE);
+    const float radius     = node.val<float>(A_FILTER_RADIUS);
+    const float duration   = node.val<float>(A_DURATION);
     const int   nx_strided = int(float(nx) / stride);
     const int   iterations = int(duration * nx_strided);
     const int   ir         = std::max(1, int(radius * nx));
 
-    return P{.initial_depth = node.get_attr<FloatAttribute>(A_INITIAL_DEPTH),
-             .power         = node.get_attr<FloatAttribute>(A_POWER),
+    return P{.initial_depth = node.val<float>(A_INITIAL_DEPTH),
+             .power         = node.val<float>(A_POWER),
              .solver_stride = stride,
-             .dmap_type     = node.get_attr<EnumAttribute>(A_DMAP_TYPE),
-             .post_filter   = node.get_attr<BoolAttribute>(A_POST_FILTER),
-             .shift_to_zero = node.get_attr<BoolAttribute>(A_SHIFT_TO_ZERO),
+             .dmap_type     = node.val<int>(A_DMAP_TYPE),
+             .post_filter   = node.val<bool>(A_POST_FILTER),
+             .shift_to_zero = node.val<bool>(A_SHIFT_TO_ZERO),
              //
              .nx_strided = nx_strided,
              .iterations = iterations,

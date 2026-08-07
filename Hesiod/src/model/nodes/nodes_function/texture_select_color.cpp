@@ -4,16 +4,18 @@
 #include "highmap/colorize.hpp"
 #include "highmap/virtual_array/virtual_texture.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
 
 // -----------------------------------------------------------------------------
 // Ports & Attributes
@@ -41,18 +43,13 @@ void setup_texture_select_color_node(BaseNode &node)
   // --- Attributes
 
   // clang-format off
-  node.add_attr<ColorAttribute>(A_COLOR, "Color", 0.f, 0.8f, 0.4f, 1.f);
-  node.add_attr<FloatAttribute>(A_TOLERANCE, "Tolerance", 0.1f, 0.f, 0.5f);
+  add_color(node, A_COLOR, "Color", {0.f, 0.8f, 0.4f, 1.f});
+  add_float(node, A_TOLERANCE, "Tolerance", 0.1f, 0.f, 0.5f);
   // clang-format off
 
     // --- Attribute(s) order
 
-  node.set_attr_ordered_key({"_GROUPBOX_BEGIN_Color Selection",
-                             A_COLOR,
-                             A_TOLERANCE,
-                             "_GROUPBOX_END_"});
-
-  setup_post_process_heightmap_attributes(node,
+    setup_post_process_heightmap_attributes(node,
                                           {.add_mix = false, .remap_active_state = true});
 }
   
@@ -75,8 +72,8 @@ void compute_texture_select_color_node(BaseNode &node)
   // --- Params
 
   // clang-format off
-  const auto color_v   = node.get_attr<ColorAttribute>(A_COLOR);
-  const auto tolerance = node.get_attr<FloatAttribute>(A_TOLERANCE);
+  const auto color_v   = node.val<glm::vec4>(A_COLOR);
+  const auto tolerance = node.val<float>(A_TOLERANCE);
   // clang-format on
 
   glm::vec3 color = {color_v[0], color_v[1], color_v[2]};

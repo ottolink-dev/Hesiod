@@ -4,47 +4,54 @@
 #include "highmap/geometry/path.hpp"
 #include "highmap/shortest_path.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
+constexpr const char *P_HEIGHTMAP = "heightmap";
+constexpr const char *P_MASK_NOGO = "mask nogo";
+constexpr const char *P_PATH      = "path";
+constexpr const char *P_WAYPOINTS = "waypoints";
+
+constexpr const char *A_DISTANCE_EXPONENT = "distance_exponent";
+constexpr const char *A_DOWNSAMPLING      = "downsampling";
+constexpr const char *A_ELEVATION_RATIO   = "elevation_ratio";
 
 void setup_path_find_node(BaseNode &node)
 {
   Logger::log()->trace("setup node {}", node.get_label());
 
   // port(s)
-  node.add_port<hmap::Path>(gnode::PortType::IN, "waypoints");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "heightmap");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "mask nogo");
-  node.add_port<hmap::Path>(gnode::PortType::OUT, "path");
+  node.add_port<hmap::Path>(gnode::PortType::IN, P_WAYPOINTS);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_HEIGHTMAP);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_MASK_NOGO);
+  node.add_port<hmap::Path>(gnode::PortType::OUT, P_PATH);
 
   // attribute(s)
-  node.add_attr<FloatAttribute>("elevation_ratio", "elevation_ratio", 0.1f, 0.f, 0.9f);
-  node.add_attr<FloatAttribute>("distance_exponent", "distance_exponent", 1.f, 0.5f, 2.f);
-  node.add_attr<IntAttribute>("downsampling", "downsampling", 4, 1, 10);
-
-  // attribute(s) order
-  node.set_attr_ordered_key({"elevation_ratio", "distance_exponent", "downsampling"});
+  add_float(node, A_ELEVATION_RATIO, "elevation_ratio", 0.1f, 0.f, 0.9f);
+  add_float(node, A_DISTANCE_EXPONENT, "distance_exponent", 1.f, 0.5f, 2.f);
+  add_int(node, A_DOWNSAMPLING, "downsampling", 4, 1, 10);
 }
 
 void compute_path_find_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  hmap::Path         *p_waypoints = node.get_value_ref<hmap::Path>("waypoints");
-  hmap::VirtualArray *p_hmap      = node.get_value_ref<hmap::VirtualArray>("heightmap");
+  hmap::Path         *p_waypoints = node.get_value_ref<hmap::Path>(P_WAYPOINTS);
+  hmap::VirtualArray *p_hmap      = node.get_value_ref<hmap::VirtualArray>(P_HEIGHTMAP);
 
   if (p_waypoints && p_hmap)
   {
-    hmap::VirtualArray *p_mask = node.get_value_ref<hmap::VirtualArray>("mask nogo");
-    hmap::Path         *p_out  = node.get_value_ref<hmap::Path>("path");
+    hmap::VirtualArray *p_mask = node.get_value_ref<hmap::VirtualArray>(P_MASK_NOGO);
+    hmap::Path         *p_out  = node.get_value_ref<hmap::Path>(P_PATH);
 
     // copy the input heightmap
     *p_out = *p_waypoints;
@@ -52,7 +59,7 @@ void compute_path_find_node(BaseNode &node)
     if (p_out->size() > 1)
     {
       // working shape
-      float      ds        = (float)node.get_attr<IntAttribute>("downsampling");
+      float      ds        = (float)node.val<int>(A_DOWNSAMPLING);
       glm::ivec2 shape_wrk = glm::ivec2((int)(p_hmap->shape.x / ds),
                                         (int)(p_hmap->shape.y / ds));
 
@@ -84,8 +91,8 @@ void compute_path_find_node(BaseNode &node)
                               zw,
                               bbox,
                               edge_divisions,
-                              node.get_attr<FloatAttribute>("elevation_ratio"),
-                              node.get_attr<FloatAttribute>("distance_exponent"),
+                              node.val<float>(A_ELEVATION_RATIO),
+                              node.val<float>(A_DISTANCE_EXPONENT),
                               p_mask_array);
 
       // set values based on the "fine" grid array

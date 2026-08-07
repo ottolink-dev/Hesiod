@@ -3,32 +3,37 @@
  * this software. */
 #include "highmap/selector.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
+constexpr const char *P_IN  = "input";
+constexpr const char *P_OUT = "output";
+
+constexpr const char *A_ANGLE  = "angle";
+constexpr const char *A_RADIUS = "radius";
+constexpr const char *A_SIGMA  = "sigma";
 
 void setup_select_angle_node(BaseNode &node)
 {
   Logger::log()->trace("setup node {}", node.get_label());
 
   // port(s)
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "input");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, "output", CONFIG(node));
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_IN);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_OUT, CONFIG(node));
 
   // attribute(s)
-  node.add_attr<FloatAttribute>("angle", "angle", 0.f, 0.f, 360.f);
-  node.add_attr<FloatAttribute>("sigma", "sigma", 90.f, 0.f, 180.f);
-  node.add_attr<FloatAttribute>("radius", "radius", 0.f, 0.f, 0.2f);
-
-  // attribute(s) order
-  node.set_attr_ordered_key({"angle", "sigma", "radius"});
+  add_float(node, A_ANGLE, "angle", 0.f, 0.f, 360.f);
+  add_float(node, A_SIGMA, "sigma", 90.f, 0.f, 180.f);
+  add_float(node, A_RADIUS, "radius", 0.f, 0.f, 0.2f);
 
   setup_post_process_heightmap_attributes(node,
                                           {.add_mix = true, .remap_active_state = false});
@@ -38,13 +43,13 @@ void compute_select_angle_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  hmap::VirtualArray *p_in = node.get_value_ref<hmap::VirtualArray>("input");
+  hmap::VirtualArray *p_in = node.get_value_ref<hmap::VirtualArray>(P_IN);
 
   if (p_in)
   {
-    hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>("output");
+    hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
-    int ir = (int)(node.get_attr<FloatAttribute>("radius") * p_out->shape.x);
+    int ir = (int)(node.val<float>(A_RADIUS) * p_out->shape.x);
 
     hmap::for_each_tile(
         {p_out, p_in},
@@ -52,8 +57,8 @@ void compute_select_angle_node(BaseNode &node)
         {
           auto [pa_out, pa_in] = unpack<2>(p_arrays);
           *pa_out              = select_angle(*pa_in,
-                                 node.get_attr<FloatAttribute>("angle"),
-                                 node.get_attr<FloatAttribute>("sigma"),
+                                 node.val<float>(A_ANGLE),
+                                 node.val<float>(A_SIGMA),
                                  ir);
         },
         node.cfg().cm_cpu);

@@ -3,17 +3,19 @@
  * this software. */
 #include "highmap/erosion.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/app/enum_mappings.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
 
 // -----------------------------------------------------------------------------
 // Ports & Attributes
@@ -62,66 +64,28 @@ void setup_hydraulic_saleve_node(BaseNode &node)
 
   // attribute(s)
   // clang-format off
-  node.add_attr<SeedAttribute>(A_SEED, "Seed");
-  node.add_attr<FloatAttribute>(A_M_EXP, "Drainage Exponent", 0.15f, 0.01f, 0.8f);
-  node.add_attr<FloatAttribute>(A_DRAINAGE_NOISE_STRENGTH, "Drainage Noise Strength", 0.1f, 0.f, 1.f);
-  node.add_attr<FloatAttribute>(A_UPLIFT_RATE, "Uplift Rate", 1.f, 0.1f, 1.f);
-  node.add_attr<BoolAttribute>(A_UNIFORM_SMAX, "Uniform Slope Limiter", false);
-  node.add_attr<FloatAttribute>(A_SMAX, "Maximum Slope (Domain Center)", 6.f, 0.f, FLT_MAX);
-  node.add_attr<FloatAttribute>(A_SMIN, "Minimum Slope (Domain Border)", 0.f, 0.f, FLT_MAX);
-  node.add_attr<FloatAttribute>(A_STRENGTH, "Erosion Strength", 0.7f, 0.f, 1.f);
-  node.add_attr<BoolAttribute>(A_SCALE_ERODIBILITY_WITH_Z, "Terrain Shape Preservation", true);
-  node.add_attr<FloatAttribute>(A_ERODIBILITY_DISTRIB_EXP, "Shape Preservation Strength", 2.f, 0.1f, 4.f);
-  node.add_attr<FloatAttribute>(A_DEPOSITION_RADIUS, "Deposition Radius", 0.1f, 0.f, 0.5f);
-  node.add_attr<FloatAttribute>(A_DEPOSITION_STRENGTH, "Sediment Deposition Strength", 0.5f, 0.f, 1.f);
-  node.add_attr<FloatAttribute>(A_STREAM_EXP, "Influence Exponent", 0.8f, 0.01f, 1.f);
-  node.add_attr<FloatAttribute>(A_STREAM_STRENGTH, "Fine Erosion Strength", 0.02f, 0.f, 1.f);
-  node.add_attr<IntAttribute>(A_CONTROL_POINTS_COUNT, "Control Points Count", 15000, 500, 100000);
-  node.add_attr<FloatAttribute>(A_TOLERANCE, "Convergence Tolerance", 1e-3f, 1e-5f, 1e-1f, "{:.2e}", /* log */ true);
-  node.add_attr<IntAttribute>(A_MAX_ITERATIONS, "Max. Iterations", 500, 1, 1000);
+  add_seed(node, A_SEED, "Seed");
+  add_float(node, A_M_EXP, "Drainage Exponent", 0.15f, 0.01f, 0.8f);
+  add_float(node, A_DRAINAGE_NOISE_STRENGTH, "Drainage Noise Strength", 0.1f, 0.f, 1.f);
+  add_float(node, A_UPLIFT_RATE, "Uplift Rate", 1.f, 0.1f, 1.f);
+  add_bool(node, A_UNIFORM_SMAX, "Uniform Slope Limiter", false);
+  add_float(node, A_SMAX, "Maximum Slope (Domain Center)", 6.f, 0.f, FLT_MAX);
+  add_float(node, A_SMIN, "Minimum Slope (Domain Border)", 0.f, 0.f, FLT_MAX);
+  add_float(node, A_STRENGTH, "Erosion Strength", 0.7f, 0.f, 1.f);
+  add_bool(node, A_SCALE_ERODIBILITY_WITH_Z, "Terrain Shape Preservation", true);
+  add_float(node, A_ERODIBILITY_DISTRIB_EXP, "Shape Preservation Strength", 2.f, 0.1f, 4.f);
+  add_float(node, A_DEPOSITION_RADIUS, "Deposition Radius", 0.1f, 0.f, 0.5f);
+  add_float(node, A_DEPOSITION_STRENGTH, "Sediment Deposition Strength", 0.5f, 0.f, 1.f);
+  add_float(node, A_STREAM_EXP, "Influence Exponent", 0.8f, 0.01f, 1.f);
+  add_float(node, A_STREAM_STRENGTH, "Fine Erosion Strength", 0.02f, 0.f, 1.f);
+  add_int(node, A_CONTROL_POINTS_COUNT, "Control Points Count", 15000, 500, 100000);
+  add_float(node, A_TOLERANCE, "Convergence Tolerance", 1e-3f, 1e-5f, 1e-1f, "{:.2e}", /* log */ true);
+  add_int(node, A_MAX_ITERATIONS, "Max. Iterations", 500, 1, 1000);
 
   std::vector<std::string> choices = {"Natural Neighbors", "Delaunay + Gradients"};
-  node.add_attr<ChoiceAttribute>(A_ITP_METHOD, "Interpolation Method", choices, "Delaunay + Gradients");
-  node.add_attr<BoolAttribute>(A_ENABLE_POST_SMOOTHING, "Enable Smoothing", false);
+  add_choice(node, A_ITP_METHOD, "Interpolation Method", choices, "Delaunay + Gradients");
+  add_bool(node, A_ENABLE_POST_SMOOTHING, "Enable Smoothing", false);
   // clang-format on
-
-  // attribute(s) order
-  node.set_attr_ordered_key({"_GROUPBOX_BEGIN_Large-Scale Drainage Erosion",
-                             A_STRENGTH,
-                             A_M_EXP,
-                             A_UPLIFT_RATE,
-                             A_DRAINAGE_NOISE_STRENGTH,
-                             "_GROUPBOX_END_",
-                             //
-                             "_GROUPBOX_BEGIN_Slope Constraints",
-                             A_UNIFORM_SMAX,
-                             A_SMAX,
-                             A_SMIN,
-                             "_GROUPBOX_END_",
-                             //
-                             "_GROUPBOX_BEGIN_Sediment Deposition",
-                             A_DEPOSITION_RADIUS,
-                             A_DEPOSITION_STRENGTH,
-                             "_GROUPBOX_END_",
-                             //
-                             "_GROUPBOX_BEGIN_Secondary Flow Erosion",
-                             A_STREAM_STRENGTH,
-                             A_STREAM_EXP,
-                             "_GROUPBOX_END_",
-                             //
-                             "_GROUPBOX_BEGIN_Terrain Shape Preservation",
-                             A_SCALE_ERODIBILITY_WITH_Z,
-                             A_ERODIBILITY_DISTRIB_EXP,
-                             "_GROUPBOX_END_",
-                             //
-                             "_GROUPBOX_BEGIN_Simulation & Solver",
-                             A_CONTROL_POINTS_COUNT,
-                             A_TOLERANCE,
-                             A_MAX_ITERATIONS,
-                             A_SEED,
-                             A_ENABLE_POST_SMOOTHING,
-                             A_ITP_METHOD,
-                             "_GROUPBOX_END_"});
 
   setup_default_noise(node, {.noise_amp = 0.05f, .kw = 4.f, .smoothness = 0.15f});
   setup_post_process_heightmap_attributes(node,
@@ -173,12 +137,12 @@ void compute_hydraulic_saleve_node(BaseNode &node)
     };
 
     int   nx            = p_out->shape.x;
-    int   deposition_ir = (int)(node.get_attr<FloatAttribute>(A_DEPOSITION_RADIUS) * nx);
-    bool  uniform_smax  = node.get_attr<BoolAttribute>(A_UNIFORM_SMAX);
-    float smax          = node.get_attr<FloatAttribute>(A_SMAX);
-    float smin          = uniform_smax ? smax : node.get_attr<FloatAttribute>(A_SMIN);
+    int   deposition_ir = (int)(node.val<float>(A_DEPOSITION_RADIUS) * nx);
+    bool  uniform_smax  = node.val<bool>(A_UNIFORM_SMAX);
+    float smax          = node.val<float>(A_SMAX);
+    float smin          = uniform_smax ? smax : node.val<float>(A_SMIN);
 
-    std::string                 itp_choice = node.get_attr<ChoiceAttribute>(A_ITP_METHOD);
+    std::string                 itp_choice = node.val<std::string>(A_ITP_METHOD);
     hmap::InterpolationMethod2D itp_method;
     if (itp_choice == "Natural Neighbors")
       itp_method = hmap::InterpolationMethod2D::ITP2D_NNI;
@@ -186,25 +150,25 @@ void compute_hydraulic_saleve_node(BaseNode &node)
       itp_method = hmap::InterpolationMethod2D::ITP2D_DELAUNAY_GRADIENT;
 
     // clang-format off
-    return P{.seed = node.get_attr<SeedAttribute>(A_SEED),
-             .count = size_t(node.get_attr<IntAttribute>(A_CONTROL_POINTS_COUNT)),
-             .m_exp = node.get_attr<FloatAttribute>(A_M_EXP),
-	     .drainage_noise_strength = node.get_attr<FloatAttribute>(A_DRAINAGE_NOISE_STRENGTH),
-             .uplift_rate = node.get_attr<FloatAttribute>(A_UPLIFT_RATE),
-             .tolerance = node.get_attr<FloatAttribute>(A_TOLERANCE),
-             .max_iterations = node.get_attr<IntAttribute>(A_MAX_ITERATIONS),
+    return P{.seed = node.val<int>(A_SEED),
+             .count = size_t(node.val<int>(A_CONTROL_POINTS_COUNT)),
+             .m_exp = node.val<float>(A_M_EXP),
+	     .drainage_noise_strength = node.val<float>(A_DRAINAGE_NOISE_STRENGTH),
+             .uplift_rate = node.val<float>(A_UPLIFT_RATE),
+             .tolerance = node.val<float>(A_TOLERANCE),
+             .max_iterations = node.val<int>(A_MAX_ITERATIONS),
              .uniform_smax = uniform_smax,
              .smin = smin,
              .smax = smax,
-             .strength = node.get_attr<FloatAttribute>(A_STRENGTH),
-             .scale_erodibility_with_z = node.get_attr<BoolAttribute>(A_SCALE_ERODIBILITY_WITH_Z),
-             .erodibility_distrib_exp = node.get_attr<FloatAttribute>(A_ERODIBILITY_DISTRIB_EXP),
+             .strength = node.val<float>(A_STRENGTH),
+             .scale_erodibility_with_z = node.val<bool>(A_SCALE_ERODIBILITY_WITH_Z),
+             .erodibility_distrib_exp = node.val<float>(A_ERODIBILITY_DISTRIB_EXP),
              .deposition_ir = deposition_ir,
-             .deposition_strength = node.get_attr<FloatAttribute>(A_DEPOSITION_STRENGTH),
-	     .stream_strength = node.get_attr<FloatAttribute>(A_STREAM_STRENGTH),
-	     .stream_exp = node.get_attr<FloatAttribute>(A_STREAM_EXP),
+             .deposition_strength = node.val<float>(A_DEPOSITION_STRENGTH),
+	     .stream_strength = node.val<float>(A_STREAM_STRENGTH),
+	     .stream_exp = node.val<float>(A_STREAM_EXP),
 	     .itp_method = itp_method,
-	     .enable_post_smoothing = node.get_attr<BoolAttribute>(A_ENABLE_POST_SMOOTHING)
+	     .enable_post_smoothing = node.val<bool>(A_ENABLE_POST_SMOOTHING)
     };
     // clang-format on
   }();

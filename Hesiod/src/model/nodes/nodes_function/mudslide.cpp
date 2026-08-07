@@ -4,17 +4,19 @@
 #include "highmap/erosion.hpp"
 #include "highmap/opencl/gpu_opencl.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 #include "hesiod/model/utils.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
 
 // -----------------------------------------------------------------------------
 // Ports & Attributes
@@ -48,21 +50,13 @@ void setup_mudslide_node(BaseNode &node)
 
   // attribute(s)
   // clang-format off
-  node.add_attr<FloatAttribute>(A_DEPTH, "depth", 0.2f, 0.f, 1.f);
-  node.add_attr<FloatAttribute>(A_SLOPE_LIMIT, "slope_limit", 2.f, 0.f, FLT_MAX);
-  node.add_attr<FloatAttribute>(A_DURATION, "Simulation Duration", 1.f, 0.f, FLT_MAX);
-  node.add_attr<IntAttribute>(A_SOLVER_STRIDE, "Solver Iteration Stride", 8, 1, 32);
-  node.add_attr<FloatAttribute>(A_DEPTH_MAP_EXPONENT, "depth_map_exponent", 0.5f, 0.1f, 2.f);
-  node.add_attr<FloatAttribute>(A_VISCOSITY_LAW_POWER, "viscosity_law_power", 2.f, 1.f, 4.f);
+  add_float(node, A_DEPTH, "depth", 0.2f, 0.f, 1.f);
+  add_float(node, A_SLOPE_LIMIT, "slope_limit", 2.f, 0.f, FLT_MAX);
+  add_float(node, A_DURATION, "Simulation Duration", 1.f, 0.f, FLT_MAX);
+  add_int(node, A_SOLVER_STRIDE, "Solver Iteration Stride", 8, 1, 32);
+  add_float(node, A_DEPTH_MAP_EXPONENT, "depth_map_exponent", 0.5f, 0.1f, 2.f);
+  add_float(node, A_VISCOSITY_LAW_POWER, "viscosity_law_power", 2.f, 1.f, 4.f);
   // clang-format on
-
-  // attribute(s) order
-  node.set_attr_ordered_key({A_DEPTH,
-                             A_SLOPE_LIMIT,
-                             A_DURATION,
-                             A_SOLVER_STRIDE,
-                             A_DEPTH_MAP_EXPONENT,
-                             A_VISCOSITY_LAW_POWER});
 
   setup_post_process_heightmap_attributes(node,
                                           {.add_mix = true, .remap_active_state = false});
@@ -100,16 +94,16 @@ void compute_mudslide_node(BaseNode &node)
     };
 
     const int   nx          = p_out->shape.x;
-    const int   stride      = node.get_attr<IntAttribute>(A_SOLVER_STRIDE);
-    const float duration    = node.get_attr<FloatAttribute>(A_DURATION);
+    const int   stride      = node.val<int>(A_SOLVER_STRIDE);
+    const float duration    = node.val<float>(A_DURATION);
     const int   nx_strided  = int(float(nx) / stride);
     const int   iterations  = int(duration * nx_strided);
-    const float talus_limit = node.get_attr<FloatAttribute>(A_SLOPE_LIMIT) / nx_strided;
+    const float talus_limit = node.val<float>(A_SLOPE_LIMIT) / nx_strided;
 
-    return P{.depth               = node.get_attr<FloatAttribute>(A_DEPTH),
-             .depth_map_exponent  = node.get_attr<FloatAttribute>(A_DEPTH_MAP_EXPONENT),
+    return P{.depth               = node.val<float>(A_DEPTH),
+             .depth_map_exponent  = node.val<float>(A_DEPTH_MAP_EXPONENT),
              .talus_limit         = talus_limit,
-             .viscosity_law_power = node.get_attr<FloatAttribute>(A_VISCOSITY_LAW_POWER),
+             .viscosity_law_power = node.val<float>(A_VISCOSITY_LAW_POWER),
              .nx_strided          = nx_strided,
              .iterations          = iterations,
              .solver_stride       = stride};

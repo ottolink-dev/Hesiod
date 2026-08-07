@@ -5,17 +5,19 @@
 #include "highmap/primitives.hpp"
 #include "highmap/virtual_array/virtual_array.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/app/enum_mappings.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
 
 // -----------------------------------------------------------------------------
 // Ports & Attributes
@@ -55,38 +57,19 @@ void setup_phasor_node(BaseNode &node)
   // --- Attributes
 
   // clang-format off
-  node.add_attr<FloatAttribute>(A_KP_GLOBAL, "Spatial Frequency", 8.f, 0.f, FLT_MAX);
-  node.add_attr<FloatAttribute>(A_ANGLE_SHIFT, "Angle Offset", 0.f, -180.f, 180.f, "{:.0f}°");
-  node.add_attr<SeedAttribute>(A_SEED, "Seed");
-  node.add_attr<EnumAttribute>(A_PROFILE, "Waveform Profile", enum_mappings.phasor_profile_map, "Cosine Square");
-  node.add_attr<IntAttribute>(A_OCTAVES, "Octaves", 4, 1, 8);
-  node.add_attr<FloatAttribute>(A_WEIGHT, "Weight", 0.7f, 0.f, 1.f);
-  node.add_attr<FloatAttribute>(A_PERSISTENCE, "Persistence", 0.5f, 0.f, 1.f);
-  node.add_attr<FloatAttribute>(A_LACUNARITY, "Lacunarity", 2.f, 0.01f, 4.f);
-  node.add_attr<FloatAttribute>(A_DELTA, "Profile Sharpness", 3.f, 0.001f, 100.f, "{:.2e}", true);
-  node.add_attr<FloatAttribute>(A_PHASE_SMOOTHING, "Phase Transition Smoothing", 10.f, 0.001f, 100.f, "{:.2e}", true);
+  add_float(node, A_KP_GLOBAL, "Spatial Frequency", 8.f, 0.f, FLT_MAX);
+  add_float(node, A_ANGLE_SHIFT, "Angle Offset", 0.f, -180.f, 180.f, "{:.0f}°");
+  add_seed(node, A_SEED, "Seed");
+  add_enum(node, A_PROFILE, "Waveform Profile", enum_mappings.phasor_profile_map, "Cosine Square");
+  add_int(node, A_OCTAVES, "Octaves", 4, 1, 8);
+  add_float(node, A_WEIGHT, "Weight", 0.7f, 0.f, 1.f);
+  add_float(node, A_PERSISTENCE, "Persistence", 0.5f, 0.f, 1.f);
+  add_float(node, A_LACUNARITY, "Lacunarity", 2.f, 0.01f, 4.f);
+  add_float(node, A_DELTA, "Profile Sharpness", 3.f, 0.001f, 100.f, "{:.2e}", true);
+  add_float(node, A_PHASE_SMOOTHING, "Phase Transition Smoothing", 10.f, 0.001f, 100.f, "{:.2e}", true);
   // clang-format on
 
   // --- Attribute(s) order
-
-  node.set_attr_ordered_key({"_GROUPBOX_BEGIN_Global Controls",
-                             A_KP_GLOBAL,
-                             A_ANGLE_SHIFT,
-                             A_SEED,
-                             "_GROUPBOX_END_",
-                             //
-                             "_GROUPBOX_BEGIN_Waveform Shape",
-                             A_PROFILE,
-                             A_DELTA,
-                             A_PHASE_SMOOTHING,
-                             "_GROUPBOX_END_",
-                             //
-                             "_GROUPBOX_BEGIN_Fractal Layers",
-                             A_OCTAVES,
-                             A_WEIGHT,
-                             A_PERSISTENCE,
-                             A_LACUNARITY,
-                             "_GROUPBOX_END_"});
 
   setup_post_process_heightmap_attributes(node,
                                           {.add_mix = false, .remap_active_state = true});
@@ -113,16 +96,16 @@ void compute_phasor_node(BaseNode &node)
   // --- Params
 
   // clang-format off
-  const auto seed             = node.get_attr<SeedAttribute>(A_SEED);
-  const auto kp_global        = node.get_attr<FloatAttribute>(A_KP_GLOBAL);
-  const auto angle_shift_rads = float(M_PI) / 180.f * node.get_attr<FloatAttribute>(A_ANGLE_SHIFT);
-  const auto profile          = hmap::PhasorProfile(node.get_attr<EnumAttribute>(A_PROFILE));
-  const auto octaves          = node.get_attr<IntAttribute>(A_OCTAVES);
-  const auto weight           = node.get_attr<FloatAttribute>(A_WEIGHT);
-  const auto persistence      = node.get_attr<FloatAttribute>(A_PERSISTENCE);
-  const auto lacunarity       = node.get_attr<FloatAttribute>(A_LACUNARITY);
-  const auto delta            = node.get_attr<FloatAttribute>(A_DELTA);
-  const auto phase_smoothing  = node.get_attr<FloatAttribute>(A_PHASE_SMOOTHING);
+  const auto seed             = node.val<int>(A_SEED);
+  const auto kp_global        = node.val<float>(A_KP_GLOBAL);
+  const auto angle_shift_rads = float(M_PI) / 180.f * node.val<float>(A_ANGLE_SHIFT);
+  const auto profile          = hmap::PhasorProfile(node.val<int>(A_PROFILE));
+  const auto octaves          = node.val<int>(A_OCTAVES);
+  const auto weight           = node.val<float>(A_WEIGHT);
+  const auto persistence      = node.val<float>(A_PERSISTENCE);
+  const auto lacunarity       = node.val<float>(A_LACUNARITY);
+  const auto delta            = node.val<float>(A_DELTA);
+  const auto phase_smoothing  = node.val<float>(A_PHASE_SMOOTHING);
   // clang-format on
 
   constexpr int n_kernel_samples = 8;

@@ -3,16 +3,18 @@
  * this software. */
 #include "highmap/erosion.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
 
 // -----------------------------------------------------------------------------
 // Ports & Attributes
@@ -42,16 +44,11 @@ void setup_depression_filling_node(BaseNode &node)
   // --- Attributes
 
   // clang-format off
-  node.add_attr<BoolAttribute>(A_SMOOTHING, "Smoothing", false);
-  node.add_attr<BoolAttribute>(A_REMAP_FILL_MAP, "Remap Fill Map", true);
+  add_bool(node, A_SMOOTHING, "Smoothing", false);
+  add_bool(node, A_REMAP_FILL_MAP, "Remap Fill Map", true);
   // clang-format on
 
   // --- Attribute(s) order
-
-  node.set_attr_ordered_key({"_GROUPBOX_BEGIN_Main Parameters",
-                             A_SMOOTHING,
-                             A_REMAP_FILL_MAP,
-                             "_GROUPBOX_END_"});
 
   setup_post_process_heightmap_attributes(node,
                                           {.add_mix = true, .remap_active_state = false});
@@ -77,8 +74,8 @@ void compute_depression_filling_node(BaseNode &node)
   // --- Params
 
   // clang-format off
-  const auto smoothing      = node.get_attr<BoolAttribute>(A_SMOOTHING);
-  const auto remap_fill_map = node.get_attr<BoolAttribute>(A_REMAP_FILL_MAP);
+  const auto smoothing      = node.val<bool>(A_SMOOTHING);
+  const auto remap_fill_map = node.val<bool>(A_REMAP_FILL_MAP);
   // clang-format on
 
   // --- Compute

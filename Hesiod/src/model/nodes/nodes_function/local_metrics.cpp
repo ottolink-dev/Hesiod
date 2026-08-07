@@ -5,17 +5,19 @@
 #include "highmap/opencl/gpu_opencl.hpp"
 #include "highmap/range.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/app/enum_mappings.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
 
 // -----------------------------------------------------------------------------
 // Ports & Attributes
@@ -44,15 +46,12 @@ void setup_local_metrics_node(BaseNode &node)
   // --- Attributes
 
   // clang-format off
-  node.add_attr<FloatAttribute>(A_RADIUS, "Radius", 0.05f, 0.f, 0.5f);
-  node.add_attr<EnumAttribute>(A_METRIC, "Local Metric", enum_mappings.local_metrics_map, "Rugosity Convex");
-  node.add_attr<FloatAttribute>(A_SATMAX, "Saturation Ratio", 2.f, 0.f, 20.f, "{:.0f}%");
+  add_float(node, A_RADIUS, "Radius", 0.05f, 0.f, 0.5f);
+  add_enum(node, A_METRIC, "Local Metric", enum_mappings.local_metrics_map, "Rugosity Convex");
+  add_float(node, A_SATMAX, "Saturation Ratio", 2.f, 0.f, 20.f, "{:.0f}%");
   // clang-format on
 
   // --- Attribute(s) order
-
-  node.set_attr_ordered_key(
-      {"_GROUPBOX_BEGIN_Metric Choice", A_RADIUS, A_METRIC, A_SATMAX, "_GROUPBOX_END_"});
 
   setup_post_process_heightmap_attributes(node,
                                           {.add_mix = true, .remap_active_state = true});
@@ -77,9 +76,9 @@ void compute_local_metrics_node(BaseNode &node)
   // --- Params
 
   // clang-format off
-  const auto radius   = node.get_attr<FloatAttribute>(A_RADIUS);
-  const auto metric   = hmap::gpu::LocalMetrics(node.get_attr<EnumAttribute>(A_METRIC));
-  const auto sat_perc = 0.01f * node.get_attr<FloatAttribute>(A_SATMAX);
+  const auto radius   = node.val<float>(A_RADIUS);
+  const auto metric   = hmap::gpu::LocalMetrics(node.val<int>(A_METRIC));
+  const auto sat_perc = 0.01f * node.val<float>(A_SATMAX);
   // clang-format on
 
   const int   ir     = std::max(1, int(radius * p_out->shape.x));

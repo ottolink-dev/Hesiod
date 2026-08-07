@@ -4,16 +4,18 @@
 #include "highmap/filters.hpp"
 #include "highmap/opencl/gpu_opencl.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
 
 // -----------------------------------------------------------------------------
 // Ports & Attributes
@@ -46,14 +48,12 @@ void setup_smooth_fill_node(BaseNode &node)
   // --- Attributes
 
   // clang-format off
-  node.add_attr<FloatAttribute>(A_RADIUS, "Radius", 0.05f, 0.001f, 0.2f);
-  node.add_attr<FloatAttribute>(A_K, "k", 0.01f, 0.01f, 1.f);
-  node.add_attr<BoolAttribute>(A_NORMALIZED, "normalized_map", true);
+  add_float(node, A_RADIUS, "Radius", 0.05f, 0.001f, 0.2f);
+  add_float(node, A_K, "k", 0.01f, 0.01f, 1.f);
+  add_bool(node, A_NORMALIZED, "normalized_map", true);
   // clang-format on
 
   // --- Attribute(s) order
-
-  node.set_attr_ordered_key({A_RADIUS, A_K, A_NORMALIZED});
 
   setup_pre_process_mask_attributes(node);
   setup_post_process_heightmap_attributes(node,
@@ -85,9 +85,9 @@ void compute_smooth_fill_node(BaseNode &node)
   // --- Params
 
   // clang-format off
-  const auto radius     = node.get_attr<FloatAttribute>(A_RADIUS);
-  const auto k          = node.get_attr<FloatAttribute>(A_K);
-  const auto normalized = node.get_attr<BoolAttribute>(A_NORMALIZED);
+  const auto radius     = node.val<float>(A_RADIUS);
+  const auto k          = node.val<float>(A_K);
+  const auto normalized = node.val<bool>(A_NORMALIZED);
   // clang-format on
 
   const int ir = std::max(1, int(radius * p_out->shape.x));

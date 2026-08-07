@@ -3,42 +3,53 @@
  * this software. */
 #include "highmap/primitives.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
+constexpr const char *P_DX       = "dx";
+constexpr const char *P_DY       = "dy";
+constexpr const char *P_ENVELOPE = "envelope";
+constexpr const char *P_OUT      = "output";
+
+constexpr const char *A_APEX_ELEVATION = "apex_elevation";
+constexpr const char *A_CENTER         = "center";
+constexpr const char *A_POST_REMAP     = "post_remap";
+constexpr const char *A_SLOPE          = "slope";
+constexpr const char *A_SMOOTH_PROFILE = "smooth_profile";
 
 void setup_cone_node(BaseNode &node)
 {
   Logger::log()->trace("setup node {}", node.get_label());
 
   // port(s)
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "dx");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "dy");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "envelope");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, "output", CONFIG(node));
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_DX);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_DY);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_ENVELOPE);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_OUT, CONFIG(node));
 
   // attribute(s)
-  node.add_attr<FloatAttribute>("slope", "slope", 4.f, 0.01f, FLT_MAX);
-  node.add_attr<FloatAttribute>("apex_elevation", "apex_elevation", 1.f, 0.f, FLT_MAX);
-  node.add_attr<BoolAttribute>("smooth_profile", "smooth_profile", false);
-  node.add_attr<Vec2FloatAttribute>("center", "center");
-
-  // attribute(s) order
-  node.set_attr_ordered_key({"slope", "apex_elevation", "smooth_profile", "center"});
+  add_float(node, A_SLOPE, "slope", 4.f, 0.01f, FLT_MAX);
+  add_float(node, A_APEX_ELEVATION, "apex_elevation", 1.f, 0.f, FLT_MAX);
+  add_bool(node, A_SMOOTH_PROFILE, "smooth_profile", false);
+  add_xy(node, A_CENTER, "center");
 
   setup_post_process_heightmap_attributes(node,
                                           {.add_mix = true, .remap_active_state = true});
 
   // disable post-processing remap by default
-  node.get_attr_ref<RangeAttribute>("post_remap")->set_is_active(false);
-  node.get_attr_ref<RangeAttribute>("post_remap")->save_initial_state();
+  if (auto *p_remap = node.attr<glm::vec2>(A_POST_REMAP))
+    p_remap->metadata()
+        .try_add(std::string(meta::keys::ui::active), false)
+        ->value() = false;
 }
 
 void compute_cone_node(BaseNode &node)
@@ -47,10 +58,10 @@ void compute_cone_node(BaseNode &node)
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
   // base noise function
-  hmap::VirtualArray *p_dx  = node.get_value_ref<hmap::VirtualArray>("dx");
-  hmap::VirtualArray *p_dy  = node.get_value_ref<hmap::VirtualArray>("dy");
-  hmap::VirtualArray *p_env = node.get_value_ref<hmap::VirtualArray>("envelope");
-  hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>("output");
+  hmap::VirtualArray *p_dx  = node.get_value_ref<hmap::VirtualArray>(P_DX);
+  hmap::VirtualArray *p_dy  = node.get_value_ref<hmap::VirtualArray>(P_DY);
+  hmap::VirtualArray *p_env = node.get_value_ref<hmap::VirtualArray>(P_ENVELOPE);
+  hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
   hmap::for_each_tile(
       {p_out, p_dx, p_dy},
@@ -59,10 +70,10 @@ void compute_cone_node(BaseNode &node)
         auto [pa_out, pa_dx, pa_dy] = unpack<3>(p_arrays);
 
         *pa_out = hmap::cone(region.shape,
-                             node.get_attr<FloatAttribute>("slope"),
-                             node.get_attr<FloatAttribute>("apex_elevation"),
-                             node.get_attr<BoolAttribute>("smooth_profile"),
-                             node.get_attr<Vec2FloatAttribute>("center"),
+                             node.val<float>(A_SLOPE),
+                             node.val<float>(A_APEX_ELEVATION),
+                             node.val<bool>(A_SMOOTH_PROFILE),
+                             node.val<glm::vec2>(A_CENTER),
                              pa_dx,
                              pa_dy,
                              region.bbox);

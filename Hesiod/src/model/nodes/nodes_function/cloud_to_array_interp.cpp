@@ -1,17 +1,19 @@
 /* Copyright (c) 2023 Otto Link. Distributed under the terms of the GNU General
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/app/enum_mappings.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
 
 // -----------------------------------------------------------------------------
 // Ports & Attributes
@@ -39,12 +41,10 @@ void setup_cloud_to_array_interp_node(BaseNode &node)
   node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_OUT, CONFIG(node));
 
   // attribute(s)
-  node.add_attr<EnumAttribute>(A_ITP_METHOD,
-                               "Interpolation Method",
-                               enum_mappings.interpolation_method2d_map);
-
-  // attribute(s) order
-  node.set_attr_ordered_key({A_ITP_METHOD});
+  add_enum(node,
+           A_ITP_METHOD,
+           "Interpolation Method",
+           enum_mappings.interpolation_method2d_map);
 }
 
 // -----------------------------------------------------------------------------
@@ -81,7 +81,7 @@ void compute_cloud_to_array_interp_node(BaseNode &node)
           *pa_out = 0.f;
 
           hmap::InterpolationMethod2D method = hmap::InterpolationMethod2D(
-              node.get_attr<EnumAttribute>(A_ITP_METHOD));
+              node.val<int>(A_ITP_METHOD));
 
           p_cloud
               ->to_array_interp(*pa_out, bbox_points, method, pa_dx, pa_dy, region.bbox);

@@ -4,16 +4,18 @@
 #include "highmap/filters.hpp"
 #include "highmap/range.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
 
 // -----------------------------------------------------------------------------
 // Ports & Attributes
@@ -39,11 +41,7 @@ void setup_gamma_correction_node(BaseNode &node)
   node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_OUT, CONFIG(node));
 
   // attribute(s)
-  node.add_attr<FloatAttribute>(A_GAMMA, "Gamma Exponent", 2.f, 0.01f, 10.f);
-
-  // attribute(s) order
-  node.set_attr_ordered_key(
-      {"_GROUPBOX_BEGIN_Main Parameters", A_GAMMA, "_GROUPBOX_END_"});
+  add_float(node, A_GAMMA, "Gamma Exponent", 2.f, 0.01f, 10.f);
 
   setup_pre_process_mask_attributes(node);
   setup_post_process_heightmap_attributes(node,
@@ -69,7 +67,7 @@ void compute_gamma_correction_node(BaseNode &node)
 
   // --- Params
 
-  const auto gamma = node.get_attr<FloatAttribute>(A_GAMMA);
+  const auto gamma = node.val<float>(A_GAMMA);
 
   // --- Prepare mask
 

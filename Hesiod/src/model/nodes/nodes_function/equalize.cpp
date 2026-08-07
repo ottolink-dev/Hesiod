@@ -5,16 +5,18 @@
 #include "highmap/math/array.hpp"
 #include "highmap/opencl/gpu_opencl.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
 
 // -----------------------------------------------------------------------------
 // Ports
@@ -45,8 +47,6 @@ void setup_equalize_node(BaseNode &node)
   // none...
 
   // --- Attributes order
-
-  node.set_attr_ordered_key({});
 
   setup_pre_process_mask_attributes(node);
   setup_post_process_heightmap_attributes(node,

@@ -6,37 +6,39 @@
 #include "highmap/transform.hpp"
 #include "highmap/virtual_array/virtual_texture.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
+constexpr const char *P_ELEVATION = "elevation";
+constexpr const char *P_IN        = "input";
+constexpr const char *P_MASK      = "mask";
+constexpr const char *P_TEXTURE   = "texture";
+
+constexpr const char *A_ADVECTION_LENGTH  = "advection_length";
+constexpr const char *A_VALUE_PERSISTENCE = "value_persistence";
 
 void setup_texture_advection_warp_node(BaseNode &node)
 {
   Logger::log()->trace("setup node {}", node.get_label());
 
   // port(s)
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "elevation");
-  node.add_port<hmap::VirtualTexture>(gnode::PortType::IN, "input");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "mask");
-  node.add_port<hmap::VirtualTexture>(gnode::PortType::OUT, "texture", CONFIG_TEX(node));
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_ELEVATION);
+  node.add_port<hmap::VirtualTexture>(gnode::PortType::IN, P_IN);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_MASK);
+  node.add_port<hmap::VirtualTexture>(gnode::PortType::OUT, P_TEXTURE, CONFIG_TEX(node));
 
   // attribute(s)
-  node.add_attr<FloatAttribute>("advection_length", "advection_length", 0.05f, 0.f, 0.2f);
-  node.add_attr<FloatAttribute>("value_persistence",
-                                "value_persistence",
-                                0.95f,
-                                0.8f,
-                                1.f);
-
-  // attribute(s) order
-  node.set_attr_ordered_key({"advection_length", "value_persistence"});
+  add_float(node, A_ADVECTION_LENGTH, "advection_length", 0.05f, 0.f, 0.2f);
+  add_float(node, A_VALUE_PERSISTENCE, "value_persistence", 0.95f, 0.8f, 1.f);
 
   setup_pre_process_mask_attributes(node);
 }
@@ -48,13 +50,13 @@ void compute_texture_advection_warp_node(BaseNode &node)
 
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  hmap::VirtualArray   *p_z   = node.get_value_ref<hmap::VirtualArray>("elevation");
-  hmap::VirtualTexture *p_tex = node.get_value_ref<hmap::VirtualTexture>("input");
+  hmap::VirtualArray   *p_z   = node.get_value_ref<hmap::VirtualArray>(P_ELEVATION);
+  hmap::VirtualTexture *p_tex = node.get_value_ref<hmap::VirtualTexture>(P_IN);
 
   if (p_z && p_tex)
   {
-    hmap::VirtualArray   *p_mask = node.get_value_ref<hmap::VirtualArray>("mask");
-    hmap::VirtualTexture *p_out  = node.get_value_ref<hmap::VirtualTexture>("texture");
+    hmap::VirtualArray   *p_mask = node.get_value_ref<hmap::VirtualArray>(P_MASK);
+    hmap::VirtualTexture *p_out  = node.get_value_ref<hmap::VirtualTexture>(P_TEXTURE);
 
     // prepare mask
     std::shared_ptr<hmap::VirtualArray> sp_mask = pre_process_mask(node, p_mask, *p_z);
@@ -74,8 +76,8 @@ void compute_texture_advection_warp_node(BaseNode &node)
             *pa_field_out = hmap::gpu::advection_warp(
                 *pa_z,
                 *pa_field,
-                node.get_attr<FloatAttribute>("advection_length"),
-                node.get_attr<FloatAttribute>("value_persistence"),
+                node.val<float>(A_ADVECTION_LENGTH),
+                node.val<float>(A_VALUE_PERSISTENCE),
                 pa_mask);
           },
           node.cfg().cm_gpu);

@@ -3,61 +3,60 @@
  * this software. */
 #include "highmap/geometry/grids.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
+constexpr const char *P_CLOUD = "cloud";
+
+constexpr const char *A_JITTER_RATIO  = "jitter_ratio";
+constexpr const char *A_NPOINTS       = "npoints";
+constexpr const char *A_REMAP         = "remap";
+constexpr const char *A_SEED          = "seed";
+constexpr const char *A_STAGGER_RATIO = "stagger_ratio";
 
 void setup_cloud_lattice_node(BaseNode &node)
 {
   Logger::log()->trace("setup node {}", node.get_label());
 
   // port(s)
-  node.add_port<hmap::Cloud>(gnode::PortType::OUT, "cloud");
+  node.add_port<hmap::Cloud>(gnode::PortType::OUT, P_CLOUD);
 
   // attribute(s)
   glm::vec2 default_value = {0.1f, 0.1f};
-  node.add_attr<IntAttribute>("npoints", "npoints", 50, 1, INT_MAX);
-  node.add_attr<WaveNbAttribute>("stagger_ratio",
-                                 "stagger_ratio",
-                                 default_value,
-                                 0.f,
-                                 1.f,
-                                 true);
-  node.add_attr<WaveNbAttribute>("jitter_ratio",
-                                 "jitter_ratio",
-                                 default_value,
-                                 0.f,
-                                 1.f,
-                                 true);
-  node.add_attr<SeedAttribute>("seed", "Seed");
-  node.add_attr<RangeAttribute>("remap", "remap");
-
-  // attribute(s) order
-  node.set_attr_ordered_key(
-      {"npoints", "stagger_ratio", "jitter_ratio", "seed", "_SEPARATOR_", "remap"});
+  add_int(node, A_NPOINTS, "npoints", 50, 1, INT_MAX);
+  add_wavenumber(node, A_STAGGER_RATIO, "stagger_ratio", default_value, 0.f, 1.f, true);
+  add_wavenumber(node, A_JITTER_RATIO, "jitter_ratio", default_value, 0.f, 1.f, true);
+  add_seed(node, A_SEED, "Seed");
+  add_range(node, A_REMAP, "remap", {0.f, 1.f}, -1.f, 2.f, true);
 }
 
 void compute_cloud_lattice_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  hmap::Cloud *p_out = node.get_value_ref<hmap::Cloud>("cloud");
+  hmap::Cloud *p_out = node.get_value_ref<hmap::Cloud>(P_CLOUD);
 
-  *p_out = hmap::random_cloud_jittered(node.get_attr<IntAttribute>("npoints"),
-                                       node.get_attr<WaveNbAttribute>("jitter_ratio"),
-                                       node.get_attr<WaveNbAttribute>("stagger_ratio"),
-                                       node.get_attr<SeedAttribute>("seed"));
+  *p_out = hmap::random_cloud_jittered(node.val<int>(A_NPOINTS),
+                                       node.val<glm::vec2>(A_JITTER_RATIO),
+                                       node.val<glm::vec2>(A_STAGGER_RATIO),
+                                       node.val<int>(A_SEED));
 
-  if (node.get_attr_ref<RangeAttribute>("remap")->get_is_active())
-    p_out->remap_values(node.get_attr<RangeAttribute>("remap")[0],
-                        node.get_attr<RangeAttribute>("remap")[1]);
+  if ((node.attr<glm::vec2>(A_REMAP) &&
+               node.attr<glm::vec2>(A_REMAP)->metadata().try_value<bool>(
+                   meta::keys::ui::active)
+           ? *node.attr<glm::vec2>(A_REMAP)->metadata().try_value<bool>(
+                 meta::keys::ui::active)
+           : true))
+    p_out->remap_values(node.val<glm::vec2>(A_REMAP)[0], node.val<glm::vec2>(A_REMAP)[1]);
 }
 
 } // namespace hesiod

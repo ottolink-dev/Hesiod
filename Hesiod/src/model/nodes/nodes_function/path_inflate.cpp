@@ -3,13 +3,11 @@
  * this software. */
 #include "highmap/geometry/path.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
-
-using namespace attr;
 
 // -----------------------------------------------------------------------------
 // Ports & Attributes
@@ -26,6 +24,10 @@ namespace hesiod
 {
 
 // -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
+
+// -----------------------------------------------------------------------------
 // Setup
 // -----------------------------------------------------------------------------
 
@@ -39,20 +41,10 @@ void setup_path_inflate_node(BaseNode &node)
 
   // attribute(s)
   // clang-format off
-  node.add_attr<FloatAttribute>(A_RADIUS, "Inflation Radius", 0.f, -0.1f, 0.5f);
-  node.add_attr<BoolAttribute>(A_ENABLE_RESAMPLING, "Enable Resampling", true);
-  node.add_attr<FloatAttribute>(A_RESAMPLE_DELTA, "Step Size", 0.01f, 0.0001f, 0.1f, "{:.2e}", true);
+  add_float(node, A_RADIUS, "Inflation Radius", 0.f, -0.1f, 0.5f);
+  add_bool(node, A_ENABLE_RESAMPLING, "Enable Resampling", true);
+  add_float(node, A_RESAMPLE_DELTA, "Step Size", 0.01f, 0.0001f, 0.1f, "{:.2e}", true);
   // clang-format on
-
-  // attribute(s) order
-  node.set_attr_ordered_key({"_GROUPBOX_BEGIN_Inflate",
-                             A_RADIUS,
-                             "_GROUPBOX_END_",
-                             //
-                             "_GROUPBOX_BEGIN_Resampling",
-                             A_ENABLE_RESAMPLING,
-                             A_RESAMPLE_DELTA,
-                             "_GROUPBOX_END_"});
 }
 
 // -----------------------------------------------------------------------------
@@ -71,9 +63,9 @@ void compute_path_inflate_node(BaseNode &node)
 
   // --- Params
 
-  const auto radius            = node.get_attr<FloatAttribute>(A_RADIUS);
-  const auto enable_resampling = node.get_attr<BoolAttribute>(A_ENABLE_RESAMPLING);
-  const auto delta             = node.get_attr<FloatAttribute>(A_RESAMPLE_DELTA);
+  const auto radius            = node.val<float>(A_RADIUS);
+  const auto enable_resampling = node.val<bool>(A_ENABLE_RESAMPLING);
+  const auto delta             = node.val<float>(A_RESAMPLE_DELTA);
   //
   const auto npoints = std::max(3, int(p_in->get_arc_length().back() / delta));
 

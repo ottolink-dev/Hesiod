@@ -5,16 +5,18 @@
 #include "highmap/opencl/gpu_opencl.hpp"
 #include "highmap/primitives.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
 
 // -----------------------------------------------------------------------------
 // Ports & Attributes
@@ -53,32 +55,16 @@ void setup_strata_plates_node(BaseNode &node)
   // --- Attributes
 
   // clang-format off
-  node.add_attr<FloatAttribute>(A_SLOPE, "Slope", 1.f, 0.f, FLT_MAX);
-  node.add_attr<FloatAttribute>(A_SKEW, "Skew", 0.5f, 0.f, 8.f);
-  node.add_attr<IntAttribute>(A_DIRECTION_COUNT, "Direction Count", 4, 1, 8);
-  node.add_attr<IntAttribute>(A_DIRECTION_OFFSET, "Direction Offset", 0, 0, 7);
-  node.add_attr<BoolAttribute>(A_RANDOM_DIRECTIONS, "Random Directions", false);
-  node.add_attr<SeedAttribute>(A_SEED, "Seed");
-  node.add_attr<FloatAttribute>(A_MIX_RATIO, "Mix Ratio", 1.f, 0.f, 1.f);
+  add_float(node, A_SLOPE, "Slope", 1.f, 0.f, FLT_MAX);
+  add_float(node, A_SKEW, "Skew", 0.5f, 0.f, 8.f);
+  add_int(node, A_DIRECTION_COUNT, "Direction Count", 4, 1, 8);
+  add_int(node, A_DIRECTION_OFFSET, "Direction Offset", 0, 0, 7);
+  add_bool(node, A_RANDOM_DIRECTIONS, "Random Directions", false);
+  add_seed(node, A_SEED, "Seed");
+  add_float(node, A_MIX_RATIO, "Mix Ratio", 1.f, 0.f, 1.f);
   // clang-format on
 
   // --- Attribute(s) order
-
-  node.set_attr_ordered_key({"_GROUPBOX_BEGIN_Slope Control",
-                             A_SLOPE,
-                             A_SKEW,
-                             "_GROUPBOX_END_",
-                             //
-                             "_GROUPBOX_BEGIN_Plate Directions",
-                             A_DIRECTION_COUNT,
-                             A_DIRECTION_OFFSET,
-                             A_RANDOM_DIRECTIONS,
-                             A_SEED,
-                             "_GROUPBOX_END_",
-                             //
-                             "_GROUPBOX_BEGIN_Strength",
-                             A_MIX_RATIO,
-                             "_GROUPBOX_END_"});
 
   setup_default_noise(node, {.noise_amp = 0.07f, .kw = 4.f, .smoothness = 0.5f});
   setup_pre_process_mask_attributes(node);
@@ -106,13 +92,13 @@ void compute_strata_plates_node(BaseNode &node)
   // --- Params
 
   // clang-format off
-  const auto slope             = node.get_attr<FloatAttribute>(A_SLOPE);
-  const auto skew              = node.get_attr<FloatAttribute>(A_SKEW);
-  const auto direction_count   = node.get_attr<IntAttribute>(A_DIRECTION_COUNT);
-  const auto direction_offset  = node.get_attr<IntAttribute>(A_DIRECTION_OFFSET);
-  const auto random_directions = node.get_attr<BoolAttribute>(A_RANDOM_DIRECTIONS);
-  const auto seed              = node.get_attr<SeedAttribute>(A_SEED);
-  const auto mix_ratio         = node.get_attr<FloatAttribute>(A_MIX_RATIO);
+  const auto slope             = node.val<float>(A_SLOPE);
+  const auto skew              = node.val<float>(A_SKEW);
+  const auto direction_count   = node.val<int>(A_DIRECTION_COUNT);
+  const auto direction_offset  = node.val<int>(A_DIRECTION_OFFSET);
+  const auto random_directions = node.val<bool>(A_RANDOM_DIRECTIONS);
+  const auto seed              = node.val<int>(A_SEED);
+  const auto mix_ratio         = node.val<float>(A_MIX_RATIO);
   // clang-format on
 
   float talus = slope / float(p_in->shape.x);

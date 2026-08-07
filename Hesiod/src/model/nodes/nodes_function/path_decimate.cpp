@@ -3,16 +3,18 @@
  * this software. */
 #include "highmap/geometry/path.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
 
 // -----------------------------------------------------------------------------
 // Ports & Attributes
@@ -36,7 +38,7 @@ void setup_path_decimate_node(BaseNode &node)
   node.add_port<hmap::Path>(gnode::PortType::OUT, P_OUT);
 
   // attribute(s)
-  node.add_attr<IntAttribute>(A_NPOINTS, "Point Count Target", 8, 2, 32);
+  add_int(node, A_NPOINTS, "Point Count Target", 8, 2, 32);
 }
 
 // -----------------------------------------------------------------------------
@@ -55,7 +57,7 @@ void compute_path_decimate_node(BaseNode &node)
 
   // --- Params
 
-  const auto npoints = node.get_attr<IntAttribute>(A_NPOINTS);
+  const auto npoints = node.val<int>(A_NPOINTS);
 
   // --- Compute
 

@@ -3,16 +3,18 @@
  * this software. */
 #include "highmap/filters.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
 
 // -----------------------------------------------------------------------------
 // Ports & Attributes
@@ -41,13 +43,10 @@ void setup_fill_talus_node(BaseNode &node)
   node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_OUT, CONFIG(node));
 
   // attribute(s)
-  node.add_attr<FloatAttribute>(A_SLOPE, "slope", 4.f, 0.1f, FLT_MAX);
-  node.add_attr<FloatAttribute>(A_NOISE_RATIO, "noise_ratio", 0.2f, 0.f, 1.f);
-  node.add_attr<SeedAttribute>(A_SEED, "Seed");
-  node.add_attr<IntAttribute>(A_IR, "Radius Search", 1, 1, 8);
-
-  // attribute(s) order
-  node.set_attr_ordered_key({A_SLOPE, A_NOISE_RATIO, A_SEED, A_IR});
+  add_float(node, A_SLOPE, "slope", 4.f, 0.1f, FLT_MAX);
+  add_float(node, A_NOISE_RATIO, "noise_ratio", 0.2f, 0.f, 1.f);
+  add_seed(node, A_SEED, "Seed");
+  add_int(node, A_IR, "Radius Search", 1, 1, 8);
 }
 
 // -----------------------------------------------------------------------------
@@ -70,12 +69,12 @@ void compute_fill_talus_node(BaseNode &node)
   // --- Params
 
   // clang-format off
-  const auto seed        = node.get_attr<SeedAttribute>(A_SEED);
-  const auto ir          = node.get_attr<IntAttribute>(A_IR);
-  const auto noise_ratio = node.get_attr<FloatAttribute>(A_NOISE_RATIO);
+  const auto seed        = node.val<int>(A_SEED);
+  const auto ir          = node.val<int>(A_IR);
+  const auto noise_ratio = node.val<float>(A_NOISE_RATIO);
   // clang-format on
 
-  float talus = node.get_attr<FloatAttribute>(A_SLOPE) / (float)p_out->shape.x;
+  float talus = node.val<float>(A_SLOPE) / (float)p_out->shape.x;
 
   // --- Compute
 

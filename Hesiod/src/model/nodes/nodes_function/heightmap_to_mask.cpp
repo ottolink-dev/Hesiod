@@ -3,28 +3,30 @@
  * this software. */
 #include "highmap/range.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
+constexpr const char *P_IN   = "input";
+constexpr const char *P_MASK = "mask";
 
 void setup_heightmap_to_mask_node(BaseNode &node)
 {
   Logger::log()->trace("setup node {}", node.get_label());
 
   // port(s)
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "input");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, "mask", CONFIG(node));
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_IN);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_MASK, CONFIG(node));
 
   // attribute(s)
-
-  // attribute(s) order
 
   setup_post_process_heightmap_attributes(node,
                                           {.add_mix = false, .remap_active_state = true});
@@ -34,11 +36,11 @@ void compute_heightmap_to_mask_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  hmap::VirtualArray *p_in = node.get_value_ref<hmap::VirtualArray>("input");
+  hmap::VirtualArray *p_in = node.get_value_ref<hmap::VirtualArray>(P_IN);
 
   if (p_in)
   {
-    hmap::VirtualArray *p_mask = node.get_value_ref<hmap::VirtualArray>("mask");
+    hmap::VirtualArray *p_mask = node.get_value_ref<hmap::VirtualArray>(P_MASK);
 
     // clamp to [0, 1]
     hmap::for_each_tile(

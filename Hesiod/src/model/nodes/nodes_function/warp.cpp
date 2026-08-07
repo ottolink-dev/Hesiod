@@ -4,16 +4,18 @@
 #include "highmap/opencl/gpu_opencl.hpp"
 #include "highmap/transform.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
 
 // -----------------------------------------------------------------------------
 // Ports & Attributes
@@ -42,11 +44,8 @@ void setup_warp_node(BaseNode &node)
   node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_OUTPUT, CONFIG(node));
 
   // attribute(s)
-  node.add_attr<FloatAttribute>(A_SCALING_X, "scaling.x", 1.f, -2.f, 2.f);
-  node.add_attr<FloatAttribute>(A_SCALING_Y, "scaling.y", 1.f, -2.f, 2.f);
-
-  // attribute(s) order
-  node.set_attr_ordered_key({A_SCALING_X, A_SCALING_Y});
+  add_float(node, A_SCALING_X, "scaling.x", 1.f, -2.f, 2.f);
+  add_float(node, A_SCALING_Y, "scaling.y", 1.f, -2.f, 2.f);
 
   setup_post_process_heightmap_attributes(node,
                                           {.add_mix = true, .remap_active_state = false});
@@ -68,8 +67,8 @@ void compute_warp_node(BaseNode &node)
   if (!p_in)
     return;
 
-  float sx = node.get_attr<FloatAttribute>(A_SCALING_X);
-  float sy = node.get_attr<FloatAttribute>(A_SCALING_Y);
+  float sx = node.val<float>(A_SCALING_X);
+  float sy = node.val<float>(A_SCALING_Y);
 
   hmap::for_each_tile(
       {p_out, p_in, p_dx, p_dy},

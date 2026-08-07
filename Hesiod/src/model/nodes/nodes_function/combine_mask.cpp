@@ -3,37 +3,42 @@
  * this software. */
 #include "highmap/range.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/app/enum_mappings.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
+constexpr const char *P_INPUT_1 = "input 1";
+constexpr const char *P_INPUT_2 = "input 2";
+constexpr const char *P_OUT     = "output";
+
+constexpr const char *A_METHOD      = "method";
+constexpr const char *A_SWAP_INPUTS = "swap_inputs";
 
 void setup_combine_mask_node(BaseNode &node)
 {
   Logger::log()->trace("setup node {}", node.get_label());
 
   // port(s)
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "input 1");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "input 2");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, "output", CONFIG(node));
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_INPUT_1);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_INPUT_2);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_OUT, CONFIG(node));
 
   // attribute(s)
-  node.add_attr<EnumAttribute>("method",
-                               "method",
-                               enum_mappings.mask_combine_method_map,
-                               "intersection");
-  node.add_attr<BoolAttribute>("swap_inputs", "swap_inputs", false);
-
-  // attribute(s) order
-  node.set_attr_ordered_key(
-      {"_GROUPBOX_BEGIN_Main Parameters", "method", "swap_inputs", "_GROUPBOX_END_"});
+  add_enum(node,
+           A_METHOD,
+           "method",
+           enum_mappings.mask_combine_method_map,
+           "intersection");
+  add_bool(node, A_SWAP_INPUTS, "swap_inputs", false);
 
   setup_post_process_heightmap_attributes(node,
                                           {.add_mix = false, .remap_active_state = true});
@@ -43,22 +48,22 @@ void compute_combine_mask_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  hmap::VirtualArray *p_in1 = node.get_value_ref<hmap::VirtualArray>("input 1");
-  hmap::VirtualArray *p_in2 = node.get_value_ref<hmap::VirtualArray>("input 2");
+  hmap::VirtualArray *p_in1 = node.get_value_ref<hmap::VirtualArray>(P_INPUT_1);
+  hmap::VirtualArray *p_in2 = node.get_value_ref<hmap::VirtualArray>(P_INPUT_2);
 
   if (!p_in1 || !p_in2)
     return;
 
   // adjust inputs
-  if (node.get_attr<BoolAttribute>("swap_inputs"))
+  if (node.val<bool>(A_SWAP_INPUTS))
     std::swap(p_in1, p_in2);
 
-  hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>("output");
+  hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
   std::function<void(std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)>
       lambda;
 
-  int method = node.get_attr<EnumAttribute>("method");
+  int method = node.val<int>(A_METHOD);
 
   switch (method)
   {

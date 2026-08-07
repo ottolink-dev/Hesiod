@@ -3,17 +3,19 @@
  * this software. */
 #include "highmap/kernels.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/app/enum_mappings.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
 
 // -----------------------------------------------------------------------------
 // Ports & Attributes
@@ -43,19 +45,13 @@ void setup_heightmap_to_kernel_node(BaseNode &node)
   // --- Attributes
 
   // clang-format off
-  node.add_attr<FloatAttribute>(A_RADIUS, "radius", 0.1f, 0.001f, 0.2f);
-  node.add_attr<BoolAttribute>(A_NORMALIZE, "normalize", false);
-  node.add_attr<BoolAttribute>(A_ENVELOPE, "envelope", false);
-  node.add_attr<EnumAttribute>(A_ENVELOPE_KERNEL,
-                               "envelope_kernel",
-                               enum_mappings.kernel_type_map,
-                               "cubic_pulse");
+  add_float(node, A_RADIUS, "radius", 0.1f, 0.001f, 0.2f);
+  add_bool(node, A_NORMALIZE, "normalize", false);
+  add_bool(node, A_ENVELOPE, "envelope", false);
+  add_enum(node, A_ENVELOPE_KERNEL, "envelope_kernel", enum_mappings.kernel_type_map, "cubic_pulse");
   // clang-format on
 
   // --- Attribute(s) order
-
-  node.set_attr_ordered_key(
-      {A_RADIUS, A_NORMALIZE, "_SEPARATOR_", A_ENVELOPE, A_ENVELOPE_KERNEL});
 }
 
 // -----------------------------------------------------------------------------
@@ -77,10 +73,10 @@ void compute_heightmap_to_kernel_node(BaseNode &node)
   // --- Params
 
   // clang-format off
-  const auto radius          = node.get_attr<FloatAttribute>(A_RADIUS);
-  const auto normalize       = node.get_attr<BoolAttribute>(A_NORMALIZE);
-  const auto envelope        = node.get_attr<BoolAttribute>(A_ENVELOPE);
-  const auto envelope_kernel = static_cast<hmap::KernelType>(node.get_attr<EnumAttribute>(A_ENVELOPE_KERNEL));
+  const auto radius          = node.val<float>(A_RADIUS);
+  const auto normalize       = node.val<bool>(A_NORMALIZE);
+  const auto envelope        = node.val<bool>(A_ENVELOPE);
+  const auto envelope_kernel = static_cast<hmap::KernelType>(node.val<int>(A_ENVELOPE_KERNEL));
   // clang-format on
 
   const int        ir = std::max(1, static_cast<int>(radius * node.cfg().shape.x));

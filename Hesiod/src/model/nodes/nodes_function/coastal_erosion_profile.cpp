@@ -3,16 +3,18 @@
  * this software. */
 #include "highmap/erosion.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
 
 // -----------------------------------------------------------------------------
 // Ports & Attributes
@@ -60,37 +62,17 @@ void setup_coastal_erosion_profile_node(BaseNode &node)
   // --- Attributes
 
   // clang-format off
-  node.add_attr<FloatAttribute>(A_GROUND_EXTENT, "Ground Shore Width", 0.03f, 0.f, 0.2f);
-  node.add_attr<FloatAttribute>(A_WATER_RATIO, "Water Shore Width Ratio", 10.f, 0.f, 10.f);
-  node.add_attr<FloatAttribute>(A_SCARP_RATIO, "Scarp Extent", 0.9f, 0.f, 1.f);
-  node.add_attr<FloatAttribute>(A_SLOPE, "Shore Slope", 0.5f, 0.f, 8.f);
-  node.add_attr<BoolAttribute>(A_POST_FILTER, "Enable Shore Smoothing", true);
-  node.add_attr<IntAttribute>(A_POST_FILTER_ITERATIONS, "Iterations", 10, 1, 32);
-  node.add_attr<BoolAttribute>(A_SOLID_SHORE_MASK, "Solid Shore Mask", true);
-  node.add_attr<FloatAttribute>(A_SCARP_MASK_RATIO, "Scarp Mask Transition", 0.2f, 0.f, 1.f);
+  add_float(node, A_GROUND_EXTENT, "Ground Shore Width", 0.03f, 0.f, 0.2f);
+  add_float(node, A_WATER_RATIO, "Water Shore Width Ratio", 10.f, 0.f, 10.f);
+  add_float(node, A_SCARP_RATIO, "Scarp Extent", 0.9f, 0.f, 1.f);
+  add_float(node, A_SLOPE, "Shore Slope", 0.5f, 0.f, 8.f);
+  add_bool(node, A_POST_FILTER, "Enable Shore Smoothing", true);
+  add_int(node, A_POST_FILTER_ITERATIONS, "Iterations", 10, 1, 32);
+  add_bool(node, A_SOLID_SHORE_MASK, "Solid Shore Mask", true);
+  add_float(node, A_SCARP_MASK_RATIO, "Scarp Mask Transition", 0.2f, 0.f, 1.f);
   // clang-format on
 
   // --- Attribute(s) order
-
-  node.set_attr_ordered_key({"_GROUPBOX_BEGIN_Shore Geometry",
-                             A_GROUND_EXTENT,
-                             A_WATER_RATIO,
-                             "_GROUPBOX_END_",
-                             //
-                             "_GROUPBOX_BEGIN_Profile Shape",
-                             A_SCARP_RATIO,
-                             A_SLOPE,
-                             "_GROUPBOX_END_",
-                             //
-                             "_GROUPBOX_BEGIN_Smoothing",
-                             A_POST_FILTER,
-                             A_POST_FILTER_ITERATIONS,
-                             "_GROUPBOX_END_",
-                             //
-                             "_GROUPBOX_BEGIN_Output Masks",
-                             A_SOLID_SHORE_MASK,
-                             A_SCARP_MASK_RATIO,
-                             "_GROUPBOX_END_"});
 
   setup_default_noise(node, {.noise_amp = 1.f, .kw = 8.f, .smoothness = 0.f});
   setup_pre_process_mask_attributes(node);
@@ -122,14 +104,14 @@ void compute_coastal_erosion_profile_node(BaseNode &node)
   // --- Params
 
   // clang-format off
-  const auto ground_extent    = node.get_attr<FloatAttribute>(A_GROUND_EXTENT);
-  const auto water_ratio      = node.get_attr<FloatAttribute>(A_WATER_RATIO);
-  const auto scarp_ratio      = node.get_attr<FloatAttribute>(A_SCARP_RATIO);
-  const auto slope            = node.get_attr<FloatAttribute>(A_SLOPE);
-  const auto post_filter      = node.get_attr<BoolAttribute>(A_POST_FILTER);
-  const auto iterations       = node.get_attr<IntAttribute>(A_POST_FILTER_ITERATIONS);
-  const auto solid_shore_mask = node.get_attr<BoolAttribute>(A_SOLID_SHORE_MASK);
-  const auto scarp_mask_ratio = node.get_attr<FloatAttribute>(A_SCARP_MASK_RATIO);
+  const auto ground_extent    = node.val<float>(A_GROUND_EXTENT);
+  const auto water_ratio      = node.val<float>(A_WATER_RATIO);
+  const auto scarp_ratio      = node.val<float>(A_SCARP_RATIO);
+  const auto slope            = node.val<float>(A_SLOPE);
+  const auto post_filter      = node.val<bool>(A_POST_FILTER);
+  const auto iterations       = node.val<int>(A_POST_FILTER_ITERATIONS);
+  const auto solid_shore_mask = node.val<bool>(A_SOLID_SHORE_MASK);
+  const auto scarp_mask_ratio = node.val<float>(A_SCARP_MASK_RATIO);
   // clang-format on
 
   int ir_ground = std::max(1, int(ground_extent * p_z->shape.x));

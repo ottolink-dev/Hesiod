@@ -7,65 +7,55 @@
 #include "highmap/transform.hpp"
 #include "highmap/virtual_array/virtual_texture.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
+constexpr const char *P_ADVECTION_MASK = "advection_mask";
+constexpr const char *P_ELEVATION      = "elevation";
+constexpr const char *P_IN             = "input";
+constexpr const char *P_MASK           = "mask";
+constexpr const char *P_TEXTURE        = "texture";
+
+constexpr const char *A_ADVECTION_LENGTH     = "advection_length";
+constexpr const char *A_INERTIA              = "inertia";
+constexpr const char *A_ITERATIONS           = "iterations";
+constexpr const char *A_PARTICLE_DENSITY     = "particle_density";
+constexpr const char *A_POST_FILTERING       = "post_filtering";
+constexpr const char *A_POST_FILTERING_SIGMA = "post_filtering_sigma";
+constexpr const char *A_REVERSE              = "reverse";
+constexpr const char *A_SEED                 = "seed";
+constexpr const char *A_VALUE_PERSISTENCE    = "value_persistence";
 
 void setup_texture_advection_particle_node(BaseNode &node)
 {
   Logger::log()->trace("setup node {}", node.get_label());
 
   // port(s)
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "elevation");
-  node.add_port<hmap::VirtualTexture>(gnode::PortType::IN, "input");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "advection_mask");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "mask");
-  node.add_port<hmap::VirtualTexture>(gnode::PortType::OUT, "texture", CONFIG_TEX(node));
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_ELEVATION);
+  node.add_port<hmap::VirtualTexture>(gnode::PortType::IN, P_IN);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_ADVECTION_MASK);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_MASK);
+  node.add_port<hmap::VirtualTexture>(gnode::PortType::OUT, P_TEXTURE, CONFIG_TEX(node));
 
   // attribute(s)
-  node.add_attr<SeedAttribute>("seed", "Seed");
-  node.add_attr<FloatAttribute>("particle_density", "particle_density", 0.1f, 0.f, 1.f);
-  node.add_attr<IntAttribute>("iterations", "iterations", 5, 1, 100);
-  node.add_attr<FloatAttribute>("advection_length", "advection_length", 0.1f, 0.f, 0.2f);
-  node.add_attr<FloatAttribute>("value_persistence",
-                                "value_persistence",
-                                0.99f,
-                                0.8f,
-                                1.f);
-  node.add_attr<FloatAttribute>("inertia", "inertia", 0.f, 0.f, 1.f);
-  node.add_attr<BoolAttribute>("reverse", "reverse", false);
-  node.add_attr<BoolAttribute>("post_filtering", "post_filtering", false);
-  node.add_attr<FloatAttribute>("post_filtering_sigma",
-                                "post_filtering_sigma",
-                                0.07f,
-                                0.f,
-                                0.125f);
-
-  // attribute(s) order
-  node.set_attr_ordered_key({"_SEPARATOR_TEXT_Base Parameters",
-                             "_TEXT_Initialization",
-                             "seed",
-                             "particle_density",
-                             "iterations",
-                             //
-                             "_TEXT_Advection Control",
-                             "advection_length",
-                             "inertia",
-                             "reverse",
-                             //
-                             "_TEXT_Value Persistence",
-                             "value_persistence",
-                             //
-                             "_TEXT_Smoothing & Filtering",
-                             "post_filtering",
-                             "post_filtering_sigma"});
+  add_seed(node, A_SEED, "Seed");
+  add_float(node, A_PARTICLE_DENSITY, "particle_density", 0.1f, 0.f, 1.f);
+  add_int(node, A_ITERATIONS, "iterations", 5, 1, 100);
+  add_float(node, A_ADVECTION_LENGTH, "advection_length", 0.1f, 0.f, 0.2f);
+  add_float(node, A_VALUE_PERSISTENCE, "value_persistence", 0.99f, 0.8f, 1.f);
+  add_float(node, A_INERTIA, "inertia", 0.f, 0.f, 1.f);
+  add_bool(node, A_REVERSE, "reverse", false);
+  add_bool(node, A_POST_FILTERING, "post_filtering", false);
+  add_float(node, A_POST_FILTERING_SIGMA, "post_filtering_sigma", 0.07f, 0.f, 0.125f);
 
   setup_pre_process_mask_attributes(node);
 }
@@ -74,22 +64,22 @@ void compute_texture_advection_particle_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  hmap::VirtualArray   *p_z   = node.get_value_ref<hmap::VirtualArray>("elevation");
-  hmap::VirtualTexture *p_tex = node.get_value_ref<hmap::VirtualTexture>("input");
+  hmap::VirtualArray   *p_z   = node.get_value_ref<hmap::VirtualArray>(P_ELEVATION);
+  hmap::VirtualTexture *p_tex = node.get_value_ref<hmap::VirtualTexture>(P_IN);
 
   if (p_z && p_tex)
   {
     hmap::VirtualArray *p_advection_mask = node.get_value_ref<hmap::VirtualArray>(
-        "advection_mask");
-    hmap::VirtualArray   *p_mask = node.get_value_ref<hmap::VirtualArray>("mask");
-    hmap::VirtualTexture *p_out  = node.get_value_ref<hmap::VirtualTexture>("texture");
+        P_ADVECTION_MASK);
+    hmap::VirtualArray   *p_mask = node.get_value_ref<hmap::VirtualArray>(P_MASK);
+    hmap::VirtualTexture *p_out  = node.get_value_ref<hmap::VirtualTexture>(P_TEXTURE);
 
     // prepare mask
     std::shared_ptr<hmap::VirtualArray> sp_mask = pre_process_mask(node, p_mask, *p_z);
 
     // number of particles based on the input particle density
-    int nparticles = (int)(node.get_attr<FloatAttribute>("particle_density") *
-                           p_out->shape.x * p_out->shape.y);
+    int nparticles = (int)(node.val<float>(A_PARTICLE_DENSITY) * p_out->shape.x *
+                           p_out->shape.y);
 
     // apply advection separetely to each RGBA channels
     auto lambda = [&node, nparticles](hmap::VirtualArray *p_field_out,
@@ -109,15 +99,15 @@ void compute_texture_advection_particle_node(BaseNode &node)
             *pa_field_out = hmap::gpu::advection_particle(
                 *pa_z,
                 *pa_field,
-                node.get_attr<IntAttribute>("iterations"),
+                node.val<int>(A_ITERATIONS),
                 nparticles,
-                node.get_attr<SeedAttribute>("seed"),
-                node.get_attr<BoolAttribute>("reverse"),
-                node.get_attr<BoolAttribute>("post_filtering"),
-                node.get_attr<FloatAttribute>("post_filtering_sigma"),
-                node.get_attr<FloatAttribute>("advection_length"),
-                node.get_attr<FloatAttribute>("value_persistence"),
-                node.get_attr<FloatAttribute>("inertia"),
+                node.val<int>(A_SEED),
+                node.val<bool>(A_REVERSE),
+                node.val<bool>(A_POST_FILTERING),
+                node.val<float>(A_POST_FILTERING_SIGMA),
+                node.val<float>(A_ADVECTION_LENGTH),
+                node.val<float>(A_VALUE_PERSISTENCE),
+                node.val<float>(A_INERTIA),
                 pa_advection_mask,
                 pa_mask);
           },

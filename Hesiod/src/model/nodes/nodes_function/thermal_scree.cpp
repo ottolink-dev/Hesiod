@@ -5,16 +5,18 @@
 #include "highmap/opencl/gpu_opencl.hpp"
 #include "highmap/primitives.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
 
 // -----------------------------------------------------------------------------
 // Ports & Attributes
@@ -50,23 +52,13 @@ void setup_thermal_scree_node(BaseNode &node)
   // --- Attributes
 
   // clang-format off
-  node.add_attr<FloatAttribute>(A_TALUS_GLOBAL, "Slope", 2.f, 0.f, FLT_MAX);
-  node.add_attr<FloatAttribute>(A_ZMAX, "Scree Max Elevation", 0.5f, -1.f, 2.f);
-  node.add_attr<FloatAttribute>(A_DURATION, "Duration", 0.3f, 0.05f, 6.f);
-  node.add_attr<BoolAttribute>(A_SCALE_TALUS, "Scale with Elevation", true);
+  add_float(node, A_TALUS_GLOBAL, "Slope", 2.f, 0.f, FLT_MAX);
+  add_float(node, A_ZMAX, "Scree Max Elevation", 0.5f, -1.f, 2.f);
+  add_float(node, A_DURATION, "Duration", 0.3f, 0.05f, 6.f);
+  add_bool(node, A_SCALE_TALUS, "Scale with Elevation", true);
   // clang-format on
 
   // --- Attribute(s) order
-
-  node.set_attr_ordered_key({"_GROUPBOX_BEGIN_Slope Constraints",
-                             A_TALUS_GLOBAL,
-                             A_SCALE_TALUS,
-                             A_ZMAX,
-                             "_GROUPBOX_END_",
-                             //
-                             "_GROUPBOX_BEGIN_Deposition Dynamics",
-                             A_DURATION,
-                             "_GROUPBOX_END_"});
 
   setup_pre_process_mask_attributes(node);
   setup_post_process_heightmap_attributes(node,
@@ -95,10 +87,10 @@ void compute_thermal_scree_node(BaseNode &node)
   // --- Params
 
   // clang-format off
-  const auto talus_global = node.get_attr<FloatAttribute>(A_TALUS_GLOBAL);
-  const auto zmax_value   = node.get_attr<FloatAttribute>(A_ZMAX);
-  const auto duration     = node.get_attr<FloatAttribute>(A_DURATION);
-  const auto scale_talus  = node.get_attr<BoolAttribute>(A_SCALE_TALUS);
+  const auto talus_global = node.val<float>(A_TALUS_GLOBAL);
+  const auto zmax_value   = node.val<float>(A_ZMAX);
+  const auto duration     = node.val<float>(A_DURATION);
+  const auto scale_talus  = node.val<bool>(A_SCALE_TALUS);
   // clang-format on
 
   const float talus      = talus_global / float(p_out->shape.x);

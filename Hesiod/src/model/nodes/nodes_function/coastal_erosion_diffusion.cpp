@@ -3,16 +3,18 @@
  * this software. */
 #include "highmap/erosion.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
 
 // -----------------------------------------------------------------------------
 // Ports & Attributes
@@ -49,16 +51,11 @@ void setup_coastal_erosion_diffusion_node(BaseNode &node)
   // --- Attributes
 
   // clang-format off
-  node.add_attr<FloatAttribute>(A_ADDITIONAL_DEPTH, "Additional Depth", 0.05f, 0.f, 0.2f);
-  node.add_attr<IntAttribute>(A_ITERATIONS, "Iterations", 10, 0, INT_MAX);
+  add_float(node, A_ADDITIONAL_DEPTH, "Additional Depth", 0.05f, 0.f, 0.2f);
+  add_int(node, A_ITERATIONS, "Iterations", 10, 0, INT_MAX);
   // clang-format on
 
   // --- Attribute(s) order
-
-  node.set_attr_ordered_key({"_GROUPBOX_BEGIN_Main Parameters",
-                             A_ADDITIONAL_DEPTH,
-                             A_ITERATIONS,
-                             "_GROUPBOX_END_"});
 }
 
 // -----------------------------------------------------------------------------
@@ -84,8 +81,8 @@ void compute_coastal_erosion_diffusion_node(BaseNode &node)
 
   // --- Params
 
-  const auto additional_depth = node.get_attr<FloatAttribute>(A_ADDITIONAL_DEPTH);
-  const auto iterations       = node.get_attr<IntAttribute>(A_ITERATIONS);
+  const auto additional_depth = node.val<float>(A_ADDITIONAL_DEPTH);
+  const auto iterations       = node.val<int>(A_ITERATIONS);
 
   // --- Compute
 

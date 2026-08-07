@@ -4,16 +4,18 @@
 #include "highmap/filters.hpp"
 #include "highmap/opencl/gpu_opencl.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
 
 // -----------------------------------------------------------------------------
 // Ports & Attributes
@@ -46,21 +48,12 @@ void setup_spectral_equalizer_node(BaseNode &node)
   std::vector<float> weights(6, 1.f);
 
   // clang-format off
-  node.add_attr<VecFloatAttribute>(A_EQ, "Band Weights", weights, 0.f, 2.f, false);
-  node.add_attr<FloatAttribute>(A_RMIN, "Radius Min.", 0.05f, 0.f, 0.5f);
-  node.add_attr<FloatAttribute>(A_RMAX, "Radius Max.", 0.25f, 0.f, 0.5f);
+  add_curve(node, A_EQ, "Band Weights", weights, 0.f, 2.f);
+  add_float(node, A_RMIN, "Radius Min.", 0.05f, 0.f, 0.5f);
+  add_float(node, A_RMAX, "Radius Max.", 0.25f, 0.f, 0.5f);
   // clang-format on
 
   // --- Attribute(s) order
-
-  node.set_attr_ordered_key({"_GROUPBOX_BEGIN_Weights",
-                             A_EQ,
-                             "_GROUPBOX_END_",
-                             //
-                             "_GROUPBOX_BEGIN_Spectral Extent",
-                             A_RMIN,
-                             A_RMAX,
-                             "_GROUPBOX_END_"});
 
   setup_pre_process_mask_attributes(node);
   setup_post_process_heightmap_attributes(node,
@@ -87,9 +80,9 @@ void compute_spectral_equalizer_node(BaseNode &node)
   // --- Params
 
   // clang-format off
-  const auto weights = node.get_attr<VecFloatAttribute>(A_EQ);
-  const auto rmin    = node.get_attr<FloatAttribute>(A_RMIN);
-  const auto rmax    = node.get_attr<FloatAttribute>(A_RMAX);
+  const auto weights = node.val<std::vector<float>>(A_EQ);
+  const auto rmin    = node.val<float>(A_RMIN);
+  const auto rmax    = node.val<float>(A_RMAX);
   // clang-format on
 
   int ir_min = std::max(1, (int)(rmin * p_out->shape.x));

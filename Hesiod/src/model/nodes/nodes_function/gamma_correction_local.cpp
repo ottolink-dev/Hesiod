@@ -4,16 +4,18 @@
 #include "highmap/filters.hpp"
 #include "highmap/range.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
 
 // -----------------------------------------------------------------------------
 // Ports & Attributes
@@ -43,14 +45,11 @@ void setup_gamma_correction_local_node(BaseNode &node)
 
   // --- Attributes
 
-  node.add_attr<FloatAttribute>(A_RADIUS, "Radius", 0.05f, 0.01f, 0.2f);
-  node.add_attr<FloatAttribute>(A_GAMMA, "Gamma Exponent", 2.f, 0.01f, 10.f);
-  node.add_attr<FloatAttribute>(A_K, "Smoothing", 0.1f, 0.f, 0.5f);
+  add_float(node, A_RADIUS, "Radius", 0.05f, 0.01f, 0.2f);
+  add_float(node, A_GAMMA, "Gamma Exponent", 2.f, 0.01f, 10.f);
+  add_float(node, A_K, "Smoothing", 0.1f, 0.f, 0.5f);
 
   // --- Attribute(s) order
-
-  node.set_attr_ordered_key(
-      {"_GROUPBOX_BEGIN_Main Parameters", A_RADIUS, A_GAMMA, A_K, "_GROUPBOX_END_"});
 
   setup_pre_process_mask_attributes(node);
   setup_post_process_heightmap_attributes(node,
@@ -77,9 +76,9 @@ void compute_gamma_correction_local_node(BaseNode &node)
   // --- Params
 
   // clang-format off
-  const auto radius = node.get_attr<FloatAttribute>(A_RADIUS);
-  const auto gamma  = node.get_attr<FloatAttribute>(A_GAMMA);
-  const auto k      = node.get_attr<FloatAttribute>(A_K);
+  const auto radius = node.val<float>(A_RADIUS);
+  const auto gamma  = node.val<float>(A_GAMMA);
+  const auto k      = node.val<float>(A_K);
   // clang-format on
 
   int ir = std::max(1, (int)(radius * p_in->shape.x));

@@ -3,16 +3,18 @@
  * this software. */
 #include "highmap/math.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
 
 // -----------------------------------------------------------------------------
 // Ports & Attributes
@@ -41,18 +43,12 @@ void setup_select_value_node(BaseNode &node)
   // --- Attributes
 
   // clang-format off
-  node.add_attr<FloatAttribute>(A_VALUE, "Value", 0.5f, -1.f, 2.f);
-  node.add_attr<FloatAttribute>(A_WIDTH, "Width", 0.1f, 0.f, 0.3f);
-  node.add_attr<FloatAttribute>(A_SMOOTHING, "Smoothing", 0.02f, 0.001f, 1.f);
+  add_float(node, A_VALUE, "Value", 0.5f, -1.f, 2.f);
+  add_float(node, A_WIDTH, "Width", 0.1f, 0.f, 0.3f);
+  add_float(node, A_SMOOTHING, "Smoothing", 0.02f, 0.001f, 1.f);
   // clang-format on
 
   // --- Attribute(s) order
-
-  node.set_attr_ordered_key({"_GROUPBOX_BEGIN_Main Parameters",
-                             A_VALUE,
-                             A_WIDTH,
-                             A_SMOOTHING,
-                             "_GROUPBOX_END_"});
 
   setup_post_process_heightmap_attributes(node,
                                           {.add_mix = false, .remap_active_state = true});
@@ -77,9 +73,9 @@ void compute_select_value_node(BaseNode &node)
   // --- Params
 
   // clang-format off
-  const auto value     = node.get_attr<FloatAttribute>(A_VALUE);
-  const auto width     = node.get_attr<FloatAttribute>(A_WIDTH);
-  const auto smoothing = node.get_attr<FloatAttribute>(A_SMOOTHING);
+  const auto value     = node.val<float>(A_VALUE);
+  const auto width     = node.val<float>(A_WIDTH);
+  const auto smoothing = node.val<float>(A_SMOOTHING);
   // clang-format on
 
   const float xmin = value - 0.5f * width;

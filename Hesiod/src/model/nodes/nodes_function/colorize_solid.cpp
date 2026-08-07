@@ -3,13 +3,9 @@
  * this software. */
 #include "highmap/virtual_array/virtual_texture.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
-
-#include "hesiod/logger.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
-
-using namespace attr;
 
 namespace hesiod
 {
@@ -39,12 +35,8 @@ void setup_colorize_solid_node(BaseNode &node)
 
   // --- Attributes
 
-  node.add_attr<ColorAttribute>(A_COLOR, "Solid Color", 0.f, 1.f, 0.f, 1.f);
-  node.add_attr<FloatAttribute>(A_ALPHA, "Transparency", 1.f, 0.f, 1.f);
-
-  // --- Attribute(s) order
-
-  node.set_attr_ordered_key({A_COLOR, A_ALPHA});
+  add_color(node, A_COLOR, "Solid Color", {0.f, 1.f, 0.f, 1.f});
+  add_float(node, A_ALPHA, "Transparency", 1.f, 0.f, 1.f);
 }
 
 // -----------------------------------------------------------------------------
@@ -62,8 +54,8 @@ void compute_colorize_solid_node(BaseNode &node)
 
   // --- Params
 
-  const std::array<float, 4> color = node.get_attr<ColorAttribute>(A_COLOR);
-  const float                alpha = node.get_attr<FloatAttribute>(A_ALPHA);
+  const auto color = node.val<glm::vec4>(A_COLOR);
+  const auto alpha = node.val<float>(A_ALPHA);
 
   // --- Compute
 

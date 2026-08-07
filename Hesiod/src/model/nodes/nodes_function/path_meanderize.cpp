@@ -3,16 +3,18 @@
  * this software. */
 #include "highmap/geometry/path.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
 
 // -----------------------------------------------------------------------------
 // Ports & Attributes
@@ -41,25 +43,12 @@ void setup_path_meanderize_node(BaseNode &node)
   node.add_port<hmap::Path>(gnode::PortType::OUT, P_OUTPUT);
 
   // attribute(s)
-  node.add_attr<FloatAttribute>(A_RATIO, "Meander Ratio", 0.2f, 0.f, 1.f);
-  node.add_attr<FloatAttribute>(A_NOISE_RATIO, "Noise Ratio", 0.1f, 0.f, 1.f);
-  node.add_attr<SeedAttribute>(A_SEED, "Seed");
-  node.add_attr<IntAttribute>(A_ITERATIONS, "Solver Iterations", 2, 1, 8);
-  node.add_attr<IntAttribute>(A_EDGE_DIVISIONS, "Edge Divisions", 10, 1, 32);
-  node.add_attr<BoolAttribute>(A_REMOVE_LOOPS, "Remove Geometric Loops", false);
-
-  // attribute(s) order
-  node.set_attr_ordered_key({"_GROUPBOX_BEGIN_Meander Parameters",
-                             A_RATIO,
-                             A_NOISE_RATIO,
-                             A_SEED,
-                             A_REMOVE_LOOPS,
-                             "_GROUPBOX_END_",
-                             //
-                             "_GROUPBOX_BEGIN_Solver",
-                             A_ITERATIONS,
-                             A_EDGE_DIVISIONS,
-                             "_GROUPBOX_END_"});
+  add_float(node, A_RATIO, "Meander Ratio", 0.2f, 0.f, 1.f);
+  add_float(node, A_NOISE_RATIO, "Noise Ratio", 0.1f, 0.f, 1.f);
+  add_seed(node, A_SEED, "Seed");
+  add_int(node, A_ITERATIONS, "Solver Iterations", 2, 1, 8);
+  add_int(node, A_EDGE_DIVISIONS, "Edge Divisions", 10, 1, 32);
+  add_bool(node, A_REMOVE_LOOPS, "Remove Geometric Loops", false);
 }
 
 // -----------------------------------------------------------------------------
@@ -90,12 +79,12 @@ void compute_path_meanderize_node(BaseNode &node)
       bool  remove_loops;
     };
     return P{
-        .ratio          = node.get_attr<FloatAttribute>(A_RATIO),
-        .noise_ratio    = node.get_attr<FloatAttribute>(A_NOISE_RATIO),
-        .seed           = node.get_attr<SeedAttribute>(A_SEED),
-        .iterations     = node.get_attr<IntAttribute>(A_ITERATIONS),
-        .edge_divisions = node.get_attr<IntAttribute>(A_EDGE_DIVISIONS),
-        .remove_loops   = node.get_attr<BoolAttribute>(A_REMOVE_LOOPS),
+        .ratio          = node.val<float>(A_RATIO),
+        .noise_ratio    = node.val<float>(A_NOISE_RATIO),
+        .seed           = node.val<int>(A_SEED),
+        .iterations     = node.val<int>(A_ITERATIONS),
+        .edge_divisions = node.val<int>(A_EDGE_DIVISIONS),
+        .remove_loops   = node.val<bool>(A_REMOVE_LOOPS),
     };
   }();
 

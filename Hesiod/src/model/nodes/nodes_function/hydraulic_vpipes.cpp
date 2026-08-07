@@ -3,99 +3,110 @@
  * this software. */
 #include "highmap/erosion.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
+constexpr const char *P_BEDROCK     = "bedrock";
+constexpr const char *P_IN          = "input";
+constexpr const char *P_MASK        = "mask";
+constexpr const char *P_MOISTURE    = "moisture";
+constexpr const char *P_OUT         = "output";
+constexpr const char *P_SEDIMENT    = "sediment";
+constexpr const char *P_WATER_DEPTH = "water_depth";
+
+constexpr const char *A_DOWNCUTTING_MAX_DEPTH_RATIO = "downcutting_max_depth_ratio";
+constexpr const char *A_DURATION                    = "duration";
+constexpr const char *A_EVAP_RATE                   = "evap_rate";
+constexpr const char *A_FLUX_DIFFUSION              = "flux_diffusion";
+constexpr const char *A_FLUX_DIFFUSION_STRENGTH     = "flux_diffusion_strength";
+constexpr const char *A_ITERATIONS                  = "iterations";
+constexpr const char *A_K_CAPACITY                  = "k_capacity";
+constexpr const char *A_K_DEPOSE                    = "k_depose";
+constexpr const char *A_K_DISCHARGE_EXP             = "k_discharge_exp";
+constexpr const char *A_K_ERODE                     = "k_erode";
+constexpr const char *A_MAINTAIN_WATER_VOLUME       = "maintain_water_volume";
+constexpr const char *A_WATER_HEIGHT                = "water_height";
 
 void setup_hydraulic_vpipes_node(BaseNode &node)
 {
   Logger::log()->trace("setup node {}", node.get_label());
 
   // port(s)
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "input");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "bedrock");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "moisture");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "mask");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, "output", CONFIG(node));
-  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, "water_depth", CONFIG(node));
-  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, "sediment", CONFIG(node));
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_IN);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_BEDROCK);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_MOISTURE);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_MASK);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_OUT, CONFIG(node));
+  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_WATER_DEPTH, CONFIG(node));
+  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_SEDIMENT, CONFIG(node));
 
   // attribute(s)
-  // node.add_attr<FloatAttribute>("duration", "Duration", 0.01f, 0.01f, 0.5f);
-  node.add_attr<IntAttribute>("iterations", "iterations", 30, 1, 200);
-  node.add_attr<FloatAttribute>("water_height",
-                                "water_height",
-                                0.01f,
-                                0.001f,
-                                0.1f,
-                                "{:.2e}",
-                                /* log */ true);
-  node.add_attr<BoolAttribute>("maintain_water_volume", "maintain_water_volume", true);
-  node.add_attr<FloatAttribute>("evap_rate", "evap_rate", 0.01f, 0.f, 0.5f);
+  // add_float(node, A_DURATION, "Duration", 0.01f, 0.01f, 0.5f);
+  add_int(node, A_ITERATIONS, "iterations", 30, 1, 200);
+  add_float(node,
+            A_WATER_HEIGHT,
+            "water_height",
+            0.01f,
+            0.001f,
+            0.1f,
+            "{:.2e}",
+            /* log */ true);
+  add_bool(node, A_MAINTAIN_WATER_VOLUME, "maintain_water_volume", true);
+  add_float(node, A_EVAP_RATE, "evap_rate", 0.01f, 0.f, 0.5f);
 
-  node.add_attr<FloatAttribute>("k_capacity", "k_capacity", 0.5f, 0.01f, 2.f);
-  node.add_attr<FloatAttribute>("k_erode", "k_erode", 0.002f, 0.f, 0.1f);
-  node.add_attr<FloatAttribute>("k_depose", "k_depose", 0.01f, 0.f, 0.1f);
-  node.add_attr<FloatAttribute>("k_discharge_exp", "k_discharge_exp", 1.f, 0.1f, 2.f);
+  add_float(node, A_K_CAPACITY, "k_capacity", 0.5f, 0.01f, 2.f);
+  add_float(node, A_K_ERODE, "k_erode", 0.002f, 0.f, 0.1f);
+  add_float(node, A_K_DEPOSE, "k_depose", 0.01f, 0.f, 0.1f);
+  add_float(node, A_K_DISCHARGE_EXP, "k_discharge_exp", 1.f, 0.1f, 2.f);
 
-  node.add_attr<FloatAttribute>("downcutting_max_depth_ratio",
-                                "downcutting_max_depth_ratio",
-                                1.5f,
-                                0.01f,
-                                3.f);
+  add_float(node,
+            A_DOWNCUTTING_MAX_DEPTH_RATIO,
+            "downcutting_max_depth_ratio",
+            1.5f,
+            0.01f,
+            3.f);
 
-  node.add_attr<BoolAttribute>("flux_diffusion", "flux_diffusion", true);
-  node.add_attr<FloatAttribute>("flux_diffusion_strength",
-                                "flux_diffusion_strength",
-                                0.01f,
-                                1e-4f,
-                                1e-1f,
-                                "{:.2e}",
-                                true);
-
-  // attribute(s) order
-  node.set_attr_ordered_key({// "duration",
-                             "iterations",
-                             "water_height",
-                             "maintain_water_volume",
-                             "evap_rate",
-                             "k_capacity",
-                             "k_erode",
-                             "k_depose",
-                             "k_discharge_exp",
-                             "downcutting_max_depth_ratio",
-                             "flux_diffusion",
-                             "flux_diffusion_strength"});
+  add_bool(node, A_FLUX_DIFFUSION, "flux_diffusion", true);
+  add_float(node,
+            A_FLUX_DIFFUSION_STRENGTH,
+            "flux_diffusion_strength",
+            0.01f,
+            1e-4f,
+            1e-1f,
+            "{:.2e}",
+            true);
 }
 
 void compute_hydraulic_vpipes_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  hmap::VirtualArray *p_in = node.get_value_ref<hmap::VirtualArray>("input");
+  hmap::VirtualArray *p_in = node.get_value_ref<hmap::VirtualArray>(P_IN);
 
   if (p_in)
   {
-    hmap::VirtualArray *p_bedrock = node.get_value_ref<hmap::VirtualArray>("bedrock");
+    hmap::VirtualArray *p_bedrock = node.get_value_ref<hmap::VirtualArray>(P_BEDROCK);
     hmap::VirtualArray *p_moisture_map = node.get_value_ref<hmap::VirtualArray>(
-        "moisture");
-    hmap::VirtualArray *p_mask = node.get_value_ref<hmap::VirtualArray>("mask");
+        P_MOISTURE);
+    hmap::VirtualArray *p_mask = node.get_value_ref<hmap::VirtualArray>(P_MASK);
 
-    hmap::VirtualArray *p_out         = node.get_value_ref<hmap::VirtualArray>("output");
+    hmap::VirtualArray *p_out         = node.get_value_ref<hmap::VirtualArray>(P_OUT);
     hmap::VirtualArray *p_water_depth = node.get_value_ref<hmap::VirtualArray>(
-        "water_depth");
-    hmap::VirtualArray *p_sediment = node.get_value_ref<hmap::VirtualArray>("sediment");
+        P_WATER_DEPTH);
+    hmap::VirtualArray *p_sediment = node.get_value_ref<hmap::VirtualArray>(P_SEDIMENT);
 
-    // int iterations = int(node.get_attr<FloatAttribute>("duration") *
+    // int iterations = int(node.val<float>(A_DURATION) *
     // p_out->shape.x);
-    int iterations = node.get_attr<IntAttribute>("iterations");
+    int iterations = node.val<int>(A_ITERATIONS);
 
     hmap::for_each_tile(
         {p_in, p_bedrock, p_moisture_map, p_mask},
@@ -110,25 +121,24 @@ void compute_hydraulic_vpipes_node(BaseNode &node)
 
           *pa_out = *pa_in;
 
-          hmap::gpu::hydraulic_vpipes(
-              *pa_out,
-              node.get_attr<FloatAttribute>("water_height"),
-              node.get_attr<BoolAttribute>("maintain_water_volume"),
-              node.get_attr<FloatAttribute>("evap_rate"),
-              iterations,
-              /* dt */ 0.5f,
-              node.get_attr<FloatAttribute>("k_capacity"),
-              node.get_attr<FloatAttribute>("k_erode"),
-              node.get_attr<FloatAttribute>("k_depose"),
-              node.get_attr<FloatAttribute>("k_discharge_exp"),
-              node.get_attr<FloatAttribute>("downcutting_max_depth_ratio"),
-              node.get_attr<BoolAttribute>("flux_diffusion"),
-              node.get_attr<FloatAttribute>("flux_diffusion_strength")
-              //  *p_rain_map = nullptr,
-              // Array *p_water_depth = nullptr,
-              // Array *p_sediment = nullptr,
-              // Array *p_vel_u = nullptr,
-              // Array *p_vel_v = nullptr
+          hmap::gpu::hydraulic_vpipes(*pa_out,
+                                      node.val<float>(A_WATER_HEIGHT),
+                                      node.val<bool>(A_MAINTAIN_WATER_VOLUME),
+                                      node.val<float>(A_EVAP_RATE),
+                                      iterations,
+                                      /* dt */ 0.5f,
+                                      node.val<float>(A_K_CAPACITY),
+                                      node.val<float>(A_K_ERODE),
+                                      node.val<float>(A_K_DEPOSE),
+                                      node.val<float>(A_K_DISCHARGE_EXP),
+                                      node.val<float>(A_DOWNCUTTING_MAX_DEPTH_RATIO),
+                                      node.val<bool>(A_FLUX_DIFFUSION),
+                                      node.val<float>(A_FLUX_DIFFUSION_STRENGTH)
+                                      //  *p_rain_map = nullptr,
+                                      // Array *p_water_depth = nullptr,
+                                      // Array *p_sediment = nullptr,
+                                      // Array *p_vel_u = nullptr,
+                                      // Array *p_vel_v = nullptr
           );
         },
         node.cfg().cm_gpu);

@@ -3,17 +3,19 @@
  * this software. */
 #include "highmap/primitives.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/app/enum_mappings.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
 
 // -----------------------------------------------------------------------------
 // Ports & Attributes
@@ -61,51 +63,23 @@ void setup_rift_node(BaseNode &node)
   // --- Attributes
 
   // clang-format off
-  node.add_attr<FloatAttribute>(A_ANGLE, "Angle", 15.f, -180.f, 180.f);
-  node.add_attr<FloatAttribute>(A_RADIUS, "Radius", 0.1f, 0.f, 1.f);
-  node.add_attr<FloatAttribute>(A_AXIAL_SLOPE, "Axial Slope", 0.1f, -1.f, 1.f);
-  node.add_attr<FloatAttribute>(A_DEPTH, "Depth", 0.1f, 0.f, 1.f);
-  node.add_attr<BoolAttribute>(A_SCALE_WITH_DEPTH, "Scale Radius with Depth", true);
-  node.add_attr<EnumAttribute>(A_PROFILE, "Profile", enum_mappings.radial_profile_map, "Smoothstep");
-  node.add_attr<FloatAttribute>(A_PROFILE_PARAM, "Profile Sharpness", 0.5f, 0.f, 10.f);
-  node.add_attr<FloatAttribute>(A_BOTTOM_EXTENT, "Bottom Extent", 0.2f, 0.f, 1.f);
-  node.add_attr<FloatAttribute>(A_BOTTOM_DEPTH, "Bottom Depth", 0.02f, 0.f, 1.f);
-  node.add_attr<EnumAttribute>(A_BOTTOM_PROFILE, "Bottom Profile", enum_mappings.radial_profile_map, "Square Root");
-  node.add_attr<FloatAttribute>(A_BOTTOM_PROFILE_PARAM, "Bottom Profile Sharpness", 0.5f, 0.f, 10.f);
-  node.add_attr<BoolAttribute>(A_BOTTOM_MIN_DEPTH, "Ensure Minimum Depth", true);
-  node.add_attr<FloatAttribute>(A_OUTER_SLOPE, "Outer Slope", 0.2f, -4.f, 4.f);
-  node.add_attr<Vec2FloatAttribute>(A_CENTER, "Center");
+  add_float(node, A_ANGLE, "Angle", 15.f, -180.f, 180.f);
+  add_float(node, A_RADIUS, "Radius", 0.1f, 0.f, 1.f);
+  add_float(node, A_AXIAL_SLOPE, "Axial Slope", 0.1f, -1.f, 1.f);
+  add_float(node, A_DEPTH, "Depth", 0.1f, 0.f, 1.f);
+  add_bool(node, A_SCALE_WITH_DEPTH, "Scale Radius with Depth", true);
+  add_enum(node, A_PROFILE, "Profile", enum_mappings.radial_profile_map, "Smoothstep");
+  add_float(node, A_PROFILE_PARAM, "Profile Sharpness", 0.5f, 0.f, 10.f);
+  add_float(node, A_BOTTOM_EXTENT, "Bottom Extent", 0.2f, 0.f, 1.f);
+  add_float(node, A_BOTTOM_DEPTH, "Bottom Depth", 0.02f, 0.f, 1.f);
+  add_enum(node, A_BOTTOM_PROFILE, "Bottom Profile", enum_mappings.radial_profile_map, "Square Root");
+  add_float(node, A_BOTTOM_PROFILE_PARAM, "Bottom Profile Sharpness", 0.5f, 0.f, 10.f);
+  add_bool(node, A_BOTTOM_MIN_DEPTH, "Ensure Minimum Depth", true);
+  add_float(node, A_OUTER_SLOPE, "Outer Slope", 0.2f, -4.f, 4.f);
+  add_xy(node, A_CENTER, "Center");
   // clang-format on
 
   // --- Attribute(s) order
-
-  node.set_attr_ordered_key({
-      "_GROUPBOX_BEGIN_Global",
-      A_RADIUS,
-      A_DEPTH,
-      A_ANGLE,
-      A_CENTER,
-      "_GROUPBOX_END_",
-      //
-      "_GROUPBOX_BEGIN_Axial",
-      A_AXIAL_SLOPE,
-      A_SCALE_WITH_DEPTH,
-      "_GROUPBOX_END_",
-      //
-      "_GROUPBOX_BEGIN_Profile",
-      A_PROFILE,
-      A_PROFILE_PARAM,
-      A_OUTER_SLOPE,
-      "_GROUPBOX_END_",
-      //
-      "_GROUPBOX_BEGIN_Bottom",
-      A_BOTTOM_EXTENT,
-      A_BOTTOM_DEPTH,
-      A_BOTTOM_PROFILE,
-      A_BOTTOM_PROFILE_PARAM,
-      A_BOTTOM_MIN_DEPTH,
-      "_GROUPBOX_END_",
-  });
 
   setup_default_noise(
       node,
@@ -138,20 +112,20 @@ void compute_rift_node(BaseNode &node)
   // --- Params
 
   // clang-format off
-  const auto angle                  = node.get_attr<FloatAttribute>(A_ANGLE);
-  const auto radius                 = node.get_attr<FloatAttribute>(A_RADIUS);
-  const auto axial_slope            =  node.get_attr<FloatAttribute>(A_AXIAL_SLOPE);
-  const auto depth                  = node.get_attr<FloatAttribute>(A_DEPTH);
-  const auto scale_with_depth       = node.get_attr<BoolAttribute>(A_SCALE_WITH_DEPTH);
-  const auto profile                = hmap::RadialProfile(node.get_attr<EnumAttribute>(A_PROFILE));
-  const auto profile_param          = node.get_attr<FloatAttribute>(A_PROFILE_PARAM);
-  const auto bottom_extent          = node.get_attr<FloatAttribute>(A_BOTTOM_EXTENT);
-  const auto bottom_depth           = node.get_attr<FloatAttribute>(A_BOTTOM_DEPTH);
-  const auto bottom_profile         = hmap::RadialProfile(node.get_attr<EnumAttribute>(A_BOTTOM_PROFILE));
-  const auto bottom_profile_param   = node.get_attr<FloatAttribute>(A_BOTTOM_PROFILE_PARAM);
-  const auto bottom_force_min_depth = node.get_attr<BoolAttribute>(A_BOTTOM_MIN_DEPTH); 
-  const auto outer_slope            = node.get_attr<FloatAttribute>(A_OUTER_SLOPE);
-  const auto center                 = node.get_attr<Vec2FloatAttribute>(A_CENTER);
+  const auto angle                  = node.val<float>(A_ANGLE);
+  const auto radius                 = node.val<float>(A_RADIUS);
+  const auto axial_slope            =  node.val<float>(A_AXIAL_SLOPE);
+  const auto depth                  = node.val<float>(A_DEPTH);
+  const auto scale_with_depth       = node.val<bool>(A_SCALE_WITH_DEPTH);
+  const auto profile                = hmap::RadialProfile(node.val<int>(A_PROFILE));
+  const auto profile_param          = node.val<float>(A_PROFILE_PARAM);
+  const auto bottom_extent          = node.val<float>(A_BOTTOM_EXTENT);
+  const auto bottom_depth           = node.val<float>(A_BOTTOM_DEPTH);
+  const auto bottom_profile         = hmap::RadialProfile(node.val<int>(A_BOTTOM_PROFILE));
+  const auto bottom_profile_param   = node.val<float>(A_BOTTOM_PROFILE_PARAM);
+  const auto bottom_force_min_depth = node.val<bool>(A_BOTTOM_MIN_DEPTH); 
+  const auto outer_slope            = node.val<float>(A_OUTER_SLOPE);
+  const auto center                 = node.val<glm::vec2>(A_CENTER);
   // clang-format on
 
   // --- Resolve default noise

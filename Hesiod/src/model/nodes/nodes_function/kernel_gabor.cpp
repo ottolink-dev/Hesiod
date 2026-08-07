@@ -3,51 +3,53 @@
  * this software. */
 #include "highmap/kernels.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
+constexpr const char *P_KERNEL = "kernel";
+
+constexpr const char *A_ANGLE     = "angle";
+constexpr const char *A_KW        = "kw";
+constexpr const char *A_NORMALIZE = "normalize";
+constexpr const char *A_RADIUS    = "radius";
 
 void setup_kernel_gabor_node(BaseNode &node)
 {
   Logger::log()->trace("setup node {}", node.get_label());
 
   // port(s)
-  node.add_port<hmap::Array>(gnode::PortType::OUT, "kernel", node.cfg().shape);
+  node.add_port<hmap::Array>(gnode::PortType::OUT, P_KERNEL, node.cfg().shape);
 
   // attribute(s)
-  node.add_attr<FloatAttribute>("radius", "radius", 0.1f, 0.001f, 0.2f);
-  node.add_attr<BoolAttribute>("normalize", "normalize", false);
-  node.add_attr<FloatAttribute>("kw", "kw", 2.f, 0.01f, FLT_MAX);
-  node.add_attr<FloatAttribute>("angle", "angle", 0.f, -180.f, 180.f);
-
-  // attribute(s) order
-  node.set_attr_ordered_key({"radius", "normalize", "_SEPARATOR_", "kw", "angle"});
+  add_float(node, A_RADIUS, "radius", 0.1f, 0.001f, 0.2f);
+  add_bool(node, A_NORMALIZE, "normalize", false);
+  add_float(node, A_KW, "kw", 2.f, 0.01f, FLT_MAX);
+  add_float(node, A_ANGLE, "angle", 0.f, -180.f, 180.f);
 }
 
 void compute_kernel_gabor_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  hmap::Array *p_out = node.get_value_ref<hmap::Array>("kernel");
+  hmap::Array *p_out = node.get_value_ref<hmap::Array>(P_KERNEL);
 
-  int ir = std::max(1,
-                    (int)(node.get_attr<FloatAttribute>("radius") * node.cfg().shape.x));
+  int ir = std::max(1, (int)(node.val<float>(A_RADIUS) * node.cfg().shape.x));
 
   // kernel definition
   glm::ivec2 kernel_shape = {2 * ir + 1, 2 * ir + 1};
 
-  *p_out = hmap::gabor(kernel_shape,
-                       node.get_attr<FloatAttribute>("kw"),
-                       node.get_attr<FloatAttribute>("angle"));
+  *p_out = hmap::gabor(kernel_shape, node.val<float>(A_KW), node.val<float>(A_ANGLE));
 
-  if (node.get_attr<BoolAttribute>("normalize"))
+  if (node.val<bool>(A_NORMALIZE))
     *p_out /= p_out->sum();
 }
 

@@ -3,35 +3,41 @@
  * this software. */
 #include "highmap/curvature.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
+constexpr const char *P_IN  = "input";
+constexpr const char *P_OUT = "output";
+
+constexpr const char *A_INVERSE          = "inverse";
+constexpr const char *A_RADIUS           = "radius";
+constexpr const char *A_REMAP            = "remap";
+constexpr const char *A_SMOOTHING        = "smoothing";
+constexpr const char *A_SMOOTHING_RADIUS = "smoothing_radius";
 
 void setup_unsphericity_node(BaseNode &node)
 {
   Logger::log()->trace("setup node {}", node.get_label());
 
   // port(s)
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "input");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, "output", CONFIG(node));
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_IN);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_OUT, CONFIG(node));
 
   // attribute(s)
-  node.add_attr<FloatAttribute>("radius", "radius", 0.01f, 0.f, 0.2f);
-  node.add_attr<BoolAttribute>("remap", "remap", true);
-  node.add_attr<BoolAttribute>("inverse", "inverse", false);
-  node.add_attr<BoolAttribute>("smoothing", "smoothing", false);
-  node.add_attr<FloatAttribute>("smoothing_radius", "smoothing_radius", 0.05f, 0.f, 0.2f);
-
-  // attribute(s) order
-  node.set_attr_ordered_key(
-      {"radius", "inverse", "remap", "smoothing", "smoothing_radius"});
+  add_float(node, A_RADIUS, "radius", 0.01f, 0.f, 0.2f);
+  add_bool(node, A_REMAP, "remap", true);
+  add_bool(node, A_INVERSE, "inverse", false);
+  add_bool(node, A_SMOOTHING, "smoothing", false);
+  add_float(node, A_SMOOTHING_RADIUS, "smoothing_radius", 0.05f, 0.f, 0.2f);
 
   setup_post_process_heightmap_attributes(node,
                                           {.add_mix = false, .remap_active_state = true});
@@ -43,14 +49,14 @@ void compute_unsphericity_node(BaseNode &node)
 
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  hmap::VirtualArray *p_in = node.get_value_ref<hmap::VirtualArray>("input");
+  hmap::VirtualArray *p_in = node.get_value_ref<hmap::VirtualArray>(P_IN);
 
   if (p_in)
   {
-    hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>("output");
+    hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
     // zero radius accepted
-    int ir = std::max(0, (int)(node.get_attr<FloatAttribute>("radius") * p_out->shape.x));
+    int ir = std::max(0, (int)(node.val<float>(A_RADIUS) * p_out->shape.x));
 
     hmap::for_each_tile(
         {p_out, p_in},

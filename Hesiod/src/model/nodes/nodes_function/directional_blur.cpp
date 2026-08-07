@@ -4,13 +4,11 @@
 #include "highmap/filters.hpp"
 #include "highmap/opencl/gpu_opencl.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
-
-using namespace attr;
 
 // -----------------------------------------------------------------------------
 // Ports & Attributes
@@ -32,6 +30,10 @@ constexpr const char *A_STEPS  = "steps";
 namespace hesiod
 {
 
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
+
 void setup_directional_blur_node(BaseNode &node)
 {
   Logger::log()->trace("setup node {}", node.get_label());
@@ -43,12 +45,9 @@ void setup_directional_blur_node(BaseNode &node)
   node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_OUT, CONFIG(node));
 
   // attribute(s)
-  node.add_attr<FloatAttribute>(A_RADIUS, "radius", 0.05f, 0.f, 0.2f);
-  node.add_attr<FloatAttribute>(A_ANGLE, "angle", 0.f, -180.f, 180.f);
-  node.add_attr<IntAttribute>(A_STEPS, "steps", 16, 1, 128);
-
-  // attribute(s) order
-  node.set_attr_ordered_key({A_RADIUS, A_ANGLE, A_STEPS});
+  add_float(node, A_RADIUS, "radius", 0.05f, 0.f, 0.2f);
+  add_float(node, A_ANGLE, "angle", 0.f, -180.f, 180.f);
+  add_int(node, A_STEPS, "steps", 16, 1, 128);
 
   setup_pre_process_mask_attributes(node);
   setup_post_process_heightmap_attributes(node,
@@ -76,9 +75,9 @@ void compute_directional_blur_node(BaseNode &node)
   // --- Params
 
   // clang-format off
-  const auto radius = node.get_attr<FloatAttribute>(A_RADIUS);
-  const auto angle  = node.get_attr<FloatAttribute>(A_ANGLE);
-  const auto steps  = node.get_attr<IntAttribute>(A_STEPS);
+  const auto radius = node.val<float>(A_RADIUS);
+  const auto angle  = node.val<float>(A_ANGLE);
+  const auto steps  = node.val<int>(A_STEPS);
   // clang-format on
 
   float r_pixels = radius * p_out->shape.x;

@@ -6,66 +6,53 @@
 #include "highmap/range.hpp"
 #include "highmap/selector.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/app/enum_mappings.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
+constexpr const char *P_IN  = "input";
+constexpr const char *P_OUT = "output";
+
+constexpr const char *A_CURVATURE_CLAMP_MODE  = "curvature_clamp_mode";
+constexpr const char *A_CURVATURE_CLAMPING    = "curvature_clamping";
+constexpr const char *A_K_SATURATION          = "k_saturation";
+constexpr const char *A_RMAX                  = "rmax";
+constexpr const char *A_RMIN                  = "rmin";
+constexpr const char *A_SATURATION_LIMIT      = "saturation_limit";
+constexpr const char *A_SMALLER_SCALES_WEIGHT = "smaller_scales_weight";
+constexpr const char *A_STEPS                 = "steps";
 
 void setup_select_soil_rocks_node(BaseNode &node)
 {
   Logger::log()->trace("setup node {}", node.get_label());
 
   // port(s)
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "input");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, "output", CONFIG(node));
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_IN);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_OUT, CONFIG(node));
 
   // attribute(s)
-  node.add_attr<FloatAttribute>("rmax", "Max Radius", 0.1f, 0.f, 0.2f);
-  node.add_attr<FloatAttribute>("rmin", "Min Radius", 0.f, 0.f, 0.2f);
-  node.add_attr<IntAttribute>("steps", "Sampling Steps", 4, 2, 8);
+  add_float(node, A_RMAX, "Max Radius", 0.1f, 0.f, 0.2f);
+  add_float(node, A_RMIN, "Min Radius", 0.f, 0.f, 0.2f);
+  add_int(node, A_STEPS, "Sampling Steps", 4, 2, 8);
 
-  node.add_attr<FloatAttribute>("smaller_scales_weight",
-                                "Smaller-Scale Influence",
-                                1.f,
-                                0.f,
-                                2.f);
-  node.add_attr<EnumAttribute>("curvature_clamp_mode",
-                               "Clamp Mode",
-                               enum_mappings.clamping_mode_map,
-                               "Keep positive & clamp");
-  node.add_attr<FloatAttribute>("curvature_clamping",
-                                "Clamp Limit",
-                                1.f,
-                                0.f,
-                                FLT_MAX,
-                                "{:.4f}");
-  node.add_attr<FloatAttribute>("saturation_limit", "Saturation Limit", 0.3f, 0.f, 1.f);
-  node.add_attr<FloatAttribute>("k_saturation", "Saturation Smoothing", 0.1f, 0.f, 1.f);
-
-  // attribute(s) order
-  node.set_attr_ordered_key({"_GROUPBOX_BEGIN_Main Parameters",
-                             "smaller_scales_weight",
-                             "rmax",
-                             "rmin",
-                             "steps",
-                             "_GROUPBOX_END_",
-                             //
-                             "_GROUPBOX_BEGIN_Saturation Controls",
-                             "saturation_limit",
-                             "k_saturation",
-                             "_GROUPBOX_END_",
-                             //
-                             "_GROUPBOX_BEGIN_Curvature Clamping",
-                             "curvature_clamp_mode",
-                             "curvature_clamping",
-                             "_GROUPBOX_END_"});
+  add_float(node, A_SMALLER_SCALES_WEIGHT, "Smaller-Scale Influence", 1.f, 0.f, 2.f);
+  add_enum(node,
+           A_CURVATURE_CLAMP_MODE,
+           "Clamp Mode",
+           enum_mappings.clamping_mode_map,
+           "Keep positive & clamp");
+  add_float(node, A_CURVATURE_CLAMPING, "Clamp Limit", 1.f, 0.f, FLT_MAX, "{:.4f}");
+  add_float(node, A_SATURATION_LIMIT, "Saturation Limit", 0.3f, 0.f, 1.f);
+  add_float(node, A_K_SATURATION, "Saturation Smoothing", 0.1f, 0.f, 1.f);
 
   setup_post_process_heightmap_attributes(node,
                                           {.add_mix = false, .remap_active_state = true});
@@ -75,17 +62,17 @@ void compute_select_soil_rocks_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  hmap::VirtualArray *p_in = node.get_value_ref<hmap::VirtualArray>("input");
+  hmap::VirtualArray *p_in = node.get_value_ref<hmap::VirtualArray>(P_IN);
 
   if (p_in)
   {
-    hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>("output");
+    hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
     // --- selector
 
     int nx     = p_out->shape.x;
-    int ir_min = (int)(node.get_attr<FloatAttribute>("rmin") * nx);
-    int ir_max = std::max(1, (int)(node.get_attr<FloatAttribute>("rmax") * nx));
+    int ir_min = (int)(node.val<float>(A_RMIN) * nx);
+    int ir_max = std::max(1, (int)(node.val<float>(A_RMAX) * nx));
 
     hmap::for_each_tile(
         {p_out, p_in},
@@ -93,17 +80,15 @@ void compute_select_soil_rocks_node(BaseNode &node)
                                 const hmap::TileRegion &)
         {
           auto [pa_out, pa_in] = unpack<2>(p_arrays);
-          auto mode            = static_cast<hmap::ClampMode>(
-              node.get_attr<EnumAttribute>("curvature_clamp_mode"));
+          auto mode = static_cast<hmap::ClampMode>(node.val<int>(A_CURVATURE_CLAMP_MODE));
 
-          *pa_out = hmap::gpu::select_soil_rocks(
-              *pa_in,
-              ir_max,
-              ir_min,
-              node.get_attr<IntAttribute>("steps"),
-              node.get_attr<FloatAttribute>("smaller_scales_weight"),
-              mode,
-              node.get_attr<FloatAttribute>("curvature_clamping"));
+          *pa_out = hmap::gpu::select_soil_rocks(*pa_in,
+                                                 ir_max,
+                                                 ir_min,
+                                                 node.val<int>(A_STEPS),
+                                                 node.val<float>(A_SMALLER_SCALES_WEIGHT),
+                                                 mode,
+                                                 node.val<float>(A_CURVATURE_CLAMPING));
         },
         node.cfg().cm_gpu);
 
@@ -124,10 +109,10 @@ void compute_select_soil_rocks_node(BaseNode &node)
 
           hmap::saturate(*pa_out,
                          0.f,
-                         node.get_attr<FloatAttribute>("saturation_limit"),
+                         node.val<float>(A_SATURATION_LIMIT),
                          hmin,
                          hmax,
-                         node.get_attr<FloatAttribute>("k_saturation"));
+                         node.val<float>(A_K_SATURATION));
         },
         node.cfg().cm_cpu);
   }

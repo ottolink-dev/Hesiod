@@ -7,16 +7,18 @@
 
 #include "highmap/dbg/timer.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
 
 // -----------------------------------------------------------------------------
 // Ports & Attributes
@@ -53,23 +55,13 @@ void setup_thermal_node(BaseNode &node)
       {"Standard", "Linear", "Bedrock", "Olsen", "Ridge", "Schott", "Inflate"};
 
   // clang-format off
-  node.add_attr<ChoiceAttribute>(A_TYPE, "", choices);
-  node.add_attr<FloatAttribute>(A_TALUS, "Slope", 1.f, 0.f, FLT_MAX);
-  node.add_attr<FloatAttribute>(A_DURATION, "Duration", 0.3f, 0.05f, 6.f);
-  node.add_attr<BoolAttribute>(A_SCALE_TALUS, "Scale with Elevation", false);
+  add_choice(node, A_TYPE, "", choices);
+  add_float(node, A_TALUS, "Slope", 1.f, 0.f, FLT_MAX);
+  add_float(node, A_DURATION, "Duration", 0.3f, 0.05f, 6.f);
+  add_bool(node, A_SCALE_TALUS, "Scale with Elevation", false);
   // clang-format on
 
   // --- Attribute(s) order
-
-  node.set_attr_ordered_key({"_GROUPBOX_BEGIN_Deposition Model",
-                             A_TYPE,
-                             "_GROUPBOX_END_",
-                             //
-                             "_GROUPBOX_BEGIN_Parameters",
-                             A_TALUS,
-                             A_SCALE_TALUS,
-                             A_DURATION,
-                             "_GROUPBOX_END_"});
 
   setup_pre_process_mask_attributes(node);
   setup_post_process_heightmap_attributes(node,
@@ -101,10 +93,10 @@ void compute_thermal_node(BaseNode &node)
   // --- Params
 
   // clang-format off
-  const auto type = node.get_attr<ChoiceAttribute>(A_TYPE);
-  const auto talus_global = node.get_attr<FloatAttribute>(A_TALUS);
-  const auto duration = node.get_attr<FloatAttribute>(A_DURATION);
-  const auto scale_talus = node.get_attr<BoolAttribute>(A_SCALE_TALUS);
+  const auto type = node.val<std::string>(A_TYPE);
+  const auto talus_global = node.val<float>(A_TALUS);
+  const auto duration = node.val<float>(A_DURATION);
+  const auto scale_talus = node.val<bool>(A_SCALE_TALUS);
   // clang-format on
 
   const float talus      = talus_global / float(p_out->shape.x);
