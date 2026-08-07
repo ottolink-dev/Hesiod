@@ -3,13 +3,10 @@
  * this software. */
 #include "highmap/math.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
-
 #include "hesiod/logger.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
-
-using namespace attr;
 
 namespace hesiod
 {
@@ -23,7 +20,7 @@ void setup_abs_node(BaseNode &node)
   node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, "output", CONFIG(node));
 
   // attribute(s)
-  node.add_attr<FloatAttribute>("vshift", "vshift", 0.5f, 0.f, 1.f);
+  add_float(node, "vshift", "vshift", 0.5f, 0.f, 1.f);
 }
 
 void compute_abs_node(BaseNode &node)
@@ -41,7 +38,7 @@ void compute_abs_node(BaseNode &node)
         [&node](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
         {
           auto [pa_out, pa_in] = unpack<2>(p_arrays);
-          *pa_out = hmap::abs(*pa_in - node.get_attr<FloatAttribute>("vshift"));
+          *pa_out = hmap::abs(*pa_in - node.val<float>("vshift"));
         },
         node.cfg().cm_cpu);
   }

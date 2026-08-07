@@ -5,13 +5,10 @@
 #include "highmap/opencl/gpu_opencl.hpp"
 #include "highmap/range.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
-
 #include "hesiod/logger.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
-
-using namespace attr;
 
 namespace hesiod
 {
@@ -25,16 +22,10 @@ void setup_accumulation_curvature_node(BaseNode &node)
   node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, "output", CONFIG(node));
 
   // attribute(s)
-  node.add_attr<FloatAttribute>("radius", "radius", 0.02f, 0.f, 0.2f);
-  node.add_attr<BoolAttribute>("clamp_max", "clamp_max", false);
-  node.add_attr<FloatAttribute>("vc_max", "vc_max", 0.05f, 0.f, 0.2f);
-
-  // attribute(s) order
-  node.set_attr_ordered_key({"_GROUPBOX_BEGIN_Main Parameters",
-                             "radius",
-                             "clamp_max",
-                             "vc_max",
-                             "_GROUPBOX_END_"});
+  node.set_current_category("Main Parameters");
+  add_float(node, "radius", "radius", 0.02f, 0.f, 0.2f);
+  add_bool(node, "clamp_max", "clamp_max", false);
+  add_float(node, "vc_max", "vc_max", 0.05f, 0.f, 0.2f);
 
   setup_post_process_heightmap_attributes(node,
                                           {.add_mix = true, .remap_active_state = true});
@@ -52,7 +43,7 @@ void compute_accumulation_curvature_node(BaseNode &node)
   {
     hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>("output");
 
-    int ir = std::max(1, (int)(node.get_attr<FloatAttribute>("radius") * p_out->shape.x));
+    int ir = std::max(1, (int)(node.val<float>("radius") * p_out->shape.x));
     int nx = p_out->shape.x; // for gradient scaling
 
     hmap::for_each_tile(
@@ -67,8 +58,8 @@ void compute_accumulation_curvature_node(BaseNode &node)
                                                  hmap::CurvatureType::CT_ACCUMULATION);
 
           // truncate high values if requested
-          if (node.get_attr<BoolAttribute>("clamp_max"))
-            hmap::clamp_max(*pa_out, node.get_attr<FloatAttribute>("vc_max"));
+          if (node.val<bool>("clamp_max"))
+            hmap::clamp_max(*pa_out, node.val<float>("vc_max"));
         },
         node.cfg().cm_gpu);
 

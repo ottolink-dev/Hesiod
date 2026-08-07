@@ -3,13 +3,10 @@
  * this software. */
 #include "highmap/math.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
-
 #include "hesiod/logger.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
-
-using namespace attr;
 
 namespace hesiod
 {
@@ -23,12 +20,9 @@ void setup_abs_smooth_node(BaseNode &node)
   node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, "output", CONFIG(node));
 
   // attribute(s)
-  node.add_attr<FloatAttribute>("mu", "mu", 0.05f, 0.001f, 0.4f);
-  node.add_attr<FloatAttribute>("vshift", "vshift", 0.5f, 0.f, 1.f);
-
-  // attribute(s) order
-  node.set_attr_ordered_key(
-      {"_GROUPBOX_BEGIN_Main Parameters", "mu", "vshift", "_GROUPBOX_END_"});
+  node.set_current_category("Main Parameters");
+  add_float(node, "mu", "mu", 0.05f, 0.001f, 0.4f);
+  add_float(node, "vshift", "vshift", 0.5f, 0.f, 1.f);
 
   setup_post_process_heightmap_attributes(node,
                                           {.add_mix = true, .remap_active_state = false});
@@ -50,9 +44,9 @@ void compute_abs_smooth_node(BaseNode &node)
         {
           auto [pa_out, pa_in] = unpack<2>(p_arrays);
           *pa_out = hmap::abs_smooth(*pa_in,
-                                     node.get_attr<FloatAttribute>("mu"),
-                                     node.get_attr<FloatAttribute>("vshift")) -
-                    node.get_attr<FloatAttribute>("vshift");
+                                     node.val<float>("mu"),
+                                     node.val<float>("vshift")) -
+                    node.val<float>("vshift");
         },
         node.cfg().cm_cpu);
 
