@@ -3,90 +3,112 @@
  * this software. */
 #include "highmap/primitives.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
-
 #include "hesiod/logger.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
+
+constexpr const char *P_DR  = "dr";
+constexpr const char *P_OUT = "output";
+
+constexpr const char *A_RADIUS        = "radius";
+constexpr const char *A_SIGMA_INNER   = "sigma_inner";
+constexpr const char *A_SIGMA_OUTER   = "sigma_outer";
+constexpr const char *A_NOISE_R_AMP   = "noise_r_amp";
+constexpr const char *A_Z_BOTTOM      = "z_bottom";
+constexpr const char *A_NOISE_RATIO_Z = "noise_ratio_z";
+constexpr const char *A_CENTER        = "center";
+
+// -----------------------------------------------------------------------------
+// Setup
+// -----------------------------------------------------------------------------
 
 void setup_caldera_node(BaseNode &node)
 {
   Logger::log()->trace("setup node {}", node.get_label());
 
-  // port(s)
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "dr");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, "output", CONFIG(node));
+  // --- Ports
 
-  // attribute(s)
-  node.add_attr<FloatAttribute>("radius", "radius", 0.25f, 0.01f, 1.f);
-  node.add_attr<FloatAttribute>("sigma_inner", "sigma_inner", 0.05f, 0.f, 0.3f);
-  node.add_attr<FloatAttribute>("sigma_outer", "sigma_outer", 0.1f, 0.f, 0.3f);
-  node.add_attr<FloatAttribute>("noise_r_amp", "noise_r_amp", 0.1f, 0.f, 0.3f);
-  node.add_attr<FloatAttribute>("z_bottom", "z_bottom", 0.5f, 0.f, 1.f);
-  node.add_attr<FloatAttribute>("noise_ratio_z", "noise_ratio_z", 0.1f, 0.f, 1.f);
-  node.add_attr<Vec2FloatAttribute>("center", "center");
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_DR);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_OUT, CONFIG(node));
 
-  // attribute(s) order
-  node.set_attr_ordered_key({"radius",
-                             "sigma_inner",
-                             "sigma_outer",
-                             "noise_r_amp",
-                             "z_bottom",
-                             "noise_ratio_z",
-                             "center"});
+  // --- Attributes
+
+  node.set_current_category("Main Parameters");
+  add_float(node, A_RADIUS, "radius", 0.25f, 0.01f, 1.f);
+  add_float(node, A_SIGMA_INNER, "sigma_inner", 0.05f, 0.f, 0.3f);
+  add_float(node, A_SIGMA_OUTER, "sigma_outer", 0.1f, 0.f, 0.3f);
+  add_float(node, A_NOISE_R_AMP, "noise_r_amp", 0.1f, 0.f, 0.3f);
+  add_float(node, A_Z_BOTTOM, "z_bottom", 0.5f, 0.f, 1.f);
+  add_float(node, A_NOISE_RATIO_Z, "noise_ratio_z", 0.1f, 0.f, 1.f);
+  add_xy(node, A_CENTER, "center");
 
   setup_post_process_heightmap_attributes(node,
                                           {.add_mix = false, .remap_active_state = true});
 }
 
+// -----------------------------------------------------------------------------
+// Compute
+// -----------------------------------------------------------------------------
+
 void compute_caldera_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  // base noise function
-  hmap::VirtualArray *p_dr = node.get_value_ref<hmap::VirtualArray>("dr");
-  hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>("output");
+  // --- Inputs / Outputs
 
-  float radius_pixel = std::max(1.f,
-                                node.get_attr<FloatAttribute>("radius") * p_out->shape.x);
-  float sigma_inner_pixel = std::max(1.f,
-                                     node.get_attr<FloatAttribute>("sigma_inner") *
-                                         p_out->shape.x);
-  float sigma_outer_pixel = std::max(1.f,
-                                     node.get_attr<FloatAttribute>("sigma_outer") *
-                                         p_out->shape.x);
-  float noise_r_amp_pixel = std::max(1.f,
-                                     node.get_attr<FloatAttribute>("noise_r_amp") *
-                                         p_out->shape.x);
+  auto *p_dr  = node.get_value_ref<hmap::VirtualArray>(P_DR);
+  auto *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
+
+  if (!p_out)
+    return;
+
+  // --- Params
+
+  const auto radius        = node.val<float>(A_RADIUS);
+  const auto sigma_inner   = node.val<float>(A_SIGMA_INNER);
+  const auto sigma_outer   = node.val<float>(A_SIGMA_OUTER);
+  const auto noise_r_amp   = node.val<float>(A_NOISE_R_AMP);
+  const auto z_bottom      = node.val<float>(A_Z_BOTTOM);
+  const auto noise_ratio_z = node.val<float>(A_NOISE_RATIO_Z);
+  const auto center        = node.val<glm::vec2>(A_CENTER);
+
+  const float radius_pixel        = std::max(1.f, radius * p_out->shape.x);
+  const float sigma_inner_pixel   = std::max(1.f, sigma_inner * p_out->shape.x);
+  const float sigma_outer_pixel   = std::max(1.f, sigma_outer * p_out->shape.x);
+  const float noise_r_amp_pixel   = std::max(1.f, noise_r_amp * p_out->shape.x);
+
+  // --- Compute
 
   hmap::for_each_tile(
       {p_out, p_dr},
-      [&node, &radius_pixel, &sigma_inner_pixel, &sigma_outer_pixel, &noise_r_amp_pixel](
-          std::vector<hmap::Array *> p_arrays,
-          const hmap::TileRegion    &region)
+      [&](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &region)
       {
         hmap::Array *pa_out = p_arrays[0];
-        hmap::Array *pa_dr = p_arrays[1];
+        hmap::Array *pa_dr  = p_arrays[1];
 
         *pa_out = hmap::caldera(region.shape,
                                 radius_pixel,
                                 sigma_inner_pixel,
                                 sigma_outer_pixel,
-                                node.get_attr<FloatAttribute>("z_bottom"),
+                                z_bottom,
                                 pa_dr,
                                 noise_r_amp_pixel,
-                                node.get_attr<FloatAttribute>("noise_ratio_z"),
-                                node.get_attr<Vec2FloatAttribute>("center"),
+                                noise_ratio_z,
+                                center,
                                 region.bbox);
       },
       node.cfg().cm_cpu);
 
-  // post-process
+  // --- Post-process
+
   post_process_heightmap(node, *p_out);
 }
 

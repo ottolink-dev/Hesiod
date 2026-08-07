@@ -13,8 +13,8 @@
 #include "meta_qt/widgets/points_canvas.hpp"
 
 #include "hesiod/logger.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
 
 namespace hesiod
 {
@@ -24,7 +24,7 @@ namespace hesiod
 // -----------------------------------------------------------------------------
 
 constexpr const char *P_BACKGROUND = "background";
-constexpr const char *P_OUT = "cloud";
+constexpr const char *P_OUT        = "cloud";
 
 constexpr const char *A_CLOUD = "cloud";
 
@@ -43,13 +43,10 @@ void setup_cloud_node(BaseNode &node)
 
   // --- Attributes
 
-  auto &c = node.get_meta_group().current();
-
-  auto *a = c.add<std::vector<glm::vec3>>(A_CLOUD, {});
-  a->metadata().try_add(meta::keys::ui::label, std::string("Cloud"));
-  a->metadata().try_add(meta::keys::ui::widget_type, std::string("PointsEditor"));
-  a->metadata().try_add(meta::keys::ui::category, std::string("Main"));
-  a->metadata().try_add(
+  node.set_current_category("Main");
+  auto &a = add_cloud(node, A_CLOUD, "Cloud");
+  a.metadata().try_add(meta::keys::ui::widget_type, std::string("PointsEditor"));
+  a.metadata().try_add(
       meta::keys::ui::data_provider,
       meta::DataProvider{
           [&node, port_id = std::string(P_BACKGROUND)]() -> meta::Any
@@ -75,8 +72,8 @@ void setup_cloud_node(BaseNode &node)
             d.pixels.resize(img.size());
             for (int y = 0; y < shape.y; ++y)
               std::copy_n(img.data() + (shape.y - 1 - y) * stride,
-                          stride,
-                          d.pixels.data() + y * stride);
+                           stride,
+                           d.pixels.data() + y * stride);
             return d;
           }});
 }
@@ -93,10 +90,12 @@ void compute_cloud_node(BaseNode &node)
 
   auto *p_out = node.get_value_ref<hmap::Cloud>(P_OUT);
 
+  if (!p_out)
+    return;
+
   // --- Params
 
-  const auto cloud_attr = node.get_meta_group().current().value<std::vector<glm::vec3>>(
-      A_CLOUD);
+  const auto cloud_attr = node.val<std::vector<glm::vec3>>(A_CLOUD);
 
   // --- Compute
 
