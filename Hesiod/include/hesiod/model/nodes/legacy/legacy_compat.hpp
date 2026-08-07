@@ -49,11 +49,7 @@
 namespace hsd::legacy
 {
 
-namespace keys
-{
-inline constexpr char seed[] = "legacy.seed";
-inline constexpr char type_label[] = "ui.type_label";
-} // namespace keys
+
 
 /// Legacy color-gradient stop (field-compatible with attr::Stop and meta::Stop).
 struct Stop
@@ -114,17 +110,6 @@ struct legacy_traits; // primary: undefined (unknown tag = compile error)
 
 template <typename T>
 concept CompatTag = requires { typename legacy_traits<T>::storage; };
-
-// marker key helpers: record the legacy attribute type so serialization (Task 4)
-// can round-trip the original "type_string" and identify seed attributes.
-inline void add_compat_markers(meta::AbstractAttribute &a,
-                               const char              *type_string,
-                               bool                     is_seed = false)
-{
-  a.metadata().try_add(std::string(keys::type_label), std::string(type_string));
-  if (is_seed)
-    a.metadata().try_add(std::string(keys::seed), true);
-}
 
 // tolerant field read (legacy json_safe_get parity: warn + keep default)
 template <typename V>
@@ -192,7 +177,6 @@ template <> struct legacy_traits<FloatAttribute>
                                           vmax,
                                           value_format,
                                           log_scale);
-    add_compat_markers(a, type_string);
     return a;
   }
 
@@ -215,7 +199,6 @@ template <> struct legacy_traits<IntAttribute>
                                       const std::string        &value_format = "{}")
   {
     auto &a = meta::presets::slider_int(c, key, label, value, vmin, vmax, value_format);
-    add_compat_markers(a, type_string);
     return a;
   }
 
@@ -235,7 +218,6 @@ template <> struct legacy_traits<BoolAttribute>
                                        bool                      value)
   {
     auto &a = meta::presets::toggle_button(c, key, label, value);
-    add_compat_markers(a, type_string);
     return a;
   }
 
@@ -252,7 +234,6 @@ template <> struct legacy_traits<BoolAttribute>
                                             label_true,
                                             label_false,
                                             value);
-    add_compat_markers(a, type_string);
     return a;
   }
 
@@ -285,7 +266,6 @@ template <> struct legacy_traits<EnumAttribute>
   {
     const int value = map.begin()->second; // legacy: default = first entry
     auto     &a = meta::presets::enum_choice(c, key, label, make_items(map), value);
-    add_compat_markers(a, type_string);
     return a;
   }
 
@@ -307,7 +287,6 @@ template <> struct legacy_traits<EnumAttribute>
           choice);
     }
     auto &a = meta::presets::enum_choice(c, key, label, make_items(map), value);
-    add_compat_markers(a, type_string);
     return a;
   }
 
@@ -332,7 +311,6 @@ template <> struct legacy_traits<SeedAttribute>
                                       unsigned int              value = 0)
   {
     auto &a = meta::presets::seed(c, key, label, static_cast<int>(value));
-    add_compat_markers(a, type_string, /*is_seed=*/true);
     return a;
   }
 
@@ -365,7 +343,6 @@ template <> struct legacy_traits<RangeAttribute>
                                    2.f,
                                    is_active,
                                    "{:.3f}");
-    add_compat_markers(a, type_string);
     return a;
   }
 
@@ -386,7 +363,6 @@ template <> struct legacy_traits<RangeAttribute>
                                    vmax,
                                    is_active,
                                    value_format);
-    add_compat_markers(a, type_string);
     return a;
   }
 
@@ -432,7 +408,6 @@ template <> struct legacy_traits<WaveNbAttribute>
                                         vmax,
                                         link_xy,
                                         value_format);
-    add_compat_markers(a, type_string);
     return a;
   }
 
@@ -452,7 +427,6 @@ template <> struct legacy_traits<Vec2FloatAttribute>
   {
     // legacy 1-arg ctor: value {0.5,0.5}, bounds [0,1]^2
     auto &a = meta::presets::xy(c, key, label, {0.5f, 0.5f}, 0.f, 1.f, 0.f, 1.f);
-    add_compat_markers(a, type_string);
     return a;
   }
 
@@ -466,7 +440,6 @@ template <> struct legacy_traits<Vec2FloatAttribute>
                                             float                     ymax)
   {
     auto &a = meta::presets::xy(c, key, label, value, xmin, xmax, ymin, ymax);
-    add_compat_markers(a, type_string);
     return a;
   }
 
@@ -485,7 +458,6 @@ template <> struct legacy_traits<CloudAttribute>
                                           const std::string        &label)
   {
     auto &a = meta::presets::points(c, key, label);
-    add_compat_markers(a, type_string);
     return a;
   }
 
@@ -498,7 +470,6 @@ template <> struct legacy_traits<CloudAttribute>
     a.metadata()
         .try_add(std::string(meta::keys::ui::closed), are_points_connected)
         ->value() = are_points_connected;
-    add_compat_markers(a, type_string);
     return a;
   }
 
@@ -508,7 +479,6 @@ template <> struct legacy_traits<CloudAttribute>
                                           storage                   value)
   {
     auto &a = meta::presets::points(c, key, label, std::move(value));
-    add_compat_markers(a, type_string);
     return a;
   }
 
@@ -531,7 +501,6 @@ template <> struct legacy_traits<ColorAttribute>
                                    key,
                                    label,
                                    {value[0], value[1], value[2], value[3]});
-    add_compat_markers(a, type_string);
     return a;
   }
 
@@ -544,7 +513,6 @@ template <> struct legacy_traits<ColorAttribute>
                                             float                     a)
   {
     auto &attr = meta::presets::color(c, key, label, {r, g, b, a});
-    add_compat_markers(attr, type_string);
     return attr;
   }
 
@@ -563,7 +531,6 @@ template <> struct legacy_traits<ColorGradientAttribute>
                                                       const std::string        &label)
   {
     auto &a = meta::presets::color_gradient(c, key, label);
-    add_compat_markers(a, type_string);
     return a;
   }
 
@@ -580,7 +547,6 @@ template <> struct legacy_traits<ColorGradientAttribute>
     g.set_value(stops);
 
     auto &a = meta::presets::color_gradient(c, key, label, g);
-    add_compat_markers(a, type_string);
     return a;
   }
 
@@ -610,7 +576,6 @@ template <> struct legacy_traits<FilenameAttribute>
       bool                         for_saving = true)
   {
     auto &a = meta::presets::file(c, key, label, value, filter, for_saving);
-    add_compat_markers(a, type_string);
     return a;
   }
 
@@ -630,7 +595,6 @@ template <> struct legacy_traits<StringAttribute>
                                               const std::string        &value)
   {
     auto &a = meta::presets::text(c, key, label, value);
-    add_compat_markers(a, type_string);
     return a;
   }
 
@@ -641,7 +605,6 @@ template <> struct legacy_traits<StringAttribute>
                                               bool                      read_only)
   {
     auto &a = meta::presets::text(c, key, label, value, read_only);
-    add_compat_markers(a, type_string);
     return a;
   }
 
@@ -671,7 +634,6 @@ template <> struct legacy_traits<ChoiceAttribute>
                                               const std::string              &value)
   {
     auto &a = meta::presets::string_choice(c, key, label, choice_list, value);
-    add_compat_markers(a, type_string);
     return a;
   }
 
@@ -705,7 +667,6 @@ template <> struct legacy_traits<VecFloatAttribute>
                                           bool /*is_size_variable*/ = true)
   {
     auto &a = meta::presets::curve(c, key, label, std::move(value), vmin, vmax);
-    add_compat_markers(a, type_string);
     return a;
   }
 

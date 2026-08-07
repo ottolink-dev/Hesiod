@@ -31,7 +31,6 @@ void setup_brush_node(BaseNode &node)
   a->metadata().try_add(meta::keys::ui::category, std::string("Main"));
   a->metadata().try_add(meta::keys::ui::width, 256);
   a->metadata().try_add(meta::keys::ui::height, 256);
-  a->metadata().try_add(std::string(hsd::legacy::keys::type_label), std::string("Array"));
 
   setup_post_process_heightmap_attributes(node,
                                           {.add_mix = true, .remap_active_state = true});

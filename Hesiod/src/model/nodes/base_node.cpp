@@ -36,6 +36,44 @@ namespace hesiod
 // the same array shape.
 namespace
 {
+std::string get_legacy_type_name(const meta::AbstractAttribute *p, const std::string &key)
+{
+  std::type_index t = p->type();
+  if (t == std::type_index(typeid(float))) return "Float";
+  if (t == std::type_index(typeid(int))) {
+    if (key == "seed")
+      return "Random seed number";
+    const std::string *wt = p->metadata().try_value<std::string>(meta::keys::ui::widget_type);
+    if (wt && (*wt == "EnumComboBox" || *wt == "Enum"))
+      return "Enum";
+    return "Int";
+  }
+  if (t == std::type_index(typeid(bool))) return "Bool";
+  if (t == std::type_index(typeid(std::string))) {
+    const std::string *wt = p->metadata().try_value<std::string>(meta::keys::ui::widget_type);
+    if (wt) {
+      if (*wt == "File") return "Filename";
+      if (*wt == "ComboBox" || *wt == "StringChoice") return "Choice";
+    }
+    return "String";
+  }
+  if (t == std::type_index(typeid(glm::vec2))) {
+    if (p->metadata().find(meta::keys::ui::active))
+      return "Value range";
+    return "Vec2Float";
+  }
+  if (t == std::type_index(typeid(std::vector<glm::vec3>))) return "Cloud";
+  if (t == std::type_index(typeid(glm::vec4))) return "Color";
+  if (t == std::type_index(typeid(meta::ColorGradient))) return "Color gradient";
+  if (t == std::type_index(typeid(hmap::Array))) return "Array";
+  if (t == std::type_index(typeid(std::vector<float>))) return "Curve";
+
+  std::string name = t.name();
+  if (name.find("WaveNb") != std::string::npos) return "Wavenumber";
+
+  return name;
+}
+
 nlohmann::json canonicalize_parity_value(const nlohmann::json &v)
 {
   if (v.is_array())
@@ -719,9 +757,7 @@ nlohmann::json BaseNode::node_parameters_to_json() const
       const std::string *lbl = p->metadata().try_value<std::string>(
           meta::keys::ui::label);
       param_info["label"] = lbl ? *lbl : key;
-      const std::string *tl = p->metadata().try_value<std::string>(
-          hsd::legacy::keys::type_label);
-      param_info["type"] = tl ? *tl : std::string(p->type().name());
+      param_info["type"] = get_legacy_type_name(p, key);
       auto json_ptr = nlohmann::json::json_pointer("/parameters/" + key + "/description");
       param_info["description"] = this->documentation.value(json_ptr, "No description");
       params_json[key] = param_info;
@@ -780,11 +816,7 @@ nlohmann::json BaseNode::attribute_parity_record() const
 
     const nlohmann::json j = p->json_to();
 
-    // legacy_type metadata restores the legacy type string; native Meta
-    // nodes without it fall back to the C++ type name (no legacy form).
-    const std::string *tl = p->metadata().try_value<std::string>(
-        hsd::legacy::keys::type_label);
-    const std::string type_string = tl ? *tl : std::string(p->type().name());
+    const std::string type_string = get_legacy_type_name(p, key);
 
     const std::string *lbl = p->metadata().try_value<std::string>(meta::keys::ui::label);
     const std::string  label = lbl ? *lbl : key;
@@ -828,8 +860,7 @@ nlohmann::json BaseNode::attribute_parity_record() const
     // the facade-backed seed preset (which attaches constraints.min/max)
     // to match, so seed nodes don't false-positive on bounds in the
     // legacy/meta parity diff.
-    if (const bool *is_seed = p->metadata().try_value<bool>(hsd::legacy::keys::seed);
-        is_seed && *is_seed)
+    if (key == "seed")
       bounds = nlohmann::json();
 
     const std::string *cat = p->metadata().try_value<std::string>(
@@ -899,8 +930,7 @@ void BaseNode::reseed(bool backward)
     auto *p = this->get_meta_group().current().find(key);
     if (!p)
       continue;
-    if (const bool *is_seed = p->metadata().try_value<bool>(hsd::legacy::keys::seed);
-        is_seed && *is_seed)
+    if (key == "seed")
       if (auto *typed = p->try_cast<meta::Attribute<int>>())
       {
         int increment = backward ? -1 : 1;
