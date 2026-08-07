@@ -111,33 +111,6 @@ struct legacy_traits; // primary: undefined (unknown tag = compile error)
 template <typename T>
 concept CompatTag = requires { typename legacy_traits<T>::storage; };
 
-// tolerant field read (legacy json_safe_get parity: warn + keep default)
-template <typename V>
-inline void safe_get(const nlohmann::json &j,
-                     const char           *field,
-                     V                    &out,
-                     const std::string    &key)
-{
-  if (j.contains(field))
-  {
-    try
-    {
-      out = j.at(field).get<V>();
-    }
-    catch (const std::exception &e)
-    {
-      hesiod::Logger::log()->warn("compat decode: key '{}' field '{}': {}",
-                                  key,
-                                  field,
-                                  e.what());
-    }
-  }
-  else
-    hesiod::Logger::log()->warn("compat decode: key '{}' missing field '{}', keeping "
-                                "default",
-                                key,
-                                field);
-}
 
 inline glm::vec2 vec2_from_json(const nlohmann::json &j,
                                 const char           *field,
