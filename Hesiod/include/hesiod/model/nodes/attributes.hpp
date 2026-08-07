@@ -142,12 +142,12 @@ meta::Attribute<glm::vec2> &add_wavenumber(BaseNode          &node,
                                            const std::string &value_format = "{:.2f}");
 
 meta::Attribute<glm::vec2> &add_xy(BaseNode          &node,
-                                    const std::string &key,
-                                    const std::string &label,
-                                    const glm::vec2   &default_val = {0.5f, 0.5f},
-                                    float              xmin = 0.f,
-                                    float              xmax = 1.f,
-                                    float              ymin = 0.f,
-                                    float              ymax = 1.f);
+                                   const std::string &key,
+                                   const std::string &label,
+                                   const glm::vec2   &default_val = {0.5f, 0.5f},
+                                   float              xmin = 0.f,
+                                   float              xmax = 1.f,
+                                   float              ymin = 0.f,
+                                   float              ymax = 1.f);
 
 } // namespace hesiod

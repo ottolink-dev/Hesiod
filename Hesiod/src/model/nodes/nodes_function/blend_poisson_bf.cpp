@@ -15,10 +15,10 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_IN1  = "input 1";
-constexpr const char *P_IN2  = "input 2";
+constexpr const char *P_IN1 = "input 1";
+constexpr const char *P_IN2 = "input 2";
 constexpr const char *P_MASK = "mask";
-constexpr const char *P_OUT  = "output";
+constexpr const char *P_OUT = "output";
 
 constexpr const char *A_ITERATIONS = "iterations";
 
@@ -56,10 +56,10 @@ void compute_blend_poisson_bf_node(BaseNode &node)
 
   // --- Inputs / Outputs
 
-  auto *p_in1  = node.get_value_ref<hmap::VirtualArray>(P_IN1);
-  auto *p_in2  = node.get_value_ref<hmap::VirtualArray>(P_IN2);
+  auto *p_in1 = node.get_value_ref<hmap::VirtualArray>(P_IN1);
+  auto *p_in2 = node.get_value_ref<hmap::VirtualArray>(P_IN2);
   auto *p_mask = node.get_value_ref<hmap::VirtualArray>(P_MASK);
-  auto *p_out  = node.get_value_ref<hmap::VirtualArray>(P_OUT);
+  auto *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
   if (!p_in1 || !p_in2 || !p_out)
     return;
@@ -74,15 +74,12 @@ void compute_blend_poisson_bf_node(BaseNode &node)
       {p_out, p_in1, p_in2, p_mask},
       [iterations](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
       {
-        hmap::Array *pa_out  = p_arrays[0];
-        hmap::Array *pa_in1  = p_arrays[1];
-        hmap::Array *pa_in2  = p_arrays[2];
+        hmap::Array *pa_out = p_arrays[0];
+        hmap::Array *pa_in1 = p_arrays[1];
+        hmap::Array *pa_in2 = p_arrays[2];
         hmap::Array *pa_mask = p_arrays[3];
 
-        *pa_out = hmap::gpu::blend_poisson_bf(*pa_in1,
-                                              *pa_in2,
-                                              iterations,
-                                              pa_mask);
+        *pa_out = hmap::gpu::blend_poisson_bf(*pa_in1, *pa_in2, iterations, pa_mask);
       },
       node.cfg().cm_gpu);
 

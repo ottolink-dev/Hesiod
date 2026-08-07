@@ -21,12 +21,12 @@ constexpr const char *P_IN1 = "input 1";
 constexpr const char *P_IN2 = "input 2";
 constexpr const char *P_OUT = "output";
 
-constexpr const char *A_METHOD        = "blending_method";
-constexpr const char *A_K             = "k";
-constexpr const char *A_RADIUS        = "radius";
+constexpr const char *A_METHOD = "blending_method";
+constexpr const char *A_K = "k";
+constexpr const char *A_RADIUS = "radius";
 constexpr const char *A_INPUT1_WEIGHT = "input1_weight";
 constexpr const char *A_INPUT2_WEIGHT = "input2_weight";
-constexpr const char *A_SWAP_INPUTS   = "swap_inputs";
+constexpr const char *A_SWAP_INPUTS = "swap_inputs";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -45,7 +45,11 @@ void setup_blend_node(BaseNode &node)
   // --- Attributes
 
   node.set_current_category("Main Parameters");
-  add_enum(node, A_METHOD, "Method:", enum_mappings.blending_method_map, "minimum_smooth");
+  add_enum(node,
+           A_METHOD,
+           "Method:",
+           enum_mappings.blending_method_map,
+           "minimum_smooth");
   add_float(node, A_K, "k", 0.1f, 0.01f, 1.f);
   add_float(node, A_RADIUS, "radius", 0.05f, 0.f, 0.2f);
 
@@ -82,9 +86,9 @@ void compute_blend_node(BaseNode &node)
   if (swap)
     std::swap(p_in1, p_in2);
 
-  const auto k             = node.val<float>(A_K);
-  const auto radius        = node.val<float>(A_RADIUS);
-  const auto method        = node.val<int>(A_METHOD);
+  const auto k = node.val<float>(A_K);
+  const auto radius = node.val<float>(A_RADIUS);
+  const auto method = node.val<int>(A_METHOD);
   const auto input1_weight = node.val<float>(A_INPUT1_WEIGHT);
   const auto input2_weight = node.val<float>(A_INPUT2_WEIGHT);
 
