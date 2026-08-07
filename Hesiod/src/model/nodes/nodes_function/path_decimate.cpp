@@ -18,7 +18,7 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_IN = "input";
+constexpr const char *P_IN  = "input";
 constexpr const char *P_OUT = "path";
 
 constexpr const char *A_NPOINTS = "npoints";
@@ -47,7 +47,7 @@ void compute_path_decimate_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  hmap::Path *p_in = node.get_value_ref<hmap::Path>(P_IN);
+  hmap::Path *p_in  = node.get_value_ref<hmap::Path>(P_IN);
   hmap::Path *p_out = node.get_value_ref<hmap::Path>(P_OUT);
 
   if (!p_in || p_in->size() < 2)

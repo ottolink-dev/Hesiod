@@ -18,16 +18,16 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_Z_IN = "elevation_in";
+constexpr const char *P_Z_IN     = "elevation_in";
 constexpr const char *P_DEPTH_IN = "water_depth_in";
-constexpr const char *P_MASK_IN = "mask";
+constexpr const char *P_MASK_IN  = "mask";
 
-constexpr const char *P_Z_OUT = "elevation";
+constexpr const char *P_Z_OUT     = "elevation";
 constexpr const char *P_DEPTH_OUT = "water_depth";
-constexpr const char *P_MASK_OUT = "water_mask";
+constexpr const char *P_MASK_OUT  = "water_mask";
 
 constexpr const char *A_ADDITIONAL_DEPTH = "additional_depth";
-constexpr const char *A_ITERATIONS = "iterations";
+constexpr const char *A_ITERATIONS       = "iterations";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -71,13 +71,13 @@ void compute_coastal_erosion_diffusion_node(BaseNode &node)
 
   // --- Inputs / Outputs
 
-  auto *p_z = node.get_value_ref<hmap::VirtualArray>(P_Z_IN);
+  auto *p_z     = node.get_value_ref<hmap::VirtualArray>(P_Z_IN);
   auto *p_depth = node.get_value_ref<hmap::VirtualArray>(P_DEPTH_IN);
-  auto *p_mask = node.get_value_ref<hmap::VirtualArray>(P_MASK_IN);
+  auto *p_mask  = node.get_value_ref<hmap::VirtualArray>(P_MASK_IN);
 
-  auto *p_z_out = node.get_value_ref<hmap::VirtualArray>(P_Z_OUT);
+  auto *p_z_out     = node.get_value_ref<hmap::VirtualArray>(P_Z_OUT);
   auto *p_depth_out = node.get_value_ref<hmap::VirtualArray>(P_DEPTH_OUT);
-  auto *p_mask_out = node.get_value_ref<hmap::VirtualArray>(P_MASK_OUT);
+  auto *p_mask_out  = node.get_value_ref<hmap::VirtualArray>(P_MASK_OUT);
 
   if (!p_z || !p_depth)
     return;
@@ -85,7 +85,7 @@ void compute_coastal_erosion_diffusion_node(BaseNode &node)
   // --- Params
 
   const auto additional_depth = node.get_attr<FloatAttribute>(A_ADDITIONAL_DEPTH);
-  const auto iterations = node.get_attr<IntAttribute>(A_ITERATIONS);
+  const auto iterations       = node.get_attr<IntAttribute>(A_ITERATIONS);
 
   // --- Compute
 
@@ -100,7 +100,7 @@ void compute_coastal_erosion_diffusion_node(BaseNode &node)
 
         auto [pa_z_out, pa_depth_out, pa_mask_out] = unpack<3>(out);
 
-        *pa_z_out = *pa_z;
+        *pa_z_out     = *pa_z;
         *pa_depth_out = *pa_depth;
 
         hmap::coastal_erosion_diffusion(*pa_z_out,

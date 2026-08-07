@@ -51,7 +51,7 @@ void compute_select_angle_node(BaseNode &node)
         [&node, &ir](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
         {
           auto [pa_out, pa_in] = unpack<2>(p_arrays);
-          *pa_out = select_angle(*pa_in,
+          *pa_out              = select_angle(*pa_in,
                                  node.get_attr<FloatAttribute>("angle"),
                                  node.get_attr<FloatAttribute>("sigma"),
                                  ir);

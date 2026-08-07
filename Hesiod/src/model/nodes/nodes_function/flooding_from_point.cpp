@@ -34,7 +34,7 @@ void compute_flooding_from_point_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  hmap::VirtualArray *p_in = node.get_value_ref<hmap::VirtualArray>("elevation");
+  hmap::VirtualArray *p_in    = node.get_value_ref<hmap::VirtualArray>("elevation");
   hmap::Cloud        *p_cloud = node.get_value_ref<hmap::Cloud>("cloud");
 
   if (p_in && p_cloud)

@@ -38,7 +38,7 @@ void compute_hydraulic_blur_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  auto *p_in = node.get_value_ref<hmap::VirtualArray>("input");
+  auto *p_in  = node.get_value_ref<hmap::VirtualArray>("input");
   auto *p_out = node.get_value_ref<hmap::VirtualArray>("output");
 
   if (!p_in)
@@ -52,7 +52,7 @@ void compute_hydraulic_blur_node(BaseNode &node)
       [&node](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
       {
         auto [pa_out, pa_in] = unpack<2>(p_arrays);
-        *pa_out = *pa_in;
+        *pa_out              = *pa_in;
 
         hmap::hydraulic_blur(*pa_out,
                              node.get_attr<FloatAttribute>("radius"),

@@ -32,8 +32,8 @@ void compute_select_transitions_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  hmap::VirtualArray *p_in1 = node.get_value_ref<hmap::VirtualArray>("input 1");
-  hmap::VirtualArray *p_in2 = node.get_value_ref<hmap::VirtualArray>("input 2");
+  hmap::VirtualArray *p_in1   = node.get_value_ref<hmap::VirtualArray>("input 1");
+  hmap::VirtualArray *p_in2   = node.get_value_ref<hmap::VirtualArray>("input 2");
   hmap::VirtualArray *p_blend = node.get_value_ref<hmap::VirtualArray>("blend");
 
   if (p_in1 && p_in2 && p_blend)
@@ -44,7 +44,7 @@ void compute_select_transitions_node(BaseNode &node)
         {p_out, p_in1, p_in2, p_blend},
         [](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
         {
-          hmap::Array &m = *p_arrays[0];
+          hmap::Array &m  = *p_arrays[0];
           hmap::Array &a1 = *p_arrays[1];
           hmap::Array &a2 = *p_arrays[2];
           hmap::Array &a3 = *p_arrays[3];

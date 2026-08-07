@@ -19,10 +19,10 @@ namespace hesiod
 
 constexpr const char *P_IN = "input";
 
-constexpr const char *A_FILENAME = "fname";
-constexpr const char *A_FORMAT = "format";
+constexpr const char *A_FILENAME    = "fname";
+constexpr const char *A_FORMAT      = "format";
 constexpr const char *A_AUTO_EXPORT = "auto_export";
-constexpr const char *A_ADD_PREFIX = "add_prefix";
+constexpr const char *A_ADD_PREFIX  = "add_prefix";
 constexpr const char *A_FORCE_SHAPE = "force_shape";
 
 // -----------------------------------------------------------------------------
@@ -73,9 +73,9 @@ void compute_export_heightmap_node(BaseNode &node)
   // --- Params
 
   const auto auto_export = node.val<bool>(A_AUTO_EXPORT);
-  auto       fname = node.val<std::filesystem::path>(A_FILENAME);
-  const auto format = node.val<int>(A_FORMAT);
-  const auto add_prefix = node.val<bool>(A_ADD_PREFIX);
+  auto       fname       = node.val<std::filesystem::path>(A_FILENAME);
+  const auto format      = node.val<int>(A_FORMAT);
+  const auto add_prefix  = node.val<bool>(A_ADD_PREFIX);
   const auto force_shape = node.val<std::string>(A_FORCE_SHAPE);
 
   if (!auto_export)
@@ -94,8 +94,8 @@ void compute_export_heightmap_node(BaseNode &node)
 
   if (force_shape != "Unchanged")
   {
-    int        px = (int)std::log2(node.cfg().shape.x);
-    int        py = (int)std::log2(node.cfg().shape.y);
+    int        px        = (int)std::log2(node.cfg().shape.x);
+    int        py        = (int)std::log2(node.cfg().shape.y);
     glm::ivec2 new_shape = {std::pow(2, px), std::pow(2, py)};
 
     if (force_shape == "2^N + 1")

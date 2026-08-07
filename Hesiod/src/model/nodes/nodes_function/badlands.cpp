@@ -19,18 +19,18 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_DX = "dx";
-constexpr const char *P_DY = "dy";
+constexpr const char *P_DX  = "dx";
+constexpr const char *P_DY  = "dy";
 constexpr const char *P_ENV = "envelope";
 constexpr const char *P_OUT = "out";
 
-constexpr const char *A_ELEVATION = "elevation";
-constexpr const char *A_KW = "kw";
-constexpr const char *A_SEED = "seed";
-constexpr const char *A_OCTAVES = "octaves";
-constexpr const char *A_RUGOSITY = "rugosity";
-constexpr const char *A_ANGLE = "angle";
-constexpr const char *A_K_SMOOTHING = "k_smoothing";
+constexpr const char *A_ELEVATION      = "elevation";
+constexpr const char *A_KW             = "kw";
+constexpr const char *A_SEED           = "seed";
+constexpr const char *A_OCTAVES        = "octaves";
+constexpr const char *A_RUGOSITY       = "rugosity";
+constexpr const char *A_ANGLE          = "angle";
+constexpr const char *A_K_SMOOTHING    = "k_smoothing";
 constexpr const char *A_BASE_NOISE_AMP = "base_noise_amp";
 
 // -----------------------------------------------------------------------------
@@ -92,8 +92,8 @@ void compute_badlands_node(BaseNode &node)
 
   // --- Inputs / Outputs
 
-  auto *p_dx = node.get_value_ref<hmap::VirtualArray>(P_DX);
-  auto *p_dy = node.get_value_ref<hmap::VirtualArray>(P_DY);
+  auto *p_dx  = node.get_value_ref<hmap::VirtualArray>(P_DX);
+  auto *p_dy  = node.get_value_ref<hmap::VirtualArray>(P_DY);
   auto *p_env = node.get_value_ref<hmap::VirtualArray>(P_ENV);
   auto *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
@@ -125,7 +125,7 @@ void compute_badlands_node(BaseNode &node)
           const hmap::TileRegion          &region)
       {
         auto [pa_dx, pa_dy] = unpack<2>(in);
-        auto [pa_out] = unpack<1>(out);
+        auto [pa_out]       = unpack<1>(out);
 
         *pa_out = hmap::gpu::badlands(region.shape,
                                       kw,

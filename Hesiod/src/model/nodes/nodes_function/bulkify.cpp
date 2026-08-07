@@ -16,10 +16,10 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_IN   = "input";
-constexpr const char *P_DX   = "dx";
-constexpr const char *P_DY   = "dy";
-constexpr const char *P_OUT  = "output";
+constexpr const char *P_IN  = "input";
+constexpr const char *P_DX  = "dx";
+constexpr const char *P_DY  = "dy";
+constexpr const char *P_OUT = "output";
 
 constexpr const char *A_AMPLITUDE = "amplitude";
 constexpr const char *A_BULK_TYPE = "bulk_type";
@@ -85,14 +85,13 @@ void compute_bulkify_node(BaseNode &node)
       {
         auto [pa_out, pa_in, pa_dx, pa_dy] = unpack<4>(p_arrays);
 
-        *pa_out = hmap::bulkify(
-            *pa_in,
-            bulk_type,
-            amplitude,
-            pa_dx,
-            pa_dy,
-            center,
-            region.bbox);
+        *pa_out = hmap::bulkify(*pa_in,
+                                bulk_type,
+                                amplitude,
+                                pa_dx,
+                                pa_dy,
+                                center,
+                                region.bbox);
       },
       node.cfg().cm_cpu);
 

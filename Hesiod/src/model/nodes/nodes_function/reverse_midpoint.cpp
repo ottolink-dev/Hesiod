@@ -46,7 +46,7 @@ void compute_reverse_midpoint_node(BaseNode &node)
     if (p_path->size() > 1)
     {
       hmap::Array path_array = hmap::Array(p_out->shape);
-      glm::vec4   bbox = glm::vec4(0.f, 1.f, 0.f, 1.f);
+      glm::vec4   bbox       = glm::vec4(0.f, 1.f, 0.f, 1.f);
       p_path->to_array(path_array, bbox);
 
       hmap::Array z = hmap::reverse_midpoint(path_array,
@@ -67,7 +67,7 @@ void compute_reverse_midpoint_node(BaseNode &node)
           [](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
           {
             hmap::Array *pa_out = p_arrays[0];
-            *pa_out = 0.f;
+            *pa_out             = 0.f;
           },
           node.cfg().cm_cpu);
     }

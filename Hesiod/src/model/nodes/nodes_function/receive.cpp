@@ -32,7 +32,7 @@ void compute_receive_node(BaseNode &node)
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
   hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>("output");
-  std::string         tag = node.val<std::string>("tag");
+  std::string         tag   = node.val<std::string>("tag");
 
   // cast to specialized node
   ReceiveNode *p_receive_node = dynamic_cast<ReceiveNode *>(&node);
@@ -64,7 +64,7 @@ void compute_receive_node(BaseNode &node)
 
     // retrieve various pointers for this broadcast
     const hmap::CoordFrame   *t_source = broadcast_param.t_source;
-    const hmap::VirtualArray *p_va = broadcast_param.p_va;
+    const hmap::VirtualArray *p_va     = broadcast_param.p_va;
     hmap::CoordFrame         *t_target = p_receive_node->get_p_coord_frame();
 
     if (t_source && p_va && t_target)

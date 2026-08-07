@@ -20,19 +20,19 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_IN = "input";
-constexpr const char *P_DX = "dx";
-constexpr const char *P_DY = "dy";
+constexpr const char *P_IN   = "input";
+constexpr const char *P_DX   = "dx";
+constexpr const char *P_DY   = "dy";
 constexpr const char *P_MASK = "mask";
-constexpr const char *P_OUT = "output";
+constexpr const char *P_OUT  = "output";
 
-constexpr const char *A_SLOPE = "slope";
-constexpr const char *A_SKEW = "skew";
-constexpr const char *A_DIRECTION_COUNT = "direction_count";
-constexpr const char *A_DIRECTION_OFFSET = "direction_offset";
+constexpr const char *A_SLOPE             = "slope";
+constexpr const char *A_SKEW              = "skew";
+constexpr const char *A_DIRECTION_COUNT   = "direction_count";
+constexpr const char *A_DIRECTION_OFFSET  = "direction_offset";
 constexpr const char *A_RANDOM_DIRECTIONS = "random_directions";
-constexpr const char *A_SEED = "seed";
-constexpr const char *A_MIX_RATIO = "mix_ratio";
+constexpr const char *A_SEED              = "seed";
+constexpr const char *A_MIX_RATIO         = "mix_ratio";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -94,11 +94,11 @@ void compute_strata_plates_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  auto *p_in = node.get_value_ref<hmap::VirtualArray>(P_IN);
-  auto *p_dx = node.get_value_ref<hmap::VirtualArray>(P_DX);
-  auto *p_dy = node.get_value_ref<hmap::VirtualArray>(P_DY);
+  auto *p_in   = node.get_value_ref<hmap::VirtualArray>(P_IN);
+  auto *p_dx   = node.get_value_ref<hmap::VirtualArray>(P_DX);
+  auto *p_dy   = node.get_value_ref<hmap::VirtualArray>(P_DY);
   auto *p_mask = node.get_value_ref<hmap::VirtualArray>(P_MASK);
-  auto *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
+  auto *p_out  = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
   if (!p_in)
     return;
@@ -144,7 +144,7 @@ void compute_strata_plates_node(BaseNode &node)
           const hmap::TileRegion &)
       {
         auto [pa_in, pa_dx, pa_dy, pa_mask, pa_talus] = unpack<5>(p_arrays_in);
-        auto [pa_out] = unpack<1>(p_arrays_out);
+        auto [pa_out]                                 = unpack<1>(p_arrays_out);
 
         *pa_out = *pa_in;
 

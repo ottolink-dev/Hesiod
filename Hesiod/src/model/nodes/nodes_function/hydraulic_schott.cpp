@@ -51,7 +51,7 @@ void compute_hydraulic_schott_node(BaseNode &node)
 
   if (p_in)
   {
-    hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>("output");
+    hmap::VirtualArray *p_out      = node.get_value_ref<hmap::VirtualArray>("output");
     hmap::VirtualArray *p_flow_map = node.get_value_ref<hmap::VirtualArray>("flow_map");
 
     int iterations = int(node.get_attr<FloatAttribute>("duration") * p_out->shape.x);

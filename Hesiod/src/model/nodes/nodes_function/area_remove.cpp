@@ -18,10 +18,10 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_IN = "input";
+constexpr const char *P_IN  = "input";
 constexpr const char *P_OUT = "output";
 
-constexpr const char *A_RADIUS = "radius_limit";
+constexpr const char *A_RADIUS   = "radius_limit";
 constexpr const char *A_BG_VALUE = "bg_value";
 
 // -----------------------------------------------------------------------------
@@ -52,7 +52,7 @@ void compute_area_remove_node(BaseNode &node)
 
   // --- Inputs / Outputs
 
-  auto *p_in = node.get_value_ref<hmap::VirtualArray>(P_IN);
+  auto *p_in  = node.get_value_ref<hmap::VirtualArray>(P_IN);
   auto *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
   if (!p_in)
@@ -60,7 +60,7 @@ void compute_area_remove_node(BaseNode &node)
 
   // --- Params
 
-  const auto radius = node.val<float>(A_RADIUS);
+  const auto radius   = node.val<float>(A_RADIUS);
   const auto bg_value = node.val<float>(A_BG_VALUE);
 
   const float area_pixels = M_PI * std::pow(radius * p_in->shape.x, 2);

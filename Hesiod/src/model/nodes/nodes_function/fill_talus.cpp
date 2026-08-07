@@ -18,14 +18,14 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_IN = "input";
+constexpr const char *P_IN    = "input";
 constexpr const char *P_SMASK = "seed_mask";
-constexpr const char *P_OUT = "output";
+constexpr const char *P_OUT   = "output";
 
-constexpr const char *A_SLOPE = "slope";
+constexpr const char *A_SLOPE       = "slope";
 constexpr const char *A_NOISE_RATIO = "nosie_ratio";
-constexpr const char *A_SEED = "seed";
-constexpr const char *A_IR = "ir";
+constexpr const char *A_SEED        = "seed";
+constexpr const char *A_IR          = "ir";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -60,9 +60,9 @@ void compute_fill_talus_node(BaseNode &node)
 
   // --- Inputs / Outputs
 
-  auto *p_in = node.get_value_ref<hmap::VirtualArray>(P_IN);
+  auto *p_in        = node.get_value_ref<hmap::VirtualArray>(P_IN);
   auto *p_seed_mask = node.get_value_ref<hmap::VirtualArray>(P_SMASK);
-  auto *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
+  auto *p_out       = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
   if (!p_in)
     return;
@@ -84,7 +84,7 @@ void compute_fill_talus_node(BaseNode &node)
       [&](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
       {
         auto [pa_out, pa_in, pa_seed_mask] = unpack<3>(p_arrays);
-        *pa_out = *pa_in;
+        *pa_out                            = *pa_in;
 
         hmap::fill_talus(*pa_out, talus, seed, ir, noise_ratio, pa_seed_mask);
       },

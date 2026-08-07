@@ -49,7 +49,7 @@ void compute_flooding_lake_system_node(BaseNode &node)
                                    const hmap::TileRegion &)
         {
           auto [pa_out, pa_in] = unpack<2>(p_arrays);
-          *pa_out = hmap::flooding_lake_system(*pa_in, surface_threshold);
+          *pa_out              = hmap::flooding_lake_system(*pa_in, surface_threshold);
         },
         node.cfg().cm_single_array); // forced, not tileable
   }

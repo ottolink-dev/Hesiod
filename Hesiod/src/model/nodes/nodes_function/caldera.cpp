@@ -80,10 +80,10 @@ void compute_caldera_node(BaseNode &node)
   const auto noise_ratio_z = node.val<float>(A_NOISE_RATIO_Z);
   const auto center        = node.val<glm::vec2>(A_CENTER);
 
-  const float radius_pixel        = std::max(1.f, radius * p_out->shape.x);
-  const float sigma_inner_pixel   = std::max(1.f, sigma_inner * p_out->shape.x);
-  const float sigma_outer_pixel   = std::max(1.f, sigma_outer * p_out->shape.x);
-  const float noise_r_amp_pixel   = std::max(1.f, noise_r_amp * p_out->shape.x);
+  const float radius_pixel      = std::max(1.f, radius * p_out->shape.x);
+  const float sigma_inner_pixel = std::max(1.f, sigma_inner * p_out->shape.x);
+  const float sigma_outer_pixel = std::max(1.f, sigma_outer * p_out->shape.x);
+  const float noise_r_amp_pixel = std::max(1.f, noise_r_amp * p_out->shape.x);
 
   // --- Compute
 

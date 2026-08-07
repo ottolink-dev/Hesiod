@@ -73,7 +73,7 @@ void compute_quilting_blend_node(BaseNode &node)
 
     // --- work on a single array (i.e. not-tiled algo)
 
-    std::vector<hmap::Array>         arrays = {};
+    std::vector<hmap::Array>         arrays   = {};
     std::vector<const hmap::Array *> p_arrays = {};
 
     for (auto &ptr : {p_in1, p_in2, p_in3, p_in4})

@@ -18,8 +18,8 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_ELEVATION = "elevation";
-constexpr const char *P_WATER_DEPTH = "water_depth";
+constexpr const char *P_ELEVATION       = "elevation";
+constexpr const char *P_WATER_DEPTH     = "water_depth";
 constexpr const char *P_WATER_ELEVATION = "water_elevation";
 
 // -----------------------------------------------------------------------------
@@ -53,9 +53,9 @@ void compute_water_elevation_from_depth_node(BaseNode &node)
 
   // --- Inputs / Outputs
 
-  auto *p_z = node.get_value_ref<hmap::VirtualArray>(P_ELEVATION);
+  auto *p_z     = node.get_value_ref<hmap::VirtualArray>(P_ELEVATION);
   auto *p_depth = node.get_value_ref<hmap::VirtualArray>(P_WATER_DEPTH);
-  auto *p_wz = node.get_value_ref<hmap::VirtualArray>(P_WATER_ELEVATION);
+  auto *p_wz    = node.get_value_ref<hmap::VirtualArray>(P_WATER_ELEVATION);
 
   if (!p_z || !p_depth)
     return;

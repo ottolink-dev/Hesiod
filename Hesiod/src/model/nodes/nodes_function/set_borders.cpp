@@ -18,20 +18,20 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_IN = "input";
+constexpr const char *P_IN  = "input";
 constexpr const char *P_OUT = "output";
 
-constexpr const char *A_RADIUS = "radius";
+constexpr const char *A_RADIUS         = "radius";
 constexpr const char *A_UNIFORM_RADIUS = "uniform_radius";
-constexpr const char *A_RADIUS_WEST = "radius_west";
-constexpr const char *A_RADIUS_EAST = "radius_east";
-constexpr const char *A_RADIUS_NORTH = "radius_north";
-constexpr const char *A_RADIUS_SOUTH = "radius_south";
-constexpr const char *A_UNIFORM_VALUE = "uniform_value";
-constexpr const char *A_VALUE_WEST = "value_west";
-constexpr const char *A_VALUE_EAST = "value_east";
-constexpr const char *A_VALUE_NORTH = "value_north";
-constexpr const char *A_VALUE_SOUTH = "value_south";
+constexpr const char *A_RADIUS_WEST    = "radius_west";
+constexpr const char *A_RADIUS_EAST    = "radius_east";
+constexpr const char *A_RADIUS_NORTH   = "radius_north";
+constexpr const char *A_RADIUS_SOUTH   = "radius_south";
+constexpr const char *A_UNIFORM_VALUE  = "uniform_value";
+constexpr const char *A_VALUE_WEST     = "value_west";
+constexpr const char *A_VALUE_EAST     = "value_east";
+constexpr const char *A_VALUE_NORTH    = "value_north";
+constexpr const char *A_VALUE_SOUTH    = "value_south";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -94,7 +94,7 @@ void compute_set_borders_node(BaseNode &node)
 
   // --- Inputs / Outputs
 
-  auto *p_in = node.get_value_ref<hmap::VirtualArray>(P_IN);
+  auto *p_in  = node.get_value_ref<hmap::VirtualArray>(P_IN);
   auto *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
   if (!p_in || !p_out)

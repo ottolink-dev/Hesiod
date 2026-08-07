@@ -45,7 +45,7 @@ void compute_path_dig_node(BaseNode &node)
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
   hmap::Path         *p_path = node.get_value_ref<hmap::Path>("path");
-  hmap::VirtualArray *p_in = node.get_value_ref<hmap::VirtualArray>("input");
+  hmap::VirtualArray *p_in   = node.get_value_ref<hmap::VirtualArray>("input");
 
   if (p_path && p_in)
     if (p_path->size() > 1)
@@ -58,8 +58,8 @@ void compute_path_dig_node(BaseNode &node)
                                            "flattening_radius") *
                                        p_out->shape.x);
 
-      ir_width = std::max(1, ir_width);
-      ir_decay = std::max(1, ir_decay);
+      ir_width             = std::max(1, ir_width);
+      ir_decay             = std::max(1, ir_decay);
       ir_flattening_radius = std::max(1, ir_flattening_radius);
 
       if (!node.get_attr<BoolAttribute>("force_downhill"))
@@ -71,7 +71,7 @@ void compute_path_dig_node(BaseNode &node)
                 const hmap::TileRegion    &region)
             {
               hmap::Array *pa_out = p_arrays[0];
-              hmap::Array *pa_in = p_arrays[1];
+              hmap::Array *pa_in  = p_arrays[1];
 
               *pa_out = *pa_in;
 

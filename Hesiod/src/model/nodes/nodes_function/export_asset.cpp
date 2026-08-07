@@ -24,20 +24,20 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_ELEVATION = "elevation";
-constexpr const char *P_TEXTURE = "texture";
+constexpr const char *P_ELEVATION  = "elevation";
+constexpr const char *P_TEXTURE    = "texture";
 constexpr const char *P_NORMAL_MAP = "normal map details";
-constexpr const char *P_MASK = "mask";
+constexpr const char *P_MASK       = "mask";
 
-constexpr const char *A_FNAME = "fname";
-constexpr const char *A_AUTO_EXPORT = "auto_export";
-constexpr const char *A_ADD_PREFIX = "add_prefix";
-constexpr const char *A_EXPORT_FORMAT = "export_format";
-constexpr const char *A_MESH_TYPE = "mesh_type";
-constexpr const char *A_MAX_ERROR = "max_error";
+constexpr const char *A_FNAME             = "fname";
+constexpr const char *A_AUTO_EXPORT       = "auto_export";
+constexpr const char *A_ADD_PREFIX        = "add_prefix";
+constexpr const char *A_EXPORT_FORMAT     = "export_format";
+constexpr const char *A_MESH_TYPE         = "mesh_type";
+constexpr const char *A_MAX_ERROR         = "max_error";
 constexpr const char *A_ELEVATION_SCALING = "elevation_scaling";
-constexpr const char *A_DETAIL_SCALING = "detail_scaling";
-constexpr const char *A_BLENDING_METHOD = "blending_method";
+constexpr const char *A_DETAIL_SCALING    = "detail_scaling";
+constexpr const char *A_BLENDING_METHOD   = "blending_method";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -117,10 +117,10 @@ void compute_export_asset_node(BaseNode &node)
 
   // --- Inputs
 
-  auto *p_elev = node.get_value_ref<hmap::VirtualArray>(P_ELEVATION);
+  auto *p_elev  = node.get_value_ref<hmap::VirtualArray>(P_ELEVATION);
   auto *p_color = node.get_value_ref<hmap::VirtualTexture>(P_TEXTURE);
-  auto *p_nmap = node.get_value_ref<hmap::VirtualTexture>(P_NORMAL_MAP);
-  auto *p_mask = node.get_value_ref<hmap::VirtualArray>(P_MASK);
+  auto *p_nmap  = node.get_value_ref<hmap::VirtualTexture>(P_NORMAL_MAP);
+  auto *p_mask  = node.get_value_ref<hmap::VirtualArray>(P_MASK);
 
   if (!p_elev)
     return;

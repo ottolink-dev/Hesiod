@@ -19,19 +19,19 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_IN = "texture_in";
+constexpr const char *P_IN  = "texture_in";
 constexpr const char *P_OUT = "texture_out";
 
-constexpr const char *A_LEVELS = "levels";
-constexpr const char *A_EXPOSURE = "exposure";
-constexpr const char *A_CONTRAST = "contrast";
-constexpr const char *A_SATURATION = "saturation";
+constexpr const char *A_LEVELS      = "levels";
+constexpr const char *A_EXPOSURE    = "exposure";
+constexpr const char *A_CONTRAST    = "contrast";
+constexpr const char *A_SATURATION  = "saturation";
 constexpr const char *A_TEMPERATURE = "temperature";
-constexpr const char *A_GAMMA = "gamma";
-constexpr const char *A_DITHER = "dither_amp";
-constexpr const char *A_FILMIC = "filmic_tonemap";
-constexpr const char *A_ACES = "aces_tonemap";
-constexpr const char *A_AGX = "agx_tonemap";
+constexpr const char *A_GAMMA       = "gamma";
+constexpr const char *A_DITHER      = "dither_amp";
+constexpr const char *A_FILMIC      = "filmic_tonemap";
+constexpr const char *A_ACES        = "aces_tonemap";
+constexpr const char *A_AGX         = "agx_tonemap";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -90,7 +90,7 @@ void compute_color_adjust_node(BaseNode &node)
 
   // --- Inputs / Outputs
 
-  auto *p_in = node.get_value_ref<hmap::VirtualTexture>(P_IN);
+  auto *p_in  = node.get_value_ref<hmap::VirtualTexture>(P_IN);
   auto *p_out = node.get_value_ref<hmap::VirtualTexture>(P_OUT);
 
   if (!p_in)
@@ -111,17 +111,17 @@ void compute_color_adjust_node(BaseNode &node)
   const auto agx         = node.get_attr<BoolAttribute>(A_AGX);
   // clang-format on
 
-  hmap::ColorAdjust param = {.in_min = levels[0],
-                             .in_max = levels[1],
-                             .exposure = exposure,
-                             .contrast = contrast,
-                             .saturation = saturation,
-                             .temperature = temperature,
-                             .gamma = gamma,
-                             .dither_amp = dither,
+  hmap::ColorAdjust param = {.in_min         = levels[0],
+                             .in_max         = levels[1],
+                             .exposure       = exposure,
+                             .contrast       = contrast,
+                             .saturation     = saturation,
+                             .temperature    = temperature,
+                             .gamma          = gamma,
+                             .dither_amp     = dither,
                              .filmic_tonemap = filmic,
-                             .aces_tonemap = aces,
-                             .agx_tonemap = agx};
+                             .aces_tonemap   = aces,
+                             .agx_tonemap    = agx};
 
   // --- Compute
 

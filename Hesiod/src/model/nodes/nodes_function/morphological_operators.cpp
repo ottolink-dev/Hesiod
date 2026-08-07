@@ -19,11 +19,11 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_IN = "input";
+constexpr const char *P_IN  = "input";
 constexpr const char *P_OUT = "output";
 
-constexpr const char *A_RADIUS = "radius";
-constexpr const char *A_OPERATOR = "operator";
+constexpr const char *A_RADIUS    = "radius";
+constexpr const char *A_OPERATOR  = "operator";
 constexpr const char *A_SAT_RATIO = "sat_ratio";
 
 // -----------------------------------------------------------------------------
@@ -64,7 +64,7 @@ void compute_morphological_operators_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  auto *p_in = node.get_value_ref<hmap::VirtualArray>(P_IN);
+  auto *p_in  = node.get_value_ref<hmap::VirtualArray>(P_IN);
   auto *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
   if (!p_in)
@@ -88,7 +88,7 @@ void compute_morphological_operators_node(BaseNode &node)
       [&](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
       {
         auto [pa_out, pa_in] = unpack<2>(p_arrays);
-        *pa_out = hmap::gpu::morphological_operators(*pa_in, ir, op);
+        *pa_out              = hmap::gpu::morphological_operators(*pa_in, ir, op);
       },
       node.cfg().cm_gpu);
 

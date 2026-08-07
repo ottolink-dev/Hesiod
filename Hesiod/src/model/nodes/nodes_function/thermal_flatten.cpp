@@ -19,15 +19,15 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_IN = "input";
+constexpr const char *P_IN   = "input";
 constexpr const char *P_MASK = "mask";
-constexpr const char *P_OUT = "output";
+constexpr const char *P_OUT  = "output";
 
 constexpr const char *A_TALUS_GLOBAL = "talus_global";
-constexpr const char *A_DURATION = "duration";
-constexpr const char *A_SCALE_TALUS = "scale_talus_with_elevation";
-constexpr const char *A_SIGMA_INF = "sigma_inf";
-constexpr const char *A_SIGMA_SUP = "sigma_sup";
+constexpr const char *A_DURATION     = "duration";
+constexpr const char *A_SCALE_TALUS  = "scale_talus_with_elevation";
+constexpr const char *A_SIGMA_INF    = "sigma_inf";
+constexpr const char *A_SIGMA_SUP    = "sigma_sup";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -74,9 +74,9 @@ void compute_thermal_flatten_node(BaseNode &node)
 
   // --- Inputs / Outputs
 
-  auto *p_in = node.get_value_ref<hmap::VirtualArray>(P_IN);
+  auto *p_in   = node.get_value_ref<hmap::VirtualArray>(P_IN);
   auto *p_mask = node.get_value_ref<hmap::VirtualArray>(P_MASK);
-  auto *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
+  auto *p_out  = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
   if (!p_in)
     return;
@@ -115,7 +115,7 @@ void compute_thermal_flatten_node(BaseNode &node)
           const hmap::TileRegion &)
       {
         auto [pa_in, pa_talus_map, pa_mask] = unpack<3>(in);
-        auto [pa_out] = unpack<1>(out);
+        auto [pa_out]                       = unpack<1>(out);
 
         *pa_out = *pa_in;
 

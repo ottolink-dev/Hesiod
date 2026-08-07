@@ -19,11 +19,11 @@ using namespace attr;
 namespace hesiod
 {
 
-constexpr const char *P_IN = "input";
+constexpr const char *P_IN  = "input";
 constexpr const char *P_OUT = "output";
 
 constexpr const char *A_K_SMOOTHING = "k_smoothing";
-constexpr const char *A_RANGE = "range";
+constexpr const char *A_RANGE       = "range";
 
 void setup_saturate_node(BaseNode &node)
 {
@@ -78,7 +78,7 @@ void setup_saturate_node(BaseNode &node)
                 for (int i = 0; i < arr.shape.x; ++i)
                 {
                   int bin = static_cast<int>(sa * arr(i, j) + sb);
-                  bin = bin < 0 ? 0 : (bin >= nbins ? nbins - 1 : bin);
+                  bin     = bin < 0 ? 0 : (bin >= nbins ? nbins - 1 : bin);
                   d.y[bin] += 1.f;
                 }
               return d;
@@ -105,7 +105,7 @@ void compute_saturate_node(BaseNode &node)
     auto &c = node.get_meta_group().current();
 
     const glm::vec2 range = c.value<glm::vec2>(A_RANGE);
-    const float     k = c.value<float>(A_K_SMOOTHING);
+    const float     k     = c.value<float>(A_K_SMOOTHING);
 
     hmap::for_each_tile(
         {p_out, p_in},
@@ -113,7 +113,7 @@ void compute_saturate_node(BaseNode &node)
                                           const hmap::TileRegion &)
         {
           auto [pa_out, pa_in] = unpack<2>(p_arrays);
-          *pa_out = *pa_in;
+          *pa_out              = *pa_in;
 
           hmap::saturate(*pa_out, range[0], range[1], hmin, hmax, k);
         },

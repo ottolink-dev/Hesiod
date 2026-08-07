@@ -59,7 +59,7 @@ void compute_path_to_heightmap_node(BaseNode &node)
       {
         // work on a single array as a temporary solution
         hmap::Array z_array = hmap::Array(p_out->shape);
-        glm::vec4   bbox = glm::vec4(0.f, 1.f, 0.f, 1.f);
+        glm::vec4   bbox    = glm::vec4(0.f, 1.f, 0.f, 1.f);
 
         p_path->to_array(z_array, bbox, true);
         p_out->from_array(z_array, node.cfg().cm_cpu);
@@ -76,7 +76,7 @@ void compute_path_to_heightmap_node(BaseNode &node)
           [](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
           {
             hmap::Array *pa_out = p_arrays[0];
-            *pa_out = 0.f;
+            *pa_out             = 0.f;
           },
           node.cfg().cm_cpu);
     }

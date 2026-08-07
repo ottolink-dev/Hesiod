@@ -21,14 +21,14 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_IN = "input";
+constexpr const char *P_IN  = "input";
 constexpr const char *P_OUT = "mask";
 
-constexpr const char *A_RADIUS = "radius";
-constexpr const char *A_CTYPE = "ctype";
+constexpr const char *A_RADIUS   = "radius";
+constexpr const char *A_CTYPE    = "ctype";
 constexpr const char *A_CLAMPING = "clamping";
-constexpr const char *A_SATMAX = "satmax";
-constexpr const char *A_APPROX = "approx";
+constexpr const char *A_SATMAX   = "satmax";
+constexpr const char *A_APPROX   = "approx";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -79,7 +79,7 @@ void compute_curvatures_node(BaseNode &node)
 
   // --- Inputs / Outputs
 
-  auto *p_in = node.get_value_ref<hmap::VirtualArray>(P_IN);
+  auto *p_in  = node.get_value_ref<hmap::VirtualArray>(P_IN);
   auto *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
   if (!p_in)
@@ -96,9 +96,9 @@ void compute_curvatures_node(BaseNode &node)
   // clang-format on
 
   const bool  keep_both = (clamping == "Both");
-  const int   ir = std::max(1, int(radius * p_out->shape.x));
-  const float satmin = sat_perc;
-  const float satmax = 1.f - sat_perc;
+  const int   ir        = std::max(1, int(radius * p_out->shape.x));
+  const float satmin    = sat_perc;
+  const float satmax    = 1.f - sat_perc;
 
   // --- Compute
 
@@ -109,7 +109,7 @@ void compute_curvatures_node(BaseNode &node)
           std::vector<hmap::Array *>       out,
           const hmap::TileRegion &)
       {
-        auto [pa_in] = unpack<1>(in);
+        auto [pa_in]  = unpack<1>(in);
         auto [pa_out] = unpack<1>(out);
 
         *pa_out = hmap::gpu::curvature_quadric(*pa_in, ir, ctype, approx_algo);

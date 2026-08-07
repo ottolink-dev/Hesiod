@@ -54,7 +54,7 @@ void compute_stamping_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  hmap::Cloud *p_cloud = node.get_value_ref<hmap::Cloud>("cloud");
+  hmap::Cloud *p_cloud  = node.get_value_ref<hmap::Cloud>("cloud");
   hmap::Array *p_kernel = node.get_value_ref<hmap::Array>("kernel");
 
   if (p_cloud && p_kernel)

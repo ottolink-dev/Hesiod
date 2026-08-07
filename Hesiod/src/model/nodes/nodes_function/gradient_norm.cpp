@@ -41,7 +41,7 @@ void compute_gradient_norm_node(BaseNode &node)
         [](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
         {
           auto [pa_out, pa_in] = unpack<2>(p_arrays);
-          *pa_out = hmap::gradient_norm(*pa_in);
+          *pa_out              = hmap::gradient_norm(*pa_in);
         },
         node.cfg().cm_cpu);
 

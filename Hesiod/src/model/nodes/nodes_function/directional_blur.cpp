@@ -16,14 +16,14 @@ using namespace attr;
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_IN = "input";
+constexpr const char *P_IN    = "input";
 constexpr const char *P_ANGLE = "angle";
-constexpr const char *P_MASK = "mask";
-constexpr const char *P_OUT = "output";
+constexpr const char *P_MASK  = "mask";
+constexpr const char *P_OUT   = "output";
 
 constexpr const char *A_RADIUS = "radius";
-constexpr const char *A_ANGLE = "angle";
-constexpr const char *A_STEPS = "steps";
+constexpr const char *A_ANGLE  = "angle";
+constexpr const char *A_STEPS  = "steps";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -65,10 +65,10 @@ void compute_directional_blur_node(BaseNode &node)
 
   // --- Inputs / Outputs
 
-  auto *p_in = node.get_value_ref<hmap::VirtualArray>(P_IN);
+  auto *p_in    = node.get_value_ref<hmap::VirtualArray>(P_IN);
   auto *p_angle = node.get_value_ref<hmap::VirtualArray>(P_ANGLE);
-  auto *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
-  auto *p_mask = node.get_value_ref<hmap::VirtualArray>(P_MASK);
+  auto *p_out   = node.get_value_ref<hmap::VirtualArray>(P_OUT);
+  auto *p_mask  = node.get_value_ref<hmap::VirtualArray>(P_MASK);
 
   if (!p_in)
     return;

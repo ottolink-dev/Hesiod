@@ -41,7 +41,7 @@ void compute_heightmap_to_normal_map_node(BaseNode &node)
     hmap::VirtualTexture *p_nmap = node.get_value_ref<hmap::VirtualTexture>("normal map");
 
     hmap::Array  array = p_in->to_array(node.cfg().cm_cpu);
-    hmap::Tensor tn = hmap::normal_map(array);
+    hmap::Tensor tn    = hmap::normal_map(array);
 
     hmap::Array nx = tn.get_slice(0);
     hmap::Array ny = tn.get_slice(1);

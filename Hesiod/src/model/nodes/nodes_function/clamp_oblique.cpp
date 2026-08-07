@@ -86,7 +86,7 @@ void compute_clamp_oblique_node(BaseNode &node)
       [&](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &region)
       {
         auto [pa_out, pa_in] = unpack<2>(p_arrays);
-        *pa_out = *pa_in;
+        *pa_out              = *pa_in;
 
         hmap::clamp_oblique_plane(*pa_out,
                                   vmax,

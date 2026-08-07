@@ -49,7 +49,7 @@ void compute_flooding_from_boundaries_node(BaseNode &node)
         [&node](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
         {
           auto [pa_out, pa_in] = unpack<2>(p_arrays);
-          *pa_out = hmap::flooding_from_boundaries(
+          *pa_out              = hmap::flooding_from_boundaries(
               *pa_in,
               node.get_attr<FloatAttribute>("elevation"),
               node.get_attr<BoolAttribute>("from_east"),

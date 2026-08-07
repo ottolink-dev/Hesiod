@@ -15,7 +15,7 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_IN = "input";
+constexpr const char *P_IN  = "input";
 constexpr const char *P_OUT = "water_depth";
 
 constexpr const char *A_ELEVATION = "elevation";
@@ -49,7 +49,7 @@ void compute_flooding_uniform_level_node(BaseNode &node)
 
   // --- Inputs / Outputs
 
-  auto *p_in = node.get_value_ref<hmap::VirtualArray>(P_IN);
+  auto *p_in  = node.get_value_ref<hmap::VirtualArray>(P_IN);
   auto *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
   if (!p_in)
@@ -68,7 +68,7 @@ void compute_flooding_uniform_level_node(BaseNode &node)
           std::vector<hmap::Array *>       out,
           const hmap::TileRegion &)
       {
-        auto [pa_in] = unpack<1>(in);
+        auto [pa_in]  = unpack<1>(in);
         auto [pa_out] = unpack<1>(out);
 
         *pa_out = hmap::flooding_uniform_level(*pa_in, elevation);

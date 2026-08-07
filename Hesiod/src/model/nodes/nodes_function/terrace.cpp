@@ -48,8 +48,8 @@ void compute_terrace_node(BaseNode &node)
   if (p_in)
   {
     hmap::VirtualArray *p_noise = node.get_value_ref<hmap::VirtualArray>("noise");
-    hmap::VirtualArray *p_mask = node.get_value_ref<hmap::VirtualArray>("mask");
-    hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>("output");
+    hmap::VirtualArray *p_mask  = node.get_value_ref<hmap::VirtualArray>("mask");
+    hmap::VirtualArray *p_out   = node.get_value_ref<hmap::VirtualArray>("output");
 
     // prepare mask
     std::shared_ptr<hmap::VirtualArray> sp_mask = pre_process_mask(node, p_mask, *p_in);
@@ -61,10 +61,10 @@ void compute_terrace_node(BaseNode &node)
         {p_out, p_in, p_noise, p_mask},
         [&node, hmin, hmax](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
         {
-          hmap::Array *pa_out = p_arrays[0];
-          hmap::Array *pa_in = p_arrays[1];
+          hmap::Array *pa_out   = p_arrays[0];
+          hmap::Array *pa_in    = p_arrays[1];
           hmap::Array *pa_noise = p_arrays[2];
-          hmap::Array *pa_mask = p_arrays[3];
+          hmap::Array *pa_mask  = p_arrays[3];
 
           *pa_out = *pa_in;
 

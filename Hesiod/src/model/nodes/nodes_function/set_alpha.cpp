@@ -59,7 +59,7 @@ void compute_set_alpha_node(BaseNode &node)
           {&alpha_copy, p_noise},
           [&node](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
           {
-            hmap::Array &alpha = *p_arrays[0];
+            hmap::Array &alpha    = *p_arrays[0];
             hmap::Array *pa_noise = p_arrays[1];
 
             if (pa_noise)

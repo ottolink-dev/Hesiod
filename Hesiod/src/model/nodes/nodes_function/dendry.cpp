@@ -70,11 +70,11 @@ void compute_dendry_node(BaseNode &node)
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
   // base noise function
-  hmap::VirtualArray *p_dx = node.get_value_ref<hmap::VirtualArray>("dx");
-  hmap::VirtualArray *p_dy = node.get_value_ref<hmap::VirtualArray>("dy");
+  hmap::VirtualArray *p_dx   = node.get_value_ref<hmap::VirtualArray>("dx");
+  hmap::VirtualArray *p_dy   = node.get_value_ref<hmap::VirtualArray>("dy");
   hmap::VirtualArray *p_ctrl = node.get_value_ref<hmap::VirtualArray>("control");
-  hmap::VirtualArray *p_env = node.get_value_ref<hmap::VirtualArray>("envelope");
-  hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>("out");
+  hmap::VirtualArray *p_env  = node.get_value_ref<hmap::VirtualArray>("envelope");
+  hmap::VirtualArray *p_out  = node.get_value_ref<hmap::VirtualArray>("out");
 
   if (p_ctrl)
   {
@@ -87,8 +87,8 @@ void compute_dendry_node(BaseNode &node)
                              const hmap::TileRegion    &region)
         {
           hmap::Array *pa_out = p_arrays[0];
-          hmap::Array *pa_dx = p_arrays[1];
-          hmap::Array *pa_dy = p_arrays[2];
+          hmap::Array *pa_dx  = p_arrays[1];
+          hmap::Array *pa_dy  = p_arrays[2];
 
           *pa_out = hmap::dendry(
               region.shape,

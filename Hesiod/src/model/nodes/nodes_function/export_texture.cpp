@@ -49,7 +49,7 @@ void compute_export_texture_node(BaseNode &node)
   if (p_in && node.get_attr<BoolAttribute>("auto_export"))
   {
     std::filesystem::path fname = node.get_attr<FilenameAttribute>("fname");
-    fname = ensure_extension(fname, ".png");
+    fname                       = ensure_extension(fname, ".png");
 
     if (node.get_attr<BoolAttribute>("add_prefix"))
       fname = prepend_project_name_to_path(fname);

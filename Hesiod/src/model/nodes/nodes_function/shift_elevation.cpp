@@ -39,7 +39,7 @@ void compute_shift_elevation_node(BaseNode &node)
         [&node](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
         {
           auto [pa_out, pa_in] = unpack<2>(p_arrays);
-          *pa_out = *pa_in + node.get_attr<FloatAttribute>("shift");
+          *pa_out              = *pa_in + node.get_attr<FloatAttribute>("shift");
         },
         node.cfg().cm_cpu);
   }

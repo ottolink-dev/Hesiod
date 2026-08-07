@@ -16,8 +16,8 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_INPUT = "input";
-constexpr const char *P_MASK = "mask";
+constexpr const char *P_INPUT  = "input";
+constexpr const char *P_MASK   = "mask";
 constexpr const char *P_OUTPUT = "output";
 
 constexpr const char *A_RADIUS = "radius";
@@ -52,7 +52,7 @@ void compute_smooth_cpulse_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  auto *p_in = node.get_value_ref<hmap::VirtualArray>(P_INPUT);
+  auto *p_in  = node.get_value_ref<hmap::VirtualArray>(P_INPUT);
   auto *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUTPUT);
 
   if (!p_in || !p_out)
@@ -73,8 +73,8 @@ void compute_smooth_cpulse_node(BaseNode &node)
             const hmap::TileRegion &)
       {
         const auto [pa_in, pa_mask] = unpack<2>(p_arrays_in);
-        auto [pa_out] = unpack<1>(p_arrays_out);
-        *pa_out = *pa_in;
+        auto [pa_out]               = unpack<1>(p_arrays_out);
+        *pa_out                     = *pa_in;
 
         hmap::gpu::smooth_cpulse(*pa_out, ir, pa_mask);
       },

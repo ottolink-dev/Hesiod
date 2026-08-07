@@ -74,7 +74,7 @@ void compute_select_soil_flow_node(BaseNode &node)
                                const hmap::TileRegion &)
         {
           auto [pa_out, pa_in] = unpack<2>(p_arrays);
-          float k_smooth = 0.01f; // little influence
+          float k_smooth       = 0.01f; // little influence
 
           *pa_out = hmap::gpu::select_soil_flow(
               *pa_in,

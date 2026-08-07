@@ -18,9 +18,9 @@ namespace hesiod
 // -----------------------------------------------------------------------------
 
 constexpr const char *P_CLOUD = "cloud";
-constexpr const char *P_DX = "dx";
-constexpr const char *P_DY = "dy";
-constexpr const char *P_OUT = "heightmap";
+constexpr const char *P_DX    = "dx";
+constexpr const char *P_DY    = "dy";
+constexpr const char *P_OUT   = "heightmap";
 
 constexpr const char *A_ITP_METHOD = "itp_method";
 
@@ -73,8 +73,8 @@ void compute_cloud_to_array_interp_node(BaseNode &node)
                          const hmap::TileRegion    &region)
         {
           hmap::Array *pa_out = p_arrays[0];
-          hmap::Array *pa_dx = p_arrays[1];
-          hmap::Array *pa_dy = p_arrays[2];
+          hmap::Array *pa_dx  = p_arrays[1];
+          hmap::Array *pa_dy  = p_arrays[2];
 
           glm::vec4 bbox_points = {0.f, 1.f, 0.f, 1.f};
 
@@ -96,7 +96,7 @@ void compute_cloud_to_array_interp_node(BaseNode &node)
         [](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
         {
           hmap::Array *pa_out = p_arrays[0];
-          *pa_out = 0.f;
+          *pa_out             = 0.f;
         },
         node.cfg().cm_cpu);
   }

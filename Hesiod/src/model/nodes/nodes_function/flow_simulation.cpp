@@ -23,20 +23,20 @@ namespace hesiod
 
 constexpr const char *P_ELEVATION = "elevation";
 constexpr const char *P_DEPTH_MAP = "depth_map";
-constexpr const char *P_WATER_IN = "water_depth_in";
+constexpr const char *P_WATER_IN  = "water_depth_in";
 constexpr const char *P_WATER_OUT = "water_depth";
 
-constexpr const char *A_WATER_DEPTH = "water_depth";
-constexpr const char *A_DURATION = "duration";
-constexpr const char *A_DRY_OUT_RATIO = "dry_out_ratio";
-constexpr const char *A_FLUX_DIFFUSION = "flux_diffusion";
+constexpr const char *A_WATER_DEPTH             = "water_depth";
+constexpr const char *A_DURATION                = "duration";
+constexpr const char *A_DRY_OUT_RATIO           = "dry_out_ratio";
+constexpr const char *A_FLUX_DIFFUSION          = "flux_diffusion";
 constexpr const char *A_FLUX_DIFFUSION_STRENGTH = "flux_diffusion_strength";
-constexpr const char *A_SOLVER_STRIDE = "solver_stride";
-constexpr const char *A_DEPTH_MAP_TYPE = "depth_map_type";
-constexpr const char *A_POST_FILTER = "post_filter";
-constexpr const char *A_RADIUS = "radius";
-constexpr const char *A_AREA_FILTER = "area_filter";
-constexpr const char *A_RADIUS_LIMIT = "radius_limit";
+constexpr const char *A_SOLVER_STRIDE           = "solver_stride";
+constexpr const char *A_DEPTH_MAP_TYPE          = "depth_map_type";
+constexpr const char *A_POST_FILTER             = "post_filter";
+constexpr const char *A_RADIUS                  = "radius";
+constexpr const char *A_AREA_FILTER             = "area_filter";
+constexpr const char *A_RADIUS_LIMIT            = "radius_limit";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -99,9 +99,9 @@ void compute_flow_simulation_node(BaseNode &node)
 
   // --- Inputs / Outputs
 
-  auto *p_z = node.get_value_ref<hmap::VirtualArray>(P_ELEVATION);
+  auto *p_z         = node.get_value_ref<hmap::VirtualArray>(P_ELEVATION);
   auto *p_depth_map = node.get_value_ref<hmap::VirtualArray>(P_DEPTH_MAP);
-  auto *p_water_in = node.get_value_ref<hmap::VirtualArray>(P_WATER_IN);
+  auto *p_water_in  = node.get_value_ref<hmap::VirtualArray>(P_WATER_IN);
   auto *p_water_out = node.get_value_ref<hmap::VirtualArray>(P_WATER_OUT);
 
   if (!p_z)
@@ -125,9 +125,9 @@ void compute_flow_simulation_node(BaseNode &node)
   // --- Compute mode
 
   hmap::ComputeMode cm = node.cfg().cm_gpu;
-  cm.stride = solver_stride;
+  cm.stride            = solver_stride;
 
-  int   iterations = int(duration * p_z->shape.x / cm.stride);
+  int   iterations  = int(duration * p_z->shape.x / cm.stride);
   float water_depth = water_depth_init;
 
   // --- Resolve depth map
@@ -167,7 +167,7 @@ void compute_flow_simulation_node(BaseNode &node)
           const hmap::TileRegion &)
       {
         auto [pa_z, pa_depth] = unpack<2>(in);
-        auto [pa_water] = unpack<1>(out);
+        auto [pa_water]       = unpack<1>(out);
 
         hmap::Array depth_scaled = *pa_depth;
         hmap::remap(depth_scaled, 0.f, 1.f, dmin, dmax);

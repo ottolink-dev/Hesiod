@@ -18,26 +18,26 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_NOISE = "noise";
-constexpr const char *P_ENVELOPE = "envelope";
-constexpr const char *P_OUT = "output";
+constexpr const char *P_NOISE       = "noise";
+constexpr const char *P_ENVELOPE    = "envelope";
+constexpr const char *P_OUT         = "output";
 constexpr const char *P_CRATER_MASK = "crater_mask";
 
-constexpr const char *A_RADIUS = "radius";
-constexpr const char *A_ANGLE = "angle";
-constexpr const char *A_CENTER = "center";
-constexpr const char *A_ELEVATION_OFFSET = "elevation_offset";
-constexpr const char *A_INNER_DEPTH = "inner_depth";
-constexpr const char *A_INNER_EXP = "inner_exp";
-constexpr const char *A_LIP_HEIGHT = "lip_height";
-constexpr const char *A_LIP_EXTENT = "lip_extent";
-constexpr const char *A_LIP_EXP = "lip_exp";
-constexpr const char *A_ASYM_RATIO = "asym_ratio";
+constexpr const char *A_RADIUS              = "radius";
+constexpr const char *A_ANGLE               = "angle";
+constexpr const char *A_CENTER              = "center";
+constexpr const char *A_ELEVATION_OFFSET    = "elevation_offset";
+constexpr const char *A_INNER_DEPTH         = "inner_depth";
+constexpr const char *A_INNER_EXP           = "inner_exp";
+constexpr const char *A_LIP_HEIGHT          = "lip_height";
+constexpr const char *A_LIP_EXTENT          = "lip_extent";
+constexpr const char *A_LIP_EXP             = "lip_exp";
+constexpr const char *A_ASYM_RATIO          = "asym_ratio";
 constexpr const char *A_CENTRAL_PEAK_HEIGHT = "central_peak_height";
 constexpr const char *A_CENTRAL_PEAK_EXTENT = "central_peak_extent";
-constexpr const char *A_N_TERRACES = "n_terraces";
-constexpr const char *A_TERRACE_EXTENT = "terrace_extent";
-constexpr const char *A_TERRACE_EXP = "terrace_exp";
+constexpr const char *A_N_TERRACES          = "n_terraces";
+constexpr const char *A_TERRACE_EXTENT      = "terrace_extent";
+constexpr const char *A_TERRACE_EXP         = "terrace_exp";
 constexpr const char *A_TERRACE_PERSISTENCE = "terrace_persistence";
 
 // -----------------------------------------------------------------------------
@@ -126,9 +126,9 @@ void compute_crater_node(BaseNode &node)
 
   // --- Inputs / Outputs
 
-  auto *p_noise = node.get_value_ref<hmap::VirtualArray>(P_NOISE);
-  auto *p_envelope = node.get_value_ref<hmap::VirtualArray>(P_ENVELOPE);
-  auto *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
+  auto *p_noise       = node.get_value_ref<hmap::VirtualArray>(P_NOISE);
+  auto *p_envelope    = node.get_value_ref<hmap::VirtualArray>(P_ENVELOPE);
+  auto *p_out         = node.get_value_ref<hmap::VirtualArray>(P_OUT);
   auto *p_crater_mask = node.get_value_ref<hmap::VirtualArray>(P_CRATER_MASK);
 
   // --- Params
@@ -166,7 +166,7 @@ void compute_crater_node(BaseNode &node)
           std::vector<hmap::Array *>       out,
           const hmap::TileRegion          &region)
       {
-        auto [pa_noise, pa_envelope] = unpack<2>(in);
+        auto [pa_noise, pa_envelope]  = unpack<2>(in);
         auto [pa_out, pa_crater_mask] = unpack<2>(out);
 
         *pa_out = hmap::crater(region.shape,

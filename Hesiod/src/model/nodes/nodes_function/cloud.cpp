@@ -56,15 +56,15 @@ void setup_cloud_node(BaseNode &node)
               return {};
             const glm::ivec2     shape(256, 256);
             hmap::Array          array = p_in->to_array(shape, node.cfg().cm_cpu);
-            std::vector<uint8_t> img = hmap::colorize(array,
+            std::vector<uint8_t> img   = hmap::colorize(array,
                                                       array.min(),
                                                       array.max(),
                                                       hmap::Cmap::MAGMA,
                                                       false)
                                            .to_img_8bit();
             meta::qt::ImageData d;
-            d.width = shape.x;
-            d.height = shape.y;
+            d.width    = shape.x;
+            d.height   = shape.y;
             d.channels = 3; // to_img_8bit() -> RGB
             // vertical flip so the thumbnail origin matches the canvas (legacy
             // mirrored(false,true))
@@ -72,8 +72,8 @@ void setup_cloud_node(BaseNode &node)
             d.pixels.resize(img.size());
             for (int y = 0; y < shape.y; ++y)
               std::copy_n(img.data() + (shape.y - 1 - y) * stride,
-                           stride,
-                           d.pixels.data() + y * stride);
+                          stride,
+                          d.pixels.data() + y * stride);
             return d;
           }});
 }

@@ -32,7 +32,7 @@ void compute_cloud_to_path_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  hmap::Cloud *p_in = node.get_value_ref<hmap::Cloud>("cloud");
+  hmap::Cloud *p_in  = node.get_value_ref<hmap::Cloud>("cloud");
   hmap::Path  *p_out = node.get_value_ref<hmap::Path>("path");
 
   if (!p_in)

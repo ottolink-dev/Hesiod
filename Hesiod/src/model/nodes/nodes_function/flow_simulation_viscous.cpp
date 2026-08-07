@@ -20,18 +20,18 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_ELEVATION = "elevation_in";
-constexpr const char *P_DEPTH_MAP = "depth_map";
-constexpr const char *P_DEPTH_IN = "depth_in";
+constexpr const char *P_ELEVATION     = "elevation_in";
+constexpr const char *P_DEPTH_MAP     = "depth_map";
+constexpr const char *P_DEPTH_IN      = "depth_in";
 constexpr const char *P_ELEVATION_OUT = "elevation";
-constexpr const char *P_DEPTH_OUT = "depth";
+constexpr const char *P_DEPTH_OUT     = "depth";
 
 constexpr const char *A_INITIAL_DEPTH = "initial_depth";
-constexpr const char *A_DURATION = "simulation_duration";
-constexpr const char *A_POWER = "flow_power";
+constexpr const char *A_DURATION      = "simulation_duration";
+constexpr const char *A_POWER         = "flow_power";
 constexpr const char *A_SOLVER_STRIDE = "solver_stride";
-constexpr const char *A_DMAP_TYPE = "depth_map_type";
-constexpr const char *A_POST_FILTER = "post_filter";
+constexpr const char *A_DMAP_TYPE     = "depth_map_type";
+constexpr const char *A_POST_FILTER   = "post_filter";
 constexpr const char *A_FILTER_RADIUS = "filter_radius";
 constexpr const char *A_SHIFT_TO_ZERO = "shift_to_zero";
 
@@ -98,8 +98,8 @@ void compute_flow_simulation_viscous_node(BaseNode &node)
     return;
 
   auto *p_depth_map = node.get_value_ref<hmap::VirtualArray>(P_DEPTH_MAP);
-  auto *p_depth_in = node.get_value_ref<hmap::VirtualArray>(P_DEPTH_IN);
-  auto *p_z_out = node.get_value_ref<hmap::VirtualArray>(P_ELEVATION_OUT);
+  auto *p_depth_in  = node.get_value_ref<hmap::VirtualArray>(P_DEPTH_IN);
+  auto *p_z_out     = node.get_value_ref<hmap::VirtualArray>(P_ELEVATION_OUT);
   auto *p_depth_out = node.get_value_ref<hmap::VirtualArray>(P_DEPTH_OUT);
 
   // --- Parameters wrapper
@@ -120,31 +120,31 @@ void compute_flow_simulation_viscous_node(BaseNode &node)
       int ir;
     };
 
-    const int   nx = p_depth_out->shape.x;
-    const int   stride = node.get_attr<IntAttribute>(A_SOLVER_STRIDE);
-    const float radius = node.get_attr<FloatAttribute>(A_FILTER_RADIUS);
-    const float duration = node.get_attr<FloatAttribute>(A_DURATION);
+    const int   nx         = p_depth_out->shape.x;
+    const int   stride     = node.get_attr<IntAttribute>(A_SOLVER_STRIDE);
+    const float radius     = node.get_attr<FloatAttribute>(A_FILTER_RADIUS);
+    const float duration   = node.get_attr<FloatAttribute>(A_DURATION);
     const int   nx_strided = int(float(nx) / stride);
     const int   iterations = int(duration * nx_strided);
-    const int   ir = std::max(1, int(radius * nx));
+    const int   ir         = std::max(1, int(radius * nx));
 
     return P{.initial_depth = node.get_attr<FloatAttribute>(A_INITIAL_DEPTH),
-             .power = node.get_attr<FloatAttribute>(A_POWER),
+             .power         = node.get_attr<FloatAttribute>(A_POWER),
              .solver_stride = stride,
-             .dmap_type = node.get_attr<EnumAttribute>(A_DMAP_TYPE),
-             .post_filter = node.get_attr<BoolAttribute>(A_POST_FILTER),
+             .dmap_type     = node.get_attr<EnumAttribute>(A_DMAP_TYPE),
+             .post_filter   = node.get_attr<BoolAttribute>(A_POST_FILTER),
              .shift_to_zero = node.get_attr<BoolAttribute>(A_SHIFT_TO_ZERO),
              //
              .nx_strided = nx_strided,
              .iterations = iterations,
-             .ir = ir};
+             .ir         = ir};
   }();
 
   // --- Adjust compute mode (stride)
 
   // override compute mode (but keep storage mode)
   hmap::ComputeMode cm = node.cfg().cm_gpu;
-  cm.stride = params.solver_stride;
+  cm.stride            = params.solver_stride;
 
   // --- Resolve depth map source
 
@@ -157,12 +157,12 @@ void compute_flow_simulation_viscous_node(BaseNode &node)
   {
     copy_data(*p_depth_in, dmap, node.cfg().cm_cpu);
     mat_depth_updated = dmap.max(node.cfg().cm_cpu);
-    p_depth_map = &dmap;
+    p_depth_map       = &dmap;
   }
   else if (!p_depth_map)
   {
     auto map_type = DefaultMapOptions::Type(params.dmap_type);
-    auto options = DefaultMapOptions{.map_type = map_type};
+    auto options  = DefaultMapOptions{.map_type = map_type};
 
     generate_map(node, p_depth_map, dmap, options);
   }
@@ -188,7 +188,7 @@ void compute_flow_simulation_viscous_node(BaseNode &node)
           std::vector<hmap::Array *>       p_arrays_out,
           const hmap::TileRegion &)
       {
-        auto [pa_z, pa_depth_map] = unpack<2>(p_arrays_in);
+        auto [pa_z, pa_depth_map]     = unpack<2>(p_arrays_in);
         auto [pa_z_out, pa_depth_out] = unpack<2>(p_arrays_out);
 
         hmap::Array depth_map_scaled = *pa_depth_map;

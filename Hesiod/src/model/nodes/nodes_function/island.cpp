@@ -130,10 +130,10 @@ void compute_island_node(BaseNode &node)
   if (!p_land)
     return;
 
-  hmap::VirtualArray *p_dr = node.get_value_ref<hmap::VirtualArray>("dr");
-  hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>("out");
+  hmap::VirtualArray *p_dr    = node.get_value_ref<hmap::VirtualArray>("dr");
+  hmap::VirtualArray *p_out   = node.get_value_ref<hmap::VirtualArray>("out");
   hmap::VirtualArray *p_depth = node.get_value_ref<hmap::VirtualArray>("water_depth");
-  hmap::VirtualArray *p_mask = node.get_value_ref<hmap::VirtualArray>("inland_mask");
+  hmap::VirtualArray *p_mask  = node.get_value_ref<hmap::VirtualArray>("inland_mask");
 
   int ir = (int)(node.get_attr<FloatAttribute>("filter_radius") * p_out->shape.x);
 
@@ -143,11 +143,11 @@ void compute_island_node(BaseNode &node)
       {p_out, p_land, p_dr, p_depth, p_mask},
       [&node, ir, scale](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
       {
-        hmap::Array *pa_out = p_arrays[0];
-        hmap::Array *pa_land = p_arrays[1];
-        hmap::Array *pa_dr = p_arrays[2];
+        hmap::Array *pa_out   = p_arrays[0];
+        hmap::Array *pa_land  = p_arrays[1];
+        hmap::Array *pa_dr    = p_arrays[2];
         hmap::Array *pa_depth = p_arrays[3];
-        hmap::Array *pa_mask = p_arrays[4];
+        hmap::Array *pa_mask  = p_arrays[4];
 
         if (pa_dr)
         {

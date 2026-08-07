@@ -16,7 +16,7 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_INPUT = "input";
+constexpr const char *P_INPUT  = "input";
 constexpr const char *P_OUTPUT = "output";
 
 constexpr const char *A_REMAP = "remap";
@@ -45,7 +45,7 @@ void compute_remap_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  auto *p_in = node.get_value_ref<hmap::VirtualArray>(P_INPUT);
+  auto *p_in  = node.get_value_ref<hmap::VirtualArray>(P_INPUT);
   auto *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUTPUT);
 
   if (!p_in)

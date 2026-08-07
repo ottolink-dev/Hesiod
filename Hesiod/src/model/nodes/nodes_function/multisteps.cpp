@@ -20,25 +20,25 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_DX = "dx";
-constexpr const char *P_DY = "dy";
-constexpr const char *P_CONTROL = "control";
+constexpr const char *P_DX       = "dx";
+constexpr const char *P_DY       = "dy";
+constexpr const char *P_CONTROL  = "control";
 constexpr const char *P_ENVELOPE = "envelope";
-constexpr const char *P_OUT = "output";
+constexpr const char *P_OUT      = "output";
 
-constexpr const char *A_ANGLE = "angle";
-constexpr const char *A_R = "r";
-constexpr const char *A_NSTEPS = "nsteps";
-constexpr const char *A_SCALE = "scale";
-constexpr const char *A_CENTER = "center";
-constexpr const char *A_OUTER_SLOPE = "outer_slope";
-constexpr const char *A_ELEVATION_EXP = "elevation_exponent";
-constexpr const char *A_SHAPE_GAIN = "shape_gain";
-constexpr const char *A_SEED = "seed";
-constexpr const char *A_KW = "kw";
-constexpr const char *A_NOISE_AMP = "noise_amp";
+constexpr const char *A_ANGLE          = "angle";
+constexpr const char *A_R              = "r";
+constexpr const char *A_NSTEPS         = "nsteps";
+constexpr const char *A_SCALE          = "scale";
+constexpr const char *A_CENTER         = "center";
+constexpr const char *A_OUTER_SLOPE    = "outer_slope";
+constexpr const char *A_ELEVATION_EXP  = "elevation_exponent";
+constexpr const char *A_SHAPE_GAIN     = "shape_gain";
+constexpr const char *A_SEED           = "seed";
+constexpr const char *A_KW             = "kw";
+constexpr const char *A_NOISE_AMP      = "noise_amp";
 constexpr const char *A_NOISE_RUGOSITY = "noise_rugosity";
-constexpr const char *A_NOISE_INFLATE = "noise_inflate";
+constexpr const char *A_NOISE_INFLATE  = "noise_inflate";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -112,11 +112,11 @@ void compute_multisteps_node(BaseNode &node)
 
   // --- Inputs / Outputs
 
-  auto *p_dx = node.get_value_ref<hmap::VirtualArray>(P_DX);
-  auto *p_dy = node.get_value_ref<hmap::VirtualArray>(P_DY);
-  auto *p_control = node.get_value_ref<hmap::VirtualArray>(P_CONTROL);
+  auto *p_dx       = node.get_value_ref<hmap::VirtualArray>(P_DX);
+  auto *p_dy       = node.get_value_ref<hmap::VirtualArray>(P_DY);
+  auto *p_control  = node.get_value_ref<hmap::VirtualArray>(P_CONTROL);
   auto *p_envelope = node.get_value_ref<hmap::VirtualArray>(P_ENVELOPE);
-  auto *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
+  auto *p_out      = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
   // --- Params
 
@@ -150,7 +150,7 @@ void compute_multisteps_node(BaseNode &node)
             const hmap::TileRegion          &region)
         {
           auto [pa_dx, pa_dy, pa_control] = unpack<3>(in);
-          auto [pa_out] = unpack<1>(out);
+          auto [pa_out]                   = unpack<1>(out);
 
           *pa_out = hmap::multisteps(region.shape,
                                      angle,

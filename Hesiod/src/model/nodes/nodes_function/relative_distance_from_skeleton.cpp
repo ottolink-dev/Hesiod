@@ -53,7 +53,7 @@ void compute_relative_distance_from_skeleton_node(BaseNode &node)
         [&node, ir](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
         {
           auto [pa_out, pa_in] = unpack<2>(p_arrays);
-          *pa_out = *pa_in;
+          *pa_out              = *pa_in;
 
           float threshold = node.get_attr<FloatAttribute>("threshold");
           if (threshold)

@@ -19,17 +19,17 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_IN = "input";
-constexpr const char *P_DR = "dr";
+constexpr const char *P_IN  = "input";
+constexpr const char *P_DR  = "dr";
 constexpr const char *P_OUT = "output";
 
 constexpr const char *A_RADIAL_PROFILE = "radial_profile";
-constexpr const char *A_PROFILE_PARAM = "profile_param";
-constexpr const char *A_AMOUNT = "amount";
-constexpr const char *A_RADIUS = "radius";
-constexpr const char *A_CENTER = "center";
-constexpr const char *A_DISTANCE = "distance_function";
-constexpr const char *A_DISTANCE_AXIS = "distance_axis";
+constexpr const char *A_PROFILE_PARAM  = "profile_param";
+constexpr const char *A_AMOUNT         = "amount";
+constexpr const char *A_RADIUS         = "radius";
+constexpr const char *A_CENTER         = "center";
+constexpr const char *A_DISTANCE       = "distance_function";
+constexpr const char *A_DISTANCE_AXIS  = "distance_axis";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -92,8 +92,8 @@ void compute_zeroed_edges_node(BaseNode &node)
 
   // --- Inputs / Outputs
 
-  auto *p_in = node.get_value_ref<hmap::VirtualArray>(P_IN);
-  auto *p_dr = node.get_value_ref<hmap::VirtualArray>(P_DR);
+  auto *p_in  = node.get_value_ref<hmap::VirtualArray>(P_IN);
+  auto *p_dr  = node.get_value_ref<hmap::VirtualArray>(P_DR);
   auto *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
   if (!p_in || !p_out)

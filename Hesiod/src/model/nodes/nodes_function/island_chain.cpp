@@ -21,21 +21,21 @@ namespace hesiod
 // -----------------------------------------------------------------------------
 
 constexpr const char *P_PATH = "path";
-constexpr const char *P_OUT = "out";
+constexpr const char *P_OUT  = "out";
 
-constexpr const char *A_SEED = "seed";
-constexpr const char *A_ISLAND_COUNT = "island_count";
+constexpr const char *A_SEED          = "seed";
+constexpr const char *A_ISLAND_COUNT  = "island_count";
 constexpr const char *A_ISLAND_RADIUS = "island_radius";
-constexpr const char *A_SIZE_FALLOFF = "size_falloff";
-constexpr const char *A_SIZE_JITTER = "size_jitter";
-constexpr const char *A_SCATTER = "scatter";
-constexpr const char *A_DISPLACEMENT = "displacement";
-constexpr const char *A_NOISE_TYPE = "noise_type";
-constexpr const char *A_KW = "kw";
-constexpr const char *A_OCTAVES = "octaves";
-constexpr const char *A_WEIGHT = "weight";
-constexpr const char *A_PERSISTENCE = "persistence";
-constexpr const char *A_LACUNARITY = "lacunarity";
+constexpr const char *A_SIZE_FALLOFF  = "size_falloff";
+constexpr const char *A_SIZE_JITTER   = "size_jitter";
+constexpr const char *A_SCATTER       = "scatter";
+constexpr const char *A_DISPLACEMENT  = "displacement";
+constexpr const char *A_NOISE_TYPE    = "noise_type";
+constexpr const char *A_KW            = "kw";
+constexpr const char *A_OCTAVES       = "octaves";
+constexpr const char *A_WEIGHT        = "weight";
+constexpr const char *A_PERSISTENCE   = "persistence";
+constexpr const char *A_LACUNARITY    = "lacunarity";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -106,7 +106,7 @@ void compute_island_chain_node(BaseNode &node)
   // --- Inputs / Outputs
 
   auto *p_path = node.get_value_ref<hmap::Path>(P_PATH);
-  auto *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
+  auto *p_out  = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
   if (!p_out || !p_path || p_path->size() <= 1)
     return;

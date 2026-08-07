@@ -41,7 +41,7 @@ void compute_make_periodic_stitching_node(BaseNode &node)
         [&node](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
         {
           auto [pa_out, pa_in] = unpack<2>(p_arrays);
-          *pa_out = hmap::make_periodic_stitching(
+          *pa_out              = hmap::make_periodic_stitching(
               *pa_in,
               node.get_attr<FloatAttribute>("overlap"));
         },

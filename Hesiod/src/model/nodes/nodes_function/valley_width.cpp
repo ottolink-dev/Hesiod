@@ -50,7 +50,7 @@ void compute_valley_width_node(BaseNode &node)
         [&node, ir](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
         {
           auto [pa_out, pa_in] = unpack<2>(p_arrays);
-          *pa_out = hmap::gpu::valley_width(*pa_in,
+          *pa_out              = hmap::gpu::valley_width(*pa_in,
                                             ir,
                                             node.get_attr<BoolAttribute>("ridge_select"));
         },

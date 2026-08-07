@@ -17,17 +17,17 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_ELEVATION = "elevation";
+constexpr const char *P_ELEVATION   = "elevation";
 constexpr const char *P_MELTING_MAP = "melting_map";
 
-constexpr const char *A_MELT_RANGE = "melt_range";
-constexpr const char *A_ELEVATION_EXP = "elevation_exp";
+constexpr const char *A_MELT_RANGE         = "melt_range";
+constexpr const char *A_ELEVATION_EXP      = "elevation_exp";
 constexpr const char *A_ELEVATION_STRENGTH = "elevation_strength";
-constexpr const char *A_SUN_AZIMUTH = "sun_azimuth";
-constexpr const char *A_SUN_ZENITH = "sun_zenith";
-constexpr const char *A_ASPECT_STRENGTH = "aspect_strength";
-constexpr const char *A_SLOPE_EXP = "slope_exp";
-constexpr const char *A_SLOPE_STRENGTH = "slope_strength";
+constexpr const char *A_SUN_AZIMUTH        = "sun_azimuth";
+constexpr const char *A_SUN_ZENITH         = "sun_zenith";
+constexpr const char *A_ASPECT_STRENGTH    = "aspect_strength";
+constexpr const char *A_SLOPE_EXP          = "slope_exp";
+constexpr const char *A_SLOPE_STRENGTH     = "slope_strength";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -106,14 +106,14 @@ void compute_snow_melting_map_node(BaseNode &node)
     const glm::vec2 range = node.get_attr<RangeAttribute>(A_MELT_RANGE);
 
     return P{.melt_start_elevation = range.x,
-             .melt_end_elevation = range.y,
-             .elevation_exp = node.get_attr<FloatAttribute>(A_ELEVATION_EXP),
-             .elevation_strength = node.get_attr<FloatAttribute>(A_ELEVATION_STRENGTH),
-             .sun_azimuth = node.get_attr<FloatAttribute>(A_SUN_AZIMUTH),
-             .sun_zenith = node.get_attr<FloatAttribute>(A_SUN_ZENITH),
-             .aspect_strength = node.get_attr<FloatAttribute>(A_ASPECT_STRENGTH),
-             .slope_exp = node.get_attr<FloatAttribute>(A_SLOPE_EXP),
-             .slope_strength = node.get_attr<FloatAttribute>(A_SLOPE_STRENGTH)};
+             .melt_end_elevation   = range.y,
+             .elevation_exp        = node.get_attr<FloatAttribute>(A_ELEVATION_EXP),
+             .elevation_strength   = node.get_attr<FloatAttribute>(A_ELEVATION_STRENGTH),
+             .sun_azimuth          = node.get_attr<FloatAttribute>(A_SUN_AZIMUTH),
+             .sun_zenith           = node.get_attr<FloatAttribute>(A_SUN_ZENITH),
+             .aspect_strength      = node.get_attr<FloatAttribute>(A_ASPECT_STRENGTH),
+             .slope_exp            = node.get_attr<FloatAttribute>(A_SLOPE_EXP),
+             .slope_strength       = node.get_attr<FloatAttribute>(A_SLOPE_STRENGTH)};
   }();
 
   // --- Compute
@@ -125,7 +125,7 @@ void compute_snow_melting_map_node(BaseNode &node)
                        std::vector<hmap::Array *>       p_arrays_out,
                        const hmap::TileRegion &)
       {
-        const auto [pa_z] = unpack<1>(p_arrays_in);
+        const auto [pa_z]     = unpack<1>(p_arrays_in);
         auto [pa_melting_map] = unpack<1>(p_arrays_out);
 
         *pa_melting_map = hmap::snow_melting_map(*pa_z,

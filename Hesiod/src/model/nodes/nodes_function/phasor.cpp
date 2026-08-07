@@ -21,20 +21,20 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_OUTPUT = "phasor_fbm";
-constexpr const char *P_ANGLE = "angle";
+constexpr const char *P_OUTPUT  = "phasor_fbm";
+constexpr const char *P_ANGLE   = "angle";
 constexpr const char *P_NOISE_X = "noise_x";
 constexpr const char *P_NOISE_Y = "noise_y";
 
-constexpr const char *A_SEED = "seed";
-constexpr const char *A_KP_GLOBAL = "kp_global";
-constexpr const char *A_ANGLE_SHIFT = "angle_shift";
-constexpr const char *A_OCTAVES = "octaves";
-constexpr const char *A_WEIGHT = "weight";
-constexpr const char *A_PERSISTENCE = "persistence";
-constexpr const char *A_LACUNARITY = "lacunarity";
-constexpr const char *A_PROFILE = "profile";
-constexpr const char *A_DELTA = "delta";
+constexpr const char *A_SEED            = "seed";
+constexpr const char *A_KP_GLOBAL       = "kp_global";
+constexpr const char *A_ANGLE_SHIFT     = "angle_shift";
+constexpr const char *A_OCTAVES         = "octaves";
+constexpr const char *A_WEIGHT          = "weight";
+constexpr const char *A_PERSISTENCE     = "persistence";
+constexpr const char *A_LACUNARITY      = "lacunarity";
+constexpr const char *A_PROFILE         = "profile";
+constexpr const char *A_DELTA           = "delta";
 constexpr const char *A_PHASE_SMOOTHING = "phase_smoothing";
 
 // -----------------------------------------------------------------------------
@@ -102,10 +102,10 @@ void compute_phasor_node(BaseNode &node)
 
   // --- Inputs / Outputs
 
-  auto *p_angle = node.get_value_ref<hmap::VirtualArray>(P_ANGLE);
+  auto *p_angle   = node.get_value_ref<hmap::VirtualArray>(P_ANGLE);
   auto *p_noise_x = node.get_value_ref<hmap::VirtualArray>(P_NOISE_X);
   auto *p_noise_y = node.get_value_ref<hmap::VirtualArray>(P_NOISE_Y);
-  auto *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUTPUT);
+  auto *p_out     = node.get_value_ref<hmap::VirtualArray>(P_OUTPUT);
 
   if (!p_out)
     return;
@@ -137,7 +137,7 @@ void compute_phasor_node(BaseNode &node)
           const hmap::TileRegion          &region)
       {
         auto [pa_noise_x, pa_noise_y, pa_angle] = unpack<3>(p_arrays_in);
-        auto [pa_out] = unpack<1>(p_arrays_out);
+        auto [pa_out]                           = unpack<1>(p_arrays_out);
 
         *pa_out = hmap::gpu::phasor_fbm(profile,
                                         region.shape,

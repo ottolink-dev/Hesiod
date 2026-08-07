@@ -59,12 +59,12 @@ void compute_flow_stream_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  hmap::VirtualArray *p_in = node.get_value_ref<hmap::VirtualArray>("input");
+  hmap::VirtualArray *p_in    = node.get_value_ref<hmap::VirtualArray>("input");
   hmap::Cloud        *p_cloud = node.get_value_ref<hmap::Cloud>("sources");
 
   if (p_in && p_cloud)
   {
-    hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>("output");
+    hmap::VirtualArray *p_out  = node.get_value_ref<hmap::VirtualArray>("output");
     hmap::VirtualArray *p_mask = node.get_value_ref<hmap::VirtualArray>("river_mask");
 
     hmap::for_each_tile(
@@ -73,7 +73,7 @@ void compute_flow_stream_node(BaseNode &node)
                          const hmap::TileRegion    &region)
         {
           auto [pa_out, pa_in, pa_mask] = unpack<3>(p_arrays);
-          *pa_out = *pa_in;
+          *pa_out                       = *pa_in;
 
           // find a flow stream for each source
           std::vector<hmap::Path> path_list;
@@ -97,7 +97,7 @@ void compute_flow_stream_node(BaseNode &node)
           // dig the rivers
           int merging_ir = int(node.get_attr<FloatAttribute>("merging_radius") *
                                (region.shape.x - 1.f));
-          merging_ir = std::max(1, merging_ir);
+          merging_ir     = std::max(1, merging_ir);
 
           int river_ir = int(node.get_attr<FloatAttribute>("river_radius") *
                              (region.shape.x - 1.f));

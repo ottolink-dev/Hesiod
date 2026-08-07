@@ -21,7 +21,7 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_IN = "input";
+constexpr const char *P_IN  = "input";
 constexpr const char *P_OUT = "mask";
 
 constexpr const char *A_RADIUS = "radius";
@@ -68,7 +68,7 @@ void compute_local_metrics_node(BaseNode &node)
 
   // --- Inputs / Outputs
 
-  auto *p_in = node.get_value_ref<hmap::VirtualArray>(P_IN);
+  auto *p_in  = node.get_value_ref<hmap::VirtualArray>(P_IN);
   auto *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
   if (!p_in)
@@ -82,7 +82,7 @@ void compute_local_metrics_node(BaseNode &node)
   const auto sat_perc = 0.01f * node.get_attr<FloatAttribute>(A_SATMAX);
   // clang-format on
 
-  const int   ir = std::max(1, int(radius * p_out->shape.x));
+  const int   ir     = std::max(1, int(radius * p_out->shape.x));
   const float satmin = sat_perc;
   const float satmax = 1.f - sat_perc;
 
@@ -95,7 +95,7 @@ void compute_local_metrics_node(BaseNode &node)
           std::vector<hmap::Array *>       out,
           const hmap::TileRegion &)
       {
-        auto [pa_in] = unpack<1>(in);
+        auto [pa_in]  = unpack<1>(in);
         auto [pa_out] = unpack<1>(out);
 
         *pa_out = hmap::gpu::local_metrics(*pa_in, ir, metric);

@@ -18,23 +18,23 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_NOISE_R = "noise_r";
+constexpr const char *P_NOISE_R     = "noise_r";
 constexpr const char *P_NOISE_THETA = "noise_theta";
-constexpr const char *P_ENV = "envelope";
-constexpr const char *P_OUT = "output";
+constexpr const char *P_ENV         = "envelope";
+constexpr const char *P_OUT         = "output";
 
-constexpr const char *A_RMIN = "rmin";
-constexpr const char *A_RMAX = "rmax";
-constexpr const char *A_ASPECT_RATIO = "aspect_ratio";
+constexpr const char *A_RMIN            = "rmin";
+constexpr const char *A_RMAX            = "rmax";
+constexpr const char *A_ASPECT_RATIO    = "aspect_ratio";
 constexpr const char *A_SMOOTHING_WIDTH = "smoothing_width";
-constexpr const char *A_SQUARE_BASE = "square_base";
-constexpr const char *A_ANGLE = "angle";
-constexpr const char *A_SECTOR_ANGLE = "sector_angle";
-constexpr const char *A_VMIN = "vmin";
-constexpr const char *A_KT_VALUE = "kt_value";
-constexpr const char *A_KR_BORDER = "kr_border";
+constexpr const char *A_SQUARE_BASE     = "square_base";
+constexpr const char *A_ANGLE           = "angle";
+constexpr const char *A_SECTOR_ANGLE    = "sector_angle";
+constexpr const char *A_VMIN            = "vmin";
+constexpr const char *A_KT_VALUE        = "kt_value";
+constexpr const char *A_KR_BORDER       = "kr_border";
 constexpr const char *A_KR_BORDER_RATIO = "kr_border_ratio";
-constexpr const char *A_CENTER = "center";
+constexpr const char *A_CENTER          = "center";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -107,10 +107,10 @@ void compute_polar_shape_node(BaseNode &node)
 
   // --- Inputs / Outputs
 
-  auto *p_noise_r = node.get_value_ref<hmap::VirtualArray>(P_NOISE_R);
+  auto *p_noise_r     = node.get_value_ref<hmap::VirtualArray>(P_NOISE_R);
   auto *p_noise_theta = node.get_value_ref<hmap::VirtualArray>(P_NOISE_THETA);
-  auto *p_env = node.get_value_ref<hmap::VirtualArray>(P_ENV);
-  auto *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
+  auto *p_env         = node.get_value_ref<hmap::VirtualArray>(P_ENV);
+  auto *p_out         = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
   if (!p_out)
     return;
@@ -142,7 +142,7 @@ void compute_polar_shape_node(BaseNode &node)
           const hmap::TileRegion          &region)
       {
         auto [pa_noise_r, pa_noise_theta] = unpack<2>(in);
-        auto [pa_out] = unpack<1>(out);
+        auto [pa_out]                     = unpack<1>(out);
 
         *pa_out = hmap::polar_shape(region.shape,
                                     rmin,

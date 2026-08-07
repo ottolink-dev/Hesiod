@@ -56,8 +56,8 @@ void compute_transfer_node(BaseNode &node)
         [&node, ir](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
         {
           hmap::Array *pa_out = p_arrays[0];
-          hmap::Array *pa_s = p_arrays[1];
-          hmap::Array *pa_t = p_arrays[2];
+          hmap::Array *pa_s   = p_arrays[1];
+          hmap::Array *pa_t   = p_arrays[2];
 
           *pa_out = hmap::gpu::transfer(
               *pa_s,

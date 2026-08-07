@@ -41,14 +41,14 @@ void compute_laplace_node(BaseNode &node)
   if (p_in)
   {
     hmap::VirtualArray *p_mask = node.get_value_ref<hmap::VirtualArray>("mask");
-    hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>("output");
+    hmap::VirtualArray *p_out  = node.get_value_ref<hmap::VirtualArray>("output");
 
     hmap::for_each_tile(
         {p_out, p_in, p_mask},
         [&node](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
         {
           auto [pa_out, pa_in, pa_mask] = unpack<3>(p_arrays);
-          *pa_out = *pa_in;
+          *pa_out                       = *pa_in;
 
           hmap::laplace(*pa_out,
                         pa_mask,

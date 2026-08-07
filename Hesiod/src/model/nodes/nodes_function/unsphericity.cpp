@@ -57,7 +57,7 @@ void compute_unsphericity_node(BaseNode &node)
         [&ir](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
         {
           auto [pa_out, pa_in] = unpack<2>(p_arrays);
-          *pa_out = hmap::gpu::curvature_quadric(*pa_in,
+          *pa_out              = hmap::gpu::curvature_quadric(*pa_in,
                                                  ir,
                                                  hmap::CurvatureType::CT_UNSPHERICITY);
         },

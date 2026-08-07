@@ -88,12 +88,13 @@ void compute_hydraulic_vpipes_node(BaseNode &node)
         "moisture");
     hmap::VirtualArray *p_mask = node.get_value_ref<hmap::VirtualArray>("mask");
 
-    hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>("output");
+    hmap::VirtualArray *p_out         = node.get_value_ref<hmap::VirtualArray>("output");
     hmap::VirtualArray *p_water_depth = node.get_value_ref<hmap::VirtualArray>(
         "water_depth");
     hmap::VirtualArray *p_sediment = node.get_value_ref<hmap::VirtualArray>("sediment");
 
-    // int iterations = int(node.get_attr<FloatAttribute>("duration") * p_out->shape.x);
+    // int iterations = int(node.get_attr<FloatAttribute>("duration") *
+    // p_out->shape.x);
     int iterations = node.get_attr<IntAttribute>("iterations");
 
     hmap::for_each_tile(

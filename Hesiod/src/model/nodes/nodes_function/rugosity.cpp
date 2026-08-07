@@ -53,7 +53,7 @@ void compute_rugosity_node(BaseNode &node)
         [&node, ir](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
         {
           auto [pa_out, pa_in] = unpack<2>(p_arrays);
-          *pa_out = hmap::gpu::rugosity(*pa_in, ir);
+          *pa_out              = hmap::gpu::rugosity(*pa_in, ir);
 
           if (node.get_attr<BoolAttribute>("clamp_max"))
             hmap::clamp_max(*pa_out, node.get_attr<FloatAttribute>("vc_max"));

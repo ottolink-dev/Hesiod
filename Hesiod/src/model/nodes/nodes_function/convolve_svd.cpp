@@ -37,7 +37,7 @@ void compute_convolve_svd_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  hmap::VirtualArray *p_in = node.get_value_ref<hmap::VirtualArray>("input");
+  hmap::VirtualArray *p_in     = node.get_value_ref<hmap::VirtualArray>("input");
   hmap::Array        *p_kernel = node.get_value_ref<hmap::Array>("kernel");
 
   if (p_in && p_kernel)
@@ -49,7 +49,7 @@ void compute_convolve_svd_node(BaseNode &node)
         [&node, p_kernel](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
         {
           auto [pa_out, pa_in] = unpack<2>(p_arrays);
-          *pa_out = hmap::convolve2d_svd(*pa_in,
+          *pa_out              = hmap::convolve2d_svd(*pa_in,
                                          *p_kernel,
                                          node.get_attr<IntAttribute>("rank"));
         },

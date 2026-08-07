@@ -34,7 +34,7 @@ void compute_recurve_s_node(BaseNode &node)
   if (p_in)
   {
     hmap::VirtualArray *p_mask = node.get_value_ref<hmap::VirtualArray>("mask");
-    hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>("output");
+    hmap::VirtualArray *p_out  = node.get_value_ref<hmap::VirtualArray>("output");
 
     float hmin = p_in->min(node.cfg().cm_cpu);
     float hmax = p_in->max(node.cfg().cm_cpu);
@@ -44,7 +44,7 @@ void compute_recurve_s_node(BaseNode &node)
         [&node, hmin, hmax](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
         {
           auto [pa_out, pa_in, pa_mask] = unpack<3>(p_arrays);
-          *pa_out = *pa_in;
+          *pa_out                       = *pa_in;
 
           hmap::remap(*pa_out, 0.f, 1.f, hmin, hmax);
           hmap::recurve_s(*pa_out, pa_mask);

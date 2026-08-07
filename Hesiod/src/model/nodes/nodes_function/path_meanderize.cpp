@@ -18,15 +18,15 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_INPUT = "input";
+constexpr const char *P_INPUT  = "input";
 constexpr const char *P_OUTPUT = "output";
 
-constexpr const char *A_RATIO = "ratio";
-constexpr const char *A_NOISE_RATIO = "noise_ratio";
-constexpr const char *A_SEED = "seed";
-constexpr const char *A_ITERATIONS = "iterations";
+constexpr const char *A_RATIO          = "ratio";
+constexpr const char *A_NOISE_RATIO    = "noise_ratio";
+constexpr const char *A_SEED           = "seed";
+constexpr const char *A_ITERATIONS     = "iterations";
 constexpr const char *A_EDGE_DIVISIONS = "edge_divisions";
-constexpr const char *A_REMOVE_LOOPS = "remove_loops";
+constexpr const char *A_REMOVE_LOOPS   = "remove_loops";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -70,7 +70,7 @@ void compute_path_meanderize_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  hmap::Path *p_in = node.get_value_ref<hmap::Path>(P_INPUT);
+  hmap::Path *p_in  = node.get_value_ref<hmap::Path>(P_INPUT);
   hmap::Path *p_out = node.get_value_ref<hmap::Path>(P_OUTPUT);
 
   if (!p_in || p_in->size() < 2)
@@ -90,12 +90,12 @@ void compute_path_meanderize_node(BaseNode &node)
       bool  remove_loops;
     };
     return P{
-        .ratio = node.get_attr<FloatAttribute>(A_RATIO),
-        .noise_ratio = node.get_attr<FloatAttribute>(A_NOISE_RATIO),
-        .seed = node.get_attr<SeedAttribute>(A_SEED),
-        .iterations = node.get_attr<IntAttribute>(A_ITERATIONS),
+        .ratio          = node.get_attr<FloatAttribute>(A_RATIO),
+        .noise_ratio    = node.get_attr<FloatAttribute>(A_NOISE_RATIO),
+        .seed           = node.get_attr<SeedAttribute>(A_SEED),
+        .iterations     = node.get_attr<IntAttribute>(A_ITERATIONS),
         .edge_divisions = node.get_attr<IntAttribute>(A_EDGE_DIVISIONS),
-        .remove_loops = node.get_attr<BoolAttribute>(A_REMOVE_LOOPS),
+        .remove_loops   = node.get_attr<BoolAttribute>(A_REMOVE_LOOPS),
     };
   }();
 

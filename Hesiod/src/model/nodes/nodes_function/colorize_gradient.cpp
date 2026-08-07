@@ -51,10 +51,10 @@ void compute_colorize_gradient_node(BaseNode &node)
   {
     hmap::VirtualArray   *p_alpha = node.get_value_ref<hmap::VirtualArray>("alpha");
     hmap::VirtualArray   *p_noise = node.get_value_ref<hmap::VirtualArray>("noise");
-    hmap::VirtualTexture *p_tex = node.get_value_ref<hmap::VirtualTexture>("texture");
+    hmap::VirtualTexture *p_tex   = node.get_value_ref<hmap::VirtualTexture>("texture");
 
     // define colormap based on color gradient
-    std::vector<attr::Stop> gradient = node.get_attr<ColorGradientAttribute>("gradient");
+    std::vector<attr::Stop> gradient  = node.get_attr<ColorGradientAttribute>("gradient");
     std::vector<float>      positions = {};
     std::vector<glm::vec3>  colormap_colors = {};
 

@@ -25,32 +25,32 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_INPUT = "input";
-constexpr const char *P_BEDROCK = "bedrock";
-constexpr const char *P_MOISTURE = "moisture";
-constexpr const char *P_MASK = "mask";
-constexpr const char *P_OUTPUT = "output";
-constexpr const char *P_EROSION = "erosion";
+constexpr const char *P_INPUT      = "input";
+constexpr const char *P_BEDROCK    = "bedrock";
+constexpr const char *P_MOISTURE   = "moisture";
+constexpr const char *P_MASK       = "mask";
+constexpr const char *P_OUTPUT     = "output";
+constexpr const char *P_EROSION    = "erosion";
 constexpr const char *P_DEPOSITION = "deposition";
 
-constexpr const char *A_SCALE = "scale";
-constexpr const char *A_SEED = "seed";
-constexpr const char *A_PARTICLE_DENSITY = "particle_density";
-constexpr const char *A_C_CAPACITY = "c_capacity";
-constexpr const char *A_C_EROSION = "c_erosion";
-constexpr const char *A_C_DEPOSITION = "c_deposition";
-constexpr const char *A_C_INERTIA = "c_inertia";
-constexpr const char *A_DRAG_RATE = "drag_rate";
-constexpr const char *A_EVAP_RATE = "evap_rate";
-constexpr const char *A_ENABLE_DIRECTIONAL_BIAS = "enable_directional_bias";
-constexpr const char *A_ANGLE_BIAS = "angle_bias";
-constexpr const char *A_DEPOSITION_ONLY = "deposition_only";
-constexpr const char *A_ENABLE_DEFAULT_BEDROCK = "enable_default_bedrock";
-constexpr const char *A_BD_ELEVATION_STRENGTH = "bd_elevation_strength";
-constexpr const char *A_BD_SLOPE_STRENGTH = "bd_slope_strength";
-constexpr const char *A_BD_SLOPE = "bd_slope";
-constexpr const char *A_ENABLE_RIDGE_FORCING = "enable_ridge_forcing";
-constexpr const char *A_RIDGE_SPATIAL_FREQUENCY = "ridge_spatial_frequency";
+constexpr const char *A_SCALE                     = "scale";
+constexpr const char *A_SEED                      = "seed";
+constexpr const char *A_PARTICLE_DENSITY          = "particle_density";
+constexpr const char *A_C_CAPACITY                = "c_capacity";
+constexpr const char *A_C_EROSION                 = "c_erosion";
+constexpr const char *A_C_DEPOSITION              = "c_deposition";
+constexpr const char *A_C_INERTIA                 = "c_inertia";
+constexpr const char *A_DRAG_RATE                 = "drag_rate";
+constexpr const char *A_EVAP_RATE                 = "evap_rate";
+constexpr const char *A_ENABLE_DIRECTIONAL_BIAS   = "enable_directional_bias";
+constexpr const char *A_ANGLE_BIAS                = "angle_bias";
+constexpr const char *A_DEPOSITION_ONLY           = "deposition_only";
+constexpr const char *A_ENABLE_DEFAULT_BEDROCK    = "enable_default_bedrock";
+constexpr const char *A_BD_ELEVATION_STRENGTH     = "bd_elevation_strength";
+constexpr const char *A_BD_SLOPE_STRENGTH         = "bd_slope_strength";
+constexpr const char *A_BD_SLOPE                  = "bd_slope";
+constexpr const char *A_ENABLE_RIDGE_FORCING      = "enable_ridge_forcing";
+constexpr const char *A_RIDGE_SPATIAL_FREQUENCY   = "ridge_spatial_frequency";
 constexpr const char *A_RIDGE_ELEVATION_AMPLITUDE = "ridge_elevation_amplitude";
 
 // -----------------------------------------------------------------------------
@@ -145,12 +145,12 @@ void compute_hydraulic_particle_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  auto *p_in = node.get_value_ref<hmap::VirtualArray>(P_INPUT);
-  auto *p_bedrock = node.get_value_ref<hmap::VirtualArray>(P_BEDROCK);
-  auto *p_moisture = node.get_value_ref<hmap::VirtualArray>(P_MOISTURE);
-  auto *p_mask = node.get_value_ref<hmap::VirtualArray>(P_MASK);
-  auto *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUTPUT);
-  auto *p_erosion = node.get_value_ref<hmap::VirtualArray>(P_EROSION);
+  auto *p_in         = node.get_value_ref<hmap::VirtualArray>(P_INPUT);
+  auto *p_bedrock    = node.get_value_ref<hmap::VirtualArray>(P_BEDROCK);
+  auto *p_moisture   = node.get_value_ref<hmap::VirtualArray>(P_MOISTURE);
+  auto *p_mask       = node.get_value_ref<hmap::VirtualArray>(P_MASK);
+  auto *p_out        = node.get_value_ref<hmap::VirtualArray>(P_OUTPUT);
+  auto *p_erosion    = node.get_value_ref<hmap::VirtualArray>(P_EROSION);
   auto *p_deposition = node.get_value_ref<hmap::VirtualArray>(P_DEPOSITION);
 
   if (!p_in)
@@ -183,10 +183,10 @@ void compute_hydraulic_particle_node(BaseNode &node)
       float ridge_elevation_amplitude;
     };
 
-    const int   ncells = p_out->shape.x * p_out->shape.y;
-    const float density = node.get_attr<FloatAttribute>(A_PARTICLE_DENSITY);
+    const int   ncells     = p_out->shape.x * p_out->shape.y;
+    const float density    = node.get_attr<FloatAttribute>(A_PARTICLE_DENSITY);
     const int   nparticles = (int)(density * ncells);
-    const float bd_talus = node.get_attr<FloatAttribute>(A_BD_SLOPE) / p_out->shape.x;
+    const float bd_talus   = node.get_attr<FloatAttribute>(A_BD_SLOPE) / p_out->shape.x;
 
     // clang-format off
     return P{
@@ -234,7 +234,8 @@ void compute_hydraulic_particle_node(BaseNode &node)
   if (hmax - hmin < 1.0e-6f)
   {
     Logger::log()->warn(
-        "HydraulicParticle [{}]: input is flat/near-constant (value range ~ 0). "
+        "HydraulicParticle [{}]: input is flat/near-constant (value range ~ "
+        "0). "
         "Erosion is gradient-driven and will produce little or no change. "
         "Erode full-domain relief first, then multiply by the land mask; "
         "or enable ridge forcing.",
@@ -250,18 +251,18 @@ void compute_hydraulic_particle_node(BaseNode &node)
                                    const hmap::TileRegion          &region)
       {
         auto [pa_in, pa_bedrock, pa_moisture, pa_mask] = unpack<4>(p_arrays_in);
-        auto [pa_out, pa_erosion, pa_deposition] = unpack<3>(p_arrays_out);
+        auto [pa_out, pa_erosion, pa_deposition]       = unpack<3>(p_arrays_out);
 
         *pa_out = *pa_in;
 
         // add ridges
         if (params.enable_ridge_forcing)
         {
-          hmap::Array angle = hmap::gradient_angle(*pa_out);
-          int         octaves = 4;
-          float       weight = 0.7f;
+          hmap::Array angle       = hmap::gradient_angle(*pa_out);
+          int         octaves     = 4;
+          float       weight      = 0.7f;
           float       persistence = 0.5f;
-          float       lacunarity = 2.f;
+          float       lacunarity  = 2.f;
 
           glm::vec2 kr = {params.ridge_spatial_frequency, params.ridge_spatial_frequency};
 
@@ -282,11 +283,11 @@ void compute_hydraulic_particle_node(BaseNode &node)
           ridges = 0.5f * ridges - 0.5f; // in [-1..0]
 
           // TODO move this to params lambda
-          const float talus_ref = 4.f / region.shape.x;
-          const int   ir = std::max(1,
+          const float talus_ref    = 4.f / region.shape.x;
+          const int   ir           = std::max(1,
                                   int(region.shape.x / params.ridge_spatial_frequency));
           const float gradient_exp = 2.f;
-          hmap::Array gn = hmap::gradient_norm(*pa_out) / talus_ref;
+          hmap::Array gn           = hmap::gradient_norm(*pa_out) / talus_ref;
           hmap::gpu::smooth_cpulse(gn, ir);
           hmap::clamp_max(gn, 1.f);
           gn = hmap::pow(gn, gradient_exp);
@@ -299,7 +300,7 @@ void compute_hydraulic_particle_node(BaseNode &node)
 
         if (params.enable_default_bedrock && !pa_bedrock)
         {
-          bedrock = hmap::generate_bedrock(*pa_out,
+          bedrock    = hmap::generate_bedrock(*pa_out,
                                            params.bd_elevation_strength,
                                            params.bd_slope_strength,
                                            params.bd_talus,

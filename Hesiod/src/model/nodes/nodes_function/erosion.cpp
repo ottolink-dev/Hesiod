@@ -52,7 +52,7 @@ void compute_erosion_node(BaseNode &node)
           [&ir](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
           {
             hmap::Array *pa_out = p_arrays[0];
-            hmap::Array *pa_in = p_arrays[1];
+            hmap::Array *pa_in  = p_arrays[1];
 
             *pa_out = hmap::gpu::erosion(*pa_in, ir);
           },
@@ -65,7 +65,7 @@ void compute_erosion_node(BaseNode &node)
           [&ir](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
           {
             hmap::Array *pa_out = p_arrays[0];
-            hmap::Array *pa_in = p_arrays[1];
+            hmap::Array *pa_in  = p_arrays[1];
 
             *pa_out = hmap::erosion(*pa_in, ir);
           },

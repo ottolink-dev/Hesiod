@@ -20,7 +20,7 @@ echo "- clang-format"
 
 # directories to be formatted (recursive search)
 DIRS="Hesiod/include Hesiod/src Hesiod/app"
-FORMAT_CMD="clang-format -style=file:scripts/clang_style -i"
+FORMAT_CMD="clang-format -style=file -i"
 
 for D in ${DIRS}; do
     for F in `find ${D}/. -type f \( -iname \*.hpp -o -iname \*.cpp \)`; do

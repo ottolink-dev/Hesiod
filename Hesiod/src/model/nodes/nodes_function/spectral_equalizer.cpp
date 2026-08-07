@@ -19,11 +19,11 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_INPUT = "input";
-constexpr const char *P_MASK = "mask";
+constexpr const char *P_INPUT  = "input";
+constexpr const char *P_MASK   = "mask";
 constexpr const char *P_OUTPUT = "output";
 
-constexpr const char *A_EQ = "eq";
+constexpr const char *A_EQ   = "eq";
 constexpr const char *A_RMIN = "rmin";
 constexpr const char *A_RMAX = "rmax";
 
@@ -77,9 +77,9 @@ void compute_spectral_equalizer_node(BaseNode &node)
 
   // --- Inputs / Outputs
 
-  auto *p_in = node.get_value_ref<hmap::VirtualArray>(P_INPUT);
+  auto *p_in   = node.get_value_ref<hmap::VirtualArray>(P_INPUT);
   auto *p_mask = node.get_value_ref<hmap::VirtualArray>(P_MASK);
-  auto *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUTPUT);
+  auto *p_out  = node.get_value_ref<hmap::VirtualArray>(P_OUTPUT);
 
   if (!p_in)
     return;
@@ -109,7 +109,7 @@ void compute_spectral_equalizer_node(BaseNode &node)
           const hmap::TileRegion &)
       {
         const auto [pa_in, pa_mask] = unpack<2>(p_arrays_in);
-        auto [pa_out] = unpack<1>(p_arrays_out);
+        auto [pa_out]               = unpack<1>(p_arrays_out);
 
         *pa_out = hmap::gpu::spectral_equalizer(*pa_in, weights, ir_min, ir_max, pa_mask);
       },

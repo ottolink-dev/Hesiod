@@ -22,18 +22,18 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_IN = "input";
+constexpr const char *P_IN    = "input";
 constexpr const char *P_NOISE = "noise";
-constexpr const char *P_MASK = "mask";
-constexpr const char *P_OUT = "output";
+constexpr const char *P_MASK  = "mask";
+constexpr const char *P_OUT   = "output";
 
-constexpr const char *A_KZ = "kz";
-constexpr const char *A_GAMMA = "gamma";
-constexpr const char *A_SEED = "seed";
-constexpr const char *A_LINEAR_GAMMA = "linear_gamma";
+constexpr const char *A_KZ                = "kz";
+constexpr const char *A_GAMMA             = "gamma";
+constexpr const char *A_SEED              = "seed";
+constexpr const char *A_LINEAR_GAMMA      = "linear_gamma";
 constexpr const char *A_GAMMA_NOISE_RATIO = "gamma_noise_ratio";
-constexpr const char *A_SLOPE = "slope";
-constexpr const char *A_ANGLE = "angle";
+constexpr const char *A_SLOPE             = "slope";
+constexpr const char *A_ANGLE             = "angle";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -93,10 +93,10 @@ void compute_strata_terrace_node(BaseNode &node)
 
   // --- Inputs / Outputs
 
-  auto *p_in = node.get_value_ref<hmap::VirtualArray>(P_IN);
+  auto *p_in    = node.get_value_ref<hmap::VirtualArray>(P_IN);
   auto *p_noise = node.get_value_ref<hmap::VirtualArray>(P_NOISE);
-  auto *p_mask = node.get_value_ref<hmap::VirtualArray>(P_MASK);
-  auto *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
+  auto *p_mask  = node.get_value_ref<hmap::VirtualArray>(P_MASK);
+  auto *p_out   = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
   if (!p_in || !p_out)
     return;
@@ -127,7 +127,7 @@ void compute_strata_terrace_node(BaseNode &node)
           const hmap::TileRegion &)
       {
         auto [pa_in, pa_noise, pa_mask] = unpack<3>(in);
-        auto [pa_out] = unpack<1>(out);
+        auto [pa_out]                   = unpack<1>(out);
 
         *pa_out = *pa_in;
 

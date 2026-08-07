@@ -64,7 +64,7 @@ void compute_export_as_cubemap_node(BaseNode &node)
     hmap::Array z = p_in->to_array(node.cfg().cm_cpu);
 
     std::filesystem::path fname = node.get_attr<FilenameAttribute>("fname");
-    fname = ensure_extension(fname, ".png");
+    fname                       = ensure_extension(fname, ".png");
 
     if (node.get_attr<BoolAttribute>("add_prefix"))
       fname = prepend_project_name_to_path(fname);

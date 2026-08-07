@@ -39,8 +39,8 @@ void compute_cloud_random_density_node(BaseNode &node)
   {
     hmap::Cloud *p_cloud = node.get_value_ref<hmap::Cloud>("cloud");
 
-    int npoints = node.get_attr<IntAttribute>("npoints");
-    int ntiles = p_density->get_ntiles();
+    int npoints          = node.get_attr<IntAttribute>("npoints");
+    int ntiles           = p_density->get_ntiles();
     int npoints_per_tile = std::max(1, int(float(npoints / ntiles)));
 
     std::vector<hmap::Cloud> clouds;

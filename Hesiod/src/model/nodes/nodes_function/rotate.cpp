@@ -46,7 +46,7 @@ void compute_rotate_node(BaseNode &node)
         [&node](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
         {
           auto [pa_out, pa_in] = unpack<2>(p_arrays);
-          *pa_out = *pa_in;
+          *pa_out              = *pa_in;
           hmap::gpu::rotate(*pa_out,
                             node.get_attr<FloatAttribute>("angle"),
                             node.get_attr<BoolAttribute>("zoom_in"));

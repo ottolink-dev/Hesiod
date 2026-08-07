@@ -18,12 +18,12 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_IN = "input";
+constexpr const char *P_IN  = "input";
 constexpr const char *P_OUT = "output";
 
 constexpr const char *A_VALUE1 = "value1";
 constexpr const char *A_VALUE2 = "value2";
-constexpr const char *A_WIDTH = "width";
+constexpr const char *A_WIDTH  = "width";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -65,7 +65,7 @@ void compute_select_interval_node(BaseNode &node)
 
   // --- Inputs / Outputs
 
-  auto *p_in = node.get_value_ref<hmap::VirtualArray>(P_IN);
+  auto *p_in  = node.get_value_ref<hmap::VirtualArray>(P_IN);
   auto *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
   if (!p_in || !p_out)
@@ -91,7 +91,7 @@ void compute_select_interval_node(BaseNode &node)
           std::vector<hmap::Array *>       out,
           const hmap::TileRegion &)
       {
-        auto [pa_in] = unpack<1>(in);
+        auto [pa_in]  = unpack<1>(in);
         auto [pa_out] = unpack<1>(out);
 
         *pa_out = hmap::sigmoid(*pa_in, width, 0.f, 1.f, xmin);

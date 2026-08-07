@@ -19,27 +19,27 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_DR = "dr";
-constexpr const char *P_DS = "offset";
-constexpr const char *P_ENV = "envelope";
-constexpr const char *P_OUT = "output";
-constexpr const char *P_RIFT_MASK = "rift_mask";
+constexpr const char *P_DR          = "dr";
+constexpr const char *P_DS          = "offset";
+constexpr const char *P_ENV         = "envelope";
+constexpr const char *P_OUT         = "output";
+constexpr const char *P_RIFT_MASK   = "rift_mask";
 constexpr const char *P_BOTTOM_MASK = "bottom_mask";
 
-constexpr const char *A_ANGLE = "angle";
-constexpr const char *A_RADIUS = "radius";
-constexpr const char *A_AXIAL_SLOPE = "axial_slope";
-constexpr const char *A_DEPTH = "depth";
-constexpr const char *A_SCALE_WITH_DEPTH = "scale_with_depth";
-constexpr const char *A_PROFILE = "profile";
-constexpr const char *A_PROFILE_PARAM = "profile_param";
-constexpr const char *A_BOTTOM_EXTENT = "bottom_extent";
-constexpr const char *A_BOTTOM_DEPTH = "bottom_depth";
-constexpr const char *A_BOTTOM_PROFILE = "bottom_profile";
+constexpr const char *A_ANGLE                = "angle";
+constexpr const char *A_RADIUS               = "radius";
+constexpr const char *A_AXIAL_SLOPE          = "axial_slope";
+constexpr const char *A_DEPTH                = "depth";
+constexpr const char *A_SCALE_WITH_DEPTH     = "scale_with_depth";
+constexpr const char *A_PROFILE              = "profile";
+constexpr const char *A_PROFILE_PARAM        = "profile_param";
+constexpr const char *A_BOTTOM_EXTENT        = "bottom_extent";
+constexpr const char *A_BOTTOM_DEPTH         = "bottom_depth";
+constexpr const char *A_BOTTOM_PROFILE       = "bottom_profile";
 constexpr const char *A_BOTTOM_PROFILE_PARAM = "bottom_profile_param";
-constexpr const char *A_BOTTOM_MIN_DEPTH = "bottom_force_minimum_depth";
-constexpr const char *A_OUTER_SLOPE = "outer_slope";
-constexpr const char *A_CENTER = "center";
+constexpr const char *A_BOTTOM_MIN_DEPTH     = "bottom_force_minimum_depth";
+constexpr const char *A_OUTER_SLOPE          = "outer_slope";
+constexpr const char *A_CENTER               = "center";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -125,10 +125,10 @@ void compute_rift_node(BaseNode &node)
 
   // --- Inputs / Outputs
 
-  auto *p_dr = node.get_value_ref<hmap::VirtualArray>(P_DR);
-  auto *p_ds = node.get_value_ref<hmap::VirtualArray>(P_DS);
-  auto *p_env = node.get_value_ref<hmap::VirtualArray>(P_ENV);
-  auto *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
+  auto *p_dr    = node.get_value_ref<hmap::VirtualArray>(P_DR);
+  auto *p_ds    = node.get_value_ref<hmap::VirtualArray>(P_DS);
+  auto *p_env   = node.get_value_ref<hmap::VirtualArray>(P_ENV);
+  auto *p_out   = node.get_value_ref<hmap::VirtualArray>(P_OUT);
   auto *p_rmask = node.get_value_ref<hmap::VirtualArray>(P_RIFT_MASK);
   auto *p_bmask = node.get_value_ref<hmap::VirtualArray>(P_BOTTOM_MASK);
 
@@ -168,7 +168,7 @@ void compute_rift_node(BaseNode &node)
           std::vector<hmap::Array *>       out,
           const hmap::TileRegion          &region)
       {
-        auto [pa_dr, pa_ds] = unpack<2>(in);
+        auto [pa_dr, pa_ds]               = unpack<2>(in);
         auto [pa_out, pa_rmask, pa_bmask] = unpack<3>(out);
 
         *pa_out = hmap::rift(region.shape,

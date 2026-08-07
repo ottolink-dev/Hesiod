@@ -18,13 +18,13 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_IN = "input";
-constexpr const char *P_MASK = "mask";
-constexpr const char *P_OUT = "output";
+constexpr const char *P_IN         = "input";
+constexpr const char *P_MASK       = "mask";
+constexpr const char *P_OUT        = "output";
 constexpr const char *P_DEPOSITION = "deposition";
 
-constexpr const char *A_RADIUS = "radius";
-constexpr const char *A_STRENGTH = "strength";
+constexpr const char *A_RADIUS     = "radius";
+constexpr const char *A_STRENGTH   = "strength";
 constexpr const char *A_ITERATIONS = "iterations";
 
 // -----------------------------------------------------------------------------
@@ -73,9 +73,9 @@ void compute_deposition_fill_holes_node(BaseNode &node)
 
   // --- Inputs / Outputs
 
-  auto *p_in = node.get_value_ref<hmap::VirtualArray>(P_IN);
-  auto *p_mask = node.get_value_ref<hmap::VirtualArray>(P_MASK);
-  auto *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
+  auto *p_in         = node.get_value_ref<hmap::VirtualArray>(P_IN);
+  auto *p_mask       = node.get_value_ref<hmap::VirtualArray>(P_MASK);
+  auto *p_out        = node.get_value_ref<hmap::VirtualArray>(P_OUT);
   auto *p_deposition = node.get_value_ref<hmap::VirtualArray>(P_DEPOSITION);
 
   if (!p_in)
@@ -104,7 +104,7 @@ void compute_deposition_fill_holes_node(BaseNode &node)
           std::vector<hmap::Array *>       out,
           const hmap::TileRegion &)
       {
-        auto [pa_in, pa_mask] = unpack<2>(in);
+        auto [pa_in, pa_mask]        = unpack<2>(in);
         auto [pa_out, pa_deposition] = unpack<2>(out);
 
         *pa_out = *pa_in;

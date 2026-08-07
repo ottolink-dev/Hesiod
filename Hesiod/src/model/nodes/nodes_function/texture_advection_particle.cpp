@@ -74,7 +74,7 @@ void compute_texture_advection_particle_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  hmap::VirtualArray   *p_z = node.get_value_ref<hmap::VirtualArray>("elevation");
+  hmap::VirtualArray   *p_z   = node.get_value_ref<hmap::VirtualArray>("elevation");
   hmap::VirtualTexture *p_tex = node.get_value_ref<hmap::VirtualTexture>("input");
 
   if (p_z && p_tex)
@@ -82,7 +82,7 @@ void compute_texture_advection_particle_node(BaseNode &node)
     hmap::VirtualArray *p_advection_mask = node.get_value_ref<hmap::VirtualArray>(
         "advection_mask");
     hmap::VirtualArray   *p_mask = node.get_value_ref<hmap::VirtualArray>("mask");
-    hmap::VirtualTexture *p_out = node.get_value_ref<hmap::VirtualTexture>("texture");
+    hmap::VirtualTexture *p_out  = node.get_value_ref<hmap::VirtualTexture>("texture");
 
     // prepare mask
     std::shared_ptr<hmap::VirtualArray> sp_mask = pre_process_mask(node, p_mask, *p_z);

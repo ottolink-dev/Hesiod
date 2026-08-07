@@ -42,8 +42,8 @@ void compute_cone_sigmoid_node(BaseNode &node)
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
   // base noise function
-  hmap::VirtualArray *p_dx = node.get_value_ref<hmap::VirtualArray>("dx");
-  hmap::VirtualArray *p_dy = node.get_value_ref<hmap::VirtualArray>("dy");
+  hmap::VirtualArray *p_dx  = node.get_value_ref<hmap::VirtualArray>("dx");
+  hmap::VirtualArray *p_dy  = node.get_value_ref<hmap::VirtualArray>("dy");
   hmap::VirtualArray *p_env = node.get_value_ref<hmap::VirtualArray>("envelope");
   hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>("output");
 

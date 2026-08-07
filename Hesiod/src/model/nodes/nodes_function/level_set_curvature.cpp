@@ -20,11 +20,11 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_IN = "input";
+constexpr const char *P_IN  = "input";
 constexpr const char *P_OUT = "output";
 
 constexpr const char *A_VALUES_KEPT = "values_kept";
-constexpr const char *A_RADIUS = "radius";
+constexpr const char *A_RADIUS      = "radius";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -67,7 +67,7 @@ void compute_level_set_curvature_node(BaseNode &node)
 
   // --- Inputs / Outputs
 
-  auto *p_in = node.get_value_ref<hmap::VirtualArray>(P_IN);
+  auto *p_in  = node.get_value_ref<hmap::VirtualArray>(P_IN);
   auto *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
   if (!p_in)
@@ -81,7 +81,7 @@ void compute_level_set_curvature_node(BaseNode &node)
   // clang-format on
 
   bool keep_both = (values_kept == "both");
-  int  ir = std::max(1, int(radius * p_out->shape.x));
+  int  ir        = std::max(1, int(radius * p_out->shape.x));
 
   // --- Compute
 
@@ -92,7 +92,7 @@ void compute_level_set_curvature_node(BaseNode &node)
           std::vector<hmap::Array *>       out,
           const hmap::TileRegion &)
       {
-        auto [pa_in] = unpack<1>(in);
+        auto [pa_in]  = unpack<1>(in);
         auto [pa_out] = unpack<1>(out);
 
         *pa_out = hmap::gpu::level_set_curvature(*pa_in, ir);

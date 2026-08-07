@@ -18,7 +18,7 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_ALPHA = "alpha";
+constexpr const char *P_ALPHA   = "alpha";
 constexpr const char *P_TEXTURE = "texture";
 
 constexpr const char *A_COLOR = "color";
@@ -57,7 +57,7 @@ void compute_colorize_solid_node(BaseNode &node)
 
   // --- Inputs / Outputs
 
-  auto *p_alpha = node.get_value_ref<hmap::VirtualArray>(P_ALPHA);
+  auto *p_alpha   = node.get_value_ref<hmap::VirtualArray>(P_ALPHA);
   auto *p_texture = node.get_value_ref<hmap::VirtualTexture>(P_TEXTURE);
 
   // --- Params

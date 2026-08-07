@@ -44,7 +44,7 @@ void compute_water_depth_dry_out_node(BaseNode &node)
   if (p_in)
   {
     hmap::VirtualArray *p_mask = node.get_value_ref<hmap::VirtualArray>("mask");
-    hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>("water_depth");
+    hmap::VirtualArray *p_out  = node.get_value_ref<hmap::VirtualArray>("water_depth");
 
     float depth_max = p_in->max(node.cfg().cm_cpu);
 
@@ -53,7 +53,7 @@ void compute_water_depth_dry_out_node(BaseNode &node)
         [&node, depth_max](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
         {
           auto [pa_out, pa_in, pa_mask] = unpack<3>(p_arrays);
-          *pa_out = *pa_in;
+          *pa_out                       = *pa_in;
 
           hmap::water_depth_dry_out(*pa_out,
                                     node.get_attr<FloatAttribute>("dry_out_ratio"),

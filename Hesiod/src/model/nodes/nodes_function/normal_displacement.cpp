@@ -43,7 +43,7 @@ void compute_normal_displacement_node(BaseNode &node)
   if (p_in)
   {
     hmap::VirtualArray *p_mask = node.get_value_ref<hmap::VirtualArray>("mask");
-    hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>("output");
+    hmap::VirtualArray *p_out  = node.get_value_ref<hmap::VirtualArray>("output");
 
     int ir = std::max(0, (int)(node.get_attr<FloatAttribute>("radius") * p_in->shape.x));
 

@@ -18,12 +18,12 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_IN = "input";
-constexpr const char *P_OUT = "output";
+constexpr const char *P_IN       = "input";
+constexpr const char *P_OUT      = "output";
 constexpr const char *P_FILL_MAP = "fill map";
 
 constexpr const char *A_REMAP_FILL_MAP = "remap fill map";
-constexpr const char *A_SMOOTHING = "smoothing";
+constexpr const char *A_SMOOTHING      = "smoothing";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -67,8 +67,8 @@ void compute_depression_filling_node(BaseNode &node)
 
   // --- Inputs / Outputs
 
-  auto *p_in = node.get_value_ref<hmap::VirtualArray>(P_IN);
-  auto *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
+  auto *p_in       = node.get_value_ref<hmap::VirtualArray>(P_IN);
+  auto *p_out      = node.get_value_ref<hmap::VirtualArray>(P_OUT);
   auto *p_fill_map = node.get_value_ref<hmap::VirtualArray>(P_FILL_MAP);
 
   if (!p_in || !p_out || !p_fill_map)

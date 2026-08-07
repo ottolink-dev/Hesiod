@@ -18,14 +18,14 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_INPUT = "input";
+constexpr const char *P_INPUT  = "input";
 constexpr const char *P_OUTPUT = "output";
 
-constexpr const char *A_ITERATIONS = "iterations";
-constexpr const char *A_SEED = "seed";
-constexpr const char *A_SIGMA = "sigma";
-constexpr const char *A_ORIENTATION = "orientation";
-constexpr const char *A_PERSISTENCE = "persistence";
+constexpr const char *A_ITERATIONS   = "iterations";
+constexpr const char *A_SEED         = "seed";
+constexpr const char *A_SIGMA        = "sigma";
+constexpr const char *A_ORIENTATION  = "orientation";
+constexpr const char *A_PERSISTENCE  = "persistence";
 constexpr const char *A_REMOVE_LOOPS = "remove_loops";
 
 // -----------------------------------------------------------------------------
@@ -67,7 +67,7 @@ void compute_path_fractalize_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  hmap::Path *p_in = node.get_value_ref<hmap::Path>(P_INPUT);
+  hmap::Path *p_in  = node.get_value_ref<hmap::Path>(P_INPUT);
   hmap::Path *p_out = node.get_value_ref<hmap::Path>(P_OUTPUT);
 
   if (!p_in || p_in->size() < 2)
@@ -87,11 +87,11 @@ void compute_path_fractalize_node(BaseNode &node)
       bool  remove_loops;
     };
 
-    return P{.iterations = node.get_attr<IntAttribute>(A_ITERATIONS),
-             .seed = node.get_attr<SeedAttribute>(A_SEED),
-             .sigma = node.get_attr<FloatAttribute>(A_SIGMA),
-             .orientation = node.get_attr<IntAttribute>(A_ORIENTATION),
-             .persistence = node.get_attr<FloatAttribute>(A_PERSISTENCE),
+    return P{.iterations   = node.get_attr<IntAttribute>(A_ITERATIONS),
+             .seed         = node.get_attr<SeedAttribute>(A_SEED),
+             .sigma        = node.get_attr<FloatAttribute>(A_SIGMA),
+             .orientation  = node.get_attr<IntAttribute>(A_ORIENTATION),
+             .persistence  = node.get_attr<FloatAttribute>(A_PERSISTENCE),
              .remove_loops = node.get_attr<BoolAttribute>(A_REMOVE_LOOPS)};
   }();
 

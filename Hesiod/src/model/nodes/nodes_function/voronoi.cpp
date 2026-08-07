@@ -67,11 +67,11 @@ void compute_voronoi_node(BaseNode &node)
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
   // base noise function
-  hmap::VirtualArray *p_dx = node.get_value_ref<hmap::VirtualArray>("dx");
-  hmap::VirtualArray *p_dy = node.get_value_ref<hmap::VirtualArray>("dy");
+  hmap::VirtualArray *p_dx   = node.get_value_ref<hmap::VirtualArray>("dx");
+  hmap::VirtualArray *p_dy   = node.get_value_ref<hmap::VirtualArray>("dy");
   hmap::VirtualArray *p_ctrl = node.get_value_ref<hmap::VirtualArray>("control");
-  hmap::VirtualArray *p_env = node.get_value_ref<hmap::VirtualArray>("envelope");
-  hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>("out");
+  hmap::VirtualArray *p_env  = node.get_value_ref<hmap::VirtualArray>("envelope");
+  hmap::VirtualArray *p_out  = node.get_value_ref<hmap::VirtualArray>("out");
 
   hmap::for_each_tile(
       {p_out, p_dx, p_dy, p_ctrl},
@@ -108,7 +108,7 @@ void compute_voronoi_node(BaseNode &node)
         [](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
         {
           hmap::Array *pa_out = p_arrays[0];
-          *pa_out = hmap::sqrt(*pa_out);
+          *pa_out             = hmap::sqrt(*pa_out);
         },
         node.cfg().cm_cpu);
 

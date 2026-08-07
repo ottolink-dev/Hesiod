@@ -46,7 +46,7 @@ void compute_fold_node(BaseNode &node)
         [&node, hmin, hmax](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
         {
           auto [pa_out, pa_in] = unpack<2>(p_arrays);
-          *pa_out = *pa_in;
+          *pa_out              = *pa_in;
 
           hmap::fold(*pa_out,
                      hmin,

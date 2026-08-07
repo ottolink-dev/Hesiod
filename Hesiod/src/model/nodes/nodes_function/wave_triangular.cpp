@@ -47,7 +47,7 @@ void compute_wave_triangular_node(BaseNode &node)
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
   // base noise function
-  hmap::VirtualArray *p_dr = node.get_value_ref<hmap::VirtualArray>("dr");
+  hmap::VirtualArray *p_dr  = node.get_value_ref<hmap::VirtualArray>("dr");
   hmap::VirtualArray *p_env = node.get_value_ref<hmap::VirtualArray>("envelope");
   hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>("output");
 
@@ -59,7 +59,7 @@ void compute_wave_triangular_node(BaseNode &node)
       [&](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &region)
       {
         hmap::Array *pa_out = p_arrays[0];
-        hmap::Array *pa_dr = p_arrays[1];
+        hmap::Array *pa_dr  = p_arrays[1];
 
         *pa_out = hmap::wave_triangular(region.shape,
                                         node.get_attr<FloatAttribute>("kw"),

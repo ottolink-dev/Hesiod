@@ -20,10 +20,10 @@ namespace hesiod
 // Ports
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_IN = "input";
-constexpr const char *P_REF = "reference";
+constexpr const char *P_IN   = "input";
+constexpr const char *P_REF  = "reference";
 constexpr const char *P_MASK = "mask";
-constexpr const char *P_OUT = "output";
+constexpr const char *P_OUT  = "output";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -63,10 +63,10 @@ void compute_equalize_node(BaseNode &node)
 
   // --- Inputs / Outputs
 
-  auto *p_in = node.get_value_ref<hmap::VirtualArray>(P_IN);
-  auto *p_ref = node.get_value_ref<hmap::VirtualArray>(P_REF);
+  auto *p_in   = node.get_value_ref<hmap::VirtualArray>(P_IN);
+  auto *p_ref  = node.get_value_ref<hmap::VirtualArray>(P_REF);
   auto *p_mask = node.get_value_ref<hmap::VirtualArray>(P_MASK);
-  auto *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
+  auto *p_out  = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
   if (!p_in)
     return;
@@ -87,7 +87,7 @@ void compute_equalize_node(BaseNode &node)
             const hmap::TileRegion &)
         {
           auto [pa_in, pa_ref, pa_mask] = unpack<3>(in);
-          auto [pa_out] = unpack<1>(out);
+          auto [pa_out]                 = unpack<1>(out);
 
           *pa_out = *pa_in;
           hmap::match_histogram(*pa_out, *pa_ref);
@@ -108,7 +108,7 @@ void compute_equalize_node(BaseNode &node)
             const hmap::TileRegion &)
         {
           auto [pa_in, pa_mask] = unpack<2>(in);
-          auto [pa_out] = unpack<1>(out);
+          auto [pa_out]         = unpack<1>(out);
 
           *pa_out = *pa_in;
 

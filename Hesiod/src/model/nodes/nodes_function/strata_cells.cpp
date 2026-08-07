@@ -20,25 +20,25 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_INPUT = "input";
-constexpr const char *P_MASK = "mask";
+constexpr const char *P_INPUT   = "input";
+constexpr const char *P_MASK    = "mask";
 constexpr const char *P_NOISE_X = "noise_x";
 constexpr const char *P_NOISE_Y = "noise_y";
-constexpr const char *P_OUTPUT = "output";
+constexpr const char *P_OUTPUT  = "output";
 
-constexpr const char *A_KW = "kw";
-constexpr const char *A_AMP = "amp";
-constexpr const char *A_SEED = "seed";
-constexpr const char *A_GAMMA = "gamma";
-constexpr const char *A_GAMMA_LATERAL = "gamma_lateral";
-constexpr const char *A_ANGLE = "angle";
-constexpr const char *A_ENABLE_DEFAULT_NOISE = "enable_default_noise";
-constexpr const char *A_NOISE_AMP = "noise_amp";
+constexpr const char *A_KW                    = "kw";
+constexpr const char *A_AMP                   = "amp";
+constexpr const char *A_SEED                  = "seed";
+constexpr const char *A_GAMMA                 = "gamma";
+constexpr const char *A_GAMMA_LATERAL         = "gamma_lateral";
+constexpr const char *A_ANGLE                 = "angle";
+constexpr const char *A_ENABLE_DEFAULT_NOISE  = "enable_default_noise";
+constexpr const char *A_NOISE_AMP             = "noise_amp";
 constexpr const char *A_ABSOLUTE_DISPLACEMENT = "absolute_displacement";
 constexpr const char *A_OCCURENCE_PROBABILITY = "occurence_probability";
-constexpr const char *A_OCTAVES = "octaves";
-constexpr const char *A_PERSISTENCE = "persistence";
-constexpr const char *A_LACUNARITY = "lacunarity";
+constexpr const char *A_OCTAVES               = "octaves";
+constexpr const char *A_PERSISTENCE           = "persistence";
+constexpr const char *A_LACUNARITY            = "lacunarity";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -111,11 +111,11 @@ void compute_strata_cells_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  auto *p_in = node.get_value_ref<hmap::VirtualArray>(P_INPUT);
-  auto *p_dx = node.get_value_ref<hmap::VirtualArray>(P_NOISE_X);
-  auto *p_dy = node.get_value_ref<hmap::VirtualArray>(P_NOISE_Y);
+  auto *p_in   = node.get_value_ref<hmap::VirtualArray>(P_INPUT);
+  auto *p_dx   = node.get_value_ref<hmap::VirtualArray>(P_NOISE_X);
+  auto *p_dy   = node.get_value_ref<hmap::VirtualArray>(P_NOISE_Y);
   auto *p_mask = node.get_value_ref<hmap::VirtualArray>(P_MASK);
-  auto *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUTPUT);
+  auto *p_out  = node.get_value_ref<hmap::VirtualArray>(P_OUTPUT);
 
   if (!p_in)
     return;
@@ -142,19 +142,19 @@ void compute_strata_cells_node(BaseNode &node)
     };
 
     return P{
-        .kw = node.get_attr<WaveNbAttribute>(A_KW),
-        .amp = node.get_attr<FloatAttribute>(A_AMP),
-        .seed = node.get_attr<SeedAttribute>(A_SEED),
-        .gamma = node.get_attr<FloatAttribute>(A_GAMMA),
-        .gamma_lateral = node.get_attr<FloatAttribute>(A_GAMMA_LATERAL),
-        .angle = node.get_attr<FloatAttribute>(A_ANGLE),
-        .enable_default_noise = node.get_attr<BoolAttribute>(A_ENABLE_DEFAULT_NOISE),
-        .noise_amp = node.get_attr<FloatAttribute>(A_NOISE_AMP),
+        .kw                    = node.get_attr<WaveNbAttribute>(A_KW),
+        .amp                   = node.get_attr<FloatAttribute>(A_AMP),
+        .seed                  = node.get_attr<SeedAttribute>(A_SEED),
+        .gamma                 = node.get_attr<FloatAttribute>(A_GAMMA),
+        .gamma_lateral         = node.get_attr<FloatAttribute>(A_GAMMA_LATERAL),
+        .angle                 = node.get_attr<FloatAttribute>(A_ANGLE),
+        .enable_default_noise  = node.get_attr<BoolAttribute>(A_ENABLE_DEFAULT_NOISE),
+        .noise_amp             = node.get_attr<FloatAttribute>(A_NOISE_AMP),
         .absolute_displacement = node.get_attr<BoolAttribute>(A_ABSOLUTE_DISPLACEMENT),
         .occurence_probability = node.get_attr<FloatAttribute>(A_OCCURENCE_PROBABILITY),
-        .octaves = node.get_attr<IntAttribute>(A_OCTAVES),
-        .persistence = node.get_attr<FloatAttribute>(A_PERSISTENCE),
-        .lacunarity = node.get_attr<FloatAttribute>(A_LACUNARITY),
+        .octaves               = node.get_attr<IntAttribute>(A_OCTAVES),
+        .persistence           = node.get_attr<FloatAttribute>(A_PERSISTENCE),
+        .lacunarity            = node.get_attr<FloatAttribute>(A_LACUNARITY),
     };
   }();
 
@@ -175,7 +175,7 @@ void compute_strata_cells_node(BaseNode &node)
                        const hmap::TileRegion          &region)
       {
         const auto [pa_in, pa_dx, pa_dy, pa_mask] = unpack<4>(p_arrays_in);
-        auto [pa_out] = unpack<1>(p_arrays_out);
+        auto [pa_out]                             = unpack<1>(p_arrays_out);
 
         *pa_out = *pa_in;
 

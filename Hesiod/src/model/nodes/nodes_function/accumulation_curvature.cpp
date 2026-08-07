@@ -17,12 +17,12 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_IN = "input";
+constexpr const char *P_IN  = "input";
 constexpr const char *P_OUT = "output";
 
-constexpr const char *A_RADIUS = "radius";
+constexpr const char *A_RADIUS    = "radius";
 constexpr const char *A_CLAMP_MAX = "clamp_max";
-constexpr const char *A_VC_MAX = "vc_max";
+constexpr const char *A_VC_MAX    = "vc_max";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -60,7 +60,7 @@ void compute_accumulation_curvature_node(BaseNode &node)
 
   // --- Inputs / Outputs
 
-  auto *p_in = node.get_value_ref<hmap::VirtualArray>(P_IN);
+  auto *p_in  = node.get_value_ref<hmap::VirtualArray>(P_IN);
   auto *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
   if (!p_in)
@@ -68,9 +68,9 @@ void compute_accumulation_curvature_node(BaseNode &node)
 
   // --- Params
 
-  const auto radius = node.val<float>(A_RADIUS);
+  const auto radius    = node.val<float>(A_RADIUS);
   const auto clamp_max = node.val<bool>(A_CLAMP_MAX);
-  const auto vc_max = node.val<float>(A_VC_MAX);
+  const auto vc_max    = node.val<float>(A_VC_MAX);
 
   const int ir = std::max(1, (int)(radius * p_out->shape.x));
   const int nx = p_out->shape.x; // for gradient scaling

@@ -40,7 +40,7 @@ void compute_toggle_node(BaseNode &node)
         {p_out, p_in_a, p_in_b},
         [&node](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
         {
-          hmap::Array *pa_out = p_arrays[0];
+          hmap::Array *pa_out  = p_arrays[0];
           hmap::Array *pa_in_a = p_arrays[1];
           hmap::Array *pa_in_b = p_arrays[2];
 

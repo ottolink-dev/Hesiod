@@ -43,8 +43,8 @@ void compute_inverse_node(BaseNode &node)
         [vmin, vmax](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
         {
           auto [pa_out, pa_in] = unpack<2>(p_arrays);
-          *pa_out = -(*pa_in - vmin) / (vmax - vmin); // in [0..1]
-          *pa_out = vmin + (vmax - vmin) * (*pa_out); // in [vmin..vmax]
+          *pa_out              = -(*pa_in - vmin) / (vmax - vmin); // in [0..1]
+          *pa_out              = vmin + (vmax - vmin) * (*pa_out); // in [vmin..vmax]
         },
         node.cfg().cm_cpu);
 

@@ -21,7 +21,7 @@ namespace hesiod
 constexpr const char *P_ENV = "envelope";
 constexpr const char *P_OUT = "output";
 
-constexpr const char *A_SEED = "seed";
+constexpr const char *A_SEED    = "seed";
 constexpr const char *A_DENSITY = "density";
 
 // -----------------------------------------------------------------------------

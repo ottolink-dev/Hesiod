@@ -33,7 +33,12 @@ void setup_cloud_from_csv_node(BaseNode &node)
   // --- Attributes
 
   node.set_current_category("Filename");
-  add_filename(node, A_FNAME, "fname", std::filesystem::path(""), "CSV files (*.csv)", false);
+  add_filename(node,
+               A_FNAME,
+               "fname",
+               std::filesystem::path(""),
+               "CSV files (*.csv)",
+               false);
 }
 
 // -----------------------------------------------------------------------------

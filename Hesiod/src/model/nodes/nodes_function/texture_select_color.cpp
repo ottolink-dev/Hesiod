@@ -19,10 +19,10 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_TEX = "texture";
+constexpr const char *P_TEX  = "texture";
 constexpr const char *P_MASK = "mask";
 
-constexpr const char *A_COLOR = "color";
+constexpr const char *A_COLOR     = "color";
 constexpr const char *A_TOLERANCE = "tolerance";
 
 // -----------------------------------------------------------------------------
@@ -91,7 +91,7 @@ void compute_texture_select_color_node(BaseNode &node)
           const hmap::TileRegion &)
       {
         auto [pa_r, pa_g, pa_b] = unpack<3>(in);
-        auto [pa_mask] = unpack<1>(out);
+        auto [pa_mask]          = unpack<1>(out);
 
         *pa_mask = hmap::color_match_mask(*pa_r, *pa_g, *pa_b, color, tolerance);
       },

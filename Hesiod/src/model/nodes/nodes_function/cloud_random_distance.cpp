@@ -36,7 +36,7 @@ void compute_cloud_random_distance_node(BaseNode &node)
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
   hmap::VirtualArray *p_density = node.get_value_ref<hmap::VirtualArray>("density");
-  hmap::Cloud        *p_cloud = node.get_value_ref<hmap::Cloud>("cloud");
+  hmap::Cloud        *p_cloud   = node.get_value_ref<hmap::Cloud>("cloud");
 
   if (p_density)
   {

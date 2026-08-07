@@ -43,8 +43,8 @@ void compute_broadcast_node(BaseNode &node)
     }
 
     std::string broadcast_tag = p_broadcast_node->get_broadcast_tag();
-    std::string graph_id = node.get_graph_id();
-    std::string node_id = node.get_id();
+    std::string graph_id      = node.get_graph_id();
+    std::string node_id       = node.get_id();
 
     Logger::log()->trace("compute_broadcast_node: broadcasting graph: {}, node: {}",
                          graph_id,

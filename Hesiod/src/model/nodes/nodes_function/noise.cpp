@@ -22,15 +22,15 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_DX = "dx";
-constexpr const char *P_DY = "dy";
+constexpr const char *P_DX  = "dx";
+constexpr const char *P_DY  = "dy";
 constexpr const char *P_ENV = "envelope";
 constexpr const char *P_OUT = "out";
 
 constexpr const char *A_NOISE_TYPE = "noise_type";
-constexpr const char *A_KW = "kw";
-constexpr const char *A_SEED = "seed";
-constexpr const char *A_PERIODIC = "periodic";
+constexpr const char *A_KW         = "kw";
+constexpr const char *A_SEED       = "seed";
+constexpr const char *A_PERIODIC   = "periodic";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -71,8 +71,8 @@ void compute_noise_node(BaseNode &node)
 
   // --- Inputs / Outputs
 
-  auto *p_dx = node.get_value_ref<hmap::VirtualArray>(P_DX);
-  auto *p_dy = node.get_value_ref<hmap::VirtualArray>(P_DY);
+  auto *p_dx  = node.get_value_ref<hmap::VirtualArray>(P_DX);
+  auto *p_dy  = node.get_value_ref<hmap::VirtualArray>(P_DY);
   auto *p_env = node.get_value_ref<hmap::VirtualArray>(P_ENV);
   auto *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
@@ -82,9 +82,9 @@ void compute_noise_node(BaseNode &node)
   // --- Params
 
   const auto      noise_type = hmap::NoiseType(node.val<int>(A_NOISE_TYPE));
-  const glm::vec2 kw = node.val<glm::vec2>(A_KW);
-  const auto      seed = static_cast<uint>(node.val<int>(A_SEED));
-  const auto      periodic = node.val<bool>(A_PERIODIC);
+  const glm::vec2 kw         = node.val<glm::vec2>(A_KW);
+  const auto      seed       = static_cast<uint>(node.val<int>(A_SEED));
+  const auto      periodic   = node.val<bool>(A_PERIODIC);
 
   // --- Compute
 
@@ -96,7 +96,7 @@ void compute_noise_node(BaseNode &node)
           const hmap::TileRegion          &region)
       {
         auto [pa_dx, pa_dy] = unpack<2>(in);
-        auto [pa_out] = unpack<1>(out);
+        auto [pa_out]       = unpack<1>(out);
 
         // When periodic, snap kw to integer cells so the lattice wrap
         // aligns with the noise frequency and the result tiles

@@ -82,8 +82,8 @@ void compute_mountain_tibesti_node(BaseNode &node)
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
   // base mountain_tibesti function
-  hmap::VirtualArray *p_dx = node.get_value_ref<hmap::VirtualArray>("dx");
-  hmap::VirtualArray *p_dy = node.get_value_ref<hmap::VirtualArray>("dy");
+  hmap::VirtualArray *p_dx  = node.get_value_ref<hmap::VirtualArray>("dx");
+  hmap::VirtualArray *p_dy  = node.get_value_ref<hmap::VirtualArray>("dy");
   hmap::VirtualArray *p_env = node.get_value_ref<hmap::VirtualArray>("envelope");
   hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>("out");
 

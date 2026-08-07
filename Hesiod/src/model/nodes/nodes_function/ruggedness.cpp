@@ -53,7 +53,7 @@ void compute_ruggedness_node(BaseNode &node)
         [ir](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
         {
           auto [pa_out, pa_in] = unpack<2>(p_arrays);
-          *pa_out = hmap::gpu::ruggedness(*pa_in, ir);
+          *pa_out              = hmap::gpu::ruggedness(*pa_in, ir);
         },
         node.cfg().cm_gpu);
 

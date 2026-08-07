@@ -38,8 +38,8 @@ void compute_path_sdf_node(BaseNode &node)
 
   if (p_path)
   {
-    hmap::VirtualArray *p_dx = node.get_value_ref<hmap::VirtualArray>("dx");
-    hmap::VirtualArray *p_dy = node.get_value_ref<hmap::VirtualArray>("dy");
+    hmap::VirtualArray *p_dx  = node.get_value_ref<hmap::VirtualArray>("dx");
+    hmap::VirtualArray *p_dy  = node.get_value_ref<hmap::VirtualArray>("dy");
     hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>("sdf");
 
     if (p_path->size() > 1)
@@ -50,8 +50,8 @@ void compute_path_sdf_node(BaseNode &node)
                           const hmap::TileRegion    &region)
           {
             hmap::Array *pa_out = p_arrays[0];
-            hmap::Array *pa_dx = p_arrays[1];
-            hmap::Array *pa_dy = p_arrays[2];
+            hmap::Array *pa_dx  = p_arrays[1];
+            hmap::Array *pa_dy  = p_arrays[2];
 
             *pa_out = hmap::path_sdf_to_array(*p_path,
                                               region.shape,
@@ -72,7 +72,7 @@ void compute_path_sdf_node(BaseNode &node)
           [](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
           {
             hmap::Array *pa_out = p_arrays[0];
-            *pa_out = 0.f;
+            *pa_out             = 0.f;
           },
           node.cfg().cm_cpu);
     }

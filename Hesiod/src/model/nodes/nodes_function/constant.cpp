@@ -37,7 +37,7 @@ void compute_constant_node(BaseNode &node)
       [&node](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
       {
         hmap::Array *pa_out = p_arrays[0];
-        *pa_out = node.get_attr<FloatAttribute>("value");
+        *pa_out             = node.get_attr<FloatAttribute>("value");
       },
       node.cfg().cm_cpu);
 }

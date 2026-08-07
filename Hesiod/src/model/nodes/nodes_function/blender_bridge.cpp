@@ -15,7 +15,7 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_IN = "elevation";
+constexpr const char *P_IN  = "elevation";
 constexpr const char *P_TEX = "texture";
 
 constexpr const char *A_PORT = "port";
@@ -53,7 +53,7 @@ void compute_blender_bridge_node(BaseNode &node)
 
   // --- Inputs / Outputs
 
-  auto *p_in = node.get_value_ref<hmap::VirtualArray>(P_IN);
+  auto *p_in  = node.get_value_ref<hmap::VirtualArray>(P_IN);
   auto *p_tex = node.get_value_ref<hmap::VirtualTexture>(P_TEX);
 
   if (!p_in)

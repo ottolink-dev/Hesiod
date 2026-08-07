@@ -47,7 +47,7 @@ void compute_select_inward_outward_node(BaseNode &node)
         [&node](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &region)
         {
           auto [pa_out, pa_in] = unpack<2>(p_arrays);
-          *pa_out = hmap::select_inward_outward_slope(
+          *pa_out              = hmap::select_inward_outward_slope(
               *pa_in,
               node.get_attr<Vec2FloatAttribute>("center"),
               region.bbox);

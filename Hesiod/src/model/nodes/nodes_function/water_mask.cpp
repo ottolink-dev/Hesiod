@@ -42,7 +42,7 @@ void compute_water_mask_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  hmap::VirtualArray *p_z = node.get_value_ref<hmap::VirtualArray>("elevation");
+  hmap::VirtualArray *p_z     = node.get_value_ref<hmap::VirtualArray>("elevation");
   hmap::VirtualArray *p_depth = node.get_value_ref<hmap::VirtualArray>("water_depth");
 
   if (p_z && p_depth)
@@ -54,8 +54,8 @@ void compute_water_mask_node(BaseNode &node)
         [&node](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
         {
           hmap::Array *pa_depth = p_arrays[0];
-          hmap::Array *pa_z = p_arrays[1];
-          hmap::Array *pa_mask = p_arrays[2];
+          hmap::Array *pa_z     = p_arrays[1];
+          hmap::Array *pa_mask  = p_arrays[2];
 
           float added_depth = node.get_attr<FloatAttribute>("additional_depth");
 

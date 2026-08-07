@@ -16,17 +16,17 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_DR = "dr";
-constexpr const char *P_DS = "offset";
+constexpr const char *P_DR  = "dr";
+constexpr const char *P_DS  = "offset";
 constexpr const char *P_ENV = "envelope";
 constexpr const char *P_OUT = "output";
 
-constexpr const char *A_ANGLE = "angle";
-constexpr const char *A_LENGTH = "length";
-constexpr const char *A_WIDTH = "width";
-constexpr const char *A_PROFILE = "profile";
+constexpr const char *A_ANGLE         = "angle";
+constexpr const char *A_LENGTH        = "length";
+constexpr const char *A_WIDTH         = "width";
+constexpr const char *A_PROFILE       = "profile";
 constexpr const char *A_PROFILE_PARAM = "profile_param";
-constexpr const char *A_CENTER = "center";
+constexpr const char *A_CENTER        = "center";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -72,8 +72,8 @@ void compute_band_node(BaseNode &node)
 
   // --- Inputs / Outputs
 
-  auto *p_dr = node.get_value_ref<hmap::VirtualArray>(P_DR);
-  auto *p_ds = node.get_value_ref<hmap::VirtualArray>(P_DS);
+  auto *p_dr  = node.get_value_ref<hmap::VirtualArray>(P_DR);
+  auto *p_ds  = node.get_value_ref<hmap::VirtualArray>(P_DS);
   auto *p_env = node.get_value_ref<hmap::VirtualArray>(P_ENV);
   auto *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
@@ -82,12 +82,12 @@ void compute_band_node(BaseNode &node)
 
   // --- Params
 
-  const auto angle = node.val<float>(A_ANGLE);
-  const auto length = node.val<float>(A_LENGTH);
-  const auto width = node.val<float>(A_WIDTH);
-  const auto profile = hmap::RadialProfile(node.val<int>(A_PROFILE));
+  const auto angle         = node.val<float>(A_ANGLE);
+  const auto length        = node.val<float>(A_LENGTH);
+  const auto width         = node.val<float>(A_WIDTH);
+  const auto profile       = hmap::RadialProfile(node.val<int>(A_PROFILE));
   const auto profile_param = node.val<float>(A_PROFILE_PARAM);
-  const auto center = node.val<glm::vec2>(A_CENTER);
+  const auto center        = node.val<glm::vec2>(A_CENTER);
 
   // --- Resolve default noise
 
@@ -104,7 +104,7 @@ void compute_band_node(BaseNode &node)
           const hmap::TileRegion          &region)
       {
         auto [pa_dr, pa_ds] = unpack<2>(in);
-        auto [pa_out] = unpack<1>(out);
+        auto [pa_out]       = unpack<1>(out);
 
         *pa_out = hmap::band(region.shape,
                              angle,

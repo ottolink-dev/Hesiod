@@ -20,11 +20,11 @@ namespace hesiod
 // -----------------------------------------------------------------------------
 
 constexpr const char *P_HEIGHTMAP = "heightmap";
-constexpr const char *P_KERNEL = "kernel";
+constexpr const char *P_KERNEL    = "kernel";
 
-constexpr const char *A_RADIUS = "radius";
-constexpr const char *A_NORMALIZE = "normalize";
-constexpr const char *A_ENVELOPE = "envelope";
+constexpr const char *A_RADIUS          = "radius";
+constexpr const char *A_NORMALIZE       = "normalize";
+constexpr const char *A_ENVELOPE        = "envelope";
 constexpr const char *A_ENVELOPE_KERNEL = "envelope_kernel";
 
 // -----------------------------------------------------------------------------
@@ -68,7 +68,7 @@ void compute_heightmap_to_kernel_node(BaseNode &node)
 
   // --- Inputs / Outputs
 
-  auto *p_in = node.get_value_ref<hmap::VirtualArray>(P_HEIGHTMAP);
+  auto *p_in  = node.get_value_ref<hmap::VirtualArray>(P_HEIGHTMAP);
   auto *p_out = node.get_value_ref<hmap::Array>(P_KERNEL);
 
   if (!p_in || !p_out)

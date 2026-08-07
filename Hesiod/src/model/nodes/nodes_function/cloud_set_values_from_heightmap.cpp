@@ -31,7 +31,7 @@ void compute_cloud_set_values_from_heightmap_node(BaseNode &node)
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
   hmap::Cloud        *p_cloud = node.get_value_ref<hmap::Cloud>("cloud");
-  hmap::VirtualArray *p_hmap = node.get_value_ref<hmap::VirtualArray>("heightmap");
+  hmap::VirtualArray *p_hmap  = node.get_value_ref<hmap::VirtualArray>("heightmap");
 
   if (p_cloud && p_hmap)
   {

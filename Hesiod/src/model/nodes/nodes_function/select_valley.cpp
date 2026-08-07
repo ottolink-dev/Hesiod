@@ -40,7 +40,7 @@ void compute_select_valley_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  hmap::VirtualArray *p_in = node.get_value_ref<hmap::VirtualArray>("input");
+  hmap::VirtualArray *p_in  = node.get_value_ref<hmap::VirtualArray>("input");
   hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>("output");
 
   if (!p_in)
@@ -53,7 +53,7 @@ void compute_select_valley_node(BaseNode &node)
       [&node, ir](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
       {
         auto [pa_out, pa_in] = unpack<2>(p_arrays);
-        *pa_out = hmap::gpu::select_valley(*pa_in,
+        *pa_out              = hmap::gpu::select_valley(*pa_in,
                                            ir,
                                            node.get_attr<BoolAttribute>("ridge_select"));
       },

@@ -43,7 +43,7 @@ void compute_scan_mask_node(BaseNode &node)
         [&node](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
         {
           auto [pa_out, pa_in] = unpack<2>(p_arrays);
-          *pa_out = hmap::scan_mask(*pa_in,
+          *pa_out              = hmap::scan_mask(*pa_in,
                                     node.get_attr<FloatAttribute>("brightness"),
                                     node.get_attr<FloatAttribute>("contrast"));
         },

@@ -46,7 +46,7 @@ void compute_falloff_node(BaseNode &node)
 
   if (p_in)
   {
-    hmap::VirtualArray *p_dr = node.get_value_ref<hmap::VirtualArray>("dr");
+    hmap::VirtualArray *p_dr  = node.get_value_ref<hmap::VirtualArray>("dr");
     hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>("output");
 
     float strength = node.get_attr<FloatAttribute>("strength");
@@ -58,8 +58,8 @@ void compute_falloff_node(BaseNode &node)
                              const hmap::TileRegion    &region)
           {
             hmap::Array *pa_out = p_arrays[0];
-            hmap::Array *pa_in = p_arrays[1];
-            hmap::Array *pa_dr = p_arrays[2];
+            hmap::Array *pa_in  = p_arrays[1];
+            hmap::Array *pa_dr  = p_arrays[2];
 
             *pa_out = *pa_in;
 

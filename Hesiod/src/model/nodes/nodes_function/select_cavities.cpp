@@ -56,7 +56,7 @@ void compute_select_cavities_node(BaseNode &node)
         [&node, ir](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
         {
           auto [pa_out, pa_in] = unpack<2>(p_arrays);
-          *pa_out = hmap::gpu::select_cavities(*pa_in,
+          *pa_out              = hmap::gpu::select_cavities(*pa_in,
                                                ir,
                                                node.get_attr<BoolAttribute>("concave"));
 

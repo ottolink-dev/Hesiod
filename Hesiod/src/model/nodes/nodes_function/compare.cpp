@@ -19,12 +19,12 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_A = "a";
-constexpr const char *P_B = "b";
+constexpr const char *P_A   = "a";
+constexpr const char *P_B   = "b";
 constexpr const char *P_OUT = "output";
 
-constexpr const char *A_SLICE_X = "slide_x";
-constexpr const char *A_SLICE_Y = "slide_y";
+constexpr const char *A_SLICE_X     = "slide_x";
+constexpr const char *A_SLICE_Y     = "slide_y";
 constexpr const char *A_SWAP_INPUTS = "swap_inputs";
 
 // -----------------------------------------------------------------------------
@@ -68,8 +68,8 @@ void compute_compare_node(BaseNode &node)
 
   // --- Inputs / Outputs
 
-  auto *p_a = node.get_value_ref<hmap::VirtualArray>(P_A);
-  auto *p_b = node.get_value_ref<hmap::VirtualArray>(P_B);
+  auto *p_a   = node.get_value_ref<hmap::VirtualArray>(P_A);
+  auto *p_b   = node.get_value_ref<hmap::VirtualArray>(P_B);
   auto *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
   if (!p_a || !p_b)
@@ -98,7 +98,7 @@ void compute_compare_node(BaseNode &node)
           const hmap::TileRegion &)
       {
         auto [pa_a, pa_b] = unpack<2>(in);
-        auto [pa_out] = unpack<1>(out);
+        auto [pa_out]     = unpack<1>(out);
 
         *pa_out = hmap::compare(*pa_a, *pa_b, sx, sy);
       },

@@ -83,7 +83,7 @@ void compute_select_soil_rocks_node(BaseNode &node)
 
     // --- selector
 
-    int nx = p_out->shape.x;
+    int nx     = p_out->shape.x;
     int ir_min = (int)(node.get_attr<FloatAttribute>("rmin") * nx);
     int ir_max = std::max(1, (int)(node.get_attr<FloatAttribute>("rmax") * nx));
 
@@ -93,7 +93,7 @@ void compute_select_soil_rocks_node(BaseNode &node)
                                 const hmap::TileRegion &)
         {
           auto [pa_out, pa_in] = unpack<2>(p_arrays);
-          auto mode = static_cast<hmap::ClampMode>(
+          auto mode            = static_cast<hmap::ClampMode>(
               node.get_attr<EnumAttribute>("curvature_clamp_mode"));
 
           *pa_out = hmap::gpu::select_soil_rocks(

@@ -113,7 +113,7 @@ void compute_texture_quilting_expand_node(BaseNode &node)
     // --- define secondary arrays
 
     std::vector<hmap::Array>   secondary_arrays_storage = {};
-    std::vector<hmap::Array *> secondary_arrays_ptr = {};
+    std::vector<hmap::Array *> secondary_arrays_ptr     = {};
 
     // add first each RGBA components that are quilted based on the
     // luminance and then add other secondary textures (also modified
@@ -154,11 +154,11 @@ void compute_texture_quilting_expand_node(BaseNode &node)
     p_hmap_out->from_array(out_array, node.cfg().cm_cpu);
 
     // textures
-    std::vector<hmap::VirtualTexture *> pt_in_vec = {p_texture_guide,
-                                                     p_tex_a,
-                                                     p_tex_b,
-                                                     p_tex_c,
-                                                     p_tex_d};
+    std::vector<hmap::VirtualTexture *> pt_in_vec  = {p_texture_guide,
+                                                      p_tex_a,
+                                                      p_tex_b,
+                                                      p_tex_c,
+                                                      p_tex_d};
     std::vector<hmap::VirtualTexture *> pt_out_vec = {p_texture_out,
                                                       p_tex_out_a,
                                                       p_tex_out_b,

@@ -44,7 +44,7 @@ void compute_mixer_node(BaseNode &node)
   hmap::VirtualArray *p_in2 = node.get_value_ref<hmap::VirtualArray>("input 2");
   hmap::VirtualArray *p_in3 = node.get_value_ref<hmap::VirtualArray>("input 3");
   hmap::VirtualArray *p_in4 = node.get_value_ref<hmap::VirtualArray>("input 4");
-  hmap::VirtualArray *p_t = node.get_value_ref<hmap::VirtualArray>("t");
+  hmap::VirtualArray *p_t   = node.get_value_ref<hmap::VirtualArray>("t");
 
   std::vector<hmap::VirtualArray *> ptr_list = {};
   for (auto &ptr : {p_in1, p_in2, p_in3, p_in4})
@@ -60,7 +60,7 @@ void compute_mixer_node(BaseNode &node)
         [&node](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
         {
           hmap::Array *pa_out = p_arrays.front();
-          hmap::Array *pa_t = p_arrays.back();
+          hmap::Array *pa_t   = p_arrays.back();
 
           std::vector<const hmap::Array *> arrays = {};
 

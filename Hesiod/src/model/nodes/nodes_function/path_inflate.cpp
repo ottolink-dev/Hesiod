@@ -15,12 +15,12 @@ using namespace attr;
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_IN = "input";
+constexpr const char *P_IN  = "input";
 constexpr const char *P_OUT = "path";
 
-constexpr const char *A_RADIUS = "radius";
+constexpr const char *A_RADIUS            = "radius";
 constexpr const char *A_ENABLE_RESAMPLING = "enable_resampling";
-constexpr const char *A_RESAMPLE_DELTA = "resample_delta";
+constexpr const char *A_RESAMPLE_DELTA    = "resample_delta";
 
 namespace hesiod
 {
@@ -63,7 +63,7 @@ void compute_path_inflate_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  hmap::Path *p_in = node.get_value_ref<hmap::Path>(P_IN);
+  hmap::Path *p_in  = node.get_value_ref<hmap::Path>(P_IN);
   hmap::Path *p_out = node.get_value_ref<hmap::Path>(P_OUT);
 
   if (!p_in || p_in->size() < 3)
@@ -71,9 +71,9 @@ void compute_path_inflate_node(BaseNode &node)
 
   // --- Params
 
-  const auto radius = node.get_attr<FloatAttribute>(A_RADIUS);
+  const auto radius            = node.get_attr<FloatAttribute>(A_RADIUS);
   const auto enable_resampling = node.get_attr<BoolAttribute>(A_ENABLE_RESAMPLING);
-  const auto delta = node.get_attr<FloatAttribute>(A_RESAMPLE_DELTA);
+  const auto delta             = node.get_attr<FloatAttribute>(A_RESAMPLE_DELTA);
   //
   const auto npoints = std::max(3, int(p_in->get_arc_length().back() / delta));
 

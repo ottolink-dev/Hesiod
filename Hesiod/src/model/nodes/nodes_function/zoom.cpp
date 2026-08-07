@@ -43,8 +43,8 @@ void compute_zoom_node(BaseNode &node)
 
   if (p_in)
   {
-    hmap::VirtualArray *p_dx = node.get_value_ref<hmap::VirtualArray>("dx");
-    hmap::VirtualArray *p_dy = node.get_value_ref<hmap::VirtualArray>("dy");
+    hmap::VirtualArray *p_dx  = node.get_value_ref<hmap::VirtualArray>("dx");
+    hmap::VirtualArray *p_dy  = node.get_value_ref<hmap::VirtualArray>("dy");
     hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>("output");
 
     hmap::for_each_tile(

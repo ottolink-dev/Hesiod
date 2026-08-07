@@ -74,9 +74,9 @@ void compute_valley_fill_node(BaseNode &node)
 
   if (p_in)
   {
-    hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>("output");
+    hmap::VirtualArray *p_out   = node.get_value_ref<hmap::VirtualArray>("output");
     hmap::VirtualArray *p_noise = node.get_value_ref<hmap::VirtualArray>("noise");
-    hmap::VirtualArray *p_mask = node.get_value_ref<hmap::VirtualArray>("mask");
+    hmap::VirtualArray *p_mask  = node.get_value_ref<hmap::VirtualArray>("mask");
     hmap::VirtualArray *p_deposition_map = node.get_value_ref<hmap::VirtualArray>(
         "deposition");
 

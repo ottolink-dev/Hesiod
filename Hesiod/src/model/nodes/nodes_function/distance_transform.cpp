@@ -61,7 +61,7 @@ void compute_distance_transform_node(BaseNode &node)
         [&node](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
         {
           auto [pa_out, pa_in] = unpack<2>(p_arrays);
-          *pa_out = *pa_in;
+          *pa_out              = *pa_in;
           make_binary(*pa_out, node.get_attr<FloatAttribute>("threshold"));
 
           if (node.get_attr<BoolAttribute>("reverse_input"))

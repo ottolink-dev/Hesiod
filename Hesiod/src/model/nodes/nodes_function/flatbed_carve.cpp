@@ -77,16 +77,16 @@ void compute_flatbed_carve_node(BaseNode &node)
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
   hmap::Path         *p_path = node.get_value_ref<hmap::Path>("path");
-  hmap::VirtualArray *p_in = node.get_value_ref<hmap::VirtualArray>("input");
+  hmap::VirtualArray *p_in   = node.get_value_ref<hmap::VirtualArray>("input");
 
   if (p_path && p_in)
     if (p_path->size() > 1)
     {
-      hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>("output");
+      hmap::VirtualArray *p_out  = node.get_value_ref<hmap::VirtualArray>("output");
       hmap::VirtualArray *p_mask = node.get_value_ref<hmap::VirtualArray>("mask");
-      hmap::VirtualArray *p_dr = node.get_value_ref<hmap::VirtualArray>("dr");
+      hmap::VirtualArray *p_dr   = node.get_value_ref<hmap::VirtualArray>("dr");
 
-      float width = node.get_attr<FloatAttribute>("bottom_extent") * p_out->shape.x;
+      float width   = node.get_attr<FloatAttribute>("bottom_extent") * p_out->shape.x;
       float falloff = width * node.get_attr<FloatAttribute>("falloff_distance_ratio");
 
       hmap::for_each_tile(
@@ -94,9 +94,9 @@ void compute_flatbed_carve_node(BaseNode &node)
           [&node, width, falloff, p_path](std::vector<hmap::Array *> p_arrays,
                                           const hmap::TileRegion    &region)
           {
-            hmap::Array *pa_out = p_arrays[0];
-            hmap::Array *pa_in = p_arrays[1];
-            hmap::Array *pa_dr = p_arrays[2];
+            hmap::Array *pa_out  = p_arrays[0];
+            hmap::Array *pa_in   = p_arrays[1];
+            hmap::Array *pa_dr   = p_arrays[2];
             hmap::Array *pa_mask = p_arrays[3];
 
             *pa_out = *pa_in;

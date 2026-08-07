@@ -32,12 +32,12 @@ void compute_detrend_node(BaseNode &node)
   if (p_in)
   {
     hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>("output");
-    float               min = p_in->min(node.cfg().cm_cpu);
-    float               max = p_in->max(node.cfg().cm_cpu);
+    float               min   = p_in->min(node.cfg().cm_cpu);
+    float               max   = p_in->max(node.cfg().cm_cpu);
 
     // work on a single array
     hmap::Array z_array = p_in->to_array(node.cfg().cm_cpu);
-    z_array = hmap::detrend_reg(z_array);
+    z_array             = hmap::detrend_reg(z_array);
     p_out->from_array(z_array, node.cfg().cm_cpu);
 
     if (min != max)

@@ -63,7 +63,7 @@ void compute_curvature_mean_node(BaseNode &node)
                     nx;
 
           // determine curvature sign handling
-          const std::string choice = node.get_attr<ChoiceAttribute>("values_kept");
+          const std::string choice    = node.get_attr<ChoiceAttribute>("values_kept");
           const bool        keep_both = (choice == "both");
 
           // if only one curvature sign is kept

@@ -17,21 +17,21 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_DX = "dx";
-constexpr const char *P_DY = "dy";
-constexpr const char *P_CONTROL = "control";
+constexpr const char *P_DX       = "dx";
+constexpr const char *P_DY       = "dy";
+constexpr const char *P_CONTROL  = "control";
 constexpr const char *P_ENVELOPE = "envelope";
-constexpr const char *P_ANGLE = "angle";
-constexpr const char *P_OUTPUT = "output";
+constexpr const char *P_ANGLE    = "angle";
+constexpr const char *P_OUTPUT   = "output";
 
-constexpr const char *A_KW = "kw";
-constexpr const char *A_ANGLE = "angle";
+constexpr const char *A_KW                 = "kw";
+constexpr const char *A_ANGLE              = "angle";
 constexpr const char *A_ANGLE_SPREAD_RATIO = "angle_spread_ratio";
-constexpr const char *A_SEED = "seed";
-constexpr const char *A_OCTAVES = "octaves";
-constexpr const char *A_WEIGHT = "weight";
-constexpr const char *A_PERSISTENCE = "persistence";
-constexpr const char *A_LACUNARITY = "lacunarity";
+constexpr const char *A_SEED               = "seed";
+constexpr const char *A_OCTAVES            = "octaves";
+constexpr const char *A_WEIGHT             = "weight";
+constexpr const char *A_PERSISTENCE        = "persistence";
+constexpr const char *A_LACUNARITY         = "lacunarity";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -76,11 +76,11 @@ void compute_gabor_wave_fbm_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  auto *p_dx = node.get_value_ref<hmap::VirtualArray>(P_DX);
-  auto *p_dy = node.get_value_ref<hmap::VirtualArray>(P_DY);
-  auto *p_ctrl = node.get_value_ref<hmap::VirtualArray>(P_CONTROL);
-  auto *p_env = node.get_value_ref<hmap::VirtualArray>(P_ENVELOPE);
-  auto *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUTPUT);
+  auto *p_dx    = node.get_value_ref<hmap::VirtualArray>(P_DX);
+  auto *p_dy    = node.get_value_ref<hmap::VirtualArray>(P_DY);
+  auto *p_ctrl  = node.get_value_ref<hmap::VirtualArray>(P_CONTROL);
+  auto *p_env   = node.get_value_ref<hmap::VirtualArray>(P_ENVELOPE);
+  auto *p_out   = node.get_value_ref<hmap::VirtualArray>(P_OUTPUT);
   auto *p_angle = node.get_value_ref<hmap::VirtualArray>(P_ANGLE);
 
   hmap::for_each_tile(
@@ -91,7 +91,7 @@ void compute_gabor_wave_fbm_node(BaseNode &node)
               const hmap::TileRegion          &region)
       {
         auto [pa_ctrl, pa_dx, pa_dy, pa_angle] = unpack<4>(in);
-        auto [pa_out] = unpack<1>(out);
+        auto [pa_out]                          = unpack<1>(out);
 
         hmap::Array angle_deg(region.shape, node.val<float>(A_ANGLE));
 

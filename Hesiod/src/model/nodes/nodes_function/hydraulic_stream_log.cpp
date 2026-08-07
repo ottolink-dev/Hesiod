@@ -51,31 +51,31 @@ void compute_hydraulic_stream_log_node(BaseNode &node)
 
   if (p_in)
   {
-    hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>("output");
-    hmap::VirtualArray *p_mask = node.get_value_ref<hmap::VirtualArray>("mask");
+    hmap::VirtualArray *p_out         = node.get_value_ref<hmap::VirtualArray>("output");
+    hmap::VirtualArray *p_mask        = node.get_value_ref<hmap::VirtualArray>("mask");
     hmap::VirtualArray *p_erosion_map = node.get_value_ref<hmap::VirtualArray>("erosion");
     hmap::VirtualArray *p_deposition_map = node.get_value_ref<hmap::VirtualArray>(
         "deposition");
     hmap::VirtualArray *p_flow_map = node.get_value_ref<hmap::VirtualArray>("flow_map");
 
     int deposition_ir = (int)(node.val<float>("deposition_radius") * p_out->shape.x);
-    int gradient_ir = (int)(node.val<float>("gradient_prefilter_radius") *
+    int gradient_ir   = (int)(node.val<float>("gradient_prefilter_radius") *
                             p_out->shape.x);
 
     deposition_ir = std::max(1, deposition_ir);
-    gradient_ir = std::max(1, gradient_ir);
+    gradient_ir   = std::max(1, gradient_ir);
 
     hmap::for_each_tile(
         {p_out, p_in, p_mask, p_erosion_map, p_deposition_map, p_flow_map},
         [&node, deposition_ir, gradient_ir](std::vector<hmap::Array *> p_arrays,
                                             const hmap::TileRegion &)
         {
-          hmap::Array *pa_out = p_arrays[0];
-          hmap::Array *pa_in = p_arrays[1];
-          hmap::Array *pa_mask = p_arrays[2];
-          hmap::Array *pa_erosion_map = p_arrays[3];
+          hmap::Array *pa_out            = p_arrays[0];
+          hmap::Array *pa_in             = p_arrays[1];
+          hmap::Array *pa_mask           = p_arrays[2];
+          hmap::Array *pa_erosion_map    = p_arrays[3];
           hmap::Array *pa_deposition_map = p_arrays[4];
-          hmap::Array *pa_flow_map = p_arrays[5];
+          hmap::Array *pa_flow_map       = p_arrays[5];
 
           *pa_out = *pa_in;
 

@@ -16,29 +16,29 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_DX = "dx";
-constexpr const char *P_DY = "dy";
+constexpr const char *P_DX  = "dx";
+constexpr const char *P_DY  = "dy";
 constexpr const char *P_ENV = "envelope";
 constexpr const char *P_OUT = "out";
 
-constexpr const char *A_KW = "kw";
-constexpr const char *A_SEED = "seed";
-constexpr const char *A_WARP_KW = "warp_kw";
-constexpr const char *A_LARGE_SCALE_WARP_AMP = "large_scale_warp_amp";
-constexpr const char *A_LARGE_SCALE_GAIN = "large_scale_gain";
-constexpr const char *A_LARGE_SCALE_AMP = "large_scale_amp";
-constexpr const char *A_MEDIUM_SCALE_KW_RATIO = "medium_scale_kw_ratio";
-constexpr const char *A_MEDIUM_SCALE_WARP_AMP = "medium_scale_warp_amp";
-constexpr const char *A_MEDIUM_SCALE_GAIN = "medium_scale_gain";
-constexpr const char *A_MEDIUM_SCALE_AMP = "medium_scale_amp";
-constexpr const char *A_SMALL_SCALE_KW_RATIO = "small_scale_kw_ratio";
-constexpr const char *A_SMALL_SCALE_AMP = "small_scale_amp";
+constexpr const char *A_KW                      = "kw";
+constexpr const char *A_SEED                    = "seed";
+constexpr const char *A_WARP_KW                 = "warp_kw";
+constexpr const char *A_LARGE_SCALE_WARP_AMP    = "large_scale_warp_amp";
+constexpr const char *A_LARGE_SCALE_GAIN        = "large_scale_gain";
+constexpr const char *A_LARGE_SCALE_AMP         = "large_scale_amp";
+constexpr const char *A_MEDIUM_SCALE_KW_RATIO   = "medium_scale_kw_ratio";
+constexpr const char *A_MEDIUM_SCALE_WARP_AMP   = "medium_scale_warp_amp";
+constexpr const char *A_MEDIUM_SCALE_GAIN       = "medium_scale_gain";
+constexpr const char *A_MEDIUM_SCALE_AMP        = "medium_scale_amp";
+constexpr const char *A_SMALL_SCALE_KW_RATIO    = "small_scale_kw_ratio";
+constexpr const char *A_SMALL_SCALE_AMP         = "small_scale_amp";
 constexpr const char *A_SMALL_SCALE_OVERLAY_AMP = "small_scale_overlay_amp";
-constexpr const char *A_RUGOSITY_KW_RATIO = "rugosity_kw_ratio";
-constexpr const char *A_RUGOSITY_AMP = "rugosity_amp";
-constexpr const char *A_FLATTEN_ACTIVATE = "flatten_activate";
-constexpr const char *A_FLATTEN_KW_RATIO = "flatten_kw_ratio";
-constexpr const char *A_FLATTEN_AMP = "flatten_amp";
+constexpr const char *A_RUGOSITY_KW_RATIO       = "rugosity_kw_ratio";
+constexpr const char *A_RUGOSITY_AMP            = "rugosity_amp";
+constexpr const char *A_FLATTEN_ACTIVATE        = "flatten_activate";
+constexpr const char *A_FLATTEN_KW_RATIO        = "flatten_kw_ratio";
+constexpr const char *A_FLATTEN_AMP             = "flatten_amp";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -107,8 +107,8 @@ void compute_basalt_field_node(BaseNode &node)
 
   // --- Inputs / Outputs
 
-  auto *p_dx = node.get_value_ref<hmap::VirtualArray>(P_DX);
-  auto *p_dy = node.get_value_ref<hmap::VirtualArray>(P_DY);
+  auto *p_dx  = node.get_value_ref<hmap::VirtualArray>(P_DX);
+  auto *p_dy  = node.get_value_ref<hmap::VirtualArray>(P_DY);
   auto *p_env = node.get_value_ref<hmap::VirtualArray>(P_ENV);
   auto *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
@@ -117,24 +117,24 @@ void compute_basalt_field_node(BaseNode &node)
 
   // --- Params
 
-  const auto kw = node.val<glm::vec2>(A_KW);
-  const auto seed = static_cast<uint>(node.val<int>(A_SEED));
-  const auto warp_kw = node.val<float>(A_WARP_KW);
-  const auto large_scale_warp_amp = node.val<float>(A_LARGE_SCALE_WARP_AMP);
-  const auto large_scale_gain = node.val<float>(A_LARGE_SCALE_GAIN);
-  const auto large_scale_amp = node.val<float>(A_LARGE_SCALE_AMP);
-  const auto medium_scale_kw_ratio = node.val<float>(A_MEDIUM_SCALE_KW_RATIO);
-  const auto medium_scale_warp_amp = node.val<float>(A_MEDIUM_SCALE_WARP_AMP);
-  const auto medium_scale_gain = node.val<float>(A_MEDIUM_SCALE_GAIN);
-  const auto medium_scale_amp = node.val<float>(A_MEDIUM_SCALE_AMP);
-  const auto small_scale_kw_ratio = node.val<float>(A_SMALL_SCALE_KW_RATIO);
-  const auto small_scale_amp = node.val<float>(A_SMALL_SCALE_AMP);
+  const auto kw                      = node.val<glm::vec2>(A_KW);
+  const auto seed                    = static_cast<uint>(node.val<int>(A_SEED));
+  const auto warp_kw                 = node.val<float>(A_WARP_KW);
+  const auto large_scale_warp_amp    = node.val<float>(A_LARGE_SCALE_WARP_AMP);
+  const auto large_scale_gain        = node.val<float>(A_LARGE_SCALE_GAIN);
+  const auto large_scale_amp         = node.val<float>(A_LARGE_SCALE_AMP);
+  const auto medium_scale_kw_ratio   = node.val<float>(A_MEDIUM_SCALE_KW_RATIO);
+  const auto medium_scale_warp_amp   = node.val<float>(A_MEDIUM_SCALE_WARP_AMP);
+  const auto medium_scale_gain       = node.val<float>(A_MEDIUM_SCALE_GAIN);
+  const auto medium_scale_amp        = node.val<float>(A_MEDIUM_SCALE_AMP);
+  const auto small_scale_kw_ratio    = node.val<float>(A_SMALL_SCALE_KW_RATIO);
+  const auto small_scale_amp         = node.val<float>(A_SMALL_SCALE_AMP);
   const auto small_scale_overlay_amp = node.val<float>(A_SMALL_SCALE_OVERLAY_AMP);
-  const auto rugosity_kw_ratio = node.val<float>(A_RUGOSITY_KW_RATIO);
-  const auto rugosity_amp = node.val<float>(A_RUGOSITY_AMP);
-  const auto flatten_activate = node.val<bool>(A_FLATTEN_ACTIVATE);
-  const auto flatten_kw_ratio = node.val<float>(A_FLATTEN_KW_RATIO);
-  const auto flatten_amp = node.val<float>(A_FLATTEN_AMP);
+  const auto rugosity_kw_ratio       = node.val<float>(A_RUGOSITY_KW_RATIO);
+  const auto rugosity_amp            = node.val<float>(A_RUGOSITY_AMP);
+  const auto flatten_activate        = node.val<bool>(A_FLATTEN_ACTIVATE);
+  const auto flatten_kw_ratio        = node.val<float>(A_FLATTEN_KW_RATIO);
+  const auto flatten_amp             = node.val<float>(A_FLATTEN_AMP);
 
   // --- Compute
 

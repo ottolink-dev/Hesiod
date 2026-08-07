@@ -20,18 +20,18 @@ namespace hesiod
 // -----------------------------------------------------------------------------
 
 constexpr const char *P_PATH = "path";
-constexpr const char *P_IN = "input";
+constexpr const char *P_IN   = "input";
 
-constexpr const char *A_SEED = "seed";
-constexpr const char *A_START = "start";
-constexpr const char *A_END = "end";
-constexpr const char *A_OFFSET_RATIO = "offset_ratio";
-constexpr const char *A_STEPS = "steps";
+constexpr const char *A_SEED                  = "seed";
+constexpr const char *A_START                 = "start";
+constexpr const char *A_END                   = "end";
+constexpr const char *A_OFFSET_RATIO          = "offset_ratio";
+constexpr const char *A_STEPS                 = "steps";
 constexpr const char *A_FAVOR_BOUNDARY_CENTER = "favor_boundary_center";
 constexpr const char *A_FAVOR_LOWER_ELEVATION = "favor_lower_elevation";
-constexpr const char *A_FAVOR_SINKS = "favor_sinks";
-constexpr const char *A_SMOOTH_PATH = "smooth_path";
-constexpr const char *A_SMOOTH_SAMPLING = "smooth_sampling";
+constexpr const char *A_FAVOR_SINKS           = "favor_sinks";
+constexpr const char *A_SMOOTH_PATH           = "smooth_path";
+constexpr const char *A_SMOOTH_SAMPLING       = "smooth_sampling";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -94,7 +94,7 @@ void compute_find_cut_path_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  auto *p_in = node.get_value_ref<hmap::VirtualArray>(P_IN);
+  auto *p_in   = node.get_value_ref<hmap::VirtualArray>(P_IN);
   auto *p_path = node.get_value_ref<hmap::Path>(P_PATH);
 
   if (!p_in)
@@ -144,7 +144,8 @@ void compute_find_cut_path_node(BaseNode &node)
 
 // void compute_find_cut_path_node(BaseNode &node)
 // {
-//   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
+//   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(),
+//   node.get_id());
 
 //   auto *p_in = node.get_value_ref<hmap::VirtualArray>(P_IN);
 //   auto *p_path = node.get_value_ref<hmap::Path>(P_PATH);
@@ -177,11 +178,13 @@ void compute_find_cut_path_node(BaseNode &node)
 //       .seed = node.get_attr<SeedAttribute>(A_SEED),
 //       .offset_ratio = node.get_attr<FloatAttribute>(A_OFFSET_RATIO),
 //       .steps = node.get_attr<IntAttribute>(A_STEPS),
-//       .favor_boundary_center = node.get_attr<BoolAttribute>(A_FAVOR_BOUNDARY_CENTER),
-//       .favor_lower_elevation = node.get_attr<BoolAttribute>(A_FAVOR_LOWER_ELEVATION),
-//       .favor_sinks = node.get_attr<BoolAttribute>(A_FAVOR_SINKS),
-//       .smooth_path = node.get_attr<BoolAttribute>(A_SMOOTH_PATH),
-//       .smooth_sampling = node.get_attr<IntAttribute>(A_SMOOTH_SAMPLING)
+//       .favor_boundary_center =
+//       node.get_attr<BoolAttribute>(A_FAVOR_BOUNDARY_CENTER),
+//       .favor_lower_elevation =
+//       node.get_attr<BoolAttribute>(A_FAVOR_LOWER_ELEVATION), .favor_sinks =
+//       node.get_attr<BoolAttribute>(A_FAVOR_SINKS), .smooth_path =
+//       node.get_attr<BoolAttribute>(A_SMOOTH_PATH), .smooth_sampling =
+//       node.get_attr<IntAttribute>(A_SMOOTH_SAMPLING)
 //     };
 //     // clang-format on
 //   }();

@@ -22,12 +22,12 @@ namespace hesiod
 
 constexpr const char *P_OUT = "output";
 
-constexpr const char *A_FILENAME = "fname"; // used in GraphNodeWidget
-constexpr const char *A_FLIP_Y = "flip_y";
-constexpr const char *A_CLIP_RANGE = "clip_range";
+constexpr const char *A_FILENAME        = "fname"; // used in GraphNodeWidget
+constexpr const char *A_FLIP_Y          = "flip_y";
+constexpr const char *A_CLIP_RANGE      = "clip_range";
 constexpr const char *A_SAMPLING_METHOD = "sampling_method";
-constexpr const char *A_DEQUANTIZE = "dequantize"; // used in GraphNodeWidget
-constexpr const char *A_ITERATIONS = "iterations";
+constexpr const char *A_DEQUANTIZE      = "dequantize"; // used in GraphNodeWidget
+constexpr const char *A_ITERATIONS      = "iterations";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -161,7 +161,7 @@ void compute_import_heightmap_node(BaseNode &node)
         {
           auto [pa_out] = unpack<1>(p_arrays);
 
-          const uint      tile_seed = region.key.hash();
+          const uint      tile_seed        = region.key.hash();
           constexpr float dither_amplitude = 0.01f;
 
           *pa_out = hmap::dequantize(*pa_out, tile_seed, dither_amplitude, iterations);

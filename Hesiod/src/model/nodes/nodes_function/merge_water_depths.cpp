@@ -46,8 +46,8 @@ void compute_merge_water_depths_node(BaseNode &node)
         [&node](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
         {
           hmap::Array *pa_depth = p_arrays[0];
-          hmap::Array *pa_in1 = p_arrays[1];
-          hmap::Array *pa_in2 = p_arrays[2];
+          hmap::Array *pa_in1   = p_arrays[1];
+          hmap::Array *pa_in2   = p_arrays[2];
 
           *pa_depth = hmap::merge_water_depths(*pa_in1,
                                                *pa_in2,

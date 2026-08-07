@@ -65,24 +65,24 @@ void compute_polygon_field_node(BaseNode &node)
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
   // base noise function
-  hmap::VirtualArray *p_dx = node.get_value_ref<hmap::VirtualArray>("dx");
-  hmap::VirtualArray *p_dy = node.get_value_ref<hmap::VirtualArray>("dy");
-  hmap::VirtualArray *p_dr = node.get_value_ref<hmap::VirtualArray>("dr");
+  hmap::VirtualArray *p_dx      = node.get_value_ref<hmap::VirtualArray>("dx");
+  hmap::VirtualArray *p_dy      = node.get_value_ref<hmap::VirtualArray>("dy");
+  hmap::VirtualArray *p_dr      = node.get_value_ref<hmap::VirtualArray>("dr");
   hmap::VirtualArray *p_density = node.get_value_ref<hmap::VirtualArray>("density");
-  hmap::VirtualArray *p_size = node.get_value_ref<hmap::VirtualArray>("size");
-  hmap::VirtualArray *p_env = node.get_value_ref<hmap::VirtualArray>("envelope");
-  hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>("output");
+  hmap::VirtualArray *p_size    = node.get_value_ref<hmap::VirtualArray>("size");
+  hmap::VirtualArray *p_env     = node.get_value_ref<hmap::VirtualArray>("envelope");
+  hmap::VirtualArray *p_out     = node.get_value_ref<hmap::VirtualArray>("output");
 
   hmap::for_each_tile(
       {p_out, p_dx, p_dy, p_dr, p_density, p_size},
       [&node](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &region)
       {
-        hmap::Array *pa_out = p_arrays[0];
-        hmap::Array *pa_dx = p_arrays[1];
-        hmap::Array *pa_dy = p_arrays[2];
-        hmap::Array *pa_dr = p_arrays[3];
+        hmap::Array *pa_out     = p_arrays[0];
+        hmap::Array *pa_dx      = p_arrays[1];
+        hmap::Array *pa_dy      = p_arrays[2];
+        hmap::Array *pa_dr      = p_arrays[3];
         hmap::Array *pa_density = p_arrays[4];
-        hmap::Array *pa_size = p_arrays[5];
+        hmap::Array *pa_size    = p_arrays[5];
 
         glm::vec2 jitter(node.get_attr<FloatAttribute>("jitter.x"),
                          node.get_attr<FloatAttribute>("jitter.y"));

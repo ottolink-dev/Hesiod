@@ -15,7 +15,7 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_IN = "input";
+constexpr const char *P_IN  = "input";
 constexpr const char *P_OUT = "output";
 
 constexpr const char *A_VSHIFT = "vshift";
@@ -49,7 +49,7 @@ void compute_abs_node(BaseNode &node)
 
   // --- Inputs / Outputs
 
-  auto *p_in = node.get_value_ref<hmap::VirtualArray>(P_IN);
+  auto *p_in  = node.get_value_ref<hmap::VirtualArray>(P_IN);
   auto *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
   if (!p_in)
@@ -66,7 +66,7 @@ void compute_abs_node(BaseNode &node)
       [vshift](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
       {
         auto [pa_out, pa_in] = unpack<2>(p_arrays);
-        *pa_out = hmap::abs(*pa_in - vshift);
+        *pa_out              = hmap::abs(*pa_in - vshift);
       },
       node.cfg().cm_cpu);
 }

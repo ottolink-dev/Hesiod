@@ -65,30 +65,30 @@ void compute_combine_mask_node(BaseNode &node)
   case MaskCombineMethod::UNION:
     lambda = [](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
     {
-      hmap::Array &m = *p_arrays[0];
+      hmap::Array &m  = *p_arrays[0];
       hmap::Array &a1 = *p_arrays[1];
       hmap::Array &a2 = *p_arrays[2];
-      m = hmap::maximum(a1, a2);
+      m               = hmap::maximum(a1, a2);
     };
     break;
 
   case MaskCombineMethod::INTERSECTION:
     lambda = [](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
     {
-      hmap::Array &m = *p_arrays[0];
+      hmap::Array &m  = *p_arrays[0];
       hmap::Array &a1 = *p_arrays[1];
       hmap::Array &a2 = *p_arrays[2];
-      m = hmap::minimum(a1, a2);
+      m               = hmap::minimum(a1, a2);
     };
     break;
 
   case MaskCombineMethod::EXCLUSION:
     lambda = [](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
     {
-      hmap::Array &m = *p_arrays[0];
+      hmap::Array &m  = *p_arrays[0];
       hmap::Array &a1 = *p_arrays[1];
       hmap::Array &a2 = *p_arrays[2];
-      m = a1 - a2;
+      m               = a1 - a2;
       hmap::clamp_min(m, 0.f);
     };
     break;

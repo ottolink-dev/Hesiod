@@ -19,33 +19,33 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_INPUT = "input";
-constexpr const char *P_NOISE_X = "noise_x";
-constexpr const char *P_NOISE_Y = "noise_y";
-constexpr const char *P_MASK = "mask";
-constexpr const char *P_ANGLE_SHIFT = "angle_shift";
+constexpr const char *P_INPUT         = "input";
+constexpr const char *P_NOISE_X       = "noise_x";
+constexpr const char *P_NOISE_Y       = "noise_y";
+constexpr const char *P_MASK          = "mask";
+constexpr const char *P_ANGLE_SHIFT   = "angle_shift";
 constexpr const char *P_KP_MULTIPLIER = "kp_multiplier";
-constexpr const char *P_OUTPUT = "output";
-constexpr const char *P_RIDGE_MASK = "ridge_mask";
+constexpr const char *P_OUTPUT        = "output";
+constexpr const char *P_RIDGE_MASK    = "ridge_mask";
 
-constexpr const char *A_KP_GLOBAL = "kp_global";
-constexpr const char *A_C_EROSION = "c_erosion";
-constexpr const char *A_OCTAVES = "octaves";
-constexpr const char *A_PERSISTENCE = "persistence";
-constexpr const char *A_LACUNARITY = "lacunarity";
-constexpr const char *A_SEED = "seed";
-constexpr const char *A_EROSION_PROFILE = "erosion_profile";
+constexpr const char *A_KP_GLOBAL                 = "kp_global";
+constexpr const char *A_C_EROSION                 = "c_erosion";
+constexpr const char *A_OCTAVES                   = "octaves";
+constexpr const char *A_PERSISTENCE               = "persistence";
+constexpr const char *A_LACUNARITY                = "lacunarity";
+constexpr const char *A_SEED                      = "seed";
+constexpr const char *A_EROSION_PROFILE           = "erosion_profile";
 constexpr const char *A_EROSION_PROFILE_PARAMETER = "erosion_profile_parameter";
-constexpr const char *A_ANGLE_SHIFT = "angle_shift";
-constexpr const char *A_PHASE_SMOOTHING = "phase_smoothing";
-constexpr const char *A_TALUS_REF = "talus_ref";
-constexpr const char *A_GRADIENT_SCALING_RATIO = "gradient_scaling_ratio";
-constexpr const char *A_GRADIENT_POWER = "gradient_power";
-constexpr const char *A_EXCLUDE_RIDGES = "exclude_ridges";
-constexpr const char *A_APPLY_DEPOSITION = "apply_deposition";
-constexpr const char *A_DEPOSITION_STRENGTH = "deposition_strength";
-constexpr const char *A_ENABLE_DEFAULT_NOISE = "enable_default_noise";
-constexpr const char *A_NOISE_AMP = "noise_amp";
+constexpr const char *A_ANGLE_SHIFT               = "angle_shift";
+constexpr const char *A_PHASE_SMOOTHING           = "phase_smoothing";
+constexpr const char *A_TALUS_REF                 = "talus_ref";
+constexpr const char *A_GRADIENT_SCALING_RATIO    = "gradient_scaling_ratio";
+constexpr const char *A_GRADIENT_POWER            = "gradient_power";
+constexpr const char *A_EXCLUDE_RIDGES            = "exclude_ridges";
+constexpr const char *A_APPLY_DEPOSITION          = "apply_deposition";
+constexpr const char *A_DEPOSITION_STRENGTH       = "deposition_strength";
+constexpr const char *A_ENABLE_DEFAULT_NOISE      = "enable_default_noise";
+constexpr const char *A_NOISE_AMP                 = "noise_amp";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -134,14 +134,14 @@ void compute_hydraulic_procedural_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  auto p_in = node.get_value_ref<hmap::VirtualArray>(P_INPUT);
-  auto p_noise_x = node.get_value_ref<hmap::VirtualArray>(P_NOISE_X);
-  auto p_noise_y = node.get_value_ref<hmap::VirtualArray>(P_NOISE_Y);
-  auto p_mask = node.get_value_ref<hmap::VirtualArray>(P_MASK);
-  auto p_angle_shift = node.get_value_ref<hmap::VirtualArray>(P_ANGLE_SHIFT);
+  auto p_in            = node.get_value_ref<hmap::VirtualArray>(P_INPUT);
+  auto p_noise_x       = node.get_value_ref<hmap::VirtualArray>(P_NOISE_X);
+  auto p_noise_y       = node.get_value_ref<hmap::VirtualArray>(P_NOISE_Y);
+  auto p_mask          = node.get_value_ref<hmap::VirtualArray>(P_MASK);
+  auto p_angle_shift   = node.get_value_ref<hmap::VirtualArray>(P_ANGLE_SHIFT);
   auto p_kp_multiplier = node.get_value_ref<hmap::VirtualArray>(P_KP_MULTIPLIER);
-  auto p_out = node.get_value_ref<hmap::VirtualArray>(P_OUTPUT);
-  auto p_ridge_mask = node.get_value_ref<hmap::VirtualArray>(P_RIDGE_MASK);
+  auto p_out           = node.get_value_ref<hmap::VirtualArray>(P_OUTPUT);
+  auto p_ridge_mask    = node.get_value_ref<hmap::VirtualArray>(P_RIDGE_MASK);
 
   if (!p_in)
     return;
@@ -172,31 +172,31 @@ void compute_hydraulic_procedural_node(BaseNode &node)
       float                noise_amp;
     };
 
-    const int   nx = p_in->shape.x;
+    const int   nx        = p_in->shape.x;
     const float talus_ref = node.get_attr<FloatAttribute>(A_TALUS_REF);
-    const float talus = talus_ref / float(nx);
+    const float talus     = talus_ref / float(nx);
     const auto ep = hmap::ErosionProfile(node.get_attr<EnumAttribute>(A_EROSION_PROFILE));
 
     return P{
-        .kp_global = node.get_attr<FloatAttribute>(A_KP_GLOBAL),
-        .c_erosion = node.get_attr<FloatAttribute>(A_C_EROSION),
-        .octaves = node.get_attr<IntAttribute>(A_OCTAVES),
-        .persistence = node.get_attr<FloatAttribute>(A_PERSISTENCE),
-        .lacunarity = node.get_attr<FloatAttribute>(A_LACUNARITY),
-        .seed = node.get_attr<SeedAttribute>(A_SEED),
-        .erosion_profile = ep,
+        .kp_global                 = node.get_attr<FloatAttribute>(A_KP_GLOBAL),
+        .c_erosion                 = node.get_attr<FloatAttribute>(A_C_EROSION),
+        .octaves                   = node.get_attr<IntAttribute>(A_OCTAVES),
+        .persistence               = node.get_attr<FloatAttribute>(A_PERSISTENCE),
+        .lacunarity                = node.get_attr<FloatAttribute>(A_LACUNARITY),
+        .seed                      = node.get_attr<SeedAttribute>(A_SEED),
+        .erosion_profile           = ep,
         .erosion_profile_parameter = node.get_attr<FloatAttribute>(
             A_EROSION_PROFILE_PARAMETER),
-        .angle_shift = node.get_attr<FloatAttribute>(A_ANGLE_SHIFT),
-        .phase_smoothing = node.get_attr<FloatAttribute>(A_PHASE_SMOOTHING),
-        .talus = talus,
+        .angle_shift            = node.get_attr<FloatAttribute>(A_ANGLE_SHIFT),
+        .phase_smoothing        = node.get_attr<FloatAttribute>(A_PHASE_SMOOTHING),
+        .talus                  = talus,
         .gradient_scaling_ratio = node.get_attr<FloatAttribute>(A_GRADIENT_SCALING_RATIO),
-        .gradient_power = node.get_attr<FloatAttribute>(A_GRADIENT_POWER),
-        .exclude_ridges = node.get_attr<BoolAttribute>(A_EXCLUDE_RIDGES),
-        .apply_deposition = node.get_attr<BoolAttribute>(A_APPLY_DEPOSITION),
-        .deposition_strength = node.get_attr<FloatAttribute>(A_DEPOSITION_STRENGTH),
-        .enable_default_noise = node.get_attr<BoolAttribute>(A_ENABLE_DEFAULT_NOISE),
-        .noise_amp = node.get_attr<FloatAttribute>(A_NOISE_AMP),
+        .gradient_power         = node.get_attr<FloatAttribute>(A_GRADIENT_POWER),
+        .exclude_ridges         = node.get_attr<BoolAttribute>(A_EXCLUDE_RIDGES),
+        .apply_deposition       = node.get_attr<BoolAttribute>(A_APPLY_DEPOSITION),
+        .deposition_strength    = node.get_attr<FloatAttribute>(A_DEPOSITION_STRENGTH),
+        .enable_default_noise   = node.get_attr<BoolAttribute>(A_ENABLE_DEFAULT_NOISE),
+        .noise_amp              = node.get_attr<FloatAttribute>(A_NOISE_AMP),
     };
   }();
 
@@ -219,7 +219,7 @@ void compute_hydraulic_procedural_node(BaseNode &node)
                     pa_mask,
                     pa_angle_shift,
                     pa_kp_multiplier] = unpack<6>(p_arrays_in);
-        auto [pa_out, pa_ridge_mask] = unpack<2>(p_arrays_out);
+        auto [pa_out, pa_ridge_mask]  = unpack<2>(p_arrays_out);
 
         *pa_out = *pa_in;
 

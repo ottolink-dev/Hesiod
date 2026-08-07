@@ -53,7 +53,7 @@ void compute_make_periodic_node(BaseNode &node)
         [&node, nbuffer](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
         {
           auto [pa_out, pa_in] = unpack<2>(p_arrays);
-          *pa_out = *pa_in;
+          *pa_out              = *pa_in;
 
           hmap::make_periodic(
               *pa_out,

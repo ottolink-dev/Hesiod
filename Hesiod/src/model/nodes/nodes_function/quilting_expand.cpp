@@ -65,7 +65,7 @@ void compute_quilting_expand_node(BaseNode &node)
 
     // --- work on a single array (i.e. not-tiled algo)
 
-    hmap::Array in_array = p_in->to_array(node.cfg().cm_cpu);
+    hmap::Array in_array  = p_in->to_array(node.cfg().cm_cpu);
     hmap::Array out_array = hmap::Array(p_out->shape);
 
     out_array = hmap::quilting_expand(

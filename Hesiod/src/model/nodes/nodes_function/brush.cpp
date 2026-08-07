@@ -51,7 +51,7 @@ void compute_brush_node(BaseNode &node)
 
   hmap::Array array(arr.shape);
   array.vector = arr.vector;
-  array = array.resample_to_shape_bilinear(node.get_config_ref()->shape);
+  array        = array.resample_to_shape_bilinear(node.get_config_ref()->shape);
 
   // Array -> VirtualArray
   p_out->from_array(array, node.cfg().cm_cpu);

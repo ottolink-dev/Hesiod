@@ -19,8 +19,8 @@ namespace hesiod
 // -----------------------------------------------------------------------------
 
 constexpr const char *P_DENSITY = "density";
-constexpr const char *P_ENV = "envelope";
-constexpr const char *P_OUT = "output";
+constexpr const char *P_ENV     = "envelope";
+constexpr const char *P_OUT     = "output";
 
 constexpr const char *A_SEED = "seed";
 
@@ -61,8 +61,8 @@ void compute_white_density_map_node(BaseNode &node)
   // --- Inputs / Outputs
 
   auto *p_density = node.get_value_ref<hmap::VirtualArray>(P_DENSITY);
-  auto *p_env = node.get_value_ref<hmap::VirtualArray>(P_ENV);
-  auto *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
+  auto *p_env     = node.get_value_ref<hmap::VirtualArray>(P_ENV);
+  auto *p_out     = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
   if (!p_density)
     return;

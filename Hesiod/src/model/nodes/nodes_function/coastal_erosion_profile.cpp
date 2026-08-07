@@ -18,24 +18,24 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_Z_IN = "elevation_in";
+constexpr const char *P_Z_IN     = "elevation_in";
 constexpr const char *P_DEPTH_IN = "water_depth_in";
-constexpr const char *P_NOISE = "noise";
-constexpr const char *P_MASK = "mask";
+constexpr const char *P_NOISE    = "noise";
+constexpr const char *P_MASK     = "mask";
 
-constexpr const char *P_Z_OUT = "elevation";
-constexpr const char *P_DEPTH_OUT = "water_depth";
+constexpr const char *P_Z_OUT      = "elevation";
+constexpr const char *P_DEPTH_OUT  = "water_depth";
 constexpr const char *P_SHORE_MASK = "shore_mask";
 constexpr const char *P_SCARP_MASK = "scarp_mask";
 
-constexpr const char *A_GROUND_EXTENT = "shore_ground_extent";
-constexpr const char *A_WATER_RATIO = "shore_water_extent_ratio";
-constexpr const char *A_SCARP_RATIO = "scarp_extent_ratio";
-constexpr const char *A_SLOPE = "slope_shore";
-constexpr const char *A_POST_FILTER = "apply_post_filter";
+constexpr const char *A_GROUND_EXTENT          = "shore_ground_extent";
+constexpr const char *A_WATER_RATIO            = "shore_water_extent_ratio";
+constexpr const char *A_SCARP_RATIO            = "scarp_extent_ratio";
+constexpr const char *A_SLOPE                  = "slope_shore";
+constexpr const char *A_POST_FILTER            = "apply_post_filter";
 constexpr const char *A_POST_FILTER_ITERATIONS = "post_filter_iterations";
-constexpr const char *A_SOLID_SHORE_MASK = "solid_shore_mask";
-constexpr const char *A_SCARP_MASK_RATIO = "scarp_mask_ratio";
+constexpr const char *A_SOLID_SHORE_MASK       = "solid_shore_mask";
+constexpr const char *A_SCARP_MASK_RATIO       = "scarp_mask_ratio";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -106,13 +106,13 @@ void compute_coastal_erosion_profile_node(BaseNode &node)
 
   // --- Inputs / Outputs
 
-  auto *p_z = node.get_value_ref<hmap::VirtualArray>(P_Z_IN);
+  auto *p_z     = node.get_value_ref<hmap::VirtualArray>(P_Z_IN);
   auto *p_depth = node.get_value_ref<hmap::VirtualArray>(P_DEPTH_IN);
   auto *p_noise = node.get_value_ref<hmap::VirtualArray>(P_NOISE);
-  auto *p_mask = node.get_value_ref<hmap::VirtualArray>(P_MASK);
+  auto *p_mask  = node.get_value_ref<hmap::VirtualArray>(P_MASK);
 
-  auto *p_z_out = node.get_value_ref<hmap::VirtualArray>(P_Z_OUT);
-  auto *p_depth_out = node.get_value_ref<hmap::VirtualArray>(P_DEPTH_OUT);
+  auto *p_z_out      = node.get_value_ref<hmap::VirtualArray>(P_Z_OUT);
+  auto *p_depth_out  = node.get_value_ref<hmap::VirtualArray>(P_DEPTH_OUT);
   auto *p_shore_mask = node.get_value_ref<hmap::VirtualArray>(P_SHORE_MASK);
   auto *p_scarp_mask = node.get_value_ref<hmap::VirtualArray>(P_SCARP_MASK);
 
@@ -133,7 +133,7 @@ void compute_coastal_erosion_profile_node(BaseNode &node)
   // clang-format on
 
   int ir_ground = std::max(1, int(ground_extent * p_z->shape.x));
-  int ir_water = int(water_ratio * ir_ground);
+  int ir_water  = int(water_ratio * ir_ground);
 
   // --- Prepare mask
 
@@ -153,10 +153,10 @@ void compute_coastal_erosion_profile_node(BaseNode &node)
           std::vector<hmap::Array *>       out,
           const hmap::TileRegion &)
       {
-        auto [pa_z, pa_depth, pa_noise, pa_mask] = unpack<4>(in);
+        auto [pa_z, pa_depth, pa_noise, pa_mask]                    = unpack<4>(in);
         auto [pa_z_out, pa_depth_out, pa_shore_mask, pa_scarp_mask] = unpack<4>(out);
 
-        *pa_z_out = *pa_z;
+        *pa_z_out     = *pa_z;
         *pa_depth_out = *pa_depth;
 
         hmap::coastal_erosion_profile(*pa_z_out,

@@ -50,7 +50,7 @@ void compute_rescale_node(BaseNode &node)
         [&node, vref](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
         {
           auto [pa_out, pa_in] = unpack<2>(p_arrays);
-          *pa_out = *pa_in;
+          *pa_out              = *pa_in;
 
           hmap::rescale(*pa_out, node.get_attr<FloatAttribute>("scaling"), vref);
         },

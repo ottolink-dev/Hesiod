@@ -19,26 +19,26 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_ELEVATION_IN = "elevation_in";
-constexpr const char *P_DEPTH_MAP = "depth_map";
-constexpr const char *P_SNOW_DEPTH_IN = "snow_depth_in";
-constexpr const char *P_MELTING_MAP = "melting_map";
-constexpr const char *P_ELEVATION_OUT = "elevation";
+constexpr const char *P_ELEVATION_IN   = "elevation_in";
+constexpr const char *P_DEPTH_MAP      = "depth_map";
+constexpr const char *P_SNOW_DEPTH_IN  = "snow_depth_in";
+constexpr const char *P_MELTING_MAP    = "melting_map";
+constexpr const char *P_ELEVATION_OUT  = "elevation";
 constexpr const char *P_SNOW_DEPTH_OUT = "snow_depth";
 
-constexpr const char *A_SNOW_DEPTH = "snow_depth";
-constexpr const char *A_TALUS_GLOBAL = "talus_global";
-constexpr const char *A_DURATION = "duration";
-constexpr const char *A_SOLVER_STRIDE = "solver_stride";
-constexpr const char *A_DMAP_TYPE = "depth_map_type";
-constexpr const char *A_POST_FILTER = "post_filter";
+constexpr const char *A_SNOW_DEPTH          = "snow_depth";
+constexpr const char *A_TALUS_GLOBAL        = "talus_global";
+constexpr const char *A_DURATION            = "duration";
+constexpr const char *A_SOLVER_STRIDE       = "solver_stride";
+constexpr const char *A_DMAP_TYPE           = "depth_map_type";
+constexpr const char *A_POST_FILTER         = "post_filter";
 constexpr const char *A_THERMAL_TALUS_RATIO = "thermal_talus_ratio";
-constexpr const char *A_K_SNOW = "k_snow";
-constexpr const char *A_K_VISC = "k_visc";
-constexpr const char *A_K_MELT_FACTOR = "k_melt_factor";
-constexpr const char *A_K_DEPTH_RATIO = "k_depth_ratio";
+constexpr const char *A_K_SNOW              = "k_snow";
+constexpr const char *A_K_VISC              = "k_visc";
+constexpr const char *A_K_MELT_FACTOR       = "k_melt_factor";
+constexpr const char *A_K_DEPTH_RATIO       = "k_depth_ratio";
 constexpr const char *A_K_DEPTH_SLOPE_RATIO = "k_depth_slope_ratio";
-constexpr const char *A_SHIFT_TO_ZERO = "shift_to_zero";
+constexpr const char *A_SHIFT_TO_ZERO       = "shift_to_zero";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -118,11 +118,11 @@ void compute_snow_simulation_node(BaseNode &node)
   if (!p_z)
     return;
 
-  auto *p_depth_map = node.get_value_ref<hmap::VirtualArray>(P_DEPTH_MAP);
+  auto *p_depth_map     = node.get_value_ref<hmap::VirtualArray>(P_DEPTH_MAP);
   auto *p_snow_depth_in = node.get_value_ref<hmap::VirtualArray>(P_SNOW_DEPTH_IN);
-  auto *p_snow_depth = node.get_value_ref<hmap::VirtualArray>(P_SNOW_DEPTH_OUT);
-  auto *p_melting_map = node.get_value_ref<hmap::VirtualArray>(P_MELTING_MAP);
-  auto *p_z_out = node.get_value_ref<hmap::VirtualArray>(P_ELEVATION_OUT);
+  auto *p_snow_depth    = node.get_value_ref<hmap::VirtualArray>(P_SNOW_DEPTH_OUT);
+  auto *p_melting_map   = node.get_value_ref<hmap::VirtualArray>(P_MELTING_MAP);
+  auto *p_z_out         = node.get_value_ref<hmap::VirtualArray>(P_ELEVATION_OUT);
 
   // --- Parameters wrapper
 
@@ -144,35 +144,35 @@ void compute_snow_simulation_node(BaseNode &node)
       float talus;
     };
 
-    const int   nx = p_z->shape.x;
-    const int   stride = node.get_attr<IntAttribute>(A_SOLVER_STRIDE);
-    const float duration = node.get_attr<FloatAttribute>(A_DURATION);
+    const int   nx         = p_z->shape.x;
+    const int   stride     = node.get_attr<IntAttribute>(A_SOLVER_STRIDE);
+    const float duration   = node.get_attr<FloatAttribute>(A_DURATION);
     const int   nx_strided = int(float(nx) / stride);
     const int   iterations = int(duration * nx_strided);
-    const float talus = node.get_attr<FloatAttribute>(A_TALUS_GLOBAL) / nx_strided;
+    const float talus      = node.get_attr<FloatAttribute>(A_TALUS_GLOBAL) / nx_strided;
 
-    return P{.solver_stride = stride,
-             .dmap_type = node.get_attr<EnumAttribute>(A_DMAP_TYPE),
-             .snow_depth = node.get_attr<FloatAttribute>(A_SNOW_DEPTH),
-             .k_snow = node.get_attr<FloatAttribute>(A_K_SNOW),
-             .k_visc = node.get_attr<FloatAttribute>(A_K_VISC),
-             .k_melt_factor = node.get_attr<FloatAttribute>(A_K_MELT_FACTOR),
-             .k_depth_ratio = node.get_attr<FloatAttribute>(A_K_DEPTH_RATIO),
+    return P{.solver_stride       = stride,
+             .dmap_type           = node.get_attr<EnumAttribute>(A_DMAP_TYPE),
+             .snow_depth          = node.get_attr<FloatAttribute>(A_SNOW_DEPTH),
+             .k_snow              = node.get_attr<FloatAttribute>(A_K_SNOW),
+             .k_visc              = node.get_attr<FloatAttribute>(A_K_VISC),
+             .k_melt_factor       = node.get_attr<FloatAttribute>(A_K_MELT_FACTOR),
+             .k_depth_ratio       = node.get_attr<FloatAttribute>(A_K_DEPTH_RATIO),
              .k_depth_slope_ratio = node.get_attr<FloatAttribute>(A_K_DEPTH_SLOPE_RATIO),
              .thermal_talus_ratio = node.get_attr<FloatAttribute>(A_THERMAL_TALUS_RATIO),
-             .post_filter = node.get_attr<BoolAttribute>(A_POST_FILTER),
-             .shift_to_zero = node.get_attr<BoolAttribute>(A_SHIFT_TO_ZERO),
+             .post_filter         = node.get_attr<BoolAttribute>(A_POST_FILTER),
+             .shift_to_zero       = node.get_attr<BoolAttribute>(A_SHIFT_TO_ZERO),
              //
              .nx_strided = nx_strided,
              .iterations = iterations,
-             .talus = talus};
+             .talus      = talus};
   }();
 
   // --- Adjust compute mode (stride)
 
   // override compute mode (but keep storage mode)
   hmap::ComputeMode cm = node.cfg().cm_gpu;
-  cm.stride = params.solver_stride;
+  cm.stride            = params.solver_stride;
 
   // --- Create talus virtual array
 
@@ -202,12 +202,12 @@ void compute_snow_simulation_node(BaseNode &node)
   {
     copy_data(*p_snow_depth_in, dmap, node.cfg().cm_cpu);
     snow_depth_updated = dmap.max(node.cfg().cm_cpu);
-    p_depth_map = &dmap;
+    p_depth_map        = &dmap;
   }
   else if (!p_depth_map)
   {
     auto map_type = DefaultMapOptions::Type(params.dmap_type);
-    auto options = DefaultMapOptions{.map_type = map_type};
+    auto options  = DefaultMapOptions{.map_type = map_type};
 
     generate_map(node, p_depth_map, dmap, options);
   }
@@ -234,7 +234,7 @@ void compute_snow_simulation_node(BaseNode &node)
           const hmap::TileRegion &)
       {
         auto [pa_z, pa_depth_map, pa_melting_map, pa_talus_map] = unpack<4>(p_arrays_in);
-        auto [pa_z_out, pa_snow_depth] = unpack<2>(p_arrays_out);
+        auto [pa_z_out, pa_snow_depth]                          = unpack<2>(p_arrays_out);
 
         hmap::Array depth_map_scaled = *pa_depth_map;
         hmap::remap(depth_map_scaled, 0.f, 1.f, dmin, dmax);

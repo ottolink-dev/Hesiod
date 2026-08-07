@@ -53,7 +53,7 @@ void compute_select_slope_node(BaseNode &node)
           [&node, ir](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
           {
             hmap::Array *pa_out = p_arrays[0];
-            hmap::Array *pa_in = p_arrays[1];
+            hmap::Array *pa_in  = p_arrays[1];
 
             *pa_out = hmap::gpu::morphological_gradient(*pa_in, ir);
           },
@@ -65,7 +65,7 @@ void compute_select_slope_node(BaseNode &node)
           [&node](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
           {
             hmap::Array *pa_out = p_arrays[0];
-            hmap::Array *pa_in = p_arrays[1];
+            hmap::Array *pa_in  = p_arrays[1];
 
             *pa_out = hmap::gradient_norm(*pa_in);
           },

@@ -19,31 +19,31 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_OUT = "output";
-constexpr const char *P_IN = "input";
-constexpr const char *P_DX = "dx";
-constexpr const char *P_DY = "dy";
+constexpr const char *P_OUT  = "output";
+constexpr const char *P_IN   = "input";
+constexpr const char *P_DX   = "dx";
+constexpr const char *P_DY   = "dy";
 constexpr const char *P_MASK = "mask";
 
-constexpr const char *A_SEED = "seed";
-constexpr const char *A_CONTROL_POINTS_COUNT = "control_points_count";
-constexpr const char *A_M_EXP = "m_exp";
-constexpr const char *A_DRAINAGE_NOISE_STRENGTH = "drainage_noise_strength";
-constexpr const char *A_UPLIFT_RATE = "uplift_rate";
-constexpr const char *A_TOLERANCE = "tolerance";
-constexpr const char *A_MAX_ITERATIONS = "max_iterations";
-constexpr const char *A_SMIN = "smin";
-constexpr const char *A_SMAX = "smax";
-constexpr const char *A_UNIFORM_SMAX = "uniform_smax";
-constexpr const char *A_STRENGTH = "strength";
+constexpr const char *A_SEED                     = "seed";
+constexpr const char *A_CONTROL_POINTS_COUNT     = "control_points_count";
+constexpr const char *A_M_EXP                    = "m_exp";
+constexpr const char *A_DRAINAGE_NOISE_STRENGTH  = "drainage_noise_strength";
+constexpr const char *A_UPLIFT_RATE              = "uplift_rate";
+constexpr const char *A_TOLERANCE                = "tolerance";
+constexpr const char *A_MAX_ITERATIONS           = "max_iterations";
+constexpr const char *A_SMIN                     = "smin";
+constexpr const char *A_SMAX                     = "smax";
+constexpr const char *A_UNIFORM_SMAX             = "uniform_smax";
+constexpr const char *A_STRENGTH                 = "strength";
 constexpr const char *A_SCALE_ERODIBILITY_WITH_Z = "scale_erodibility_with_z";
-constexpr const char *A_ERODIBILITY_DISTRIB_EXP = "erodibility_distrib_exp";
-constexpr const char *A_DEPOSITION_RADIUS = "deposition_radius";
-constexpr const char *A_DEPOSITION_STRENGTH = "eposition_strength";
-constexpr const char *A_STREAM_STRENGTH = "stream_strength";
-constexpr const char *A_STREAM_EXP = "stream_exp";
-constexpr const char *A_ITP_METHOD = "itp_method";
-constexpr const char *A_ENABLE_POST_SMOOTHING = "enable_post_smoothing";
+constexpr const char *A_ERODIBILITY_DISTRIB_EXP  = "erodibility_distrib_exp";
+constexpr const char *A_DEPOSITION_RADIUS        = "deposition_radius";
+constexpr const char *A_DEPOSITION_STRENGTH      = "eposition_strength";
+constexpr const char *A_STREAM_STRENGTH          = "stream_strength";
+constexpr const char *A_STREAM_EXP               = "stream_exp";
+constexpr const char *A_ITP_METHOD               = "itp_method";
+constexpr const char *A_ENABLE_POST_SMOOTHING    = "enable_post_smoothing";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -136,11 +136,11 @@ void compute_hydraulic_saleve_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  auto  p_in = node.get_value_ref<hmap::VirtualArray>(P_IN);
-  auto  p_dx = node.get_value_ref<hmap::VirtualArray>(P_DX);
-  auto  p_dy = node.get_value_ref<hmap::VirtualArray>(P_DY);
+  auto  p_in   = node.get_value_ref<hmap::VirtualArray>(P_IN);
+  auto  p_dx   = node.get_value_ref<hmap::VirtualArray>(P_DX);
+  auto  p_dy   = node.get_value_ref<hmap::VirtualArray>(P_DY);
   auto *p_mask = node.get_value_ref<hmap::VirtualArray>(P_MASK);
-  auto  p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
+  auto  p_out  = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
   if (!p_in)
     return;
@@ -172,11 +172,11 @@ void compute_hydraulic_saleve_node(BaseNode &node)
       bool                        enable_post_smoothing;
     };
 
-    int   nx = p_out->shape.x;
+    int   nx            = p_out->shape.x;
     int   deposition_ir = (int)(node.get_attr<FloatAttribute>(A_DEPOSITION_RADIUS) * nx);
-    bool  uniform_smax = node.get_attr<BoolAttribute>(A_UNIFORM_SMAX);
-    float smax = node.get_attr<FloatAttribute>(A_SMAX);
-    float smin = uniform_smax ? smax : node.get_attr<FloatAttribute>(A_SMIN);
+    bool  uniform_smax  = node.get_attr<BoolAttribute>(A_UNIFORM_SMAX);
+    float smax          = node.get_attr<FloatAttribute>(A_SMAX);
+    float smin          = uniform_smax ? smax : node.get_attr<FloatAttribute>(A_SMIN);
 
     std::string                 itp_choice = node.get_attr<ChoiceAttribute>(A_ITP_METHOD);
     hmap::InterpolationMethod2D itp_method;
@@ -226,7 +226,7 @@ void compute_hydraulic_saleve_node(BaseNode &node)
                        const hmap::TileRegion          &region)
       {
         const auto [pa_in, pa_dx, pa_dy, pa_mask] = unpack<4>(p_arrays_in);
-        auto [pa_out] = unpack<1>(p_arrays_out);
+        auto [pa_out]                             = unpack<1>(p_arrays_out);
 
         // add a small background noise to avoid numerical artefacts
         // due to perfectly flat surfaces

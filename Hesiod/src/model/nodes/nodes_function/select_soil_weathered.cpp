@@ -72,7 +72,7 @@ void compute_select_soil_weathered_node(BaseNode &node)
   {
     hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>("output");
 
-    int nx = p_out->shape.x; // for gradient scaling
+    int nx      = p_out->shape.x; // for gradient scaling
     int ir_curv = (int)(node.get_attr<FloatAttribute>("radius_curvature") * nx);
     int ir_grad = std::max(1,
                            (int)(node.get_attr<FloatAttribute>("radius_gradient") * nx));
@@ -86,7 +86,7 @@ void compute_select_soil_weathered_node(BaseNode &node)
         [&node, ir_grad](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
         {
           auto [pa_out, pa_in] = unpack<2>(p_arrays);
-          *pa_out = hmap::gpu::morphological_gradient(*pa_in, ir_grad);
+          *pa_out              = hmap::gpu::morphological_gradient(*pa_in, ir_grad);
         },
         node.cfg().cm_gpu);
 
@@ -110,8 +110,8 @@ void compute_select_soil_weathered_node(BaseNode &node)
         [&node, nx, ir_curv, ir_grad](std::vector<hmap::Array *> p_arrays,
                                       const hmap::TileRegion &)
         {
-          hmap::Array *pa_out = p_arrays[0];
-          hmap::Array *pa_in = p_arrays[1];
+          hmap::Array *pa_out       = p_arrays[0];
+          hmap::Array *pa_in        = p_arrays[1];
           hmap::Array *pa_grad_norm = p_arrays[2];
 
           auto mode = static_cast<hmap::ClampMode>(

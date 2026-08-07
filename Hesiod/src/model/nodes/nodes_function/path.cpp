@@ -18,9 +18,9 @@ namespace hesiod
 // -----------------------------------------------------------------------------
 
 constexpr const char *P_BACKGROUND = "background";
-constexpr const char *P_OUT = "path";
+constexpr const char *P_OUT        = "path";
 
-constexpr const char *A_PATH = "path";
+constexpr const char *A_PATH   = "path";
 constexpr const char *A_CLOSED = "closed";
 
 // -----------------------------------------------------------------------------
@@ -64,7 +64,7 @@ void compute_path_node(BaseNode &node)
   // --- Params
 
   const auto path_attr = node.get_attr<CloudAttribute>(A_PATH);
-  const auto closed = node.get_attr<BoolAttribute>(A_CLOSED);
+  const auto closed    = node.get_attr<BoolAttribute>(A_CLOSED);
 
   // --- Compute
 

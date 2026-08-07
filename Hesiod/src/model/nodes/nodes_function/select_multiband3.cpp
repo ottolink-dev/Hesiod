@@ -44,8 +44,8 @@ void compute_select_multiband3_node(BaseNode &node)
 
   if (p_in)
   {
-    hmap::VirtualArray *p_low = node.get_value_ref<hmap::VirtualArray>("low");
-    hmap::VirtualArray *p_mid = node.get_value_ref<hmap::VirtualArray>("mid");
+    hmap::VirtualArray *p_low  = node.get_value_ref<hmap::VirtualArray>("low");
+    hmap::VirtualArray *p_mid  = node.get_value_ref<hmap::VirtualArray>("mid");
     hmap::VirtualArray *p_high = node.get_value_ref<hmap::VirtualArray>("high");
 
     float vmin = p_in->min(node.cfg().cm_cpu);

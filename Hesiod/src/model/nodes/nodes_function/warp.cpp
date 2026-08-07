@@ -19,9 +19,9 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_INPUT = "input";
-constexpr const char *P_DX = "dx";
-constexpr const char *P_DY = "dy";
+constexpr const char *P_INPUT  = "input";
+constexpr const char *P_DX     = "dx";
+constexpr const char *P_DY     = "dy";
 constexpr const char *P_OUTPUT = "output";
 
 constexpr const char *A_SCALING_X = "scaling.x";
@@ -60,9 +60,9 @@ void compute_warp_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  auto *p_in = node.get_value_ref<hmap::VirtualArray>(P_INPUT);
-  auto *p_dx = node.get_value_ref<hmap::VirtualArray>(P_DX);
-  auto *p_dy = node.get_value_ref<hmap::VirtualArray>(P_DY);
+  auto *p_in  = node.get_value_ref<hmap::VirtualArray>(P_INPUT);
+  auto *p_dx  = node.get_value_ref<hmap::VirtualArray>(P_DX);
+  auto *p_dy  = node.get_value_ref<hmap::VirtualArray>(P_DY);
   auto *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUTPUT);
 
   if (!p_in)
