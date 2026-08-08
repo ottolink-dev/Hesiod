@@ -6,11 +6,9 @@
 #include "highmap/opencl/gpu_opencl.hpp"
 #include "highmap/range.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
-
+#include "hesiod/logger.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
-
-using namespace attr;
 
 namespace hesiod
 {
@@ -21,7 +19,7 @@ std::shared_ptr<hmap::VirtualArray> pre_process_mask(BaseNode            &node,
 {
   // do not modify any existing input mask and return a dummy shared
   // pointer that will not be used
-  if (p_mask || !node.get_attr<BoolAttribute>("mask_activate"))
+  if (p_mask || !node.val<bool>("mask_activate"))
     return std::make_shared<hmap::VirtualArray>();
 
   // create mask storage and assign to current mask pointer
@@ -36,8 +34,8 @@ std::shared_ptr<hmap::VirtualArray> pre_process_mask(BaseNode            &node,
 
   // --- mask definition
 
-  const std::string mask_type = node.get_attr<ChoiceAttribute>("mask_type");
-  const int ir = (int)(node.get_attr<FloatAttribute>("mask_radius") * p_mask->shape.x);
+  const std::string mask_type = node.val<std::string>("mask_type");
+  const int         ir = (int)(node.val<float>("mask_radius") * p_mask->shape.x);
 
   if (mask_type == "Elevation")
   {
@@ -96,7 +94,7 @@ std::shared_ptr<hmap::VirtualArray> pre_process_mask(BaseNode            &node,
 
   // --- apply gain to the mask
 
-  float mask_gain = node.get_attr<FloatAttribute>("mask_gain");
+  float mask_gain = node.val<float>("mask_gain");
 
   if (mask_gain != 1.f)
   {
@@ -110,7 +108,7 @@ std::shared_ptr<hmap::VirtualArray> pre_process_mask(BaseNode            &node,
         cfg.cm_cpu);
   }
 
-  if (node.get_attr<BoolAttribute>("mask_inverse"))
+  if (node.val<bool>("mask_inverse"))
     p_mask->inverse(cfg.cm_cpu);
 
   return sp_mask;
@@ -118,28 +116,17 @@ std::shared_ptr<hmap::VirtualArray> pre_process_mask(BaseNode            &node,
 
 void setup_pre_process_mask_attributes(BaseNode &node)
 {
-  node.add_attr<BoolAttribute>("mask_activate", "mask_activate", false);
+  add_bool(node, "mask_activate", "mask_activate", false);
 
   std::vector<std::string> choices = {"Elevation",
                                       "Elevation mid-range",
                                       "Gradient norm"};
-  node.add_attr<ChoiceAttribute>("mask_type", "mask_type", choices);
 
-  node.add_attr<BoolAttribute>("mask_inverse", "mask_inverse", false);
-
-  node.add_attr<FloatAttribute>("mask_radius", "mask_radius", 0.01f, 0.f, 0.2f);
-
-  node.add_attr<FloatAttribute>("mask_gain", "mask_gain", 1.f, 0.f, 10.f);
-
-  std::vector<std::string> *p_keys = node.get_attr_ordered_key_ref();
-
-  p_keys->push_back("_GROUPBOX_BEGIN_Mask Definition");
-  p_keys->push_back("mask_activate");
-  p_keys->push_back("mask_type");
-  p_keys->push_back("mask_radius");
-  p_keys->push_back("mask_gain");
-  p_keys->push_back("mask_inverse");
-  p_keys->push_back("_GROUPBOX_END_");
+  node.set_current_category("Mask Definition");
+  add_choice(node, "mask_type", "Mask Type", choices);
+  add_bool(node, "mask_inverse", "mask_inverse", false);
+  add_float(node, "mask_radius", "mask_radius", 0.01f, 0.f, 0.2f);
+  add_float(node, "mask_gain", "mask_gain", 1.f, 0.f, 10.f);
 }
 
 } // namespace hesiod

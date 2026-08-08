@@ -5,8 +5,6 @@
 #include <QLabel>
 #include <QPushButton>
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
-
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/widgets/data_preview.hpp"
 #include "hesiod/gui/widgets/graph_node_widget.hpp"
@@ -15,8 +13,6 @@
 #include "hesiod/logger.hpp"
 #include "hesiod/model/graph/graph_node.hpp"
 #include "hesiod/model/utils.hpp"
-
-using namespace attr;
 
 namespace hesiod
 {
@@ -39,7 +35,7 @@ ToggleNodeWidget::ToggleNodeWidget(std::weak_ptr<BaseNode>   model,
   this->button_a->setCheckable(true);
   this->button_b->setCheckable(true);
 
-  bool checked = m->get_attr<BoolAttribute>("toggle");
+  bool checked = m->val<bool>("toggle");
   this->button_a->setChecked(checked);
   this->button_b->setChecked(!checked);
 
@@ -56,7 +52,7 @@ ToggleNodeWidget::ToggleNodeWidget(std::weak_ptr<BaseNode>   model,
 
                   if (auto m = this->model.lock())
                   {
-                    m->get_attr_ref<BoolAttribute>("toggle")->set_value(is_checked);
+                    m->set_value<bool>("toggle", is_checked);
                     m->get_p_graph()->update(m->get_id());
                   }
                 });
@@ -74,7 +70,7 @@ ToggleNodeWidget::ToggleNodeWidget(std::weak_ptr<BaseNode>   model,
 
                   if (auto m = this->model.lock())
                   {
-                    m->get_attr_ref<BoolAttribute>("toggle")->set_value(!is_checked);
+                    m->set_value<bool>("toggle", !is_checked);
                     m->get_p_graph()->update(m->get_id());
                   }
                 });
@@ -91,7 +87,7 @@ void ToggleNodeWidget::on_compute_finished()
   // by another UI element)
   if (auto m = this->model.lock())
   {
-    bool checked = m->get_attr<BoolAttribute>("toggle");
+    bool checked = m->val<bool>("toggle");
     this->sync_guard = true;
     this->button_a->setChecked(checked);
     this->button_b->setChecked(!checked);

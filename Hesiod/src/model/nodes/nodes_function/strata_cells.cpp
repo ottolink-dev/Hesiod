@@ -120,7 +120,7 @@ void compute_strata_cells_node(BaseNode &node)
     return P{
         .kw                    = node.val<glm::vec2>(A_KW),
         .amp                   = node.val<float>(A_AMP),
-        .seed                  = node.val<int>(A_SEED),
+        .seed                  = uint(node.val<int>(A_SEED)),
         .gamma                 = node.val<float>(A_GAMMA),
         .gamma_lateral         = node.val<float>(A_GAMMA_LATERAL),
         .angle                 = node.val<float>(A_ANGLE),

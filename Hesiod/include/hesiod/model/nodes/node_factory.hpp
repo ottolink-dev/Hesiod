@@ -18,9 +18,6 @@ void dump_node_inventory(const std::string &fname);
 void dump_node_documentation_stub(const std::string         &fname,
                                   std::weak_ptr<GraphConfig> config);
 
-void dump_node_attribute_parity(const std::string         &fname,
-                                std::weak_ptr<GraphConfig> config);
-
 void dump_node_settings_screenshots();
 
 // Retrieves a map of node inventory.

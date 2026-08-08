@@ -151,7 +151,7 @@ void compute_hydraulic_procedural_node(BaseNode &node)
         .octaves                   = node.val<int>(A_OCTAVES),
         .persistence               = node.val<float>(A_PERSISTENCE),
         .lacunarity                = node.val<float>(A_LACUNARITY),
-        .seed                      = node.val<int>(A_SEED),
+        .seed                      = uint(node.val<int>(A_SEED)),
         .erosion_profile           = ep,
         .erosion_profile_parameter = node.val<float>(A_EROSION_PROFILE_PARAMETER),
         .angle_shift               = node.val<float>(A_ANGLE_SHIFT),

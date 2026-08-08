@@ -152,7 +152,7 @@ void compute_hydraulic_particle_node(BaseNode &node)
 
     // clang-format off
     return P{
-        .seed = node.val<int>(A_SEED),
+      .seed = uint(node.val<int>(A_SEED)),
         .nparticles = nparticles,
         .c_capacity = node.val<float>(A_C_CAPACITY),
         .c_erosion = node.val<float>(A_C_EROSION),

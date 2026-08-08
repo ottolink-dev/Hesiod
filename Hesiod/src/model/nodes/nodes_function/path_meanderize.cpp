@@ -81,7 +81,7 @@ void compute_path_meanderize_node(BaseNode &node)
     return P{
         .ratio          = node.val<float>(A_RATIO),
         .noise_ratio    = node.val<float>(A_NOISE_RATIO),
-        .seed           = node.val<int>(A_SEED),
+        .seed           = uint(node.val<int>(A_SEED)),
         .iterations     = node.val<int>(A_ITERATIONS),
         .edge_divisions = node.val<int>(A_EDGE_DIVISIONS),
         .remove_loops   = node.val<bool>(A_REMOVE_LOOPS),

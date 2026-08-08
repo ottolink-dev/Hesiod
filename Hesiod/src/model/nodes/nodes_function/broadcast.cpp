@@ -27,35 +27,35 @@ void compute_broadcast_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  hmap::VirtualArray *p_in = node.get_value_ref<hmap::VirtualArray>("input");
+  auto *p_in   = node.get_value_ref<hmap::VirtualArray>("input");
+  auto *p_thru = node.get_value_ref<hmap::VirtualArray>("thru");
 
-  if (p_in)
+  if (!p_in)
+    return;
+
+  p_thru->copy_from(*p_in, node.get_config_ref()->cm_cpu);
+
+  BroadcastNode *p_broadcast_node = dynamic_cast<BroadcastNode *>(&node);
+
+  if (!p_broadcast_node)
   {
-    hmap::VirtualArray *p_thru = node.get_value_ref<hmap::VirtualArray>("thru");
-    p_thru->copy_from(*p_in, node.get_config_ref()->cm_cpu);
-
-    BroadcastNode *p_broadcast_node = dynamic_cast<BroadcastNode *>(&node);
-
-    if (!p_broadcast_node)
-    {
-      Logger::log()->error("compute_receive_node: Failed to cast to BroadcastNode");
-      return;
-    }
-
-    std::string broadcast_tag = p_broadcast_node->get_broadcast_tag();
-    std::string graph_id      = node.get_graph_id();
-    std::string node_id       = node.get_id();
-
-    Logger::log()->trace("compute_broadcast_node: broadcasting graph: {}, node: {}",
-                         graph_id,
-                         node_id);
-
-    Logger::log()->trace("broadcast_tag: {}", broadcast_tag);
-
-    // this goes to the graph editor
-    if (p_broadcast_node->broadcast_node_updated)
-      p_broadcast_node->broadcast_node_updated(graph_id, broadcast_tag);
+    Logger::log()->error("compute_receive_node: Failed to cast to BroadcastNode");
+    return;
   }
+
+  std::string broadcast_tag = p_broadcast_node->get_broadcast_tag();
+  std::string graph_id      = node.get_graph_id();
+  std::string node_id       = node.get_id();
+
+  Logger::log()->trace("compute_broadcast_node: broadcasting graph: {}, node: {}",
+                       graph_id,
+                       node_id);
+
+  Logger::log()->trace("broadcast_tag: {}", broadcast_tag);
+
+  // this goes to the graph editor
+  if (p_broadcast_node->broadcast_node_updated)
+    p_broadcast_node->broadcast_node_updated(graph_id, broadcast_tag);
 }
 
 } // namespace hesiod

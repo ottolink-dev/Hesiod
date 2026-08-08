@@ -4,6 +4,17 @@
 #include <exception>
 #include <optional>
 
+#include <QApplication>
+#include <QFileDialog>
+#include <QMenu>
+#include <QMessageBox>
+#include <QPointer>
+#include <QScreen>
+#include <QTimer>
+#include <QToolButton>
+#include <QVBoxLayout>
+#include <QWidgetAction>
+
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/widgets/custom_qmenu.hpp"
 #include "hesiod/gui/widgets/graph_config_widgets/graph_config_dialog.hpp"
@@ -20,16 +31,6 @@
 #include "hesiod/model/nodes/node_factory.hpp"
 #include "hesiod/model/nodes/port_catalog.hpp"
 #include "hesiod/model/utils.hpp"
-#include <QApplication>
-#include <QFileDialog>
-#include <QMenu>
-#include <QMessageBox>
-#include <QPointer>
-#include <QScreen>
-#include <QTimer>
-#include <QToolButton>
-#include <QVBoxLayout>
-#include <QWidgetAction>
 
 namespace hesiod
 {
@@ -91,9 +92,8 @@ void GraphNodeWidget::add_import_heightmap_node(const QImage &img)
     save_heightmap(img, fpath, aspect_ratio);
 
     // adjust node parameter accordingly
-    p_node->get_attr_ref<hsd::legacy::FilenameAttribute>("fname")->set_value(
-        fpath.string());
-    p_node->get_attr_ref<hsd::legacy::BoolAttribute>("dequantize")->set_value(true);
+    p_node->set_value<std::filesystem::path>("fname", fpath.string());
+    p_node->set_value<bool>("dequantize", true);
 
     p_node->compute();
   }
@@ -127,8 +127,7 @@ void GraphNodeWidget::add_import_texture_nodes(
     BaseNode *p_node = gno->get_node_ref_by_id<BaseNode>(node_id);
     if (p_node)
     {
-      p_node->get_attr_ref<hsd::legacy::FilenameAttribute>("fname")->set_value(fname);
-
+      p_node->set_value<std::filesystem::path>("fname", fname);
       p_node->compute();
     }
     else

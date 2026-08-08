@@ -80,7 +80,7 @@ void compute_path_fractalize_node(BaseNode &node)
     };
 
     return P{.iterations   = node.val<int>(A_ITERATIONS),
-             .seed         = node.val<int>(A_SEED),
+             .seed         = uint(node.val<int>(A_SEED)),
              .sigma        = node.val<float>(A_SIGMA),
              .orientation  = node.val<int>(A_ORIENTATION),
              .persistence  = node.val<float>(A_PERSISTENCE),

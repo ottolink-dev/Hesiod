@@ -4,6 +4,9 @@
 #include "highmap/colorize.hpp"
 #include "highmap/range.hpp"
 
+#include "meta/metadata/keys.hpp"
+
+#include "hesiod/logger.hpp"
 #include "hesiod/model/constants/color_gradient.hpp"
 #include "hesiod/model/nodes/attributes.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
@@ -64,82 +67,81 @@ void compute_colorize_gradient_node(BaseNode &node)
   // --- Inputs / Outputs
 
   auto *p_level = node.get_value_ref<hmap::VirtualArray>(P_LEVEL);
+  auto *p_alpha = node.get_value_ref<hmap::VirtualArray>(P_ALPHA);
+  auto *p_noise = node.get_value_ref<hmap::VirtualArray>(P_NOISE);
+  auto *p_tex   = node.get_value_ref<hmap::VirtualTexture>(P_TEXTURE);
 
-  if (p_level)
+  if (!p_level)
+    return;
+
+  // --- Params
+
+  // define colormap based on color gradient
+  const auto &gradient         = node.val<meta::ColorGradient>(A_GRADIENT).value();
+  const auto  reverse_colormap = node.val<bool>(A_REVERSE_COLORMAP);
+  const auto  reverse_alpha    = node.val<bool>(A_REVERSE_ALPHA);
+  const auto  clamp_alpha      = node.val<bool>(A_CLAMP_ALPHA);
+
+  std::vector<float>     positions       = {};
+  std::vector<glm::vec3> colormap_colors = {};
+
+  for (const auto &data : gradient)
   {
-    auto *p_alpha = node.get_value_ref<hmap::VirtualArray>(P_ALPHA);
-    auto *p_noise = node.get_value_ref<hmap::VirtualArray>(P_NOISE);
-    auto *p_tex   = node.get_value_ref<hmap::VirtualTexture>(P_TEXTURE);
-
-    // --- Params
-
-    // define colormap based on color gradient
-    const auto &gradient         = node.val<meta::ColorGradient>(A_GRADIENT).value();
-    const auto  reverse_colormap = node.val<bool>(A_REVERSE_COLORMAP);
-    const auto  reverse_alpha    = node.val<bool>(A_REVERSE_ALPHA);
-    const auto  clamp_alpha      = node.val<bool>(A_CLAMP_ALPHA);
-
-    std::vector<float>     positions       = {};
-    std::vector<glm::vec3> colormap_colors = {};
-
-    for (const auto &data : gradient)
-    {
-      positions.push_back(data.position);
-      colormap_colors.push_back({data.color[0], data.color[1], data.color[2]});
-    }
-
-    // --- Compute
-
-    // reverse alpha
-    hmap::VirtualArray  alpha_copy;
-    hmap::VirtualArray *p_alpha_copy = nullptr;
-
-    if (!p_alpha)
-    {
-      p_alpha_copy = p_alpha;
-    }
-    else
-    {
-      alpha_copy.copy_from(*p_alpha, node.cfg().cm_cpu);
-      p_alpha_copy = &alpha_copy;
-
-      hmap::for_each_tile(
-          {p_alpha_copy},
-          [clamp_alpha, reverse_alpha](std::vector<hmap::Array *> p_arrays,
-                                       const hmap::TileRegion &)
-          {
-            hmap::Array &alpha = *p_arrays[0];
-
-            if (clamp_alpha)
-              hmap::clamp(alpha, 0.f, 1.f);
-
-            if (reverse_alpha)
-              alpha = 1.f - alpha;
-          },
-          node.cfg().cm_cpu);
-    }
-
-    // colorize
-    float cmin = p_level->min(node.cfg().cm_cpu);
-    float cmax = p_level->max(node.cfg().cm_cpu);
-
-    if (p_noise)
-    {
-      cmin += p_noise->min(node.cfg().cm_cpu);
-      cmax += p_noise->max(node.cfg().cm_cpu);
-    }
-
-    hmap::colorize(*p_tex,
-                   *p_level,
-                   node.cfg().cm_cpu,
-                   cmin,
-                   cmax,
-                   positions,
-                   colormap_colors,
-                   p_alpha_copy,
-                   reverse_colormap,
-                   p_noise);
+    positions.push_back(data.position);
+    colormap_colors.push_back({data.color[0], data.color[1], data.color[2]});
   }
+
+  // --- Compute
+
+  // reverse alpha
+  hmap::VirtualArray  alpha_copy;
+  hmap::VirtualArray *p_alpha_copy = nullptr;
+
+  if (!p_alpha)
+  {
+    p_alpha_copy = p_alpha;
+  }
+  else
+  {
+    alpha_copy.copy_from(*p_alpha, node.cfg().cm_cpu);
+    p_alpha_copy = &alpha_copy;
+
+    hmap::for_each_tile(
+        {p_alpha_copy},
+        [clamp_alpha, reverse_alpha](std::vector<hmap::Array *> p_arrays,
+                                     const hmap::TileRegion &)
+        {
+          hmap::Array &alpha = *p_arrays[0];
+
+          if (clamp_alpha)
+            hmap::clamp(alpha, 0.f, 1.f);
+
+          if (reverse_alpha)
+            alpha = 1.f - alpha;
+        },
+        node.cfg().cm_cpu);
+  }
+
+  // colorize
+  float cmin = p_level->min(node.cfg().cm_cpu);
+  float cmax = p_level->max(node.cfg().cm_cpu);
+
+  if (p_noise)
+  {
+    cmin += p_noise->min(node.cfg().cm_cpu);
+    cmax += p_noise->max(node.cfg().cm_cpu);
+  }
+
+  hmap::colorize(*p_tex,
+                 *p_level,
+                 node.cfg().cm_cpu,
+                 cmin,
+                 cmax,
+                 positions,
+                 colormap_colors,
+                 p_alpha_copy,
+                 reverse_colormap,
+                 p_noise);
 }
 
 } // namespace hesiod

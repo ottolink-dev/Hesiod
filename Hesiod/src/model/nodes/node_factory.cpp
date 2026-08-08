@@ -111,27 +111,6 @@ void dump_node_documentation_stub(const std::string         &fname,
   f.close();
 }
 
-void dump_node_attribute_parity(const std::string         &fname,
-                                std::weak_ptr<GraphConfig> config)
-{
-  Logger::log()->trace("dump_node_attribute_parity");
-
-  std::map<std::string, std::string> ni = hesiod::get_node_inventory();
-
-  nlohmann::json json;
-  for (auto [name, category] : ni)
-  {
-    std::shared_ptr<gnode::Node> p_node = node_factory(name, config);
-    hesiod::BaseNode *p_base_node = dynamic_cast<hesiod::BaseNode *>(p_node.get());
-    json[name] = p_base_node->attribute_parity_record();
-  }
-
-  std::fstream f;
-  f.open(fname, std::ios::out);
-  f << json.dump(4) << "\n";
-  f.close();
-}
-
 void dump_node_settings_screenshots()
 {
   Logger::log()->trace("dump_node_settings_screenshots");

@@ -4,15 +4,11 @@
 #include <QLabel>
 #include <QPushButton>
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
-
 #include "hesiod/gui/widgets/data_preview.hpp"
 #include "hesiod/gui/widgets/graph_node_widget.hpp"
 #include "hesiod/gui/widgets/gui_utils.hpp"
 #include "hesiod/gui/widgets/node_widget.hpp"
 #include "hesiod/logger.hpp"
-
-using namespace attr;
 
 namespace hesiod
 {
@@ -36,10 +32,10 @@ ExportNodeWidget::ExportNodeWidget(std::weak_ptr<BaseNode>   model,
                   if (auto m = this->model.lock())
                   {
                     // bypass 'auto_export' attribute
-                    bool auto_export = m->get_attr<BoolAttribute>("auto_export");
-                    m->get_attr_ref<BoolAttribute>("auto_export")->set_value(true);
+                    bool auto_export = m->val<bool>("auto_export");
+                    m->set_value<bool>("auto_export", true);
                     m->compute();
-                    m->get_attr_ref<BoolAttribute>("auto_export")->set_value(auto_export);
+                    m->set_value<bool>("auto_export", auto_export);
                   }
                 });
 }

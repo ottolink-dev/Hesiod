@@ -150,7 +150,7 @@ void compute_hydraulic_saleve_node(BaseNode &node)
       itp_method = hmap::InterpolationMethod2D::ITP2D_DELAUNAY_GRADIENT;
 
     // clang-format off
-    return P{.seed = node.val<int>(A_SEED),
+    return P{.seed = (uint)node.val<int>(A_SEED),
              .count = size_t(node.val<int>(A_CONTROL_POINTS_COUNT)),
              .m_exp = node.val<float>(A_M_EXP),
 	     .drainage_noise_strength = node.val<float>(A_DRAINAGE_NOISE_STRENGTH),

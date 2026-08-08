@@ -4,6 +4,7 @@
 #include "hesiod/model/nodes/attributes.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 
+#include "meta/metadata/keys.hpp"
 #include "meta/presets/choice.hpp"
 #include "meta/presets/color_gradient.hpp"
 #include "meta/presets/curve.hpp"

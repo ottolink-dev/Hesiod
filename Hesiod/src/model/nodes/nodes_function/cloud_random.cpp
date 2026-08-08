@@ -3,6 +3,8 @@
  * this software. */
 #include "hesiod/model/nodes/attributes.hpp"
 
+#include "meta/metadata/keys.hpp"
+
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
@@ -48,13 +50,11 @@ void compute_cloud_random_node(BaseNode &node)
                               node.val<int>(A_SEED),
                               (hmap::PointSamplingMethod)node.val<int>(A_METHOD));
 
-  if ((node.attr<glm::vec2>(A_REMAP) &&
-               node.attr<glm::vec2>(A_REMAP)->metadata().try_value<bool>(
-                   meta::keys::ui::active)
-           ? *node.attr<glm::vec2>(A_REMAP)->metadata().try_value<bool>(
-                 meta::keys::ui::active)
-           : true))
-    p_out->remap_values(node.val<glm::vec2>(A_REMAP)[0], node.val<glm::vec2>(A_REMAP)[1]);
+  if (node.metadata_val<bool>(A_REMAP, meta::keys::ui::active))
+  {
+    glm::vec2 range = node.val<glm::vec2>(A_REMAP);
+    p_out->remap_values(range.x, range.y);
+  }
 }
 
 } // namespace hesiod

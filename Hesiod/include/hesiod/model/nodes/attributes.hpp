@@ -31,6 +31,8 @@ meta::Attribute<float> &add_angle(BaseNode          &node,
                                   float              vmax = 180.f,
                                   const std::string &value_format = "{:.1f}°");
 
+// meta::Attribute<meta::Array> &add_array();
+
 meta::Attribute<bool> &add_bool(BaseNode          &node,
                                 const std::string &key,
                                 const std::string &label,
@@ -110,9 +112,9 @@ meta::Attribute<int> &add_int(BaseNode          &node,
 meta::Attribute<glm::vec2> &add_range(BaseNode          &node,
                                       const std::string &key,
                                       const std::string &label,
-                                      const glm::vec2   &default_range,
-                                      float              vmin,
-                                      float              vmax,
+                                      const glm::vec2   &default_range = {0.f, 1.f},
+                                      float              vmin = -1.f,
+                                      float              vmax = 2.f,
                                       bool               is_active = true,
                                       const std::string &value_format = "{:.3f}");
 

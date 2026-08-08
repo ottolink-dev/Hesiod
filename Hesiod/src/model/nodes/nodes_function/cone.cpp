@@ -44,12 +44,6 @@ void setup_cone_node(BaseNode &node)
 
   setup_post_process_heightmap_attributes(node,
                                           {.add_mix = true, .remap_active_state = true});
-
-  // disable post-processing remap by default
-  if (auto *p_remap = node.attr<glm::vec2>(A_POST_REMAP))
-    p_remap->metadata()
-        .try_add(std::string(meta::keys::ui::active), false)
-        ->value() = false;
 }
 
 void compute_cone_node(BaseNode &node)
