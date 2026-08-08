@@ -34,6 +34,25 @@ meta::Attribute<float> &add_angle(BaseNode          &node,
   return add_float(node, key, label, default_val, vmin, vmax, value_format);
 }
 
+meta::Attribute<meta::Array> &add_array(BaseNode          &node,
+                                        const std::string &key,
+                                        const std::string &label)
+{
+  auto      &c = node.get_meta_group().current();
+  const auto shape = node.cfg().shape;
+
+  auto *a = c.add<meta::Array>(key,
+                               meta::Array{shape, std::vector(shape.x * shape.y, 0.f)});
+
+  a->metadata().try_add(meta::keys::ui::label, std::string(label));
+  a->metadata().try_add(meta::keys::ui::width, 256);
+  a->metadata().try_add(meta::keys::ui::height, 256);
+
+  apply_category_if_set(node, *a);
+
+  return *a;
+}
+
 meta::Attribute<bool> &add_bool(BaseNode          &node,
                                 const std::string &key,
                                 const std::string &label,
@@ -213,6 +232,18 @@ meta::Attribute<int> &add_int(BaseNode          &node,
                                       vmin,
                                       vmax,
                                       value_format);
+  apply_category_if_set(node, a);
+  return a;
+}
+
+meta::Attribute<std::vector<glm::vec3>> &add_path(BaseNode          &node,
+                                                  const std::string &key,
+                                                  const std::string &label,
+                                                  bool               closed)
+{
+  auto &a = meta::presets::points(node.get_meta_group().current(), key, label);
+  a.metadata().try_add(meta::keys::ui::widget_type, std::string("PathEditor"));
+  a.metadata().try_add(std::string(meta::keys::ui::closed), closed);
   apply_category_if_set(node, a);
   return a;
 }

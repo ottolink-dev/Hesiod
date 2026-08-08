@@ -38,43 +38,7 @@ void setup_saturate_node(BaseNode &node)
   add_float(node, A_K_SMOOTHING, "k_smoothing", 0.1f, 0.01f, 1.f);
   add_range(node, A_RANGE, "Saturation Range");
 
-  // range
-  {
-    // auto *a = c.add<glm::vec2>(A_RANGE, glm::vec2(0.f, 1.f));
-    // a->metadata().try_add(meta::keys::ui::widget_type, std::string("RangeBar"));
-    // a->metadata().try_add(meta::keys::constraints::min,
-    //                       -1.f); // legacy RangeAttribute domain
-    // a->metadata().try_add(meta::keys::constraints::max, 2.f);
-    // a->metadata().try_add(meta::keys::ui::category, std::string("Main"));
-    // a->metadata().try_add(meta::keys::ui::tooltip,
-    //                       std::string("<b>Saturation range</b>"));
-    // a->metadata().try_add(
-    //     meta::keys::ui::data_provider,
-    //     meta::DataProvider{
-    //         [&node, port_id = std::string(P_IN)]() -> meta::Any
-    //         {
-    //           hmap::VirtualArray *p_in =
-    //           node.get_value_ref<hmap::VirtualArray>(port_id); if (!p_in)
-    //             return {};
-    //           float vmin = p_in->min(node.cfg().cm_cpu);
-    //           float vmax = p_in->max(node.cfg().cm_cpu);
-    //           if (vmin == vmax)
-    //             return {};
-    //           const int               nbins = 256;
-    //           hmap::Array             arr = p_in->to_array({256, 256},
-    //           node.cfg().cm_cpu); meta::qt::HistogramData d; d.x = hmap::linspace(vmin,
-    //           vmax, nbins, false); d.y.assign(nbins, 0.f); const float sa = 1.f / (vmax
-    //           - vmin) * (nbins - 1); const float sb = -vmin / (vmax - vmin) * (nbins -
-    //           1); for (int j = 0; j < arr.shape.y; ++j)
-    //             for (int i = 0; i < arr.shape.x; ++i)
-    //             {
-    //               int bin = static_cast<int>(sa * arr(i, j) + sb);
-    //               bin     = bin < 0 ? 0 : (bin >= nbins ? nbins - 1 : bin);
-    //               d.y[bin] += 1.f;
-    //             }
-    //           return d;
-    //         }});
-  }
+  setup_histogram_for_range_attribute(node, A_RANGE, P_IN);
 
   setup_post_process_heightmap_attributes(node,
                                           {.add_mix = true, .remap_active_state = false});

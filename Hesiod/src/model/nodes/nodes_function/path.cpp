@@ -3,8 +3,6 @@
  * this software. */
 #include "highmap/geometry/path.hpp"
 
-#include "meta/metadata/keys.hpp"
-
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/attributes.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
@@ -37,13 +35,8 @@ void setup_path_node(BaseNode &node)
 
   // --- Attributes
 
-  auto &a_path_attr = add_cloud(node, A_PATH, "Path");
-  a_path_attr.metadata()
-      .try_add(std::string(meta::keys::ui::closed), true)
-      ->value() = true;
+  add_path(node, A_PATH, "Path");
   add_bool(node, A_CLOSED, "Closed Path", false);
-
-  // --- Attribute(s) order
 
   setup_background_image_for_cloud_attribute(node, A_PATH, P_BACKGROUND);
 }

@@ -12,6 +12,7 @@
 #include "glm/vec4.hpp"
 
 #include "meta/core/attribute.hpp"
+#include "meta/ext/array/array.hpp"
 #include "meta/ext/color_gradient/color_gradient.hpp"
 
 namespace hesiod
@@ -31,7 +32,9 @@ meta::Attribute<float> &add_angle(BaseNode          &node,
                                   float              vmax = 180.f,
                                   const std::string &value_format = "{:.1f}°");
 
-// meta::Attribute<meta::Array> &add_array();
+meta::Attribute<meta::Array> &add_array(BaseNode          &node,
+                                        const std::string &key,
+                                        const std::string &label);
 
 meta::Attribute<bool> &add_bool(BaseNode          &node,
                                 const std::string &key,
@@ -53,7 +56,7 @@ meta::Attribute<std::string> &add_choice(BaseNode                       &node,
 
 meta::Attribute<std::vector<glm::vec3>> &add_cloud(BaseNode          &node,
                                                    const std::string &key,
-                                                   const std::string &label = "Cloud");
+                                                   const std::string &label);
 
 meta::Attribute<glm::vec4> &add_color(BaseNode          &node,
                                       const std::string &key,
@@ -108,6 +111,11 @@ meta::Attribute<int> &add_int(BaseNode          &node,
                               int                vmin,
                               int                vmax,
                               const std::string &value_format = "{}");
+
+meta::Attribute<std::vector<glm::vec3>> &add_path(BaseNode          &node,
+                                                  const std::string &key,
+                                                  const std::string &label,
+                                                  bool               closed = false);
 
 meta::Attribute<glm::vec2> &add_range(BaseNode          &node,
                                       const std::string &key,

@@ -46,8 +46,10 @@ void setup_colorize_gradient_node(BaseNode &node)
 
   // --- Attributes
 
-  auto &gradient_attr = add_color_gradient(node, A_GRADIENT, "gradient");
-  gradient_attr.metadata().add(
+  add_color_gradient(node, A_GRADIENT, "gradient");
+
+  node.set_metadata(
+      A_GRADIENT,
       meta::keys::ui::presets,
       meta::GradientPresets{ColorGradientManager::get_instance().get_as_attr_presets()});
 
@@ -111,6 +113,9 @@ void compute_colorize_gradient_node(BaseNode &node)
         [clamp_alpha, reverse_alpha](std::vector<hmap::Array *> p_arrays,
                                      const hmap::TileRegion &)
         {
+          if (p_arrays.empty())
+            return;
+
           hmap::Array &alpha = *p_arrays[0];
 
           if (clamp_alpha)

@@ -1,10 +1,6 @@
 /* Copyright (c) 2023 Otto Link. Distributed under the terms of the GNU General
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
-#include "meta/core/data_provider.hpp"
-#include "meta/ext/array/array.hpp"
-#include "meta/metadata/keys.hpp"
-
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/attributes.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
@@ -28,15 +24,7 @@ void setup_brush_node(BaseNode &node)
   node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_OUT, CONFIG(node));
 
   // attribute(s)
-  auto &c = node.get_meta_group().current();
-
-  auto *a = c.add<meta::Array>(
-      "hmap",
-      meta::Array{glm::ivec2(512, 512), std::vector<float>(512 * 512, 0.f)});
-  a->metadata().try_add(meta::keys::ui::label, std::string("Heightmap"));
-  a->metadata().try_add(meta::keys::ui::category, std::string("Main"));
-  a->metadata().try_add(meta::keys::ui::width, 256);
-  a->metadata().try_add(meta::keys::ui::height, 256);
+  add_array(node, "hmap", "HeightMap");
 
   setup_post_process_heightmap_attributes(node,
                                           {.add_mix = true, .remap_active_state = true});
