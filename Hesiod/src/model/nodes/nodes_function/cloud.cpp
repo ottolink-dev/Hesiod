@@ -45,15 +45,17 @@ void setup_cloud_node(BaseNode &node)
 
   node.set_current_category("Main");
   auto &a = add_cloud(node, A_CLOUD, "Cloud");
-  a.metadata().try_add(meta::keys::ui::widget_type, std::string("PointsEditor"));
+
   a.metadata().try_add(
       meta::keys::ui::data_provider,
       meta::DataProvider{
           [&node, port_id = std::string(P_BACKGROUND)]() -> meta::Any
           {
             hmap::VirtualArray *p_in = node.get_value_ref<hmap::VirtualArray>(port_id);
+
             if (!p_in)
               return {};
+
             const glm::ivec2     shape(256, 256);
             hmap::Array          array = p_in->to_array(shape, node.cfg().cm_cpu);
             std::vector<uint8_t> img   = hmap::colorize(array,

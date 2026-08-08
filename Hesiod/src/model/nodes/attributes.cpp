@@ -84,6 +84,7 @@ meta::Attribute<std::vector<glm::vec3>> &add_cloud(BaseNode          &node,
                                                    const std::string &label)
 {
   auto &a = meta::presets::points(node.get_meta_group().current(), key, label);
+  a.metadata().try_add(meta::keys::ui::widget_type, std::string("PointsEditor"));
   apply_category_if_set(node, a);
   return a;
 }
