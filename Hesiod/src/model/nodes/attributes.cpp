@@ -126,6 +126,7 @@ meta::Attribute<meta::ColorGradient> &add_color_gradient(BaseNode          &node
                                                          const std::string &label)
 {
   auto &a = meta::presets::color_gradient(node.get_meta_group().current(), key, label);
+  a.metadata().try_add(meta::keys::ui::presets, meta::GradientPresets{});
   apply_category_if_set(node, a);
   return a;
 }

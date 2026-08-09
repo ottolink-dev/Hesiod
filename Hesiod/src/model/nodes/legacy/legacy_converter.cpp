@@ -1,9 +1,13 @@
-#include "hesiod/model/nodes/legacy/legacy_converter.hpp"
+#include <algorithm>
+#include <vector>
+
+#include <glm/glm.hpp>
+
 #include "meta/core/attribute.hpp"
 #include "meta/ext/array/array.hpp"
-#include <algorithm>
-#include <glm/glm.hpp>
-#include <vector>
+#include "meta/ext/color_gradient/color_gradient.hpp"
+
+#include "hesiod/model/nodes/legacy/legacy_converter.hpp"
 
 namespace hesiod
 {
@@ -16,7 +20,7 @@ nlohmann::json convert_legacy_attribute_json(const meta::AbstractAttribute *attr
 
   nlohmann::json converted = j;
 
-  // 1. Cloud conversion: meta::Attribute<std::vector<glm::vec3>>
+  // Cloud conversion: meta::Attribute<std::vector<glm::vec3>>
   if (attr->try_cast<meta::Attribute<std::vector<glm::vec3>>>())
   {
     if (j.contains("x") && j.contains("y") && j.contains("values"))
@@ -41,7 +45,7 @@ nlohmann::json convert_legacy_attribute_json(const meta::AbstractAttribute *attr
       }
     }
   }
-  // 2. Range / Wavenumber / Vector 2D conversion: meta::Attribute<glm::vec2>
+  // Range / Wavenumber / Vector 2D conversion: meta::Attribute<glm::vec2>
   else if (attr->try_cast<meta::Attribute<glm::vec2>>())
   {
     if (j.contains("value") && j["value"].is_array() && j["value"].size() == 2)
@@ -55,7 +59,7 @@ nlohmann::json convert_legacy_attribute_json(const meta::AbstractAttribute *attr
       }
     }
   }
-  // 3. Color conversion: meta::Attribute<glm::vec4>
+  // Color conversion: meta::Attribute<glm::vec4>
   else if (attr->try_cast<meta::Attribute<glm::vec4>>())
   {
     if (j.contains("value") && j["value"].is_array() && j["value"].size() == 4)
@@ -72,7 +76,7 @@ nlohmann::json convert_legacy_attribute_json(const meta::AbstractAttribute *attr
       }
     }
   }
-  // 4. Array conversion: meta::Attribute<meta::Array>
+  // Array conversion: meta::Attribute<meta::Array>
   else if (attr->try_cast<meta::Attribute<meta::Array>>())
   {
     if (j.contains("shape.x") && j.contains("shape.y") && j.contains("vector"))
@@ -81,6 +85,22 @@ nlohmann::json convert_legacy_attribute_json(const meta::AbstractAttribute *attr
       converted["value"] = {{"shape.x", j["shape.x"]},
                             {"shape.y", j["shape.y"]},
                             {"vector", j["vector"]}};
+    }
+  }
+  // ColorGradient conversion: meta::Attribute<meta::ColorGradient>
+  else if (attr->try_cast<meta::Attribute<meta::ColorGradient>>())
+  {
+    if (j.contains("value") && j["value"].is_array())
+    {
+      try
+      {
+        converted = nlohmann::json::object();
+        converted["value"] = nlohmann::json::object();
+        converted["value"]["value"] = j["value"];
+      }
+      catch (...)
+      {
+      }
     }
   }
 
