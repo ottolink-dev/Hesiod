@@ -1,8 +1,8 @@
 /* Copyright (c) 2025 Otto Link. Distributed under the terms of the GNU General
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
-#include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/widgets/grip_splitter.hpp"
+#include "hesiod/app/hesiod_application.hpp"
 
 namespace hesiod
 {

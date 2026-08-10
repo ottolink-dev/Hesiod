@@ -69,6 +69,11 @@ std::filesystem::path insert_before_basename(const std::filesystem::path &origin
 std::filesystem::path insert_before_extension(const std::filesystem::path &original_path,
                                               const std::string           &insert_str);
 
+std::filesystem::path make_unique_filename(
+    const std::filesystem::path                        &output_directory,
+    std::string                                         filename,
+    const std::unordered_map<std::string, std::string> &replacements);
+
 std::filesystem::path prepend_project_name_to_path(
     const std::filesystem::path &original_path);
 
@@ -113,6 +118,10 @@ inline void json_safe_get(const nlohmann::json &j, const std::string &key, QColo
 std::string insert_char_every_nth(const std::string &input,
                                   std::size_t        n,
                                   const std::string &chr);
+
+// int_to_string(42);       // "42"
+// int_to_string(42, 4);    // "0042"
+std::string int_to_string(int value, int width = 0);
 
 std::string ptr_as_string(void *ptr);
 std::string remove_trailing_char(const std::string &input, char ch);

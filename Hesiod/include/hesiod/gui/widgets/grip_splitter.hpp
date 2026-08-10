@@ -2,10 +2,10 @@
    License. The full license is in the file LICENSE, distributed with this software. */
 #pragma once
 #include <QPaintEvent>
+#include <QPainter>
 #include <QSplitter>
 #include <QSplitterHandle>
 #include <QWidget>
-#include <QPainter>
 
 namespace hesiod
 {

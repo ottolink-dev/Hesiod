@@ -4,12 +4,16 @@
 #include <chrono>
 #include <fstream>
 #include <iomanip>
+#include <regex>
 #include <sstream>
+#include <unordered_map>
 
 #include "nlohmann/json.hpp"
 
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/logger.hpp"
+
+namespace fs = std::filesystem;
 
 namespace hesiod
 {
@@ -116,6 +120,23 @@ std::string insert_char_every_nth(const std::string &input,
   return result;
 }
 
+#include <filesystem>
+#include <regex>
+#include <string>
+#include <unordered_map>
+
+namespace fs = std::filesystem;
+
+std::string int_to_string(int value, int width = 0)
+{
+  std::string result = std::to_string(value);
+
+  if (width > 0 && result.size() < static_cast<std::size_t>(width))
+    result.insert(0, width - result.size(), '0');
+
+  return result;
+}
+
 nlohmann::json json_from_file(const std::string &fname)
 {
   nlohmann::json json;
@@ -180,6 +201,63 @@ void json_to_file(const nlohmann::json &json,
   else
   {
     Logger::log()->error("json_to_file: Could not open file {} to save JSON", fname);
+  }
+}
+
+fs::path make_unique_filename(
+    const fs::path                                     &output_directory,
+    std::string                                         filename,
+    const std::unordered_map<std::string, std::string> &replacements)
+{
+  // Apply user-defined replacements.
+  for (const auto &[placeholder, value] : replacements)
+  {
+    std::size_t pos = 0;
+
+    while ((pos = filename.find(placeholder, pos)) != std::string::npos)
+    {
+      filename.replace(pos, placeholder.size(), value);
+      pos += value.size();
+    }
+  }
+
+  // Find {INC} or {INC:N}.
+  const std::regex inc_regex(R"(\{INC(?::([0-9]+))?\})");
+  std::smatch      match;
+
+  if (!std::regex_search(filename, match, inc_regex))
+  {
+    const fs::path output_path = output_directory / filename;
+
+    if (fs::exists(output_path))
+      Logger::log()->warn("Output file already exists: {}. "
+                          "Filename pattern does not contain INC placeholder.",
+                          output_path.string());
+
+    return output_path;
+  }
+
+  const int width = match[1].matched ? std::stoi(match[1].str()) : 0;
+
+  const std::string inc_placeholder = match[0].str();
+
+  for (int inc = 0;; ++inc)
+  {
+    const std::string inc_string = int_to_string(inc, width);
+
+    std::string candidate = filename;
+
+    std::size_t pos = 0;
+    while ((pos = candidate.find(inc_placeholder, pos)) != std::string::npos)
+    {
+      candidate.replace(pos, inc_placeholder.size(), inc_string);
+      pos += inc_string.size();
+    }
+
+    const fs::path output_path = output_directory / candidate;
+
+    if (!fs::exists(output_path))
+      return output_path;
   }
 }
 
