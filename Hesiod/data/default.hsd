@@ -1,5 +1,5 @@
 {
-    "Hesiod version": "v0.5.0",
+    "Hesiod version": "v0.6.0",
     "bake_config": {
         "force_auto_export": true,
         "force_distributed": true,
@@ -61,311 +61,1294 @@
                         "id": "3",
                         "label": "Preview",
                         "runtime_info": {
-                            "eval_count": 8,
+                            "eval_count": 9,
                             "time_creation": 1764510137388,
-                            "time_last_update": 1765484228855,
-                            "update_time": 0.01269999984651804
+                            "time_last_update": 1786362599767,
+                            "update_time": 0.005520000122487545
                         }
                     },
                     {
                         "comment": "",
                         "elevation": {
-                            "label": "elevation",
-                            "log_scale": false,
-                            "type": 6,
-                            "type_string": "Float",
-                            "value": 0.20000000298023224,
-                            "vmax": 2.0,
-                            "vmin": -1.0
+                            "metadata": {
+                                "constraints.max": {
+                                    "type": "float",
+                                    "value": 2.0
+                                },
+                                "constraints.min": {
+                                    "type": "float",
+                                    "value": -1.0
+                                },
+                                "ui.category": {
+                                    "type": "std::string",
+                                    "value": "Main Parameters"
+                                },
+                                "ui.format": {
+                                    "type": "std::string",
+                                    "value": "{:.2f}"
+                                },
+                                "ui.label": {
+                                    "type": "std::string",
+                                    "value": "Elevation"
+                                },
+                                "ui.tooltip": {
+                                    "type": "std::string",
+                                    "value": "<div><font size=\"+1\"><b>Elevation</font></b><br><font color='#949495'>No description</div>"
+                                },
+                                "ui.widget_type": {
+                                    "type": "std::string",
+                                    "value": "SliderFloat"
+                                }
+                            },
+                            "type": "float",
+                            "value": 0.20000000298023224
                         },
                         "id": "4",
                         "label": "FloodingUniformLevel",
                         "runtime_info": {
-                            "eval_count": 6,
+                            "eval_count": 7,
                             "time_creation": 1764510137388,
-                            "time_last_update": 1765484208430,
-                            "update_time": 5.778655052185059
+                            "time_last_update": 1786362599767,
+                            "update_time": 4.729804039001465
                         }
                     },
                     {
                         "angle": {
-                            "label": "angle",
-                            "log_scale": false,
-                            "type": 6,
-                            "type_string": "Float",
-                            "value": 0.0,
-                            "vmax": 180.0,
-                            "vmin": -180.0
+                            "metadata": {
+                                "constraints.max": {
+                                    "type": "float",
+                                    "value": 180.0
+                                },
+                                "constraints.min": {
+                                    "type": "float",
+                                    "value": -180.0
+                                },
+                                "ui.category": {
+                                    "type": "std::string",
+                                    "value": "Gabor Wave"
+                                },
+                                "ui.format": {
+                                    "type": "std::string",
+                                    "value": "{:.1f}°"
+                                },
+                                "ui.label": {
+                                    "type": "std::string",
+                                    "value": "Angle"
+                                },
+                                "ui.tooltip": {
+                                    "type": "std::string",
+                                    "value": "<div><font size=\"+1\"><b>Angle</font></b><br><font color='#949495'>Controls the base orientation of the Gabor wavelets, influencing\nthe dominant direction of the noise pattern. Expressed in\ndegrees.</div>"
+                                },
+                                "ui.widget_type": {
+                                    "type": "std::string",
+                                    "value": "SliderFloat"
+                                }
+                            },
+                            "type": "float",
+                            "value": 0.0
                         },
                         "angle_spread_ratio": {
-                            "label": "angle_spread_ratio",
-                            "log_scale": false,
-                            "type": 6,
-                            "type_string": "Float",
-                            "value": 1.0,
-                            "vmax": 1.0,
-                            "vmin": 0.0
+                            "metadata": {
+                                "constraints.max": {
+                                    "type": "float",
+                                    "value": 1.0
+                                },
+                                "constraints.min": {
+                                    "type": "float",
+                                    "value": 0.0
+                                },
+                                "ui.category": {
+                                    "type": "std::string",
+                                    "value": "Gabor Wave"
+                                },
+                                "ui.format": {
+                                    "type": "std::string",
+                                    "value": "{:.2f}"
+                                },
+                                "ui.label": {
+                                    "type": "std::string",
+                                    "value": "Angle Spread Ratio"
+                                },
+                                "ui.tooltip": {
+                                    "type": "std::string",
+                                    "value": "<div><font size=\"+1\"><b>Angle Spread Ratio</font></b><br><font color='#949495'>Determines how much the local angle of the Gabor kernel can\nvary. A low value results in straighter structures, while a high\nvalue introduces more directional variation.</div>"
+                                },
+                                "ui.widget_type": {
+                                    "type": "std::string",
+                                    "value": "SliderFloat"
+                                }
+                            },
+                            "type": "float",
+                            "value": 1.0
                         },
                         "comment": "",
                         "id": "6",
                         "kw": {
-                            "label": "kw",
-                            "link_xy": true,
-                            "type": 17,
-                            "type_string": "Wavenumber",
-                            "value": [
-                                2.0,
-                                2.0
-                            ],
-                            "vmax": 3.4028234663852886e+38,
-                            "vmin": 0.0
+                            "metadata": {
+                                "constraints.max": {
+                                    "type": "float",
+                                    "value": 64.0
+                                },
+                                "constraints.min": {
+                                    "type": "float",
+                                    "value": 0.0
+                                },
+                                "ui.category": {
+                                    "type": "std::string",
+                                    "value": "Gabor Wave"
+                                },
+                                "ui.format": {
+                                    "type": "std::string",
+                                    "value": "{:.2f}"
+                                },
+                                "ui.label": {
+                                    "type": "std::string",
+                                    "value": "Spatial Frequency"
+                                },
+                                "ui.locked_xy": {
+                                    "type": "bool",
+                                    "value": true
+                                },
+                                "ui.tooltip": {
+                                    "type": "std::string",
+                                    "value": "<div><font size=\"+1\"><b>Spatial Frequency</font></b><br><font color='#949495'>Base spatial frequencies in the X and Y directions. The\nfrequencies are defined with respect to the entire domain: for\nexample, kw = 2 produces two full oscillations across the domain\nwidth (and similarly for the Y direction).</div>"
+                                },
+                                "ui.widget_type": {
+                                    "type": "std::string",
+                                    "value": "LinkedSliders"
+                                }
+                            },
+                            "type": "glm::vec2",
+                            "value": {
+                                "x": 2.0,
+                                "y": 2.0
+                            }
                         },
                         "label": "GaborWaveFbm",
                         "lacunarity": {
-                            "label": "lacunarity",
-                            "log_scale": false,
-                            "type": 6,
-                            "type_string": "Float",
-                            "value": 2.0,
-                            "vmax": 4.0,
-                            "vmin": 0.009999999776482582
+                            "metadata": {
+                                "constraints.max": {
+                                    "type": "float",
+                                    "value": 4.0
+                                },
+                                "constraints.min": {
+                                    "type": "float",
+                                    "value": 0.009999999776482582
+                                },
+                                "ui.category": {
+                                    "type": "std::string",
+                                    "value": "FBM Noise"
+                                },
+                                "ui.format": {
+                                    "type": "std::string",
+                                    "value": "{:.2f}"
+                                },
+                                "ui.label": {
+                                    "type": "std::string",
+                                    "value": "Lacunarity"
+                                },
+                                "ui.tooltip": {
+                                    "type": "std::string",
+                                    "value": "<div><font size=\"+1\"><b>Lacunarity</font></b><br><font color='#949495'>The frequency scaling factor for successive noise octaves.\nHigher values increase the frequency of each successive octave.</div>"
+                                },
+                                "ui.widget_type": {
+                                    "type": "std::string",
+                                    "value": "SliderFloat"
+                                }
+                            },
+                            "type": "float",
+                            "value": 2.0
                         },
                         "octaves": {
-                            "label": "octaves",
-                            "type": 10,
-                            "type_string": "Integer",
-                            "value": 8,
-                            "vmax": 32,
-                            "vmin": 0
+                            "metadata": {
+                                "constraints.max": {
+                                    "type": "int",
+                                    "value": 32
+                                },
+                                "constraints.min": {
+                                    "type": "int",
+                                    "value": 0
+                                },
+                                "ui.category": {
+                                    "type": "std::string",
+                                    "value": "FBM Noise"
+                                },
+                                "ui.format": {
+                                    "type": "std::string",
+                                    "value": "{}"
+                                },
+                                "ui.label": {
+                                    "type": "std::string",
+                                    "value": "Octaves"
+                                },
+                                "ui.tooltip": {
+                                    "type": "std::string",
+                                    "value": "<div><font size=\"+1\"><b>Octaves</font></b><br><font color='#949495'>The number of octaves for fractal noise generation. More octaves\nadd finer details to the terrain.</div>"
+                                },
+                                "ui.widget_type": {
+                                    "type": "std::string",
+                                    "value": "SliderInt"
+                                }
+                            },
+                            "type": "int",
+                            "value": 8
                         },
                         "persistence": {
-                            "label": "persistence",
-                            "log_scale": false,
-                            "type": 6,
-                            "type_string": "Float",
-                            "value": 0.5,
-                            "vmax": 1.0,
-                            "vmin": 0.0
+                            "metadata": {
+                                "constraints.max": {
+                                    "type": "float",
+                                    "value": 1.0
+                                },
+                                "constraints.min": {
+                                    "type": "float",
+                                    "value": 0.0
+                                },
+                                "ui.category": {
+                                    "type": "std::string",
+                                    "value": "FBM Noise"
+                                },
+                                "ui.format": {
+                                    "type": "std::string",
+                                    "value": "{:.2f}"
+                                },
+                                "ui.label": {
+                                    "type": "std::string",
+                                    "value": "Persistence"
+                                },
+                                "ui.tooltip": {
+                                    "type": "std::string",
+                                    "value": "<div><font size=\"+1\"><b>Persistence</font></b><br><font color='#949495'>The amplitude scaling factor for subsequent noise octaves. Lower\nvalues reduce the contribution of higher octaves.</div>"
+                                },
+                                "ui.widget_type": {
+                                    "type": "std::string",
+                                    "value": "SliderFloat"
+                                }
+                            },
+                            "type": "float",
+                            "value": 0.5
                         },
                         "post_gain": {
-                            "label": "Gain",
-                            "log_scale": false,
-                            "type": 6,
-                            "type_string": "Float",
-                            "value": 1.0,
-                            "vmax": 10.0,
-                            "vmin": 0.009999999776482582
+                            "metadata": {
+                                "constraints.max": {
+                                    "type": "float",
+                                    "value": 10.0
+                                },
+                                "constraints.min": {
+                                    "type": "float",
+                                    "value": 0.009999999776482582
+                                },
+                                "ui.category": {
+                                    "type": "std::string",
+                                    "value": "Post-Processing"
+                                },
+                                "ui.format": {
+                                    "type": "std::string",
+                                    "value": "{:.2f}"
+                                },
+                                "ui.label": {
+                                    "type": "std::string",
+                                    "value": "Gain"
+                                },
+                                "ui.tooltip": {
+                                    "type": "std::string",
+                                    "value": "<div><font size=\"+1\"><b>Gain</font></b><br><font color='#949495'>Mid-centered gain transformation applied to the elevation\nvalues. This is a non-linear recurve operator centered around\nthe mid elevation (typically 0.5). Increasing the gain pushes\nvalues toward the minimum and maximum elevations, creating\nflatter low/high regions with a steeper transition around the\nmidpoint.</div>"
+                                },
+                                "ui.widget_type": {
+                                    "type": "std::string",
+                                    "value": "SliderFloat"
+                                }
+                            },
+                            "type": "float",
+                            "value": 1.0
+                        },
+                        "post_gamma": {
+                            "metadata": {
+                                "constraints.max": {
+                                    "type": "float",
+                                    "value": 10.0
+                                },
+                                "constraints.min": {
+                                    "type": "float",
+                                    "value": 0.009999999776482582
+                                },
+                                "ui.category": {
+                                    "type": "std::string",
+                                    "value": "Post-Processing"
+                                },
+                                "ui.format": {
+                                    "type": "std::string",
+                                    "value": "{:.2f}"
+                                },
+                                "ui.label": {
+                                    "type": "std::string",
+                                    "value": "Gamma"
+                                },
+                                "ui.tooltip": {
+                                    "type": "std::string",
+                                    "value": "<div><font size=\"+1\"><b>Gamma</font></b><br><font color='#949495'>Standard gamma correction applied to the elevation values. This\nis a monotonic power-law remapping that shifts emphasis toward\nlow or high elevations, making the overall shape sharper or\nbulkier without changing its ordering.</div>"
+                                },
+                                "ui.widget_type": {
+                                    "type": "std::string",
+                                    "value": "SliderFloat"
+                                }
+                            },
+                            "type": "float",
+                            "value": 1.0
                         },
                         "post_inverse": {
-                            "label": "Invert Output",
-                            "label_false": "",
-                            "label_true": "",
-                            "type": 0,
-                            "type_string": "Bool",
+                            "metadata": {
+                                "ui.category": {
+                                    "type": "std::string",
+                                    "value": "Post-Processing"
+                                },
+                                "ui.label": {
+                                    "type": "std::string",
+                                    "value": "Invert Output"
+                                },
+                                "ui.tooltip": {
+                                    "type": "std::string",
+                                    "value": "<div><font size=\"+1\"><b>Invert Output</font></b><br><font color='#949495'>Inverts the output values after processing, flipping low and\nhigh values across the midrange.</div>"
+                                },
+                                "ui.widget_type": {
+                                    "type": "std::string",
+                                    "value": "Toggle"
+                                }
+                            },
+                            "type": "bool",
                             "value": false
                         },
+                        "post_mix": {
+                            "metadata": {
+                                "constraints.max": {
+                                    "type": "float",
+                                    "value": 1.0
+                                },
+                                "constraints.min": {
+                                    "type": "float",
+                                    "value": 0.0
+                                },
+                                "ui.category": {
+                                    "type": "std::string",
+                                    "value": "Post-Processing"
+                                },
+                                "ui.format": {
+                                    "type": "std::string",
+                                    "value": "{:.2f}"
+                                },
+                                "ui.label": {
+                                    "type": "std::string",
+                                    "value": "Mix Factor"
+                                },
+                                "ui.tooltip": {
+                                    "type": "std::string",
+                                    "value": "<div><font size=\"+1\"><b>Mix Factor</font></b><br><font color='#949495'>Mixing factor for blending input and output values. A value of 0\nuses only the input, 1 uses only the output, and intermediate\nvalues perform a linear interpolation.</div>"
+                                },
+                                "ui.widget_type": {
+                                    "type": "std::string",
+                                    "value": "SliderFloat"
+                                }
+                            },
+                            "type": "float",
+                            "value": 1.0
+                        },
+                        "post_mix_method": {
+                            "metadata": {
+                                "constraints.enum_items": {
+                                    "type": "std::vector<std::pair<int, std::string>>",
+                                    "value": [
+                                        {
+                                            "label": "add",
+                                            "value": 0
+                                        },
+                                        {
+                                            "label": "exclusion",
+                                            "value": 1
+                                        },
+                                        {
+                                            "label": "gradients",
+                                            "value": 2
+                                        },
+                                        {
+                                            "label": "maximum",
+                                            "value": 3
+                                        },
+                                        {
+                                            "label": "maximum_smooth",
+                                            "value": 4
+                                        },
+                                        {
+                                            "label": "minimum",
+                                            "value": 5
+                                        },
+                                        {
+                                            "label": "minimum_smooth",
+                                            "value": 6
+                                        },
+                                        {
+                                            "label": "multiply",
+                                            "value": 7
+                                        },
+                                        {
+                                            "label": "multiply_add",
+                                            "value": 8
+                                        },
+                                        {
+                                            "label": "negate",
+                                            "value": 9
+                                        },
+                                        {
+                                            "label": "overlay",
+                                            "value": 10
+                                        },
+                                        {
+                                            "label": "replace",
+                                            "value": 11
+                                        },
+                                        {
+                                            "label": "soft",
+                                            "value": 12
+                                        },
+                                        {
+                                            "label": "substract",
+                                            "value": 13
+                                        }
+                                    ]
+                                },
+                                "ui.category": {
+                                    "type": "std::string",
+                                    "value": "Post-Processing"
+                                },
+                                "ui.label": {
+                                    "type": "std::string",
+                                    "value": "Mix Method"
+                                },
+                                "ui.tooltip": {
+                                    "type": "std::string",
+                                    "value": "<div><font size=\"+1\"><b>Mix Method</font></b><br><font color='#949495'>Method used to combine input and output values. Options include\nlinear interpolation (default), min, max, smooth min, smooth\nmax, add, and subtract.</div>"
+                                },
+                                "ui.widget_type": {
+                                    "type": "std::string",
+                                    "value": "EnumComboBox"
+                                }
+                            },
+                            "type": "int",
+                            "value": 11
+                        },
                         "post_remap": {
-                            "is_active": true,
-                            "label": "Remap Range",
-                            "type": 11,
-                            "type_string": "Value range",
-                            "value": [
-                                0.0,
-                                1.0
-                            ],
-                            "vmax": 2.0,
-                            "vmin": -1.0
+                            "metadata": {
+                                "constraints.max": {
+                                    "type": "float",
+                                    "value": 2.0
+                                },
+                                "constraints.min": {
+                                    "type": "float",
+                                    "value": -1.0
+                                },
+                                "ui.active": {
+                                    "type": "bool",
+                                    "value": true
+                                },
+                                "ui.category": {
+                                    "type": "std::string",
+                                    "value": "Post-Processing"
+                                },
+                                "ui.format": {
+                                    "type": "std::string",
+                                    "value": "{:.3f}"
+                                },
+                                "ui.has_active_toggle": {
+                                    "type": "bool",
+                                    "value": true
+                                },
+                                "ui.label": {
+                                    "type": "std::string",
+                                    "value": "Remap Range"
+                                },
+                                "ui.tooltip": {
+                                    "type": "std::string",
+                                    "value": "<div><font size=\"+1\"><b>Remap Range</font></b><br><font color='#949495'>Linearly remaps the output values to a specified target range\n(default is [0, 1]).</div>"
+                                },
+                                "ui.widget_type": {
+                                    "type": "std::string",
+                                    "value": "RangeBar"
+                                }
+                            },
+                            "type": "glm::vec2",
+                            "value": {
+                                "x": 0.0,
+                                "y": 1.0
+                            }
                         },
                         "post_saturate": {
-                            "is_active": false,
-                            "label": "Saturation Range",
-                            "type": 11,
-                            "type_string": "Value range",
-                            "value": [
-                                0.0,
-                                1.0
-                            ],
-                            "vmax": 2.0,
-                            "vmin": -1.0
+                            "metadata": {
+                                "constraints.max": {
+                                    "type": "float",
+                                    "value": 2.0
+                                },
+                                "constraints.min": {
+                                    "type": "float",
+                                    "value": -1.0
+                                },
+                                "ui.active": {
+                                    "type": "bool",
+                                    "value": false
+                                },
+                                "ui.category": {
+                                    "type": "std::string",
+                                    "value": "Post-Processing"
+                                },
+                                "ui.format": {
+                                    "type": "std::string",
+                                    "value": "{:.3f}"
+                                },
+                                "ui.has_active_toggle": {
+                                    "type": "bool",
+                                    "value": true
+                                },
+                                "ui.label": {
+                                    "type": "std::string",
+                                    "value": "Saturation Range"
+                                },
+                                "ui.tooltip": {
+                                    "type": "std::string",
+                                    "value": "<div><font size=\"+1\"><b>Saturation Range</font></b><br><font color='#949495'>Modifies the amplitude of elevations by first clamping them to a\ngiven interval and then scaling them so that the restricted\ninterval matches the original input range. This enhances\ncontrast in elevation variations while maintaining overall\nstructure.</div>"
+                                },
+                                "ui.widget_type": {
+                                    "type": "std::string",
+                                    "value": "RangeBar"
+                                }
+                            },
+                            "type": "glm::vec2",
+                            "value": {
+                                "x": 0.0,
+                                "y": 1.0
+                            }
                         },
                         "post_smoothing_radius": {
-                            "label": "Smoothing Radius",
-                            "log_scale": false,
-                            "type": 6,
-                            "type_string": "Float",
-                            "value": 0.0,
-                            "vmax": 0.05000000074505806,
-                            "vmin": 0.0
+                            "metadata": {
+                                "constraints.max": {
+                                    "type": "float",
+                                    "value": 0.05000000074505806
+                                },
+                                "constraints.min": {
+                                    "type": "float",
+                                    "value": 0.0
+                                },
+                                "ui.category": {
+                                    "type": "std::string",
+                                    "value": "Post-Processing"
+                                },
+                                "ui.format": {
+                                    "type": "std::string",
+                                    "value": "{:.2f}"
+                                },
+                                "ui.label": {
+                                    "type": "std::string",
+                                    "value": "Smoothing Radius"
+                                },
+                                "ui.tooltip": {
+                                    "type": "std::string",
+                                    "value": "<div><font size=\"+1\"><b>Smoothing Radius</font></b><br><font color='#949495'>Defines the radius for post-processing smoothing, determining\nthe size of the neighborhood used to average local values and\nreduce high-frequency detail. A radius of 0 disables smoothing.</div>"
+                                },
+                                "ui.widget_type": {
+                                    "type": "std::string",
+                                    "value": "SliderFloat"
+                                }
+                            },
+                            "type": "float",
+                            "value": 0.0
                         },
                         "runtime_info": {
-                            "eval_count": 3,
+                            "eval_count": 4,
                             "time_creation": 1764510137413,
-                            "time_last_update": 1765484186092,
-                            "update_time": 43.02960968017578
+                            "time_last_update": 1786362599358,
+                            "update_time": 39.33547592163086
                         },
                         "seed": {
-                            "label": "seed",
-                            "type": 12,
-                            "type_string": "Random seed number",
+                            "metadata": {
+                                "constraints.max": {
+                                    "type": "int",
+                                    "value": 2147483647
+                                },
+                                "constraints.min": {
+                                    "type": "int",
+                                    "value": 0
+                                },
+                                "constraints.step": {
+                                    "type": "int",
+                                    "value": 1
+                                },
+                                "ui.category": {
+                                    "type": "std::string",
+                                    "value": "Gabor Wave"
+                                },
+                                "ui.label": {
+                                    "type": "std::string",
+                                    "value": "Seed"
+                                },
+                                "ui.plus_minus": {
+                                    "type": "bool",
+                                    "value": true
+                                },
+                                "ui.tooltip": {
+                                    "type": "std::string",
+                                    "value": "<div><font size=\"+1\"><b>Seed</font></b><br><font color='#949495'>Random seed number. The random seed is an offset to the\nrandomized process. A different seed will produce a new result.</div>"
+                                },
+                                "ui.widget_type": {
+                                    "type": "std::string",
+                                    "value": "SliderInt"
+                                }
+                            },
+                            "type": "int",
                             "value": 0
                         },
                         "weight": {
-                            "label": "weight",
-                            "log_scale": false,
-                            "type": 6,
-                            "type_string": "Float",
-                            "value": 0.699999988079071,
-                            "vmax": 1.0,
-                            "vmin": 0.0
+                            "metadata": {
+                                "constraints.max": {
+                                    "type": "float",
+                                    "value": 1.0
+                                },
+                                "constraints.min": {
+                                    "type": "float",
+                                    "value": 0.0
+                                },
+                                "ui.category": {
+                                    "type": "std::string",
+                                    "value": "FBM Noise"
+                                },
+                                "ui.format": {
+                                    "type": "std::string",
+                                    "value": "{:.2f}"
+                                },
+                                "ui.label": {
+                                    "type": "std::string",
+                                    "value": "Weight"
+                                },
+                                "ui.tooltip": {
+                                    "type": "std::string",
+                                    "value": "<div><font size=\"+1\"><b>Weight</font></b><br><font color='#949495'>Controls how much higher FBM octaves contribute to the noise\nbased on local elevation. A higher weight suppresses\nhigh-frequency octaves at low elevations and increases their\ninfluence at higher elevations, producing terrain where fine\ndetails appear mainly near peaks while lower areas remain\nsmoother.</div>"
+                                },
+                                "ui.widget_type": {
+                                    "type": "std::string",
+                                    "value": "SliderFloat"
+                                }
+                            },
+                            "type": "float",
+                            "value": 0.699999988079071
                         }
                     },
                     {
                         "c_erosion": {
-                            "label": "Erosion Strength",
-                            "log_scale": false,
-                            "type": 6,
-                            "type_string": "Float",
-                            "value": 0.10000000149011612,
-                            "vmax": 1.0,
-                            "vmin": 0.009999999776482582
+                            "metadata": {
+                                "constraints.max": {
+                                    "type": "float",
+                                    "value": 1.0
+                                },
+                                "constraints.min": {
+                                    "type": "float",
+                                    "value": 0.009999999776482582
+                                },
+                                "ui.category": {
+                                    "type": "std::string",
+                                    "value": "Core Erosion Controls"
+                                },
+                                "ui.format": {
+                                    "type": "std::string",
+                                    "value": "{:.2f}"
+                                },
+                                "ui.label": {
+                                    "type": "std::string",
+                                    "value": "Erosion Strength"
+                                },
+                                "ui.tooltip": {
+                                    "type": "std::string",
+                                    "value": "<div><font size=\"+1\"><b>Erosion Strength</font></b><br><font color='#949495'>Erosion coefficient controlling the overall strength of erosion\nduring flow simulation.</div>"
+                                },
+                                "ui.widget_type": {
+                                    "type": "std::string",
+                                    "value": "SliderFloat"
+                                }
+                            },
+                            "type": "float",
+                            "value": 0.10000000149011612
                         },
                         "comment": "",
                         "deposition_radius": {
-                            "label": "Deposition Radius",
-                            "log_scale": false,
-                            "type": 6,
-                            "type_string": "Float",
-                            "value": 0.10000000149011612,
-                            "vmax": 0.20000000298023224,
-                            "vmin": 0.0
+                            "metadata": {
+                                "constraints.max": {
+                                    "type": "float",
+                                    "value": 0.20000000298023224
+                                },
+                                "constraints.min": {
+                                    "type": "float",
+                                    "value": 0.0
+                                },
+                                "ui.category": {
+                                    "type": "std::string",
+                                    "value": "Deposition Controls"
+                                },
+                                "ui.format": {
+                                    "type": "std::string",
+                                    "value": "{:.2f}"
+                                },
+                                "ui.label": {
+                                    "type": "std::string",
+                                    "value": "Deposition Radius"
+                                },
+                                "ui.tooltip": {
+                                    "type": "std::string",
+                                    "value": "<div><font size=\"+1\"><b>Deposition Radius</font></b><br><font color='#949495'>Deposition kernel radius. Values > 0 apply smoothing to sediment\ndeposition, simulating lateral diffusion.</div>"
+                                },
+                                "ui.widget_type": {
+                                    "type": "std::string",
+                                    "value": "SliderFloat"
+                                }
+                            },
+                            "type": "float",
+                            "value": 0.10000000149011612
                         },
                         "deposition_scale_ratio": {
-                            "label": "Sediment Amount Scale",
-                            "log_scale": false,
-                            "type": 6,
-                            "type_string": "Float",
-                            "value": 1.0,
-                            "vmax": 1.0,
-                            "vmin": 0.0
+                            "metadata": {
+                                "constraints.max": {
+                                    "type": "float",
+                                    "value": 1.0
+                                },
+                                "constraints.min": {
+                                    "type": "float",
+                                    "value": 0.0
+                                },
+                                "ui.category": {
+                                    "type": "std::string",
+                                    "value": "Deposition Controls"
+                                },
+                                "ui.format": {
+                                    "type": "std::string",
+                                    "value": "{:.2f}"
+                                },
+                                "ui.label": {
+                                    "type": "std::string",
+                                    "value": "Sediment Amount Scale"
+                                },
+                                "ui.tooltip": {
+                                    "type": "std::string",
+                                    "value": "<div><font size=\"+1\"><b>Sediment Amount Scale</font></b><br><font color='#949495'>Scaling factor controlling how much sediment is deposited after\nerosion.</div>"
+                                },
+                                "ui.widget_type": {
+                                    "type": "std::string",
+                                    "value": "SliderFloat"
+                                }
+                            },
+                            "type": "float",
+                            "value": 1.0
                         },
                         "gradient_power": {
-                            "label": "Influence Power",
-                            "log_scale": false,
-                            "type": 6,
-                            "type_string": "Float",
-                            "value": 0.800000011920929,
-                            "vmax": 2.0,
-                            "vmin": 0.10000000149011612
+                            "metadata": {
+                                "constraints.max": {
+                                    "type": "float",
+                                    "value": 2.0
+                                },
+                                "constraints.min": {
+                                    "type": "float",
+                                    "value": 0.10000000149011612
+                                },
+                                "ui.category": {
+                                    "type": "std::string",
+                                    "value": "Slope-Based Controls"
+                                },
+                                "ui.format": {
+                                    "type": "std::string",
+                                    "value": "{:.2f}"
+                                },
+                                "ui.label": {
+                                    "type": "std::string",
+                                    "value": "Influence Power"
+                                },
+                                "ui.tooltip": {
+                                    "type": "std::string",
+                                    "value": "<div><font size=\"+1\"><b>Influence Power</font></b><br><font color='#949495'>Exponent applied to the terrain gradient to modulate erosion\nintensity. Higher values increase sensitivity to steep slopes.</div>"
+                                },
+                                "ui.widget_type": {
+                                    "type": "std::string",
+                                    "value": "SliderFloat"
+                                }
+                            },
+                            "type": "float",
+                            "value": 0.800000011920929
                         },
                         "gradient_prefilter_radius": {
-                            "label": "Prefilter Radius",
-                            "log_scale": false,
-                            "type": 6,
-                            "type_string": "Float",
-                            "value": 0.10000000149011612,
-                            "vmax": 0.20000000298023224,
-                            "vmin": 0.0
+                            "metadata": {
+                                "constraints.max": {
+                                    "type": "float",
+                                    "value": 0.20000000298023224
+                                },
+                                "constraints.min": {
+                                    "type": "float",
+                                    "value": 0.0
+                                },
+                                "ui.category": {
+                                    "type": "std::string",
+                                    "value": "Slope-Based Controls"
+                                },
+                                "ui.format": {
+                                    "type": "std::string",
+                                    "value": "{:.2f}"
+                                },
+                                "ui.label": {
+                                    "type": "std::string",
+                                    "value": "Prefilter Radius"
+                                },
+                                "ui.tooltip": {
+                                    "type": "std::string",
+                                    "value": "<div><font size=\"+1\"><b>Prefilter Radius</font></b><br><font color='#949495'>Radius of the smoothing filter applied to the gradient field\nprior to erosion. Helps stabilize erosion on noisy terrain.</div>"
+                                },
+                                "ui.widget_type": {
+                                    "type": "std::string",
+                                    "value": "SliderFloat"
+                                }
+                            },
+                            "type": "float",
+                            "value": 0.10000000149011612
                         },
                         "gradient_scaling_ratio": {
-                            "label": "Influence Scale",
-                            "log_scale": false,
-                            "type": 6,
-                            "type_string": "Float",
-                            "value": 1.0,
-                            "vmax": 1.0,
-                            "vmin": 0.0
+                            "metadata": {
+                                "constraints.max": {
+                                    "type": "float",
+                                    "value": 1.0
+                                },
+                                "constraints.min": {
+                                    "type": "float",
+                                    "value": 0.0
+                                },
+                                "ui.category": {
+                                    "type": "std::string",
+                                    "value": "Slope-Based Controls"
+                                },
+                                "ui.format": {
+                                    "type": "std::string",
+                                    "value": "{:.2f}"
+                                },
+                                "ui.label": {
+                                    "type": "std::string",
+                                    "value": "Influence Scale"
+                                },
+                                "ui.tooltip": {
+                                    "type": "std::string",
+                                    "value": "<div><font size=\"+1\"><b>Influence Scale</font></b><br><font color='#949495'>Scaling factor applied to gradient-based erosion intensity,\nadjusting how strongly slope contributes to erosion.</div>"
+                                },
+                                "ui.widget_type": {
+                                    "type": "std::string",
+                                    "value": "SliderFloat"
+                                }
+                            },
+                            "type": "float",
+                            "value": 1.0
                         },
                         "id": "7",
                         "label": "HydraulicStreamLog",
                         "post_gain": {
-                            "label": "Gain",
-                            "log_scale": false,
-                            "type": 6,
-                            "type_string": "Float",
-                            "value": 1.0,
-                            "vmax": 10.0,
-                            "vmin": 0.009999999776482582
+                            "metadata": {
+                                "constraints.max": {
+                                    "type": "float",
+                                    "value": 10.0
+                                },
+                                "constraints.min": {
+                                    "type": "float",
+                                    "value": 0.009999999776482582
+                                },
+                                "ui.category": {
+                                    "type": "std::string",
+                                    "value": "Post-Processing"
+                                },
+                                "ui.format": {
+                                    "type": "std::string",
+                                    "value": "{:.2f}"
+                                },
+                                "ui.label": {
+                                    "type": "std::string",
+                                    "value": "Gain"
+                                },
+                                "ui.tooltip": {
+                                    "type": "std::string",
+                                    "value": "<div><font size=\"+1\"><b>Gain</font></b><br><font color='#949495'>Mid-centered gain transformation applied to the elevation\nvalues. This is a non-linear recurve operator centered around\nthe mid elevation (typically 0.5). Increasing the gain pushes\nvalues toward the minimum and maximum elevations, creating\nflatter low/high regions with a steeper transition around the\nmidpoint.</div>"
+                                },
+                                "ui.widget_type": {
+                                    "type": "std::string",
+                                    "value": "SliderFloat"
+                                }
+                            },
+                            "type": "float",
+                            "value": 1.0
+                        },
+                        "post_gamma": {
+                            "metadata": {
+                                "constraints.max": {
+                                    "type": "float",
+                                    "value": 10.0
+                                },
+                                "constraints.min": {
+                                    "type": "float",
+                                    "value": 0.009999999776482582
+                                },
+                                "ui.category": {
+                                    "type": "std::string",
+                                    "value": "Post-Processing"
+                                },
+                                "ui.format": {
+                                    "type": "std::string",
+                                    "value": "{:.2f}"
+                                },
+                                "ui.label": {
+                                    "type": "std::string",
+                                    "value": "Gamma"
+                                },
+                                "ui.tooltip": {
+                                    "type": "std::string",
+                                    "value": "<div><font size=\"+1\"><b>Gamma</font></b><br><font color='#949495'>Standard gamma correction applied to the elevation values. This\nis a monotonic power-law remapping that shifts emphasis toward\nlow or high elevations, making the overall shape sharper or\nbulkier without changing its ordering.</div>"
+                                },
+                                "ui.widget_type": {
+                                    "type": "std::string",
+                                    "value": "SliderFloat"
+                                }
+                            },
+                            "type": "float",
+                            "value": 1.0
                         },
                         "post_inverse": {
-                            "label": "Invert Output",
-                            "label_false": "",
-                            "label_true": "",
-                            "type": 0,
-                            "type_string": "Bool",
+                            "metadata": {
+                                "ui.category": {
+                                    "type": "std::string",
+                                    "value": "Post-Processing"
+                                },
+                                "ui.label": {
+                                    "type": "std::string",
+                                    "value": "Invert Output"
+                                },
+                                "ui.tooltip": {
+                                    "type": "std::string",
+                                    "value": "<div><font size=\"+1\"><b>Invert Output</font></b><br><font color='#949495'>Inverts the output values after processing, flipping low and\nhigh values across the midrange.</div>"
+                                },
+                                "ui.widget_type": {
+                                    "type": "std::string",
+                                    "value": "Toggle"
+                                }
+                            },
+                            "type": "bool",
                             "value": false
                         },
                         "post_mix": {
-                            "label": "Mix Factor",
-                            "log_scale": false,
-                            "type": 6,
-                            "type_string": "Float",
-                            "value": 1.0,
-                            "vmax": 1.0,
-                            "vmin": 0.0
+                            "metadata": {
+                                "constraints.max": {
+                                    "type": "float",
+                                    "value": 1.0
+                                },
+                                "constraints.min": {
+                                    "type": "float",
+                                    "value": 0.0
+                                },
+                                "ui.category": {
+                                    "type": "std::string",
+                                    "value": "Post-Processing"
+                                },
+                                "ui.format": {
+                                    "type": "std::string",
+                                    "value": "{:.2f}"
+                                },
+                                "ui.label": {
+                                    "type": "std::string",
+                                    "value": "Mix Factor"
+                                },
+                                "ui.tooltip": {
+                                    "type": "std::string",
+                                    "value": "<div><font size=\"+1\"><b>Mix Factor</font></b><br><font color='#949495'>Mixing factor for blending input and output values. A value of 0\nuses only the input, 1 uses only the output, and intermediate\nvalues perform a linear interpolation.</div>"
+                                },
+                                "ui.widget_type": {
+                                    "type": "std::string",
+                                    "value": "SliderFloat"
+                                }
+                            },
+                            "type": "float",
+                            "value": 1.0
                         },
                         "post_mix_method": {
-                            "choice": "replace",
-                            "label": "Mix Method",
-                            "type": 4,
-                            "type_string": "Enumeration",
+                            "metadata": {
+                                "constraints.enum_items": {
+                                    "type": "std::vector<std::pair<int, std::string>>",
+                                    "value": [
+                                        {
+                                            "label": "add",
+                                            "value": 0
+                                        },
+                                        {
+                                            "label": "exclusion",
+                                            "value": 1
+                                        },
+                                        {
+                                            "label": "gradients",
+                                            "value": 2
+                                        },
+                                        {
+                                            "label": "maximum",
+                                            "value": 3
+                                        },
+                                        {
+                                            "label": "maximum_smooth",
+                                            "value": 4
+                                        },
+                                        {
+                                            "label": "minimum",
+                                            "value": 5
+                                        },
+                                        {
+                                            "label": "minimum_smooth",
+                                            "value": 6
+                                        },
+                                        {
+                                            "label": "multiply",
+                                            "value": 7
+                                        },
+                                        {
+                                            "label": "multiply_add",
+                                            "value": 8
+                                        },
+                                        {
+                                            "label": "negate",
+                                            "value": 9
+                                        },
+                                        {
+                                            "label": "overlay",
+                                            "value": 10
+                                        },
+                                        {
+                                            "label": "replace",
+                                            "value": 11
+                                        },
+                                        {
+                                            "label": "soft",
+                                            "value": 12
+                                        },
+                                        {
+                                            "label": "substract",
+                                            "value": 13
+                                        }
+                                    ]
+                                },
+                                "ui.category": {
+                                    "type": "std::string",
+                                    "value": "Post-Processing"
+                                },
+                                "ui.label": {
+                                    "type": "std::string",
+                                    "value": "Mix Method"
+                                },
+                                "ui.tooltip": {
+                                    "type": "std::string",
+                                    "value": "<div><font size=\"+1\"><b>Mix Method</font></b><br><font color='#949495'>Method used to combine input and output values. Options include\nlinear interpolation (default), min, max, smooth min, smooth\nmax, add, and subtract.</div>"
+                                },
+                                "ui.widget_type": {
+                                    "type": "std::string",
+                                    "value": "EnumComboBox"
+                                }
+                            },
+                            "type": "int",
                             "value": 11
                         },
                         "post_remap": {
-                            "is_active": true,
-                            "label": "Remap Range",
-                            "type": 11,
-                            "type_string": "Value range",
-                            "value": [
-                                0.0,
-                                1.0
-                            ],
-                            "vmax": 2.0,
-                            "vmin": -1.0
+                            "metadata": {
+                                "constraints.max": {
+                                    "type": "float",
+                                    "value": 2.0
+                                },
+                                "constraints.min": {
+                                    "type": "float",
+                                    "value": -1.0
+                                },
+                                "ui.active": {
+                                    "type": "bool",
+                                    "value": true
+                                },
+                                "ui.category": {
+                                    "type": "std::string",
+                                    "value": "Post-Processing"
+                                },
+                                "ui.format": {
+                                    "type": "std::string",
+                                    "value": "{:.3f}"
+                                },
+                                "ui.has_active_toggle": {
+                                    "type": "bool",
+                                    "value": true
+                                },
+                                "ui.label": {
+                                    "type": "std::string",
+                                    "value": "Remap Range"
+                                },
+                                "ui.tooltip": {
+                                    "type": "std::string",
+                                    "value": "<div><font size=\"+1\"><b>Remap Range</font></b><br><font color='#949495'>Linearly remaps the output values to a specified target range\n(default is [0, 1]).</div>"
+                                },
+                                "ui.widget_type": {
+                                    "type": "std::string",
+                                    "value": "RangeBar"
+                                }
+                            },
+                            "type": "glm::vec2",
+                            "value": {
+                                "x": 0.0,
+                                "y": 1.0
+                            }
                         },
                         "post_saturate": {
-                            "is_active": false,
-                            "label": "Saturation Range",
-                            "type": 11,
-                            "type_string": "Value range",
-                            "value": [
-                                0.0,
-                                1.0
-                            ],
-                            "vmax": 2.0,
-                            "vmin": -1.0
+                            "metadata": {
+                                "constraints.max": {
+                                    "type": "float",
+                                    "value": 2.0
+                                },
+                                "constraints.min": {
+                                    "type": "float",
+                                    "value": -1.0
+                                },
+                                "ui.active": {
+                                    "type": "bool",
+                                    "value": false
+                                },
+                                "ui.category": {
+                                    "type": "std::string",
+                                    "value": "Post-Processing"
+                                },
+                                "ui.format": {
+                                    "type": "std::string",
+                                    "value": "{:.3f}"
+                                },
+                                "ui.has_active_toggle": {
+                                    "type": "bool",
+                                    "value": true
+                                },
+                                "ui.label": {
+                                    "type": "std::string",
+                                    "value": "Saturation Range"
+                                },
+                                "ui.tooltip": {
+                                    "type": "std::string",
+                                    "value": "<div><font size=\"+1\"><b>Saturation Range</font></b><br><font color='#949495'>Modifies the amplitude of elevations by first clamping them to a\ngiven interval and then scaling them so that the restricted\ninterval matches the original input range. This enhances\ncontrast in elevation variations while maintaining overall\nstructure.</div>"
+                                },
+                                "ui.widget_type": {
+                                    "type": "std::string",
+                                    "value": "RangeBar"
+                                }
+                            },
+                            "type": "glm::vec2",
+                            "value": {
+                                "x": 0.0,
+                                "y": 1.0
+                            }
                         },
                         "post_smoothing_radius": {
-                            "label": "Smoothing Radius",
-                            "log_scale": false,
-                            "type": 6,
-                            "type_string": "Float",
-                            "value": 0.0,
-                            "vmax": 0.05000000074505806,
-                            "vmin": 0.0
+                            "metadata": {
+                                "constraints.max": {
+                                    "type": "float",
+                                    "value": 0.05000000074505806
+                                },
+                                "constraints.min": {
+                                    "type": "float",
+                                    "value": 0.0
+                                },
+                                "ui.category": {
+                                    "type": "std::string",
+                                    "value": "Post-Processing"
+                                },
+                                "ui.format": {
+                                    "type": "std::string",
+                                    "value": "{:.2f}"
+                                },
+                                "ui.label": {
+                                    "type": "std::string",
+                                    "value": "Smoothing Radius"
+                                },
+                                "ui.tooltip": {
+                                    "type": "std::string",
+                                    "value": "<div><font size=\"+1\"><b>Smoothing Radius</font></b><br><font color='#949495'>Defines the radius for post-processing smoothing, determining\nthe size of the neighborhood used to average local values and\nreduce high-frequency detail. A radius of 0 disables smoothing.</div>"
+                                },
+                                "ui.widget_type": {
+                                    "type": "std::string",
+                                    "value": "SliderFloat"
+                                }
+                            },
+                            "type": "float",
+                            "value": 0.0
                         },
                         "runtime_info": {
-                            "eval_count": 2,
+                            "eval_count": 3,
                             "time_creation": 1765484203244,
-                            "time_last_update": 1765484205623,
-                            "update_time": 506.4389953613281
+                            "time_last_update": 1786362599762,
+                            "update_time": 404.0700988769531
                         },
                         "saturation_ratio": {
-                            "label": "Water Saturation Threshold",
-                            "log_scale": false,
-                            "type": 6,
-                            "type_string": "Float",
-                            "value": 1.0,
-                            "vmax": 1.0,
-                            "vmin": 0.009999999776482582
+                            "metadata": {
+                                "constraints.max": {
+                                    "type": "float",
+                                    "value": 1.0
+                                },
+                                "constraints.min": {
+                                    "type": "float",
+                                    "value": 0.009999999776482582
+                                },
+                                "ui.category": {
+                                    "type": "std::string",
+                                    "value": "Core Erosion Controls"
+                                },
+                                "ui.format": {
+                                    "type": "std::string",
+                                    "value": "{:.2f}"
+                                },
+                                "ui.label": {
+                                    "type": "std::string",
+                                    "value": "Water Saturation Threshold"
+                                },
+                                "ui.tooltip": {
+                                    "type": "std::string",
+                                    "value": "<div><font size=\"+1\"><b>Water Saturation Threshold</font></b><br><font color='#949495'>Flow accumulation saturation threshold. Controls clipping of\nwater flux to avoid runaway erosion.</div>"
+                                },
+                                "ui.widget_type": {
+                                    "type": "std::string",
+                                    "value": "SliderFloat"
+                                }
+                            },
+                            "type": "float",
+                            "value": 1.0
                         },
                         "talus_ref": {
-                            "label": "Slope Threshold",
-                            "log_scale": false,
-                            "type": 6,
-                            "type_string": "Float",
-                            "value": 0.10000000149011612,
-                            "vmax": 10.0,
-                            "vmin": 0.009999999776482582
+                            "metadata": {
+                                "constraints.max": {
+                                    "type": "float",
+                                    "value": 10.0
+                                },
+                                "constraints.min": {
+                                    "type": "float",
+                                    "value": 0.009999999776482582
+                                },
+                                "ui.category": {
+                                    "type": "std::string",
+                                    "value": "Core Erosion Controls"
+                                },
+                                "ui.format": {
+                                    "type": "std::string",
+                                    "value": "{:.2f}"
+                                },
+                                "ui.label": {
+                                    "type": "std::string",
+                                    "value": "Slope Threshold"
+                                },
+                                "ui.tooltip": {
+                                    "type": "std::string",
+                                    "value": "<div><font size=\"+1\"><b>Slope Threshold</font></b><br><font color='#949495'>Reference talus angle. Lower values produce thinner flow streams\nby increasing directional concentration.</div>"
+                                },
+                                "ui.widget_type": {
+                                    "type": "std::string",
+                                    "value": "SliderFloat"
+                                }
+                            },
+                            "type": "float",
+                            "value": 0.10000000149011612
                         }
                     }
                 ],
@@ -397,9 +1380,211 @@
             "graph": {
                 "comments": [],
                 "current_link_type": 2,
+                "graph_editor_widget.node_library_widget": {
+                    "Boundaries": {
+                        "children": {},
+                        "expanded": true
+                    },
+                    "Bridges": {
+                        "children": {},
+                        "expanded": true
+                    },
+                    "Converter": {
+                        "children": {},
+                        "expanded": true
+                    },
+                    "Debug": {
+                        "children": {},
+                        "expanded": true
+                    },
+                    "Erosion": {
+                        "children": {
+                            "Deposition": {
+                                "children": {},
+                                "expanded": true
+                            },
+                            "Hydraulic": {
+                                "children": {},
+                                "expanded": true
+                            },
+                            "Stratify": {
+                                "children": {},
+                                "expanded": true
+                            },
+                            "Water": {
+                                "children": {},
+                                "expanded": true
+                            }
+                        },
+                        "expanded": true
+                    },
+                    "Export": {
+                        "children": {},
+                        "expanded": true
+                    },
+                    "Filter": {
+                        "children": {
+                            "Advanced Filters": {
+                                "children": {},
+                                "expanded": true
+                            },
+                            "Range": {
+                                "children": {},
+                                "expanded": true
+                            },
+                            "Recast": {
+                                "children": {},
+                                "expanded": true
+                            },
+                            "Recurve": {
+                                "children": {},
+                                "expanded": true
+                            },
+                            "Smoothing": {
+                                "children": {},
+                                "expanded": true
+                            }
+                        },
+                        "expanded": true
+                    },
+                    "Geometry": {
+                        "children": {
+                            "Cloud": {
+                                "children": {},
+                                "expanded": true
+                            },
+                            "Path": {
+                                "children": {},
+                                "expanded": true
+                            }
+                        },
+                        "expanded": true
+                    },
+                    "Hydrology": {
+                        "children": {},
+                        "expanded": true
+                    },
+                    "Math": {
+                        "children": {
+                            "Base": {
+                                "children": {},
+                                "expanded": true
+                            },
+                            "Convolution": {
+                                "children": {},
+                                "expanded": true
+                            },
+                            "Gradient": {
+                                "children": {},
+                                "expanded": true
+                            }
+                        },
+                        "expanded": true
+                    },
+                    "Operator": {
+                        "children": {
+                            "Blend": {
+                                "children": {},
+                                "expanded": true
+                            },
+                            "Resynthesis": {
+                                "children": {},
+                                "expanded": true
+                            },
+                            "Tiling": {
+                                "children": {},
+                                "expanded": true
+                            },
+                            "Transform": {
+                                "children": {},
+                                "expanded": true
+                            }
+                        },
+                        "expanded": true
+                    },
+                    "Primitive": {
+                        "children": {
+                            "Authoring": {
+                                "children": {},
+                                "expanded": true
+                            },
+                            "Coherent": {
+                                "children": {},
+                                "expanded": true
+                            },
+                            "Function": {
+                                "children": {},
+                                "expanded": true
+                            },
+                            "Geological": {
+                                "children": {},
+                                "expanded": true
+                            },
+                            "Kernel": {
+                                "children": {},
+                                "expanded": true
+                            },
+                            "Random": {
+                                "children": {},
+                                "expanded": true
+                            }
+                        },
+                        "expanded": true
+                    },
+                    "Routing": {
+                        "children": {},
+                        "expanded": true
+                    },
+                    "Terrain Features": {
+                        "children": {
+                            "Advanced": {
+                                "children": {},
+                                "expanded": true
+                            },
+                            "Clustering": {
+                                "children": {},
+                                "expanded": true
+                            },
+                            "ForTexturing": {
+                                "children": {},
+                                "expanded": true
+                            },
+                            "Landform": {
+                                "children": {},
+                                "expanded": true
+                            },
+                            "Mask Operations": {
+                                "children": {},
+                                "expanded": true
+                            },
+                            "Morphology": {
+                                "children": {},
+                                "expanded": true
+                            },
+                            "Selector": {
+                                "children": {},
+                                "expanded": true
+                            }
+                        },
+                        "expanded": true
+                    },
+                    "Texture": {
+                        "children": {},
+                        "expanded": true
+                    },
+                    "WIP": {
+                        "children": {
+                            "DEPRECATED": {
+                                "children": {},
+                                "expanded": true
+                            }
+                        },
+                        "expanded": true
+                    }
+                },
                 "graph_editor_widget.viewer3d": {
                     "current_node_id": "3",
-                    "height": 512,
+                    "height": 533,
                     "is_node_pinned": false,
                     "label": "3D Renderer",
                     "renderer": {
@@ -466,10 +1651,11 @@
                         "fog_scattering_ratio": 0.699999988079071,
                         "fog_strength": 0.5,
                         "gamma_correction": 2.0,
-                        "height": 512,
+                        "height": 533,
                         "hmap_h": 0.4000000059604645,
                         "hmap_h0": 0.0,
-                        "hmap_w": 2.0,
+                        "hmap_wx": 2.0,
+                        "hmap_wy": 2.0,
                         "light": {
                             "position": {
                                 "x": -6.122223854064941,
@@ -534,7 +1720,7 @@
                         "waves_kw": 256.0,
                         "waves_normal_amplitude": 0.019999999552965164,
                         "waves_speed": 0.20000000298023224,
-                        "width": 1523,
+                        "width": 1163,
                         "wireframe_mode": false,
                         "x": 2,
                         "y": 0
@@ -574,7 +1760,7 @@
                         }
                     },
                     "viewer_type": 0,
-                    "width": 1527,
+                    "width": 1167,
                     "x": 0,
                     "y": 0
                 },
@@ -584,8 +1770,15 @@
                     {
                         "link_type": 2,
                         "node_in_id": "3",
-                        "node_out_id": "7",
-                        "port_in_id": "elevation",
+                        "node_out_id": "4",
+                        "port_in_id": "water_depth",
+                        "port_out_id": "water_depth"
+                    },
+                    {
+                        "link_type": 2,
+                        "node_in_id": "7",
+                        "node_out_id": "6",
+                        "port_in_id": "input",
                         "port_out_id": "output"
                     },
                     {
@@ -597,33 +1790,19 @@
                     },
                     {
                         "link_type": 2,
-                        "node_in_id": "7",
-                        "node_out_id": "6",
-                        "port_in_id": "input",
-                        "port_out_id": "output"
-                    },
-                    {
-                        "link_type": 2,
                         "node_in_id": "3",
-                        "node_out_id": "4",
-                        "port_in_id": "water_depth",
-                        "port_out_id": "water_depth"
+                        "node_out_id": "7",
+                        "port_in_id": "elevation",
+                        "port_out_id": "output"
                     }
                 ],
                 "nodes": [
                     {
-                        "caption": "HydraulicStreamLog",
-                        "id": "7",
+                        "caption": "GaborWaveFbm",
+                        "id": "6",
                         "is_widget_visible": true,
-                        "scene_position.x": -197.1639550048992,
-                        "scene_position.y": -256.17182353832743
-                    },
-                    {
-                        "caption": "Preview",
-                        "id": "3",
-                        "is_widget_visible": true,
-                        "scene_position.x": 270.1703796386719,
-                        "scene_position.y": -318.4334716796875
+                        "scene_position.x": -411.5465393066406,
+                        "scene_position.y": -341.77099609375
                     },
                     {
                         "caption": "FloodingUniformLevel",
@@ -633,15 +1812,22 @@
                         "scene_position.y": -168.27957153320313
                     },
                     {
-                        "caption": "GaborWaveFbm",
-                        "id": "6",
+                        "caption": "Preview",
+                        "id": "3",
                         "is_widget_visible": true,
-                        "scene_position.x": -411.5465393066406,
-                        "scene_position.y": -341.77099609375
+                        "scene_position.x": 270.1703796386719,
+                        "scene_position.y": -318.4334716796875
+                    },
+                    {
+                        "caption": "HydraulicStreamLog",
+                        "id": "7",
+                        "is_widget_visible": true,
+                        "scene_position.x": -197.16395568847656,
+                        "scene_position.y": -256.17181396484375
                     }
                 ]
             }
         }
     },
-    "saved_at": "2025-12-11_21-17-17"
+    "saved_at": "2026-08-10_13-50-09"
 }

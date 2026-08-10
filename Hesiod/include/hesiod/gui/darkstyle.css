@@ -117,8 +117,15 @@ QCheckBox::indicator:checked {
 }
 
 /* QSplitter --------------------------------------------------------------- */
-QSplitter::handle:vertical {
-    border-top: 1px solid COLOR_BORDER;
+QSplitter::handle {
+    background-color: COLOR_SEPARATOR;
+}
+
+QSplitter::handle:horizontal { width: 4px; }
+QSplitter::handle:vertical   { height: 4px; }
+
+QSplitter::handle:hover {
+    background-color: COLOR_HOVER;
 }
 
 /* QTableView checkbox indicators */

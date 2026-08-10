@@ -10,6 +10,7 @@
 #include "hesiod/gui/widgets/graph_editor_widget.hpp"
 #include "hesiod/gui/widgets/graph_node_widget.hpp"
 #include "hesiod/gui/widgets/graph_toolbar.hpp"
+#include "hesiod/gui/widgets/grip_splitter.hpp"
 #include "hesiod/gui/widgets/gui_utils.hpp"
 #include "hesiod/gui/widgets/node_library_widget.hpp"
 #include "hesiod/gui/widgets/node_settings_widget.hpp"
@@ -170,7 +171,7 @@ void GraphEditorWidget::setup_layout()
   graph_layout->setSpacing(0);
 
   {
-    QSplitter *splitter = new QSplitter(Qt::Vertical);
+    GripSplitter *splitter = new GripSplitter(Qt::Vertical);
     splitter->setChildrenCollapsible(false);
 
     this->graph_node_widget = new GraphNodeWidget(gno->get_shared());
@@ -205,7 +206,7 @@ void GraphEditorWidget::setup_layout()
   }
 
   // horizontal splitter: [ graph area | settings ] — user-resizable.
-  QSplitter *h_splitter = new QSplitter(Qt::Horizontal);
+  GripSplitter *h_splitter = new GripSplitter(Qt::Horizontal);
   h_splitter->setChildrenCollapsible(false);
   h_splitter->addWidget(graph_container);
   h_splitter->addWidget(this->node_settings_widget);
