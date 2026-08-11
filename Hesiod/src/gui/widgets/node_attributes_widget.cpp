@@ -326,6 +326,11 @@ void NodeAttributesWidget::setup_layout()
                   gno->update(this->node_id);
                 });
 
+  this->after_conn = p_node->update_after_event.subscribe(
+      [this](gnode::Node &) {
+        QMetaObject::invokeMethod(this, "sync_from_model", Qt::QueuedConnection);
+      });
+
   main_layout->addWidget(this->meta_widget);
 }
 

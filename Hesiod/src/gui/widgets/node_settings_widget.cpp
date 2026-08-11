@@ -45,11 +45,6 @@ void NodeSettingsWidget::setup_connections()
                 &gngui::GraphViewer::selection_has_changed,
                 this,
                 &NodeSettingsWidget::update_content);
-
-  this->connect(this->p_graph_node_widget,
-                &GraphNodeWidget::update_finished,
-                this,
-                &NodeSettingsWidget::sync_content);
 }
 
 void NodeSettingsWidget::setup_layout()

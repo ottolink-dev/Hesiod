@@ -28,7 +28,7 @@ public:
                        bool                      add_toolbar = false,
                        QWidget                  *parent = nullptr);
 
-  void sync_from_model();
+  Q_INVOKABLE void sync_from_model();
   bool is_meta_backed() const;
 
 private:
@@ -39,6 +39,7 @@ private:
   std::string               node_id;
   QPointer<GraphNodeWidget> p_graph_node_widget;
   bool                      add_toolbar;
+  gnode::EventConnection    after_conn;
 
   meta::qt::MetaWidget *meta_widget = nullptr;
 };
