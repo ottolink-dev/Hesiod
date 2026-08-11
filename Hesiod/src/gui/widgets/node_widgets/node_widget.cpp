@@ -32,32 +32,18 @@ void NodeWidget::on_compute_started() { this->data_preview->clear_preview(); }
 
 void NodeWidget::setup_connections()
 {
-  if (!this->p_gnw)
-    return;
+  if (auto m = this->model.lock())
+  {
+    this->before_conn = m->update_before_event.subscribe(
+        [this](gnode::Node &) {
+          QMetaObject::invokeMethod(this, "on_compute_started", Qt::QueuedConnection);
+        });
 
-  this->connect(this->p_gnw,
-                &GraphNodeWidget::compute_started,
-                this,
-                [this](const std::string &id)
-                {
-                  if (auto m = this->model.lock())
-                  {
-                    if (id == m->get_id())
-                      this->on_compute_started();
-                  }
-                });
-
-  this->connect(this->p_gnw,
-                &GraphNodeWidget::compute_finished,
-                this,
-                [this](const std::string &id)
-                {
-                  if (auto m = this->model.lock())
-                  {
-                    if (id == m->get_id())
-                      this->on_compute_finished();
-                  }
-                });
+    this->after_conn = m->update_after_event.subscribe(
+        [this](gnode::Node &) {
+          QMetaObject::invokeMethod(this, "on_compute_finished", Qt::QueuedConnection);
+        });
+  }
 }
 
 void NodeWidget::setup_layout()
