@@ -45,8 +45,8 @@ meta::Attribute<meta::Array> &add_array(BaseNode          &node,
                                meta::Array{shape, std::vector(shape.x * shape.y, 0.f)});
 
   a->metadata().try_add(meta::keys::ui::label, std::string(label));
-  a->metadata().try_add(meta::keys::ui::width, 256);
-  a->metadata().try_add(meta::keys::ui::height, 256);
+  a->metadata().try_add(meta::keys::ui::width, shape.x);
+  a->metadata().try_add(meta::keys::ui::height, shape.y);
 
   apply_category_if_set(node, *a);
 

@@ -14,6 +14,7 @@
 #include "highmap/geometry/path.hpp"
 #include "highmap/virtual_array/virtual_array.hpp"
 
+#include "meta/ext/array/array.hpp"
 #include "meta/metadata/keys.hpp"
 
 #include "hesiod/app/hesiod_application.hpp"
@@ -606,6 +607,28 @@ void BaseNode::propagate_config_change()
         }
       }
     }
+
+  // Update shape for the UI of meta::Array attributes
+  for (const auto &key : this->get_meta_group().current().insertion_order())
+  {
+    auto *p = this->get_meta_group().current().find(key);
+
+    if (!p)
+      continue;
+
+    if (auto *a = p->try_cast<meta::Attribute<meta::Array>>())
+    {
+      if (auto *width_ptr = a->metadata().try_value<int>(meta::keys::ui::width))
+        *width_ptr = cfg.shape.x;
+      else
+        a->metadata().try_add(meta::keys::ui::width, cfg.shape.x);
+
+      if (auto *height_ptr = a->metadata().try_value<int>(meta::keys::ui::height))
+        *height_ptr = cfg.shape.y;
+      else
+        a->metadata().try_add(meta::keys::ui::height, cfg.shape.y);
+    }
+  }
 }
 
 void BaseNode::reseed(bool backward)
