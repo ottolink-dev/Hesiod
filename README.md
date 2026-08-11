@@ -5,6 +5,7 @@ A desktop application for node-based procedural terrain generation.
 - Discord: https://discord.gg/HBgFCjdV8W
 - tutorial videos (WIP): https://www.youtube.com/playlist?list=PLvla2FXp5tDxbPypf_Mp66gWzX_Lga3DK
 - documentation (WIP): https://hesioddoc.readthedocs.io
+- roadmap: https://github.com/otto-link/Hesiod/discussions/608
 
 >[!WARNING] 
 > Work in progress, use at your own risk!
