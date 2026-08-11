@@ -29,7 +29,7 @@ public:
                        QWidget                  *parent = nullptr);
 
   Q_INVOKABLE void sync_from_model();
-  bool is_meta_backed() const;
+  bool             is_meta_backed() const;
 
 private:
   QWidget *create_toolbar();

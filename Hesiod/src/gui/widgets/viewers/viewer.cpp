@@ -262,9 +262,8 @@ void Viewer::set_current_node_id(const std::string &new_id)
     if (BaseNode *p_node = this->safe_get_node())
     {
       this->post_update_conn = p_node->post_update_event.subscribe(
-          [this](gnode::Node &) {
-            QMetaObject::invokeMethod(this, "update_renderer", Qt::QueuedConnection);
-          });
+          [this](gnode::Node &)
+          { QMetaObject::invokeMethod(this, "update_renderer", Qt::QueuedConnection); });
     }
   }
 
