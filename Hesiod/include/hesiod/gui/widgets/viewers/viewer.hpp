@@ -74,7 +74,7 @@ protected:
   BaseNode *safe_get_node();
 
   // --- Should be pure virtual but kept to avoid UB ---
-  virtual ViewerNodeParam get_default_view_param() const;
+  virtual ViewerNodeParam  get_default_view_param() const;
   Q_INVOKABLE virtual void update_renderer();
 
   // --- Members ---

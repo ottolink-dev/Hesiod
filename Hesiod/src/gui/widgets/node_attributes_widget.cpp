@@ -327,9 +327,8 @@ void NodeAttributesWidget::setup_layout()
                 });
 
   this->post_update_conn = p_node->post_update_event.subscribe(
-      [this](gnode::Node &) {
-        QMetaObject::invokeMethod(this, "sync_from_model", Qt::QueuedConnection);
-      });
+      [this](gnode::Node &)
+      { QMetaObject::invokeMethod(this, "sync_from_model", Qt::QueuedConnection); });
 
   main_layout->addWidget(this->meta_widget);
 }

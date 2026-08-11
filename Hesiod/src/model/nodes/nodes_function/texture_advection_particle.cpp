@@ -64,66 +64,68 @@ void compute_texture_advection_particle_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  hmap::VirtualArray   *p_z   = node.get_value_ref<hmap::VirtualArray>(P_ELEVATION);
-  hmap::VirtualTexture *p_tex = node.get_value_ref<hmap::VirtualTexture>(P_IN);
+  auto *p_z              = node.get_value_ref<hmap::VirtualArray>(P_ELEVATION);
+  auto *p_tex            = node.get_value_ref<hmap::VirtualTexture>(P_IN);
+  auto *p_advection_mask = node.get_value_ref<hmap::VirtualArray>(P_ADVECTION_MASK);
+  auto *p_mask           = node.get_value_ref<hmap::VirtualArray>(P_MASK);
+  auto *p_out            = node.get_value_ref<hmap::VirtualTexture>(P_TEXTURE);
 
-  if (p_z && p_tex)
+  if (!p_z || !p_tex)
+    return;
+
+  // prepare mask
+  std::shared_ptr<hmap::VirtualArray> sp_mask = pre_process_mask(node, p_mask, *p_z);
+
+  // number of particles based on the input particle density
+  int nparticles = (int)(node.val<float>(A_PARTICLE_DENSITY) * p_out->shape.x *
+                         p_out->shape.y);
+
+  // build list of data pointers
+  std::vector<hmap::VirtualArray *> ptrs = {p_z, p_advection_mask, p_mask};
+
+  for (auto ptr : p_tex->channels_ptr())
+    ptrs.push_back(ptr);
+
+  for (auto ptr : p_out->channels_ptr())
+    ptrs.push_back(ptr);
+
+  auto lambda = [&](std::vector<hmap::Array *> &p_arrays, const hmap::TileRegion &)
   {
-    hmap::VirtualArray *p_advection_mask = node.get_value_ref<hmap::VirtualArray>(
-        P_ADVECTION_MASK);
-    hmap::VirtualArray   *p_mask = node.get_value_ref<hmap::VirtualArray>(P_MASK);
-    hmap::VirtualTexture *p_out  = node.get_value_ref<hmap::VirtualTexture>(P_TEXTURE);
+    // 3 scalars + 4 channels + 4 channels
+    auto [pa_z,
+          pa_advection_mask,
+          pa_mask,
+          pa_r,
+          pa_g,
+          pa_b,
+          pa_a,
+          pa_out_r,
+          pa_out_g,
+          pa_out_b,
+          pa_out_a] = unpack<11>(p_arrays);
 
-    // prepare mask
-    std::shared_ptr<hmap::VirtualArray> sp_mask = pre_process_mask(node, p_mask, *p_z);
+    std::vector<hmap::Array> advected = hmap::gpu::advection_particle(
+        *pa_z,
+        {*pa_r, *pa_g, *pa_b, *pa_a},
+        node.val<int>(A_ITERATIONS),
+        nparticles,
+        node.val<int>(A_SEED),
+        node.val<bool>(A_REVERSE),
+        node.val<bool>(A_POST_FILTERING),
+        node.val<float>(A_POST_FILTERING_SIGMA),
+        node.val<float>(A_ADVECTION_LENGTH),
+        node.val<float>(A_VALUE_PERSISTENCE),
+        node.val<float>(A_INERTIA),
+        pa_advection_mask,
+        pa_mask);
 
-    // number of particles based on the input particle density
-    int nparticles = (int)(node.val<float>(A_PARTICLE_DENSITY) * p_out->shape.x *
-                           p_out->shape.y);
+    *pa_out_r = advected[0];
+    *pa_out_g = advected[1];
+    *pa_out_b = advected[2];
+    *pa_out_a = advected[3];
+  };
 
-    // apply advection separetely to each RGBA channels
-    auto lambda = [&node, nparticles](hmap::VirtualArray *p_field_out,
-                                      hmap::VirtualArray *p_z,
-                                      hmap::VirtualArray *p_field,
-                                      hmap::VirtualArray *p_advection_mask,
-                                      hmap::VirtualArray *p_mask)
-    {
-      hmap::for_each_tile(
-          {p_field_out, p_z, p_field, p_advection_mask, p_mask},
-          [&node, nparticles](std::vector<hmap::Array *> p_arrays,
-                              const hmap::TileRegion &)
-          {
-            auto [pa_field_out, pa_z, pa_field, pa_advection_mask, pa_mask] = unpack<5>(
-                p_arrays);
-
-            *pa_field_out = hmap::gpu::advection_particle(
-                *pa_z,
-                *pa_field,
-                node.val<int>(A_ITERATIONS),
-                nparticles,
-                node.val<int>(A_SEED),
-                node.val<bool>(A_REVERSE),
-                node.val<bool>(A_POST_FILTERING),
-                node.val<float>(A_POST_FILTERING_SIGMA),
-                node.val<float>(A_ADVECTION_LENGTH),
-                node.val<float>(A_VALUE_PERSISTENCE),
-                node.val<float>(A_INERTIA),
-                pa_advection_mask,
-                pa_mask);
-          },
-          node.cfg().cm_gpu);
-    };
-
-    for (int nch = 0; nch < 4; nch++)
-    {
-      lambda(&(p_out->channel(nch)),
-             p_z,
-             &(p_tex->channel(nch)),
-             p_advection_mask,
-             p_mask);
-      p_out->channel(nch).smooth_overlap_buffers();
-    }
-  }
+  hmap::for_each_tile(ptrs, lambda, node.cfg().cm_gpu);
 }
 
 } // namespace hesiod

@@ -35,9 +35,8 @@ void NodeWidget::setup_connections()
   if (auto m = this->model.lock())
   {
     this->pre_update_conn = m->pre_update_event.subscribe(
-        [this](gnode::Node &) {
-          QMetaObject::invokeMethod(this, "on_compute_started", Qt::QueuedConnection);
-        });
+        [this](gnode::Node &)
+        { QMetaObject::invokeMethod(this, "on_compute_started", Qt::QueuedConnection); });
 
     this->post_update_conn = m->post_update_event.subscribe(
         [this](gnode::Node &) {
