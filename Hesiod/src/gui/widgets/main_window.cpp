@@ -83,33 +83,45 @@ void MainWindow::setup_connections_with_project()
   // GraphNode model -> MainWindow
   ctx.project_model->get_graph_manager_ref()->update_progress = [this](float progress)
   {
-    if (progress == 0.f || progress == 100.f)
-    {
-      this->progress_bar->setValue(0);
-      this->progress_bar->setTextVisible(false);
+    QMetaObject::invokeMethod(
+        this,
+        [this, progress]()
+        {
+          if (progress == 0.f || progress == 100.f)
+          {
+            this->progress_bar->setValue(0);
+            this->progress_bar->setTextVisible(false);
 
-      const std::string message = (progress == 0.f) ? "Updating graph..."
-                                                    : "Graph updated successfully.";
+            const std::string message = (progress == 0.f) ? "Updating graph..."
+                                                          : "Graph updated successfully.";
 
-      this->notify(message);
-      return;
-    }
+            this->notify(message);
+            return;
+          }
 
-    this->progress_bar->setTextVisible(true);
-    this->progress_bar->setValue(static_cast<int>(progress));
+          this->progress_bar->setTextVisible(true);
+          this->progress_bar->setValue(static_cast<int>(progress));
+        },
+        Qt::QueuedConnection);
   };
 
   ctx.project_model->get_graph_manager_ref()->update_failed =
       [this](const std::string &message)
   {
-    this->progress_bar->setValue(0);
-    this->progress_bar->setTextVisible(false);
+    QMetaObject::invokeMethod(
+        this,
+        [this, message]()
+        {
+          this->progress_bar->setValue(0);
+          this->progress_bar->setTextVisible(false);
 
-    this->notify(message);
+          this->notify(message);
 
-    QMessageBox::warning(this,
-                         tr("Graph update failed"),
-                         QString::fromStdString(message));
+          QMessageBox::warning(this,
+                               tr("Graph update failed"),
+                               QString::fromStdString(message));
+        },
+        Qt::QueuedConnection);
   };
 }
 
