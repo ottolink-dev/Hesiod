@@ -83,12 +83,54 @@ nlohmann::json convert_legacy_attribute_json(const meta::AbstractAttribute *attr
   // Array conversion: meta::Attribute<meta::Array>
   else if (attr->try_cast<meta::Attribute<meta::Array>>())
   {
-    if (j.contains("shape.x") && j.contains("shape.y") && j.contains("vector"))
+    if (j.contains("shape.x") && j.contains("shape.y"))
     {
-      converted = nlohmann::json::object();
-      converted["value"] = {{"shape.x", j["shape.x"]},
-                            {"shape.y", j["shape.y"]},
-                            {"vector", j["vector"]}};
+      try
+      {
+        size_t shape_x = j.at("shape.x").get<size_t>();
+        size_t shape_y = j.at("shape.y").get<size_t>();
+        size_t expected_size = shape_x * shape_y;
+        std::vector<float> vec;
+        bool size_issue = false;
+
+        try
+        {
+          if (j.contains("vector") && j.at("vector").is_array())
+          {
+            vec = j.at("vector").get<std::vector<float>>();
+          }
+          else
+          {
+            size_issue = true;
+          }
+        }
+        catch (...)
+        {
+          size_issue = true;
+        }
+
+        if (vec.size() != expected_size)
+        {
+          size_issue = true;
+        }
+
+        if (size_issue)
+        {
+          Logger::log()->warn(
+              "Legacy converter: Array size mismatch or malformed vector (shape: {}x{}={}, vector size: {}). Padding/truncating with zeros.",
+              shape_x, shape_y, expected_size, vec.size());
+          vec.resize(expected_size, 0.0f);
+        }
+
+        converted = nlohmann::json::object();
+        converted["value"] = {{"shape.x", shape_x},
+                              {"shape.y", shape_y},
+                              {"vector", vec}};
+      }
+      catch (const std::exception &e)
+      {
+        Logger::log()->warn("Legacy converter: Array conversion failed: {}", e.what());
+      }
     }
   }
   // ColorGradient conversion: meta::Attribute<meta::ColorGradient>
