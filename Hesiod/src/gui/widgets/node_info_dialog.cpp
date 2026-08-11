@@ -106,16 +106,13 @@ void NodeInfoDialog::setup_connections()
           weak->deleteLater();
       });
 
-  // update when the graph node is modified (the node itself of the
-  // links)
-  this->connect(this->p_graph_node_widget,
-                &GraphNodeWidget::compute_finished,
-                this,
-                [this](const std::string &updated_node_id)
-                {
-                  if (updated_node_id == this->node_id)
-                    this->update_content();
-                });
+  if (auto ptrs = this->get_node_pointers(); ptrs.node)
+  {
+    this->after_conn = ptrs.node->update_after_event.subscribe(
+        [this](gnode::Node &) {
+          QMetaObject::invokeMethod(this, "update_content", Qt::QueuedConnection);
+        });
+  }
 
   this->connect(this->p_graph_node_widget,
                 &gngui::GraphViewer::connection_deleted,

@@ -32,6 +32,7 @@ public:
                  const std::string        &node_id,
                  QWidget                  *parent = nullptr);
 
+public slots:
   void update_content();
 
 private:
@@ -46,6 +47,7 @@ private:
   // members
   QPointer<GraphNodeWidget> p_graph_node_widget;
   std::string               node_id;
+  gnode::EventConnection    after_conn;
 
   // UI
   QVBoxLayout    *layout;
