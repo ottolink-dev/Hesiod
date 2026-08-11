@@ -3,6 +3,7 @@
  * this software. */
 #include "highmap/gradient.hpp"
 #include "highmap/range.hpp"
+#include "highmap/texture.hpp"
 #include "highmap/virtual_array/virtual_texture.hpp"
 
 #include "hesiod/model/nodes/attributes.hpp"
@@ -51,9 +52,9 @@ void compute_normal_map_to_heightmap_node(BaseNode &node)
   {
     hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
-    hmap::Tensor ts = hmap::Tensor(p_nmap->shape, 3);
+    hmap::Texture ts = hmap::Texture(p_nmap->shape, 3);
     for (int nch = 0; nch < 3; ++nch)
-      ts.set_slice(nch, p_nmap->channel(nch).to_array(node.cfg().cm_cpu));
+      ts.channel(nch) = p_nmap->channel(nch).to_array(node.cfg().cm_cpu);
 
     hmap::Array z;
 

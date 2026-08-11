@@ -3,7 +3,7 @@
  * this software. */
 #include <fstream>
 
-#include "highmap/tensor.hpp"
+#include "highmap/texture.hpp"
 #include "highmap/virtual_array/virtual_texture.hpp"
 
 #include "hesiod/model/nodes/attributes.hpp"
@@ -56,12 +56,12 @@ void compute_texture_uv_checker_node(BaseNode &node)
   if (f.good())
   {
     // load rgba data
-    bool         flip_j = true;
-    hmap::Tensor tensor4(fname, flip_j);
-    tensor4 = tensor4.resample_to_shape_xy(node.cfg().shape);
+    bool          flip_j = true;
+    hmap::Texture tensor4(fname, flip_j);
+    tensor4 = tensor4.resample_to_shape(node.cfg().shape);
 
     for (int nch = 0; nch < 4; ++nch)
-      p_out->channel(nch).from_array(tensor4.get_slice(nch), node.cfg().cm_cpu);
+      p_out->channel(nch).from_array(tensor4.channel(nch), node.cfg().cm_cpu);
   }
 }
 

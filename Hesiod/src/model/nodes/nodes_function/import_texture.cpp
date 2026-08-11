@@ -5,7 +5,7 @@
 #include <cmath>
 #include <fstream>
 
-#include "highmap/tensor.hpp"
+#include "highmap/texture.hpp"
 #include "highmap/virtual_array/virtual_texture.hpp"
 
 #include "hesiod/model/nodes/attributes.hpp"
@@ -58,11 +58,11 @@ void compute_import_texture_node(BaseNode &node)
   if (f.good())
   {
     // load rgba data
-    hmap::Tensor tensor4(fname, node.val<bool>(A_FLIP_Y));
+    hmap::Texture tensor4(fname, node.val<bool>(A_FLIP_Y));
 
     if (tensor4.shape.x * tensor4.shape.y == 0)
     {
-      Logger::log()->error("compute_import_texture_node: Failed to construct Tensor");
+      Logger::log()->error("compute_import_texture_node: Failed to construct Texture");
       return;
     }
 
@@ -78,7 +78,7 @@ void compute_import_texture_node(BaseNode &node)
       glm::ivec2 fitted = {std::max(1, (int)std::round(tensor4.shape.x * scale)),
                            std::max(1, (int)std::round(tensor4.shape.y * scale))};
 
-      hmap::Tensor fitted_tensor = tensor4.resample_to_shape_xy(fitted);
+      hmap::Texture fitted_tensor = tensor4.resample_to_shape(fitted);
 
       int ox = (target.x - fitted.x) / 2;
       int oy = (target.y - fitted.y) / 2;
@@ -88,10 +88,10 @@ void compute_import_texture_node(BaseNode &node)
       hmap::Array ba(target, 0.f);
       hmap::Array aa(target, 0.f);
 
-      hmap::Array f_r = fitted_tensor.get_slice(0);
-      hmap::Array f_g = fitted_tensor.get_slice(1);
-      hmap::Array f_b = fitted_tensor.get_slice(2);
-      hmap::Array f_a = fitted_tensor.get_slice(3);
+      hmap::Array f_r = fitted_tensor.channel(0);
+      hmap::Array f_g = fitted_tensor.channel(1);
+      hmap::Array f_b = fitted_tensor.channel(2);
+      hmap::Array f_a = fitted_tensor.channel(3);
 
       for (int i = 0; i < fitted.x; ++i)
         for (int j = 0; j < fitted.y; ++j)
@@ -106,12 +106,12 @@ void compute_import_texture_node(BaseNode &node)
     }
     else
     {
-      tensor4 = tensor4.resample_to_shape_xy(target);
+      tensor4 = tensor4.resample_to_shape(target);
 
-      hmap::Array ra = tensor4.get_slice(0);
-      hmap::Array ga = tensor4.get_slice(1);
-      hmap::Array ba = tensor4.get_slice(2);
-      hmap::Array aa = tensor4.get_slice(3);
+      hmap::Array ra = tensor4.channel(0);
+      hmap::Array ga = tensor4.channel(1);
+      hmap::Array ba = tensor4.channel(2);
+      hmap::Array aa = tensor4.channel(3);
 
       p_tex->from_arrays({&ra, &ga, &ba, &aa}, node.cfg().cm_cpu);
     }

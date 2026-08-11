@@ -4,7 +4,7 @@
 #include "highmap/colorize.hpp"
 #include "highmap/export.hpp"
 #include "highmap/gradient.hpp"
-#include "highmap/tensor.hpp"
+#include "highmap/texture.hpp"
 #include "highmap/virtual_array/virtual_texture.hpp"
 
 #include "hesiod/model/nodes/attributes.hpp"
@@ -146,11 +146,11 @@ void compute_export_asset_node(BaseNode &node)
 
   std::string nmap_fname = fname + "_nmap.png";
 
-  hmap::Tensor nvec = hmap::normal_map(array);
+  hmap::Texture nvec = hmap::normal_map(array);
 
-  hmap::Array nx = nvec.get_slice(0);
-  hmap::Array ny = nvec.get_slice(1);
-  hmap::Array nz = nvec.get_slice(2);
+  hmap::Array nx = nvec.channel(0);
+  hmap::Array ny = nvec.channel(1);
+  hmap::Array nz = nvec.channel(2);
   hmap::Array alpha(node.cfg().shape, 1.f);
 
   hmap::VirtualTexture normal_map(CONFIG_TEX(node));

@@ -4,6 +4,7 @@
 
 #include "highmap/authoring.hpp"
 #include "highmap/boundary.hpp"
+#include "highmap/colorize.hpp"
 #include "highmap/colormaps.hpp"
 #include "highmap/curvature.hpp"
 #include "highmap/erosion.hpp"
@@ -21,6 +22,11 @@ namespace hesiod
 
 static struct EnumMappings
 {
+
+  const std::map<std::string, int> mix_method_map = {
+      {"Linear", hmap::MixMethod::MM_LINEAR},
+      {"Square Averaged", hmap::MixMethod::MM_SQRT_AVG},
+      {"Mixbox (Pigment-Based)", hmap::MixMethod::MM_MIXBOX}};
 
   const std::map<std::string, int> blending_method_map = {
       {"add", BlendingMethod::ADD},

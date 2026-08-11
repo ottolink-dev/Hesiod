@@ -5,6 +5,7 @@
 #include "highmap/kernels.hpp"
 #include "highmap/virtual_array/virtual_texture.hpp"
 
+#include "hesiod/app/enum_mappings.hpp"
 #include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
@@ -24,7 +25,7 @@ constexpr const char *P_TEXTURE3 = "texture3";
 constexpr const char *P_TEXTURE4 = "texture4";
 
 constexpr const char *A_RESET_OUTPUT_ALPHA = "reset_output_alpha";
-constexpr const char *A_USE_SQRT_AVG       = "use_sqrt_avg";
+constexpr const char *A_MIX_METHOD         = "mix_method";
 
 void setup_mix_texture_node(BaseNode &node)
 {
@@ -38,7 +39,7 @@ void setup_mix_texture_node(BaseNode &node)
   node.add_port<hmap::VirtualTexture>(gnode::PortType::OUT, P_TEXTURE, CONFIG_TEX(node));
 
   // attribute(s)
-  add_bool(node, A_USE_SQRT_AVG, "use_sqrt_avg", true);
+  add_enum(node, A_MIX_METHOD, "mix_method", EnumMappings{}.mix_method_map, "sqrt_avg");
   add_bool(node, A_RESET_OUTPUT_ALPHA, "reset_output_alpha", true);
 }
 
@@ -60,7 +61,10 @@ void compute_mix_texture_node(BaseNode &node)
 
   if ((int)ptr_list.size())
   {
-    mix(*p_out, ptr_list, node.cfg().cm_cpu, node.val<bool>(A_USE_SQRT_AVG));
+    mix(*p_out,
+        ptr_list,
+        node.cfg().cm_cpu,
+        static_cast<hmap::MixMethod>(node.val<int>(A_MIX_METHOD)));
 
     if (node.val<bool>(A_RESET_OUTPUT_ALPHA))
       p_out->fill(3, 1.f, node.cfg().cm_cpu);
