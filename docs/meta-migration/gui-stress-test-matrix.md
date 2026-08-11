@@ -1,9 +1,24 @@
 # Meta migration — manual GUI stress matrix
 
-The headless suite (`--parity-dump`, `--compat-check`) already proves **attribute
-values** are correct across ~295 nodes and that legacy `.hsd` files decode. It cannot
-touch what actually crashed twice: **widget construction, teardown, and live
-interaction**. This matrix targets exactly that. Ten graphs, foundational → brutal.
+> **Amended 2026-08-11 for `meta-integration-wip`.** The compat facade is gone, and the two
+> headless gates this matrix leaned on (`--parity-dump`, `--compat-check`) went with it.
+> `--parity-dump` is genuinely obsolete — it compared the legacy and Meta backends, and
+> there is only one backend now. The corpus decode gate is *not* obsolete, so it was
+> re-run externally against this branch: **508 files, zero regressions vs `dev`**, and four
+> files that fail on `dev` (`Cloud`, `CloudToPath`, `FloodingFromPoint`, `PathFractalize`
+> — natively-migrated nodes that never got legacy decoders) now load correctly through
+> `legacy_converter`. Six pre-existing failures are unchanged and environmental (missing
+> CSV/image assets, the deprecated `MorphologicalGradient`, the malformed
+> `CoastalErosionDiffusion.hsd`, the stray `ZeroedEdges.bak.hsd`).
+>
+> Changed below: rows 1 and 4 of the coverage table, and **G5**. Worth restoring as a
+> CI-able gate: a headless "load every corpus file, fail on error" check — nothing in-tree
+> covers legacy decode now.
+
+The headless suite proves **attribute values** are correct across ~295 nodes and that
+legacy `.hsd` files decode. It cannot touch what actually crashed twice: **widget
+construction, teardown, and live interaction**. This matrix targets exactly that. Ten
+graphs, foundational → brutal.
 
 ## How to read the steps
 
@@ -29,10 +44,10 @@ interaction**. This matrix targets exactly that. Ten graphs, foundational → br
 
 | Risk surface (what only the GUI can break) | G1 | G2 | G3 | G4 | G5 | G6 | G7 | G8 | G9 | G10 |
 |---|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
-| Every facade attribute type round-trips | ● | | | ● | ● | | ● | | ● | ● |
+| Every `hesiod::attributes` builder type round-trips | ● | | | ● | ● | | ● | | ● | ● |
 | Paired sliders / `kw` responsive stacking | ● | | | | | | | | ● | ● |
 | Custom node-widgets (Thru/Toggle/Export/Debug) | | | | | | ● | | | | ● |
-| Mixed backend (Brush: legacy hmap + Meta post_*) | | | | | ● | | | | | ● |
+| Brush ArrayEditor (canvas↔model resample, amplitude stability) | | | | | ● | | | | | ● |
 | Data-provider widgets live (Saturate hist, Cloud bg) | | | | | | | ● | | | ● |
 | Native-Meta nodes (Noise/Saturate/Cloud) | | ● | ● | | | | ● | | | ● |
 | Custom editors (gradient, recurve curve, spectral bars) | | | ● | ● | | | | | | ● |
@@ -145,9 +160,15 @@ spectral bars — the highest serialization risk. Two type-correct branches off 
 9. Open `SpectralEqualizer` — move the bars.
 10. Save; reload; **each custom widget restores its exact shape.** Then the ritual.
 
-## G5 — Mixed backend (Brush — the only one)
+## G5 — Brush ArrayEditor (canvas ↔ model)
 
-**Tests:** the single node that is half legacy (hmap paint) + half Meta (`post_*`).
+**Rewritten 2026-08-11.** Brush is no longer half-legacy — `add_array` gives it a native
+`meta::Array`. What replaces the mixed-backend risk is the **resample round trip**: the
+canvas is a fixed 256×256 `[0,1]` paint field, while the model is `node.cfg().shape`
+(1024² by default). Every stroke upsamples canvas→model and every sync downsamples
+model→canvas, and neither is lossless unless the two shapes match. Two bugs already fixed
+in Meta live on this path (`5898e8c` stroke-clobbering, `6c7f196` amplitude inflation), so
+this graph guards against their return.
 
 1. Place a `Brush` node — paint straight on its canvas *(its `background` input is optional)*.
 2. Place a `Noise` node.
@@ -155,8 +176,22 @@ spectral bars — the highest serialization risk. Two type-correct branches off 
 4. Place `ExportHeightmap`; drag `Blend.output → ExportHeightmap.input`.
 
 **Verify:**
-5. Paint strokes; adjust Brush's `post_*` (gain/gamma/remap).
-6. Save; reload; **both the painted mask AND the post_* values persist.** Then the ritual.
+5. **Strokes land.** Paint a continuous drag — the stroke appears as you move and is not
+   erased mid-gesture (regression guard for the R1 sync-contract fix).
+6. **Amplitude is stable.** Paint one blob, release, then paint a *second* blob elsewhere.
+   The first blob's height must not change when the second is painted (regression guard
+   for the normalize-on-sync fix). Watch the 3D preview, not the canvas.
+7. **Peak erosion.** Paint one blob, then make five more short strokes far away from it.
+   The original blob should keep its height. Expect a slow softening at the default
+   1024² model vs 256² canvas — worth measuring, and it disappears entirely if the canvas
+   field is set to the model shape (`ui.width`/`ui.height` in `add_array`).
+8. Wire `Noise.out → Brush.background` and confirm the thumbnail appears behind the canvas.
+9. Adjust Brush's `post_*` (gain/gamma/remap).
+10. Save; reload; **both the painting AND the post_* values persist.** Then the ritual.
+11. **Resolution sweep:** set the graph shape to 4096² in project settings and reopen
+    Brush. The painting is `shape.x * shape.y` floats — 16.7M at 4k, ~67 MB in RAM and
+    serialized into the `.hsd` as a JSON number array. Confirm this is acceptable, or that
+    the brush should own a fixed resolution independent of the graph.
 
 ## G6 — Special node-widgets + cross-graph
 
