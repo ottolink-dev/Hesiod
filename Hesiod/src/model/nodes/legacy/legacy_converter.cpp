@@ -7,8 +7,8 @@
 #include "meta/ext/array/array.hpp"
 #include "meta/ext/color_gradient/color_gradient.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_converter.hpp"
 #include "hesiod/logger.hpp"
+#include "hesiod/model/nodes/legacy/legacy_converter.hpp"
 
 namespace hesiod
 {
@@ -87,11 +87,11 @@ nlohmann::json convert_legacy_attribute_json(const meta::AbstractAttribute *attr
     {
       try
       {
-        size_t shape_x = j.at("shape.x").get<size_t>();
-        size_t shape_y = j.at("shape.y").get<size_t>();
-        size_t expected_size = shape_x * shape_y;
+        size_t             shape_x = j.at("shape.x").get<size_t>();
+        size_t             shape_y = j.at("shape.y").get<size_t>();
+        size_t             expected_size = shape_x * shape_y;
         std::vector<float> vec;
-        bool size_issue = false;
+        bool               size_issue = false;
 
         try
         {
@@ -117,8 +117,12 @@ nlohmann::json convert_legacy_attribute_json(const meta::AbstractAttribute *attr
         if (size_issue)
         {
           Logger::log()->warn(
-              "Legacy converter: Array size mismatch or malformed vector (shape: {}x{}={}, vector size: {}). Padding/truncating with zeros.",
-              shape_x, shape_y, expected_size, vec.size());
+              "Legacy converter: Array size mismatch or malformed vector (shape: "
+              "{}x{}={}, vector size: {}). Padding/truncating with zeros.",
+              shape_x,
+              shape_y,
+              expected_size,
+              vec.size());
           vec.resize(expected_size, 0.0f);
         }
 
@@ -146,7 +150,8 @@ nlohmann::json convert_legacy_attribute_json(const meta::AbstractAttribute *attr
       }
       catch (const std::exception &e)
       {
-        Logger::log()->warn("Legacy converter: ColorGradient conversion failed: {}", e.what());
+        Logger::log()->warn("Legacy converter: ColorGradient conversion failed: {}",
+                            e.what());
       }
     }
   }
