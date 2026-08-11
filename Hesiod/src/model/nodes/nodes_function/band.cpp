@@ -3,14 +3,11 @@
  * this software. */
 #include "highmap/primitives.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
-
 #include "hesiod/app/enum_mappings.hpp"
 #include "hesiod/logger.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
-
-using namespace attr;
 
 namespace hesiod
 {
@@ -19,17 +16,17 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_DR = "dr";
-constexpr const char *P_DS = "offset";
+constexpr const char *P_DR  = "dr";
+constexpr const char *P_DS  = "offset";
 constexpr const char *P_ENV = "envelope";
 constexpr const char *P_OUT = "output";
 
-constexpr const char *A_ANGLE = "angle";
-constexpr const char *A_LENGTH = "length";
-constexpr const char *A_WIDTH = "width";
-constexpr const char *A_PROFILE = "profile";
+constexpr const char *A_ANGLE         = "angle";
+constexpr const char *A_LENGTH        = "length";
+constexpr const char *A_WIDTH         = "width";
+constexpr const char *A_PROFILE       = "profile";
 constexpr const char *A_PROFILE_PARAM = "profile_param";
-constexpr const char *A_CENTER = "center";
+constexpr const char *A_CENTER        = "center";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -48,30 +45,15 @@ void setup_band_node(BaseNode &node)
 
   // --- Attributes
 
-  // clang-format off
-  node.add_attr<FloatAttribute>(A_ANGLE, "Angle", 0.f, -180.f, 180.f);
-  node.add_attr<FloatAttribute>(A_LENGTH, "Length", 0.5f, 0.f, 4.f);
-  node.add_attr<FloatAttribute>(A_WIDTH, "Width", 0.1f, 0.f, 1.f);
-  node.add_attr<EnumAttribute>(A_PROFILE, "Profile", enum_mappings.radial_profile_map, "Smoothstep");
-  node.add_attr<FloatAttribute>(A_PROFILE_PARAM, "Profile Sharpness", 0.5f, 0.f, 10.f);
-  node.add_attr<Vec2FloatAttribute>(A_CENTER, "Center");
-  // clang-format on
+  node.set_current_category("Global");
+  add_float(node, A_LENGTH, "Length", 0.5f, 0.f, 4.f);
+  add_float(node, A_WIDTH, "Width", 0.1f, 0.f, 1.f);
+  add_angle(node, A_ANGLE, "Angle", 0.f, -180.f, 180.f);
+  add_xy(node, A_CENTER, "Center");
 
-  // --- Attribute(s) order
-
-  node.set_attr_ordered_key({
-      "_GROUPBOX_BEGIN_Global",
-      A_LENGTH,
-      A_WIDTH,
-      A_ANGLE,
-      A_CENTER,
-      "_GROUPBOX_END_",
-      //
-      "_GROUPBOX_BEGIN_Profile",
-      A_PROFILE,
-      A_PROFILE_PARAM,
-      "_GROUPBOX_END_",
-  });
+  node.set_current_category("Profile");
+  add_enum(node, A_PROFILE, "Profile", enum_mappings.radial_profile_map, "Smoothstep");
+  add_float(node, A_PROFILE_PARAM, "Profile Sharpness", 0.5f, 0.f, 10.f);
 
   setup_default_noise(
       node,
@@ -90,8 +72,8 @@ void compute_band_node(BaseNode &node)
 
   // --- Inputs / Outputs
 
-  auto *p_dr = node.get_value_ref<hmap::VirtualArray>(P_DR);
-  auto *p_ds = node.get_value_ref<hmap::VirtualArray>(P_DS);
+  auto *p_dr  = node.get_value_ref<hmap::VirtualArray>(P_DR);
+  auto *p_ds  = node.get_value_ref<hmap::VirtualArray>(P_DS);
   auto *p_env = node.get_value_ref<hmap::VirtualArray>(P_ENV);
   auto *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
@@ -100,14 +82,12 @@ void compute_band_node(BaseNode &node)
 
   // --- Params
 
-  // clang-format off
-  const auto angle         = node.get_attr<FloatAttribute>(A_ANGLE);
-  const auto length        = node.get_attr<FloatAttribute>(A_LENGTH);
-  const auto width         = node.get_attr<FloatAttribute>(A_WIDTH);
-  const auto profile       = hmap::RadialProfile(node.get_attr<EnumAttribute>(A_PROFILE));
-  const auto profile_param = node.get_attr<FloatAttribute>(A_PROFILE_PARAM);
-  const auto center        = node.get_attr<Vec2FloatAttribute>(A_CENTER);
-  // clang-format on
+  const auto angle         = node.val<float>(A_ANGLE);
+  const auto length        = node.val<float>(A_LENGTH);
+  const auto width         = node.val<float>(A_WIDTH);
+  const auto profile       = hmap::RadialProfile(node.val<int>(A_PROFILE));
+  const auto profile_param = node.val<float>(A_PROFILE_PARAM);
+  const auto center        = node.val<glm::vec2>(A_CENTER);
 
   // --- Resolve default noise
 
@@ -124,7 +104,7 @@ void compute_band_node(BaseNode &node)
           const hmap::TileRegion          &region)
       {
         auto [pa_dr, pa_ds] = unpack<2>(in);
-        auto [pa_out] = unpack<1>(out);
+        auto [pa_out]       = unpack<1>(out);
 
         *pa_out = hmap::band(region.shape,
                              angle,

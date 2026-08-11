@@ -7,15 +7,13 @@
 #include "highmap/tensor.hpp"
 #include "highmap/virtual_array/virtual_texture.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/node_factory.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 #include "hesiod/model/utils.hpp"
-
-using namespace attr;
 
 namespace hesiod
 {
@@ -24,20 +22,24 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_ELEVATION = "elevation";
-constexpr const char *P_TEXTURE = "texture";
-constexpr const char *P_NORMAL_MAP = "normal map details";
-constexpr const char *P_MASK = "mask";
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
 
-constexpr const char *A_FNAME = "fname";
-constexpr const char *A_AUTO_EXPORT = "auto_export";
-constexpr const char *A_ADD_PREFIX = "add_prefix";
-constexpr const char *A_EXPORT_FORMAT = "export_format";
-constexpr const char *A_MESH_TYPE = "mesh_type";
-constexpr const char *A_MAX_ERROR = "max_error";
+constexpr const char *P_ELEVATION  = "elevation";
+constexpr const char *P_TEXTURE    = "texture";
+constexpr const char *P_NORMAL_MAP = "normal map details";
+constexpr const char *P_MASK       = "mask";
+
+constexpr const char *A_FNAME             = "fname";
+constexpr const char *A_AUTO_EXPORT       = "auto_export";
+constexpr const char *A_ADD_PREFIX        = "add_prefix";
+constexpr const char *A_EXPORT_FORMAT     = "export_format";
+constexpr const char *A_MESH_TYPE         = "mesh_type";
+constexpr const char *A_MAX_ERROR         = "max_error";
 constexpr const char *A_ELEVATION_SCALING = "elevation_scaling";
-constexpr const char *A_DETAIL_SCALING = "detail_scaling";
-constexpr const char *A_BLENDING_METHOD = "blending_method";
+constexpr const char *A_DETAIL_SCALING    = "detail_scaling";
+constexpr const char *A_BLENDING_METHOD   = "blending_method";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -54,20 +56,16 @@ void setup_export_asset_node(BaseNode &node)
   node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_MASK);
 
   // attributes
-  node.add_attr<FilenameAttribute>(A_FNAME,
-                                   "Export File",
-                                   std::filesystem::path("export"),
-                                   "*",
-                                   true);
+  add_filename(node, A_FNAME, "Export File", std::filesystem::path("export"), "*", true);
 
   // attribute(s)
   // clang-format off
-  node.add_attr<BoolAttribute>(A_AUTO_EXPORT, "Auto Export on Node Update", false);
-  node.add_attr<BoolAttribute>(A_ADD_PREFIX, "Add Project Name as Prefix", false);
-  node.add_attr<FloatAttribute>(A_MAX_ERROR, "Max Error", 5e-4f, 0.f, 0.01f);
-  node.add_attr<FloatAttribute>(A_ELEVATION_SCALING, "Elevation Scale", 0.2f, 0.f, 1.f);
-  node.add_attr<FloatAttribute>(A_DETAIL_SCALING, "Normal Map Scale", 1.f, 0.f, 4.f);
-  node.add_attr<EnumAttribute>(A_BLENDING_METHOD, "Blending Method:", hmap::normal_map_blending_method_as_string);
+  add_bool(node, A_AUTO_EXPORT, "Auto Export on Node Update", false);
+  add_bool(node, A_ADD_PREFIX, "Add Project Name as Prefix", false);
+  add_float(node, A_MAX_ERROR, "Max Error", 5e-4f, 0.f, 0.01f);
+  add_float(node, A_ELEVATION_SCALING, "Elevation Scale", 0.2f, 0.f, 1.f);
+  add_float(node, A_DETAIL_SCALING, "Normal Map Scale", 1.f, 0.f, 4.f);
+  add_enum(node, A_BLENDING_METHOD, "Blending Method:", hmap::normal_map_blending_method_as_string);
   // clang-format on
 
   // enums
@@ -82,29 +80,10 @@ void setup_export_asset_node(BaseNode &node)
       mesh_type_map[infos] = (int)id;
 
     // clang-format off
-    node.add_attr<EnumAttribute>(A_EXPORT_FORMAT, "Export Format:", export_format_map, "GL Transmission Format v. 2 (binary) - *.glb");
-    node.add_attr<EnumAttribute>(A_MESH_TYPE, "Mesh Type:", mesh_type_map, "triangles");
+    add_enum(node, A_EXPORT_FORMAT, "Export Format:", export_format_map, "GL Transmission Format v. 2 (binary) - *.glb");
+    add_enum(node, A_MESH_TYPE, "Mesh Type:", mesh_type_map, "triangles");
     // clang-format on
   }
-
-  // attribute(s) order
-  node.set_attr_ordered_key({"_GROUPBOX_BEGIN_Export",
-                             A_AUTO_EXPORT,
-                             A_FNAME,
-                             A_ADD_PREFIX,
-                             A_EXPORT_FORMAT,
-                             "_GROUPBOX_END_",
-                             //
-                             "_GROUPBOX_BEGIN_Geometry",
-                             A_MESH_TYPE,
-                             A_MAX_ERROR,
-                             A_ELEVATION_SCALING,
-                             "_GROUPBOX_END_",
-                             //
-                             "_GROUPBOX_BEGIN_Shading",
-                             A_BLENDING_METHOD,
-                             A_DETAIL_SCALING,
-                             "_GROUPBOX_END_"});
 }
 
 // -----------------------------------------------------------------------------
@@ -117,29 +96,29 @@ void compute_export_asset_node(BaseNode &node)
 
   // --- Inputs
 
-  auto *p_elev = node.get_value_ref<hmap::VirtualArray>(P_ELEVATION);
+  auto *p_elev  = node.get_value_ref<hmap::VirtualArray>(P_ELEVATION);
   auto *p_color = node.get_value_ref<hmap::VirtualTexture>(P_TEXTURE);
-  auto *p_nmap = node.get_value_ref<hmap::VirtualTexture>(P_NORMAL_MAP);
-  auto *p_mask = node.get_value_ref<hmap::VirtualArray>(P_MASK);
+  auto *p_nmap  = node.get_value_ref<hmap::VirtualTexture>(P_NORMAL_MAP);
+  auto *p_mask  = node.get_value_ref<hmap::VirtualArray>(P_MASK);
 
   if (!p_elev)
     return;
 
-  const bool auto_export = node.get_attr<BoolAttribute>(A_AUTO_EXPORT);
+  const bool auto_export = node.val<bool>(A_AUTO_EXPORT);
   if (!auto_export)
     return;
 
   // --- Params
 
   // clang-format off
-  auto       fpath           = node.get_attr<FilenameAttribute>(A_FNAME);
-  const auto add_prefix      = node.get_attr<BoolAttribute>(A_ADD_PREFIX);
-  const auto export_format   = node.get_attr<EnumAttribute>(A_EXPORT_FORMAT);
-  const auto mesh_type       = node.get_attr<EnumAttribute>(A_MESH_TYPE);
-  const auto max_error       = node.get_attr<FloatAttribute>(A_MAX_ERROR);
-  const auto elev_scale      = node.get_attr<FloatAttribute>(A_ELEVATION_SCALING);
-  const auto detail_scale    = node.get_attr<FloatAttribute>(A_DETAIL_SCALING);
-  const auto blending_method = node.get_attr<EnumAttribute>(A_BLENDING_METHOD);
+  auto       fpath           = node.val<std::filesystem::path>(A_FNAME);
+  const auto add_prefix      = node.val<bool>(A_ADD_PREFIX);
+  const auto export_format   = node.val<int>(A_EXPORT_FORMAT);
+  const auto mesh_type       = node.val<int>(A_MESH_TYPE);
+  const auto max_error       = node.val<float>(A_MAX_ERROR);
+  const auto elev_scale      = node.val<float>(A_ELEVATION_SCALING);
+  const auto detail_scale    = node.val<float>(A_DETAIL_SCALING);
+  const auto blending_method = node.val<int>(A_BLENDING_METHOD);
   // clang-format on
 
   // --- Resolve path

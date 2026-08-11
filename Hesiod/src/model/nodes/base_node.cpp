@@ -10,122 +10,23 @@
 
 #include <QCoreApplication>
 
-#include "hesiod/app/hesiod_application.hpp"
-#include "hesiod/logger.hpp"
-#include "hesiod/model/nodes/base_node.hpp"
-#include "hesiod/model/nodes/legacy/legacy_converter.hpp"
-#include "hesiod/model/nodes/node_factory.hpp"
-#include "hesiod/model/utils.hpp"
 #include "highmap/geometry/cloud.hpp"
 #include "highmap/geometry/path.hpp"
 #include "highmap/virtual_array/virtual_array.hpp"
 
+#include "meta/ext/array/array.hpp"
+#include "meta/metadata/keys.hpp"
+
+#include "hesiod/app/hesiod_application.hpp"
+#include "hesiod/logger.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
+#include "hesiod/model/nodes/base_node.hpp"
+#include "hesiod/model/nodes/legacy/legacy_converter.hpp"
+#include "hesiod/model/nodes/node_factory.hpp"
+#include "hesiod/model/utils.hpp"
+
 namespace hesiod
 {
-
-// --- parity helper
-
-// Fold glm-object values to fixed-order arrays so the two parity backends
-// compare equal. glm::vec2/vec3/vec4 serialize (Meta side) as
-// {"x":..} / {"x","y","z"} / {"x","y","z","w"}; legacy Hesiod attributes
-// serialize the SAME values as JSON arrays ([x,y] / [r,g,b,a]). This transform
-// is faithful and value-preserving: identical numbers, emitted in the fixed
-// component order (x,y,z,w). Applied recursively so nested occurrences (e.g.
-// glm values inside a compound value) are folded too. Applied symmetrically to
-// both backends: legacy arrays pass through unchanged; Meta objects collapse to
-// the same array shape.
-namespace
-{
-nlohmann::json canonicalize_parity_value(const nlohmann::json &v)
-{
-  if (v.is_array())
-  {
-    nlohmann::json out = nlohmann::json::array();
-    for (const auto &e : v)
-      out.push_back(canonicalize_parity_value(e));
-    return out;
-  }
-
-  if (v.is_object())
-  {
-    static const std::vector<std::vector<std::string>> glm_key_sets = {
-        {"x", "y"},
-        {"x", "y", "z"},
-        {"x", "y", "z", "w"}};
-
-    for (const auto &keys : glm_key_sets)
-    {
-      if (v.size() != keys.size())
-        continue;
-      bool match = true;
-      for (const auto &k : keys)
-        if (!v.contains(k))
-        {
-          match = false;
-          break;
-        }
-      if (match)
-      {
-        nlohmann::json arr = nlohmann::json::array();
-        for (const auto &k : keys)
-          arr.push_back(canonicalize_parity_value(v.at(k)));
-        return arr;
-      }
-    }
-
-    // generic object (e.g. a ColorGradient stop {"position":.., "color":[..]}):
-    // recurse into the values, keep the keys.
-    nlohmann::json out = nlohmann::json::object();
-    for (auto it = v.begin(); it != v.end(); ++it)
-      out[it.key()] = canonicalize_parity_value(it.value());
-    return out;
-  }
-
-  return v;
-}
-
-// Type-aware value normalization shared by both parity backends, so they cannot
-// drift. Keyed on the legacy type string -- identical on both backends: the
-// legacy attribute_type_map string on the legacy path, and compat.legacy_type
-// on the Meta (facade) path. This gating is deliberate: it reconciles a compat
-// facade node's Meta output with its LEGACY reference. Nodes migrated NATIVELY
-// to Meta (no compat.legacy_type -> a mangled C++ type name like
-// "N3glm3vec...") are self-referential -- their fixture entry IS their own Meta
-// output -- so they are left completely untouched here and stay byte-identical
-// to the fixture.
-nlohmann::json normalize_parity_value(const std::string    &type_string,
-                                      const nlohmann::json &value_in)
-{
-  // Cloud: legacy CloudAttribute::json_to serializes parallel x/y/values arrays
-  // and NO "value" key, so the parity record (which reads j["value"]) genuinely
-  // captures null. Null the facade side so the Meta points array cannot
-  // false-positive -- cloud point contents are out of scope for this record on
-  // BOTH backends (round-trip is verified separately by the compat decoders).
-  if (type_string == "Cloud")
-    return nlohmann::json();
-
-  // ColorGradient: legacy emits the stop array directly under "value"; the Meta
-  // ColorGradient::json_to nests its own {"value": [...]} inside the Attribute's
-  // "value", double-wrapping it. Unwrap to the inner array so the stop lists
-  // compare equal (empty gradient -> null, matching legacy's missing "value").
-  if (type_string == "Color gradient")
-  {
-    nlohmann::json value_json = value_in;
-    if (value_json.is_object())
-      value_json = value_json.contains("value") ? value_json["value"] : nlohmann::json();
-    return canonicalize_parity_value(value_json);
-  }
-
-  // glm-backed compat legacy types: Meta serializes glm::vec2/vec4 as
-  // {"x":..} objects; legacy serializes the same values as arrays. Fold the
-  // object to a fixed-order array so they match.
-  if (type_string == "Wavenumber" || type_string == "Value range" ||
-      type_string == "Vec2Float" || type_string == "Color")
-    return canonicalize_parity_value(value_in);
-
-  return value_in;
-}
-} // namespace
 
 // --- helper
 
@@ -236,11 +137,6 @@ void BaseNode::compute()
   if (out_of_memory)
     throw std::bad_alloc();
 }
-
-std::vector<std::string> *BaseNode::get_attr_ordered_key_ref()
-{
-  return &this->attr_ordered_key;
-};
 
 meta::ContainerGroup &BaseNode::get_meta_group()
 {
@@ -538,75 +434,7 @@ void BaseNode::finalize_attributes()
 {
   auto &c = this->get_meta_group().current();
 
-  // // 1) _GROUPBOX_ sentinels in the ordered-key list -> ui.category metadata
-  // //    + build the sanitized display order
-  // std::vector<std::string> order;
-  // std::string              category = "";
-
-  // for (const auto &key : this->attr_ordered_key)
-  // {
-  //   if (key.starts_with("_GROUPBOX_BEGIN_"))
-  //   {
-  //     category = key.substr(std::string("_GROUPBOX_BEGIN_").size());
-  //     continue;
-  //   }
-  //   if (key.starts_with("_GROUPBOX_END"))
-  //   {
-  //     category = "";
-  //     continue;
-  //   }
-  //   auto *p = c.find(key);
-  //   if (!p)
-  //   {
-  //     Logger::log()->warn("finalize_attributes: node {}: ordered key '{}' not found",
-  //                         this->get_label(),
-  //                         key);
-  //     continue;
-  //   }
-  //   if (!category.empty())
-  //     p->metadata()
-  //         .try_add(std::string(meta::keys::ui::category), std::string(category))
-  //         ->value() = category;
-  //   order.push_back(key);
-  // }
-
-  // // 2) render order = legacy ordered-key order, then unlisted keys appended.
-  // //    The legacy backend keeps attributes in a std::map, so its *unlisted*
-  // //    keys render in alphabetical order. To preserve display + parity order,
-  // //    sort the unlisted tail alphabetically when it is entirely compat-backed
-  // //    (every unlisted key carries compat.legacy_type metadata). Native Meta
-  // //    attributes have no legacy std::map counterpart, so their insertion order
-  // //    is left untouched (mixed native+post_* nodes keep insertion order).
-  // {
-  //   std::vector<std::string> unlisted;
-  //   for (const auto &key : c.insertion_order())
-  //     if (std::find(order.begin(), order.end(), key) == order.end())
-  //       unlisted.push_back(key);
-
-  //   bool all_compat = !unlisted.empty();
-  //   for (const auto &key : unlisted)
-  //   {
-  //     const auto *p = c.find(key);
-  //     if (!p || !p->metadata().try_value<std::string>(hsd::legacy::keys::type_label))
-  //     {
-  //       all_compat = false;
-  //       break;
-  //     }
-  //   }
-  //   if (all_compat)
-  //     std::sort(unlisted.begin(), unlisted.end());
-
-  //   for (const auto &key : unlisted)
-  //     order.push_back(key);
-
-  //   if (!order.empty() && order != c.insertion_order())
-  //     if (!c.set_insertion_order(order))
-  //       Logger::log()->warn("finalize_attributes: node {}: set_insertion_order
-  //       rejected",
-  //                           this->get_label());
-  // }
-
-  // 3) initial state for toolbar Reset
+  // initial state for toolbar Reset
   this->initial_meta_state = c.json_to();
 }
 
@@ -719,9 +547,6 @@ nlohmann::json BaseNode::node_parameters_to_json() const
       const std::string *lbl = p->metadata().try_value<std::string>(
           meta::keys::ui::label);
       param_info["label"] = lbl ? *lbl : key;
-      const std::string *tl = p->metadata().try_value<std::string>(
-          hsd::legacy::keys::type_label);
-      param_info["type"] = tl ? *tl : std::string(p->type().name());
       auto json_ptr = nlohmann::json::json_pointer("/parameters/" + key + "/description");
       param_info["description"] = this->documentation.value(json_ptr, "No description");
       params_json[key] = param_info;
@@ -737,114 +562,6 @@ nlohmann::json BaseNode::node_parameters_to_json() const
   }
 
   return json;
-}
-
-nlohmann::json BaseNode::attribute_parity_record() const
-{
-  nlohmann::json           record;
-  std::vector<std::string> order;
-
-  // Single place where the normalized entry shape lives, so the two backends
-  // cannot drift: is_active folding, bounds shape and the field set are all
-  // decided here.
-  auto make_entry = [](const std::string         &type_string,
-                       const std::string         &label,
-                       const nlohmann::json      &value_json,
-                       const std::optional<bool> &is_active,
-                       const nlohmann::json      &bounds, // array [min,max] or null
-                       const std::string         &category) -> nlohmann::json
-  {
-    nlohmann::json e;
-    e["type"] = type_string;
-    e["label"] = label;
-    // Range folds its is_active toggle into the value so the two backends
-    // (legacy json "is_active" vs Meta "ui.active" metadata) look identical.
-    if (is_active.has_value())
-      e["value"] = {{"value", value_json}, {"is_active", *is_active}};
-    else
-      e["value"] = value_json;
-    e["bounds"] = bounds; // already null or [min, max]
-    e["category"] = category;
-    return e;
-  };
-
-  // ---- Meta backend (container group) ----
-  const auto &c = this->get_meta_group().current();
-  order = c.insertion_order();
-
-  for (const auto &key : order)
-  {
-    const auto *p = c.find(key);
-    if (!p)
-      continue;
-
-    const nlohmann::json j = p->json_to();
-
-    // legacy_type metadata restores the legacy type string; native Meta
-    // nodes without it fall back to the C++ type name (no legacy form).
-    const std::string *tl = p->metadata().try_value<std::string>(
-        hsd::legacy::keys::type_label);
-    const std::string type_string = tl ? *tl : std::string(p->type().name());
-
-    const std::string *lbl = p->metadata().try_value<std::string>(meta::keys::ui::label);
-    const std::string  label = lbl ? *lbl : key;
-
-    nlohmann::json value_json = j.contains("value") ? j["value"] : nlohmann::json();
-    value_json = normalize_parity_value(type_string, value_json);
-
-    std::optional<bool> is_active;
-    if (const bool *m = p->metadata().try_value<bool>(meta::keys::ui::active))
-      is_active = *m;
-
-    nlohmann::json bounds; // null
-    const auto    *p_min = p->metadata().find(meta::keys::constraints::min);
-    const auto    *p_max = p->metadata().find(meta::keys::constraints::max);
-    if (p_min && p_max)
-      bounds = nlohmann::json::array(
-          {p_min->json_to()["value"], p_max->json_to()["value"]});
-
-    // Vec2Float: legacy Vec2FloatAttribute::json_to emits xmin/xmax/ymin/ymax
-    // (NOT vmin/vmax) -> legacy parity bounds is null. The compat `xy` preset
-    // stashes constraints.min/max (the x-axis range) for the current XYCanvas
-    // widget, which would otherwise surface as a non-null bound. Null it so
-    // bounds matches legacy.
-    if (type_string == "Vec2Float")
-      bounds = nlohmann::json();
-
-    // VecFloat: legacy emits vmin/vmax -> bounds [vmin,vmax]. The compat
-    // `curve` preset stores the y-range under ui.min_y/ui.max_y (not
-    // constraints.min/max), so the constraints lookup above leaves bounds
-    // null. Source it from ui.min_y/ui.max_y so it equals legacy [vmin,vmax].
-    if (type_string == "Vector of floats")
-    {
-      const auto *p_miny = p->metadata().find(std::string(meta::keys::ui::min_y));
-      const auto *p_maxy = p->metadata().find(std::string(meta::keys::ui::max_y));
-      if (p_miny && p_maxy)
-        bounds = nlohmann::json::array(
-            {p_miny->json_to()["value"], p_maxy->json_to()["value"]});
-    }
-
-    // legacy SeedAttribute has no vmin/vmax -> bounds is null there; force
-    // the facade-backed seed preset (which attaches constraints.min/max)
-    // to match, so seed nodes don't false-positive on bounds in the
-    // legacy/meta parity diff.
-    if (const bool *is_seed = p->metadata().try_value<bool>(hsd::legacy::keys::seed);
-        is_seed && *is_seed)
-      bounds = nlohmann::json();
-
-    const std::string *cat = p->metadata().try_value<std::string>(
-        meta::keys::ui::category);
-
-    record[key] = make_entry(type_string,
-                             label,
-                             value_json,
-                             is_active,
-                             bounds,
-                             cat ? *cat : std::string(""));
-  }
-
-  record["__order"] = order;
-  return record;
 }
 
 void BaseNode::propagate_config_change()
@@ -890,6 +607,28 @@ void BaseNode::propagate_config_change()
         }
       }
     }
+
+  // Update shape for the UI of meta::Array attributes
+  for (const auto &key : this->get_meta_group().current().insertion_order())
+  {
+    auto *p = this->get_meta_group().current().find(key);
+
+    if (!p)
+      continue;
+
+    if (auto *a = p->try_cast<meta::Attribute<meta::Array>>())
+    {
+      if (auto *width_ptr = a->metadata().try_value<int>(meta::keys::ui::width))
+        *width_ptr = cfg.shape.x;
+      else
+        a->metadata().try_add(meta::keys::ui::width, cfg.shape.x);
+
+      if (auto *height_ptr = a->metadata().try_value<int>(meta::keys::ui::height))
+        *height_ptr = cfg.shape.y;
+      else
+        a->metadata().try_add(meta::keys::ui::height, cfg.shape.y);
+    }
+  }
 }
 
 void BaseNode::reseed(bool backward)
@@ -899,19 +638,13 @@ void BaseNode::reseed(bool backward)
     auto *p = this->get_meta_group().current().find(key);
     if (!p)
       continue;
-    if (const bool *is_seed = p->metadata().try_value<bool>(hsd::legacy::keys::seed);
-        is_seed && *is_seed)
+    if (key == "seed")
       if (auto *typed = p->try_cast<meta::Attribute<int>>())
       {
         int increment = backward ? -1 : 1;
         typed->set_from_any(typed->value() + increment);
       }
   }
-}
-
-void BaseNode::set_attr_ordered_key(const std::vector<std::string> &new_attr_ordered_key)
-{
-  this->attr_ordered_key = new_attr_ordered_key;
 }
 
 void BaseNode::set_comment(const std::string &new_comment)

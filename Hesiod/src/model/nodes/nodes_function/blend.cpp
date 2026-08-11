@@ -4,89 +4,111 @@
 #include "highmap/blending.hpp"
 #include "highmap/range.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
-
 #include "hesiod/app/enum_mappings.hpp"
 #include "hesiod/logger.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
+
+constexpr const char *P_IN1 = "input 1";
+constexpr const char *P_IN2 = "input 2";
+constexpr const char *P_OUT = "output";
+
+constexpr const char *A_METHOD        = "blending_method";
+constexpr const char *A_K             = "k";
+constexpr const char *A_RADIUS        = "radius";
+constexpr const char *A_INPUT1_WEIGHT = "input1_weight";
+constexpr const char *A_INPUT2_WEIGHT = "input2_weight";
+constexpr const char *A_SWAP_INPUTS   = "swap_inputs";
+
+// -----------------------------------------------------------------------------
+// Setup
+// -----------------------------------------------------------------------------
 
 void setup_blend_node(BaseNode &node)
 {
   Logger::log()->trace("setup node {}", node.get_label());
 
-  // port(s)
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "input 1");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "input 2");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, "output", CONFIG(node));
+  // --- Ports
 
-  // attribute(s)
-  node.add_attr<EnumAttribute>("blending_method",
-                               "Method:",
-                               enum_mappings.blending_method_map,
-                               "minimum_smooth");
-  node.add_attr<FloatAttribute>("k", "k", 0.1f, 0.01f, 1.f);
-  node.add_attr<FloatAttribute>("radius", "radius", 0.05f, 0.f, 0.2f);
-  node.add_attr<FloatAttribute>("input1_weight", "input1_weight", 1.f, 0.f, 1.f);
-  node.add_attr<FloatAttribute>("input2_weight", "input2_weight", 1.f, 0.f, 1.f);
-  node.add_attr<BoolAttribute>("swap_inputs", "swap_inputs", false);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_IN1);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_IN2);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_OUT, CONFIG(node));
 
-  // attribute(s) order
-  node.set_attr_ordered_key({"_GROUPBOX_BEGIN_Main Parameters",
-                             "blending_method",
-                             "k",
-                             "radius",
-                             "_GROUPBOX_END_",
-                             //
-                             "_GROUPBOX_BEGIN_Inputs",
-                             "input1_weight",
-                             "input2_weight",
-                             "swap_inputs",
-                             "_GROUPBOX_END_"});
+  // --- Attributes
+
+  node.set_current_category("Main Parameters");
+  add_enum(node,
+           A_METHOD,
+           "Method:",
+           enum_mappings.blending_method_map,
+           "minimum_smooth");
+  add_float(node, A_K, "k", 0.1f, 0.01f, 1.f);
+  add_float(node, A_RADIUS, "radius", 0.05f, 0.f, 0.2f);
+
+  node.set_current_category("Inputs");
+  add_float(node, A_INPUT1_WEIGHT, "input1_weight", 1.f, 0.f, 1.f);
+  add_float(node, A_INPUT2_WEIGHT, "input2_weight", 1.f, 0.f, 1.f);
+  add_bool(node, A_SWAP_INPUTS, "swap_inputs", false);
 
   setup_post_process_heightmap_attributes(
       node,
       {.add_mix = false, .remap_active_state = false});
 }
 
+// -----------------------------------------------------------------------------
+// Compute
+// -----------------------------------------------------------------------------
+
 void compute_blend_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  hmap::VirtualArray *p_in1 = node.get_value_ref<hmap::VirtualArray>("input 1");
-  hmap::VirtualArray *p_in2 = node.get_value_ref<hmap::VirtualArray>("input 2");
+  // --- Inputs / Outputs
 
-  if (p_in1 && p_in2)
-  {
-    // adjust inputs
-    if (node.get_attr<BoolAttribute>("swap_inputs"))
-      std::swap(p_in1, p_in2);
+  auto *p_in1 = node.get_value_ref<hmap::VirtualArray>(P_IN1);
+  auto *p_in2 = node.get_value_ref<hmap::VirtualArray>(P_IN2);
+  auto *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
-    // compute output
-    hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>("output");
+  if (!p_in1 || !p_in2 || !p_out)
+    return;
 
-    float k = node.get_attr<FloatAttribute>("k");
-    int ir = std::max(1, (int)(node.get_attr<FloatAttribute>("radius") * p_out->shape.x));
-    int method = node.get_attr<EnumAttribute>("blending_method");
+  // --- Params
 
-    blend_heightmaps(node,
-                     *p_out,
-                     *p_in1,
-                     *p_in2,
-                     static_cast<BlendingMethod>(method),
-                     k,
-                     ir,
-                     node.get_attr<FloatAttribute>("input1_weight"),
-                     node.get_attr<FloatAttribute>("input2_weight"));
+  const auto swap = node.val<bool>(A_SWAP_INPUTS);
+  if (swap)
+    std::swap(p_in1, p_in2);
 
-    // post-process
-    post_process_heightmap(node, *p_out);
-  }
+  const auto k             = node.val<float>(A_K);
+  const auto radius        = node.val<float>(A_RADIUS);
+  const auto method        = node.val<int>(A_METHOD);
+  const auto input1_weight = node.val<float>(A_INPUT1_WEIGHT);
+  const auto input2_weight = node.val<float>(A_INPUT2_WEIGHT);
+
+  const int ir = std::max(1, (int)(radius * p_out->shape.x));
+
+  // --- Compute
+
+  blend_heightmaps(node,
+                   *p_out,
+                   *p_in1,
+                   *p_in2,
+                   static_cast<BlendingMethod>(method),
+                   k,
+                   ir,
+                   input1_weight,
+                   input2_weight);
+
+  // --- Post-process
+
+  post_process_heightmap(node, *p_out);
 }
 
 } // namespace hesiod

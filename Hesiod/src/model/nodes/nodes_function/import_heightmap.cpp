@@ -5,13 +5,11 @@
 
 #include "highmap/range.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
-
-using namespace attr;
 
 namespace hesiod
 {
@@ -20,14 +18,18 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
+
 constexpr const char *P_OUT = "output";
 
-constexpr const char *A_FILENAME = "fname"; // used in GraphNodeWidget
-constexpr const char *A_FLIP_Y = "flip_y";
-constexpr const char *A_CLIP_RANGE = "clip_range";
+constexpr const char *A_FILENAME        = "fname"; // used in GraphNodeWidget
+constexpr const char *A_FLIP_Y          = "flip_y";
+constexpr const char *A_CLIP_RANGE      = "clip_range";
 constexpr const char *A_SAMPLING_METHOD = "sampling_method";
-constexpr const char *A_DEQUANTIZE = "dequantize"; // used in GraphNodeWidget
-constexpr const char *A_ITERATIONS = "iterations";
+constexpr const char *A_DEQUANTIZE      = "dequantize"; // used in GraphNodeWidget
+constexpr const char *A_ITERATIONS      = "iterations";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -46,29 +48,17 @@ void setup_import_heightmap_node(BaseNode &node)
   std::vector<std::string> choices = {"Bicubic", "Nearest"};
 
   // clang-format off
-  node.add_attr<FilenameAttribute>(A_FILENAME, "Filename", std::filesystem::path(""), "Image files (*.bmp *.dib *.jpeg *.jpg *.png *.pbm *.pgm *.ppm *.pxm *.pnm *.tiff *.tif *.hdr *.pic *.exr)", false);
-  node.add_attr<BoolAttribute>(A_FLIP_Y, "Flip Y", true);
-  node.add_attr<BoolAttribute>(A_CLIP_RANGE, "Clip Range", false);
-  node.add_attr<ChoiceAttribute>(A_SAMPLING_METHOD, "Sampling Method", choices);
+  add_filename(node, A_FILENAME, "Filename", std::filesystem::path(""), "Image files (*.bmp *.dib *.jpeg *.jpg *.png *.pbm *.pgm *.ppm *.pxm *.pnm *.tiff *.tif *.hdr *.pic *.exr)", false);
+  add_bool(node, A_FLIP_Y, "Flip Y", true);
+  add_bool(node, A_CLIP_RANGE, "Clip Range", false);
+  add_choice(node, A_SAMPLING_METHOD, "Sampling Method", choices);
   
-  node.add_attr<BoolAttribute>(A_DEQUANTIZE, "Enable Dequantize", false);
-  node.add_attr<IntAttribute>(A_ITERATIONS, "Iterations", 4, 1, 16);
+  add_bool(node, A_DEQUANTIZE, "Enable Dequantize", false);
+  add_int(node, A_ITERATIONS, "Iterations", 4, 1, 16);
 
   // clang-format on
 
   // --- Attribute(s) order
-
-  node.set_attr_ordered_key({"_GROUPBOX_BEGIN_Import",
-                             A_FILENAME,
-                             A_FLIP_Y,
-                             A_CLIP_RANGE,
-                             A_SAMPLING_METHOD,
-                             "_GROUPBOX_END_",
-                             //
-                             "_GROUPBOX_BEGIN_Dequantization",
-                             A_DEQUANTIZE,
-                             A_ITERATIONS,
-                             "_GROUPBOX_END_"});
 
   setup_post_process_heightmap_attributes(
       node,
@@ -93,12 +83,12 @@ void compute_import_heightmap_node(BaseNode &node)
   // --- Params
 
   // clang-format off
-  const auto fname           = node.get_attr<FilenameAttribute>(A_FILENAME);
-  const auto flip_y          = node.get_attr<BoolAttribute>(A_FLIP_Y);
-  const auto clip_range      = node.get_attr<BoolAttribute>(A_CLIP_RANGE);
-  const auto sampling_method = node.get_attr<ChoiceAttribute>(A_SAMPLING_METHOD);
-  const auto dequantize      = node.get_attr<BoolAttribute>(A_DEQUANTIZE);
-  const auto iterations      = node.get_attr<IntAttribute>(A_ITERATIONS);
+  const auto fname           = node.val<std::filesystem::path>(A_FILENAME);
+  const auto flip_y          = node.val<bool>(A_FLIP_Y);
+  const auto clip_range      = node.val<bool>(A_CLIP_RANGE);
+  const auto sampling_method = node.val<std::string>(A_SAMPLING_METHOD);
+  const auto dequantize      = node.val<bool>(A_DEQUANTIZE);
+  const auto iterations      = node.val<int>(A_ITERATIONS);
   // clang-format on
 
   // --- Sanity check
@@ -161,7 +151,7 @@ void compute_import_heightmap_node(BaseNode &node)
         {
           auto [pa_out] = unpack<1>(p_arrays);
 
-          const uint      tile_seed = region.key.hash();
+          const uint      tile_seed        = region.key.hash();
           constexpr float dither_amplitude = 0.01f;
 
           *pa_out = hmap::dequantize(*pa_out, tile_seed, dither_amplitude, iterations);

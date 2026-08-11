@@ -3,48 +3,59 @@
  * this software. */
 #include "highmap/authoring.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
+constexpr const char *P_DX        = "dx";
+constexpr const char *P_DY        = "dy";
+constexpr const char *P_HEIGHTMAP = "heightmap";
+constexpr const char *P_PATH      = "path";
+
+constexpr const char *A_K_SMOOTHING  = "k_smoothing";
+constexpr const char *A_TALUS_GLOBAL = "talus_global";
+constexpr const char *A_VMIN         = "vmin";
+constexpr const char *A_WIDTH        = "width";
 
 void setup_ridgelines_node(BaseNode &node)
 {
   Logger::log()->trace("setup node {}", node.get_label());
 
   // port(s)
-  node.add_port<hmap::Path>(gnode::PortType::IN, "path");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "dx");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "dy");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, "heightmap", CONFIG(node));
+  node.add_port<hmap::Path>(gnode::PortType::IN, P_PATH);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_DX);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_DY);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_HEIGHTMAP, CONFIG(node));
 
   // attribute(s)
-  node.add_attr<FloatAttribute>("talus_global", "talus_global", 4.f, -FLT_MAX, FLT_MAX);
-  node.add_attr<FloatAttribute>("k_smoothing", "k_smoothing", 1.f, 0.01f, 2.f);
-  node.add_attr<FloatAttribute>("width", "width", 0.1f, 0.f, 1.f);
-  node.add_attr<FloatAttribute>("vmin", "vmin", 0.f, -1.f, 1.f);
+  add_float(node, A_TALUS_GLOBAL, "talus_global", 4.f, -FLT_MAX, FLT_MAX);
+  add_float(node, A_K_SMOOTHING, "k_smoothing", 1.f, 0.01f, 2.f);
+  add_float(node, A_WIDTH, "width", 0.1f, 0.f, 1.f);
+  add_float(node, A_VMIN, "vmin", 0.f, -1.f, 1.f);
 }
 
 void compute_ridgelines_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  hmap::Path *p_path = node.get_value_ref<hmap::Path>("path");
+  hmap::Path *p_path = node.get_value_ref<hmap::Path>(P_PATH);
 
   if (p_path)
   {
-    hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>("heightmap");
+    hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>(P_HEIGHTMAP);
 
     if (p_path->size() > 1)
     {
-      hmap::VirtualArray *p_dx = node.get_value_ref<hmap::VirtualArray>("dx");
-      hmap::VirtualArray *p_dy = node.get_value_ref<hmap::VirtualArray>("dy");
+      hmap::VirtualArray *p_dx = node.get_value_ref<hmap::VirtualArray>(P_DX);
+      hmap::VirtualArray *p_dy = node.get_value_ref<hmap::VirtualArray>(P_DY);
 
       std::vector<float> xs, ys, zs = {};
 
@@ -65,8 +76,8 @@ void compute_ridgelines_node(BaseNode &node)
                                       const hmap::TileRegion    &region)
           {
             hmap::Array *pa_out = p_arrays[0];
-            hmap::Array *pa_dx = p_arrays[1];
-            hmap::Array *pa_dy = p_arrays[2];
+            hmap::Array *pa_dx  = p_arrays[1];
+            hmap::Array *pa_dy  = p_arrays[2];
 
             glm::vec4 bbox_points = {0.f, 1.f, 0.f, 1.f};
 
@@ -74,10 +85,10 @@ void compute_ridgelines_node(BaseNode &node)
                                        xs,
                                        ys,
                                        zs,
-                                       node.get_attr<FloatAttribute>("talus_global"),
-                                       node.get_attr<FloatAttribute>("k_smoothing"),
-                                       node.get_attr<FloatAttribute>("width"),
-                                       node.get_attr<FloatAttribute>("vmin"),
+                                       node.val<float>(A_TALUS_GLOBAL),
+                                       node.val<float>(A_K_SMOOTHING),
+                                       node.val<float>(A_WIDTH),
+                                       node.val<float>(A_VMIN),
                                        bbox_points,
                                        pa_dx,
                                        pa_dy,
@@ -94,7 +105,7 @@ void compute_ridgelines_node(BaseNode &node)
           [](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
           {
             hmap::Array *pa_out = p_arrays[0];
-            *pa_out = 0.f;
+            *pa_out             = 0.f;
           },
           node.cfg().cm_cpu);
     }

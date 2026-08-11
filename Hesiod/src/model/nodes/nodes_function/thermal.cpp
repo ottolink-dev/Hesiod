@@ -7,13 +7,11 @@
 
 #include "highmap/dbg/timer.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
-
-using namespace attr;
 
 namespace hesiod
 {
@@ -22,14 +20,18 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_IN = "input";
-constexpr const char *P_MASK = "mask";
-constexpr const char *P_OUT = "output";
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
+
+constexpr const char *P_IN         = "input";
+constexpr const char *P_MASK       = "mask";
+constexpr const char *P_OUT        = "output";
 constexpr const char *P_DEPOSITION = "deposition";
 
-constexpr const char *A_TYPE = "type";
-constexpr const char *A_TALUS = "talus_global";
-constexpr const char *A_DURATION = "duration";
+constexpr const char *A_TYPE        = "type";
+constexpr const char *A_TALUS       = "talus_global";
+constexpr const char *A_DURATION    = "duration";
 constexpr const char *A_SCALE_TALUS = "scale_talus_with_elevation";
 
 // -----------------------------------------------------------------------------
@@ -53,23 +55,13 @@ void setup_thermal_node(BaseNode &node)
       {"Standard", "Linear", "Bedrock", "Olsen", "Ridge", "Schott", "Inflate"};
 
   // clang-format off
-  node.add_attr<ChoiceAttribute>(A_TYPE, "", choices);
-  node.add_attr<FloatAttribute>(A_TALUS, "Slope", 1.f, 0.f, FLT_MAX);
-  node.add_attr<FloatAttribute>(A_DURATION, "Duration", 0.3f, 0.05f, 6.f);
-  node.add_attr<BoolAttribute>(A_SCALE_TALUS, "Scale with Elevation", false);
+  add_choice(node, A_TYPE, "", choices);
+  add_float(node, A_TALUS, "Slope", 1.f, 0.f, FLT_MAX);
+  add_float(node, A_DURATION, "Duration", 0.3f, 0.05f, 6.f);
+  add_bool(node, A_SCALE_TALUS, "Scale with Elevation", false);
   // clang-format on
 
   // --- Attribute(s) order
-
-  node.set_attr_ordered_key({"_GROUPBOX_BEGIN_Deposition Model",
-                             A_TYPE,
-                             "_GROUPBOX_END_",
-                             //
-                             "_GROUPBOX_BEGIN_Parameters",
-                             A_TALUS,
-                             A_SCALE_TALUS,
-                             A_DURATION,
-                             "_GROUPBOX_END_"});
 
   setup_pre_process_mask_attributes(node);
   setup_post_process_heightmap_attributes(node,
@@ -86,9 +78,9 @@ void compute_thermal_node(BaseNode &node)
 
   // --- Inputs / Outputs
 
-  auto *p_in = node.get_value_ref<hmap::VirtualArray>(P_IN);
-  auto *p_mask = node.get_value_ref<hmap::VirtualArray>(P_MASK);
-  auto *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
+  auto *p_in         = node.get_value_ref<hmap::VirtualArray>(P_IN);
+  auto *p_mask       = node.get_value_ref<hmap::VirtualArray>(P_MASK);
+  auto *p_out        = node.get_value_ref<hmap::VirtualArray>(P_OUT);
   auto *p_deposition = node.get_value_ref<hmap::VirtualArray>(P_DEPOSITION);
 
   if (!p_in)
@@ -101,13 +93,13 @@ void compute_thermal_node(BaseNode &node)
   // --- Params
 
   // clang-format off
-  const auto type = node.get_attr<ChoiceAttribute>(A_TYPE);
-  const auto talus_global = node.get_attr<FloatAttribute>(A_TALUS);
-  const auto duration = node.get_attr<FloatAttribute>(A_DURATION);
-  const auto scale_talus = node.get_attr<BoolAttribute>(A_SCALE_TALUS);
+  const auto type = node.val<std::string>(A_TYPE);
+  const auto talus_global = node.val<float>(A_TALUS);
+  const auto duration = node.val<float>(A_DURATION);
+  const auto scale_talus = node.val<bool>(A_SCALE_TALUS);
   // clang-format on
 
-  const float talus = talus_global / float(p_out->shape.x);
+  const float talus      = talus_global / float(p_out->shape.x);
   const int   iterations = int(duration * p_out->shape.x);
 
   // --- Talus map
@@ -131,7 +123,7 @@ void compute_thermal_node(BaseNode &node)
           const hmap::TileRegion &)
       {
         auto [pa_in, pa_mask, pa_talus_map] = unpack<3>(in);
-        auto [pa_out, pa_deposition] = unpack<2>(out);
+        auto [pa_out, pa_deposition]        = unpack<2>(out);
 
         *pa_out = *pa_in;
 

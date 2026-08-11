@@ -3,14 +3,12 @@
  * this software. */
 #include "highmap/operator.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/app/enum_mappings.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
-
-using namespace attr;
 
 namespace hesiod
 {
@@ -19,12 +17,16 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_A = "a";
-constexpr const char *P_B = "b";
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
+
+constexpr const char *P_A   = "a";
+constexpr const char *P_B   = "b";
 constexpr const char *P_OUT = "output";
 
-constexpr const char *A_SLICE_X = "slide_x";
-constexpr const char *A_SLICE_Y = "slide_y";
+constexpr const char *A_SLICE_X     = "slide_x";
+constexpr const char *A_SLICE_Y     = "slide_y";
 constexpr const char *A_SWAP_INPUTS = "swap_inputs";
 
 // -----------------------------------------------------------------------------
@@ -44,18 +46,12 @@ void setup_compare_node(BaseNode &node)
   // --- Attributes
 
   // clang-format off
-  node.add_attr<FloatAttribute>(A_SLICE_X, "X-cutslice Position", 0.5f, 0.f, 1.f);
-  node.add_attr<FloatAttribute>(A_SLICE_Y, "Y-cutslice Position", 1.f, 0.f, 1.f);
-  node.add_attr<BoolAttribute>(A_SWAP_INPUTS, "Swap Inputs", false);
+  add_float(node, A_SLICE_X, "X-cutslice Position", 0.5f, 0.f, 1.f);
+  add_float(node, A_SLICE_Y, "Y-cutslice Position", 1.f, 0.f, 1.f);
+  add_bool(node, A_SWAP_INPUTS, "Swap Inputs", false);
   // clang-format on
 
   // --- Attribute(s) order
-
-  node.set_attr_ordered_key({"_GROUPBOX_BEGIN_Main Parameters",
-                             A_SLICE_X,
-                             A_SLICE_Y,
-                             A_SWAP_INPUTS,
-                             "_GROUPBOX_END_"});
 }
 
 // -----------------------------------------------------------------------------
@@ -68,8 +64,8 @@ void compute_compare_node(BaseNode &node)
 
   // --- Inputs / Outputs
 
-  auto *p_a = node.get_value_ref<hmap::VirtualArray>(P_A);
-  auto *p_b = node.get_value_ref<hmap::VirtualArray>(P_B);
+  auto *p_a   = node.get_value_ref<hmap::VirtualArray>(P_A);
+  auto *p_b   = node.get_value_ref<hmap::VirtualArray>(P_B);
   auto *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
   if (!p_a || !p_b)
@@ -78,9 +74,9 @@ void compute_compare_node(BaseNode &node)
   // --- Params
 
   // clang-format off
-  const auto sx          = node.get_attr<FloatAttribute>(A_SLICE_X);
-  const auto sy          = node.get_attr<FloatAttribute>(A_SLICE_Y);
-  const auto swap_inputs = node.get_attr<BoolAttribute>(A_SWAP_INPUTS);
+  const auto sx          = node.val<float>(A_SLICE_X);
+  const auto sy          = node.val<float>(A_SLICE_Y);
+  const auto swap_inputs = node.val<bool>(A_SWAP_INPUTS);
   // clang-format on
 
   // --- Adjust inputs
@@ -98,7 +94,7 @@ void compute_compare_node(BaseNode &node)
           const hmap::TileRegion &)
       {
         auto [pa_a, pa_b] = unpack<2>(in);
-        auto [pa_out] = unpack<1>(out);
+        auto [pa_out]     = unpack<1>(out);
 
         *pa_out = hmap::compare(*pa_a, *pa_b, sx, sy);
       },

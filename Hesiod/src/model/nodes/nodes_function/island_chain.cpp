@@ -4,14 +4,12 @@
 #include "highmap/geometry/path.hpp"
 #include "highmap/primitives.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/app/enum_mappings.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
-
-using namespace attr;
 
 namespace hesiod
 {
@@ -20,22 +18,26 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_PATH = "path";
-constexpr const char *P_OUT = "out";
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
 
-constexpr const char *A_SEED = "seed";
-constexpr const char *A_ISLAND_COUNT = "island_count";
+constexpr const char *P_PATH = "path";
+constexpr const char *P_OUT  = "out";
+
+constexpr const char *A_SEED          = "seed";
+constexpr const char *A_ISLAND_COUNT  = "island_count";
 constexpr const char *A_ISLAND_RADIUS = "island_radius";
-constexpr const char *A_SIZE_FALLOFF = "size_falloff";
-constexpr const char *A_SIZE_JITTER = "size_jitter";
-constexpr const char *A_SCATTER = "scatter";
-constexpr const char *A_DISPLACEMENT = "displacement";
-constexpr const char *A_NOISE_TYPE = "noise_type";
-constexpr const char *A_KW = "kw";
-constexpr const char *A_OCTAVES = "octaves";
-constexpr const char *A_WEIGHT = "weight";
-constexpr const char *A_PERSISTENCE = "persistence";
-constexpr const char *A_LACUNARITY = "lacunarity";
+constexpr const char *A_SIZE_FALLOFF  = "size_falloff";
+constexpr const char *A_SIZE_JITTER   = "size_jitter";
+constexpr const char *A_SCATTER       = "scatter";
+constexpr const char *A_DISPLACEMENT  = "displacement";
+constexpr const char *A_NOISE_TYPE    = "noise_type";
+constexpr const char *A_KW            = "kw";
+constexpr const char *A_OCTAVES       = "octaves";
+constexpr const char *A_WEIGHT        = "weight";
+constexpr const char *A_PERSISTENCE   = "persistence";
+constexpr const char *A_LACUNARITY    = "lacunarity";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -53,43 +55,22 @@ void setup_island_chain_node(BaseNode &node)
   // --- Attributes
 
   // clang-format off
-  node.add_attr<SeedAttribute>(A_SEED, "Seed");
-  node.add_attr<IntAttribute>(A_ISLAND_COUNT, "Islands", 5, 1, 64);
-  node.add_attr<FloatAttribute>(A_ISLAND_RADIUS, "Radius", 0.1f, 0.f, 1.f);
-  node.add_attr<FloatAttribute>(A_SIZE_FALLOFF, "Size Falloff", 0.5f, -1.f, 1.f);
-  node.add_attr<FloatAttribute>(A_SIZE_JITTER, "Size Jitter", 0.3f, 0.f, 1.f);
-  node.add_attr<FloatAttribute>(A_SCATTER, "Scatter", 0.05f, 0.f, 0.5f);
-  node.add_attr<FloatAttribute>(A_DISPLACEMENT, "Displacement", 0.02f, 0.f, 0.5f);
-  node.add_attr<EnumAttribute>(A_NOISE_TYPE, "Type", enum_mappings.noise_type_map);
-  node.add_attr<FloatAttribute>(A_KW, "kw", 4.f, 0.f, FLT_MAX);
-  node.add_attr<IntAttribute>(A_OCTAVES, "Octaves", 8, 0, 32);
-  node.add_attr<FloatAttribute>(A_WEIGHT, "Weight", 0.7f, 0.f, 1.f);
-  node.add_attr<FloatAttribute>(A_PERSISTENCE, "Persistence", 0.5f, 0.f, 1.f);
-  node.add_attr<FloatAttribute>(A_LACUNARITY, "Lacunarity", 2.f, 0.01f, 4.f);
+  add_seed(node, A_SEED, "Seed");
+  add_int(node, A_ISLAND_COUNT, "Islands", 5, 1, 64);
+  add_float(node, A_ISLAND_RADIUS, "Radius", 0.1f, 0.f, 1.f);
+  add_float(node, A_SIZE_FALLOFF, "Size Falloff", 0.5f, -1.f, 1.f);
+  add_float(node, A_SIZE_JITTER, "Size Jitter", 0.3f, 0.f, 1.f);
+  add_float(node, A_SCATTER, "Scatter", 0.05f, 0.f, 0.5f);
+  add_float(node, A_DISPLACEMENT, "Displacement", 0.02f, 0.f, 0.5f);
+  add_enum(node, A_NOISE_TYPE, "Type", enum_mappings.noise_type_map);
+  add_float(node, A_KW, "kw", 4.f, 0.f, FLT_MAX);
+  add_int(node, A_OCTAVES, "Octaves", 8, 0, 32);
+  add_float(node, A_WEIGHT, "Weight", 0.7f, 0.f, 1.f);
+  add_float(node, A_PERSISTENCE, "Persistence", 0.5f, 0.f, 1.f);
+  add_float(node, A_LACUNARITY, "Lacunarity", 2.f, 0.01f, 4.f);
   // clang-format on
 
   // --- Attribute(s) order
-
-  node.set_attr_ordered_key({
-      "_GROUPBOX_BEGIN_Islands",
-      A_SEED,
-      A_ISLAND_COUNT,
-      A_ISLAND_RADIUS,
-      A_SIZE_FALLOFF,
-      A_SIZE_JITTER,
-      A_SCATTER,
-      A_DISPLACEMENT,
-      "_GROUPBOX_END_",
-      //
-      "_GROUPBOX_BEGIN_Noise",
-      A_NOISE_TYPE,
-      A_KW,
-      A_OCTAVES,
-      A_WEIGHT,
-      A_PERSISTENCE,
-      A_LACUNARITY,
-      "_GROUPBOX_END_",
-  });
 
   setup_post_process_heightmap_attributes(node,
                                           {.add_mix = true, .remap_active_state = true});
@@ -106,7 +87,7 @@ void compute_island_chain_node(BaseNode &node)
   // --- Inputs / Outputs
 
   auto *p_path = node.get_value_ref<hmap::Path>(P_PATH);
-  auto *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
+  auto *p_out  = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
   if (!p_out || !p_path || p_path->size() <= 1)
     return;
@@ -114,19 +95,19 @@ void compute_island_chain_node(BaseNode &node)
   // --- Params
 
   // clang-format off
-  const auto seed          = node.get_attr<SeedAttribute>(A_SEED);
-  const auto island_count  = node.get_attr<IntAttribute>(A_ISLAND_COUNT);
-  const auto island_radius = node.get_attr<FloatAttribute>(A_ISLAND_RADIUS);
-  const auto size_falloff  = node.get_attr<FloatAttribute>(A_SIZE_FALLOFF);
-  const auto size_jitter   = node.get_attr<FloatAttribute>(A_SIZE_JITTER);
-  const auto scatter       = node.get_attr<FloatAttribute>(A_SCATTER);
-  const auto displacement  = node.get_attr<FloatAttribute>(A_DISPLACEMENT);
-  const auto noise_type    = hmap::NoiseType(node.get_attr<EnumAttribute>(A_NOISE_TYPE));
-  const auto kw            = node.get_attr<FloatAttribute>(A_KW);
-  const auto octaves       = node.get_attr<IntAttribute>(A_OCTAVES);
-  const auto weight        = node.get_attr<FloatAttribute>(A_WEIGHT);
-  const auto persistence   = node.get_attr<FloatAttribute>(A_PERSISTENCE);
-  const auto lacunarity    = node.get_attr<FloatAttribute>(A_LACUNARITY);
+  const auto seed          = node.val<int>(A_SEED);
+  const auto island_count  = node.val<int>(A_ISLAND_COUNT);
+  const auto island_radius = node.val<float>(A_ISLAND_RADIUS);
+  const auto size_falloff  = node.val<float>(A_SIZE_FALLOFF);
+  const auto size_jitter   = node.val<float>(A_SIZE_JITTER);
+  const auto scatter       = node.val<float>(A_SCATTER);
+  const auto displacement  = node.val<float>(A_DISPLACEMENT);
+  const auto noise_type    = hmap::NoiseType(node.val<int>(A_NOISE_TYPE));
+  const auto kw            = node.val<float>(A_KW);
+  const auto octaves       = node.val<int>(A_OCTAVES);
+  const auto weight        = node.val<float>(A_WEIGHT);
+  const auto persistence   = node.val<float>(A_PERSISTENCE);
+  const auto lacunarity    = node.val<float>(A_LACUNARITY);
   // clang-format on
 
   // --- Compute

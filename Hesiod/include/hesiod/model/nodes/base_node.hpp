@@ -14,7 +14,6 @@
 #include "meta/core/container_group.hpp"
 
 #include "hesiod/model/graph/graph_config.hpp"
-#include "hesiod/model/nodes/legacy/legacy_compat.hpp"
 #include "hesiod/model/nodes/node_runtime_info.hpp"
 
 // clang-format off
@@ -68,12 +67,6 @@ public:
   virtual nlohmann::json json_to() const;
   nlohmann::json         node_parameters_to_json() const;
 
-  // Backend-agnostic, normalized attribute snapshot used by the Meta-migration
-  // parity tooling. Both the legacy (attr map) and Meta (container group)
-  // backends are folded into ONE identical record shape so a node flipped from
-  // legacy to Meta diffs to zero against its captured legacy reference.
-  nlohmann::json attribute_parity_record() const;
-
   // --- Documentation ---
   nlohmann::json get_documentation() const;
   std::string    get_documentation_html() const;
@@ -91,51 +84,49 @@ public:
   gngui::PortType get_port_type(int port_index) const;
   std::string     get_tool_tip_text();
 
-  template <typename T, typename... Args>
-  void add_attr(const std::string &key, Args &&...args)
+  // --- Meta Accessors & Helpers ---
+  template <typename T> decltype(auto) val(const std::string &key) const
   {
-    static_assert(hsd::legacy::CompatTag<T>, "add_attr<T>: T is not a compat tag");
-    auto &a = hsd::legacy::legacy_traits<T>::create(this->get_meta_group().current(),
-                                                    key,
-                                                    std::forward<Args>(args)...);
-    if (!this->current_category.empty())
-    {
-      a.metadata().try_add(std::string(meta::keys::ui::category),
-                           std::string(this->current_category));
-    }
+    return this->get_meta_group().current().value<T>(key);
   }
 
-  template <typename T> auto get_attr(const std::string &key) const -> decltype(auto)
+  template <typename T> void set_value(const std::string &key, T new_value)
   {
-    static_assert(hsd::legacy::CompatTag<T>);
-    using traits = hsd::legacy::legacy_traits<T>;
-    return traits::to_legacy(
-        this->get_meta_group().current().value<typename traits::storage>(key));
+    this->get_meta_group().current().value<T>(key) = new_value;
   }
 
-  template <typename T> auto get_attr_ref(const std::string &key) const
+  template <typename T>
+  decltype(auto) metadata_val(const std::string &key, const std::string &meta_key) const
   {
-    using storage = typename hsd::legacy::legacy_traits<T>::storage;
-    // legacy get_attr_ref was const-returning-mutable; mirror that
-    auto &c = const_cast<BaseNode *>(this)->get_meta_group().current();
-    auto *p = c.find(key);
+    const meta::AbstractAttribute *handle = this->get_meta_group().current().find(key);
+    return handle->metadata().value<T>(meta_key);
+  }
+
+  template <typename T>
+  void set_metadata(const std::string &key, const std::string &meta_key, T new_value)
+  {
+    meta::AbstractAttribute *handle = this->get_meta_group().current().find(key);
+    handle->metadata().value<T>(meta_key) = new_value;
+  }
+
+  template <typename T> meta::Attribute<T> *attr(const std::string &key)
+  {
+    auto *p = this->get_meta_group().current().find(key);
     if (!p)
-      throw std::invalid_argument("unknown attribute key: " + key);
-    auto *typed = p->template try_cast<meta::Attribute<storage>>();
-    if (!typed)
-      throw std::runtime_error("wrong attribute type for key: " + key);
-    return typename hsd::legacy::handle_of<T>::type(typed);
+      return nullptr;
+    return p->template try_cast<meta::Attribute<T>>();
   }
-
-  std::vector<std::string> *get_attr_ordered_key_ref();
-  void set_attr_ordered_key(const std::vector<std::string> &new_attr_ordered_key);
 
   meta::ContainerGroup       &get_meta_group(); // lazily creates group + "main" container
   const meta::ContainerGroup &get_meta_group() const;
   void                        set_current_category(const std::string &category);
+  const std::string &get_current_category() const { return this->current_category; }
 
   void                  finalize_attributes();
-  const nlohmann::json &iinitial_meta_state() const { return this->initial_meta_state; }
+  const nlohmann::json &get_initial_meta_state() const
+  {
+    return this->initial_meta_state;
+  }
 
   void reseed(bool backward);
 
@@ -151,7 +142,6 @@ private:
   // container state captured at finalize time; toolbar "Reset Settings" restores it
   nlohmann::json initial_meta_state;
 
-  std::vector<std::string>            attr_ordered_key = {};
   std::string                         category;
   std::string                         comment;
   std::weak_ptr<GraphConfig>          config; // owned by GraphNode

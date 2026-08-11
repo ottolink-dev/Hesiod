@@ -5,7 +5,7 @@
 #include "highmap/geometry/cloud.hpp"
 #include "highmap/operator.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
@@ -13,60 +13,55 @@
 #include "hesiod/model/nodes/post_process.hpp"
 #include "hesiod/model/utils.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
+constexpr const char *P_CLOUD = "cloud";
+
+constexpr const char *A_ADD_PREFIX  = "add_prefix";
+constexpr const char *A_AUTO_EXPORT = "auto_export";
+constexpr const char *A_FNAME       = "fname";
+constexpr const char *A_LABEL1      = "label1";
+constexpr const char *A_LABEL2      = "label2";
+constexpr const char *A_LABEL3      = "label3";
+constexpr const char *A_XMAX        = "xmax";
+constexpr const char *A_XMIN        = "xmin";
+constexpr const char *A_YMAX        = "ymax";
+constexpr const char *A_YMIN        = "ymin";
+constexpr const char *A_ZMAX        = "zmax";
+constexpr const char *A_ZMIN        = "zmin";
 
 void setup_export_cloud_to_ply_node(BaseNode &node)
 {
   Logger::log()->trace("setup node {}", node.get_label());
 
   // port(s)
-  node.add_port<hmap::Cloud>(gnode::PortType::IN, "cloud");
+  node.add_port<hmap::Cloud>(gnode::PortType::IN, P_CLOUD);
   node.add_port<std::vector<float>>(gnode::PortType::IN, "point_data1");
   node.add_port<std::vector<float>>(gnode::PortType::IN, "point_data2");
   node.add_port<std::vector<float>>(gnode::PortType::IN, "point_data3");
 
   // attribute(s)
-  node.add_attr<FilenameAttribute>("fname",
-                                   "fname",
-                                   std::filesystem::path("points.ply"),
-                                   "Stanford PLY (*.ply)",
-                                   true);
-  node.add_attr<BoolAttribute>("auto_export", "Auto Export on Node Update", false);
-  node.add_attr<BoolAttribute>("add_prefix", "Add Project Name as Prefix", false);
-  node.add_attr<StringAttribute>("label1", "", "data1");
-  node.add_attr<StringAttribute>("label2", "", "data2");
-  node.add_attr<StringAttribute>("label3", "", "data3");
-  node.add_attr<FloatAttribute>("xmin", "xmin", 0.f, -FLT_MAX, FLT_MAX);
-  node.add_attr<FloatAttribute>("xmax", "xmax", 1.f, -FLT_MAX, FLT_MAX);
-  node.add_attr<FloatAttribute>("ymin", "ymin", 0.f, -FLT_MAX, FLT_MAX);
-  node.add_attr<FloatAttribute>("ymax", "ymax", 1.f, -FLT_MAX, FLT_MAX);
-  node.add_attr<FloatAttribute>("zmin", "zmin", 0.f, -FLT_MAX, FLT_MAX);
-  node.add_attr<FloatAttribute>("zmax", "zmax", 1.f, -FLT_MAX, FLT_MAX);
-
-  // attribute(s) order
-  node.set_attr_ordered_key({"_GROUPBOX_BEGIN_Main Parameters",
-                             "fname",
-                             "auto_export",
-                             "add_prefix",
-                             "_GROUPBOX_END_",
-                             //
-                             "_GROUPBOX_BEGIN_Custom data labels",
-                             "label1",
-                             "label2",
-                             "label3",
-                             "_GROUPBOX_END_",
-                             //
-                             "_GROUPBOX_BEGIN_Rescaling",
-                             "xmin",
-                             "xmax",
-                             "ymin",
-                             "ymax",
-                             "zmin",
-                             "zmax",
-                             "_GROUPBOX_END_"});
+  add_filename(node,
+               A_FNAME,
+               "fname",
+               std::filesystem::path("points.ply"),
+               "Stanford PLY (*.ply)",
+               true);
+  add_bool(node, A_AUTO_EXPORT, "Auto Export on Node Update", false);
+  add_bool(node, A_ADD_PREFIX, "Add Project Name as Prefix", false);
+  add_string(node, A_LABEL1, "", "data1");
+  add_string(node, A_LABEL2, "", "data2");
+  add_string(node, A_LABEL3, "", "data3");
+  add_float(node, A_XMIN, "xmin", 0.f, -FLT_MAX, FLT_MAX);
+  add_float(node, A_XMAX, "xmax", 1.f, -FLT_MAX, FLT_MAX);
+  add_float(node, A_YMIN, "ymin", 0.f, -FLT_MAX, FLT_MAX);
+  add_float(node, A_YMAX, "ymax", 1.f, -FLT_MAX, FLT_MAX);
+  add_float(node, A_ZMIN, "zmin", 0.f, -FLT_MAX, FLT_MAX);
+  add_float(node, A_ZMAX, "zmax", 1.f, -FLT_MAX, FLT_MAX);
 
   // specialized GUI
 }
@@ -75,14 +70,14 @@ void compute_export_cloud_to_ply_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  hmap::Cloud *p_in = node.get_value_ref<hmap::Cloud>("cloud");
+  hmap::Cloud *p_in = node.get_value_ref<hmap::Cloud>(P_CLOUD);
 
-  if (p_in && node.get_attr<BoolAttribute>("auto_export"))
+  if (p_in && node.val<bool>(A_AUTO_EXPORT))
   {
-    std::filesystem::path fname = node.get_attr<FilenameAttribute>("fname");
-    fname = ensure_extension(fname, ".ply");
+    std::filesystem::path fname = node.val<std::filesystem::path>(A_FNAME);
+    fname                       = ensure_extension(fname, ".ply");
 
-    if (node.get_attr<BoolAttribute>("add_prefix"))
+    if (node.val<bool>(A_ADD_PREFIX))
       fname = prepend_project_name_to_path(fname);
 
     // --- create custom fields
@@ -99,20 +94,20 @@ void compute_export_cloud_to_ply_node(BaseNode &node)
     for (size_t k = 0; k < labels.size(); ++k)
     {
       if (data_ptrs[k])
-        custom_fields[node.get_attr<StringAttribute>(labels[k])] = *data_ptrs[k];
+        custom_fields[node.val<std::string>(labels[k])] = *data_ptrs[k];
     }
 
     // --- export
 
     auto xr = hmap::rescaled_vector(p_in->get_x(),
-                                    node.get_attr<FloatAttribute>("xmin"),
-                                    node.get_attr<FloatAttribute>("xmax"));
+                                    node.val<float>(A_XMIN),
+                                    node.val<float>(A_XMAX));
     auto yr = hmap::rescaled_vector(p_in->get_y(),
-                                    node.get_attr<FloatAttribute>("ymin"),
-                                    node.get_attr<FloatAttribute>("ymax"));
+                                    node.val<float>(A_YMIN),
+                                    node.val<float>(A_YMAX));
     auto zr = hmap::rescaled_vector(p_in->get_values(),
-                                    node.get_attr<FloatAttribute>("zmin"),
-                                    node.get_attr<FloatAttribute>("zmax"));
+                                    node.val<float>(A_ZMIN),
+                                    node.val<float>(A_ZMAX));
 
     hmap::export_points_to_ply(fname.string(), xr, yr, zr, custom_fields);
   }

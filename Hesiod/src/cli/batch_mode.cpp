@@ -42,17 +42,6 @@ int parse_args(args::ArgumentParser &parser,
 
   args::Flag node_inventory(group, "", "Node inventory output", {"inventory"});
 
-  args::ValueFlag<std::string> parity_dump(group,
-                                           "file",
-                                           "dump attribute parity records",
-                                           {"parity-dump"});
-
-  args::ValueFlag<std::string> compat_check(group,
-                                            "dir",
-                                            "verify legacy .hsd corpus decodes + "
-                                            "round-trips through _meta",
-                                            {"compat-check"});
-
   args::Flag check_port_links(group,
                               "check-port-links",
                               "verify drag-to-create port rules",
@@ -105,16 +94,6 @@ int parse_args(args::ArgumentParser &parser,
     {
       run_node_inventory();
       return 0;
-    }
-    else if (parity_dump)
-    {
-      auto config = std::make_shared<hesiod::GraphConfig>();
-      hesiod::dump_node_attribute_parity(args::get(parity_dump), config);
-      return 0;
-    }
-    else if (compat_check)
-    {
-      return run_compat_check(args::get(compat_check));
     }
     else if (check_port_links)
     {

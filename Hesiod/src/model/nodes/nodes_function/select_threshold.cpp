@@ -3,13 +3,11 @@
  * this software. */
 #include "highmap/math.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
-
-using namespace attr;
 
 namespace hesiod
 {
@@ -18,11 +16,15 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_IN = "input";
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
+
+constexpr const char *P_IN  = "input";
 constexpr const char *P_OUT = "output";
 
 constexpr const char *A_WIDTH = "width";
-constexpr const char *A_X0 = "x0";
+constexpr const char *A_X0    = "x0";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -40,14 +42,11 @@ void setup_select_threshold_node(BaseNode &node)
   // --- Attributes
 
   // clang-format off
-  node.add_attr<FloatAttribute>(A_X0, "Value", 0.5f, -1.f, 2.f);
-  node.add_attr<FloatAttribute>(A_WIDTH, "Tolerance", 0.1f, 0.f, 0.3f);
+  add_float(node, A_X0, "Value", 0.5f, -1.f, 2.f);
+  add_float(node, A_WIDTH, "Tolerance", 0.1f, 0.f, 0.3f);
   // clang-format on
 
   // --- Attribute(s) order
-
-  node.set_attr_ordered_key(
-      {"_GROUPBOX_BEGIN_Main Parameters", A_X0, A_WIDTH, "_GROUPBOX_END_"});
 
   setup_post_process_heightmap_attributes(node,
                                           {.add_mix = true, .remap_active_state = true});
@@ -63,7 +62,7 @@ void compute_select_threshold_node(BaseNode &node)
 
   // --- Inputs / Outputs
 
-  auto *p_in = node.get_value_ref<hmap::VirtualArray>(P_IN);
+  auto *p_in  = node.get_value_ref<hmap::VirtualArray>(P_IN);
   auto *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
   if (!p_in || !p_out)
@@ -72,8 +71,8 @@ void compute_select_threshold_node(BaseNode &node)
   // --- Params
 
   // clang-format off
-  const auto width = node.get_attr<FloatAttribute>(A_WIDTH);
-  const auto x0    = node.get_attr<FloatAttribute>(A_X0);
+  const auto width = node.val<float>(A_WIDTH);
+  const auto x0    = node.val<float>(A_X0);
   // clang-format on
 
   // --- Compute
@@ -85,7 +84,7 @@ void compute_select_threshold_node(BaseNode &node)
           std::vector<hmap::Array *>       out,
           const hmap::TileRegion &)
       {
-        auto [pa_in] = unpack<1>(in);
+        auto [pa_in]  = unpack<1>(in);
         auto [pa_out] = unpack<1>(out);
 
         *pa_out = hmap::sigmoid(*pa_in,

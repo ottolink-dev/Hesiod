@@ -4,30 +4,33 @@
 #include "highmap/geometry/grids.hpp"
 #include "highmap/selector.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
+constexpr const char *P_IN  = "input";
+constexpr const char *P_OUT = "output";
+
+constexpr const char *A_RADIUS = "radius";
 
 void setup_select_blob_log_node(BaseNode &node)
 {
   Logger::log()->trace("setup node {}", node.get_label());
 
   // port(s)
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "input");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, "output", CONFIG(node));
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_IN);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_OUT, CONFIG(node));
 
   // attribute(s)
-  node.add_attr<FloatAttribute>("radius", "radius", 0.05f, 0.001f, 0.2f);
-
-  // attribute(s) order
-  node.set_attr_ordered_key({"radius"});
+  add_float(node, A_RADIUS, "radius", 0.05f, 0.001f, 0.2f);
 
   setup_post_process_heightmap_attributes(node,
                                           {.add_mix = false, .remap_active_state = true});
@@ -37,14 +40,13 @@ void compute_select_blob_log_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  hmap::VirtualArray *p_in = node.get_value_ref<hmap::VirtualArray>("input");
+  hmap::VirtualArray *p_in = node.get_value_ref<hmap::VirtualArray>(P_IN);
 
   if (p_in)
   {
-    hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>("output");
+    hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
-    int ir = hmap::convert_length_to_pixel(node.get_attr<FloatAttribute>("radius"),
-                                           p_out->shape.x);
+    int ir = hmap::convert_length_to_pixel(node.val<float>(A_RADIUS), p_out->shape.x);
 
     hmap::for_each_tile(
         {p_out, p_in},

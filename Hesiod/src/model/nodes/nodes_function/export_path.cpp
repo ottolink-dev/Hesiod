@@ -3,7 +3,7 @@
  * this software. */
 #include "highmap/geometry/path.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
@@ -11,29 +11,34 @@
 #include "hesiod/model/nodes/post_process.hpp"
 #include "hesiod/model/utils.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
+constexpr const char *P_IN = "input";
+
+constexpr const char *A_ADD_PREFIX  = "add_prefix";
+constexpr const char *A_AUTO_EXPORT = "auto_export";
+constexpr const char *A_FNAME       = "fname";
 
 void setup_export_path_node(BaseNode &node)
 {
   Logger::log()->trace("setup node {}", node.get_label());
 
   // port(s)
-  node.add_port<hmap::Path>(gnode::PortType::IN, "input");
+  node.add_port<hmap::Path>(gnode::PortType::IN, P_IN);
 
   // attribute(s)
-  node.add_attr<FilenameAttribute>("fname",
-                                   "fname",
-                                   std::filesystem::path("path.csv"),
-                                   "CSV (*.csv)",
-                                   true);
-  node.add_attr<BoolAttribute>("auto_export", "Auto Export on Node Update", false);
-  node.add_attr<BoolAttribute>("add_prefix", "Add Project Name as Prefix", false);
-
-  // attribute(s) order
-  node.set_attr_ordered_key({"fname", "auto_export", "add_prefix"});
+  add_filename(node,
+               A_FNAME,
+               "fname",
+               std::filesystem::path("path.csv"),
+               "CSV (*.csv)",
+               true);
+  add_bool(node, A_AUTO_EXPORT, "Auto Export on Node Update", false);
+  add_bool(node, A_ADD_PREFIX, "Add Project Name as Prefix", false);
 
   // specialized GUI
 }
@@ -42,14 +47,14 @@ void compute_export_path_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  hmap::Path *p_in = node.get_value_ref<hmap::Path>("input");
+  hmap::Path *p_in = node.get_value_ref<hmap::Path>(P_IN);
 
-  if (p_in && node.get_attr<BoolAttribute>("auto_export"))
+  if (p_in && node.val<bool>(A_AUTO_EXPORT))
   {
-    std::filesystem::path fname = node.get_attr<FilenameAttribute>("fname");
-    fname = ensure_extension(fname, ".csv");
+    std::filesystem::path fname = node.val<std::filesystem::path>(A_FNAME);
+    fname                       = ensure_extension(fname, ".csv");
 
-    if (node.get_attr<BoolAttribute>("add_prefix"))
+    if (node.val<bool>(A_ADD_PREFIX))
       fname = prepend_project_name_to_path(fname);
 
     p_in->to_csv(fname.string());

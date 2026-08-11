@@ -3,39 +3,41 @@
  * this software. */
 #include "highmap/primitives.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
+constexpr const char *P_DR       = "dr";
+constexpr const char *P_ENVELOPE = "envelope";
+constexpr const char *P_OUT      = "output";
+
+constexpr const char *A_ANGLE       = "angle";
+constexpr const char *A_CENTER      = "center";
+constexpr const char *A_KW          = "kw";
+constexpr const char *A_PHASE_SHIFT = "phase_shift";
 
 void setup_wave_square_node(BaseNode &node)
 {
   Logger::log()->trace("setup node {}", node.get_label());
 
   // port(s)
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "dr");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "envelope");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, "output", CONFIG(node));
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_DR);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_ENVELOPE);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_OUT, CONFIG(node));
 
   // attribute(s)
-  node.add_attr<FloatAttribute>("kw", "kw", 2.f, 0.01f, FLT_MAX);
-  node.add_attr<FloatAttribute>("angle", "angle", 0.f, 0.f, 180.f, "{:.1f}°");
-  node.add_attr<FloatAttribute>("phase_shift",
-                                "phase_shift",
-                                0.f,
-                                -180.f,
-                                180.f,
-                                "{:.1f}°");
-  node.add_attr<Vec2FloatAttribute>("center", "center");
-
-  // attribute(s) order
-  node.set_attr_ordered_key({"kw", "angle", "phase_shift", "center"});
+  add_float(node, A_KW, "kw", 2.f, 0.01f, FLT_MAX);
+  add_float(node, A_ANGLE, "angle", 0.f, 0.f, 180.f, "{:.1f}°");
+  add_float(node, A_PHASE_SHIFT, "phase_shift", 0.f, -180.f, 180.f, "{:.1f}°");
+  add_xy(node, A_CENTER, "center");
 
   setup_post_process_heightmap_attributes(node,
                                           {.add_mix = true, .remap_active_state = true});
@@ -46,28 +48,27 @@ void compute_wave_square_node(BaseNode &node)
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
   // base noise function
-  hmap::VirtualArray *p_dr = node.get_value_ref<hmap::VirtualArray>("dr");
-  hmap::VirtualArray *p_env = node.get_value_ref<hmap::VirtualArray>("envelope");
-  hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>("output");
+  hmap::VirtualArray *p_dr  = node.get_value_ref<hmap::VirtualArray>(P_DR);
+  hmap::VirtualArray *p_env = node.get_value_ref<hmap::VirtualArray>(P_ENVELOPE);
+  hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
-  const float phase_rad = node.get_attr<FloatAttribute>("phase_shift") *
-                          float(M_PI / 180.0);
+  const float phase_rad = node.val<float>(A_PHASE_SHIFT) * float(M_PI / 180.0);
 
   hmap::for_each_tile(
       {p_out, p_dr},
       [&](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &region)
       {
         hmap::Array *pa_out = p_arrays[0];
-        hmap::Array *pa_dr = p_arrays[1];
+        hmap::Array *pa_dr  = p_arrays[1];
 
         *pa_out = hmap::wave_square(region.shape,
-                                    node.get_attr<FloatAttribute>("kw"),
-                                    node.get_attr<FloatAttribute>("angle"),
+                                    node.val<float>(A_KW),
+                                    node.val<float>(A_ANGLE),
                                     phase_rad,
                                     pa_dr,
                                     nullptr,
                                     nullptr,
-                                    node.get_attr<Vec2FloatAttribute>("center"),
+                                    node.val<glm::vec2>(A_CENTER),
                                     region.bbox);
       },
       node.cfg().cm_cpu);

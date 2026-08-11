@@ -5,13 +5,11 @@
 #include "highmap/opencl/gpu_opencl.hpp"
 #include "highmap/primitives.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
-
-using namespace attr;
 
 namespace hesiod
 {
@@ -20,16 +18,20 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_IN = "input";
-constexpr const char *P_MASK = "mask";
-constexpr const char *P_ZMAX = "zmax";
-constexpr const char *P_OUT = "output";
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
+
+constexpr const char *P_IN         = "input";
+constexpr const char *P_MASK       = "mask";
+constexpr const char *P_ZMAX       = "zmax";
+constexpr const char *P_OUT        = "output";
 constexpr const char *P_DEPOSITION = "deposition";
 
 constexpr const char *A_TALUS_GLOBAL = "talus_global";
-constexpr const char *A_ZMAX = "zmax";
-constexpr const char *A_DURATION = "duration";
-constexpr const char *A_SCALE_TALUS = "scale_talus_with_elevation";
+constexpr const char *A_ZMAX         = "zmax";
+constexpr const char *A_DURATION     = "duration";
+constexpr const char *A_SCALE_TALUS  = "scale_talus_with_elevation";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -50,23 +52,13 @@ void setup_thermal_scree_node(BaseNode &node)
   // --- Attributes
 
   // clang-format off
-  node.add_attr<FloatAttribute>(A_TALUS_GLOBAL, "Slope", 2.f, 0.f, FLT_MAX);
-  node.add_attr<FloatAttribute>(A_ZMAX, "Scree Max Elevation", 0.5f, -1.f, 2.f);
-  node.add_attr<FloatAttribute>(A_DURATION, "Duration", 0.3f, 0.05f, 6.f);
-  node.add_attr<BoolAttribute>(A_SCALE_TALUS, "Scale with Elevation", true);
+  add_float(node, A_TALUS_GLOBAL, "Slope", 2.f, 0.f, FLT_MAX);
+  add_float(node, A_ZMAX, "Scree Max Elevation", 0.5f, -1.f, 2.f);
+  add_float(node, A_DURATION, "Duration", 0.3f, 0.05f, 6.f);
+  add_bool(node, A_SCALE_TALUS, "Scale with Elevation", true);
   // clang-format on
 
   // --- Attribute(s) order
-
-  node.set_attr_ordered_key({"_GROUPBOX_BEGIN_Slope Constraints",
-                             A_TALUS_GLOBAL,
-                             A_SCALE_TALUS,
-                             A_ZMAX,
-                             "_GROUPBOX_END_",
-                             //
-                             "_GROUPBOX_BEGIN_Deposition Dynamics",
-                             A_DURATION,
-                             "_GROUPBOX_END_"});
 
   setup_pre_process_mask_attributes(node);
   setup_post_process_heightmap_attributes(node,
@@ -83,10 +75,10 @@ void compute_thermal_scree_node(BaseNode &node)
 
   // --- Inputs / Outputs
 
-  auto *p_in = node.get_value_ref<hmap::VirtualArray>(P_IN);
-  auto *p_mask = node.get_value_ref<hmap::VirtualArray>(P_MASK);
-  auto *p_zmax = node.get_value_ref<hmap::VirtualArray>(P_ZMAX);
-  auto *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
+  auto *p_in         = node.get_value_ref<hmap::VirtualArray>(P_IN);
+  auto *p_mask       = node.get_value_ref<hmap::VirtualArray>(P_MASK);
+  auto *p_zmax       = node.get_value_ref<hmap::VirtualArray>(P_ZMAX);
+  auto *p_out        = node.get_value_ref<hmap::VirtualArray>(P_OUT);
   auto *p_deposition = node.get_value_ref<hmap::VirtualArray>(P_DEPOSITION);
 
   if (!p_in)
@@ -95,13 +87,13 @@ void compute_thermal_scree_node(BaseNode &node)
   // --- Params
 
   // clang-format off
-  const auto talus_global = node.get_attr<FloatAttribute>(A_TALUS_GLOBAL);
-  const auto zmax_value   = node.get_attr<FloatAttribute>(A_ZMAX);
-  const auto duration     = node.get_attr<FloatAttribute>(A_DURATION);
-  const auto scale_talus  = node.get_attr<BoolAttribute>(A_SCALE_TALUS);
+  const auto talus_global = node.val<float>(A_TALUS_GLOBAL);
+  const auto zmax_value   = node.val<float>(A_ZMAX);
+  const auto duration     = node.val<float>(A_DURATION);
+  const auto scale_talus  = node.val<bool>(A_SCALE_TALUS);
   // clang-format on
 
-  const float talus = talus_global / float(p_out->shape.x);
+  const float talus      = talus_global / float(p_out->shape.x);
   const int   iterations = int(duration * p_out->shape.x);
 
   // --- Prepare mask
@@ -139,7 +131,7 @@ void compute_thermal_scree_node(BaseNode &node)
           const hmap::TileRegion &)
       {
         auto [pa_in, pa_mask, pa_talus_map, pa_zmax] = unpack<4>(in);
-        auto [pa_out, pa_deposition] = unpack<2>(out);
+        auto [pa_out, pa_deposition]                 = unpack<2>(out);
 
         *pa_out = *pa_in;
 

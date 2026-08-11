@@ -3,13 +3,11 @@
  * this software. */
 #include "highmap/erosion.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
-
-using namespace attr;
 
 namespace hesiod
 {
@@ -18,13 +16,17 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_IN = "input";
-constexpr const char *P_MASK = "mask";
-constexpr const char *P_OUT = "output";
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
+
+constexpr const char *P_IN         = "input";
+constexpr const char *P_MASK       = "mask";
+constexpr const char *P_OUT        = "output";
 constexpr const char *P_DEPOSITION = "deposition";
 
-constexpr const char *A_RADIUS = "radius";
-constexpr const char *A_STRENGTH = "strength";
+constexpr const char *A_RADIUS     = "radius";
+constexpr const char *A_STRENGTH   = "strength";
 constexpr const char *A_ITERATIONS = "iterations";
 
 // -----------------------------------------------------------------------------
@@ -45,18 +47,12 @@ void setup_deposition_fill_holes_node(BaseNode &node)
   // --- Attributes
 
   // clang-format off
-  node.add_attr<FloatAttribute>(A_RADIUS, "Radius", 0.05f, 0.f, 0.2f);
-  node.add_attr<FloatAttribute>(A_STRENGTH, "Strength", 1.f, 0.f, 1.f);
-  node.add_attr<IntAttribute>(A_ITERATIONS, "Iterations", 1, 1, 16);
+  add_float(node, A_RADIUS, "Radius", 0.05f, 0.f, 0.2f);
+  add_float(node, A_STRENGTH, "Strength", 1.f, 0.f, 1.f);
+  add_int(node, A_ITERATIONS, "Iterations", 1, 1, 16);
   // clang-format on
 
   // --- Attribute(s) order
-
-  node.set_attr_ordered_key({"_GROUPBOX_BEGIN_Main Parameters",
-                             A_RADIUS,
-                             A_STRENGTH,
-                             A_ITERATIONS,
-                             "_GROUPBOX_END_"});
 
   setup_pre_process_mask_attributes(node);
   setup_post_process_heightmap_attributes(node,
@@ -73,9 +69,9 @@ void compute_deposition_fill_holes_node(BaseNode &node)
 
   // --- Inputs / Outputs
 
-  auto *p_in = node.get_value_ref<hmap::VirtualArray>(P_IN);
-  auto *p_mask = node.get_value_ref<hmap::VirtualArray>(P_MASK);
-  auto *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
+  auto *p_in         = node.get_value_ref<hmap::VirtualArray>(P_IN);
+  auto *p_mask       = node.get_value_ref<hmap::VirtualArray>(P_MASK);
+  auto *p_out        = node.get_value_ref<hmap::VirtualArray>(P_OUT);
   auto *p_deposition = node.get_value_ref<hmap::VirtualArray>(P_DEPOSITION);
 
   if (!p_in)
@@ -84,9 +80,9 @@ void compute_deposition_fill_holes_node(BaseNode &node)
   // --- Params
 
   // clang-format off
-  const auto radius     = node.get_attr<FloatAttribute>(A_RADIUS);
-  const auto strength   = node.get_attr<FloatAttribute>(A_STRENGTH);
-  const auto iterations = node.get_attr<IntAttribute>(A_ITERATIONS);
+  const auto radius     = node.val<float>(A_RADIUS);
+  const auto strength   = node.val<float>(A_STRENGTH);
+  const auto iterations = node.val<int>(A_ITERATIONS);
   // clang-format on
 
   const int ir = std::max(1, int(radius * p_out->shape.x));
@@ -104,7 +100,7 @@ void compute_deposition_fill_holes_node(BaseNode &node)
           std::vector<hmap::Array *>       out,
           const hmap::TileRegion &)
       {
-        auto [pa_in, pa_mask] = unpack<2>(in);
+        auto [pa_in, pa_mask]        = unpack<2>(in);
         auto [pa_out, pa_deposition] = unpack<2>(out);
 
         *pa_out = *pa_in;

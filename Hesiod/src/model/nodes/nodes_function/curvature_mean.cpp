@@ -5,33 +5,38 @@
 #include "highmap/opencl/gpu_opencl.hpp"
 #include "highmap/range.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
+constexpr const char *P_IN  = "input";
+constexpr const char *P_OUT = "output";
+
+constexpr const char *A_CLAMP_MAX   = "clamp_max";
+constexpr const char *A_VALUES_KEPT = "values_kept";
+constexpr const char *A_VC_MAX      = "vc_max";
 
 void setup_curvature_mean_node(BaseNode &node)
 {
   Logger::log()->trace("setup node {}", node.get_label());
 
   // port(s)
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "input");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, "output", CONFIG(node));
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_IN);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_OUT, CONFIG(node));
 
   // attribute(s)
   std::vector<std::string> choices = {"positive", "negative", "both"};
-  node.add_attr<ChoiceAttribute>("values_kept", "values_kept", choices);
-  node.add_attr<BoolAttribute>("clamp_max", "clamp_max", false);
-  node.add_attr<FloatAttribute>("vc_max", "vc_max", 1.f, 0.f, FLT_MAX, "{:.4f}");
-
-  // attribute(s) order
-  node.set_attr_ordered_key({"values_kept", "clamp_max", "vc_max"});
+  add_choice(node, A_VALUES_KEPT, "values_kept", choices);
+  add_bool(node, A_CLAMP_MAX, "clamp_max", false);
+  add_float(node, A_VC_MAX, "vc_max", 1.f, 0.f, FLT_MAX, "{:.4f}");
 
   setup_post_process_heightmap_attributes(node,
                                           {.add_mix = true, .remap_active_state = false});
@@ -43,11 +48,11 @@ void compute_curvature_mean_node(BaseNode &node)
 
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  hmap::VirtualArray *p_in = node.get_value_ref<hmap::VirtualArray>("input");
+  hmap::VirtualArray *p_in = node.get_value_ref<hmap::VirtualArray>(P_IN);
 
   if (p_in)
   {
-    hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>("output");
+    hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
     int nx = p_out->shape.x; // for gradient scaling
 
@@ -63,7 +68,7 @@ void compute_curvature_mean_node(BaseNode &node)
                     nx;
 
           // determine curvature sign handling
-          const std::string choice = node.get_attr<ChoiceAttribute>("values_kept");
+          const std::string choice    = node.val<std::string>(A_VALUES_KEPT);
           const bool        keep_both = (choice == "both");
 
           // if only one curvature sign is kept
@@ -76,9 +81,9 @@ void compute_curvature_mean_node(BaseNode &node)
           }
 
           // clamp output range
-          const float vc_max = node.get_attr<FloatAttribute>("vc_max");
+          const float vc_max = node.val<float>(A_VC_MAX);
 
-          if (node.get_attr<BoolAttribute>("clamp_max") && !keep_both)
+          if (node.val<bool>(A_CLAMP_MAX) && !keep_both)
             hmap::clamp_max(*pa_out, vc_max);
           else
             hmap::clamp(*pa_out, -vc_max, vc_max);

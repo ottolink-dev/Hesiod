@@ -5,13 +5,11 @@
 #include "highmap/opencl/gpu_opencl.hpp"
 #include "highmap/range.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
-
-using namespace attr;
 
 namespace hesiod
 {
@@ -20,11 +18,15 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_IN = "input";
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
+
+constexpr const char *P_IN  = "input";
 constexpr const char *P_OUT = "output";
 
 constexpr const char *A_VALUES_KEPT = "values_kept";
-constexpr const char *A_RADIUS = "radius";
+constexpr const char *A_RADIUS      = "radius";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -44,14 +46,11 @@ void setup_level_set_curvature_node(BaseNode &node)
   std::vector<std::string> choices = {"positive", "negative", "both"};
 
   // clang-format off
-  node.add_attr<ChoiceAttribute>(A_VALUES_KEPT, "Values Kept", choices, "both");
-  node.add_attr<FloatAttribute>(A_RADIUS, "Radius", 0.1f, 0.f, 1.f, "{:.4f}");
+  add_choice(node, A_VALUES_KEPT, "Values Kept", choices, "both");
+  add_float(node, A_RADIUS, "Radius", 0.1f, 0.f, 1.f, "{:.4f}");
   // clang-format on
 
   // --- Attribute(s) order
-
-  node.set_attr_ordered_key(
-      {"_GROUPBOX_BEGIN_Main Parameters", A_RADIUS, A_VALUES_KEPT, "_GROUPBOX_END_"});
 
   setup_post_process_heightmap_attributes(node,
                                           {.add_mix = false, .remap_active_state = true});
@@ -67,7 +66,7 @@ void compute_level_set_curvature_node(BaseNode &node)
 
   // --- Inputs / Outputs
 
-  auto *p_in = node.get_value_ref<hmap::VirtualArray>(P_IN);
+  auto *p_in  = node.get_value_ref<hmap::VirtualArray>(P_IN);
   auto *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
   if (!p_in)
@@ -76,12 +75,12 @@ void compute_level_set_curvature_node(BaseNode &node)
   // --- Params
 
   // clang-format off
-  const auto radius      = node.get_attr<FloatAttribute>(A_RADIUS);
-  const auto values_kept = node.get_attr<ChoiceAttribute>(A_VALUES_KEPT);
+  const auto radius      = node.val<float>(A_RADIUS);
+  const auto values_kept = node.val<std::string>(A_VALUES_KEPT);
   // clang-format on
 
   bool keep_both = (values_kept == "both");
-  int  ir = std::max(1, int(radius * p_out->shape.x));
+  int  ir        = std::max(1, int(radius * p_out->shape.x));
 
   // --- Compute
 
@@ -92,7 +91,7 @@ void compute_level_set_curvature_node(BaseNode &node)
           std::vector<hmap::Array *>       out,
           const hmap::TileRegion &)
       {
-        auto [pa_in] = unpack<1>(in);
+        auto [pa_in]  = unpack<1>(in);
         auto [pa_out] = unpack<1>(out);
 
         *pa_out = hmap::gpu::level_set_curvature(*pa_in, ir);

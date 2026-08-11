@@ -3,13 +3,11 @@
  * this software. */
 #include "highmap/geometry/path.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
-
-using namespace attr;
 
 namespace hesiod
 {
@@ -18,15 +16,19 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_INPUT = "input";
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
+
+constexpr const char *P_INPUT  = "input";
 constexpr const char *P_OUTPUT = "output";
 
-constexpr const char *A_RATIO = "ratio";
-constexpr const char *A_NOISE_RATIO = "noise_ratio";
-constexpr const char *A_SEED = "seed";
-constexpr const char *A_ITERATIONS = "iterations";
+constexpr const char *A_RATIO          = "ratio";
+constexpr const char *A_NOISE_RATIO    = "noise_ratio";
+constexpr const char *A_SEED           = "seed";
+constexpr const char *A_ITERATIONS     = "iterations";
 constexpr const char *A_EDGE_DIVISIONS = "edge_divisions";
-constexpr const char *A_REMOVE_LOOPS = "remove_loops";
+constexpr const char *A_REMOVE_LOOPS   = "remove_loops";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -41,25 +43,12 @@ void setup_path_meanderize_node(BaseNode &node)
   node.add_port<hmap::Path>(gnode::PortType::OUT, P_OUTPUT);
 
   // attribute(s)
-  node.add_attr<FloatAttribute>(A_RATIO, "Meander Ratio", 0.2f, 0.f, 1.f);
-  node.add_attr<FloatAttribute>(A_NOISE_RATIO, "Noise Ratio", 0.1f, 0.f, 1.f);
-  node.add_attr<SeedAttribute>(A_SEED, "Seed");
-  node.add_attr<IntAttribute>(A_ITERATIONS, "Solver Iterations", 2, 1, 8);
-  node.add_attr<IntAttribute>(A_EDGE_DIVISIONS, "Edge Divisions", 10, 1, 32);
-  node.add_attr<BoolAttribute>(A_REMOVE_LOOPS, "Remove Geometric Loops", false);
-
-  // attribute(s) order
-  node.set_attr_ordered_key({"_GROUPBOX_BEGIN_Meander Parameters",
-                             A_RATIO,
-                             A_NOISE_RATIO,
-                             A_SEED,
-                             A_REMOVE_LOOPS,
-                             "_GROUPBOX_END_",
-                             //
-                             "_GROUPBOX_BEGIN_Solver",
-                             A_ITERATIONS,
-                             A_EDGE_DIVISIONS,
-                             "_GROUPBOX_END_"});
+  add_float(node, A_RATIO, "Meander Ratio", 0.2f, 0.f, 1.f);
+  add_float(node, A_NOISE_RATIO, "Noise Ratio", 0.1f, 0.f, 1.f);
+  add_seed(node, A_SEED, "Seed");
+  add_int(node, A_ITERATIONS, "Solver Iterations", 2, 1, 8);
+  add_int(node, A_EDGE_DIVISIONS, "Edge Divisions", 10, 1, 32);
+  add_bool(node, A_REMOVE_LOOPS, "Remove Geometric Loops", false);
 }
 
 // -----------------------------------------------------------------------------
@@ -70,7 +59,7 @@ void compute_path_meanderize_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  hmap::Path *p_in = node.get_value_ref<hmap::Path>(P_INPUT);
+  hmap::Path *p_in  = node.get_value_ref<hmap::Path>(P_INPUT);
   hmap::Path *p_out = node.get_value_ref<hmap::Path>(P_OUTPUT);
 
   if (!p_in || p_in->size() < 2)
@@ -90,12 +79,12 @@ void compute_path_meanderize_node(BaseNode &node)
       bool  remove_loops;
     };
     return P{
-        .ratio = node.get_attr<FloatAttribute>(A_RATIO),
-        .noise_ratio = node.get_attr<FloatAttribute>(A_NOISE_RATIO),
-        .seed = node.get_attr<SeedAttribute>(A_SEED),
-        .iterations = node.get_attr<IntAttribute>(A_ITERATIONS),
-        .edge_divisions = node.get_attr<IntAttribute>(A_EDGE_DIVISIONS),
-        .remove_loops = node.get_attr<BoolAttribute>(A_REMOVE_LOOPS),
+        .ratio          = node.val<float>(A_RATIO),
+        .noise_ratio    = node.val<float>(A_NOISE_RATIO),
+        .seed           = uint(node.val<int>(A_SEED)),
+        .iterations     = node.val<int>(A_ITERATIONS),
+        .edge_divisions = node.val<int>(A_EDGE_DIVISIONS),
+        .remove_loops   = node.val<bool>(A_REMOVE_LOOPS),
     };
   }();
 

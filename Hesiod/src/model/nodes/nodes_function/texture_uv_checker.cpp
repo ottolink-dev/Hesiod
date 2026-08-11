@@ -6,44 +6,49 @@
 #include "highmap/tensor.hpp"
 #include "highmap/virtual_array/virtual_texture.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
+constexpr const char *P_TEXTURE = "texture";
+
+constexpr const char *A_SIZE = "size";
 
 void setup_texture_uv_checker_node(BaseNode &node)
 {
   Logger::log()->trace("setup node {}", node.get_label());
 
   // port(s)
-  node.add_port<hmap::VirtualTexture>(gnode::PortType::OUT, "texture", CONFIG_TEX(node));
+  node.add_port<hmap::VirtualTexture>(gnode::PortType::OUT, P_TEXTURE, CONFIG_TEX(node));
 
   // attribute(s)
   std::vector<std::string> choices = {"4x4", "8x8", "16x16"};
-  node.add_attr<ChoiceAttribute>("size", "size", choices, "8x8");
+  add_choice(node, A_SIZE, "size", choices, "8x8");
 }
 
 void compute_texture_uv_checker_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  hmap::VirtualTexture *p_out = node.get_value_ref<hmap::VirtualTexture>("texture");
+  hmap::VirtualTexture *p_out = node.get_value_ref<hmap::VirtualTexture>(P_TEXTURE);
 
   // generated with https://uvchecker.vinzi.xyz/
 
   std::string fname;
 
-  if (node.get_attr<ChoiceAttribute>("size") == "4x4")
+  if (node.val<std::string>(A_SIZE) == "4x4")
     fname = "data/uv_checker_2k_04x04.png";
-  else if (node.get_attr<ChoiceAttribute>("size") == "8x8")
+  else if (node.val<std::string>(A_SIZE) == "8x8")
     fname = "data/uv_checker_2k_08x08.png";
-  else if (node.get_attr<ChoiceAttribute>("size") == "16x16")
+  else if (node.val<std::string>(A_SIZE) == "16x16")
     fname = "data/uv_checker_2k_16x16.png";
 
   // if the file exists, keep going

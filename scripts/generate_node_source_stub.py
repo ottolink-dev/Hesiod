@@ -69,7 +69,7 @@ print()
 for t, name in attrs:
     if t == "bool":
         print(
-            f'node.add_attr<BoolAttribute>(A_{name.upper()}, "{name}", false);'
+            f'add_bool(node, A_{name.upper()}, "{name}", false);'
         )
     elif t == "int":
         print(
@@ -77,7 +77,7 @@ for t, name in attrs:
         )
     else:
         print(
-            f'node.add_attr<FloatAttribute>(A_{name.upper()}, "{name}", 0.f, 0.f, 1.f);'
+            f'add_float(node, A_{name.upper()}, "{name}", 0.f, 0.f, 1.f);'
         )
 
 # ---------------------------

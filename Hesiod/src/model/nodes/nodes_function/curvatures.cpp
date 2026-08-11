@@ -5,14 +5,12 @@
 #include "highmap/opencl/gpu_opencl.hpp"
 #include "highmap/range.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/app/enum_mappings.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
-
-using namespace attr;
 
 namespace hesiod
 {
@@ -21,14 +19,18 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_IN = "input";
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
+
+constexpr const char *P_IN  = "input";
 constexpr const char *P_OUT = "mask";
 
-constexpr const char *A_RADIUS = "radius";
-constexpr const char *A_CTYPE = "ctype";
+constexpr const char *A_RADIUS   = "radius";
+constexpr const char *A_CTYPE    = "ctype";
 constexpr const char *A_CLAMPING = "clamping";
-constexpr const char *A_SATMAX = "satmax";
-constexpr const char *A_APPROX = "approx";
+constexpr const char *A_SATMAX   = "satmax";
+constexpr const char *A_APPROX   = "approx";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -48,22 +50,14 @@ void setup_curvatures_node(BaseNode &node)
   std::vector<std::string> choices = {"Positive", "Negative", "Both"};
 
   // clang-format off
-  node.add_attr<FloatAttribute>(A_RADIUS, "Radius", 0.f, 0.f, 0.5f);
-  node.add_attr<EnumAttribute>(A_CTYPE, "Curvature Type", enum_mappings.curvature_type_map, "Mean");
-  node.add_attr<ChoiceAttribute>(A_CLAMPING, "Values Kept", choices);
-  node.add_attr<FloatAttribute>(A_SATMAX, "Saturation Ratio", 2.f, 0.f, 20.f, "{:.0f}%");
-  node.add_attr<BoolAttribute>(A_APPROX, "Approx. Algo.", false);
+  add_float(node, A_RADIUS, "Radius", 0.f, 0.f, 0.5f);
+  add_enum(node, A_CTYPE, "Curvature Type", enum_mappings.curvature_type_map, "Mean");
+  add_choice(node, A_CLAMPING, "Values Kept", choices);
+  add_float(node, A_SATMAX, "Saturation Ratio", 2.f, 0.f, 20.f, "{:.0f}%");
+  add_bool(node, A_APPROX, "Approx. Algo.", false);
   // clang-format on
 
   // --- Attribute(s) order
-
-  node.set_attr_ordered_key({"_GROUPBOX_BEGIN_Metric Choice",
-                             A_RADIUS,
-                             A_CTYPE,
-                             A_CLAMPING,
-                             A_SATMAX,
-                             A_APPROX,
-                             "_GROUPBOX_END_"});
 
   setup_post_process_heightmap_attributes(node,
                                           {.add_mix = true, .remap_active_state = true});
@@ -79,7 +73,7 @@ void compute_curvatures_node(BaseNode &node)
 
   // --- Inputs / Outputs
 
-  auto *p_in = node.get_value_ref<hmap::VirtualArray>(P_IN);
+  auto *p_in  = node.get_value_ref<hmap::VirtualArray>(P_IN);
   auto *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
   if (!p_in)
@@ -88,17 +82,17 @@ void compute_curvatures_node(BaseNode &node)
   // --- Params
 
   // clang-format off
-  const auto radius      = node.get_attr<FloatAttribute>(A_RADIUS);
-  const auto ctype       = hmap::CurvatureType(node.get_attr<EnumAttribute>(A_CTYPE));
-  const auto clamping    = node.get_attr<ChoiceAttribute>(A_CLAMPING);
-  const auto approx_algo = node.get_attr<BoolAttribute>(A_APPROX);
-  const auto sat_perc    = 0.01f * node.get_attr<FloatAttribute>(A_SATMAX);
+  const auto radius      = node.val<float>(A_RADIUS);
+  const auto ctype       = hmap::CurvatureType(node.val<int>(A_CTYPE));
+  const auto clamping    = node.val<std::string>(A_CLAMPING);
+  const auto approx_algo = node.val<bool>(A_APPROX);
+  const auto sat_perc    = 0.01f * node.val<float>(A_SATMAX);
   // clang-format on
 
   const bool  keep_both = (clamping == "Both");
-  const int   ir = std::max(1, int(radius * p_out->shape.x));
-  const float satmin = sat_perc;
-  const float satmax = 1.f - sat_perc;
+  const int   ir        = std::max(1, int(radius * p_out->shape.x));
+  const float satmin    = sat_perc;
+  const float satmax    = 1.f - sat_perc;
 
   // --- Compute
 
@@ -109,7 +103,7 @@ void compute_curvatures_node(BaseNode &node)
           std::vector<hmap::Array *>       out,
           const hmap::TileRegion &)
       {
-        auto [pa_in] = unpack<1>(in);
+        auto [pa_in]  = unpack<1>(in);
         auto [pa_out] = unpack<1>(out);
 
         *pa_out = hmap::gpu::curvature_quadric(*pa_in, ir, ctype, approx_algo);

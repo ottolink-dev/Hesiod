@@ -4,64 +4,61 @@
 #include "highmap/opencl/gpu_opencl.hpp"
 #include "highmap/primitives.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
+constexpr const char *P_DX       = "dx";
+constexpr const char *P_DY       = "dy";
+constexpr const char *P_ENVELOPE = "envelope";
+constexpr const char *P_OUT      = "out";
+
+constexpr const char *A_ADD_DEPOSITION = "add_deposition";
+constexpr const char *A_ANGLE          = "angle";
+constexpr const char *A_BASE_NOISE_AMP = "base_noise_amp";
+constexpr const char *A_CENTER         = "center";
+constexpr const char *A_ELEVATION      = "elevation";
+constexpr const char *A_GAMMA          = "gamma";
+constexpr const char *A_K_SMOOTHING    = "k_smoothing";
+constexpr const char *A_OCTAVES        = "octaves";
+constexpr const char *A_PEAK_KW        = "peak_kw";
+constexpr const char *A_RIDGE_AMP      = "ridge_amp";
+constexpr const char *A_RUGOSITY       = "rugosity";
+constexpr const char *A_SCALE          = "scale";
+constexpr const char *A_SEED           = "seed";
 
 void setup_mountain_stump_node(BaseNode &node)
 {
   Logger::log()->trace("setup node {}", node.get_label());
 
   // port(s)
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "dx");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "dy");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "envelope");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, "out", CONFIG(node));
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_DX);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_DY);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_ENVELOPE);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_OUT, CONFIG(node));
 
   // attribute(s)
-  node.add_attr<FloatAttribute>("elevation", "elevation", 0.7f, 0.f, 1.f);
-  node.add_attr<FloatAttribute>("scale", "scale", 0.75f, 0.01f, FLT_MAX);
-  node.add_attr<FloatAttribute>("ridge_amp", "ridge_amp", 0.75f, 0.f, FLT_MAX);
-  node.add_attr<SeedAttribute>("seed", "Seed");
-  node.add_attr<IntAttribute>("octaves", "Octaves", 8, 0, 32);
-  node.add_attr<FloatAttribute>("peak_kw", "peak_kw", 6.f, 0.01f, FLT_MAX);
-  node.add_attr<FloatAttribute>("rugosity", "rugosity", 0.f, 0.f, 1.f);
-  node.add_attr<FloatAttribute>("angle", "angle", 45.f, -180.f, 180.f);
-  node.add_attr<FloatAttribute>("k_smoothing", "k_smoothing", 0.f, 0.f, 1.f);
-  node.add_attr<FloatAttribute>("gamma", "gamma", 0.25f, 0.01f, 4.f);
-  node.add_attr<BoolAttribute>("add_deposition", "add_deposition", false);
-  node.add_attr<FloatAttribute>("base_noise_amp", "base_noise_amp", 0.05f, 0.f, 1.f);
-  node.add_attr<Vec2FloatAttribute>("center", "center");
-
-  // attribute(s) order
-  node.set_attr_ordered_key({"_GROUPBOX_BEGIN_Main Parameters",
-                             "_TEXT_Base Terrain Shape",
-                             "elevation",
-                             "scale",
-                             "ridge_amp",
-                             "seed",
-                             "octaves",
-                             "peak_kw",
-                             "_TEXT_Position",
-                             "center",
-                             //
-                             "_TEXT_Surface Detail & Structure",
-                             "rugosity",
-                             "angle",
-                             "k_smoothing",
-                             "gamma",
-                             "add_deposition",
-                             //
-                             "_TEXT_Noise & Modulation",
-                             "base_noise_amp",
-                             "_GROUPBOX_END_"});
+  add_float(node, A_ELEVATION, "elevation", 0.7f, 0.f, 1.f);
+  add_float(node, A_SCALE, "scale", 0.75f, 0.01f, FLT_MAX);
+  add_float(node, A_RIDGE_AMP, "ridge_amp", 0.75f, 0.f, FLT_MAX);
+  add_seed(node, A_SEED, "Seed");
+  add_int(node, A_OCTAVES, "Octaves", 8, 0, 32);
+  add_float(node, A_PEAK_KW, "peak_kw", 6.f, 0.01f, FLT_MAX);
+  add_float(node, A_RUGOSITY, "rugosity", 0.f, 0.f, 1.f);
+  add_float(node, A_ANGLE, "angle", 45.f, -180.f, 180.f);
+  add_float(node, A_K_SMOOTHING, "k_smoothing", 0.f, 0.f, 1.f);
+  add_float(node, A_GAMMA, "gamma", 0.25f, 0.01f, 4.f);
+  add_bool(node, A_ADD_DEPOSITION, "add_deposition", false);
+  add_float(node, A_BASE_NOISE_AMP, "base_noise_amp", 0.05f, 0.f, 1.f);
+  add_xy(node, A_CENTER, "center");
 
   setup_post_process_heightmap_attributes(
       node,
@@ -73,10 +70,10 @@ void compute_mountain_stump_node(BaseNode &node)
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
   // base mountain_stump function
-  hmap::VirtualArray *p_dx = node.get_value_ref<hmap::VirtualArray>("dx");
-  hmap::VirtualArray *p_dy = node.get_value_ref<hmap::VirtualArray>("dy");
-  hmap::VirtualArray *p_env = node.get_value_ref<hmap::VirtualArray>("envelope");
-  hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>("out");
+  hmap::VirtualArray *p_dx  = node.get_value_ref<hmap::VirtualArray>(P_DX);
+  hmap::VirtualArray *p_dy  = node.get_value_ref<hmap::VirtualArray>(P_DY);
+  hmap::VirtualArray *p_env = node.get_value_ref<hmap::VirtualArray>(P_ENVELOPE);
+  hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
   hmap::for_each_tile(
       {p_out, p_dx, p_dy},
@@ -84,27 +81,26 @@ void compute_mountain_stump_node(BaseNode &node)
       {
         auto [pa_out, pa_dx, pa_dy] = unpack<3>(p_arrays);
 
-        *pa_out = hmap::gpu::mountain_stump(
-            region.shape,
-            node.get_attr<SeedAttribute>("seed"),
-            node.get_attr<FloatAttribute>("scale"),
-            node.get_attr<IntAttribute>("octaves"),
-            node.get_attr<FloatAttribute>("peak_kw"),
-            node.get_attr<FloatAttribute>("rugosity"),
-            node.get_attr<FloatAttribute>("angle"),
-            node.get_attr<FloatAttribute>("k_smoothing"),
-            node.get_attr<FloatAttribute>("gamma"),
-            node.get_attr<BoolAttribute>("add_deposition"),
-            node.get_attr<FloatAttribute>("ridge_amp"),
-            node.get_attr<FloatAttribute>("base_noise_amp"),
-            node.get_attr<Vec2FloatAttribute>("center"),
-            pa_dx,
-            pa_dy,
-            region.bbox);
+        *pa_out = hmap::gpu::mountain_stump(region.shape,
+                                            node.val<int>(A_SEED),
+                                            node.val<float>(A_SCALE),
+                                            node.val<int>(A_OCTAVES),
+                                            node.val<float>(A_PEAK_KW),
+                                            node.val<float>(A_RUGOSITY),
+                                            node.val<float>(A_ANGLE),
+                                            node.val<float>(A_K_SMOOTHING),
+                                            node.val<float>(A_GAMMA),
+                                            node.val<bool>(A_ADD_DEPOSITION),
+                                            node.val<float>(A_RIDGE_AMP),
+                                            node.val<float>(A_BASE_NOISE_AMP),
+                                            node.val<glm::vec2>(A_CENTER),
+                                            pa_dx,
+                                            pa_dy,
+                                            region.bbox);
       },
       node.cfg().cm_gpu);
 
-  p_out->remap(0.f, node.get_attr<FloatAttribute>("elevation"), node.cfg().cm_cpu);
+  p_out->remap(0.f, node.val<float>(A_ELEVATION), node.cfg().cm_cpu);
 
   // post-process
   post_apply_enveloppe(node, *p_out, p_env);

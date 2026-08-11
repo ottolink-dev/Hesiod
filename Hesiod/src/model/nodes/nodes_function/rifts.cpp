@@ -5,80 +5,68 @@
 #include "highmap/opencl/gpu_opencl.hpp"
 #include "highmap/range.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
+constexpr const char *P_DX   = "dx";
+constexpr const char *P_DY   = "dy";
+constexpr const char *P_IN   = "input";
+constexpr const char *P_MASK = "mask";
+constexpr const char *P_OUT  = "output";
+
+constexpr const char *A_AMPLITUDE             = "amplitude";
+constexpr const char *A_ANGLE                 = "angle";
+constexpr const char *A_APPLY_MASK            = "apply_mask";
+constexpr const char *A_CENTER                = "center";
+constexpr const char *A_CLAMP_VMIN            = "clamp_vmin";
+constexpr const char *A_ELEVATION_NOISE_AMP   = "elevation_noise_amp";
+constexpr const char *A_ELEVATION_NOISE_SHIFT = "elevation_noise_shift";
+constexpr const char *A_K_SMOOTH_BOTTOM       = "k_smooth_bottom";
+constexpr const char *A_K_SMOOTH_TOP          = "k_smooth_top";
+constexpr const char *A_KW                    = "kw";
+constexpr const char *A_MASK_GAMMA            = "mask_gamma";
+constexpr const char *A_RADIAL_SPREAD_AMP     = "radial_spread_amp";
+constexpr const char *A_REMAP_VMIN            = "remap_vmin";
+constexpr const char *A_REVERSE_MASK          = "reverse_mask";
+constexpr const char *A_SEED                  = "seed";
 
 void setup_rifts_node(BaseNode &node)
 {
   Logger::log()->trace("setup node {}", node.get_label());
 
   // port(s)
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "input");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "dx");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "dy");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "mask");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, "output", CONFIG(node));
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_IN);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_DX);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_DY);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_MASK);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_OUT, CONFIG(node));
 
   // attribute(s)
   glm::vec2 kw_default = {4.f, 1.2f};
-  node.add_attr<WaveNbAttribute>("kw", "Spatial Frequency", kw_default, 0.f, 32.f, false);
-  node.add_attr<FloatAttribute>("angle", "angle", 0.f, -180.f, 180.f);
-  node.add_attr<FloatAttribute>("amplitude", "amplitude", 0.1f, 0.f, 1.f);
-  node.add_attr<SeedAttribute>("seed", "Seed");
-  node.add_attr<FloatAttribute>("k_smooth_bottom", "k_smooth_bottom", 0.05f, 0.f, 0.3f);
-  node.add_attr<FloatAttribute>("k_smooth_top", "k_smooth_top", 0.05f, 0.f, 0.3f);
-  node.add_attr<FloatAttribute>("radial_spread_amp",
-                                "radial_spread_amp",
-                                0.2f,
-                                -1.f,
-                                1.f);
-  node.add_attr<FloatAttribute>("elevation_noise_amp",
-                                "elevation_noise_amp",
-                                0.1f,
-                                0.f,
-                                1.f);
-  node.add_attr<FloatAttribute>("clamp_vmin", "clamp_vmin", 0.5f, 0.f, 1.f);
-  node.add_attr<FloatAttribute>("remap_vmin", "remap_vmin", 0.6f, 0.f, 1.f);
-  node.add_attr<FloatAttribute>("elevation_noise_shift",
-                                "elevation_noise_shift",
-                                0.f,
-                                -1.f,
-                                1.f);
-  node.add_attr<BoolAttribute>("apply_mask", "apply_mask", true);
-  node.add_attr<BoolAttribute>("reverse_mask", "reverse_mask", false);
-  node.add_attr<FloatAttribute>("mask_gamma", "mask_gamma", 1.f, 0.01f, 4.f);
-  node.add_attr<Vec2FloatAttribute>("center", "center");
-
-  // attribute(s) order
-  node.set_attr_ordered_key({
-      "_TEXT_Base paramaters",
-      "kw",
-      "angle",
-      "amplitude",
-      "seed",
-      "_TEXT_Edge smoothing",
-      "k_smooth_bottom",
-      "k_smooth_top",
-      "_TEXT_Ridge geometry",
-      "radial_spread_amp",
-      "elevation_noise_amp",
-      "clamp_vmin",
-      "remap_vmin",
-      "elevation_noise_shift",
-      "center",
-      "_TEXT_Masking",
-      "apply_mask",
-      "reverse_mask",
-      "mask_gamma",
-  });
+  add_wavenumber(node, A_KW, "Spatial Frequency", kw_default, 0.f, 32.f, false);
+  add_float(node, A_ANGLE, "angle", 0.f, -180.f, 180.f);
+  add_float(node, A_AMPLITUDE, "amplitude", 0.1f, 0.f, 1.f);
+  add_seed(node, A_SEED, "Seed");
+  add_float(node, A_K_SMOOTH_BOTTOM, "k_smooth_bottom", 0.05f, 0.f, 0.3f);
+  add_float(node, A_K_SMOOTH_TOP, "k_smooth_top", 0.05f, 0.f, 0.3f);
+  add_float(node, A_RADIAL_SPREAD_AMP, "radial_spread_amp", 0.2f, -1.f, 1.f);
+  add_float(node, A_ELEVATION_NOISE_AMP, "elevation_noise_amp", 0.1f, 0.f, 1.f);
+  add_float(node, A_CLAMP_VMIN, "clamp_vmin", 0.5f, 0.f, 1.f);
+  add_float(node, A_REMAP_VMIN, "remap_vmin", 0.6f, 0.f, 1.f);
+  add_float(node, A_ELEVATION_NOISE_SHIFT, "elevation_noise_shift", 0.f, -1.f, 1.f);
+  add_bool(node, A_APPLY_MASK, "apply_mask", true);
+  add_bool(node, A_REVERSE_MASK, "reverse_mask", false);
+  add_float(node, A_MASK_GAMMA, "mask_gamma", 1.f, 0.01f, 4.f);
+  add_xy(node, A_CENTER, "center");
 
   setup_default_noise(node, {.noise_amp = 0.1f, .kw = 4.f});
   setup_pre_process_mask_attributes(node);
@@ -90,14 +78,14 @@ void compute_rifts_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  hmap::VirtualArray *p_in = node.get_value_ref<hmap::VirtualArray>("input");
+  hmap::VirtualArray *p_in = node.get_value_ref<hmap::VirtualArray>(P_IN);
 
   if (p_in)
   {
-    hmap::VirtualArray *p_dx = node.get_value_ref<hmap::VirtualArray>("dx");
-    hmap::VirtualArray *p_dy = node.get_value_ref<hmap::VirtualArray>("dy");
-    hmap::VirtualArray *p_mask = node.get_value_ref<hmap::VirtualArray>("mask");
-    hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>("output");
+    hmap::VirtualArray *p_dx   = node.get_value_ref<hmap::VirtualArray>(P_DX);
+    hmap::VirtualArray *p_dy   = node.get_value_ref<hmap::VirtualArray>(P_DY);
+    hmap::VirtualArray *p_mask = node.get_value_ref<hmap::VirtualArray>(P_MASK);
+    hmap::VirtualArray *p_out  = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
     // prepare mask
     std::shared_ptr<hmap::VirtualArray> sp_mask = pre_process_mask(node, p_mask, *p_in);
@@ -122,25 +110,25 @@ void compute_rifts_node(BaseNode &node)
           hmap::remap(*pa_out, 0.f, 1.f, hmin, hmax);
 
           hmap::gpu::rifts(*pa_out,
-                           node.get_attr<WaveNbAttribute>("kw"),
-                           node.get_attr<FloatAttribute>("angle"),
-                           node.get_attr<FloatAttribute>("amplitude"),
-                           node.get_attr<SeedAttribute>("seed"),
-                           node.get_attr<FloatAttribute>("elevation_noise_shift"),
-                           node.get_attr<FloatAttribute>("k_smooth_bottom"),
-                           node.get_attr<FloatAttribute>("k_smooth_top"),
-                           node.get_attr<FloatAttribute>("radial_spread_amp"),
-                           node.get_attr<FloatAttribute>("elevation_noise_amp"),
-                           node.get_attr<FloatAttribute>("clamp_vmin"),
-                           node.get_attr<FloatAttribute>("remap_vmin"),
-                           node.get_attr<BoolAttribute>("apply_mask"),
-                           !node.get_attr<BoolAttribute>("reverse_mask") &&
-                               node.get_attr<BoolAttribute>("apply_mask"),
-                           node.get_attr<FloatAttribute>("mask_gamma"),
+                           node.val<glm::vec2>(A_KW),
+                           node.val<float>(A_ANGLE),
+                           node.val<float>(A_AMPLITUDE),
+                           node.val<int>(A_SEED),
+                           node.val<float>(A_ELEVATION_NOISE_SHIFT),
+                           node.val<float>(A_K_SMOOTH_BOTTOM),
+                           node.val<float>(A_K_SMOOTH_TOP),
+                           node.val<float>(A_RADIAL_SPREAD_AMP),
+                           node.val<float>(A_ELEVATION_NOISE_AMP),
+                           node.val<float>(A_CLAMP_VMIN),
+                           node.val<float>(A_REMAP_VMIN),
+                           node.val<bool>(A_APPLY_MASK),
+                           !node.val<bool>(A_REVERSE_MASK) &&
+                               node.val<bool>(A_APPLY_MASK),
+                           node.val<float>(A_MASK_GAMMA),
                            pa_dx,
                            pa_dy,
                            pa_mask,
-                           node.get_attr<Vec2FloatAttribute>("center"),
+                           node.val<glm::vec2>(A_CENTER),
                            region.bbox);
           hmap::remap(*pa_out, hmin, hmax, 0.f, 1.f);
         },

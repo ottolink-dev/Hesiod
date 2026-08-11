@@ -1,9 +1,14 @@
-#include "hesiod/model/nodes/legacy/legacy_converter.hpp"
+#include <algorithm>
+#include <vector>
+
+#include <glm/glm.hpp>
+
 #include "meta/core/attribute.hpp"
 #include "meta/ext/array/array.hpp"
-#include <algorithm>
-#include <glm/glm.hpp>
-#include <vector>
+#include "meta/ext/color_gradient/color_gradient.hpp"
+
+#include "hesiod/logger.hpp"
+#include "hesiod/model/nodes/legacy/legacy_converter.hpp"
 
 namespace hesiod
 {
@@ -16,7 +21,7 @@ nlohmann::json convert_legacy_attribute_json(const meta::AbstractAttribute *attr
 
   nlohmann::json converted = j;
 
-  // 1. Cloud conversion: meta::Attribute<std::vector<glm::vec3>>
+  // Cloud conversion: meta::Attribute<std::vector<glm::vec3>>
   if (attr->try_cast<meta::Attribute<std::vector<glm::vec3>>>())
   {
     if (j.contains("x") && j.contains("y") && j.contains("values"))
@@ -36,12 +41,13 @@ nlohmann::json convert_legacy_attribute_json(const meta::AbstractAttribute *attr
         converted = nlohmann::json::object();
         converted["value"] = val_arr;
       }
-      catch (...)
+      catch (const std::exception &e)
       {
+        Logger::log()->warn("Legacy converter: Cloud conversion failed: {}", e.what());
       }
     }
   }
-  // 2. Range / Wavenumber / Vector 2D conversion: meta::Attribute<glm::vec2>
+  // Range / Wavenumber / Vector 2D conversion: meta::Attribute<glm::vec2>
   else if (attr->try_cast<meta::Attribute<glm::vec2>>())
   {
     if (j.contains("value") && j["value"].is_array() && j["value"].size() == 2)
@@ -50,12 +56,13 @@ nlohmann::json convert_legacy_attribute_json(const meta::AbstractAttribute *attr
       {
         converted["value"] = {{"x", j["value"][0]}, {"y", j["value"][1]}};
       }
-      catch (...)
+      catch (const std::exception &e)
       {
+        Logger::log()->warn("Legacy converter: Vec2 conversion failed: {}", e.what());
       }
     }
   }
-  // 3. Color conversion: meta::Attribute<glm::vec4>
+  // Color conversion: meta::Attribute<glm::vec4>
   else if (attr->try_cast<meta::Attribute<glm::vec4>>())
   {
     if (j.contains("value") && j["value"].is_array() && j["value"].size() == 4)
@@ -67,20 +74,85 @@ nlohmann::json convert_legacy_attribute_json(const meta::AbstractAttribute *attr
                               {"z", j["value"][2]},
                               {"w", j["value"][3]}};
       }
-      catch (...)
+      catch (const std::exception &e)
       {
+        Logger::log()->warn("Legacy converter: Vec4 conversion failed: {}", e.what());
       }
     }
   }
-  // 4. Array conversion: meta::Attribute<meta::Array>
+  // Array conversion: meta::Attribute<meta::Array>
   else if (attr->try_cast<meta::Attribute<meta::Array>>())
   {
-    if (j.contains("shape.x") && j.contains("shape.y") && j.contains("vector"))
+    if (j.contains("shape.x") && j.contains("shape.y"))
     {
-      converted = nlohmann::json::object();
-      converted["value"] = {{"shape.x", j["shape.x"]},
-                            {"shape.y", j["shape.y"]},
-                            {"vector", j["vector"]}};
+      try
+      {
+        size_t             shape_x = j.at("shape.x").get<size_t>();
+        size_t             shape_y = j.at("shape.y").get<size_t>();
+        size_t             expected_size = shape_x * shape_y;
+        std::vector<float> vec;
+        bool               size_issue = false;
+
+        try
+        {
+          if (j.contains("vector") && j.at("vector").is_array())
+          {
+            vec = j.at("vector").get<std::vector<float>>();
+          }
+          else
+          {
+            size_issue = true;
+          }
+        }
+        catch (...)
+        {
+          size_issue = true;
+        }
+
+        if (vec.size() != expected_size)
+        {
+          size_issue = true;
+        }
+
+        if (size_issue)
+        {
+          Logger::log()->warn(
+              "Legacy converter: Array size mismatch or malformed vector (shape: "
+              "{}x{}={}, vector size: {}). Padding/truncating with zeros.",
+              shape_x,
+              shape_y,
+              expected_size,
+              vec.size());
+          vec.resize(expected_size, 0.0f);
+        }
+
+        converted = nlohmann::json::object();
+        converted["value"] = {{"shape.x", shape_x},
+                              {"shape.y", shape_y},
+                              {"vector", vec}};
+      }
+      catch (const std::exception &e)
+      {
+        Logger::log()->warn("Legacy converter: Array conversion failed: {}", e.what());
+      }
+    }
+  }
+  // ColorGradient conversion: meta::Attribute<meta::ColorGradient>
+  else if (attr->try_cast<meta::Attribute<meta::ColorGradient>>())
+  {
+    if (j.contains("value") && j["value"].is_array())
+    {
+      try
+      {
+        converted = nlohmann::json::object();
+        converted["value"] = nlohmann::json::object();
+        converted["value"]["value"] = j["value"];
+      }
+      catch (const std::exception &e)
+      {
+        Logger::log()->warn("Legacy converter: ColorGradient conversion failed: {}",
+                            e.what());
+      }
     }
   }
 

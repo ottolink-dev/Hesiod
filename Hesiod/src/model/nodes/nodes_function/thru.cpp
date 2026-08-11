@@ -7,13 +7,10 @@
 
 #include "gnode/graph.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
-
 #include "hesiod/logger.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
-
-using namespace attr;
 
 namespace hesiod
 {
@@ -27,10 +24,8 @@ void setup_thru_node(BaseNode &node)
   node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, "output", CONFIG(node));
 
   // attribute(s)
-  node.add_attr<BoolAttribute>("block_update", "block_update", false);
-
-  // attribute(s) order
-  node.set_attr_ordered_key({"block_update"});
+  node.set_current_category("Main");
+  add_bool(node, "block_update", "block_update", false);
 }
 
 void compute_thru_node(BaseNode &node)
@@ -39,7 +34,7 @@ void compute_thru_node(BaseNode &node)
 
   hmap::VirtualArray *p_in = node.get_value_ref<hmap::VirtualArray>("input");
 
-  if (p_in && !node.get_attr<BoolAttribute>("block_update"))
+  if (p_in && !node.val<bool>("block_update"))
   {
     hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>("output");
 
@@ -49,7 +44,7 @@ void compute_thru_node(BaseNode &node)
         [&node](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
         {
           auto [pa_out, pa_in] = unpack<2>(p_arrays);
-          *pa_out = *pa_in;
+          *pa_out              = *pa_in;
         },
         node.cfg().cm_cpu);
   }

@@ -5,14 +5,12 @@
 #include "highmap/opencl/gpu_opencl.hpp"
 #include "highmap/primitives.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/app/enum_mappings.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
-
-using namespace attr;
 
 namespace hesiod
 {
@@ -21,17 +19,21 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_Z = "z";
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
+
+constexpr const char *P_Z       = "z";
 constexpr const char *P_SCALING = "scaling";
 constexpr const char *P_NOISE_X = "dx";
 constexpr const char *P_NOISE_Y = "dy";
-constexpr const char *P_MASK = "mask";
-constexpr const char *P_OUTPUT = "output";
+constexpr const char *P_MASK    = "mask";
+constexpr const char *P_OUTPUT  = "output";
 
-constexpr const char *A_AMPLITUDE = "amplitude";
-constexpr const char *A_WIDTH = "width";
-constexpr const char *A_EDT_EXPONENT = "edt_exponent";
-constexpr const char *A_RADIUS = "prefilter_radius";
+constexpr const char *A_AMPLITUDE       = "amplitude";
+constexpr const char *A_WIDTH           = "width";
+constexpr const char *A_EDT_EXPONENT    = "edt_exponent";
+constexpr const char *A_RADIUS          = "prefilter_radius";
 constexpr const char *A_DEFAULT_SCALING = "default_scaling";
 
 // -----------------------------------------------------------------------------
@@ -51,20 +53,11 @@ void setup_watershed_ridge_node(BaseNode &node)
   node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_OUTPUT, CONFIG(node));
 
   // attribute(s)
-  node.add_attr<FloatAttribute>(A_AMPLITUDE, "amplitude", 0.05f, 0.f, 1.f);
-  node.add_attr<FloatAttribute>(A_WIDTH, "width", 0.1f, 0.f, 0.5f);
-  node.add_attr<FloatAttribute>(A_EDT_EXPONENT, "edt_exponent", 0.5f, 0.01f, 2.f);
-  node.add_attr<FloatAttribute>(A_RADIUS, "Prefilter Radius", 0.2f, 0.f, 0.5f);
-  node.add_attr<BoolAttribute>(A_DEFAULT_SCALING, "Enable Default Scaling", true);
-
-  // attribute(s) order
-  node.set_attr_ordered_key({"_GROUPBOX_BEGIN_Parameters",
-                             A_AMPLITUDE,
-                             A_WIDTH,
-                             A_EDT_EXPONENT,
-                             A_RADIUS,
-                             A_DEFAULT_SCALING,
-                             "_GROUPBOX_END_"});
+  add_float(node, A_AMPLITUDE, "amplitude", 0.05f, 0.f, 1.f);
+  add_float(node, A_WIDTH, "width", 0.1f, 0.f, 0.5f);
+  add_float(node, A_EDT_EXPONENT, "edt_exponent", 0.5f, 0.01f, 2.f);
+  add_float(node, A_RADIUS, "Prefilter Radius", 0.2f, 0.f, 0.5f);
+  add_bool(node, A_DEFAULT_SCALING, "Enable Default Scaling", true);
 
   setup_default_noise(node, {.noise_amp = 0.05f, .kw = 8.f, .smoothness = 0.2f});
   setup_pre_process_mask_attributes(node);
@@ -85,11 +78,11 @@ void compute_watershed_ridge_node(BaseNode &node)
   if (!p_in)
     return;
 
-  auto *p_dx = node.get_value_ref<hmap::VirtualArray>(P_NOISE_X);
-  auto *p_dy = node.get_value_ref<hmap::VirtualArray>(P_NOISE_Y);
-  auto *p_mask = node.get_value_ref<hmap::VirtualArray>(P_MASK);
+  auto *p_dx      = node.get_value_ref<hmap::VirtualArray>(P_NOISE_X);
+  auto *p_dy      = node.get_value_ref<hmap::VirtualArray>(P_NOISE_Y);
+  auto *p_mask    = node.get_value_ref<hmap::VirtualArray>(P_MASK);
   auto *p_scaling = node.get_value_ref<hmap::VirtualArray>(P_SCALING);
-  auto *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUTPUT);
+  auto *p_out     = node.get_value_ref<hmap::VirtualArray>(P_OUTPUT);
 
   // --- Parameters wrapper
 
@@ -104,16 +97,16 @@ void compute_watershed_ridge_node(BaseNode &node)
       bool  default_scaling;
     };
 
-    const int   nx = p_out->shape.x;
-    const float width = node.get_attr<FloatAttribute>(A_WIDTH);
-    const float radius = node.get_attr<FloatAttribute>(A_RADIUS);
-    const int   ir = int(radius * nx);
+    const int   nx     = p_out->shape.x;
+    const float width  = node.val<float>(A_WIDTH);
+    const float radius = node.val<float>(A_RADIUS);
+    const int   ir     = int(radius * nx);
 
-    return P{.amplitude = node.get_attr<FloatAttribute>(A_AMPLITUDE),
-             .width_pixels = nx * width,
-             .edt_exponent = node.get_attr<FloatAttribute>(A_EDT_EXPONENT),
-             .ir = ir,
-             .default_scaling = node.get_attr<BoolAttribute>(A_DEFAULT_SCALING)};
+    return P{.amplitude       = node.val<float>(A_AMPLITUDE),
+             .width_pixels    = nx * width,
+             .edt_exponent    = node.val<float>(A_EDT_EXPONENT),
+             .ir              = ir,
+             .default_scaling = node.val<bool>(A_DEFAULT_SCALING)};
   }();
 
   // --- prepare mask
@@ -126,7 +119,7 @@ void compute_watershed_ridge_node(BaseNode &node)
 
   if (!p_scaling && params.default_scaling)
   {
-    auto options = DefaultMapOptions{.map_type = DefaultMapOptions::Type::DMT_PULSE,
+    auto options = DefaultMapOptions{.map_type       = DefaultMapOptions::Type::DMT_PULSE,
                                      .inverse_output = true};
     generate_map(node, p_scaling, default_scaling, options);
   }
@@ -152,7 +145,7 @@ void compute_watershed_ridge_node(BaseNode &node)
                        const hmap::TileRegion &)
       {
         auto [pa_in, pa_dx, pa_dy, pa_mask, pa_scaling] = unpack<5>(p_arrays_in);
-        auto [pa_out] = unpack<1>(p_arrays_out);
+        auto [pa_out]                                   = unpack<1>(p_arrays_out);
 
         *pa_out = hmap::gpu::watershed_ridge(*pa_in,
                                              pa_mask,

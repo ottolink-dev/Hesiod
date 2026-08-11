@@ -4,13 +4,11 @@
 #include "highmap/erosion.hpp"
 #include "highmap/opencl/gpu_opencl.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
-
-using namespace attr;
 
 namespace hesiod
 {
@@ -19,15 +17,19 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_IN = "input";
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
+
+constexpr const char *P_IN   = "input";
 constexpr const char *P_MASK = "mask";
-constexpr const char *P_OUT = "output";
+constexpr const char *P_OUT  = "output";
 
 constexpr const char *A_TALUS_GLOBAL = "talus_global";
-constexpr const char *A_DURATION = "duration";
-constexpr const char *A_SCALE_TALUS = "scale_talus_with_elevation";
-constexpr const char *A_SIGMA_INF = "sigma_inf";
-constexpr const char *A_SIGMA_SUP = "sigma_sup";
+constexpr const char *A_DURATION     = "duration";
+constexpr const char *A_SCALE_TALUS  = "scale_talus_with_elevation";
+constexpr const char *A_SIGMA_INF    = "sigma_inf";
+constexpr const char *A_SIGMA_SUP    = "sigma_sup";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -46,22 +48,14 @@ void setup_thermal_flatten_node(BaseNode &node)
   // --- Attributes
 
   // clang-format off
-  node.add_attr<FloatAttribute>(A_TALUS_GLOBAL, "talus_global", 1.f, 0.f, FLT_MAX);
-  node.add_attr<FloatAttribute>(A_DURATION, "Duration", 0.3f, 0.05f, 6.f);
-  node.add_attr<BoolAttribute>(A_SCALE_TALUS, "scale_talus_with_elevation", false);
-  node.add_attr<FloatAttribute>(A_SIGMA_INF, "sigma_inf", 0.5f, 0.f, 0.5f);
-  node.add_attr<FloatAttribute>(A_SIGMA_SUP, "sigma_sup", 0.25f, 0.f, 0.5f);
+  add_float(node, A_TALUS_GLOBAL, "talus_global", 1.f, 0.f, FLT_MAX);
+  add_float(node, A_DURATION, "Duration", 0.3f, 0.05f, 6.f);
+  add_bool(node, A_SCALE_TALUS, "scale_talus_with_elevation", false);
+  add_float(node, A_SIGMA_INF, "sigma_inf", 0.5f, 0.f, 0.5f);
+  add_float(node, A_SIGMA_SUP, "sigma_sup", 0.25f, 0.f, 0.5f);
   // clang-format on
 
   // --- Attribute(s) order
-
-  node.set_attr_ordered_key({"_GROUPBOX_BEGIN_Parameters",
-                             A_TALUS_GLOBAL,
-                             A_DURATION,
-                             A_SCALE_TALUS,
-                             A_SIGMA_INF,
-                             A_SIGMA_SUP,
-                             "_GROUPBOX_END_"});
 }
 
 // -----------------------------------------------------------------------------
@@ -74,9 +68,9 @@ void compute_thermal_flatten_node(BaseNode &node)
 
   // --- Inputs / Outputs
 
-  auto *p_in = node.get_value_ref<hmap::VirtualArray>(P_IN);
+  auto *p_in   = node.get_value_ref<hmap::VirtualArray>(P_IN);
   auto *p_mask = node.get_value_ref<hmap::VirtualArray>(P_MASK);
-  auto *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
+  auto *p_out  = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
   if (!p_in)
     return;
@@ -84,11 +78,11 @@ void compute_thermal_flatten_node(BaseNode &node)
   // --- Params
 
   // clang-format off
-  const auto talus       = node.get_attr<FloatAttribute>(A_TALUS_GLOBAL) / float(p_out->shape.x);
-  const auto duration    = node.get_attr<FloatAttribute>(A_DURATION);
-  const auto scale_talus = node.get_attr<BoolAttribute>(A_SCALE_TALUS);
-  const auto sigma_inf   = node.get_attr<FloatAttribute>(A_SIGMA_INF);
-  const auto sigma_sup   = node.get_attr<FloatAttribute>(A_SIGMA_SUP);
+  const auto talus       = node.val<float>(A_TALUS_GLOBAL) / float(p_out->shape.x);
+  const auto duration    = node.val<float>(A_DURATION);
+  const auto scale_talus = node.val<bool>(A_SCALE_TALUS);
+  const auto sigma_inf   = node.val<float>(A_SIGMA_INF);
+  const auto sigma_sup   = node.val<float>(A_SIGMA_SUP);
   // clang-format on
 
   const int iterations = int(duration * p_out->shape.x);
@@ -115,7 +109,7 @@ void compute_thermal_flatten_node(BaseNode &node)
           const hmap::TileRegion &)
       {
         auto [pa_in, pa_talus_map, pa_mask] = unpack<3>(in);
-        auto [pa_out] = unpack<1>(out);
+        auto [pa_out]                       = unpack<1>(out);
 
         *pa_out = *pa_in;
 

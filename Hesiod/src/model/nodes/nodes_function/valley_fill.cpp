@@ -7,59 +7,51 @@
 
 #include "highmap/dbg/timer.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
+constexpr const char *P_DEPOSITION = "deposition";
+constexpr const char *P_IN         = "input";
+constexpr const char *P_MASK       = "mask";
+constexpr const char *P_NOISE      = "noise";
+constexpr const char *P_OUT        = "output";
+
+constexpr const char *A_DURATION                   = "duration";
+constexpr const char *A_ELEVATION_MAX_RATIO        = "elevation_max_ratio";
+constexpr const char *A_GAMMA                      = "gamma";
+constexpr const char *A_PRESERVE_ELEVATION_RANGE   = "preserve_elevation_range";
+constexpr const char *A_RATIO                      = "ratio";
+constexpr const char *A_SCALE_TALUS_WITH_ELEVATION = "scale_talus_with_elevation";
+constexpr const char *A_TALUS_GLOBAL               = "talus_global";
 
 void setup_valley_fill_node(BaseNode &node)
 {
   Logger::log()->trace("setup node {}", node.get_label());
 
   // port(s)
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "input");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "noise");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "mask");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, "output", CONFIG(node));
-  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, "deposition", CONFIG(node));
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_IN);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_NOISE);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_MASK);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_OUT, CONFIG(node));
+  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_DEPOSITION, CONFIG(node));
 
   // attribute(s)
-  node.add_attr<FloatAttribute>("talus_global", "Slope", 1.f, 0.f, FLT_MAX);
-  node.add_attr<FloatAttribute>("duration", "Duration", 2.f, 0.05f, 6.f);
-  node.add_attr<FloatAttribute>("ratio", "Deposition Ratio", 0.8f, 0.f, 1.f);
-  node.add_attr<BoolAttribute>("preserve_elevation_range", "Preserve Input Range", true);
-  node.add_attr<FloatAttribute>("gamma", "Deposition Gamma", 2.f, 0.01f, 4.f);
-  node.add_attr<BoolAttribute>("scale_talus_with_elevation",
-                               "Scale with Elevation",
-                               true);
-  node.add_attr<FloatAttribute>("elevation_max_ratio",
-                                "Scree Max Elevation",
-                                0.7f,
-                                0.f,
-                                2.f);
-
-  // attribute(s) order
-  node.set_attr_ordered_key({"_GROUPBOX_BEGIN_Slope Constraints",
-                             "talus_global",
-                             "scale_talus_with_elevation",
-                             "_GROUPBOX_END_",
-                             //
-                             "_GROUPBOX_BEGIN_Deposition Profile",
-                             "ratio",
-                             "gamma",
-                             "elevation_max_ratio",
-                             "preserve_elevation_range",
-                             "_GROUPBOX_END_",
-                             //
-                             "_GROUPBOX_BEGIN_Deposition Dynamics",
-                             "duration",
-                             "_GROUPBOX_END_"});
+  add_float(node, A_TALUS_GLOBAL, "Slope", 1.f, 0.f, FLT_MAX);
+  add_float(node, A_DURATION, "Duration", 2.f, 0.05f, 6.f);
+  add_float(node, A_RATIO, "Deposition Ratio", 0.8f, 0.f, 1.f);
+  add_bool(node, A_PRESERVE_ELEVATION_RANGE, "Preserve Input Range", true);
+  add_float(node, A_GAMMA, "Deposition Gamma", 2.f, 0.01f, 4.f);
+  add_bool(node, A_SCALE_TALUS_WITH_ELEVATION, "Scale with Elevation", true);
+  add_float(node, A_ELEVATION_MAX_RATIO, "Scree Max Elevation", 0.7f, 0.f, 2.f);
 
   setup_default_noise(node, {.noise_amp = 1.f, .kw = 32.f});
   setup_post_process_heightmap_attributes(node,
@@ -70,25 +62,25 @@ void compute_valley_fill_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  hmap::VirtualArray *p_in = node.get_value_ref<hmap::VirtualArray>("input");
+  hmap::VirtualArray *p_in = node.get_value_ref<hmap::VirtualArray>(P_IN);
 
   if (p_in)
   {
-    hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>("output");
-    hmap::VirtualArray *p_noise = node.get_value_ref<hmap::VirtualArray>("noise");
-    hmap::VirtualArray *p_mask = node.get_value_ref<hmap::VirtualArray>("mask");
+    hmap::VirtualArray *p_out   = node.get_value_ref<hmap::VirtualArray>(P_OUT);
+    hmap::VirtualArray *p_noise = node.get_value_ref<hmap::VirtualArray>(P_NOISE);
+    hmap::VirtualArray *p_mask  = node.get_value_ref<hmap::VirtualArray>(P_MASK);
     hmap::VirtualArray *p_deposition_map = node.get_value_ref<hmap::VirtualArray>(
-        "deposition");
+        P_DEPOSITION);
 
     // --- prepapre talus field
 
-    float talus = node.get_attr<FloatAttribute>("talus_global") / (float)p_out->shape.x;
-    int   iterations = int(node.get_attr<FloatAttribute>("duration") * p_out->shape.x);
+    float talus      = node.val<float>(A_TALUS_GLOBAL) / (float)p_out->shape.x;
+    int   iterations = int(node.val<float>(A_DURATION) * p_out->shape.x);
 
     hmap::VirtualArray talus_map = hmap::VirtualArray(CONFIG(node));
     talus_map.fill(talus, node.cfg().cm_cpu);
 
-    if (node.get_attr<BoolAttribute>("scale_talus_with_elevation"))
+    if (node.val<bool>(A_SCALE_TALUS_WITH_ELEVATION))
     {
       talus_map.copy_from(*p_in, node.cfg().cm_cpu);
       talus_map.remap(talus / 10.f, talus, node.cfg().cm_cpu);
@@ -122,12 +114,12 @@ void compute_valley_fill_node(BaseNode &node)
                                  pa_mask,
                                  *pa_talus_map,
                                  iterations,
-                                 node.get_attr<FloatAttribute>("gamma"),
-                                 node.get_attr<FloatAttribute>("ratio"),
+                                 node.val<float>(A_GAMMA),
+                                 node.val<float>(A_RATIO),
                                  zmin,
                                  zmax,
-                                 node.get_attr<FloatAttribute>("elevation_max_ratio"),
-                                 node.get_attr<BoolAttribute>("preserve_elevation_range"),
+                                 node.val<float>(A_ELEVATION_MAX_RATIO),
+                                 node.val<bool>(A_PRESERVE_ELEVATION_RANGE),
                                  pa_noise,
                                  pa_deposition_map);
         },

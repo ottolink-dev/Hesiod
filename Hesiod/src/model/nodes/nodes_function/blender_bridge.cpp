@@ -3,13 +3,10 @@
  * this software. */
 #include <string>
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
-
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/logger.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
-
-using namespace attr;
 
 namespace hesiod
 {
@@ -18,7 +15,7 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_IN = "elevation";
+constexpr const char *P_IN  = "elevation";
 constexpr const char *P_TEX = "texture";
 
 constexpr const char *A_PORT = "port";
@@ -40,12 +37,8 @@ void setup_blender_bridge_node(BaseNode &node)
 
   int current_port = int(HSD_APP->get_blender_streamer().get_port());
 
-  // clang-format off
-  node.add_attr<IntAttribute>(A_PORT, "Communication Port", current_port, 1024, 65535);
-  // clang-format on
-
-  // --- Attribute(s) order
-  node.set_attr_ordered_key({A_PORT});
+  node.set_current_category("Main");
+  add_int(node, A_PORT, "Communication Port", current_port, 1024, 65535);
 
   HSD_APP->get_blender_streamer().start(HSD_APP->get_blender_streamer().get_port());
 }
@@ -60,7 +53,7 @@ void compute_blender_bridge_node(BaseNode &node)
 
   // --- Inputs / Outputs
 
-  auto *p_in = node.get_value_ref<hmap::VirtualArray>(P_IN);
+  auto *p_in  = node.get_value_ref<hmap::VirtualArray>(P_IN);
   auto *p_tex = node.get_value_ref<hmap::VirtualTexture>(P_TEX);
 
   if (!p_in)
@@ -68,9 +61,7 @@ void compute_blender_bridge_node(BaseNode &node)
 
   // --- Params
 
-  // clang-format off
-  const auto port = std::uint16_t(node.get_attr<IntAttribute>(A_PORT));
-  // clang-format on
+  const auto port = std::uint16_t(node.val<int>(A_PORT));
 
   // --- Compute
 

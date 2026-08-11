@@ -3,25 +3,30 @@
  * this software. */
 #include "highmap/gradient.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
+constexpr const char *P_DX = "dx";
+constexpr const char *P_DY = "dy";
+constexpr const char *P_IN = "input";
 
 void setup_gradient_node(BaseNode &node)
 {
   Logger::log()->trace("setup node {}", node.get_label());
 
   // port(s)
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "input");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, "dx", CONFIG(node));
-  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, "dy", CONFIG(node));
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_IN);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_DX, CONFIG(node));
+  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_DY, CONFIG(node));
 
   setup_post_process_heightmap_attributes(node,
                                           {.add_mix = true, .remap_active_state = true});
@@ -31,12 +36,12 @@ void compute_gradient_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  hmap::VirtualArray *p_in = node.get_value_ref<hmap::VirtualArray>("input");
+  hmap::VirtualArray *p_in = node.get_value_ref<hmap::VirtualArray>(P_IN);
 
   if (p_in)
   {
-    hmap::VirtualArray *p_dx = node.get_value_ref<hmap::VirtualArray>("dx");
-    hmap::VirtualArray *p_dy = node.get_value_ref<hmap::VirtualArray>("dy");
+    hmap::VirtualArray *p_dx = node.get_value_ref<hmap::VirtualArray>(P_DX);
+    hmap::VirtualArray *p_dy = node.get_value_ref<hmap::VirtualArray>(P_DY);
 
     hmap::for_each_tile(
         {p_dx, p_in},

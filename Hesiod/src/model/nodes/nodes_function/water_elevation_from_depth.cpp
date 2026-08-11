@@ -3,13 +3,11 @@
  * this software. */
 #include "highmap/hydrology/hydrology.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
-
-using namespace attr;
 
 namespace hesiod
 {
@@ -18,8 +16,12 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_ELEVATION = "elevation";
-constexpr const char *P_WATER_DEPTH = "water_depth";
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
+
+constexpr const char *P_ELEVATION       = "elevation";
+constexpr const char *P_WATER_DEPTH     = "water_depth";
 constexpr const char *P_WATER_ELEVATION = "water_elevation";
 
 // -----------------------------------------------------------------------------
@@ -38,9 +40,6 @@ void setup_water_elevation_from_depth_node(BaseNode &node)
                                     CONFIG(node));
 
   // attribute(s)
-
-  // attribute(s) order
-  node.set_attr_ordered_key({});
 }
 
 // -----------------------------------------------------------------------------
@@ -53,9 +52,9 @@ void compute_water_elevation_from_depth_node(BaseNode &node)
 
   // --- Inputs / Outputs
 
-  auto *p_z = node.get_value_ref<hmap::VirtualArray>(P_ELEVATION);
+  auto *p_z     = node.get_value_ref<hmap::VirtualArray>(P_ELEVATION);
   auto *p_depth = node.get_value_ref<hmap::VirtualArray>(P_WATER_DEPTH);
-  auto *p_wz = node.get_value_ref<hmap::VirtualArray>(P_WATER_ELEVATION);
+  auto *p_wz    = node.get_value_ref<hmap::VirtualArray>(P_WATER_ELEVATION);
 
   if (!p_z || !p_depth)
     return;

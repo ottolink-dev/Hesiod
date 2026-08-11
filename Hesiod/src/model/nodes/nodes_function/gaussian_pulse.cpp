@@ -3,34 +3,41 @@
  * this software. */
 #include "highmap/primitives.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
+constexpr const char *P_CONTROL  = "control";
+constexpr const char *P_DX       = "dx";
+constexpr const char *P_DY       = "dy";
+constexpr const char *P_ENVELOPE = "envelope";
+constexpr const char *P_OUT      = "output";
+
+constexpr const char *A_CENTER = "center";
+constexpr const char *A_RADIUS = "radius";
 
 void setup_gaussian_pulse_node(BaseNode &node)
 {
   Logger::log()->trace("setup node {}", node.get_label());
 
   // port(s)
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "dx");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "dy");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "control");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "envelope");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, "output", CONFIG(node));
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_DX);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_DY);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_CONTROL);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_ENVELOPE);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_OUT, CONFIG(node));
 
   // attribute(s)
-  node.add_attr<FloatAttribute>("radius", "radius", 0.1f, 0.f, 1.f);
-  node.add_attr<Vec2FloatAttribute>("center", "center");
-
-  // attribute(s) order
-  node.set_attr_ordered_key({"radius", "center"});
+  add_float(node, A_RADIUS, "radius", 0.1f, 0.f, 1.f);
+  add_xy(node, A_CENTER, "center");
 
   setup_post_process_heightmap_attributes(node,
                                           {.add_mix = false, .remap_active_state = true});
@@ -41,11 +48,11 @@ void compute_gaussian_pulse_node(BaseNode &node)
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
   // base noise function
-  hmap::VirtualArray *p_dx = node.get_value_ref<hmap::VirtualArray>("dx");
-  hmap::VirtualArray *p_dy = node.get_value_ref<hmap::VirtualArray>("dy");
-  hmap::VirtualArray *p_ctrl = node.get_value_ref<hmap::VirtualArray>("control");
-  hmap::VirtualArray *p_env = node.get_value_ref<hmap::VirtualArray>("envelope");
-  hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>("output");
+  hmap::VirtualArray *p_dx   = node.get_value_ref<hmap::VirtualArray>(P_DX);
+  hmap::VirtualArray *p_dy   = node.get_value_ref<hmap::VirtualArray>(P_DY);
+  hmap::VirtualArray *p_ctrl = node.get_value_ref<hmap::VirtualArray>(P_CONTROL);
+  hmap::VirtualArray *p_env  = node.get_value_ref<hmap::VirtualArray>(P_ENVELOPE);
+  hmap::VirtualArray *p_out  = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
   hmap::for_each_tile(
       {p_out, p_dx, p_dy, p_ctrl},
@@ -54,12 +61,12 @@ void compute_gaussian_pulse_node(BaseNode &node)
         auto [pa_out, pa_dx, pa_dy, pa_ctrl] = unpack<4>(p_arrays);
 
         *pa_out = hmap::gaussian_pulse(region.shape,
-                                       node.get_attr<FloatAttribute>("radius"),
+                                       node.val<float>(A_RADIUS),
                                        pa_ctrl,
                                        pa_dx,
                                        pa_dy,
                                        nullptr,
-                                       node.get_attr<Vec2FloatAttribute>("center"),
+                                       node.val<glm::vec2>(A_CENTER),
                                        region.bbox);
       },
       node.cfg().cm_cpu);

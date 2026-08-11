@@ -3,30 +3,33 @@
  * this software. */
 #include "highmap/geometry/path.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
+constexpr const char *P_HEIGHTMAP = "heightmap";
+constexpr const char *P_PATH      = "path";
+
+constexpr const char *A_FILLED = "filled";
 
 void setup_path_to_heightmap_node(BaseNode &node)
 {
   Logger::log()->trace("setup node {}", node.get_label());
 
   // port(s)
-  node.add_port<hmap::Path>(gnode::PortType::IN, "path");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, "heightmap", CONFIG(node));
+  node.add_port<hmap::Path>(gnode::PortType::IN, P_PATH);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_HEIGHTMAP, CONFIG(node));
 
   // attribute(s)
-  node.add_attr<BoolAttribute>("filled", "filled", false);
-
-  // attribute(s) order
-  node.set_attr_ordered_key({"filled"});
+  add_bool(node, A_FILLED, "filled", false);
 
   setup_post_process_heightmap_attributes(node,
                                           {.add_mix = false, .remap_active_state = true});
@@ -36,15 +39,15 @@ void compute_path_to_heightmap_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  hmap::Path *p_path = node.get_value_ref<hmap::Path>("path");
+  hmap::Path *p_path = node.get_value_ref<hmap::Path>(P_PATH);
 
   if (p_path)
   {
-    hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>("heightmap");
+    hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>(P_HEIGHTMAP);
 
     if (p_path->size() > 1)
     {
-      if (!node.get_attr<BoolAttribute>("filled"))
+      if (!node.val<bool>(A_FILLED))
       {
         hmap::for_each_tile(
             {p_out},
@@ -59,7 +62,7 @@ void compute_path_to_heightmap_node(BaseNode &node)
       {
         // work on a single array as a temporary solution
         hmap::Array z_array = hmap::Array(p_out->shape);
-        glm::vec4   bbox = glm::vec4(0.f, 1.f, 0.f, 1.f);
+        glm::vec4   bbox    = glm::vec4(0.f, 1.f, 0.f, 1.f);
 
         p_path->to_array(z_array, bbox, true);
         p_out->from_array(z_array, node.cfg().cm_cpu);
@@ -76,7 +79,7 @@ void compute_path_to_heightmap_node(BaseNode &node)
           [](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
           {
             hmap::Array *pa_out = p_arrays[0];
-            *pa_out = 0.f;
+            *pa_out             = 0.f;
           },
           node.cfg().cm_cpu);
     }

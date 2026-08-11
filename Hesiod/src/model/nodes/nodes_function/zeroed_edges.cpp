@@ -3,14 +3,12 @@
  * this software. */
 #include "highmap/boundary.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/app/enum_mappings.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
-
-using namespace attr;
 
 namespace hesiod
 {
@@ -19,17 +17,21 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_IN = "input";
-constexpr const char *P_DR = "dr";
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
+
+constexpr const char *P_IN  = "input";
+constexpr const char *P_DR  = "dr";
 constexpr const char *P_OUT = "output";
 
 constexpr const char *A_RADIAL_PROFILE = "radial_profile";
-constexpr const char *A_PROFILE_PARAM = "profile_param";
-constexpr const char *A_AMOUNT = "amount";
-constexpr const char *A_RADIUS = "radius";
-constexpr const char *A_CENTER = "center";
-constexpr const char *A_DISTANCE = "distance_function";
-constexpr const char *A_DISTANCE_AXIS = "distance_axis";
+constexpr const char *A_PROFILE_PARAM  = "profile_param";
+constexpr const char *A_AMOUNT         = "amount";
+constexpr const char *A_RADIUS         = "radius";
+constexpr const char *A_CENTER         = "center";
+constexpr const char *A_DISTANCE       = "distance_function";
+constexpr const char *A_DISTANCE_AXIS  = "distance_axis";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -48,35 +50,16 @@ void setup_zeroed_edges_node(BaseNode &node)
   // --- Attributes
 
   // clang-format off
-  node.add_attr<EnumAttribute>(A_RADIAL_PROFILE, "Radial Profile", enum_mappings.radial_profile_map, "Smoothstep");
-  node.add_attr<FloatAttribute>(A_PROFILE_PARAM, "Profile Parameter", 2.f, 0.f, 16.f);
-  node.add_attr<FloatAttribute>(A_AMOUNT, "Amount", 1.f, 0.f, 1.f);
-  node.add_attr<FloatAttribute>(A_RADIUS, "Radius", 0.5f, 0.f, 1.f);
-  node.add_attr<Vec2FloatAttribute>(A_CENTER, "Center");
-  node.add_attr<EnumAttribute>(A_DISTANCE, "Distance Function", enum_mappings.distance_function_map, "Euclidian");
-  node.add_attr<EnumAttribute>(A_DISTANCE_AXIS, "Distance Axis", enum_mappings.distance_function_axis_map, "XY");
+  add_enum(node, A_RADIAL_PROFILE, "Radial Profile", enum_mappings.radial_profile_map, "Smoothstep");
+  add_float(node, A_PROFILE_PARAM, "Profile Parameter", 2.f, 0.f, 16.f);
+  add_float(node, A_AMOUNT, "Amount", 1.f, 0.f, 1.f);
+  add_float(node, A_RADIUS, "Radius", 0.5f, 0.f, 1.f);
+  add_xy(node, A_CENTER, "Center");
+  add_enum(node, A_DISTANCE, "Distance Function", enum_mappings.distance_function_map, "Euclidian");
+  add_enum(node, A_DISTANCE_AXIS, "Distance Axis", enum_mappings.distance_function_axis_map, "XY");
   // clang-format on
 
   // --- Attribute(s) order
-
-  node.set_attr_ordered_key({"_GROUPBOX_BEGIN_Main Parameters",
-                             A_AMOUNT,
-                             "_GROUPBOX_END_",
-                             //
-                             "_GROUPBOX_BEGIN_Profile",
-                             A_RADIAL_PROFILE,
-                             A_PROFILE_PARAM,
-                             "_GROUPBOX_END_",
-                             //
-                             "_GROUPBOX_BEGIN_Falloff",
-                             A_RADIUS,
-                             A_DISTANCE,
-                             A_DISTANCE_AXIS,
-                             "_GROUPBOX_END_",
-                             //
-                             "_GROUPBOX_BEGIN_Position",
-                             A_CENTER,
-                             "_GROUPBOX_END_"});
 
   setup_post_process_heightmap_attributes(node,
                                           {.add_mix = true, .remap_active_state = false});
@@ -92,8 +75,8 @@ void compute_zeroed_edges_node(BaseNode &node)
 
   // --- Inputs / Outputs
 
-  auto *p_in = node.get_value_ref<hmap::VirtualArray>(P_IN);
-  auto *p_dr = node.get_value_ref<hmap::VirtualArray>(P_DR);
+  auto *p_in  = node.get_value_ref<hmap::VirtualArray>(P_IN);
+  auto *p_dr  = node.get_value_ref<hmap::VirtualArray>(P_DR);
   auto *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
   if (!p_in || !p_out)
@@ -102,13 +85,13 @@ void compute_zeroed_edges_node(BaseNode &node)
   // --- Params
 
   // clang-format off
-  const auto radial_profile = hmap::RadialProfile(node.get_attr<EnumAttribute>(A_RADIAL_PROFILE));
-  const auto profile_param  = node.get_attr<FloatAttribute>(A_PROFILE_PARAM);
-  const auto amount         = node.get_attr<FloatAttribute>(A_AMOUNT);
-  const auto radius         = node.get_attr<FloatAttribute>(A_RADIUS);
-  const auto center         = node.get_attr<Vec2FloatAttribute>(A_CENTER);
-  const auto distance       = hmap::DistanceFunction(node.get_attr<EnumAttribute>(A_DISTANCE));
-  const auto distance_axis  = hmap::DistanceFunctionAxis(node.get_attr<EnumAttribute>(A_DISTANCE_AXIS));
+  const auto radial_profile = hmap::RadialProfile(node.val<int>(A_RADIAL_PROFILE));
+  const auto profile_param  = node.val<float>(A_PROFILE_PARAM);
+  const auto amount         = node.val<float>(A_AMOUNT);
+  const auto radius         = node.val<float>(A_RADIUS);
+  const auto center         = node.val<glm::vec2>(A_CENTER);
+  const auto distance       = hmap::DistanceFunction(node.val<int>(A_DISTANCE));
+  const auto distance_axis  = hmap::DistanceFunctionAxis(node.val<int>(A_DISTANCE_AXIS));
   // clang-format on
 
   // --- Compute

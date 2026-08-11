@@ -3,34 +3,41 @@
  * this software. */
 #include "highmap/selector.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
+constexpr const char *P_HIGH = "high";
+constexpr const char *P_IN   = "input";
+constexpr const char *P_LOW  = "low";
+constexpr const char *P_MID  = "mid";
+
+constexpr const char *A_OVERLAP = "overlap";
+constexpr const char *A_RATIO1  = "ratio1";
+constexpr const char *A_RATIO2  = "ratio2";
 
 void setup_select_multiband3_node(BaseNode &node)
 {
   Logger::log()->trace("setup node {}", node.get_label());
 
   // port(s)
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "input");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, "low", CONFIG(node));
-  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, "mid", CONFIG(node));
-  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, "high", CONFIG(node));
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_IN);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_LOW, CONFIG(node));
+  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_MID, CONFIG(node));
+  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_HIGH, CONFIG(node));
 
   // attribute(s)
-  node.add_attr<FloatAttribute>("ratio1", "ratio1", 0.2f, 0.f, 1.f);
-  node.add_attr<FloatAttribute>("ratio2", "ratio2", 0.5f, 0.f, 1.f);
-  node.add_attr<FloatAttribute>("overlap", "overlap", 0.5f, 0.f, 1.f);
-
-  // attribute(s) order
-  node.set_attr_ordered_key({"ratio1", "ratio2", "overlap"});
+  add_float(node, A_RATIO1, "ratio1", 0.2f, 0.f, 1.f);
+  add_float(node, A_RATIO2, "ratio2", 0.5f, 0.f, 1.f);
+  add_float(node, A_OVERLAP, "overlap", 0.5f, 0.f, 1.f);
 
   setup_post_process_heightmap_attributes(node,
                                           {.add_mix = false, .remap_active_state = true});
@@ -40,13 +47,13 @@ void compute_select_multiband3_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  hmap::VirtualArray *p_in = node.get_value_ref<hmap::VirtualArray>("input");
+  hmap::VirtualArray *p_in = node.get_value_ref<hmap::VirtualArray>(P_IN);
 
   if (p_in)
   {
-    hmap::VirtualArray *p_low = node.get_value_ref<hmap::VirtualArray>("low");
-    hmap::VirtualArray *p_mid = node.get_value_ref<hmap::VirtualArray>("mid");
-    hmap::VirtualArray *p_high = node.get_value_ref<hmap::VirtualArray>("high");
+    hmap::VirtualArray *p_low  = node.get_value_ref<hmap::VirtualArray>(P_LOW);
+    hmap::VirtualArray *p_mid  = node.get_value_ref<hmap::VirtualArray>(P_MID);
+    hmap::VirtualArray *p_high = node.get_value_ref<hmap::VirtualArray>(P_HIGH);
 
     float vmin = p_in->min(node.cfg().cm_cpu);
     float vmax = p_in->max(node.cfg().cm_cpu);
@@ -61,9 +68,9 @@ void compute_select_multiband3_node(BaseNode &node)
                                   *pa_low,
                                   *pa_mid,
                                   *pa_high,
-                                  node.get_attr<FloatAttribute>("ratio1"),
-                                  node.get_attr<FloatAttribute>("ratio2"),
-                                  node.get_attr<FloatAttribute>("overlap"),
+                                  node.val<float>(A_RATIO1),
+                                  node.val<float>(A_RATIO2),
+                                  node.val<float>(A_OVERLAP),
                                   vmin,
                                   vmax);
         },

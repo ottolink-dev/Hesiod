@@ -3,13 +3,11 @@
  * this software. */
 #include "highmap/primitives.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
-
-using namespace attr;
 
 namespace hesiod
 {
@@ -18,10 +16,14 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
+
 constexpr const char *P_ENV = "envelope";
 constexpr const char *P_OUT = "output";
 
-constexpr const char *A_SEED = "seed";
+constexpr const char *A_SEED    = "seed";
 constexpr const char *A_DENSITY = "density";
 
 // -----------------------------------------------------------------------------
@@ -39,12 +41,10 @@ void setup_white_sparse_node(BaseNode &node)
 
   // --- Attributes
 
-  node.add_attr<SeedAttribute>(A_SEED, "Seed");
-  node.add_attr<FloatAttribute>(A_DENSITY, "Density", 0.1f, 0.f, 1.f);
+  add_seed(node, A_SEED, "Seed");
+  add_float(node, A_DENSITY, "Density", 0.1f, 0.f, 1.f);
 
   // --- Attribute(s) order
-
-  node.set_attr_ordered_key({A_SEED, A_DENSITY});
 
   setup_post_process_heightmap_attributes(node,
                                           {.add_mix = true, .remap_active_state = true});
@@ -69,8 +69,8 @@ void compute_white_sparse_node(BaseNode &node)
   // --- Params
 
   // clang-format off
-  const auto seed    = node.get_attr<SeedAttribute>(A_SEED);
-  const auto density = node.get_attr<FloatAttribute>(A_DENSITY);
+  const auto seed    = node.val<int>(A_SEED);
+  const auto density = node.val<float>(A_DENSITY);
   // clang-format on
 
   const float density_per_tile = density / float(p_out->shape.x / p_out->tile_shape.x);

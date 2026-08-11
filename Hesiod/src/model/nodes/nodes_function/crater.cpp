@@ -3,13 +3,11 @@
  * this software. */
 #include "highmap/primitives.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
-
-using namespace attr;
 
 namespace hesiod
 {
@@ -18,26 +16,30 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_NOISE = "noise";
-constexpr const char *P_ENVELOPE = "envelope";
-constexpr const char *P_OUT = "output";
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
+
+constexpr const char *P_NOISE       = "noise";
+constexpr const char *P_ENVELOPE    = "envelope";
+constexpr const char *P_OUT         = "output";
 constexpr const char *P_CRATER_MASK = "crater_mask";
 
-constexpr const char *A_RADIUS = "radius";
-constexpr const char *A_ANGLE = "angle";
-constexpr const char *A_CENTER = "center";
-constexpr const char *A_ELEVATION_OFFSET = "elevation_offset";
-constexpr const char *A_INNER_DEPTH = "inner_depth";
-constexpr const char *A_INNER_EXP = "inner_exp";
-constexpr const char *A_LIP_HEIGHT = "lip_height";
-constexpr const char *A_LIP_EXTENT = "lip_extent";
-constexpr const char *A_LIP_EXP = "lip_exp";
-constexpr const char *A_ASYM_RATIO = "asym_ratio";
+constexpr const char *A_RADIUS              = "radius";
+constexpr const char *A_ANGLE               = "angle";
+constexpr const char *A_CENTER              = "center";
+constexpr const char *A_ELEVATION_OFFSET    = "elevation_offset";
+constexpr const char *A_INNER_DEPTH         = "inner_depth";
+constexpr const char *A_INNER_EXP           = "inner_exp";
+constexpr const char *A_LIP_HEIGHT          = "lip_height";
+constexpr const char *A_LIP_EXTENT          = "lip_extent";
+constexpr const char *A_LIP_EXP             = "lip_exp";
+constexpr const char *A_ASYM_RATIO          = "asym_ratio";
 constexpr const char *A_CENTRAL_PEAK_HEIGHT = "central_peak_height";
 constexpr const char *A_CENTRAL_PEAK_EXTENT = "central_peak_extent";
-constexpr const char *A_N_TERRACES = "n_terraces";
-constexpr const char *A_TERRACE_EXTENT = "terrace_extent";
-constexpr const char *A_TERRACE_EXP = "terrace_exp";
+constexpr const char *A_N_TERRACES          = "n_terraces";
+constexpr const char *A_TERRACE_EXTENT      = "terrace_extent";
+constexpr const char *A_TERRACE_EXP         = "terrace_exp";
 constexpr const char *A_TERRACE_PERSISTENCE = "terrace_persistence";
 
 // -----------------------------------------------------------------------------
@@ -58,60 +60,25 @@ void setup_crater_node(BaseNode &node)
   // --- Attributes
 
   // clang-format off
-  node.add_attr<FloatAttribute>(A_RADIUS, "Crater Radius", 0.25f, 0.f, 2.f);
-  node.add_attr<FloatAttribute>(A_ANGLE, "Rotation Angle", 0.f, -180.f, 180.f, "{:.1f}°");
-  node.add_attr<Vec2FloatAttribute>(A_CENTER, "Center");
-  node.add_attr<FloatAttribute>(A_ELEVATION_OFFSET, "Elevation Offset", 0.f, -1.f, 1.f);
-  node.add_attr<FloatAttribute>(A_INNER_DEPTH, "Inner Basin Depth", 0.2f, 0.f, 1.f);
-  node.add_attr<FloatAttribute>(A_INNER_EXP, "Inner Basin Falloff", 2.5f, 0.01f, 4.f);
-  node.add_attr<FloatAttribute>(A_LIP_HEIGHT, "Rim Height", 0.05f, 0.f, 1.f);
-  node.add_attr<FloatAttribute>(A_LIP_EXTENT, "Rim Width", 0.15f, 0.f, 2.f);
-  node.add_attr<FloatAttribute>(A_LIP_EXP, "Rim Falloff", 2.f, 0.01f, 4.f);
-  node.add_attr<FloatAttribute>(A_ASYM_RATIO, "Asymmetry Ratio", 1.f, 0.f, 4.f);
-  node.add_attr<FloatAttribute>(A_CENTRAL_PEAK_HEIGHT, "Central Peak Height", 0.01f, 0.f, 1.f);
-  node.add_attr<FloatAttribute>(A_CENTRAL_PEAK_EXTENT, "Central Peak Extent", 0.4f, 0.f, 1.f);
-  node.add_attr<IntAttribute>(A_N_TERRACES, "Terrace Count", 0, 0, 16);
-  node.add_attr<FloatAttribute>(A_TERRACE_EXTENT, "Terrace Extent", 0.1f, 0.f, 1.f);
-  node.add_attr<FloatAttribute>(A_TERRACE_EXP, "Terrace Sharpness", 2.f, 0.01f, 1.f);
-  node.add_attr<FloatAttribute>(A_TERRACE_PERSISTENCE, "Terrace Persistence", 0.5f, 0.f, 1.f);
+  add_float(node, A_RADIUS, "Crater Radius", 0.25f, 0.f, 2.f);
+  add_float(node, A_ANGLE, "Rotation Angle", 0.f, -180.f, 180.f, "{:.1f}°");
+  add_xy(node, A_CENTER, "Center");
+  add_float(node, A_ELEVATION_OFFSET, "Elevation Offset", 0.f, -1.f, 1.f);
+  add_float(node, A_INNER_DEPTH, "Inner Basin Depth", 0.2f, 0.f, 1.f);
+  add_float(node, A_INNER_EXP, "Inner Basin Falloff", 2.5f, 0.01f, 4.f);
+  add_float(node, A_LIP_HEIGHT, "Rim Height", 0.05f, 0.f, 1.f);
+  add_float(node, A_LIP_EXTENT, "Rim Width", 0.15f, 0.f, 2.f);
+  add_float(node, A_LIP_EXP, "Rim Falloff", 2.f, 0.01f, 4.f);
+  add_float(node, A_ASYM_RATIO, "Asymmetry Ratio", 1.f, 0.f, 4.f);
+  add_float(node, A_CENTRAL_PEAK_HEIGHT, "Central Peak Height", 0.01f, 0.f, 1.f);
+  add_float(node, A_CENTRAL_PEAK_EXTENT, "Central Peak Extent", 0.4f, 0.f, 1.f);
+  add_int(node, A_N_TERRACES, "Terrace Count", 0, 0, 16);
+  add_float(node, A_TERRACE_EXTENT, "Terrace Extent", 0.1f, 0.f, 1.f);
+  add_float(node, A_TERRACE_EXP, "Terrace Sharpness", 2.f, 0.01f, 1.f);
+  add_float(node, A_TERRACE_PERSISTENCE, "Terrace Persistence", 0.5f, 0.f, 1.f);
   // clang-format on
 
   // --- Attribute(s) order
-
-  // attribute(s) order
-  node.set_attr_ordered_key({"_GROUPBOX_BEGIN_Global Shape",
-                             A_RADIUS,
-                             A_ANGLE,
-                             A_CENTER,
-                             "_GROUPBOX_END_",
-                             //
-                             "_GROUPBOX_BEGIN_Base Profile",
-                             A_INNER_DEPTH,
-                             A_INNER_EXP,
-                             A_ELEVATION_OFFSET,
-                             "_GROUPBOX_END_",
-                             //
-                             "_GROUPBOX_BEGIN_Rim Profile",
-                             A_LIP_HEIGHT,
-                             A_LIP_EXTENT,
-                             A_LIP_EXP,
-                             "_GROUPBOX_END_",
-                             //
-                             "_GROUPBOX_BEGIN_Shape Distortion",
-                             A_ASYM_RATIO,
-                             "_GROUPBOX_END_",
-                             //
-                             "_GROUPBOX_BEGIN_Rim Profile",
-                             A_CENTRAL_PEAK_HEIGHT,
-                             A_CENTRAL_PEAK_EXTENT,
-                             "_GROUPBOX_END_",
-                             //
-                             "_GROUPBOX_BEGIN_Shape Distortion",
-                             A_N_TERRACES,
-                             A_TERRACE_EXTENT,
-                             A_TERRACE_EXP,
-                             A_TERRACE_PERSISTENCE,
-                             "_GROUPBOX_END_"});
 
   setup_default_noise(node, {.noise_amp = 0.2f, .kw = 4.f, .smoothness = 0.3f});
 
@@ -126,30 +93,30 @@ void compute_crater_node(BaseNode &node)
 
   // --- Inputs / Outputs
 
-  auto *p_noise = node.get_value_ref<hmap::VirtualArray>(P_NOISE);
-  auto *p_envelope = node.get_value_ref<hmap::VirtualArray>(P_ENVELOPE);
-  auto *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
+  auto *p_noise       = node.get_value_ref<hmap::VirtualArray>(P_NOISE);
+  auto *p_envelope    = node.get_value_ref<hmap::VirtualArray>(P_ENVELOPE);
+  auto *p_out         = node.get_value_ref<hmap::VirtualArray>(P_OUT);
   auto *p_crater_mask = node.get_value_ref<hmap::VirtualArray>(P_CRATER_MASK);
 
   // --- Params
 
   // clang-format off
-  const auto radius              = node.get_attr<FloatAttribute>(A_RADIUS);
-  const auto angle               = node.get_attr<FloatAttribute>(A_ANGLE);
-  const auto center              = node.get_attr<Vec2FloatAttribute>(A_CENTER);
-  const auto elevation_offset    = node.get_attr<FloatAttribute>(A_ELEVATION_OFFSET);
-  const auto inner_depth         = node.get_attr<FloatAttribute>(A_INNER_DEPTH);
-  const auto inner_exp           = node.get_attr<FloatAttribute>(A_INNER_EXP);
-  const auto lip_height          = node.get_attr<FloatAttribute>(A_LIP_HEIGHT);
-  const auto lip_extent          = node.get_attr<FloatAttribute>(A_LIP_EXTENT);
-  const auto lip_exp             = node.get_attr<FloatAttribute>(A_LIP_EXP);
-  const auto asym_ratio          = node.get_attr<FloatAttribute>(A_ASYM_RATIO);
-  const auto central_peak_height = node.get_attr<FloatAttribute>(A_CENTRAL_PEAK_HEIGHT);
-  const auto central_peak_extent = node.get_attr<FloatAttribute>(A_CENTRAL_PEAK_EXTENT);
-  const auto n_terraces          = node.get_attr<IntAttribute>(A_N_TERRACES);
-  const auto terrace_extent      = node.get_attr<FloatAttribute>(A_TERRACE_EXTENT);
-  const auto terrace_exp         = node.get_attr<FloatAttribute>(A_TERRACE_EXP);
-  const auto terrace_persistence = node.get_attr<FloatAttribute>(A_TERRACE_PERSISTENCE);
+  const auto radius              = node.val<float>(A_RADIUS);
+  const auto angle               = node.val<float>(A_ANGLE);
+  const auto center              = node.val<glm::vec2>(A_CENTER);
+  const auto elevation_offset    = node.val<float>(A_ELEVATION_OFFSET);
+  const auto inner_depth         = node.val<float>(A_INNER_DEPTH);
+  const auto inner_exp           = node.val<float>(A_INNER_EXP);
+  const auto lip_height          = node.val<float>(A_LIP_HEIGHT);
+  const auto lip_extent          = node.val<float>(A_LIP_EXTENT);
+  const auto lip_exp             = node.val<float>(A_LIP_EXP);
+  const auto asym_ratio          = node.val<float>(A_ASYM_RATIO);
+  const auto central_peak_height = node.val<float>(A_CENTRAL_PEAK_HEIGHT);
+  const auto central_peak_extent = node.val<float>(A_CENTRAL_PEAK_EXTENT);
+  const auto n_terraces          = node.val<int>(A_N_TERRACES);
+  const auto terrace_extent      = node.val<float>(A_TERRACE_EXTENT);
+  const auto terrace_exp         = node.val<float>(A_TERRACE_EXP);
+  const auto terrace_persistence = node.val<float>(A_TERRACE_PERSISTENCE);
   // clang-format on
 
   // --- Resolve default noise
@@ -166,7 +133,7 @@ void compute_crater_node(BaseNode &node)
           std::vector<hmap::Array *>       out,
           const hmap::TileRegion          &region)
       {
-        auto [pa_noise, pa_envelope] = unpack<2>(in);
+        auto [pa_noise, pa_envelope]  = unpack<2>(in);
         auto [pa_out, pa_crater_mask] = unpack<2>(out);
 
         *pa_out = hmap::crater(region.shape,

@@ -4,56 +4,51 @@
 #include "highmap/opencl/gpu_opencl.hpp"
 #include "highmap/primitives.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/app/enum_mappings.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
-using namespace attr;
-
 namespace hesiod
 {
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
+constexpr const char *P_ENVELOPE = "envelope";
+constexpr const char *P_OUT      = "output";
+
+constexpr const char *A_BASE_NOISE_AMP = "base_noise_amp";
+constexpr const char *A_DIRECTION      = "direction";
+constexpr const char *A_KW             = "kw";
+constexpr const char *A_KW_MULTIPLIER  = "kw_multiplier";
+constexpr const char *A_MIX_RATIO      = "mix_ratio";
+constexpr const char *A_OCTAVES        = "octaves";
+constexpr const char *A_RUGOSITY       = "rugosity";
+constexpr const char *A_SEED           = "seed";
+constexpr const char *A_SLOPE          = "slope";
 
 void setup_plates_node(BaseNode &node)
 {
   Logger::log()->trace("setup node {}", node.get_label());
 
   // port(s)
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "envelope");
-  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, "output", CONFIG(node));
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_ENVELOPE);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_OUT, CONFIG(node));
 
   // attribute(s)
   glm::vec2 kw = {4.f, 4.f};
-  node.add_attr<WaveNbAttribute>("kw", "Spatial Frequency", kw, 0.f, FLT_MAX, true);
-  node.add_attr<FloatAttribute>("slope", "Slope", 2.f, 0.f, FLT_MAX);
-  node.add_attr<IntAttribute>("direction", "Propagation Direction (D8)", 0, 0, 7);
-  node.add_attr<SeedAttribute>("seed", "Seed");
-  node.add_attr<FloatAttribute>("mix_ratio", "Mix", 0.9f, 0.f, 1.f);
-  node.add_attr<FloatAttribute>("base_noise_amp", "Amplitude", 0.05f, 0.f, 1.f);
-  node.add_attr<IntAttribute>("octaves", "Octaves", 8, 0, 32);
-  node.add_attr<FloatAttribute>("rugosity", "Smoothness", 0.5f, 0.f, 1.f);
-  node.add_attr<FloatAttribute>("kw_multiplier", "Frequency Scale", 2.f, 0.f, 16.f);
-
-  // attribute(s) order
-  node.set_attr_ordered_key({"_GROUPBOX_BEGIN_Base Primitive",
-                             "kw",
-                             "seed",
-                             "_GROUPBOX_END_",
-                             //
-                             "_GROUPBOX_BEGIN_Plates",
-                             "slope",
-                             "direction",
-                             "mix_ratio",
-                             "_GROUPBOX_END_",
-                             //
-                             "_GROUPBOX_BEGIN_Noise Parameters",
-                             "base_noise_amp",
-                             "octaves",
-                             "rugosity",
-                             "kw_multiplier",
-                             "_GROUPBOX_END_"});
+  add_wavenumber(node, A_KW, "Spatial Frequency", kw, 0.f, FLT_MAX, true);
+  add_float(node, A_SLOPE, "Slope", 2.f, 0.f, FLT_MAX);
+  add_int(node, A_DIRECTION, "Propagation Direction (D8)", 0, 0, 7);
+  add_seed(node, A_SEED, "Seed");
+  add_float(node, A_MIX_RATIO, "Mix", 0.9f, 0.f, 1.f);
+  add_float(node, A_BASE_NOISE_AMP, "Amplitude", 0.05f, 0.f, 1.f);
+  add_int(node, A_OCTAVES, "Octaves", 8, 0, 32);
+  add_float(node, A_RUGOSITY, "Smoothness", 0.5f, 0.f, 1.f);
+  add_float(node, A_KW_MULTIPLIER, "Frequency Scale", 2.f, 0.f, 16.f);
 
   setup_post_process_heightmap_attributes(node,
                                           {.add_mix = true, .remap_active_state = true});
@@ -64,10 +59,10 @@ void compute_plates_node(BaseNode &node)
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
   // base noise function
-  hmap::VirtualArray *p_env = node.get_value_ref<hmap::VirtualArray>("envelope");
-  hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>("output");
+  hmap::VirtualArray *p_env = node.get_value_ref<hmap::VirtualArray>(P_ENVELOPE);
+  hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
-  float talus = node.get_attr<FloatAttribute>("slope") / float(p_out->shape.x);
+  float talus = node.val<float>(A_SLOPE) / float(p_out->shape.x);
 
   hmap::for_each_tile(
       {p_out},
@@ -76,15 +71,15 @@ void compute_plates_node(BaseNode &node)
         auto [pa_out] = unpack<1>(p_arrays);
 
         *pa_out = hmap::gpu::plates(region.shape,
-                                    node.get_attr<WaveNbAttribute>("kw"),
-                                    node.get_attr<SeedAttribute>("seed"),
+                                    node.val<glm::vec2>(A_KW),
+                                    node.val<int>(A_SEED),
                                     talus,
-                                    node.get_attr<IntAttribute>("direction"),
-                                    node.get_attr<FloatAttribute>("mix_ratio"),
-                                    node.get_attr<FloatAttribute>("base_noise_amp"),
-                                    node.get_attr<FloatAttribute>("kw_multiplier"),
-                                    node.get_attr<IntAttribute>("octaves"),
-                                    node.get_attr<FloatAttribute>("rugosity"),
+                                    node.val<int>(A_DIRECTION),
+                                    node.val<float>(A_MIX_RATIO),
+                                    node.val<float>(A_BASE_NOISE_AMP),
+                                    node.val<float>(A_KW_MULTIPLIER),
+                                    node.val<int>(A_OCTAVES),
+                                    node.val<float>(A_RUGOSITY),
                                     region.bbox);
       },
       node.cfg().cm_gpu);

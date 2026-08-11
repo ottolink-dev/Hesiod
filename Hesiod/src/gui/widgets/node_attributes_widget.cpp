@@ -224,9 +224,9 @@ QWidget *NodeAttributesWidget::create_toolbar()
                     return;
 
                   auto *c = meta_container();
-                  if (c && !p_node->iinitial_meta_state().empty())
+                  if (c && !p_node->get_initial_meta_state().empty())
                   {
-                    c->json_from(p_node->iinitial_meta_state(), true);
+                    c->json_from(p_node->get_initial_meta_state(), true);
                     this->sync_from_model();
                     gno->update(this->node_id);
                   }

@@ -3,15 +3,12 @@
  * this software. */
 #include "highmap/export.hpp"
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
-
 #include "hesiod/app/enum_mappings.hpp"
 #include "hesiod/logger.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/node_factory.hpp"
 #include "hesiod/model/utils.hpp"
-
-using namespace attr;
 
 namespace hesiod
 {
@@ -22,10 +19,10 @@ namespace hesiod
 
 constexpr const char *P_IN = "input";
 
-constexpr const char *A_FILENAME = "fname";
-constexpr const char *A_FORMAT = "format";
+constexpr const char *A_FILENAME    = "fname";
+constexpr const char *A_FORMAT      = "format";
 constexpr const char *A_AUTO_EXPORT = "auto_export";
-constexpr const char *A_ADD_PREFIX = "add_prefix";
+constexpr const char *A_ADD_PREFIX  = "add_prefix";
 constexpr const char *A_FORCE_SHAPE = "force_shape";
 
 // -----------------------------------------------------------------------------
@@ -44,26 +41,18 @@ void setup_export_heightmap_node(BaseNode &node)
 
   std::vector<std::string> choices = {"Unchanged", "2^N", "2^N + 1"};
 
-  // clang-format off
-  node.add_attr<FilenameAttribute>(A_FILENAME, "Filename", std::filesystem::path("hmap.png"), "*", true);
-  node.add_attr<EnumAttribute>(A_FORMAT, "File Format", enum_mappings.heightmap_export_format_map, "png (16 bit)");
-  node.add_attr<BoolAttribute>(A_AUTO_EXPORT, "Auto Export on Node Update", false);
-  node.add_attr<BoolAttribute>(A_ADD_PREFIX, "Add Project Name as Prefix", false);
-  node.add_attr<ChoiceAttribute>(A_FORCE_SHAPE, "Force Export Shape", choices, "Unchanged");
-  // clang-format on
+  node.set_current_category("Filename");
+  add_filename(node, A_FILENAME, "Filename", "hmap.png", "*", true);
+  add_bool(node, A_ADD_PREFIX, "Add Project Name as Prefix", false);
 
-  // --- Attribute(s) order
-
-  node.set_attr_ordered_key({"_GROUPBOX_BEGIN_Filename",
-                             A_FILENAME,
-                             A_ADD_PREFIX,
-                             "_GROUPBOX_END_",
-                             //
-                             "_GROUPBOX_BEGIN_Export Parameters",
-                             A_FORMAT,
-                             A_AUTO_EXPORT,
-                             A_FORCE_SHAPE,
-                             "_GROUPBOX_END_"});
+  node.set_current_category("Export Parameters");
+  add_enum(node,
+           A_FORMAT,
+           "File Format",
+           enum_mappings.heightmap_export_format_map,
+           "png (16 bit)");
+  add_bool(node, A_AUTO_EXPORT, "Auto Export on Node Update", false);
+  add_choice(node, A_FORCE_SHAPE, "Force Export Shape", choices, "Unchanged");
 }
 
 // -----------------------------------------------------------------------------
@@ -83,13 +72,11 @@ void compute_export_heightmap_node(BaseNode &node)
 
   // --- Params
 
-  // clang-format off
-  const auto auto_export = node.get_attr<BoolAttribute>(A_AUTO_EXPORT);
-  auto fname             = node.get_attr<FilenameAttribute>(A_FILENAME);
-  const auto format      = node.get_attr<EnumAttribute>(A_FORMAT);
-  const auto add_prefix  = node.get_attr<BoolAttribute>(A_ADD_PREFIX);
-  const auto force_shape = node.get_attr<ChoiceAttribute>(A_FORCE_SHAPE);
-  // clang-format on
+  const auto auto_export = node.val<bool>(A_AUTO_EXPORT);
+  auto       fname       = node.val<std::filesystem::path>(A_FILENAME);
+  const auto format      = node.val<int>(A_FORMAT);
+  const auto add_prefix  = node.val<bool>(A_ADD_PREFIX);
+  const auto force_shape = node.val<std::string>(A_FORCE_SHAPE);
 
   if (!auto_export)
     return;
@@ -107,8 +94,8 @@ void compute_export_heightmap_node(BaseNode &node)
 
   if (force_shape != "Unchanged")
   {
-    int        px = (int)std::log2(node.cfg().shape.x);
-    int        py = (int)std::log2(node.cfg().shape.y);
+    int        px        = (int)std::log2(node.cfg().shape.x);
+    int        py        = (int)std::log2(node.cfg().shape.y);
     glm::ivec2 new_shape = {std::pow(2, px), std::pow(2, py)};
 
     if (force_shape == "2^N + 1")

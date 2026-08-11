@@ -4,8 +4,6 @@
 #include <QGridLayout>
 #include <QLabel>
 
-#include "hesiod/model/nodes/legacy/legacy_attributes.hpp"
-
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/widgets/data_preview.hpp"
 #include "hesiod/gui/widgets/graph_node_widget.hpp"
@@ -14,8 +12,6 @@
 #include "hesiod/logger.hpp"
 #include "hesiod/model/graph/graph_node.hpp"
 #include "hesiod/model/utils.hpp"
-
-using namespace attr;
 
 namespace hesiod
 {
@@ -32,7 +28,7 @@ ThruNodeWidget::ThruNodeWidget(std::weak_ptr<BaseNode>   model,
   if (!m)
     return;
 
-  bool state = m->get_attr<BoolAttribute>("block_update");
+  bool state = m->val<bool>("block_update");
 
   this->button = new QPushButton("BLOCK UPDATE");
   this->button->setCheckable(true);
@@ -47,7 +43,7 @@ ThruNodeWidget::ThruNodeWidget(std::weak_ptr<BaseNode>   model,
                   if (!m)
                     return;
 
-                  m->get_attr_ref<BoolAttribute>("block_update")->set_value(checked);
+                  m->set_value<bool>("block_update", checked);
                   m->get_p_graph()->update(m->get_id());
                 });
 
@@ -61,7 +57,7 @@ void ThruNodeWidget::on_compute_finished()
   // align attribute state and widget state (it can have being changed
   // by another UI element)
   if (auto m = this->model.lock())
-    this->button->setChecked(m->get_attr<BoolAttribute>("block_update"));
+    this->button->setChecked(m->val<bool>("block_update"));
 }
 
 } // namespace hesiod
