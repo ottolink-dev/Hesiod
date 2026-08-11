@@ -8,6 +8,7 @@
 #include "meta/ext/color_gradient/color_gradient.hpp"
 
 #include "hesiod/model/nodes/legacy/legacy_converter.hpp"
+#include "hesiod/logger.hpp"
 
 namespace hesiod
 {
@@ -40,8 +41,9 @@ nlohmann::json convert_legacy_attribute_json(const meta::AbstractAttribute *attr
         converted = nlohmann::json::object();
         converted["value"] = val_arr;
       }
-      catch (...)
+      catch (const std::exception &e)
       {
+        Logger::log()->warn("Legacy converter: Cloud conversion failed: {}", e.what());
       }
     }
   }
@@ -54,8 +56,9 @@ nlohmann::json convert_legacy_attribute_json(const meta::AbstractAttribute *attr
       {
         converted["value"] = {{"x", j["value"][0]}, {"y", j["value"][1]}};
       }
-      catch (...)
+      catch (const std::exception &e)
       {
+        Logger::log()->warn("Legacy converter: Vec2 conversion failed: {}", e.what());
       }
     }
   }
@@ -71,8 +74,9 @@ nlohmann::json convert_legacy_attribute_json(const meta::AbstractAttribute *attr
                               {"z", j["value"][2]},
                               {"w", j["value"][3]}};
       }
-      catch (...)
+      catch (const std::exception &e)
       {
+        Logger::log()->warn("Legacy converter: Vec4 conversion failed: {}", e.what());
       }
     }
   }
@@ -98,8 +102,9 @@ nlohmann::json convert_legacy_attribute_json(const meta::AbstractAttribute *attr
         converted["value"] = nlohmann::json::object();
         converted["value"]["value"] = j["value"];
       }
-      catch (...)
+      catch (const std::exception &e)
       {
+        Logger::log()->warn("Legacy converter: ColorGradient conversion failed: {}", e.what());
       }
     }
   }
