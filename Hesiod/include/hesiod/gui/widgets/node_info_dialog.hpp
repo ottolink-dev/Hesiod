@@ -47,7 +47,7 @@ private:
   // members
   QPointer<GraphNodeWidget> p_graph_node_widget;
   std::string               node_id;
-  gnode::EventConnection    after_conn;
+  gnode::EventConnection    post_update_conn;
 
   // UI
   QVBoxLayout    *layout;

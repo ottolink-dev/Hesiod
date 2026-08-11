@@ -108,7 +108,7 @@ void NodeInfoDialog::setup_connections()
 
   if (auto ptrs = this->get_node_pointers(); ptrs.node)
   {
-    this->after_conn = ptrs.node->update_after_event.subscribe(
+    this->post_update_conn = ptrs.node->post_update_event.subscribe(
         [this](gnode::Node &) {
           QMetaObject::invokeMethod(this, "update_content", Qt::QueuedConnection);
         });

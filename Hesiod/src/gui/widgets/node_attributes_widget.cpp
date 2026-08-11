@@ -326,7 +326,7 @@ void NodeAttributesWidget::setup_layout()
                   gno->update(this->node_id);
                 });
 
-  this->after_conn = p_node->update_after_event.subscribe(
+  this->post_update_conn = p_node->post_update_event.subscribe(
       [this](gnode::Node &) {
         QMetaObject::invokeMethod(this, "sync_from_model", Qt::QueuedConnection);
       });

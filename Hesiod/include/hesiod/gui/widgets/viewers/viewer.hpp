@@ -82,7 +82,7 @@ protected:
   ViewerType                             viewer_type;
   std::string                            label;
   std::string                            current_node_id = "";
-  gnode::EventConnection                 after_conn;
+  gnode::EventConnection                 post_update_conn;
   ViewerNodeParam                        view_param;
   std::map<std::string, ViewerNodeParam> view_param_map; // storage per node id
   std::map<std::string, QComboBox *>     combo_map;

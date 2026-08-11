@@ -39,7 +39,7 @@ private:
   std::string               node_id;
   QPointer<GraphNodeWidget> p_graph_node_widget;
   bool                      add_toolbar;
-  gnode::EventConnection    after_conn;
+  gnode::EventConnection    post_update_conn;
 
   meta::qt::MetaWidget *meta_widget = nullptr;
 };

@@ -237,7 +237,7 @@ void Viewer::set_current_node_id(const std::string &new_id)
   if (this->current_node_id != "")
     this->view_param_map[this->current_node_id] = this->view_param;
 
-  this->after_conn.disconnect();
+  this->post_update_conn.disconnect();
 
   if (new_id == "" && this->current_node_id != "")
   {
@@ -261,7 +261,7 @@ void Viewer::set_current_node_id(const std::string &new_id)
 
     if (BaseNode *p_node = this->safe_get_node())
     {
-      this->after_conn = p_node->update_after_event.subscribe(
+      this->post_update_conn = p_node->post_update_event.subscribe(
           [this](gnode::Node &) {
             QMetaObject::invokeMethod(this, "update_renderer", Qt::QueuedConnection);
           });

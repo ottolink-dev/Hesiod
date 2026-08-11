@@ -48,8 +48,8 @@ protected:
   QVBoxLayout *layout;
   DataPreview *data_preview;
 
-  gnode::EventConnection before_conn;
-  gnode::EventConnection after_conn;
+  gnode::EventConnection pre_update_conn;
+  gnode::EventConnection post_update_conn;
 };
 
 // DebugNodeWidget

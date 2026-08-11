@@ -42,7 +42,7 @@ GraphNode::GraphNode(const std::string &id, const std::shared_ptr<GraphConfig> &
       this->update_progress(current_id, progress);
   };
 
-  this->update_conn = this->node_update_event.subscribe(lambda);
+  this->graph_progress_conn = this->graph_progress_event.subscribe(lambda);
 }
 
 std::string GraphNode::add_node(const std::string &node_type)
