@@ -75,13 +75,14 @@ protected:
 
   // --- Should be pure virtual but kept to avoid UB ---
   virtual ViewerNodeParam get_default_view_param() const;
-  virtual void            update_renderer();
+  Q_INVOKABLE virtual void update_renderer();
 
   // --- Members ---
   QPointer<GraphNodeWidget>              p_graph_node_widget;
   ViewerType                             viewer_type;
   std::string                            label;
   std::string                            current_node_id = "";
+  gnode::EventConnection                 after_conn;
   ViewerNodeParam                        view_param;
   std::map<std::string, ViewerNodeParam> view_param_map; // storage per node id
   std::map<std::string, QComboBox *>     combo_map;

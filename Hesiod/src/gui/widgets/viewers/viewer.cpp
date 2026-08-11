@@ -237,6 +237,8 @@ void Viewer::set_current_node_id(const std::string &new_id)
   if (this->current_node_id != "")
     this->view_param_map[this->current_node_id] = this->view_param;
 
+  this->after_conn.disconnect();
+
   if (new_id == "" && this->current_node_id != "")
   {
     this->current_node_id = "";
@@ -255,6 +257,14 @@ void Viewer::set_current_node_id(const std::string &new_id)
     {
       // wild guess a default view setup...
       wild_guess_view_param(this->view_param, viewer_type, *this->safe_get_node());
+    }
+
+    if (BaseNode *p_node = this->safe_get_node())
+    {
+      this->after_conn = p_node->update_after_event.subscribe(
+          [this](gnode::Node &) {
+            QMetaObject::invokeMethod(this, "update_renderer", Qt::QueuedConnection);
+          });
     }
   }
 
@@ -327,16 +337,6 @@ void Viewer::setup_connections()
                     }
                   });
   }
-
-  // graph update
-  this->connect(this->p_graph_node_widget,
-                &GraphNodeWidget::compute_finished,
-                this,
-                [this](const std::string &id)
-                {
-                  if (id == this->current_node_id)
-                    this->update_renderer();
-                });
 }
 
 void Viewer::setup_layout()
