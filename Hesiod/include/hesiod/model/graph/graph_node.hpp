@@ -82,6 +82,7 @@ private:
   // --- Members ---
   std::shared_ptr<GraphConfig> config;
   BroadcastMap                *p_broadcast_params = nullptr; // own by GraphManager
+  gnode::EventConnection       update_conn;
 };
 
 } // namespace hesiod
