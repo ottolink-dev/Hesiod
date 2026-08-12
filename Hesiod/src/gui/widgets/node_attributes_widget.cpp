@@ -273,6 +273,18 @@ QWidget *NodeAttributesWidget::create_toolbar()
 
 void NodeAttributesWidget::sync_from_model()
 {
+  // This slot is delivered through a queued connection (see setup_layout), so it
+  // can arrive after the node it mirrors has already been removed from the
+  // graph. Meta's sync callbacks capture raw pointers and references into the
+  // node's attribute container, so syncing against a dead node dereferences
+  // freed memory. Drop the stale event instead.
+  auto gno = this->p_graph_node.lock();
+  if (!gno)
+    return;
+
+  if (!gno->get_node_ref_by_id<BaseNode>(this->node_id))
+    return;
+
   if (this->meta_widget)
     this->meta_widget->on_sync_widget_from_model();
 }
