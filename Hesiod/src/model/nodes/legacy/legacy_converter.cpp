@@ -126,10 +126,17 @@ nlohmann::json convert_legacy_attribute_json(const meta::AbstractAttribute *attr
           vec.resize(expected_size, 0.0f);
         }
 
+        // meta::Array::json_from expects a nested "shape" object (see
+        // Array::json_to); emitting flat "shape.x"/"shape.y" keys leaves the
+        // shape at its reset value of {0, 0}, which silently discards the
+        // vector and yields a zero-sized array downstream.
+        nlohmann::json value = nlohmann::json::object();
+        value["shape"]["x"] = shape_x;
+        value["shape"]["y"] = shape_y;
+        value["vector"] = vec;
+
         converted = nlohmann::json::object();
-        converted["value"] = {{"shape.x", shape_x},
-                              {"shape.y", shape_y},
-                              {"vector", vec}};
+        converted["value"] = value;
       }
       catch (const std::exception &e)
       {
