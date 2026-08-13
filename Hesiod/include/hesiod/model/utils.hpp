@@ -63,17 +63,17 @@ template <typename T> void remove_all_occurrences(std::vector<T> &vec, const T &
 std::filesystem::path ensure_extension(std::filesystem::path fname,
                                        const std::string    &extension);
 
-std::filesystem::path insert_before_basename(const std::filesystem::path &original_path,
-                                             const std::string           &insert_str);
-
-std::filesystem::path insert_before_extension(const std::filesystem::path &original_path,
-                                              const std::string           &insert_str);
-
 class BaseNode;
 
 std::unordered_map<std::string, std::string> get_standard_replacements(
     const BaseNode              &node,
     const std::filesystem::path &fname);
+
+std::filesystem::path insert_before_basename(const std::filesystem::path &original_path,
+                                             const std::string           &insert_str);
+
+std::filesystem::path insert_before_extension(const std::filesystem::path &original_path,
+                                              const std::string           &insert_str);
 
 std::filesystem::path make_unique_filename(
     const std::filesystem::path                        &output_directory,
