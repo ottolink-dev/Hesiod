@@ -3,6 +3,7 @@
  * this software. */
 #include "highmap/export.hpp"
 
+#include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
@@ -20,7 +21,7 @@ namespace hesiod
 constexpr const char *P_IN = "input";
 
 constexpr const char *A_16BIT       = "16bit";
-constexpr const char *A_ADD_PREFIX  = "add_prefix";
+constexpr const char *A_PATTERN     = "pattern";
 constexpr const char *A_AUTO_EXPORT = "auto_export";
 constexpr const char *A_FNAME       = "fname";
 
@@ -38,9 +39,9 @@ void setup_export_normal_map_node(BaseNode &node)
                std::filesystem::path("nmap.png"),
                "PNG (*.png)",
                true);
+  add_string(node, A_PATTERN, "Filename Pattern", "{FILENAME}.{EXT}");
   add_bool(node, A_16BIT, "16bit", false);
   add_bool(node, A_AUTO_EXPORT, "Auto Export on Node Update", false);
-  add_bool(node, A_ADD_PREFIX, "Add Project Name as Prefix", false);
 
   // specialized GUI
 }
@@ -55,16 +56,33 @@ void compute_export_normal_map_node(BaseNode &node)
   {
     std::filesystem::path fname = node.val<std::filesystem::path>(A_FNAME);
     fname                       = ensure_extension(fname, ".png");
+    const auto pattern          = node.val<std::string>(A_PATTERN);
 
-    if (node.val<bool>(A_ADD_PREFIX))
-      fname = prepend_project_name_to_path(fname);
+    std::string ext = fname.extension().string();
+    if (!ext.empty() && ext[0] == '.')
+      ext = ext.substr(1);
+
+    std::string filename_val = fname.stem().string();
+    std::string project_name = HSD_CTX.project_model->get_name();
+    std::string width_val    = std::to_string(node.cfg().shape.x);
+    std::string height_val   = std::to_string(node.cfg().shape.y);
+
+    std::unordered_map<std::string, std::string> replacements = {
+        {"{EXT}", ext},
+        {"{WIDTH}", width_val},
+        {"{HEIGHT}", height_val},
+        {"{PROJECT}", project_name},
+        {"{FILENAME}", filename_val}};
+
+    std::filesystem::path export_path =
+        make_unique_filename(fname.parent_path(), pattern, replacements);
 
     if (node.val<bool>(A_16BIT))
-      hmap::export_normal_map_png(fname.string(),
+      hmap::export_normal_map_png(export_path.string(),
                                   p_in->to_array(node.cfg().cm_cpu),
                                   CV_16U);
     else
-      hmap::export_normal_map_png(fname.string(),
+      hmap::export_normal_map_png(export_path.string(),
                                   p_in->to_array(node.cfg().cm_cpu),
                                   CV_8U);
   }

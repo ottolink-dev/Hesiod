@@ -5,6 +5,7 @@
 #include "highmap/geometry/cloud.hpp"
 #include "highmap/operator.hpp"
 
+#include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
@@ -19,7 +20,7 @@ namespace hesiod
 // -----------------------------------------------------------------------------
 // Ports & Attributes
 // -----------------------------------------------------------------------------
-constexpr const char *A_ADD_PREFIX  = "add_prefix";
+constexpr const char *A_PATTERN     = "pattern";
 constexpr const char *A_AUTO_EXPORT = "auto_export";
 constexpr const char *A_FNAME       = "fname";
 constexpr const char *A_LABEL1      = "label1";
@@ -51,8 +52,8 @@ void setup_export_points_to_ply_node(BaseNode &node)
                std::filesystem::path("points.ply"),
                "Stanford PLY (*.ply)",
                true);
+  add_string(node, A_PATTERN, "Filename Pattern", "{FILENAME}.{EXT}");
   add_bool(node, A_AUTO_EXPORT, "Auto Export on Node Update", false);
-  add_bool(node, A_ADD_PREFIX, "Add Project Name as Prefix", false);
   add_string(node, A_LABEL1, "", "data1");
   add_string(node, A_LABEL2, "", "data2");
   add_string(node, A_LABEL3, "", "data3");
@@ -78,9 +79,26 @@ void compute_export_points_to_ply_node(BaseNode &node)
   {
     std::filesystem::path fname = node.val<std::filesystem::path>(A_FNAME);
     fname                       = ensure_extension(fname, ".ply");
+    const auto pattern          = node.val<std::string>(A_PATTERN);
 
-    if (node.val<bool>(A_ADD_PREFIX))
-      fname = prepend_project_name_to_path(fname);
+    std::string ext = fname.extension().string();
+    if (!ext.empty() && ext[0] == '.')
+      ext = ext.substr(1);
+
+    std::string filename_val = fname.stem().string();
+    std::string project_name = HSD_CTX.project_model->get_name();
+    std::string width_val    = std::to_string(node.cfg().shape.x);
+    std::string height_val   = std::to_string(node.cfg().shape.y);
+
+    std::unordered_map<std::string, std::string> replacements = {
+        {"{EXT}", ext},
+        {"{WIDTH}", width_val},
+        {"{HEIGHT}", height_val},
+        {"{PROJECT}", project_name},
+        {"{FILENAME}", filename_val}};
+
+    std::filesystem::path export_path =
+        make_unique_filename(fname.parent_path(), pattern, replacements);
 
     // --- create custom fields
 
@@ -111,7 +129,7 @@ void compute_export_points_to_ply_node(BaseNode &node)
                                     node.val<float>(A_ZMIN),
                                     node.val<float>(A_ZMAX));
 
-    hmap::export_points_to_ply(fname.string(), xr, yr, zr, custom_fields);
+    hmap::export_points_to_ply(export_path.string(), xr, yr, zr, custom_fields);
   }
 }
 
