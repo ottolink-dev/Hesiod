@@ -43,9 +43,28 @@ void compute_brush_node(BaseNode &node)
   // retrieve raw data and convert them to an hmap::Array
   const auto arr = node.get_meta_group().current().value<meta::Array>("hmap");
 
-  hmap::Array array(arr.shape);
-  array.vector = arr.vector;
-  array        = array.resample_to_shape_bilinear(node.get_config_ref()->shape);
+  // reject degenerate data (e.g. a zero shape persisted by older releases)
+  // instead of resampling an inconsistent array
+  hmap::Array array(node.get_config_ref()->shape);
+
+  if (arr.shape.x <= 0 || arr.shape.y <= 0 ||
+      arr.vector.size() != static_cast<size_t>(arr.shape.x) *
+                               static_cast<size_t>(arr.shape.y))
+  {
+    Logger::log()->error(
+        "Brush node [{}]: invalid heightmap data (shape {}x{}, {} values), "
+        "falling back to a zeroed heightmap",
+        node.get_id(),
+        arr.shape.x,
+        arr.shape.y,
+        arr.vector.size());
+  }
+  else
+  {
+    hmap::Array painted(arr.shape);
+    painted.vector = arr.vector;
+    array          = painted.resample_to_shape_bilinear(node.get_config_ref()->shape);
+  }
 
   // Array -> VirtualArray
   p_out->from_array(array, node.cfg().cm_cpu);
