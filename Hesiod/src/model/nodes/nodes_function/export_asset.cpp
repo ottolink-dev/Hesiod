@@ -120,21 +120,8 @@ void compute_export_asset_node(BaseNode &node)
 
   // --- Resolve path using make_unique_filename
 
-  std::string ext = fpath.extension().string();
-  if (!ext.empty() && ext[0] == '.')
-    ext = ext.substr(1);
-
-  std::string filename_val = fpath.stem().string();
-  std::string project_name = HSD_CTX.project_model->get_name();
-  std::string width_val    = std::to_string(node.cfg().shape.x);
-  std::string height_val   = std::to_string(node.cfg().shape.y);
-
-  std::unordered_map<std::string, std::string> replacements = {
-      {"{EXT}", ext},
-      {"{WIDTH}", width_val},
-      {"{HEIGHT}", height_val},
-      {"{PROJECT}", project_name},
-      {"{FILENAME}", filename_val}};
+  std::unordered_map<std::string, std::string> replacements =
+      get_standard_replacements(node, fpath);
 
   std::filesystem::path export_path =
       make_unique_filename(fpath.parent_path(), pattern, replacements);

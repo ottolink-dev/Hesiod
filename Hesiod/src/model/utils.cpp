@@ -12,6 +12,7 @@
 
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/logger.hpp"
+#include "hesiod/model/nodes/base_node.hpp"
 
 namespace fs = std::filesystem;
 
@@ -259,6 +260,29 @@ fs::path make_unique_filename(
     if (!fs::exists(output_path))
       return output_path;
   }
+}
+
+std::unordered_map<std::string, std::string> get_standard_replacements(
+    const BaseNode              &node,
+    const std::filesystem::path &fname)
+{
+  std::string ext = fname.extension().string();
+  if (!ext.empty() && ext[0] == '.')
+    ext = ext.substr(1);
+
+  std::string filename_val = fname.stem().string();
+  std::string project_name = HSD_CTX.project_model->get_name();
+  std::string width_val    = std::to_string(node.cfg().shape.x);
+  std::string height_val   = std::to_string(node.cfg().shape.y);
+  std::string time_val     = timestamp();
+
+  return {
+      {"{EXT}", ext},
+      {"{WIDTH}", width_val},
+      {"{HEIGHT}", height_val},
+      {"{PROJECT}", project_name},
+      {"{FILENAME}", filename_val},
+      {"{TIMESTAMP}", time_val}};
 }
 
 std::filesystem::path prepend_project_name_to_path(
