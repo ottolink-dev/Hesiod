@@ -60,14 +60,16 @@ void compute_export_tiled_node(BaseNode &node)
   if (p_in && node.val<bool>(A_AUTO_EXPORT))
   {
     // prepare parameters
-    std::filesystem::path fname = node.val<std::filesystem::path>(A_FNAME);
-    const auto pattern          = node.val<std::string>(A_PATTERN);
+    std::filesystem::path fname   = node.val<std::filesystem::path>(A_FNAME);
+    const auto            pattern = node.val<std::string>(A_PATTERN);
 
-    std::unordered_map<std::string, std::string> replacements =
-        get_standard_replacements(node, fname);
+    std::unordered_map<std::string, std::string> replacements = get_standard_replacements(
+        node,
+        fname);
 
-    std::filesystem::path export_path =
-        make_unique_filename(fname.parent_path(), pattern, replacements);
+    std::filesystem::path export_path = make_unique_filename(fname.parent_path(),
+                                                             pattern,
+                                                             replacements);
 
     int bit_depth;
     if (node.val<std::string>(A_BIT_DEPTH) == "8 bit")

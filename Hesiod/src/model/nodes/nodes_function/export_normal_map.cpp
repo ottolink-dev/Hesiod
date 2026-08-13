@@ -58,11 +58,13 @@ void compute_export_normal_map_node(BaseNode &node)
     fname                       = ensure_extension(fname, ".png");
     const auto pattern          = node.val<std::string>(A_PATTERN);
 
-    std::unordered_map<std::string, std::string> replacements =
-        get_standard_replacements(node, fname);
+    std::unordered_map<std::string, std::string> replacements = get_standard_replacements(
+        node,
+        fname);
 
-    std::filesystem::path export_path =
-        make_unique_filename(fname.parent_path(), pattern, replacements);
+    std::filesystem::path export_path = make_unique_filename(fname.parent_path(),
+                                                             pattern,
+                                                             replacements);
 
     if (node.val<bool>(A_16BIT))
       hmap::export_normal_map_png(export_path.string(),

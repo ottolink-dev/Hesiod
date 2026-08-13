@@ -79,11 +79,13 @@ void compute_export_cloud_to_ply_node(BaseNode &node)
     fname                       = ensure_extension(fname, ".ply");
     const auto pattern          = node.val<std::string>(A_PATTERN);
 
-    std::unordered_map<std::string, std::string> replacements =
-        get_standard_replacements(node, fname);
+    std::unordered_map<std::string, std::string> replacements = get_standard_replacements(
+        node,
+        fname);
 
-    std::filesystem::path export_path =
-        make_unique_filename(fname.parent_path(), pattern, replacements);
+    std::filesystem::path export_path = make_unique_filename(fname.parent_path(),
+                                                             pattern,
+                                                             replacements);
 
     // --- create custom fields
 

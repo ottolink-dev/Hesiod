@@ -127,11 +127,13 @@ void compute_export_heightmap_node(BaseNode &node)
 
   // --- Export using make_unique_filename
 
-  std::unordered_map<std::string, std::string> replacements =
-      get_standard_replacements(node, fname);
+  std::unordered_map<std::string, std::string> replacements = get_standard_replacements(
+      node,
+      fname);
 
-  std::filesystem::path export_path =
-      make_unique_filename(fname.parent_path(), pattern, replacements);
+  std::filesystem::path export_path = make_unique_filename(fname.parent_path(),
+                                                           pattern,
+                                                           replacements);
 
   switch (format)
   {

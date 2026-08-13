@@ -48,8 +48,8 @@ void compute_brush_node(BaseNode &node)
   hmap::Array array(node.get_config_ref()->shape);
 
   if (arr.shape.x <= 0 || arr.shape.y <= 0 ||
-      arr.vector.size() != static_cast<size_t>(arr.shape.x) *
-                               static_cast<size_t>(arr.shape.y))
+      arr.vector.size() !=
+          static_cast<size_t>(arr.shape.x) * static_cast<size_t>(arr.shape.y))
   {
     Logger::log()->error(
         "Brush node [{}]: invalid heightmap data (shape {}x{}, {} values), "

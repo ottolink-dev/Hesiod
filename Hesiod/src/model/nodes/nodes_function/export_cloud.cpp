@@ -56,11 +56,13 @@ void compute_export_cloud_node(BaseNode &node)
     fname                       = ensure_extension(fname, ".csv");
     const auto pattern          = node.val<std::string>(A_PATTERN);
 
-    std::unordered_map<std::string, std::string> replacements =
-        get_standard_replacements(node, fname);
+    std::unordered_map<std::string, std::string> replacements = get_standard_replacements(
+        node,
+        fname);
 
-    std::filesystem::path export_path =
-        make_unique_filename(fname.parent_path(), pattern, replacements);
+    std::filesystem::path export_path = make_unique_filename(fname.parent_path(),
+                                                             pattern,
+                                                             replacements);
 
     p_in->to_csv(export_path.string());
   }

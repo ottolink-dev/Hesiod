@@ -120,11 +120,13 @@ void compute_export_asset_node(BaseNode &node)
 
   // --- Resolve path using make_unique_filename
 
-  std::unordered_map<std::string, std::string> replacements =
-      get_standard_replacements(node, fpath);
+  std::unordered_map<std::string, std::string> replacements = get_standard_replacements(
+      node,
+      fpath);
 
-  std::filesystem::path export_path =
-      make_unique_filename(fpath.parent_path(), pattern, replacements);
+  std::filesystem::path export_path = make_unique_filename(fpath.parent_path(),
+                                                           pattern,
+                                                           replacements);
 
   const std::string fname = export_path.string();
 
