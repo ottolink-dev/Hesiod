@@ -407,6 +407,7 @@ std::map<std::string, std::string> get_node_inventory()
       {"TextureSplitChannels", "Texture"},
       {"TextureToHeightmap", "Texture"},
       {"TextureUvChecker", "Texture"},
+      {"TextureTransform", "Texture"},
       {"Thermal", "Erosion/Deposition"},
       {"ThermalFlatten", "Erosion/Deposition"},
       {"ThermalScree", "Erosion/Deposition"},
@@ -745,6 +746,7 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
     SETUP_NODE(TextureSplitChannels, texture_split_channels);
     SETUP_NODE(TextureToHeightmap, texture_to_heightmap);
     SETUP_NODE(TextureUvChecker, texture_uv_checker);
+    SETUP_NODE(TextureTransform, texture_transform);
     SETUP_NODE(Transfer, transfer);
     SETUP_NODE(Translate, translate);
     SETUP_NODE(Thermal, thermal);
