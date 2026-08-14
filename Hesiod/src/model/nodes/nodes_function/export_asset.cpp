@@ -8,6 +8,7 @@
 #include "highmap/transform.hpp"
 #include "highmap/virtual_array/virtual_texture.hpp"
 
+#include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
@@ -29,8 +30,8 @@ constexpr const char *P_NORMAL_MAP = "normal map details";
 constexpr const char *P_MASK       = "mask";
 
 constexpr const char *A_FNAME             = "fname";
+constexpr const char *A_PATTERN           = "pattern";
 constexpr const char *A_AUTO_EXPORT       = "auto_export";
-constexpr const char *A_ADD_PREFIX        = "add_prefix";
 constexpr const char *A_EXPORT_FORMAT     = "export_format";
 constexpr const char *A_MESH_TYPE         = "mesh_type";
 constexpr const char *A_MAX_ERROR         = "max_error";
@@ -56,11 +57,11 @@ void setup_export_asset_node(BaseNode &node)
 
   // attributes
   add_filename(node, A_FNAME, "Export File", std::filesystem::path("export"), "*", true);
+  add_string(node, A_PATTERN, "Filename Pattern", "{FILENAME}.{EXT}");
 
   // attribute(s)
   // clang-format off
   add_bool(node, A_AUTO_EXPORT, "Auto Export on Node Update", false);
-  add_bool(node, A_ADD_PREFIX, "Add Project Name as Prefix", false);
   add_float(node, A_MAX_ERROR, "Max Error", 5e-4f, 0.f, 0.01f);
   add_float(node, A_ELEVATION_SCALING, "Elevation Scale", 0.2f, 0.f, 1.f);
   add_float(node, A_DETAIL_SCALING, "Normal Map Scale", 1.f, 0.f, 4.f);
@@ -113,7 +114,7 @@ void compute_export_asset_node(BaseNode &node)
 
   // clang-format off
   auto       fpath           = node.val<std::filesystem::path>(A_FNAME);
-  const auto add_prefix      = node.val<bool>(A_ADD_PREFIX);
+  const auto pattern         = node.val<std::string>(A_PATTERN);
   const auto export_format   = node.val<int>(A_EXPORT_FORMAT);
   const auto mesh_type       = node.val<int>(A_MESH_TYPE);
   const auto max_error       = node.val<float>(A_MAX_ERROR);
@@ -124,12 +125,17 @@ void compute_export_asset_node(BaseNode &node)
   const auto flip_y          = node.val<bool>(A_FLIP_Y);
   // clang-format on
 
-  // --- Resolve path
+  // --- Resolve path using make_unique_filename
 
-  if (add_prefix)
-    fpath = prepend_project_name_to_path(fpath);
+  std::unordered_map<std::string, std::string> replacements = get_standard_replacements(
+      node,
+      fpath);
 
-  const std::string fname = fpath.string();
+  std::filesystem::path export_path = make_unique_filename(fpath.parent_path(),
+                                                           pattern,
+                                                           replacements);
+
+  const std::string fname = export_path.string();
 
   // --- Convert elevation
 

@@ -6,6 +6,7 @@
 #include "highmap/transform.hpp"
 #include "highmap/virtual_array/virtual_texture.hpp"
 
+#include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
@@ -23,7 +24,7 @@ namespace hesiod
 constexpr const char *P_TEXTURE = "texture";
 
 constexpr const char *A_16_BIT      = "16 bit";
-constexpr const char *A_ADD_PREFIX  = "add_prefix";
+constexpr const char *A_PATTERN     = "pattern";
 constexpr const char *A_AUTO_EXPORT = "auto_export";
 constexpr const char *A_FNAME       = "fname";
 constexpr const char *A_FLIP_X      = "flip_x";
@@ -37,19 +38,15 @@ void setup_export_texture_node(BaseNode &node)
   node.add_port<hmap::VirtualTexture>(gnode::PortType::IN, P_TEXTURE);
 
   // attribute(s)
-  add_filename(node,
-               A_FNAME,
-               "fname",
-               std::filesystem::path("texture.png"),
-               "PNG (*.png)",
-               true);
+
+  // clang-format off
+  add_filename(node, A_FNAME, "fname", std::filesystem::path("texture.png"), "PNG (*.png)", true);
+  add_string(node, A_PATTERN, "Filename Pattern", "{FILENAME}.{EXT}");
   add_bool(node, A_16_BIT, "16 bit", false);
   add_bool(node, A_AUTO_EXPORT, "Auto Export on Node Update", false);
-  add_bool(node, A_ADD_PREFIX, "Add Project Name as Prefix", false);
   add_bool(node, A_FLIP_X, "Flip-X", false);
   add_bool(node, A_FLIP_Y, "Flip-Y", false);
-
-  // specialized GUI
+  // clang-format on
 }
 
 void compute_export_texture_node(BaseNode &node)
@@ -62,9 +59,15 @@ void compute_export_texture_node(BaseNode &node)
   {
     std::filesystem::path fname = node.val<std::filesystem::path>(A_FNAME);
     fname                       = ensure_extension(fname, ".png");
+    const auto pattern          = node.val<std::string>(A_PATTERN);
 
-    if (node.val<bool>(A_ADD_PREFIX))
-      fname = prepend_project_name_to_path(fname);
+    std::unordered_map<std::string, std::string> replacements = get_standard_replacements(
+        node,
+        fname);
+
+    std::filesystem::path export_path = make_unique_filename(fname.parent_path(),
+                                                             pattern,
+                                                             replacements);
 
     const bool flip_x = node.val<bool>(A_FLIP_X);
     const bool flip_y = node.val<bool>(A_FLIP_Y);

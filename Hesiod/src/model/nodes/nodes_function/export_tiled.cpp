@@ -4,6 +4,7 @@
 #include "highmap/export.hpp"
 #include "highmap/transform.hpp"
 
+#include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/app/enum_mappings.hpp"
@@ -20,7 +21,7 @@ namespace hesiod
 // -----------------------------------------------------------------------------
 constexpr const char *P_IN = "input";
 
-constexpr const char *A_ADD_PREFIX              = "add_prefix";
+constexpr const char *A_PATTERN                 = "pattern";
 constexpr const char *A_AUTO_EXPORT             = "auto_export";
 constexpr const char *A_BIT_DEPTH               = "bit_depth";
 constexpr const char *A_FNAME                   = "fname";
@@ -41,6 +42,7 @@ void setup_export_tiled_node(BaseNode &node)
 
   // attribute(s)
   add_filename(node, A_FNAME, "fname", std::filesystem::path("hmap.png"), "*", true);
+  add_string(node, A_PATTERN, "Filename Pattern", "{FILENAME}.{EXT}");
 
   std::vector<std::string> choices = {"8 bit", "16 bit"};
   add_choice(node, A_BIT_DEPTH, "PNG Bit Depth", choices, "16 bit");
@@ -50,7 +52,6 @@ void setup_export_tiled_node(BaseNode &node)
   add_bool(node, A_OVERLAPPING_EDGES, "Overlapping Edges", false);
   add_bool(node, A_REVERSE_TILE_Y_INDEXING, "Reverse y-indexing", false);
   add_bool(node, A_AUTO_EXPORT, "Auto Export on Node Update", false);
-  add_bool(node, A_ADD_PREFIX, "Add Project Name as Prefix", false);
   add_bool(node, A_FLIP_X, "Flip-X", false);
   add_bool(node, A_FLIP_Y, "Flip-Y", false);
 }
@@ -64,10 +65,16 @@ void compute_export_tiled_node(BaseNode &node)
   if (p_in && node.val<bool>(A_AUTO_EXPORT))
   {
     // prepare parameters
-    std::filesystem::path fname = node.val<std::filesystem::path>(A_FNAME);
+    std::filesystem::path fname   = node.val<std::filesystem::path>(A_FNAME);
+    const auto            pattern = node.val<std::string>(A_PATTERN);
 
-    if (node.val<bool>(A_ADD_PREFIX))
-      fname = prepend_project_name_to_path(fname);
+    std::unordered_map<std::string, std::string> replacements = get_standard_replacements(
+        node,
+        fname);
+
+    std::filesystem::path export_path = make_unique_filename(fname.parent_path(),
+                                                             pattern,
+                                                             replacements);
 
     int bit_depth;
     if (node.val<std::string>(A_BIT_DEPTH) == "8 bit")
@@ -87,9 +94,9 @@ void compute_export_tiled_node(BaseNode &node)
       hmap::flip_ud(array);
 
     // export
-    hmap::export_tiled(fname.string(),
+    hmap::export_tiled(export_path.string(),
                        "png",
-                       array,
+                       p_in->to_array(node.cfg().cm_cpu),
                        tiling,
                        node.val<int>(A_LEADING_ZEROS),
                        bit_depth,

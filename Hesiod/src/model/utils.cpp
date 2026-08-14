@@ -12,6 +12,8 @@
 
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/logger.hpp"
+#include "hesiod/model/nodes/base_node.hpp"
+#include "hesiod/model/utils.hpp"
 
 namespace fs = std::filesystem;
 
@@ -78,6 +80,28 @@ std::filesystem::path ensure_extension(std::filesystem::path fname,
   return fname;
 }
 
+std::unordered_map<std::string, std::string> get_standard_replacements(
+    const BaseNode              &node,
+    const std::filesystem::path &fname)
+{
+  std::string ext = fname.extension().string();
+  if (!ext.empty() && ext[0] == '.')
+    ext = ext.substr(1);
+
+  std::string filename_val = fname.stem().string();
+  std::string project_name = HSD_CTX.project_model->get_name();
+  std::string width_val = std::to_string(node.cfg().shape.x);
+  std::string height_val = std::to_string(node.cfg().shape.y);
+  std::string time_val = timestamp();
+
+  return {{"{EXT}", ext},
+          {"{WIDTH}", width_val},
+          {"{HEIGHT}", height_val},
+          {"{PROJECT}", project_name},
+          {"{FILENAME}", filename_val},
+          {"{TIMESTAMP}", time_val}};
+}
+
 std::filesystem::path insert_before_basename(const std::filesystem::path &original_path,
                                              const std::string           &insert_str)
 {
@@ -120,14 +144,7 @@ std::string insert_char_every_nth(const std::string &input,
   return result;
 }
 
-#include <filesystem>
-#include <regex>
-#include <string>
-#include <unordered_map>
-
-namespace fs = std::filesystem;
-
-std::string int_to_string(int value, int width = 0)
+std::string int_to_string(int value, int width)
 {
   std::string result = std::to_string(value);
 
@@ -260,7 +277,6 @@ fs::path make_unique_filename(
       return output_path;
   }
 }
-
 std::filesystem::path prepend_project_name_to_path(
     const std::filesystem::path &original_path)
 {

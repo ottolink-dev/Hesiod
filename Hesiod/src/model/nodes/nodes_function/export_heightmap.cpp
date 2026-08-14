@@ -5,6 +5,7 @@
 #include "highmap/transform.hpp"
 
 #include "hesiod/app/enum_mappings.hpp"
+#include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/attributes.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
@@ -21,9 +22,9 @@ namespace hesiod
 constexpr const char *P_IN = "input";
 
 constexpr const char *A_FILENAME    = "fname";
+constexpr const char *A_PATTERN     = "pattern";
 constexpr const char *A_FORMAT      = "format";
 constexpr const char *A_AUTO_EXPORT = "auto_export";
-constexpr const char *A_ADD_PREFIX  = "add_prefix";
 constexpr const char *A_FORCE_SHAPE = "force_shape";
 constexpr const char *A_FLIP_X      = "flip_x";
 constexpr const char *A_FLIP_Y      = "flip_y";
@@ -44,20 +45,18 @@ void setup_export_heightmap_node(BaseNode &node)
 
   std::vector<std::string> choices = {"Unchanged", "2^N", "2^N + 1"};
 
+  // clang-format off
   node.set_current_category("Filename");
   add_filename(node, A_FILENAME, "Filename", "hmap.png", "*", true);
-  add_bool(node, A_ADD_PREFIX, "Add Project Name as Prefix", false);
+  add_string(node, A_PATTERN, "Filename Pattern", "{FILENAME}.{EXT}");
 
   node.set_current_category("Export Parameters");
-  add_enum(node,
-           A_FORMAT,
-           "File Format",
-           enum_mappings.heightmap_export_format_map,
-           "png (16 bit)");
+  add_enum(node, A_FORMAT, "File Format", enum_mappings.heightmap_export_format_map, "png (16 bit)");
   add_bool(node, A_AUTO_EXPORT, "Auto Export on Node Update", false);
   add_choice(node, A_FORCE_SHAPE, "Force Export Shape", choices, "Unchanged");
   add_bool(node, A_FLIP_X, "Flip-X", false);
   add_bool(node, A_FLIP_Y, "Flip-Y", false);
+  // clang-format on
 }
 
 // -----------------------------------------------------------------------------
@@ -79,8 +78,8 @@ void compute_export_heightmap_node(BaseNode &node)
 
   const auto auto_export = node.val<bool>(A_AUTO_EXPORT);
   auto       fname       = node.val<std::filesystem::path>(A_FILENAME);
+  const auto pattern     = node.val<std::string>(A_PATTERN);
   const auto format      = node.val<int>(A_FORMAT);
-  const auto add_prefix  = node.val<bool>(A_ADD_PREFIX);
   const auto force_shape = node.val<std::string>(A_FORCE_SHAPE);
   const auto flip_x      = node.val<bool>(A_FLIP_X);
   const auto flip_y      = node.val<bool>(A_FLIP_Y);
@@ -90,8 +89,21 @@ void compute_export_heightmap_node(BaseNode &node)
 
   // --- Prepare filename
 
-  if (add_prefix)
-    fname = prepend_project_name_to_path(fname);
+  std::string default_ext;
+  switch (format)
+  {
+  case ExportFormat::PNG8BIT:
+  case ExportFormat::PNG16BIT:
+    default_ext = ".png";
+    break;
+  case ExportFormat::EXR32BIT:
+    default_ext = ".exr";
+    break;
+  case ExportFormat::RAW16BIT:
+    default_ext = ".raw";
+    break;
+  }
+  fname = ensure_extension(fname, default_ext);
 
   // --- Convert input
 
@@ -125,35 +137,36 @@ void compute_export_heightmap_node(BaseNode &node)
   if (flip_y)
     hmap::flip_ud(array);
 
-  // --- Export
+  // --- Export using make_unique_filename
+
+  std::unordered_map<std::string, std::string> replacements = get_standard_replacements(
+      node,
+      fname);
+
+  std::filesystem::path export_path = make_unique_filename(fname.parent_path(),
+                                                           pattern,
+                                                           replacements);
 
   switch (format)
   {
   case ExportFormat::PNG8BIT:
   {
-    fname = ensure_extension(fname, ".png");
-    array.to_png_grayscale(fname.string(), CV_8U);
+    array.to_png_grayscale(export_path.string(), CV_8U);
     break;
   }
-
   case ExportFormat::PNG16BIT:
   {
-    fname = ensure_extension(fname, ".png");
-    array.to_png_grayscale(fname.string(), CV_16U);
+    array.to_png_grayscale(export_path.string(), CV_16U);
     break;
   }
-
   case ExportFormat::EXR32BIT:
   {
-    fname = ensure_extension(fname, ".exr");
-    array.to_exr(fname.string());
+    array.to_exr(export_path.string());
     break;
   }
-
   case ExportFormat::RAW16BIT:
   {
-    fname = ensure_extension(fname, ".raw");
-    array.to_raw_16bit(fname.string());
+    array.to_raw_16bit(export_path.string());
     break;
   }
   }

@@ -3,6 +3,7 @@
  * this software. */
 #include "highmap/geometry/path.hpp"
 
+#include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/model/nodes/attributes.hpp"
 
 #include "hesiod/logger.hpp"
@@ -19,7 +20,7 @@ namespace hesiod
 // -----------------------------------------------------------------------------
 constexpr const char *P_IN = "input";
 
-constexpr const char *A_ADD_PREFIX  = "add_prefix";
+constexpr const char *A_PATTERN     = "pattern";
 constexpr const char *A_AUTO_EXPORT = "auto_export";
 constexpr const char *A_FNAME       = "fname";
 
@@ -31,16 +32,12 @@ void setup_export_path_node(BaseNode &node)
   node.add_port<hmap::Path>(gnode::PortType::IN, P_IN);
 
   // attribute(s)
-  add_filename(node,
-               A_FNAME,
-               "fname",
-               std::filesystem::path("path.csv"),
-               "CSV (*.csv)",
-               true);
-  add_bool(node, A_AUTO_EXPORT, "Auto Export on Node Update", false);
-  add_bool(node, A_ADD_PREFIX, "Add Project Name as Prefix", false);
 
-  // specialized GUI
+  // clang-format off
+  add_filename(node, A_FNAME, "fname", std::filesystem::path("path.csv"), "CSV (*.csv)", true);
+  add_string(node, A_PATTERN, "Filename Pattern", "{FILENAME}.{EXT}");
+  add_bool(node, A_AUTO_EXPORT, "Auto Export on Node Update", false);
+  // clang-format on
 }
 
 void compute_export_path_node(BaseNode &node)
@@ -53,11 +50,17 @@ void compute_export_path_node(BaseNode &node)
   {
     std::filesystem::path fname = node.val<std::filesystem::path>(A_FNAME);
     fname                       = ensure_extension(fname, ".csv");
+    const auto pattern          = node.val<std::string>(A_PATTERN);
 
-    if (node.val<bool>(A_ADD_PREFIX))
-      fname = prepend_project_name_to_path(fname);
+    std::unordered_map<std::string, std::string> replacements = get_standard_replacements(
+        node,
+        fname);
 
-    p_in->to_csv(fname.string());
+    std::filesystem::path export_path = make_unique_filename(fname.parent_path(),
+                                                             pattern,
+                                                             replacements);
+
+    p_in->to_csv(export_path.string());
   }
 }
 
