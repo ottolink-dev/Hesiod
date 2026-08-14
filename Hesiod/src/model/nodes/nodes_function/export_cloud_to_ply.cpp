@@ -46,12 +46,9 @@ void setup_export_cloud_to_ply_node(BaseNode &node)
   node.add_port<std::vector<float>>(gnode::PortType::IN, "point_data3");
 
   // attribute(s)
-  add_filename(node,
-               A_FNAME,
-               "fname",
-               std::filesystem::path("points.ply"),
-               "Stanford PLY (*.ply)",
-               true);
+
+  // clang-format off
+  add_filename(node, A_FNAME, "fname", std::filesystem::path("points.ply"), "Stanford PLY (*.ply)", true);
   add_string(node, A_PATTERN, "Filename Pattern", "{FILENAME}.{EXT}");
   add_bool(node, A_AUTO_EXPORT, "Auto Export on Node Update", false);
   add_string(node, A_LABEL1, "", "data1");
@@ -63,8 +60,7 @@ void setup_export_cloud_to_ply_node(BaseNode &node)
   add_float(node, A_YMAX, "ymax", 1.f, -FLT_MAX, FLT_MAX);
   add_float(node, A_ZMIN, "zmin", 0.f, -FLT_MAX, FLT_MAX);
   add_float(node, A_ZMAX, "zmax", 1.f, -FLT_MAX, FLT_MAX);
-
-  // specialized GUI
+  // clang-format on
 }
 
 void compute_export_cloud_to_ply_node(BaseNode &node)

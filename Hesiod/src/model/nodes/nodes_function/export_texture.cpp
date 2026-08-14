@@ -34,17 +34,13 @@ void setup_export_texture_node(BaseNode &node)
   node.add_port<hmap::VirtualTexture>(gnode::PortType::IN, P_TEXTURE);
 
   // attribute(s)
-  add_filename(node,
-               A_FNAME,
-               "fname",
-               std::filesystem::path("texture.png"),
-               "PNG (*.png)",
-               true);
+
+  // clang-format off
+  add_filename(node, A_FNAME, "fname", std::filesystem::path("texture.png"), "PNG (*.png)", true);
   add_string(node, A_PATTERN, "Filename Pattern", "{FILENAME}.{EXT}");
   add_bool(node, A_16_BIT, "16 bit", false);
   add_bool(node, A_AUTO_EXPORT, "Auto Export on Node Update", false);
-
-  // specialized GUI
+  // clang-format on
 }
 
 void compute_export_texture_node(BaseNode &node)

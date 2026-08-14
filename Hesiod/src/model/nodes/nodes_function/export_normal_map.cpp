@@ -33,17 +33,13 @@ void setup_export_normal_map_node(BaseNode &node)
   node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_IN);
 
   // attribute(s)
-  add_filename(node,
-               A_FNAME,
-               "fname",
-               std::filesystem::path("nmap.png"),
-               "PNG (*.png)",
-               true);
+
+  // clang-format off
+  add_filename(node, A_FNAME, "fname", std::filesystem::path("nmap.png"), "PNG (*.png)", true);
   add_string(node, A_PATTERN, "Filename Pattern", "{FILENAME}.{EXT}");
   add_bool(node, A_16BIT, "16bit", false);
   add_bool(node, A_AUTO_EXPORT, "Auto Export on Node Update", false);
-
-  // specialized GUI
+  // clang-format on
 }
 
 void compute_export_normal_map_node(BaseNode &node)

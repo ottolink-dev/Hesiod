@@ -36,20 +36,16 @@ void setup_export_as_cubemap_node(BaseNode &node)
   node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_IN);
 
   // attribute(s)
-  add_filename(node,
-               A_FNAME,
-               "fname",
-               std::filesystem::path("cubemap.png"),
-               "PNG (*.png)",
-               true);
+
+  // clang-format off
+  add_filename(node, A_FNAME, "fname", std::filesystem::path("cubemap.png"), "PNG (*.png)", true);
   add_string(node, A_PATTERN, "Filename Pattern", "{FILENAME}.{EXT}");
   add_int(node, A_CUBEMAP_RESOLUTION, "cubemap_resolution", 64, 32, INT_MAX);
   add_float(node, A_OVERLAP, "overlap", 0.25f, 0.1f, 5.f);
   add_int(node, A_IR, "ir", 16, 1, INT_MAX);
   add_bool(node, A_SPLITTED, "splitted", false);
   add_bool(node, A_AUTO_EXPORT, "Auto Export on Node Update", false);
-
-  // specialized GUI
+  // clang-format on
 }
 
 void compute_export_as_cubemap_node(BaseNode &node)

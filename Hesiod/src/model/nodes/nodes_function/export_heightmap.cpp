@@ -42,18 +42,16 @@ void setup_export_heightmap_node(BaseNode &node)
 
   std::vector<std::string> choices = {"Unchanged", "2^N", "2^N + 1"};
 
+  // clang-format off
   node.set_current_category("Filename");
   add_filename(node, A_FILENAME, "Filename", "hmap.png", "*", true);
   add_string(node, A_PATTERN, "Filename Pattern", "{FILENAME}.{EXT}");
 
   node.set_current_category("Export Parameters");
-  add_enum(node,
-           A_FORMAT,
-           "File Format",
-           enum_mappings.heightmap_export_format_map,
-           "png (16 bit)");
+  add_enum(node, A_FORMAT, "File Format", enum_mappings.heightmap_export_format_map, "png (16 bit)");
   add_bool(node, A_AUTO_EXPORT, "Auto Export on Node Update", false);
   add_choice(node, A_FORCE_SHAPE, "Force Export Shape", choices, "Unchanged");
+  // clang-format on
 }
 
 // -----------------------------------------------------------------------------
