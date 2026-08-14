@@ -104,7 +104,6 @@ void compute_wave_sine_node(BaseNode &node)
                                   phase_rad,
                                   pa_dr,
                                   nullptr,
-                                  nullptr,
                                   center,
                                   region.bbox);
       },

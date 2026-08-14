@@ -44,7 +44,6 @@ void generate_noise(BaseNode            &node,
                                                  nullptr,
                                                  nullptr,
                                                  nullptr,
-                                                 nullptr,
                                                  region.bbox);
 
         *pa_noise_default *= node.val<float>("dn_noise_amp");
