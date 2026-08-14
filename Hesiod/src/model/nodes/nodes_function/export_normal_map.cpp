@@ -2,6 +2,7 @@
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
 #include "highmap/export.hpp"
+#include "highmap/transform.hpp"
 
 #include "hesiod/model/nodes/attributes.hpp"
 
@@ -23,6 +24,8 @@ constexpr const char *A_16BIT       = "16bit";
 constexpr const char *A_ADD_PREFIX  = "add_prefix";
 constexpr const char *A_AUTO_EXPORT = "auto_export";
 constexpr const char *A_FNAME       = "fname";
+constexpr const char *A_FLIP_X      = "flip_x";
+constexpr const char *A_FLIP_Y      = "flip_y";
 
 void setup_export_normal_map_node(BaseNode &node)
 {
@@ -41,6 +44,8 @@ void setup_export_normal_map_node(BaseNode &node)
   add_bool(node, A_16BIT, "16bit", false);
   add_bool(node, A_AUTO_EXPORT, "Auto Export on Node Update", false);
   add_bool(node, A_ADD_PREFIX, "Add Project Name as Prefix", false);
+  add_bool(node, A_FLIP_X, "Flip-X", false);
+  add_bool(node, A_FLIP_Y, "Flip-Y", false);
 
   // specialized GUI
 }
@@ -59,14 +64,19 @@ void compute_export_normal_map_node(BaseNode &node)
     if (node.val<bool>(A_ADD_PREFIX))
       fname = prepend_project_name_to_path(fname);
 
+    hmap::Array array  = p_in->to_array(node.cfg().cm_cpu);
+    const bool  flip_x = node.val<bool>(A_FLIP_X);
+    const bool  flip_y = node.val<bool>(A_FLIP_Y);
+
+    if (flip_x)
+      hmap::flip_lr(array);
+    if (flip_y)
+      hmap::flip_ud(array);
+
     if (node.val<bool>(A_16BIT))
-      hmap::export_normal_map_png(fname.string(),
-                                  p_in->to_array(node.cfg().cm_cpu),
-                                  CV_16U);
+      hmap::export_normal_map_png(fname.string(), array, CV_16U);
     else
-      hmap::export_normal_map_png(fname.string(),
-                                  p_in->to_array(node.cfg().cm_cpu),
-                                  CV_8U);
+      hmap::export_normal_map_png(fname.string(), array, CV_8U);
   }
 }
 

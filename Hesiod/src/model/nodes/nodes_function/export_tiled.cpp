@@ -2,6 +2,7 @@
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
 #include "highmap/export.hpp"
+#include "highmap/transform.hpp"
 
 #include "hesiod/model/nodes/attributes.hpp"
 
@@ -28,6 +29,8 @@ constexpr const char *A_OVERLAPPING_EDGES       = "overlapping_edges";
 constexpr const char *A_REVERSE_TILE_Y_INDEXING = "reverse_tile_y_indexing";
 constexpr const char *A_TILING_X                = "tiling.x";
 constexpr const char *A_TILING_Y                = "tiling.y";
+constexpr const char *A_FLIP_X                  = "flip_x";
+constexpr const char *A_FLIP_Y                  = "flip_y";
 
 void setup_export_tiled_node(BaseNode &node)
 {
@@ -48,6 +51,8 @@ void setup_export_tiled_node(BaseNode &node)
   add_bool(node, A_REVERSE_TILE_Y_INDEXING, "Reverse y-indexing", false);
   add_bool(node, A_AUTO_EXPORT, "Auto Export on Node Update", false);
   add_bool(node, A_ADD_PREFIX, "Add Project Name as Prefix", false);
+  add_bool(node, A_FLIP_X, "Flip-X", false);
+  add_bool(node, A_FLIP_Y, "Flip-Y", false);
 }
 
 void compute_export_tiled_node(BaseNode &node)
@@ -72,10 +77,19 @@ void compute_export_tiled_node(BaseNode &node)
 
     glm::ivec2 tiling = {node.val<int>(A_TILING_X), node.val<int>(A_TILING_Y)};
 
+    hmap::Array array  = p_in->to_array(node.cfg().cm_cpu);
+    const bool  flip_x = node.val<bool>(A_FLIP_X);
+    const bool  flip_y = node.val<bool>(A_FLIP_Y);
+
+    if (flip_x)
+      hmap::flip_lr(array);
+    if (flip_y)
+      hmap::flip_ud(array);
+
     // export
     hmap::export_tiled(fname.string(),
                        "png",
-                       p_in->to_array(node.cfg().cm_cpu),
+                       array,
                        tiling,
                        node.val<int>(A_LEADING_ZEROS),
                        bit_depth,

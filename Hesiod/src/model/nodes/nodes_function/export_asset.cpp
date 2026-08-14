@@ -5,6 +5,7 @@
 #include "highmap/export.hpp"
 #include "highmap/gradient.hpp"
 #include "highmap/texture.hpp"
+#include "highmap/transform.hpp"
 #include "highmap/virtual_array/virtual_texture.hpp"
 
 #include "hesiod/model/nodes/attributes.hpp"
@@ -17,10 +18,6 @@
 
 namespace hesiod
 {
-
-// -----------------------------------------------------------------------------
-// Ports & Attributes
-// -----------------------------------------------------------------------------
 
 // -----------------------------------------------------------------------------
 // Ports & Attributes
@@ -40,6 +37,8 @@ constexpr const char *A_MAX_ERROR         = "max_error";
 constexpr const char *A_ELEVATION_SCALING = "elevation_scaling";
 constexpr const char *A_DETAIL_SCALING    = "detail_scaling";
 constexpr const char *A_BLENDING_METHOD   = "blending_method";
+constexpr const char *A_FLIP_X            = "flip_x";
+constexpr const char *A_FLIP_Y            = "flip_y";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -66,6 +65,8 @@ void setup_export_asset_node(BaseNode &node)
   add_float(node, A_ELEVATION_SCALING, "Elevation Scale", 0.2f, 0.f, 1.f);
   add_float(node, A_DETAIL_SCALING, "Normal Map Scale", 1.f, 0.f, 4.f);
   add_enum(node, A_BLENDING_METHOD, "Blending Method:", hmap::normal_map_blending_method_as_string);
+  add_bool(node, A_FLIP_X, "Flip-X", false);
+  add_bool(node, A_FLIP_Y, "Flip-Y", false);
   // clang-format on
 
   // enums
@@ -119,6 +120,8 @@ void compute_export_asset_node(BaseNode &node)
   const auto elev_scale      = node.val<float>(A_ELEVATION_SCALING);
   const auto detail_scale    = node.val<float>(A_DETAIL_SCALING);
   const auto blending_method = node.val<int>(A_BLENDING_METHOD);
+  const auto flip_x          = node.val<bool>(A_FLIP_X);
+  const auto flip_y          = node.val<bool>(A_FLIP_Y);
   // clang-format on
 
   // --- Resolve path
@@ -131,6 +134,10 @@ void compute_export_asset_node(BaseNode &node)
   // --- Convert elevation
 
   hmap::Array array = p_elev->to_array(node.cfg().cm_cpu);
+  if (flip_x)
+    hmap::flip_lr(array);
+  if (flip_y)
+    hmap::flip_ud(array);
 
   // --- Export texture (optional)
 
@@ -138,8 +145,13 @@ void compute_export_asset_node(BaseNode &node)
 
   if (p_color)
   {
-    texture_fname = fname + ".png";
-    p_color->to_png(texture_fname, node.cfg().cm_cpu, CV_16U);
+    texture_fname   = fname + ".png";
+    hmap::Texture t = p_color->to_texture(p_color->shape, node.cfg().cm_cpu);
+    if (flip_x)
+      hmap::flip_lr(t);
+    if (flip_y)
+      hmap::flip_ud(t);
+    t.to_png(texture_fname, CV_16U);
   }
 
   // --- Build normal map
@@ -160,9 +172,20 @@ void compute_export_asset_node(BaseNode &node)
 
   if (p_nmap)
   {
+    hmap::Texture t_nmap = p_nmap->to_texture(p_nmap->shape, node.cfg().cm_cpu);
+    if (flip_x)
+      hmap::flip_lr(t_nmap);
+    if (flip_y)
+      hmap::flip_ud(t_nmap);
+    hmap::VirtualTexture             flipped_nmap(CONFIG_TEX(node));
+    std::vector<const hmap::Array *> nmap_ptrs;
+    for (auto &c : t_nmap.channels)
+      nmap_ptrs.push_back(&c);
+    flipped_nmap.from_arrays(nmap_ptrs, node.cfg().cm_cpu);
+
     hmap::mix_normal_map(normal_map,
                          normal_map,
-                         *p_nmap,
+                         flipped_nmap,
                          node.cfg().cm_cpu,
                          detail_scale,
                          (hmap::NormalMapBlendingMethod)blending_method);
@@ -175,6 +198,10 @@ void compute_export_asset_node(BaseNode &node)
   if (p_mask)
   {
     hmap::Array mask = p_mask->to_array(node.cfg().cm_cpu);
+    if (flip_x)
+      hmap::flip_lr(mask);
+    if (flip_y)
+      hmap::flip_ud(mask);
 
     // with a mask, the optimized mesh is not available
     hmap::export_asset(fname,

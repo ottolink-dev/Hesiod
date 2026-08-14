@@ -2,6 +2,7 @@
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
 #include "highmap/export.hpp"
+#include "highmap/transform.hpp"
 
 #include "hesiod/model/nodes/attributes.hpp"
 
@@ -26,6 +27,8 @@ constexpr const char *A_FNAME              = "fname";
 constexpr const char *A_IR                 = "ir";
 constexpr const char *A_OVERLAP            = "overlap";
 constexpr const char *A_SPLITTED           = "splitted";
+constexpr const char *A_FLIP_X             = "flip_x";
+constexpr const char *A_FLIP_Y             = "flip_y";
 
 void setup_export_as_cubemap_node(BaseNode &node)
 {
@@ -47,6 +50,8 @@ void setup_export_as_cubemap_node(BaseNode &node)
   add_bool(node, A_SPLITTED, "splitted", false);
   add_bool(node, A_AUTO_EXPORT, "Auto Export on Node Update", false);
   add_bool(node, A_ADD_PREFIX, "Add Project Name as Prefix", false);
+  add_bool(node, A_FLIP_X, "Flip-X", false);
+  add_bool(node, A_FLIP_Y, "Flip-Y", false);
 
   // specialized GUI
 }
@@ -60,6 +65,14 @@ void compute_export_as_cubemap_node(BaseNode &node)
   if (p_in && node.val<bool>(A_AUTO_EXPORT))
   {
     hmap::Array z = p_in->to_array(node.cfg().cm_cpu);
+
+    const bool flip_x = node.val<bool>(A_FLIP_X);
+    const bool flip_y = node.val<bool>(A_FLIP_Y);
+
+    if (flip_x)
+      hmap::flip_lr(z);
+    if (flip_y)
+      hmap::flip_ud(z);
 
     std::filesystem::path fname = node.val<std::filesystem::path>(A_FNAME);
     fname                       = ensure_extension(fname, ".png");
