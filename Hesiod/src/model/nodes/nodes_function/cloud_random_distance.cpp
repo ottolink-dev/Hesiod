@@ -89,7 +89,7 @@ void compute_cloud_random_distance_node(BaseNode &node)
                                            node.val<int>(A_SEED));
   }
 
-  if (node.metadata_val<bool>(A_REMAP, meta::keys::ui::active))
+  if (node.state_val<bool>(A_REMAP, meta::keys::state::active))
   {
     glm::vec2 range = node.val<glm::vec2>(A_REMAP);
     p_cloud->remap_values(range.x, range.y);

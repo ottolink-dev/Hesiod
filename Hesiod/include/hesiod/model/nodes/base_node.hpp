@@ -109,6 +109,20 @@ public:
     handle->metadata().value<T>(meta_key) = new_value;
   }
 
+  template <typename T>
+  decltype(auto) state_val(const std::string &key, const std::string &meta_key) const
+  {
+    const meta::AbstractAttribute *handle = this->get_meta_group().current().find(key);
+    return handle->state().value<T>(meta_key);
+  }
+
+  template <typename T>
+  void set_state(const std::string &key, const std::string &meta_key, T new_value)
+  {
+    meta::AbstractAttribute *handle = this->get_meta_group().current().find(key);
+    handle->state().value<T>(meta_key) = new_value;
+  }
+
   template <typename T> meta::Attribute<T> *attr(const std::string &key)
   {
     auto *p = this->get_meta_group().current().find(key);
