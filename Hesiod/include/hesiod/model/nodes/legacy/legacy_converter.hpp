@@ -4,7 +4,8 @@
 namespace meta
 {
 class AbstractAttribute;
-}
+class ContainerGroup;
+} // namespace meta
 
 namespace hesiod
 {
@@ -17,4 +18,14 @@ namespace hesiod
  */
 nlohmann::json convert_legacy_attribute_json(const meta::AbstractAttribute *attr,
                                              const nlohmann::json          &j);
+
+/**
+ * @brief Converts legacy node attribute JSON (which has flat attributes and no
+ *        "containers" key) into a format expected by meta::ContainerGroup::json_from.
+ * @param group The ContainerGroup instance to inspect attributes for legacy conversions.
+ * @param j The serialized node JSON or container JSON.
+ * @return A ContainerGroup-compatible JSON representation.
+ */
+nlohmann::json convert_legacy_container_group_json(const meta::ContainerGroup &group,
+                                                   const nlohmann::json       &j);
 } // namespace hesiod

@@ -432,10 +432,10 @@ std::shared_ptr<BaseNode> BaseNode::get_shared()
 
 void BaseNode::finalize_attributes()
 {
-  auto &c = this->get_meta_group().current();
+  auto &group = this->get_meta_group();
 
   // initial state for toolbar Reset
-  this->initial_meta_state = c.json_to(meta::SerializationMode::state);
+  this->initial_meta_state = group.json_to(meta::SerializationMode::state);
 }
 
 void BaseNode::json_from(nlohmann::json const &json)
@@ -450,36 +450,10 @@ void BaseNode::json_from(nlohmann::json const &json)
     if (json.contains("runtime_info"))
       this->runtime_info.json_from(json["runtime_info"]);
 
-    nlohmann::json meta_json = nlohmann::json::object();
+    auto          &group = this->get_meta_group();
+    nlohmann::json group_json = convert_legacy_container_group_json(group, json);
 
-    // Centralized JSON Normalization: Translate top-level legacy keys to Meta
-    auto &container = this->get_meta_group().current();
-    for (const auto &key : container.insertion_order())
-    {
-      auto *attr = container.find(key);
-      if (json.contains(key) && !meta_json.contains(key))
-      {
-        meta_json[key] = convert_legacy_attribute_json(attr, json[key]);
-      }
-      else if (meta_json.contains(key))
-      {
-        meta_json[key] = convert_legacy_attribute_json(attr, meta_json[key]);
-      }
-    }
-
-    // in json_from(), the loop only iterates over
-    // container.insertion_order() (the actual declared attributes
-    // like radius, noise_type, etc.). Because "state" is
-    // container-level metadata and not an attribute in
-    // insertion_order(), without these lines meta_json would never
-    // receive json["state"], and container.json_from(meta_json, ...)
-    // would never restore the container's state.
-    if (json.contains("state") && !meta_json.contains("state"))
-    {
-      meta_json["state"] = json["state"];
-    }
-
-    container.json_from(meta_json, meta::SerializationMode::state);
+    group.json_from(group_json, meta::SerializationMode::state);
   }
   catch (const nlohmann::json::exception &e)
   {
@@ -497,8 +471,8 @@ nlohmann::json BaseNode::json_to() const
     json["label"] = this->get_label();
     json["comment"] = this->get_comment();
     json["runtime_info"] = this->runtime_info.json_to();
-    auto meta_json = this->get_meta_group().current().json_to(
-        meta::SerializationMode::state);
+
+    auto meta_json = this->get_meta_group().json_to(meta::SerializationMode::state);
     for (auto &[key, val] : meta_json.items())
     {
       json[key] = val;
