@@ -75,7 +75,6 @@ void compute_paraboloid_node(BaseNode &node)
                                    node.val<bool>(A_REVERSE_Y),
                                    pa_dx,
                                    pa_dy,
-                                   nullptr,
                                    node.val<glm::vec2>(A_CENTER),
                                    region.bbox);
       },

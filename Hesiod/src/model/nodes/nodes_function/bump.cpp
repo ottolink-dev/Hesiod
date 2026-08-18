@@ -87,7 +87,6 @@ void compute_bump_node(BaseNode &node)
                              pa_ctrl,
                              pa_dx,
                              pa_dy,
-                             nullptr,
                              center,
                              region.bbox);
       },

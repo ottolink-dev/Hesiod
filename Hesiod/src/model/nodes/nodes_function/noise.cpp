@@ -119,7 +119,6 @@ void compute_noise_node(BaseNode &node)
                                    seed,
                                    pa_dx,
                                    pa_dy,
-                                   nullptr,
                                    region.bbox,
                                    period);
       },

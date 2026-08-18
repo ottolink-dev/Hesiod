@@ -102,7 +102,6 @@ void compute_dendry_node(BaseNode &node)
                                  0.5f, // overlap
                                  pa_dx,
                                  pa_dy,
-                                 nullptr,
                                  region.bbox,
                                  node.val<int>(A_SUBSAMPLING));
         },

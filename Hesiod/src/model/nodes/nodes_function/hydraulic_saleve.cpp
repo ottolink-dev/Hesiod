@@ -200,7 +200,6 @@ void compute_hydraulic_saleve_node(BaseNode &node)
                                                              params.seed,
                                                              nullptr,
                                                              nullptr,
-                                                             nullptr,
                                                              region.bbox);
 
         *pa_out = hmap::hydraulic_saleve(base,
