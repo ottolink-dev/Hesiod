@@ -73,7 +73,6 @@ void compute_wave_dune_node(BaseNode &node)
                                   phase_rad,
                                   pa_dr,
                                   nullptr,
-                                  nullptr,
                                   node.val<glm::vec2>(A_CENTER),
                                   region.bbox);
       },

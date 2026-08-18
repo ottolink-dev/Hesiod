@@ -435,7 +435,7 @@ void BaseNode::finalize_attributes()
   auto &c = this->get_meta_group().current();
 
   // initial state for toolbar Reset
-  this->initial_meta_state = c.json_to();
+  this->initial_meta_state = c.json_to(meta::SerializationMode::state);
 }
 
 void BaseNode::json_from(nlohmann::json const &json)
@@ -451,12 +451,8 @@ void BaseNode::json_from(nlohmann::json const &json)
       this->runtime_info.json_from(json["runtime_info"]);
 
     nlohmann::json meta_json = nlohmann::json::object();
-    if (json.contains("_meta") && json["_meta"].is_object())
-    {
-      meta_json = json["_meta"];
-    }
 
-    // Centralized JSON Normalization: Translate top-level legacy keys to _meta
+    // Centralized JSON Normalization: Translate top-level legacy keys to Meta
     auto &container = this->get_meta_group().current();
     for (const auto &key : container.insertion_order())
     {
@@ -471,7 +467,19 @@ void BaseNode::json_from(nlohmann::json const &json)
       }
     }
 
-    container.json_from(meta_json);
+    // in json_from(), the loop only iterates over
+    // container.insertion_order() (the actual declared attributes
+    // like radius, noise_type, etc.). Because "state" is
+    // container-level metadata and not an attribute in
+    // insertion_order(), without these lines meta_json would never
+    // receive json["state"], and container.json_from(meta_json, ...)
+    // would never restore the container's state.
+    if (json.contains("state") && !meta_json.contains("state"))
+    {
+      meta_json["state"] = json["state"];
+    }
+
+    container.json_from(meta_json, meta::SerializationMode::state);
   }
   catch (const nlohmann::json::exception &e)
   {
@@ -489,7 +497,8 @@ nlohmann::json BaseNode::json_to() const
     json["label"] = this->get_label();
     json["comment"] = this->get_comment();
     json["runtime_info"] = this->runtime_info.json_to();
-    auto meta_json = this->get_meta_group().current().json_to();
+    auto meta_json = this->get_meta_group().current().json_to(
+        meta::SerializationMode::state);
     for (auto &[key, val] : meta_json.items())
     {
       json[key] = val;

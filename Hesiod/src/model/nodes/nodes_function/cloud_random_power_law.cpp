@@ -48,7 +48,7 @@ void compute_cloud_random_power_law_node(BaseNode &node)
                                                  node.val<float>(A_ALPHA),
                                                  node.val<int>(A_SEED));
 
-  if (node.metadata_val<bool>(A_REMAP, meta::keys::ui::active))
+  if (node.state_val<bool>(A_REMAP, meta::keys::state::active))
   {
     glm::vec2 range = node.val<glm::vec2>(A_REMAP);
     p_out->remap_values(range.x, range.y);

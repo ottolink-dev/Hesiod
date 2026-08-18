@@ -82,7 +82,6 @@ void compute_noise_pingpong_node(BaseNode &node)
                                        pa_ctrl,
                                        pa_dx,
                                        pa_dy,
-                                       nullptr,
                                        region.bbox);
       },
       node.cfg().cm_cpu);

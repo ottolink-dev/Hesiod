@@ -141,7 +141,6 @@ void compute_noise_fbm_node(BaseNode &node)
                                        pa_ctrl,
                                        pa_dx,
                                        pa_dy,
-                                       nullptr,
                                        region.bbox,
                                        period);
       },

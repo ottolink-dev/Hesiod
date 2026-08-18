@@ -164,7 +164,7 @@ void post_process_heightmap(BaseNode           &node,
   }
 
   // remap
-  if (node.metadata_val<bool>("post_remap", meta::keys::ui::active))
+  if (node.state_val<bool>("post_remap", meta::keys::state::active))
   {
     glm::vec2 range = node.val<glm::vec2>("post_remap");
 
@@ -172,7 +172,7 @@ void post_process_heightmap(BaseNode           &node,
   }
 
   // saturate
-  if (node.metadata_val<bool>("post_saturate", meta::keys::ui::active))
+  if (node.state_val<bool>("post_saturate", meta::keys::state::active))
   {
     float     hmin = h.min(node.cfg().cm_cpu);
     float     hmax = h.max(node.cfg().cm_cpu);

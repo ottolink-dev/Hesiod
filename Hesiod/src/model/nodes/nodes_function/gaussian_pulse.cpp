@@ -65,7 +65,6 @@ void compute_gaussian_pulse_node(BaseNode &node)
                                        pa_ctrl,
                                        pa_dx,
                                        pa_dy,
-                                       nullptr,
                                        node.val<glm::vec2>(A_CENTER),
                                        region.bbox);
       },
