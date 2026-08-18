@@ -151,6 +151,16 @@ meta::ContainerGroup &BaseNode::get_meta_group()
 
 const meta::ContainerGroup &BaseNode::get_meta_group() const { return *this->meta_group; }
 
+void BaseNode::set_current_group(const std::string &group_name)
+{
+  auto &group = this->get_meta_group();
+
+  if (!group.find(group_name))
+    group.add(group_name);
+
+  group.set_current(group_name);
+}
+
 void BaseNode::set_current_category(const std::string &category)
 {
   this->current_category = category;

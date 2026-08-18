@@ -133,6 +133,7 @@ public:
 
   meta::ContainerGroup       &get_meta_group(); // lazily creates group + "main" container
   const meta::ContainerGroup &get_meta_group() const;
+  void                        set_current_group(const std::string &group_name);
   void                        set_current_category(const std::string &category);
   const std::string &get_current_category() const { return this->current_category; }
 
