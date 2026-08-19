@@ -2829,6 +2829,81 @@
             }
         }
     },
+    "ColorizeBivariate": {
+        "category": "Texture",
+        "description": "ColorizeBivariate generates a texture by colorizing two scalar fields using two custom color gradients and blending them according to a chosen mixing method.",
+        "label": "ColorizeBivariate",
+        "parameters": {
+            "gradient1": {
+                "description": "Colormap as a manually defined color gradient for input 1.",
+                "key": "gradient1",
+                "label": "gradient1",
+                "type": "Color gradient"
+            },
+            "gradient2": {
+                "description": "Colormap as a manually defined color gradient for input 2.",
+                "key": "gradient2",
+                "label": "gradient2",
+                "type": "Color gradient"
+            },
+            "mix_method": {
+                "description": "Mixing method used to blend the colors from both colormaps.",
+                "key": "mix_method",
+                "label": "mix_method",
+                "type": "Enum"
+            },
+            "reverse_colormap1": {
+                "description": "Reverse the colormap 1 range.",
+                "key": "reverse_colormap1",
+                "label": "reverse_colormap1",
+                "type": "Bool"
+            },
+            "reverse_colormap2": {
+                "description": "Reverse the colormap 2 range.",
+                "key": "reverse_colormap2",
+                "label": "reverse_colormap2",
+                "type": "Bool"
+            },
+            "sat_percentile1": {
+                "description": "Saturation percentile for normalization of input 1.",
+                "key": "sat_percentile1",
+                "label": "Saturation Percentile 1",
+                "type": "Float"
+            },
+            "sat_percentile2": {
+                "description": "Saturation percentile for normalization of input 2.",
+                "key": "sat_percentile2",
+                "label": "Saturation Percentile 2",
+                "type": "Float"
+            }
+        },
+        "ports": {
+            "input1": {
+                "caption": "input1",
+                "data_type": "VirtualArray",
+                "description": "First data values field for color selection.",
+                "type": "input"
+            },
+            "input2": {
+                "caption": "input2",
+                "data_type": "VirtualArray",
+                "description": "Second data values field for color selection.",
+                "type": "input"
+            },
+            "noise": {
+                "caption": "noise",
+                "data_type": "VirtualArray",
+                "description": "Noise for dithering (shared between input 1 and input 2).",
+                "type": "input"
+            },
+            "texture": {
+                "caption": "texture",
+                "data_type": "VirtualTexture",
+                "description": "Output colorized texture.",
+                "type": "output"
+            }
+        }
+    },
     "ColorizeGradient": {
         "category": "Texture",
         "description": "ColorizeGradient generates a texture based on colormaps to assign colors to data values.",
