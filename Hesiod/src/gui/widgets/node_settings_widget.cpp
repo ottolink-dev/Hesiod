@@ -51,6 +51,18 @@ void NodeSettingsWidget::setup_layout()
 {
   Logger::log()->trace("NodeSettingsWidget::setup_layout");
 
+  this->setStyleSheet("QTabBar::tab {"
+                      "  min-height: 20px;"
+                      "  padding: 4px 8px;"
+                      "  border-top-left-radius: 4px;"
+                      "  border-top-right-radius: 4px;"
+                      "  border-bottom-left-radius: 0px;"
+                      "  border-bottom-right-radius: 0px;"
+                      "}"
+                      "QTabBar::tab:selected {"
+                      "  margin-bottom: -1px;"
+                      "}");
+
   auto *layout = new QVBoxLayout();
   layout->setContentsMargins(0, 0, 0, 0);
   layout->setSpacing(4);

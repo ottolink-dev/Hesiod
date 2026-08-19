@@ -179,7 +179,8 @@ std::map<std::string, std::string> get_node_inventory()
       {"CloudToVectors", "Geometry/Cloud"},
       {"CoastalErosionDiffusion", "Erosion/Water"},
       {"CoastalErosionProfile", "Erosion/Water"},
-      {"CoastalFetch", "WIP"}, // "Terrain Features/Advanced"},
+      {"CoastalFetch", "WIP"},  // "Terrain Features/Advanced"},
+      {"CoherentNoise", "WIP"}, // Primitive/Coherent"},
       {"ColorAdjust", "Texture"},
       {"ColorizeGradient", "Texture"},
       {"ColorizeSolid", "Texture"},
@@ -528,6 +529,7 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
     SETUP_NODE(CoastalErosionDiffusion, coastal_erosion_diffusion);
     SETUP_NODE(CoastalErosionProfile, coastal_erosion_profile);
     SETUP_NODE(CoastalFetch, coastal_fetch);
+    SETUP_NODE(CoherentNoise, coherent_noise);
     SETUP_NODE(ColorAdjust, color_adjust)
     SETUP_NODE(ColorizeGradient, colorize_gradient);
     SETUP_NODE(ColorizeSolid, colorize_solid);

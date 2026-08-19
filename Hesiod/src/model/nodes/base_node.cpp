@@ -155,6 +155,25 @@ void BaseNode::set_current_group(const std::string &group_name)
 {
   auto &group = this->get_meta_group();
 
+  // Erase any existing empty containers that are not the target group
+  std::vector<std::string> to_erase;
+  for (const auto &name : group.insertion_order())
+  {
+    if (name != group_name)
+    {
+      const auto *c = group.find(name);
+      if (c && c->size() == 0)
+      {
+        to_erase.push_back(name);
+      }
+    }
+  }
+
+  for (const auto &name : to_erase)
+  {
+    group.erase(name);
+  }
+
   if (!group.find(group_name))
     group.add(group_name);
 
