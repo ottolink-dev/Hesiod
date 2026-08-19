@@ -1,9 +1,11 @@
 #include <algorithm>
+#include <unordered_set>
 #include <vector>
 
 #include <glm/glm.hpp>
 
 #include "meta/core/attribute.hpp"
+#include "meta/core/container_group.hpp"
 #include "meta/ext/array/array.hpp"
 #include "meta/ext/color_gradient/color_gradient.hpp"
 
@@ -174,6 +176,92 @@ nlohmann::json convert_legacy_attribute_json(const meta::AbstractAttribute *attr
   }
 
   return converted;
+}
+
+nlohmann::json convert_legacy_container_group_json(const meta::ContainerGroup &group,
+                                                   const nlohmann::json       &j)
+{
+  if (!j.is_object())
+    return j;
+
+  // If already in ContainerGroup format (has "containers"), convert container contents if
+  // needed
+  if (j.contains("containers") && j["containers"].is_object())
+  {
+    nlohmann::json converted_group = j;
+    for (auto &[cname, cjson] : converted_group["containers"].items())
+    {
+      if (cjson.is_object())
+      {
+        const meta::AttributeContainer *container = group.find(cname);
+        if (!container)
+        {
+          container = &group.current();
+        }
+
+        if (container)
+        {
+          for (const auto &key : container->insertion_order())
+          {
+            auto *attr = container->find(key);
+            if (cjson.contains(key))
+            {
+              cjson[key] = convert_legacy_attribute_json(attr, cjson[key]);
+            }
+          }
+        }
+      }
+    }
+    return converted_group;
+  }
+
+  // Legacy format: the node JSON has attributes directly (or in a single "main"
+  // container). Wrap into ContainerGroup format: { "current": "main", "containers": {
+  // "main": ... } }
+  nlohmann::json group_json = nlohmann::json::object();
+  group_json["current"] = "main";
+
+  nlohmann::json main_container_json = nlohmann::json::object();
+
+  const meta::AttributeContainer *container = group.find("main");
+  if (!container)
+    container = &group.current();
+
+  if (container)
+  {
+    for (const auto &key : container->insertion_order())
+    {
+      auto *attr = container->find(key);
+      if (j.contains(key))
+      {
+        main_container_json[key] = convert_legacy_attribute_json(attr, j[key]);
+      }
+    }
+  }
+  else
+  {
+    // Fallback: copy keys that are not standard node keys
+    static const std::unordered_set<std::string> node_keys = {"id",
+                                                              "label",
+                                                              "comment",
+                                                              "runtime_info",
+                                                              "state"};
+    for (auto &[key, val] : j.items())
+    {
+      if (!node_keys.contains(key))
+      {
+        main_container_json[key] = val;
+      }
+    }
+  }
+
+  if (j.contains("state"))
+  {
+    main_container_json["state"] = j["state"];
+  }
+
+  group_json["containers"]["main"] = main_container_json;
+  return group_json;
 }
 
 } // namespace hesiod
