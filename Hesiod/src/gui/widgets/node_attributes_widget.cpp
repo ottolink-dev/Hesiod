@@ -6,10 +6,12 @@
 #include <QDesktopServices>
 #include <QFileDialog>
 #include <QLayout>
+#include <QStackedWidget>
 #include <QStyle>
 #include <QToolButton>
 
 #include "meta_qt/container_group_widget.hpp"
+#include "meta_qt/widgets/collapsible_section.hpp"
 
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/widgets/documentation_popup.hpp"
@@ -305,6 +307,7 @@ void NodeAttributesWidget::setup_layout()
 
   // --- main layout (built once)
   QVBoxLayout *main_layout = new QVBoxLayout(this);
+  main_layout->setAlignment(Qt::AlignTop);
   main_layout->setSpacing(4);
   main_layout->setContentsMargins(0, 0, 0, 0);
 
@@ -321,6 +324,35 @@ void NodeAttributesWidget::setup_layout()
                                        options,
                                        this,
                                        /* render_single_group_as_a_container */ true);
+
+  if (this->meta_widget && this->meta_widget->layout())
+    this->meta_widget->layout()->setAlignment(Qt::AlignTop);
+
+  for (auto *stacked : this->meta_widget->findChildren<QStackedWidget *>())
+  {
+    for (int i = 0; i < stacked->count(); ++i)
+    {
+      if (auto *page = stacked->widget(i))
+      {
+        if (page->layout())
+          page->layout()->setAlignment(Qt::AlignTop);
+      }
+    }
+  }
+
+  for (auto *section :
+       this->meta_widget->findChildren<meta::qt::CollapsibleSection *>())
+  {
+    this->connect(section,
+                  &meta::qt::CollapsibleSection::expanded_state_changed,
+                  this,
+                  [this]()
+                  {
+                    this->updateGeometry();
+                    if (auto *p = this->parentWidget())
+                      p->updateGeometry();
+                  });
+  }
 
   // Recompute on value_changed or edit_ended depending on app settings.
   auto signal = HSD_CTX.app_settings.node_editor.live_update

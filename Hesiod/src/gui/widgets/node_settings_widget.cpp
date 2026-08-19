@@ -75,6 +75,7 @@ void NodeSettingsWidget::setup_layout()
   {
     auto *container = new QWidget();
     this->attr_layout = new QVBoxLayout(container);
+    this->attr_layout->setAlignment(Qt::AlignTop);
     this->attr_layout->setContentsMargins(margin, 0, margin, 0);
     this->attr_layout->setSpacing(2);
 
