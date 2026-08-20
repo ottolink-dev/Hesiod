@@ -16,10 +16,6 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-// -----------------------------------------------------------------------------
-// Ports & Attributes
-// -----------------------------------------------------------------------------
-
 constexpr const char *P_INPUT  = "input";
 constexpr const char *P_OUTPUT = "output";
 
@@ -29,6 +25,7 @@ constexpr const char *A_SIGMA        = "sigma";
 constexpr const char *A_ORIENTATION  = "orientation";
 constexpr const char *A_PERSISTENCE  = "persistence";
 constexpr const char *A_REMOVE_LOOPS = "remove_loops";
+constexpr const char *A_BOUNDED      = "bounded";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -43,12 +40,18 @@ void setup_path_fractalize_node(BaseNode &node)
   node.add_port<hmap::Path>(gnode::PortType::OUT, P_OUTPUT);
 
   // attribute(s)
+  node.set_current_category("Main Parameters");
+
   add_int(node, A_ITERATIONS, "Iterations", 4, 1, 10);
   add_seed(node, A_SEED, "Random Seed");
   add_float(node, A_SIGMA, "Sigma", 0.3f, 0.f, 1.f);
   add_int(node, A_ORIENTATION, "Orientation", 0, 0, 1);
   add_float(node, A_PERSISTENCE, "Persistence", 1.f, 0.01f, 4.f);
+
+  node.set_current_category("Post-Process");
+
   add_bool(node, A_REMOVE_LOOPS, "Remove Geometric Loops", false);
+  add_bool(node, A_BOUNDED, "Bounded Displacements", false);
 }
 
 // -----------------------------------------------------------------------------
@@ -65,38 +68,29 @@ void compute_path_fractalize_node(BaseNode &node)
   if (!p_in || p_in->size() < 2)
     return;
 
-  // --- Parameters wrapper
+  // --- Params
 
-  const auto params = [&node]()
-  {
-    struct P
-    {
-      int   iterations;
-      uint  seed;
-      float sigma;
-      int   orientation;
-      float persistence;
-      bool  remove_loops;
-    };
-
-    return P{.iterations   = node.val<int>(A_ITERATIONS),
-             .seed         = uint(node.val<int>(A_SEED)),
-             .sigma        = node.val<float>(A_SIGMA),
-             .orientation  = node.val<int>(A_ORIENTATION),
-             .persistence  = node.val<float>(A_PERSISTENCE),
-             .remove_loops = node.val<bool>(A_REMOVE_LOOPS)};
-  }();
+  const auto iterations   = node.val<int>(A_ITERATIONS);
+  const auto seed         = uint(node.val<int>(A_SEED));
+  const auto sigma        = node.val<float>(A_SIGMA);
+  const auto orientation  = node.val<int>(A_ORIENTATION);
+  const auto persistence  = node.val<float>(A_PERSISTENCE);
+  const auto remove_loops = node.val<bool>(A_REMOVE_LOOPS);
+  const auto bounded      = node.val<bool>(A_BOUNDED);
 
   // --- Apply fractalize
 
   *p_out = hmap::fractalize(*p_in,
-                            params.iterations,
-                            params.seed,
-                            params.sigma,
-                            params.orientation,
-                            params.persistence);
+                            iterations,
+                            seed,
+                            sigma,
+                            orientation,
+                            persistence,
+                            /* p_control_field */ nullptr,
+                            /* bbox */ glm::vec4{0.f, 1.f, 0.f, 1.f},
+                            bounded);
 
-  if (params.remove_loops)
+  if (remove_loops)
     *p_out = hmap::remove_geometric_loops(*p_out);
 }
 
