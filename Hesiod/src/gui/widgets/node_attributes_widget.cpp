@@ -340,8 +340,7 @@ void NodeAttributesWidget::setup_layout()
     }
   }
 
-  for (auto *section :
-       this->meta_widget->findChildren<meta::qt::CollapsibleSection *>())
+  for (auto *section : this->meta_widget->findChildren<meta::qt::CollapsibleSection *>())
   {
     this->connect(section,
                   &meta::qt::CollapsibleSection::expanded_state_changed,
