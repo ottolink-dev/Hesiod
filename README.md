@@ -76,7 +76,7 @@ Start the main executable:
 bin/./hesiod
 ```
 
-## Dependencies and moudle structures
+## Dependencies and module structures
 
 ```mermaid
 ---
@@ -97,10 +97,9 @@ flowchart TD
         OpenCL["OpenCL"]
         FastNoiseLite["FastNoiseLite"]
   end
-    Hesiod["Hesiod"] --> HighMap & GNode & GNodeGUI & Attributes["Attributes"] & QTerrainRenderer["QTerrainRenderer"] & QTextureDownloader["QTextureDownloader"]
+    Hesiod["Hesiod"] --> HighMap & GNode & GNodeGUI & Meta["Meta"] & QTerrainRenderer["QTerrainRenderer"] & QTextureDownloader["QTextureDownloader"]
     HighMap --> CLWrapper & PointSampler & FastNoiseLite
     CLWrapper --> CLErrorLookup & OpenCL
-    Attributes --> QSliderX["QSliderX"]
     QTerrainRenderer --> OpenGL["OpenGL"] & ImGui["ImGui"]
      OpenCL:::non_hesiod
      FastNoiseLite:::non_hesiod
