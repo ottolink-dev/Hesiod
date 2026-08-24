@@ -1,6 +1,8 @@
 /* Copyright (c) 2025 Otto Link. Distributed under the terms of the GNU General Public
    License. The full license is in the file LICENSE, distributed with this software. */
 #pragma once
+#include <filesystem>
+
 #include <QComboBox>
 #include <QPointer>
 #include <QWidget>
@@ -33,6 +35,7 @@ public:
 
   void clear() override;
   bool get_param_visibility_state(const std::string &param_name) const override;
+  void set_skybox(const std::filesystem::path path);
   void setup_layout() override;
   void setup_connections() override;
 
