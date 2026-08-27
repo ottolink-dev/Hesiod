@@ -25,6 +25,7 @@ void NodeRuntimeInfo::json_from(nlohmann::json const &json)
 
   json_safe_get(json, "update_time", update_time);
   json_safe_get(json, "eval_count", eval_count);
+  json_safe_get(json, "error_count", error_count);
 }
 
 nlohmann::json NodeRuntimeInfo::json_to() const
@@ -35,6 +36,7 @@ nlohmann::json NodeRuntimeInfo::json_to() const
   json["time_last_update"] = helper_time_to_int64(time_last_update);
   json["update_time"] = this->update_time;
   json["eval_count"] = this->eval_count;
+  json["error_count"] = this->error_count;
 
   return json;
 }

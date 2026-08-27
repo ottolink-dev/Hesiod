@@ -103,6 +103,7 @@ void BaseNode::compute()
   }
   catch (const std::bad_alloc &)
   {
+    this->runtime_info.error_count++;
     Logger::log()->critical("BaseNode::compute: out of memory computing node '{}' "
                             "({}); abandoning this graph update - lower the "
                             "resolution and try again",
@@ -112,6 +113,7 @@ void BaseNode::compute()
   }
   catch (const std::exception &e)
   {
+    this->runtime_info.error_count++;
     Logger::log()->critical("BaseNode::compute: node '{}' ({}) failed: {}",
                             this->get_id(),
                             this->get_node_type(),
@@ -119,6 +121,7 @@ void BaseNode::compute()
   }
   catch (...)
   {
+    this->runtime_info.error_count++;
     Logger::log()->critical("BaseNode::compute: node '{}' ({}) failed with an "
                             "unknown exception",
                             this->get_id(),

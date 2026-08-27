@@ -258,6 +258,7 @@ void NodeInfoDialog::update_info_content()
       {"Last Update", timestamp(info.time_last_update)},
       {"Update Time", std::format("{:.1f} ms", info.update_time)},
       {"Execution Count", std::to_string(info.eval_count)},
+      {"Error Count", std::to_string(info.error_count)},
       {"Memory Usage", std::format("~{:.2f} MB", ptrs.node->get_memory_usage())},
       {"Address", ptr_as_string(static_cast<void *>(ptrs.node))},
       {"Config", ""},

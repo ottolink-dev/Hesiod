@@ -24,6 +24,7 @@ struct NodeRuntimeInfo
   std::chrono::system_clock::time_point time_last_update;
   float                                 update_time;
   size_t                                eval_count = 0;
+  size_t                                error_count = 0;
 
   void           json_from(nlohmann::json const &json);
   nlohmann::json json_to() const;
