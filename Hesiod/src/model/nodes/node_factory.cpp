@@ -180,6 +180,7 @@ std::map<std::string, std::string> get_node_inventory()
       {"CoastalErosionDiffusion", "Erosion/Water"},
       {"CoastalErosionProfile", "Erosion/Water"},
       {"CoastalFetch", "WIP"}, // "Terrain Features/Advanced"},
+      {"CellularNoise", "Primitive/Coherent"},
       {"CoherentNoise", "Primitive/Coherent"},
       {"ColorAdjust", "Texture"},
       {"ColorizeGradient", "Texture"},
@@ -419,12 +420,12 @@ std::map<std::string, std::string> get_node_inventory()
       {"Unsphericity", "WIP/DEPRECATED"},
       {"ValleyFill", "Erosion/Deposition"},
       {"ValleyWidth", "Terrain Features/Landform"},
-      {"Vorolines", "Primitive/Coherent"},
-      {"VorolinesFbm", "Primitive/Coherent"},
-      {"Voronoi", "Primitive/Coherent"},
-      {"VoronoiFbm", "Primitive/Coherent"},
-      {"Voronoise", "Primitive/Coherent"},
-      {"Vororand", "Primitive/Coherent"},
+      {"Vorolines", "WIP/DEPRECATED"},
+      {"VorolinesFbm", "WIP/DEPRECATED"},
+      {"Voronoi", "WIP/DEPRECATED"},
+      {"VoronoiFbm", "WIP/DEPRECATED"},
+      {"Voronoise", "WIP/DEPRECATED"},
+      {"Vororand", "WIP/DEPRECATED"},
       {"Warp", "Operator/Transform"},
       {"WarpDownslope", "WIP"}, // Operator/Transform
       {"WaterDepthDryOut", "Hydrology"},
@@ -508,6 +509,7 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
     SETUP_NODE(Clamp, clamp);
     SETUP_NODE(ClampOblique, clamp_oblique);
     SETUP_NODE(Closing, closing);
+    SETUP_NODE(CellularNoise, cellular_noise);
     SETUP_NODE(Cloud, cloud);
     SETUP_NODE(CloudFromCsv, cloud_from_csv);
     SETUP_NODE(CloudMerge, cloud_merge);

@@ -18,13 +18,14 @@ namespace hesiod
 namespace
 {
 
-std::string resolve_legacy_noise_group_name(const meta::ContainerGroup &group,
-                                            const nlohmann::json       &j)
+std::string resolve_legacy_group_name(const meta::ContainerGroup &group,
+                                      const nlohmann::json       &j)
 {
   std::string label;
   if (j.contains("label") && j["label"].is_string())
     label = j["label"].get<std::string>();
 
+  // Coherent noise mappings
   if (label == "Noise" || label == "NoiseFbm")
     return "FBM";
   if (label == "NoiseRidged")
@@ -39,6 +40,16 @@ std::string resolve_legacy_noise_group_name(const meta::ContainerGroup &group,
     return "PingPong";
   if (label == "NoiseSwiss")
     return "Swiss";
+
+  // Cellular noise mappings
+  if (label == "Voronoi" || label == "VoronoiFbm")
+    return "Grid";
+  if (label == "Vorolines" || label == "VorolinesFbm")
+    return "Lines";
+  if (label == "Vororand")
+    return "Scattered";
+  if (label == "Voronoise")
+    return "Voronoise";
 
   if (group.current_container_name().has_value() &&
       group.contains(*group.current_container_name()))
@@ -63,34 +74,91 @@ nlohmann::json convert_legacy_node_json(const nlohmann::json &json_node)
   if (json_node.contains("label") && json_node["label"].is_string())
     label = json_node["label"].get<std::string>();
 
+  std::string target_label;
   std::string group_name;
-  bool        is_single_noise = false;
+  bool        is_single_octave = false;
 
+  // --- Coherent noise family ---
   if (label == "Noise")
   {
+    target_label = "CoherentNoise";
     group_name = "FBM";
-    is_single_noise = true;
+    is_single_octave = true;
   }
   else if (label == "NoiseFbm")
+  {
+    target_label = "CoherentNoise";
     group_name = "FBM";
+  }
   else if (label == "NoiseRidged")
+  {
+    target_label = "CoherentNoise";
     group_name = "Ridged";
+  }
   else if (label == "NoiseIq")
+  {
+    target_label = "CoherentNoise";
     group_name = "IQ";
+  }
   else if (label == "NoiseJordan")
+  {
+    target_label = "CoherentNoise";
     group_name = "Jordan";
+  }
   else if (label == "NoiseParberry")
+  {
+    target_label = "CoherentNoise";
     group_name = "Parberry";
+  }
   else if (label == "NoisePingpong")
+  {
+    target_label = "CoherentNoise";
     group_name = "PingPong";
+  }
   else if (label == "NoiseSwiss")
+  {
+    target_label = "CoherentNoise";
     group_name = "Swiss";
+  }
+  // --- Cellular noise / Voronoi family ---
+  else if (label == "Voronoi")
+  {
+    target_label = "CellularNoise";
+    group_name = "Grid";
+    is_single_octave = true;
+  }
+  else if (label == "VoronoiFbm")
+  {
+    target_label = "CellularNoise";
+    group_name = "Grid";
+  }
+  else if (label == "Vorolines")
+  {
+    target_label = "CellularNoise";
+    group_name = "Lines";
+    is_single_octave = true;
+  }
+  else if (label == "VorolinesFbm")
+  {
+    target_label = "CellularNoise";
+    group_name = "Lines";
+  }
+  else if (label == "Vororand")
+  {
+    target_label = "CellularNoise";
+    group_name = "Scattered";
+  }
+  else if (label == "Voronoise")
+  {
+    target_label = "CellularNoise";
+    group_name = "Voronoise";
+  }
 
-  if (group_name.empty())
+  if (target_label.empty() || group_name.empty())
     return json_node;
 
   nlohmann::json converted_node = json_node;
-  converted_node["label"] = "CoherentNoise";
+  converted_node["label"] = target_label;
   converted_node["current"] = group_name;
 
   // If the node already has a "containers" object
@@ -100,11 +168,11 @@ nlohmann::json convert_legacy_node_json(const nlohmann::json &json_node)
     {
       nlohmann::json main_json = converted_node["containers"]["main"];
       converted_node["containers"].erase("main");
-      if (is_single_noise)
+      if (is_single_octave)
       {
         main_json["octaves"] = {{"value", 1}};
         if (!main_json.contains("weight"))
-          main_json["weight"] = {{"value", 1.0f}};
+          main_json["weight"] = {{"value", 0.7f}};
         if (!main_json.contains("persistence"))
           main_json["persistence"] = {{"value", 0.5f}};
         if (!main_json.contains("lacunarity"))
@@ -147,11 +215,11 @@ nlohmann::json convert_legacy_node_json(const nlohmann::json &json_node)
       container_json["state"] = converted_node["state"];
     }
 
-    if (is_single_noise)
+    if (is_single_octave)
     {
       container_json["octaves"] = {{"value", 1}};
       if (!container_json.contains("weight"))
-        container_json["weight"] = {{"value", 1.0f}};
+        container_json["weight"] = {{"value", 0.7f}};
       if (!container_json.contains("persistence"))
         container_json["persistence"] = {{"value", 0.5f}};
       if (!container_json.contains("lacunarity"))
@@ -341,11 +409,11 @@ nlohmann::json convert_legacy_container_group_json(const meta::ContainerGroup &g
     nlohmann::json converted_group = j;
 
     // If the serialized group contains a single "main" container but the target group
-    // does not have a "main" container (e.g. CoherentNoise), remap "main" to the
-    // resolved group container name.
+    // does not have a "main" container (e.g. CoherentNoise, CellularNoise), remap "main"
+    // to the resolved group container name.
     if (converted_group["containers"].contains("main") && !group.contains("main"))
     {
-      std::string    target_name = resolve_legacy_noise_group_name(group, j);
+      std::string    target_name = resolve_legacy_group_name(group, j);
       nlohmann::json main_json = converted_group["containers"]["main"];
       converted_group["containers"].erase("main");
       converted_group["containers"][target_name] = main_json;
@@ -380,11 +448,11 @@ nlohmann::json convert_legacy_container_group_json(const meta::ContainerGroup &g
 
   // Legacy format: the node JSON has attributes directly (flat attributes).
   // Determine target container name (either "main" if present in group, or resolved group
-  // name for multi-container nodes like CoherentNoise).
+  // name for multi-container nodes like CoherentNoise, CellularNoise).
   std::string target_container_name = "main";
   if (!group.contains("main"))
   {
-    target_container_name = resolve_legacy_noise_group_name(group, j);
+    target_container_name = resolve_legacy_group_name(group, j);
   }
 
   nlohmann::json group_json = nlohmann::json::object();
