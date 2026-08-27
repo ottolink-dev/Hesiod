@@ -5,6 +5,7 @@
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/broadcast_node.hpp"
+#include "hesiod/model/nodes/legacy/legacy_converter.hpp"
 #include "hesiod/model/nodes/node_factory.hpp"
 #include "hesiod/model/nodes/receive_node.hpp"
 #include "hesiod/model/utils.hpp"
@@ -172,9 +173,11 @@ void GraphNode::json_from(nlohmann::json const &json, GraphConfig *p_input_confi
   {
     for (auto &json_node : json["nodes"])
     {
+      nlohmann::json converted_node = convert_legacy_node_json(json_node);
+
       std::string node_type = "";
 
-      json_safe_get(json_node, "label", node_type);
+      json_safe_get(converted_node, "label", node_type);
 
       Logger::log()->trace("GraphNode::json_from, node type: {}", node_type);
 
@@ -182,12 +185,12 @@ void GraphNode::json_from(nlohmann::json const &json, GraphConfig *p_input_confi
       std::shared_ptr<gnode::Node> node = node_factory(node_type, this->config);
 
       std::string id = "";
-      json_safe_get(json_node, "id", id);
+      json_safe_get(converted_node, "id", id);
 
       this->add_node(node, id);
 
       // set its parameters
-      dynamic_cast<BaseNode *>(node.get())->json_from(json_node);
+      dynamic_cast<BaseNode *>(node.get())->json_from(converted_node);
     }
   }
   else
@@ -206,6 +209,15 @@ void GraphNode::json_from(nlohmann::json const &json, GraphConfig *p_input_confi
       json_safe_get(json_link, "port_id_from", port_id_from);
       json_safe_get(json_link, "node_id_to", node_id_to);
       json_safe_get(json_link, "port_id_to", port_id_to);
+
+      if (auto *p_from = this->get_node(node_id_from))
+      {
+        if (port_id_from == "out" && p_from->get_port_index("out") == -1 &&
+            p_from->get_port_index("output") != -1)
+        {
+          port_id_from = "output";
+        }
+      }
 
       Logger::log()->trace("GraphNode::json_from, new link request: {}/{} => {}/{}",
                            node_id_from,
