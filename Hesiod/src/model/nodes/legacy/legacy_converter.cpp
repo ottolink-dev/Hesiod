@@ -15,6 +15,156 @@
 namespace hesiod
 {
 
+namespace
+{
+
+std::string resolve_legacy_noise_group_name(const meta::ContainerGroup &group,
+                                            const nlohmann::json       &j)
+{
+  std::string label;
+  if (j.contains("label") && j["label"].is_string())
+    label = j["label"].get<std::string>();
+
+  if (label == "Noise" || label == "NoiseFbm")
+    return "FBM";
+  if (label == "NoiseRidged")
+    return "Ridged";
+  if (label == "NoiseIq")
+    return "IQ";
+  if (label == "NoiseJordan")
+    return "Jordan";
+  if (label == "NoiseParberry")
+    return "Parberry";
+  if (label == "NoisePingpong")
+    return "PingPong";
+  if (label == "NoiseSwiss")
+    return "Swiss";
+
+  if (group.current_container_name().has_value() &&
+      group.contains(*group.current_container_name()))
+  {
+    return *group.current_container_name();
+  }
+
+  if (!group.insertion_order().empty())
+    return group.insertion_order().front();
+
+  return "main";
+}
+
+} // namespace
+
+nlohmann::json convert_legacy_node_json(const nlohmann::json &json_node)
+{
+  if (!json_node.is_object())
+    return json_node;
+
+  std::string label;
+  if (json_node.contains("label") && json_node["label"].is_string())
+    label = json_node["label"].get<std::string>();
+
+  std::string group_name;
+  bool        is_single_noise = false;
+
+  if (label == "Noise")
+  {
+    group_name = "FBM";
+    is_single_noise = true;
+  }
+  else if (label == "NoiseFbm")
+    group_name = "FBM";
+  else if (label == "NoiseRidged")
+    group_name = "Ridged";
+  else if (label == "NoiseIq")
+    group_name = "IQ";
+  else if (label == "NoiseJordan")
+    group_name = "Jordan";
+  else if (label == "NoiseParberry")
+    group_name = "Parberry";
+  else if (label == "NoisePingpong")
+    group_name = "PingPong";
+  else if (label == "NoiseSwiss")
+    group_name = "Swiss";
+
+  if (group_name.empty())
+    return json_node;
+
+  nlohmann::json converted_node = json_node;
+  converted_node["label"] = "CoherentNoise";
+  converted_node["current"] = group_name;
+
+  // If the node already has a "containers" object
+  if (converted_node.contains("containers") && converted_node["containers"].is_object())
+  {
+    if (converted_node["containers"].contains("main"))
+    {
+      nlohmann::json main_json = converted_node["containers"]["main"];
+      converted_node["containers"].erase("main");
+      if (is_single_noise)
+      {
+        main_json["octaves"] = {{"value", 1}};
+        if (!main_json.contains("weight"))
+          main_json["weight"] = {{"value", 1.0f}};
+        if (!main_json.contains("persistence"))
+          main_json["persistence"] = {{"value", 0.5f}};
+        if (!main_json.contains("lacunarity"))
+          main_json["lacunarity"] = {{"value", 2.0f}};
+      }
+      converted_node["containers"][group_name] = main_json;
+    }
+  }
+  else
+  {
+    // Legacy format: flat attributes at the node level
+    static const std::unordered_set<std::string> node_keys = {"id",
+                                                              "label",
+                                                              "caption",
+                                                              "comment",
+                                                              "runtime_info",
+                                                              "state",
+                                                              "current",
+                                                              "containers"};
+
+    nlohmann::json           container_json = nlohmann::json::object();
+    std::vector<std::string> keys_to_remove;
+
+    for (auto &[key, val] : converted_node.items())
+    {
+      if (!node_keys.contains(key))
+      {
+        container_json[key] = val;
+        keys_to_remove.push_back(key);
+      }
+    }
+
+    for (const auto &key : keys_to_remove)
+    {
+      converted_node.erase(key);
+    }
+
+    if (converted_node.contains("state"))
+    {
+      container_json["state"] = converted_node["state"];
+    }
+
+    if (is_single_noise)
+    {
+      container_json["octaves"] = {{"value", 1}};
+      if (!container_json.contains("weight"))
+        container_json["weight"] = {{"value", 1.0f}};
+      if (!container_json.contains("persistence"))
+        container_json["persistence"] = {{"value", 0.5f}};
+      if (!container_json.contains("lacunarity"))
+        container_json["lacunarity"] = {{"value", 2.0f}};
+    }
+
+    converted_node["containers"] = nlohmann::json::object();
+    converted_node["containers"][group_name] = container_json;
+  }
+
+  return converted_node;
+}
+
 nlohmann::json convert_legacy_attribute_json(const meta::AbstractAttribute *attr,
                                              const nlohmann::json          &j)
 {
@@ -189,6 +339,19 @@ nlohmann::json convert_legacy_container_group_json(const meta::ContainerGroup &g
   if (j.contains("containers") && j["containers"].is_object())
   {
     nlohmann::json converted_group = j;
+
+    // If the serialized group contains a single "main" container but the target group
+    // does not have a "main" container (e.g. CoherentNoise), remap "main" to the
+    // resolved group container name.
+    if (converted_group["containers"].contains("main") && !group.contains("main"))
+    {
+      std::string    target_name = resolve_legacy_noise_group_name(group, j);
+      nlohmann::json main_json = converted_group["containers"]["main"];
+      converted_group["containers"].erase("main");
+      converted_group["containers"][target_name] = main_json;
+      converted_group["current"] = target_name;
+    }
+
     for (auto &[cname, cjson] : converted_group["containers"].items())
     {
       if (cjson.is_object())
@@ -215,15 +378,21 @@ nlohmann::json convert_legacy_container_group_json(const meta::ContainerGroup &g
     return converted_group;
   }
 
-  // Legacy format: the node JSON has attributes directly (or in a single "main"
-  // container). Wrap into ContainerGroup format: { "current": "main", "containers": {
-  // "main": ... } }
+  // Legacy format: the node JSON has attributes directly (flat attributes).
+  // Determine target container name (either "main" if present in group, or resolved group
+  // name for multi-container nodes like CoherentNoise).
+  std::string target_container_name = "main";
+  if (!group.contains("main"))
+  {
+    target_container_name = resolve_legacy_noise_group_name(group, j);
+  }
+
   nlohmann::json group_json = nlohmann::json::object();
-  group_json["current"] = "main";
+  group_json["current"] = target_container_name;
 
-  nlohmann::json main_container_json = nlohmann::json::object();
+  nlohmann::json target_container_json = nlohmann::json::object();
 
-  const meta::AttributeContainer *container = group.find("main");
+  const meta::AttributeContainer *container = group.find(target_container_name);
   if (!container)
     container = &group.current();
 
@@ -234,7 +403,7 @@ nlohmann::json convert_legacy_container_group_json(const meta::ContainerGroup &g
       auto *attr = container->find(key);
       if (j.contains(key))
       {
-        main_container_json[key] = convert_legacy_attribute_json(attr, j[key]);
+        target_container_json[key] = convert_legacy_attribute_json(attr, j[key]);
       }
     }
   }
@@ -250,17 +419,17 @@ nlohmann::json convert_legacy_container_group_json(const meta::ContainerGroup &g
     {
       if (!node_keys.contains(key))
       {
-        main_container_json[key] = val;
+        target_container_json[key] = val;
       }
     }
   }
 
   if (j.contains("state"))
   {
-    main_container_json["state"] = j["state"];
+    target_container_json["state"] = j["state"];
   }
 
-  group_json["containers"]["main"] = main_container_json;
+  group_json["containers"][target_container_name] = target_container_json;
   return group_json;
 }
 
