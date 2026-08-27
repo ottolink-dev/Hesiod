@@ -467,6 +467,7 @@ void BaseNode::finalize_attributes()
   // group containers
   this->initial_meta_state = group.json_to(meta::SerializationMode::state);
   group.synchronize_all();
+  group.set_current_to_first();
 }
 
 void BaseNode::json_from(nlohmann::json const &json)

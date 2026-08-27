@@ -69,6 +69,10 @@ void setup_coherent_noise_node(BaseNode &node)
     add_float(node, A_LACUNARITY, "Lacunarity", 2.f, 0.01f, 4.f);
     add_bool(node, A_PERIODIC, "Periodic (tileable)", false);
     // clang-format on
+
+    setup_post_process_heightmap_attributes(
+        node,
+        {.add_mix = false, .remap_active_state = true});
   }
 
   {
@@ -89,6 +93,10 @@ void setup_coherent_noise_node(BaseNode &node)
     add_float(node, A_LACUNARITY, "Lacunarity", 2.f, 0.01f, 4.f);
     add_float(node, A_K_SMOOTHING, "k_smoothing", 0.2f, 0.f, 1.f);
     // clang-format on
+
+    setup_post_process_heightmap_attributes(
+        node,
+        {.add_mix = false, .remap_active_state = true});
   }
 }
 
@@ -216,15 +224,10 @@ void compute_coherent_noise_node(BaseNode &node)
                          current_group);
   }
 
-  // // Stub: zero-fill output
-  // hmap::for_each_tile(
-  //     {p_out},
-  //     [](std::vector<hmap::Array *> out, const hmap::TileRegion &)
-  //     {
-  //       if (!out.empty() && out[0])
-  //         *out[0] = 0.f;
-  //     },
-  //     node.cfg().cm_cpu);
+  // --- Post-process (common to all groups)
+
+  post_apply_enveloppe(node, *p_out, p_env);
+  post_process_heightmap(node, *p_out);
 }
 
 } // namespace hesiod
