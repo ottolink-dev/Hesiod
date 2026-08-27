@@ -463,8 +463,10 @@ void BaseNode::finalize_attributes()
 {
   auto &group = this->get_meta_group();
 
-  // initial state for toolbar Reset
+  // initial state for toolbar Reset and sync common attributes accros
+  // group containers
   this->initial_meta_state = group.json_to(meta::SerializationMode::state);
+  group.synchronize_all();
 }
 
 void BaseNode::json_from(nlohmann::json const &json)
