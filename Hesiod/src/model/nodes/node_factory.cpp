@@ -183,6 +183,7 @@ std::map<std::string, std::string> get_node_inventory()
       {"CellularNoise", "Primitive/Coherent"},
       {"CoherentNoise", "Primitive/Coherent"},
       {"ColorAdjust", "Texture"},
+      {"ColorizeBivariate", "Texture"},
       {"ColorizeGradient", "Texture"},
       {"ColorizeSolid", "Texture"},
       {"CombineMask", "Terrain Features/Mask Operations"},
@@ -533,6 +534,7 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
     SETUP_NODE(CoastalFetch, coastal_fetch);
     SETUP_NODE(CoherentNoise, coherent_noise);
     SETUP_NODE(ColorAdjust, color_adjust)
+    SETUP_NODE(ColorizeBivariate, colorize_bivariate);
     SETUP_NODE(ColorizeGradient, colorize_gradient);
     SETUP_NODE(ColorizeSolid, colorize_solid);
     SETUP_NODE(CombineMask, combine_mask);
