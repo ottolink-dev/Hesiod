@@ -183,7 +183,7 @@ meta::Attribute<int> &add_enum(BaseNode                         &node,
 meta::Attribute<std::filesystem::path> &add_filename(BaseNode          &node,
                                                      const std::string &key,
                                                      const std::string &label,
-                                                     const std::string &default_path,
+                                                     const std::filesystem::path &default_path,
                                                      const std::string &filter,
                                                      bool               is_save)
 {
