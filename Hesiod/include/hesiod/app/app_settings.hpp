@@ -88,6 +88,20 @@ struct AppSettings
     bool enable_heightmapper_widget = true;
     bool enable_tool_tips = true;
     bool enable_example_selector_at_startup = true;
+
+    // Node properties panel look. Both are names resolved at runtime, not
+    // enums, so registering a new design or colourway does not mean editing
+    // this struct.
+    //
+    // A design name with nothing registered against it (e.g. "stock") makes
+    // every row fall back to Meta's stock renderer, which is how the two looks
+    // are A/B compared without a rebuild.
+    //
+    // Applied at panel construction. Changing either takes effect on restart --
+    // see meta_qt/ui/theme.hpp for why live re-theming is deliberately not
+    // supported yet.
+    std::string properties_panel_design = "industrial";
+    std::string properties_panel_theme = "industrial-dark";
   } interface;
 
   struct NodeEditor
