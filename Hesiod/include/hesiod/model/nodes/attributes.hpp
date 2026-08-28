@@ -88,12 +88,12 @@ meta::Attribute<int> &add_enum(BaseNode                         &node,
                                const std::string                &default_choice = "");
 
 meta::Attribute<std::filesystem::path> &add_filename(
-    BaseNode          &node,
-    const std::string &key,
-    const std::string &label,
+    BaseNode                    &node,
+    const std::string           &key,
+    const std::string           &label,
     const std::filesystem::path &default_path = {},
-    const std::string &filter = "All Files (*.*)",
-    bool               is_save = false);
+    const std::string           &filter = "All Files (*.*)",
+    bool                         is_save = false);
 
 meta::Attribute<float> &add_float(BaseNode          &node,
                                   const std::string &key,

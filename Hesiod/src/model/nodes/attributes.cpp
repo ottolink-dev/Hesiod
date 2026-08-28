@@ -180,12 +180,13 @@ meta::Attribute<int> &add_enum(BaseNode                         &node,
   return add_enum(node, key, label, items, default_val);
 }
 
-meta::Attribute<std::filesystem::path> &add_filename(BaseNode          &node,
-                                                     const std::string &key,
-                                                     const std::string &label,
-                                                     const std::filesystem::path &default_path,
-                                                     const std::string &filter,
-                                                     bool               is_save)
+meta::Attribute<std::filesystem::path> &add_filename(
+    BaseNode                    &node,
+    const std::string           &key,
+    const std::string           &label,
+    const std::filesystem::path &default_path,
+    const std::string           &filter,
+    bool                         is_save)
 {
   auto &a = meta::presets::file(node.get_meta_group().current(),
                                 key,

@@ -51,6 +51,10 @@ std::string resolve_legacy_group_name(const meta::ContainerGroup &group,
   if (label == "Voronoise")
     return "Voronoise";
 
+  // Path fractalize mappings
+  if (label == "PathFractalize")
+    return "Fractalize";
+
   if (group.current_container_name().has_value() &&
       group.contains(*group.current_container_name()))
   {
@@ -152,6 +156,12 @@ nlohmann::json convert_legacy_node_json(const nlohmann::json &json_node)
   {
     target_label = "CellularNoise";
     group_name = "Voronoise";
+  }
+  // --- Path Fractalize ---
+  else if (label == "PathFractalize")
+  {
+    target_label = "PathFractalize";
+    group_name = "Fractalize";
   }
 
   if (target_label.empty() || group_name.empty())
