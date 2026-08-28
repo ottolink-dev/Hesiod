@@ -33,6 +33,7 @@ constexpr const char *A_REVERSE_COLORMAP1 = "reverse_colormap1";
 constexpr const char *A_REVERSE_COLORMAP2 = "reverse_colormap2";
 constexpr const char *A_SAT_PERC1         = "sat_percentile1";
 constexpr const char *A_SAT_PERC2         = "sat_percentile2";
+constexpr const char *A_SHARPNESS         = "sharpness";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -51,29 +52,26 @@ void setup_colorize_bivariate_node(BaseNode &node)
 
   // --- Attributes
 
-  add_color_gradient(node, A_GRADIENT1, "gradient1");
-  node.set_metadata(
-      A_GRADIENT1,
-      meta::keys::ui::presets,
-      meta::GradientPresets{ColorGradientManager::get_instance().get_as_attr_presets()});
+  auto presets = meta::GradientPresets{
+      ColorGradientManager::get_instance().get_as_attr_presets()};
 
-  add_color_gradient(node, A_GRADIENT2, "gradient2");
-  node.set_metadata(
-      A_GRADIENT2,
-      meta::keys::ui::presets,
-      meta::GradientPresets{ColorGradientManager::get_instance().get_as_attr_presets()});
+  // clang-format off
+  node.set_current_category("Colormap 1");
+  add_color_gradient(node, A_GRADIENT1, "Gradient");
+  node.set_metadata(A_GRADIENT1, meta::keys::ui::presets, presets);
+  add_bool(node, A_REVERSE_COLORMAP1, "Reverse Colormap", false);
+  add_float(node, A_SAT_PERC1, "Saturation Percentile", 0.f, 0.f, 50.f, "{:.1f}%");
 
-  add_enum(node,
-           A_MIX_METHOD,
-           "mix_method",
-           enum_mappings.mix_method_map,
-           "Square Averaged");
+  node.set_current_category("Colormap 2");
+  add_color_gradient(node, A_GRADIENT2, "Gradient");
+  node.set_metadata(A_GRADIENT2, meta::keys::ui::presets, presets);
+  add_bool(node, A_REVERSE_COLORMAP2, "Reverse Colormap", false);
+  add_float(node, A_SAT_PERC2, "Saturation Percentile", 0.f, 0.f, 50.f, "{:.1f}%");
 
-  add_bool(node, A_REVERSE_COLORMAP1, "reverse_colormap1", false);
-  add_bool(node, A_REVERSE_COLORMAP2, "reverse_colormap2", false);
-
-  add_float(node, A_SAT_PERC1, "Saturation Percentile 1", 0.f, 0.f, 50.f, "{:.1f}%");
-  add_float(node, A_SAT_PERC2, "Saturation Percentile 2", 0.f, 0.f, 50.f, "{:.1f}%");
+  node.set_current_category("Blending");
+  add_enum(node, A_MIX_METHOD, "Color Mix Method", enum_mappings.mix_method_map, "Square Averaged");
+  add_float(node, A_SHARPNESS, "Sharpness", 1.f, 0.01f, 10.f);
+  // clang-format on
 }
 
 // -----------------------------------------------------------------------------
@@ -96,15 +94,14 @@ void compute_colorize_bivariate_node(BaseNode &node)
 
   // --- Params
 
-  const auto &gradient1 = node.val<meta::ColorGradient>(A_GRADIENT1).value();
-  const auto &gradient2 = node.val<meta::ColorGradient>(A_GRADIENT2).value();
-
-  const auto mix_method = static_cast<hmap::MixMethod>(node.val<int>(A_MIX_METHOD));
-  const auto reverse_colormap1 = node.val<bool>(A_REVERSE_COLORMAP1);
-  const auto reverse_colormap2 = node.val<bool>(A_REVERSE_COLORMAP2);
-
-  const auto sat_perc1 = 0.01f * node.val<float>(A_SAT_PERC1);
-  const auto sat_perc2 = 0.01f * node.val<float>(A_SAT_PERC2);
+  const auto &gradient1  = node.val<meta::ColorGradient>(A_GRADIENT1).value();
+  const auto &gradient2  = node.val<meta::ColorGradient>(A_GRADIENT2).value();
+  const auto  mix_method = static_cast<hmap::MixMethod>(node.val<int>(A_MIX_METHOD));
+  const auto  reverse_colormap1 = node.val<bool>(A_REVERSE_COLORMAP1);
+  const auto  reverse_colormap2 = node.val<bool>(A_REVERSE_COLORMAP2);
+  const auto  sat_perc1         = 0.01f * node.val<float>(A_SAT_PERC1);
+  const auto  sat_perc2         = 0.01f * node.val<float>(A_SAT_PERC2);
+  const auto  sharpness         = node.val<float>(A_SHARPNESS);
 
   std::vector<float>     positions1       = {};
   std::vector<glm::vec3> colormap_colors1 = {};
@@ -146,14 +143,76 @@ void compute_colorize_bivariate_node(BaseNode &node)
     range2.y += nmax;
   }
 
+  hmap::VirtualArray  in1_processed;
+  hmap::VirtualArray  in2_processed;
+  hmap::VirtualArray *p_in1_final   = p_in1;
+  hmap::VirtualArray *p_in2_final   = p_in2;
+  hmap::VirtualArray *p_noise_final = p_noise;
+
+  glm::vec2 range1_final = range1;
+  glm::vec2 range2_final = range2;
+
+  if (sharpness != 1.f)
+  {
+    in1_processed.copy_from(*p_in1, node.cfg().cm_cpu, false);
+    in2_processed.copy_from(*p_in2, node.cfg().cm_cpu, false);
+
+    float denom1 = (range1.y != range1.x) ? (range1.y - range1.x) : 1.f;
+    float denom2 = (range2.y != range2.x) ? (range2.y - range2.x) : 1.f;
+
+    std::vector<hmap::VirtualArray *> ptrs = {&in1_processed,
+                                              &in2_processed,
+                                              p_in1,
+                                              p_in2,
+                                              p_noise};
+
+    hmap::for_each_tile(
+        ptrs,
+        [range1, range2, denom1, denom2, sharpness](std::vector<hmap::Array *> p_arrays,
+                                                    const hmap::TileRegion    &region)
+        {
+          auto [pa_out1, pa_out2, pa_in1, pa_in2, pa_noise] = unpack<5>(p_arrays);
+
+          for (int j = 0; j < region.shape.y; ++j)
+          {
+            for (int i = 0; i < region.shape.x; ++i)
+            {
+              float noise_val = pa_noise ? (*pa_noise)(i, j) : 0.f;
+
+              float v1 = (*pa_in1)(i, j) + noise_val;
+              float v2 = (*pa_in2)(i, j) + noise_val;
+
+              v1 = (v1 - range1.x) / denom1;
+              v2 = (v2 - range2.x) / denom2;
+
+              v1 = std::clamp(v1, 0.f, 1.f);
+              v2 = std::clamp(v2, 0.f, 1.f);
+
+              v1 = hmap::gain(v1, sharpness);
+              v2 = hmap::gain(v2, sharpness);
+
+              (*pa_out1)(i, j) = v1;
+              (*pa_out2)(i, j) = v2;
+            }
+          }
+        },
+        node.cfg().cm_cpu);
+
+    p_in1_final   = &in1_processed;
+    p_in2_final   = &in2_processed;
+    range1_final  = {0.f, 1.f};
+    range2_final  = {0.f, 1.f};
+    p_noise_final = nullptr;
+  }
+
   // --- Compute
 
   hmap::colorize_bivariate(*p_tex,
-                           *p_in1,
-                           *p_in2,
+                           *p_in1_final,
+                           *p_in2_final,
                            node.cfg().cm_cpu,
-                           range1,
-                           range2,
+                           range1_final,
+                           range2_final,
                            positions1,
                            positions2,
                            colormap_colors1,
@@ -161,8 +220,8 @@ void compute_colorize_bivariate_node(BaseNode &node)
                            mix_method,
                            reverse_colormap1,
                            reverse_colormap2,
-                           p_noise,
-                           p_noise);
+                           p_noise_final,
+                           p_noise_final);
 }
 
 } // namespace hesiod

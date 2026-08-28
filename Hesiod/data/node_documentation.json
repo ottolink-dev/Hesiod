@@ -2875,6 +2875,12 @@
                 "key": "sat_percentile2",
                 "label": "Saturation Percentile 2",
                 "type": "Float"
+            },
+            "sharpness": {
+                "description": "Sharpness of the transition between the two colormaps.",
+                "key": "sharpness",
+                "label": "Sharpness",
+                "type": "Float"
             }
         },
         "ports": {
