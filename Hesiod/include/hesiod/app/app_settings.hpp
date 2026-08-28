@@ -88,6 +88,21 @@ struct AppSettings
     bool enable_heightmapper_widget = true;
     bool enable_tool_tips = true;
     bool enable_example_selector_at_startup = true;
+
+    // Node properties panel look. Both are names resolved at runtime, not
+    // enums, so registering a new design or colourway does not mean editing
+    // this struct.
+    //
+    // "industrial" and "stock" are peer designs, so selecting "stock" gives
+    // the unmodified Qt look -- that is how the two are A/B compared without a
+    // rebuild. A widget type "industrial" has not covered yet resolves through
+    // stock via the design's fallback chain.
+    //
+    // Applied at panel construction. Changing either takes effect on restart --
+    // see meta_qt/ui/theme.hpp for why live re-theming is deliberately not
+    // supported yet.
+    std::string properties_panel_design = "industrial";
+    std::string properties_panel_theme = "industrial-dark";
   } interface;
 
   struct NodeEditor

@@ -11,6 +11,9 @@
 #include <QToolButton>
 
 #include "meta_qt/container_group_widget.hpp"
+#include "meta_qt/designs/industrial/industrial.hpp"
+#include "meta_qt/ui/design_registry.hpp"
+#include "meta_qt/ui/theme.hpp"
 #include "meta_qt/widgets/collapsible_section.hpp"
 
 #include "hesiod/app/hesiod_application.hpp"
@@ -21,6 +24,59 @@
 
 namespace hesiod
 {
+
+namespace
+{
+
+/** @brief Look up an attribute's default value from a node's initial state.
+ *
+ * The panel needs this because "modified" means `|value - default| > 1e-4`,
+ * not "changed since the panel opened", and a Meta attribute does not carry
+ * its own default. BaseNode captures one in finalize_attributes().
+ *
+ * The initial state is a ContainerGroup snapshot:
+ *   { "current": name, "containers": { <container>: { <attr>: { "value": ... } } } }
+ *
+ * Returns an empty std::any for anything it cannot resolve -- an unknown
+ * default is reported as *not* modified, since a panel that paints every row
+ * as modified is worse than one that paints none.
+ */
+std::any lookup_default(const nlohmann::json    &initial_state,
+                        const std::string       &container_name,
+                        const std::string       &key,
+                        const std::type_index   &type)
+{
+  if (!initial_state.contains("containers")) return {};
+
+  const auto &containers = initial_state["containers"];
+  if (!containers.contains(container_name)) return {};
+
+  const auto &container = containers[container_name];
+  if (!container.contains(key)) return {};
+
+  const auto &entry = container[key];
+  if (!entry.contains("value")) return {};
+
+  const auto &value = entry["value"];
+
+  try
+  {
+    // Only the types the design actually renders need converting; anything
+    // else falls through to "unknown", which is harmless.
+    if (type == std::type_index(typeid(float))) return value.get<float>();
+    if (type == std::type_index(typeid(bool))) return value.get<bool>();
+    if (type == std::type_index(typeid(int))) return value.get<int>();
+  }
+  catch (const nlohmann::json::exception &)
+  {
+    // A snapshot whose shape disagrees with the live attribute is a host bug,
+    // not a reason to refuse to draw the row.
+  }
+
+  return {};
+}
+
+} // namespace
 
 NodeAttributesWidget::NodeAttributesWidget(std::weak_ptr<GraphNode>  p_graph_node,
                                            const std::string        &node_id,
@@ -316,9 +372,48 @@ void NodeAttributesWidget::setup_layout()
 
   // --- Meta ContainerGroupWidget
 
+  // Designs register once per process; calling this unconditionally is cheap
+  // and keeps the registration next to the only thing that consumes it.
+  meta::qt::industrial::register_design();
+
+  const AppSettings &settings = HSD_CTX.app_settings;
+  const std::string  design = settings.interface.properties_panel_design;
+  const meta::qt::Theme &theme = meta::qt::ThemeRegistry::instance().get(
+      settings.interface.properties_panel_theme);
+
+  meta::qt::RowContext row_ctx;
+  row_ctx.theme = &theme;
+
+  // Captures by value: the row renderer outlives this function, and the widget
+  // owns the node only weakly.
+  const nlohmann::json initial_state = p_node->get_initial_meta_state();
+  const std::string    container_name = p_node->get_meta_group()
+                                         .current_container_name()
+                                         .value_or(std::string{});
+
+  row_ctx.default_value = [initial_state, container_name, this](
+                              const std::string &key) -> std::any
+  {
+    auto gno = this->p_graph_node.lock();
+    if (!gno) return {};
+
+    BaseNode *p_current = gno->get_node_ref_by_id<BaseNode>(this->node_id);
+    if (!p_current) return {};
+
+    auto *p_attr = p_current->get_meta_group().current().find(key);
+    if (!p_attr) return {};
+
+    return lookup_default(initial_state, container_name, key, p_attr->type());
+  };
+
   auto options = meta::qt::ContainerRenderOptions{
       .category_policy = meta::qt::CategoryPolicy::CP_MERGED,
       .root_category_name = std::string{}};
+
+  // An unregistered design name resolves nothing and every row falls back to
+  // the stock renderer, so "stock" is a working value here rather than a error.
+  options.row_renderer = [design, row_ctx](meta::AbstractAttribute *p_attr)
+  { return meta::qt::render_row(p_attr, design, row_ctx); };
 
   this->meta_widget = meta::qt::render(p_node->get_meta_group(),
                                        options,
