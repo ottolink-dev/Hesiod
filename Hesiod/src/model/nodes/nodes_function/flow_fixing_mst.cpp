@@ -25,12 +25,10 @@ constexpr const char *A_ELEVATION_RATIO     = "elevation_ratio";
 constexpr const char *A_DISTANCE_EXPONENT   = "distance_exponent";
 constexpr const char *A_UPWARD_PENALIZATION = "upward_penalization";
 constexpr const char *A_VALLEY_AFFINITY     = "valley_affinity";
-constexpr const char *A_PATH_SINUOSITY      = "path_sinuosity";
 constexpr const char *A_PREFILTER_RADIUS    = "prefilter_radius";
 constexpr const char *A_MINIMUM_DEPTH       = "minimum_depth";
 constexpr const char *A_CARVE_RIVERBED      = "carve_riverbed";
 constexpr const char *A_MERGING_RADIUS      = "merging_radius";
-constexpr const char *A_SEED                = "seed";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -50,22 +48,20 @@ void setup_flow_fixing_mst_node(BaseNode &node)
 
   // clang-format off
   node.set_current_category("Riverbed Slope & Pathfinding");
-  add_float(node, A_RIVERBED_SLOPE, "Riverbed Slope", 0.01f, 0.f, 0.1f);
-  add_float(node, A_ELEVATION_RATIO, "Elevation vs Slope Weight", 0.95f, 0.f, 1.f);
+  add_float(node, A_RIVERBED_SLOPE, "Riverbed Slope", 0.1f, 0.f, 1.f);
+  add_float(node, A_ELEVATION_RATIO, "Elevation vs Slope Weight", 0.95f, 0.f, 0.99f);
   add_float(node, A_DISTANCE_EXPONENT, "Distance Exponent", 2.f, 0.1f, 4.f);
-  add_float(node, A_UPWARD_PENALIZATION, "Upward Penalization", 50.f, 1.f, 1000.f);
+  add_float(node, A_UPWARD_PENALIZATION, "Upward Penalization", 500.f, 1.f, 1000.f);
   add_float(node, A_VALLEY_AFFINITY, "Valley Affinity", 0.5f, 0.f, 1.f);
-  add_float(node, A_PATH_SINUOSITY, "Path Sinuosity", 0.f, 0.f, 1.f);
   add_float(node, A_PREFILTER_RADIUS, "Prefilter Radius", 0.02f, 0.f, 0.1f);
-  add_float(node, A_MINIMUM_DEPTH, "Minimum Depth", 1e-3f, 1e-4f, 1e-1f, "{:.2e}", true);
+  add_float(node, A_MINIMUM_DEPTH, "Minimum Depth", 1e-2f, 1e-4f, 1e-1f, "{:.2e}", true);
 
   node.set_current_category("Riverbank Carving");
   add_bool(node, A_CARVE_RIVERBED, "Carve Riverbed", true);
-  add_float(node, A_MERGING_RADIUS, "Merging Radius", 0.02f, 0.f, 0.2f);
-  add_seed(node, A_SEED, "Seed");
+  add_float(node, A_MERGING_RADIUS, "Merging Radius", 5e-2f, 1e-4f, 1e-1f, "{:.2e}", true);
   // clang-format on
 
-  setup_default_noise(node, {.noise_amp = 0.05f, .kw = 8.f, .smoothness = 0.2f});
+  setup_default_noise(node, {.noise_amp = 0.8f, .kw = 8.f, .smoothness = 0.f});
   setup_post_process_heightmap_attributes(node,
                                           {.add_mix = true, .remap_active_state = false});
 }
@@ -93,11 +89,9 @@ void compute_flow_fixing_mst_node(BaseNode &node)
   const auto distance_exponent   = node.val<float>(A_DISTANCE_EXPONENT);
   const auto upward_penalization = node.val<float>(A_UPWARD_PENALIZATION);
   const auto valley_affinity     = node.val<float>(A_VALLEY_AFFINITY);
-  const auto path_sinuosity      = node.val<float>(A_PATH_SINUOSITY);
   const auto prefilter_ir        = int(node.val<float>(A_PREFILTER_RADIUS) * nx);
   const auto minimum_depth       = node.val<float>(A_MINIMUM_DEPTH);
   const auto carve_riverbed      = node.val<bool>(A_CARVE_RIVERBED);
-  const auto seed                = std::uint32_t(node.val<int>(A_SEED));
   const auto merging_distance    = node.val<float>(A_MERGING_RADIUS) * nx;
 
   // --- Prepare default noise
@@ -124,11 +118,9 @@ void compute_flow_fixing_mst_node(BaseNode &node)
                                         distance_exponent,
                                         upward_penalization,
                                         valley_affinity,
-                                        path_sinuosity,
                                         prefilter_ir,
                                         minimum_depth,
                                         carve_riverbed,
-                                        seed,
                                         merging_distance,
                                         pa_noise_r);
       },
