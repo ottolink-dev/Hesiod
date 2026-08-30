@@ -44,7 +44,11 @@ void setup_bulkify_node(BaseNode &node)
 
   node.set_current_category("Bulk Shape");
   add_float(node, A_AMPLITUDE, "amplitude", 1.f, -1.f, 4.f);
-  add_enum(node, A_BULK_TYPE, "bulk_type", enum_mappings.primitive_type_map);
+  add_enum(node,
+           A_BULK_TYPE,
+           "bulk_type",
+           enum_mappings.primitive_type_map,
+           "Cubic Pulse");
 
   node.set_current_category("Position");
   add_xy(node, A_CENTER, "center");
