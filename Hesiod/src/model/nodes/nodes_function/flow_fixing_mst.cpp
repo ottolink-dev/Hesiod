@@ -5,6 +5,7 @@
 
 #include "hesiod/model/nodes/attributes.hpp"
 
+#include "hesiod/app/enum_mappings.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
@@ -20,15 +21,17 @@ constexpr const char *P_IN      = "input";
 constexpr const char *P_NOISE_R = "noise_r";
 constexpr const char *P_OUT     = "output";
 
-constexpr const char *A_RIVERBED_SLOPE      = "riverbed_slope";
-constexpr const char *A_ELEVATION_RATIO     = "elevation_ratio";
-constexpr const char *A_DISTANCE_EXPONENT   = "distance_exponent";
-constexpr const char *A_UPWARD_PENALIZATION = "upward_penalization";
-constexpr const char *A_VALLEY_AFFINITY     = "valley_affinity";
-constexpr const char *A_PREFILTER_RADIUS    = "prefilter_radius";
-constexpr const char *A_MINIMUM_DEPTH       = "minimum_depth";
-constexpr const char *A_CARVE_RIVERBED      = "carve_riverbed";
-constexpr const char *A_MERGING_RADIUS      = "merging_radius";
+constexpr const char *A_RIVERBED_SLOPE           = "riverbed_slope";
+constexpr const char *A_ELEVATION_RATIO          = "elevation_ratio";
+constexpr const char *A_DISTANCE_EXPONENT        = "distance_exponent";
+constexpr const char *A_UPWARD_PENALIZATION      = "upward_penalization";
+constexpr const char *A_VALLEY_AFFINITY          = "valley_affinity";
+constexpr const char *A_PREFILTER_RADIUS         = "prefilter_radius";
+constexpr const char *A_MINIMUM_DEPTH            = "minimum_depth";
+constexpr const char *A_CARVE_RIVERBED           = "carve_riverbed";
+constexpr const char *A_MERGING_RADIUS           = "merging_radius";
+constexpr const char *A_RADIAL_PROFILE           = "radial_profile";
+constexpr const char *A_RADIAL_PROFILE_PARAMETER = "radial_profile_parameter";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -59,6 +62,8 @@ void setup_flow_fixing_mst_node(BaseNode &node)
   node.set_current_category("Riverbank Carving");
   add_bool(node, A_CARVE_RIVERBED, "Carve Riverbed", true);
   add_float(node, A_MERGING_RADIUS, "Merging Radius", 5e-2f, 1e-4f, 1e-1f, "{:.2e}", true);
+  add_enum(node, A_RADIAL_PROFILE, "Radial Profile", enum_mappings.radial_profile_map, "Smoothstep Upper");
+  add_float(node, A_RADIAL_PROFILE_PARAMETER, "Profile Sharpness", 2.f, 0.f, 8.f);
   // clang-format on
 
   setup_default_noise(node, {.noise_amp = 0.8f, .kw = 8.f, .smoothness = 0.f});
@@ -93,6 +98,8 @@ void compute_flow_fixing_mst_node(BaseNode &node)
   const auto minimum_depth       = node.val<float>(A_MINIMUM_DEPTH);
   const auto carve_riverbed      = node.val<bool>(A_CARVE_RIVERBED);
   const auto merging_distance    = node.val<float>(A_MERGING_RADIUS) * nx;
+  const auto radial_profile      = hmap::RadialProfile(node.val<int>(A_RADIAL_PROFILE));
+  const auto radial_profile_parameter = node.val<float>(A_RADIAL_PROFILE_PARAMETER);
 
   // --- Prepare default noise
 
@@ -122,6 +129,8 @@ void compute_flow_fixing_mst_node(BaseNode &node)
                                         minimum_depth,
                                         carve_riverbed,
                                         merging_distance,
+                                        radial_profile,
+                                        radial_profile_parameter,
                                         pa_noise_r);
       },
       node.cfg().cm_single_array); // forced, not tileable
