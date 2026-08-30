@@ -28,6 +28,7 @@ constexpr const char *A_UPWARD_PENALIZATION   = "upward_penalization";
 constexpr const char *A_VALLEY_AFFINITY       = "valley_affinity";
 constexpr const char *A_PATH_SINUOSITY        = "path_sinuosity";
 constexpr const char *A_PREFILTER_RADIUS      = "prefilter_radius";
+constexpr const char *A_MINIMUM_DEPTH         = "minimum_depth";
 constexpr const char *A_CARVE_RIVERBED        = "carve_riverbed";
 constexpr const char *A_SMOOTH_RIVER_BOTTOM   = "smooth_river_bottom";
 constexpr const char *A_TALUS_RIVERBANK       = "talus_riverbank";
@@ -59,8 +60,9 @@ void setup_flow_fixing_mst_node(BaseNode &node)
   add_float(node, A_DISTANCE_EXPONENT, "Distance Exponent", 2.f, 0.1f, 4.f);
   add_float(node, A_UPWARD_PENALIZATION, "Upward Penalization", 50.f, 1.f, 1000.f);
   add_float(node, A_VALLEY_AFFINITY, "Valley Affinity", 0.5f, 0.f, 1.f);
-  add_float(node, A_PATH_SINUOSITY, "Path Sinuosity", 0.25f, 0.f, 1.f);
+  add_float(node, A_PATH_SINUOSITY, "Path Sinuosity", 0.f, 0.f, 1.f);
   add_float(node, A_PREFILTER_RADIUS, "Prefilter Radius", 0.02f, 0.f, 0.1f);
+  add_float(node, A_MINIMUM_DEPTH, "Minimum Depth", 1e-3f, 1e-4f, 1e-1f, "{:.2e}", true);
 
   node.set_current_category("Riverbank Carving");
   add_bool(node, A_CARVE_RIVERBED, "Carve Riverbed", true);
@@ -70,8 +72,6 @@ void setup_flow_fixing_mst_node(BaseNode &node)
   add_float(node, A_MERGING_RADIUS, "Merging Radius", 0.02f, 0.f, 0.2f);
   add_seed(node, A_SEED, "Seed");
   // clang-format on
-
-  // --- Attribute(s) order
 
   setup_default_noise(node, {.noise_amp = 0.05f, .kw = 8.f, .smoothness = 0.2f});
   setup_post_process_heightmap_attributes(node,
@@ -104,6 +104,7 @@ void compute_flow_fixing_mst_node(BaseNode &node)
   const auto valley_affinity     = node.val<float>(A_VALLEY_AFFINITY);
   const auto path_sinuosity      = node.val<float>(A_PATH_SINUOSITY);
   const auto prefilter_ir        = int(node.val<float>(A_PREFILTER_RADIUS) * nx);
+  const auto minimum_depth       = node.val<float>(A_MINIMUM_DEPTH);
   const auto carve_riverbed      = node.val<bool>(A_CARVE_RIVERBED);
   const auto smooth_river_bottom = node.val<bool>(A_SMOOTH_RIVER_BOTTOM);
   const auto talus_riverbank     = node.val<float>(A_TALUS_RIVERBANK);
@@ -139,6 +140,7 @@ void compute_flow_fixing_mst_node(BaseNode &node)
                                         valley_affinity,
                                         path_sinuosity,
                                         prefilter_ir,
+                                        minimum_depth,
                                         carve_riverbed,
                                         smooth_river_bottom,
                                         talus_riverbank,

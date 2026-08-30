@@ -80,8 +80,8 @@ void setup_hydraulic_particle_node(BaseNode &node)
   add_float(node, A_C_EROSION, "Erosion Rate", 0.05f, 0.f, 0.3f);
   add_float(node, A_C_DEPOSITION, "Deposition Rate", 0.2f, 0.f, 0.3f);
   add_float(node, A_C_INERTIA, "Particle Inertia Factor", 0.2f, 0.f, 0.9f);
-  add_float(node, A_DRAG_RATE, "Velocity Drag Rate", 0.001f, 0.f, 0.02f);
-  add_float(node, A_EVAP_RATE, "Evaporation Rate", 0.001f, 0.f, 0.02f);
+  add_float(node, A_DRAG_RATE, "Velocity Drag Rate", 1e-3f, 1e-6f, 1e-1f, "{:.2e}", true);
+  add_float(node, A_EVAP_RATE, "Evaporation Rate", 1e-3f, 1e-6f, 1e-1f, "{:.2e}", true);
   add_bool(node, A_ENABLE_DIRECTIONAL_BIAS, "Enable Directional Bias", false);
   add_float(node, A_ANGLE_BIAS, "Directional Bias Angle", 0.f, -180.f, 180.f, "{:.0f}°");
   add_bool(node, A_DEPOSITION_ONLY, "Deposition Only Mode", false);
