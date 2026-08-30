@@ -16,25 +16,21 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_IN  = "input";
-constexpr const char *P_DX  = "dx";
-constexpr const char *P_DY  = "dy";
-constexpr const char *P_OUT = "output";
+constexpr const char *P_IN      = "input";
+constexpr const char *P_NOISE_R = "noise_r";
+constexpr const char *P_OUT     = "output";
 
-constexpr const char *A_RIVERBED_SLOPE        = "riverbed_slope";
-constexpr const char *A_ELEVATION_RATIO       = "elevation_ratio";
-constexpr const char *A_DISTANCE_EXPONENT     = "distance_exponent";
-constexpr const char *A_UPWARD_PENALIZATION   = "upward_penalization";
-constexpr const char *A_VALLEY_AFFINITY       = "valley_affinity";
-constexpr const char *A_PATH_SINUOSITY        = "path_sinuosity";
-constexpr const char *A_PREFILTER_RADIUS      = "prefilter_radius";
-constexpr const char *A_MINIMUM_DEPTH         = "minimum_depth";
-constexpr const char *A_CARVE_RIVERBED        = "carve_riverbed";
-constexpr const char *A_SMOOTH_RIVER_BOTTOM   = "smooth_river_bottom";
-constexpr const char *A_TALUS_RIVERBANK       = "talus_riverbank";
-constexpr const char *A_RIVERBANK_NOISE_RATIO = "riverbank_noise_ratio";
-constexpr const char *A_MERGING_RADIUS        = "merging_radius";
-constexpr const char *A_SEED                  = "seed";
+constexpr const char *A_RIVERBED_SLOPE      = "riverbed_slope";
+constexpr const char *A_ELEVATION_RATIO     = "elevation_ratio";
+constexpr const char *A_DISTANCE_EXPONENT   = "distance_exponent";
+constexpr const char *A_UPWARD_PENALIZATION = "upward_penalization";
+constexpr const char *A_VALLEY_AFFINITY     = "valley_affinity";
+constexpr const char *A_PATH_SINUOSITY      = "path_sinuosity";
+constexpr const char *A_PREFILTER_RADIUS    = "prefilter_radius";
+constexpr const char *A_MINIMUM_DEPTH       = "minimum_depth";
+constexpr const char *A_CARVE_RIVERBED      = "carve_riverbed";
+constexpr const char *A_MERGING_RADIUS      = "merging_radius";
+constexpr const char *A_SEED                = "seed";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -47,8 +43,7 @@ void setup_flow_fixing_mst_node(BaseNode &node)
   // --- Ports
 
   node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_IN);
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_DX);
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_DY);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_NOISE_R);
   node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_OUT, CONFIG(node));
 
   // --- Attributes
@@ -66,9 +61,6 @@ void setup_flow_fixing_mst_node(BaseNode &node)
 
   node.set_current_category("Riverbank Carving");
   add_bool(node, A_CARVE_RIVERBED, "Carve Riverbed", true);
-  add_bool(node, A_SMOOTH_RIVER_BOTTOM, "Smooth River Bottom", true);
-  add_float(node, A_TALUS_RIVERBANK, "Riverbank Talus", 0.01f, 0.f, 0.1f);
-  add_float(node, A_RIVERBANK_NOISE_RATIO, "Riverbank Noise Ratio", 0.f, 0.f, 1.f);
   add_float(node, A_MERGING_RADIUS, "Merging Radius", 0.02f, 0.f, 0.2f);
   add_seed(node, A_SEED, "Seed");
   // clang-format on
@@ -86,10 +78,9 @@ void compute_flow_fixing_mst_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  auto *p_in  = node.get_value_ref<hmap::VirtualArray>(P_IN);
-  auto *p_dx  = node.get_value_ref<hmap::VirtualArray>(P_DX);
-  auto *p_dy  = node.get_value_ref<hmap::VirtualArray>(P_DY);
-  auto *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
+  auto *p_in      = node.get_value_ref<hmap::VirtualArray>(P_IN);
+  auto *p_noise_r = node.get_value_ref<hmap::VirtualArray>(P_NOISE_R);
+  auto *p_out     = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
   if (!p_in)
     return;
@@ -106,31 +97,26 @@ void compute_flow_fixing_mst_node(BaseNode &node)
   const auto prefilter_ir        = int(node.val<float>(A_PREFILTER_RADIUS) * nx);
   const auto minimum_depth       = node.val<float>(A_MINIMUM_DEPTH);
   const auto carve_riverbed      = node.val<bool>(A_CARVE_RIVERBED);
-  const auto smooth_river_bottom = node.val<bool>(A_SMOOTH_RIVER_BOTTOM);
-  const auto talus_riverbank     = node.val<float>(A_TALUS_RIVERBANK);
   const auto seed                = std::uint32_t(node.val<int>(A_SEED));
-  const auto riverbank_noise_ratio = node.val<float>(A_RIVERBANK_NOISE_RATIO);
-  const auto merging_distance      = node.val<float>(A_MERGING_RADIUS) * nx;
+  const auto merging_distance    = node.val<float>(A_MERGING_RADIUS) * nx;
 
   // --- Prepare default noise
 
-  hmap::VirtualArray noise_default_x(CONFIG(node));
-  hmap::VirtualArray noise_default_y(CONFIG(node));
+  hmap::VirtualArray noise_default_r(CONFIG(node));
   uint               seed_increment = 0;
-  generate_noise(node, p_dx, noise_default_x, ++seed_increment);
-  generate_noise(node, p_dy, noise_default_y, ++seed_increment);
+  generate_noise(node, p_noise_r, noise_default_r, ++seed_increment);
 
   // --- Compute
 
   hmap::for_each_tile(
-      {p_in, p_dx, p_dy},
+      {p_in, p_noise_r},
       {p_out},
       [&](std::vector<const hmap::Array *> p_arrays_in,
           std::vector<hmap::Array *>       p_arrays_out,
           const hmap::TileRegion &)
       {
-        auto [pa_in, pa_dx, pa_dy] = unpack<3>(p_arrays_in);
-        auto [pa_out]              = unpack<1>(p_arrays_out);
+        auto [pa_in, pa_noise_r] = unpack<2>(p_arrays_in);
+        auto [pa_out]            = unpack<1>(p_arrays_out);
 
         *pa_out = hmap::flow_fixing_mst(*pa_in,
                                         riverbed_talus,
@@ -142,13 +128,9 @@ void compute_flow_fixing_mst_node(BaseNode &node)
                                         prefilter_ir,
                                         minimum_depth,
                                         carve_riverbed,
-                                        smooth_river_bottom,
-                                        talus_riverbank,
                                         seed,
-                                        riverbank_noise_ratio,
                                         merging_distance,
-                                        pa_dx,
-                                        pa_dy);
+                                        pa_noise_r);
       },
       node.cfg().cm_single_array); // forced, not tileable
 
