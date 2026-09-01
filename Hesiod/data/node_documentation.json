@@ -8032,26 +8032,20 @@
         "description": "HydraulicParticle is a particle-based hydraulic erosion operator that simulates the erosion and sediment transport processes that occur due to the flow of water over a terrain represented by the input heightmap. This type of operator models erosion by tracking the movement of virtual particles (or sediment particles) as they are transported by water flow and interact with the terrain. Erosion is gradient-driven: flat or masked-to-zero input has no slope and produces little or no change. Erode full-domain relief first, then multiply by the land mask.",
         "label": "HydraulicParticle",
         "parameters": {
-            "angle_bias": {
-                "description": "No description",
-                "key": "angle_bias",
-                "label": "Directional Bias Angle",
-                "type": "Float"
-            },
             "bd_elevation_strength": {
-                "description": "No description",
+                "description": "Controls elevation-based bedrock offset. Increases allowable erosion depth proportionally to elevation relative to the terrain height range, enabling deeper erosion at higher altitudes while protecting lowlands.",
                 "key": "bd_elevation_strength",
                 "label": "Bedrock Elevation Gap",
                 "type": "Float"
             },
             "bd_slope": {
-                "description": "No description",
+                "description": "Slope threshold for slope-based bedrock resistance. Areas steeper than this slope limit have less erosion allowance to preserve steep cliff formations.",
                 "key": "bd_slope",
                 "label": "Bedrock Slope Limit",
                 "type": "Float"
             },
             "bd_slope_strength": {
-                "description": "No description",
+                "description": "Controls slope-based bedrock offset. Deepens the bedrock on flatter surfaces below the slope limit, protecting steep cliff faces from over-erosion.",
                 "key": "bd_slope_strength",
                 "label": "Bedrock Slope Gap",
                 "type": "Float"
@@ -8093,15 +8087,9 @@
                 "type": "Float"
             },
             "enable_default_bedrock": {
-                "description": "No description",
+                "description": "Generates an automatic bedrock heightmap when no bedrock input is connected, limiting maximum erosion depth based on elevation and slope.",
                 "key": "enable_default_bedrock",
                 "label": "Enable Bedrock Resistance",
-                "type": "Bool"
-            },
-            "enable_directional_bias": {
-                "description": "No description",
-                "key": "enable_directional_bias",
-                "label": "Enable Directional Bias",
                 "type": "Bool"
             },
             "enable_ridge_forcing": {
@@ -8115,6 +8103,12 @@
                 "key": "evap_rate",
                 "label": "Evaporation Rate",
                 "type": "Float"
+            },
+            "iterations": {
+                "description": "Number of multi-pass iterations.",
+                "key": "iterations",
+                "label": "Iterations",
+                "type": "Integer"
             },
             "mask_activate": {
                 "description": "Enables or disables the internal mask. If the node's 'mask' input is connected, this setting is bypassed and the input mask is used instead.",

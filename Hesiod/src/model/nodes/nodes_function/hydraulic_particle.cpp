@@ -35,8 +35,8 @@ constexpr const char *P_OUTPUT     = "output";
 constexpr const char *P_EROSION    = "erosion";
 constexpr const char *P_DEPOSITION = "deposition";
 
-constexpr const char *A_SCALE                     = "scale";
 constexpr const char *A_SEED                      = "seed";
+constexpr const char *A_ITERATIONS                = "iterations";
 constexpr const char *A_PARTICLE_DENSITY          = "particle_density";
 constexpr const char *A_C_CAPACITY                = "c_capacity";
 constexpr const char *A_C_EROSION                 = "c_erosion";
@@ -44,8 +44,6 @@ constexpr const char *A_C_DEPOSITION              = "c_deposition";
 constexpr const char *A_C_INERTIA                 = "c_inertia";
 constexpr const char *A_DRAG_RATE                 = "drag_rate";
 constexpr const char *A_EVAP_RATE                 = "evap_rate";
-constexpr const char *A_ENABLE_DIRECTIONAL_BIAS   = "enable_directional_bias";
-constexpr const char *A_ANGLE_BIAS                = "angle_bias";
 constexpr const char *A_DEPOSITION_ONLY           = "deposition_only";
 constexpr const char *A_ENABLE_DEFAULT_BEDROCK    = "enable_default_bedrock";
 constexpr const char *A_BD_ELEVATION_STRENGTH     = "bd_elevation_strength";
@@ -74,21 +72,27 @@ void setup_hydraulic_particle_node(BaseNode &node)
 
   // attribute(s)
   // clang-format off
+  node.set_current_category("Simulation");
   add_seed(node, A_SEED, "Seed");
+  add_int(node, A_ITERATIONS, "Iterations", 1, 1, 16);
   add_float(node, A_PARTICLE_DENSITY, "Particle Density", 0.5f, 0.f, 4.f);
+  add_bool(node, A_DEPOSITION_ONLY, "Deposition Only Mode", false);
+
+  node.set_current_category("Erosion & Deposition");
   add_float(node, A_C_CAPACITY, "Sediment Capacity", 5.f, 0.1f, 40.f);
   add_float(node, A_C_EROSION, "Erosion Rate", 0.05f, 0.f, 0.3f);
   add_float(node, A_C_DEPOSITION, "Deposition Rate", 0.2f, 0.f, 0.3f);
   add_float(node, A_C_INERTIA, "Particle Inertia Factor", 0.2f, 0.f, 0.9f);
   add_float(node, A_DRAG_RATE, "Velocity Drag Rate", 1e-3f, 1e-6f, 1e-1f, "{:.2e}", true);
   add_float(node, A_EVAP_RATE, "Evaporation Rate", 1e-3f, 1e-6f, 1e-1f, "{:.2e}", true);
-  add_bool(node, A_ENABLE_DIRECTIONAL_BIAS, "Enable Directional Bias", false);
-  add_float(node, A_ANGLE_BIAS, "Directional Bias Angle", 0.f, -180.f, 180.f, "{:.0f}°");
-  add_bool(node, A_DEPOSITION_ONLY, "Deposition Only Mode", false);
+
+  node.set_current_category("Bedrock");
   add_bool(node, A_ENABLE_DEFAULT_BEDROCK, "Enable Bedrock Resistance", true);
   add_float(node, A_BD_ELEVATION_STRENGTH, "Bedrock Elevation Gap", 0.05f, 0.f, 1.f);
   add_float(node, A_BD_SLOPE_STRENGTH, "Bedrock Slope Gap", 0.f, 0.f, 1.f);
   add_float(node, A_BD_SLOPE, "Bedrock Slope Limit", 2.f, 0.f, FLT_MAX);
+
+  node.set_current_category("Ridge Forcing");
   add_bool(node, A_ENABLE_RIDGE_FORCING, "Enable Ridge Forcing", true);
   add_float(node, A_RIDGE_SPATIAL_FREQUENCY, "Ridge Spatial Frequency", 32.f, 0.f, FLT_MAX);
   add_float(node, A_RIDGE_ELEVATION_AMPLITUDE, "Ridge Height", 0.1f, 0.f, 1.f);
@@ -125,6 +129,7 @@ void compute_hydraulic_particle_node(BaseNode &node)
     struct P
     {
       uint  seed;
+      int   iterations;
       int   nparticles;
       float c_capacity;
       float c_erosion;
@@ -133,8 +138,6 @@ void compute_hydraulic_particle_node(BaseNode &node)
       float c_gravity;
       float drag_rate;
       float evap_rate;
-      bool  enable_directional_bias;
-      float angle_bias;
       bool  deposition_only;
       bool  enable_default_bedrock;
       float bd_elevation_strength;
@@ -152,24 +155,23 @@ void compute_hydraulic_particle_node(BaseNode &node)
 
     // clang-format off
     return P{
-      .seed = uint(node.val<int>(A_SEED)),
-        .nparticles = nparticles,
-        .c_capacity = node.val<float>(A_C_CAPACITY),
-        .c_erosion = node.val<float>(A_C_EROSION),
-        .c_deposition = node.val<float>(A_C_DEPOSITION),
-        .c_inertia = node.val<float>(A_C_INERTIA),
-        .c_gravity = 1.f,
-        .drag_rate = node.val<float>(A_DRAG_RATE),
-        .evap_rate = node.val<float>(A_EVAP_RATE),
-        .enable_directional_bias = node.val<bool>(A_ENABLE_DIRECTIONAL_BIAS),
-        .angle_bias = node.val<float>(A_ANGLE_BIAS),
-        .deposition_only = node.val<bool>(A_DEPOSITION_ONLY),
-        .enable_default_bedrock = node.val<bool>(A_ENABLE_DEFAULT_BEDROCK),
-        .bd_elevation_strength = node.val<float>(A_BD_ELEVATION_STRENGTH),
-        .bd_slope_strength = node.val<float>(A_BD_SLOPE_STRENGTH),
-        .bd_talus = bd_talus,
-        .enable_ridge_forcing = node.val<bool>(A_ENABLE_RIDGE_FORCING),
-        .ridge_spatial_frequency = node.val<float>(A_RIDGE_SPATIAL_FREQUENCY),
+        .seed                      = uint(node.val<int>(A_SEED)),
+        .iterations                = node.val<int>(A_ITERATIONS),
+        .nparticles                = nparticles,
+        .c_capacity                = node.val<float>(A_C_CAPACITY),
+        .c_erosion                 = node.val<float>(A_C_EROSION),
+        .c_deposition              = node.val<float>(A_C_DEPOSITION),
+        .c_inertia                 = node.val<float>(A_C_INERTIA),
+        .c_gravity                 = 1.f,
+        .drag_rate                 = node.val<float>(A_DRAG_RATE),
+        .evap_rate                 = node.val<float>(A_EVAP_RATE),
+        .deposition_only           = node.val<bool>(A_DEPOSITION_ONLY),
+        .enable_default_bedrock    = node.val<bool>(A_ENABLE_DEFAULT_BEDROCK),
+        .bd_elevation_strength     = node.val<float>(A_BD_ELEVATION_STRENGTH),
+        .bd_slope_strength         = node.val<float>(A_BD_SLOPE_STRENGTH),
+        .bd_talus                  = bd_talus,
+        .enable_ridge_forcing      = node.val<bool>(A_ENABLE_RIDGE_FORCING),
+        .ridge_spatial_frequency   = node.val<float>(A_RIDGE_SPATIAL_FREQUENCY),
         .ridge_elevation_amplitude = node.val<float>(A_RIDGE_ELEVATION_AMPLITUDE)};
     // clang-format on
   }();
@@ -288,8 +290,9 @@ void compute_hydraulic_particle_node(BaseNode &node)
                                       params.c_gravity,
                                       params.drag_rate,
                                       params.evap_rate,
-                                      params.enable_directional_bias,
-                                      params.angle_bias);
+                                      /* enable_directional_bias */ false,
+                                      /* angle_bias */ 0.f,
+                                      params.iterations);
       },
       node.cfg().cm_gpu);
 
