@@ -43,7 +43,6 @@ constexpr const char *A_DRAG_RATE                 = "drag_rate";
 constexpr const char *A_EVAP_RATE                 = "evap_rate";
 constexpr const char *A_TALUS_SLOPE               = "talus_slope";
 constexpr const char *A_COLLAPSE_RATE             = "collapse_rate";
-constexpr const char *A_DEPOSITION_ONLY           = "deposition_only";
 constexpr const char *A_ENABLE_DEFAULT_BEDROCK    = "enable_default_bedrock";
 constexpr const char *A_BD_ELEVATION_STRENGTH     = "bd_elevation_strength";
 constexpr const char *A_BD_SLOPE_STRENGTH         = "bd_slope_strength";
@@ -111,7 +110,6 @@ void setup_hydraulic_particle_node(BaseNode &node)
     node.set_current_category("Simulation");
     add_seed(node, A_SEED, "Seed");
     add_float(node, A_PARTICLE_DENSITY, "Particle Density", 0.5f, 0.f, 4.f);
-    add_bool(node, A_DEPOSITION_ONLY, "Deposition Only Mode", false);
 
     setup_common_particle_attributes(node);
   }
@@ -125,7 +123,6 @@ void setup_hydraulic_particle_node(BaseNode &node)
     add_int(node, A_LEVELS, "Levels", 3, 1, 6);
     add_float(node, A_MIX, "Mix", 0.8f, 0.f, 1.f);
     add_float(node, A_PARTICLE_DENSITY, "Particle Density", 0.5f, 0.f, 4.f);
-    add_bool(node, A_DEPOSITION_ONLY, "Deposition Only Mode", false);
 
     setup_common_particle_attributes(node);
   }
@@ -159,7 +156,6 @@ void compute_hydraulic_particle_node(BaseNode &node)
 
   const uint  seed             = uint(node.val<int>(A_SEED));
   const float particle_density = node.val<float>(A_PARTICLE_DENSITY);
-  const bool  deposition_only  = node.val<bool>(A_DEPOSITION_ONLY);
 
   const float c_capacity    = node.val<float>(A_C_CAPACITY);
   const float c_erosion     = node.val<float>(A_C_EROSION);
@@ -179,13 +175,6 @@ void compute_hydraulic_particle_node(BaseNode &node)
   const bool  enable_ridge_forcing      = node.val<bool>(A_ENABLE_RIDGE_FORCING);
   const float ridge_spatial_frequency   = node.val<float>(A_RIDGE_SPATIAL_FREQUENCY);
   const float ridge_elevation_amplitude = node.val<float>(A_RIDGE_ELEVATION_AMPLITUDE);
-
-  // --- Resolve bedrock
-
-  // set the bedrock at the input heightmap to prevent any erosion, if
-  // requested
-  if (deposition_only)
-    p_bedrock = p_in;
 
   // --- Prepare mask
 

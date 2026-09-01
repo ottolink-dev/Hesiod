@@ -8080,12 +8080,6 @@
                 "label": "Collapse Rate",
                 "type": "Float"
             },
-            "deposition_only": {
-                "description": "TODO",
-                "key": "deposition_only",
-                "label": "Deposition Only Mode",
-                "type": "Bool"
-            },
             "drag_rate": {
                 "description": "Particle drag rate.",
                 "key": "drag_rate",
