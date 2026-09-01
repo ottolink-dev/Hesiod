@@ -8074,6 +8074,12 @@
                 "label": "Particle Inertia Factor",
                 "type": "Float"
             },
+            "collapse_rate": {
+                "description": "Rate of bank collapse and talus relaxation. Controls how much steep bank material collapses into the channel when slopes exceed the talus limit.",
+                "key": "collapse_rate",
+                "label": "Collapse Rate",
+                "type": "Float"
+            },
             "deposition_only": {
                 "description": "TODO",
                 "key": "deposition_only",
@@ -8104,10 +8110,10 @@
                 "label": "Evaporation Rate",
                 "type": "Float"
             },
-            "iterations": {
-                "description": "Number of multi-pass iterations.",
-                "key": "iterations",
-                "label": "Iterations",
+            "levels": {
+                "description": "Number of cascade levels for multiscale erosion. Steps per level scale as powers of two from coarse to fine.",
+                "key": "levels",
+                "label": "Levels",
                 "type": "Integer"
             },
             "mask_activate": {
@@ -8139,6 +8145,12 @@
                 "key": "mask_type",
                 "label": "mask_type",
                 "type": "Choice"
+            },
+            "mix": {
+                "description": "Blending factor between the un-eroded input and the multiscale eroded terrain.",
+                "key": "mix",
+                "label": "Mix",
+                "type": "Float"
             },
             "particle_density": {
                 "description": "TODO",
@@ -8211,6 +8223,12 @@
                 "key": "seed",
                 "label": "Seed",
                 "type": "Random seed number"
+            },
+            "talus_slope": {
+                "description": "Maximum stable bank slope limit. When channel erosion carves bank slopes steeper than this threshold, adjacent terrain relaxes and collapses into the channel.",
+                "key": "talus_slope",
+                "label": "Talus Slope",
+                "type": "Float"
             }
         },
         "ports": {
