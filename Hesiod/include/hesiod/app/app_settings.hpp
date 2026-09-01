@@ -101,8 +101,11 @@ struct AppSettings
     // Applied at panel construction. Changing either takes effect on restart --
     // see meta_qt/ui/theme.hpp for why live re-theming is deliberately not
     // supported yet.
+    // "palette" derives every colour from the application palette, so the
+    // panel follows the app's colour scheme rather than imposing its own.
+    // "industrial-dark" pins the reference colourway instead.
     std::string properties_panel_design = "industrial";
-    std::string properties_panel_theme = "industrial-dark";
+    std::string properties_panel_theme = "palette";
   } interface;
 
   struct NodeEditor

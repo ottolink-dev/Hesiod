@@ -3,6 +3,7 @@
  * this software. */
 #include <fstream>
 
+#include <QApplication>
 #include <QDesktopServices>
 #include <QFileDialog>
 #include <QLayout>
@@ -74,6 +75,45 @@ std::any lookup_default(const nlohmann::json    &initial_state,
   }
 
   return {};
+}
+
+/** @brief Register a "palette" theme derived from Hesiod's own colours.
+ *
+ * Meta derives the base theme from a QPalette so the design fits whatever
+ * colour scheme the host runs. Hesiod never sets an application palette
+ * though: it keeps its colours in AppSettings::Colors and applies them through
+ * per-widget stylesheets. Left alone, meta_qt would therefore derive from the
+ * *system* palette and the panel would follow Windows rather than Hesiod.
+ *
+ * So map the app settings onto a palette and hand that over. Meta does the
+ * derivation; Hesiod supplies the colours, which keeps the split intact.
+ *
+ * Note this makes the rails take the app accent (blue by default) rather than
+ * the reference orange. Set interface.properties_panel_theme to
+ * "industrial-dark" to pin the reference colourway instead.
+ */
+void register_hesiod_palette_theme()
+{
+  static bool done = false;
+  if (done) return;
+  done = true;
+
+  const AppSettings::Colors &c = HSD_CTX.app_settings.colors;
+
+  QPalette palette = QApplication::palette();
+  palette.setColor(QPalette::Window, c.bg_primary);
+  palette.setColor(QPalette::Base, c.bg_deep);
+  palette.setColor(QPalette::Text, c.text_primary);
+  palette.setColor(QPalette::WindowText, c.text_primary);
+  palette.setColor(QPalette::BrightText, c.accent_bw);
+  palette.setColor(QPalette::Mid, c.border);
+  palette.setColor(QPalette::Light, c.text_primary);
+  palette.setColor(QPalette::Highlight, c.accent);
+  palette.setColor(QPalette::Disabled, QPalette::Text, c.text_disabled);
+
+  // Registering under the same name replaces the system-derived default.
+  meta::qt::ThemeRegistry::instance().add(
+      meta::qt::Theme::from_palette(palette, meta::qt::ThemeRegistry::kPaletteTheme));
 }
 
 } // namespace
@@ -375,6 +415,7 @@ void NodeAttributesWidget::setup_layout()
   // Designs register once per process; calling this unconditionally is cheap
   // and keeps the registration next to the only thing that consumes it.
   meta::qt::industrial::register_design();
+  register_hesiod_palette_theme();
 
   const AppSettings &settings = HSD_CTX.app_settings;
   const std::string  design = settings.interface.properties_panel_design;
