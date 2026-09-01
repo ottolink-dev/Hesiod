@@ -212,8 +212,17 @@ void GraphEditorWidget::setup_layout()
   h_splitter->addWidget(this->node_settings_widget);
   h_splitter->setStretchFactor(0, 1); // graph area absorbs window resizing
   h_splitter->setStretchFactor(1, 0); // settings keeps its width
-  h_splitter->setSizes(
-      {650, 500}); // default: settings opens wide enough for paired sliders
+  h_splitter->setSizes({650, HSD_CTX.app_settings.node_editor.node_settings_panel_width});
+
+  this->connect(h_splitter,
+                &QSplitter::splitterMoved,
+                this,
+                [h_splitter](int, int)
+                {
+                  auto sizes = h_splitter->sizes();
+                  if (sizes.size() >= 2 && sizes[1] > 0)
+                    HSD_CTX.app_settings.node_editor.node_settings_panel_width = sizes[1];
+                });
 
   layout->addWidget(h_splitter, 0, 3, 2, 1);
 
