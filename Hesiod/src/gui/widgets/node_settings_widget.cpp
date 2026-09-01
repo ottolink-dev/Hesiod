@@ -4,6 +4,9 @@
 #include <QLabel>
 #include <QVBoxLayout>
 
+#include "meta_qt/designs/industrial/panel_chrome.hpp"
+#include "meta_qt/ui/theme.hpp"
+
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/widgets/gui_utils.hpp"
 #include "hesiod/gui/widgets/icon_check_box.hpp"
@@ -15,6 +18,20 @@
 
 namespace hesiod
 {
+
+namespace
+{
+
+/// Scrollbar chrome for the panel, taken from the active theme.
+QString panel_scrollbar_style()
+{
+  const auto &theme = meta::qt::ThemeRegistry::instance().get(
+      HSD_CTX.app_settings.interface.properties_panel_theme);
+
+  return meta::qt::industrial::scrollbar_stylesheet(theme);
+}
+
+} // namespace
 
 NodeSettingsWidget::NodeSettingsWidget(QPointer<GraphNodeWidget> p_graph_node_widget,
                                        QWidget                  *parent)
@@ -68,7 +85,6 @@ void NodeSettingsWidget::setup_layout()
   layout->setSpacing(4);
   this->setLayout(layout);
 
-  const int margin = 6;
 
   // --- attributes widget
 
@@ -76,15 +92,26 @@ void NodeSettingsWidget::setup_layout()
     auto *container = new QWidget();
     this->attr_layout = new QVBoxLayout(container);
     this->attr_layout->setAlignment(Qt::AlignTop);
-    this->attr_layout->setContentsMargins(margin, 0, margin, 0);
+
+    // No horizontal margin: section headers are meant to span the full width of
+    // the panel. Sections apply their own padding to their contents instead.
+    this->attr_layout->setContentsMargins(0, 0, 0, 0);
     this->attr_layout->setSpacing(2);
 
     auto *scroll = new QScrollArea();
-    scroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    scroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
+    // Reserve the vertical scrollbar permanently. An as-needed bar appearing on
+    // expand narrows the viewport and reflows every row, so padding jumps
+    // sideways for reasons unrelated to what was clicked. Costs a few pixels
+    // and removes a whole class of confusion.
+    scroll->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+
     scroll->setWidget(container);
     scroll->setWidgetResizable(true);
     scroll->setFrameShape(QFrame::NoFrame);
     scroll->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    scroll->setStyleSheet(panel_scrollbar_style());
 
     layout->addWidget(scroll);
   }

@@ -13,6 +13,7 @@
 
 #include "meta_qt/container_group_widget.hpp"
 #include "meta_qt/designs/industrial/industrial.hpp"
+#include "meta_qt/designs/industrial/section.hpp"
 #include "meta_qt/ui/design_registry.hpp"
 #include "meta_qt/ui/theme.hpp"
 #include "meta_qt/widgets/collapsible_section.hpp"
@@ -75,6 +76,20 @@ std::any lookup_default(const nlohmann::json    &initial_state,
   }
 
   return {};
+}
+
+/// True when any attribute declares a ui.category, i.e. the node builds its own
+/// sections and does not need a root one wrapped around them.
+bool has_categorised_attributes(BaseNode &node)
+{
+  auto &container = node.get_meta_group().current();
+
+  for (const auto &key : container.insertion_order())
+    if (const auto *p_attr = container.find(key))
+      if (!meta::common::category(*p_attr).empty())
+        return true;
+
+  return false;
 }
 
 /** @brief Register a "palette" theme derived from Hesiod's own colours.
@@ -449,12 +464,28 @@ void NodeAttributesWidget::setup_layout()
 
   auto options = meta::qt::ContainerRenderOptions{
       .category_policy = meta::qt::CategoryPolicy::CP_MERGED,
-      .root_category_name = std::string{}};
+      // Uncategorised attributes would otherwise sit bare under the toolbar
+      // with no card behind them, which on a node with a single parameter looks
+      // like an unfinished panel rather than a small one.
+      //
+      // Only when the node has no categories of its own, though: adding a root
+      // section to a node that already has some wraps every real section in a
+      // second card, which reads as nested boxes rather than grouping.
+      .root_category_name = (design == meta::qt::industrial::kDesignName &&
+                             !has_categorised_attributes(*p_node))
+                                ? std::string{"Parameters"}
+                                : std::string{}};
 
   // An unregistered design name resolves nothing and every row falls back to
   // the stock renderer, so "stock" is a working value here rather than a error.
   options.row_renderer = [design, row_ctx](meta::AbstractAttribute *p_attr)
   { return meta::qt::render_row(p_attr, design, row_ctx); };
+
+  // Section chrome is not bound to an attribute, so it cannot go through the
+  // design registry. Only the industrial design supplies one; any other design
+  // keeps the stock section.
+  if (design == meta::qt::industrial::kDesignName)
+    options.section_factory = meta::qt::industrial::make_section_factory(theme);
 
   this->meta_widget = meta::qt::render(p_node->get_meta_group(),
                                        options,
