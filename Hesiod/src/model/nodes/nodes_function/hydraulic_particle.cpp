@@ -273,8 +273,6 @@ void compute_hydraulic_particle_node(BaseNode &node)
           for (int i = 0; i < nlevels; ++i)
             steps_per_level[i] = 1 << (nlevels - 1 - i);
 
-          hmap::Array z_before = *pa_out;
-
           hmap::gpu::hydraulic_particle_multiscale(*pa_out,
                                                    seed,
                                                    steps_per_level,
@@ -292,16 +290,8 @@ void compute_hydraulic_particle_node(BaseNode &node)
                                                    drag_rate,
                                                    evap_rate,
                                                    talus_slope,
-                                                   collapse_rate);
-
-          if (mix < 1.f)
-          {
-            *pa_out = hmap::lerp(z_before, *pa_out, mix);
-            if (pa_erosion)
-              *pa_erosion *= mix;
-            if (pa_deposition)
-              *pa_deposition *= mix;
-          }
+                                                   collapse_rate,
+                                                   mix);
         }
         else
         {

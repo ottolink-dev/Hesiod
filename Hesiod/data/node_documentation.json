@@ -8141,7 +8141,7 @@
                 "type": "Choice"
             },
             "mix": {
-                "description": "Blending factor between the un-eroded input and the multiscale eroded terrain.",
+                "description": "Interpolation blend factor between original input heightmap (0) and eroded heightmap (1) at each multiscale upsampling step to preserve high-frequency details.",
                 "key": "mix",
                 "label": "Mix",
                 "type": "Float"
