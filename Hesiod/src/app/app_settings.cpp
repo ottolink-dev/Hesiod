@@ -188,6 +188,12 @@ void AppSettings::json_from(nlohmann::json const &json)
                 "node_editor.show_node_settings_pan",
                 node_editor.show_node_settings_pan);
   json_safe_get(json,
+                "node_editor.node_settings_panel_width",
+                node_editor.node_settings_panel_width);
+  json_safe_get(json,
+                "node_editor.node_settings_pan_width",
+                node_editor.node_settings_panel_width);
+  json_safe_get(json,
                 "node_editor.show_node_toolbar_in_settings_pan",
                 node_editor.show_node_toolbar_in_settings_pan);
   json_safe_get(json, "node_editor.show_viewer", node_editor.show_viewer);
@@ -270,6 +276,7 @@ nlohmann::json AppSettings::json_to() const
   json["node_editor.auto_layout_dy"] = node_editor.auto_layout_dy;
   json["node_editor.show_node_library_pan"] = node_editor.show_node_library_pan;
   json["node_editor.show_node_settings_pan"] = node_editor.show_node_settings_pan;
+  json["node_editor.node_settings_panel_width"] = node_editor.node_settings_panel_width;
   json["node_editor.show_node_toolbar_in_settings_pan"] =
       node_editor.show_node_toolbar_in_settings_pan;
   json["node_editor.show_viewer"] = node_editor.show_viewer;

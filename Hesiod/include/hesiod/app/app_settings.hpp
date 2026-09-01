@@ -104,6 +104,7 @@ struct AppSettings
     float       auto_layout_dy = 384.f;
     bool        show_node_library_pan = true;
     bool        show_node_settings_pan = true;
+    int         node_settings_panel_width = 500;
     bool        show_node_toolbar_in_settings_pan = true;
     bool        show_viewer = true;
     int         max_bake_resolution = 8192 * 4;
