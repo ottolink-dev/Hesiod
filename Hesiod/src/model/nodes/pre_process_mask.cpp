@@ -116,17 +116,17 @@ std::shared_ptr<hmap::VirtualArray> pre_process_mask(BaseNode            &node,
 
 void setup_pre_process_mask_attributes(BaseNode &node)
 {
-  add_bool(node, "mask_activate", "mask_activate", false);
-
   std::vector<std::string> choices = {"Elevation",
                                       "Elevation mid-range",
                                       "Gradient norm"};
 
-  node.set_current_category("Mask Definition");
+  node.set_current_category("Default Mask Definition");
+
+  add_bool(node, "mask_activate", "Activate Default Mask", false);
   add_choice(node, "mask_type", "Mask Type", choices);
-  add_bool(node, "mask_inverse", "mask_inverse", false);
-  add_float(node, "mask_radius", "mask_radius", 0.01f, 0.f, 0.2f);
-  add_float(node, "mask_gain", "mask_gain", 1.f, 0.f, 10.f);
+  add_bool(node, "mask_inverse", "Inverse Mask", false);
+  add_float(node, "mask_radius", "Mask Radius", 0.01f, 0.f, 0.2f);
+  add_float(node, "mask_gain", "Mask Gain", 1.f, 0.f, 10.f);
 }
 
 } // namespace hesiod
