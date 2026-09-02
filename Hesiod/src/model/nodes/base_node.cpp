@@ -683,39 +683,46 @@ void BaseNode::update_attributes_tool_tip()
 
   size_t width = 64;
 
-  for (const auto &key : this->get_meta_group().current().insertion_order())
+  for (const auto &[container_name, p_container] : this->get_meta_group().containers())
   {
-    auto *p = this->get_meta_group().current().find(key);
-    if (!p)
+    if (!p_container)
       continue;
 
-    const std::string *lbl = p->metadata().try_value<std::string>(meta::keys::ui::label);
-    std::string        label = lbl ? *lbl : key;
-
-    if (this->documentation.contains("parameters") &&
-        this->documentation["parameters"].contains(key))
+    for (const auto &key : p_container->insertion_order())
     {
-      std::string description = "<div><font size=\"+1\"><b>" +
-                                remove_trailing_char(label, ':') + "</font></b><br>";
+      auto *p = p_container->find(key);
+      if (!p)
+        continue;
 
-      description += "<font color='COLOR_TEXT_SECONDARY'>";
+      const std::string *lbl = p->metadata().try_value<std::string>(
+          meta::keys::ui::label);
+      std::string label = lbl ? *lbl : key;
 
-      replace_all(description,
-                  "COLOR_TEXT_SECONDARY",
-                  HSD_CTX.app_settings.colors.text_secondary.name().toStdString());
-
-      if (this->documentation["parameters"][key].contains("description"))
+      if (this->documentation.contains("parameters") &&
+          this->documentation["parameters"].contains(key))
       {
-        std::string base_desc = this->documentation["parameters"][key]["description"];
-        base_desc = wrap_text(base_desc, width);
-        description += base_desc;
+        std::string description = "<div><font size=\"+1\"><b>" +
+                                  remove_trailing_char(label, ':') + "</font></b><br>";
+
+        description += "<font color='COLOR_TEXT_SECONDARY'>";
+
+        replace_all(description,
+                    "COLOR_TEXT_SECONDARY",
+                    HSD_CTX.app_settings.colors.text_secondary.name().toStdString());
+
+        if (this->documentation["parameters"][key].contains("description"))
+        {
+          std::string base_desc = this->documentation["parameters"][key]["description"];
+          base_desc = wrap_text(base_desc, width);
+          description += base_desc;
+        }
+
+        description += "</div>";
+
+        p->metadata()
+            .try_add(std::string(meta::keys::ui::tooltip), std::string(description))
+            ->value() = description;
       }
-
-      description += "</div>";
-
-      p->metadata()
-          .try_add(std::string(meta::keys::ui::tooltip), std::string(description))
-          ->value() = description;
     }
   }
 }
