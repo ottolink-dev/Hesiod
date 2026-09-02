@@ -89,11 +89,15 @@ meta::Attribute<std::string> &add_choice(BaseNode                       &node,
                                          const std::vector<std::string> &choices,
                                          const std::string              &default_choice)
 {
+  std::string value = default_choice;
+  if (value.empty() && !choices.empty())
+    value = choices.front();
+
   auto &a = meta::presets::string_choice(node.get_meta_group().current(),
                                          key,
                                          label,
                                          choices,
-                                         default_choice);
+                                         value);
   apply_category_if_set(node, a);
   return a;
 }
