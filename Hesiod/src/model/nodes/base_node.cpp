@@ -552,25 +552,58 @@ nlohmann::json BaseNode::node_parameters_to_json() const
     }
     json["ports"] = ports_json;
 
-    // Attribute information
+    // Attribute information: walk every container of the meta group, not just
+    // the current one, so grouped nodes document the parameters of all their
+    // groups. "parameters" stays a flat key->info map (tooltip lookups address
+    // it by key); "parameter_groups" preserves the group structure and order.
     nlohmann::json params_json;
+    nlohmann::json groups_json = nlohmann::json::array();
 
-    for (const auto &key : this->get_meta_group().current().insertion_order())
+    const auto &group = this->get_meta_group();
+
+    for (const auto &group_name : group.insertion_order())
     {
-      const auto *p = this->get_meta_group().current().find(key);
-      if (!p)
+      const auto *container = group.find(group_name);
+      if (!container)
         continue;
-      nlohmann::json param_info;
-      param_info["key"] = key;
-      const std::string *lbl = p->metadata().try_value<std::string>(
-          meta::keys::ui::label);
-      param_info["label"] = lbl ? *lbl : key;
-      auto json_ptr = nlohmann::json::json_pointer("/parameters/" + key + "/description");
-      param_info["description"] = this->documentation.value(json_ptr, "No description");
-      params_json[key] = param_info;
+
+      nlohmann::json group_info;
+      group_info["name"] = group_name;
+      std::vector<std::string> group_keys;
+
+      for (const auto &key : container->insertion_order())
+      {
+        const auto *p = container->find(key);
+        if (!p)
+          continue;
+
+        group_keys.push_back(key);
+
+        // an attribute shared between groups is documented once
+        if (params_json.contains(key))
+          continue;
+
+        nlohmann::json param_info;
+        param_info["key"] = key;
+        const std::string *lbl = p->metadata().try_value<std::string>(
+            meta::keys::ui::label);
+        param_info["label"] = lbl ? *lbl : key;
+        const std::string *doc_type = p->metadata().try_value<std::string>(
+            ATTR_DOC_TYPE_KEY);
+        param_info["type"] = doc_type ? *doc_type : "";
+        auto json_ptr = nlohmann::json::json_pointer("/parameters/" + key +
+                                                     "/description");
+        param_info["description"] = this->documentation.value(json_ptr,
+                                                              "No description");
+        params_json[key] = param_info;
+      }
+
+      group_info["keys"] = group_keys;
+      groups_json.push_back(group_info);
     }
 
     json["parameters"] = params_json;
+    json["parameter_groups"] = groups_json;
   }
   catch (const std::exception &e)
   {
