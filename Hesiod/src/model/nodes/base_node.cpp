@@ -593,8 +593,7 @@ nlohmann::json BaseNode::node_parameters_to_json() const
         param_info["type"] = doc_type ? *doc_type : "";
         auto json_ptr = nlohmann::json::json_pointer("/parameters/" + key +
                                                      "/description");
-        param_info["description"] = this->documentation.value(json_ptr,
-                                                              "No description");
+        param_info["description"] = this->documentation.value(json_ptr, "No description");
         params_json[key] = param_info;
       }
 

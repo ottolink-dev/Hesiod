@@ -51,16 +51,21 @@ void setup_color_adjust_node(BaseNode &node)
   // --- Attributes
 
   // clang-format off
+  node.set_current_category("Adjustments");
   add_range(node, A_LEVELS, "Levels", {0.f, 1.f}, -1.f, 2.f, true);
   add_float(node, A_EXPOSURE, "Exposure", 0.f, -10.f, 10.f);
   add_float(node, A_CONTRAST, "Contrast", 1.f, 0.f, 4.f);
   add_float(node, A_SATURATION, "Saturation", 1.f, 0.f, 4.f);
   add_float(node, A_TEMPERATURE, "Temperature", 0.f, -1.f, 1.f);
   add_float(node, A_GAMMA, "Gamma", 1.f, 0.1f, 4.f);
-  add_float(node, A_DITHER, "Dither Amplitude", 0.f, 0.f, 0.5f);
+
+  node.set_current_category("Tonemapping");
   add_bool(node, A_FILMIC, "Filmic Tonemap", false);
   add_bool(node, A_ACES, "ACES Tonemap", false);
   add_bool(node, A_AGX, "AGX Tonemap", false);
+
+  node.set_current_category("Dithering");
+  add_float(node, A_DITHER, "Dither Amplitude", 0.f, 0.f, 0.5f);
   // clang-format on
 
   // --- Attribute(s) order
