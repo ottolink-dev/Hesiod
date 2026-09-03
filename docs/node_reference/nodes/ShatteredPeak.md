@@ -63,7 +63,7 @@ Corresponding Hesiod file: [ShatteredPeak.hsd](../../examples/ShatteredPeak.hsd)
     Example files are kept up-to-date with the latest version of [Hesiod](https://github.com/otto-link/Hesiod).
     If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).
 
-  
+
 # Screenshots
 
 ![img](../../images/nodes/ShatteredPeak_wiki0.png)

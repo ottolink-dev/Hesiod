@@ -32,8 +32,8 @@ Operator/Blend
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
-|blending_method1|Enumeration|No description|
-|blending_method2|Enumeration|No description|
+|Method 1|Enumeration|No description|
+|Method 2|Enumeration|No description|
 |input1_weight|Float|No description|
 |input2_weight|Float|No description|
 |input3_weight|Float|No description|
@@ -61,4 +61,4 @@ Corresponding Hesiod file: [Blend3.hsd](../../examples/Blend3.hsd). Use [Ctrl+I]
     Example files are kept up-to-date with the latest version of [Hesiod](https://github.com/otto-link/Hesiod).
     If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).
 
-  
+

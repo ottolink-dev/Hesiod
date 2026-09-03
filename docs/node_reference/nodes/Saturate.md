@@ -39,7 +39,7 @@ Filter/Recurve
 |Remap Range|Value range|Linearly remaps the output values to a specified target range (default is [0, 1]).|
 |Saturation Range|Value range|Modifies the amplitude of elevations by first clamping them to a given interval and then scaling them so that the restricted interval matches the original input range. This enhances contrast in elevation variations while maintaining overall structure.|
 |Smoothing Radius|Float|Defines the radius for post-processing smoothing, determining the size of the neighborhood used to average local values and reduce high-frequency detail. A radius of 0 disables smoothing.|
-|range|Value range|Saturation range: define the minimum and maximum values of the saturation process.|
+|Saturation Range|Value range|Saturation range: define the minimum and maximum values of the saturation process.|
 
 ## Example
 
@@ -52,4 +52,4 @@ Corresponding Hesiod file: [Saturate.hsd](../../examples/Saturate.hsd). Use [Ctr
     Example files are kept up-to-date with the latest version of [Hesiod](https://github.com/otto-link/Hesiod).
     If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).
 
-  
+

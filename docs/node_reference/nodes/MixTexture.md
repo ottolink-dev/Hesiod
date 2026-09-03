@@ -33,8 +33,8 @@ Texture
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
+|mix_method|Enumeration|No description|
 |reset_output_alpha|Bool|Reset the output alpha channel to 1 (opaque).|
-|use_sqrt_avg|Bool|Use square averaging for alpha-compositing (instead of linear averaging).|
 
 ## Example
 
@@ -47,4 +47,4 @@ Corresponding Hesiod file: [MixTexture.hsd](../../examples/MixTexture.hsd). Use 
     Example files are kept up-to-date with the latest version of [Hesiod](https://github.com/otto-link/Hesiod).
     If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).
 
-  
+

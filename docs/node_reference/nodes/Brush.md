@@ -30,7 +30,7 @@ Primitive/Authoring
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
-|Heightmap|Array|The heightmap data representing the painted terrain.|
+|HeightMap|Array|The heightmap data representing the painted terrain.|
 |Gain|Float|Mid-centered gain transformation applied to the elevation values. This is a non-linear recurve operator centered around the mid elevation (typically 0.5). Increasing the gain pushes values toward the minimum and maximum elevations, creating flatter low/high regions with a steeper transition around the midpoint.|
 |Gamma|Float|Standard gamma correction applied to the elevation values. This is a monotonic power-law remapping that shifts emphasis toward low or high elevations, making the overall shape sharper or bulkier without changing its ordering.|
 |Invert Output|Bool|Inverts the output values after processing, flipping low and high values across the midrange.|
@@ -51,4 +51,4 @@ Corresponding Hesiod file: [Brush.hsd](../../examples/Brush.hsd). Use [Ctrl+I] i
     Example files are kept up-to-date with the latest version of [Hesiod](https://github.com/otto-link/Hesiod).
     If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).
 
-  
+
