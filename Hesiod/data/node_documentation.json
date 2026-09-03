@@ -8270,6 +8270,7 @@
                 "keys": [
                     "water_depth",
                     "duration",
+                    "outflow_boundaries",
                     "dry_out_ratio",
                     "flux_diffusion",
                     "flux_diffusion_strength",
@@ -8320,6 +8321,12 @@
                 "label": "Flux Diffusion Strength",
                 "type": "Float"
             },
+            "outflow_boundaries": {
+                "description": "No description",
+                "key": "outflow_boundaries",
+                "label": "Outflow Boundaries",
+                "type": "Bool"
+            },
             "post_filter": {
                 "description": "No description",
                 "key": "post_filter",
@@ -8364,6 +8371,12 @@
                 "description": "No description",
                 "type": "input"
             },
+            "rain_map": {
+                "caption": "rain_map",
+                "data_type": "VirtualArray",
+                "description": "No description",
+                "type": "input"
+            },
             "water_depth": {
                 "caption": "water_depth",
                 "data_type": "VirtualArray",
@@ -8388,6 +8401,7 @@
                     "initial_depth",
                     "simulation_duration",
                     "flow_power",
+                    "outflow_boundaries",
                     "solver_stride",
                     "depth_map_type",
                     "post_filter",
@@ -8421,6 +8435,12 @@
                 "key": "initial_depth",
                 "label": "Initial Material Depth",
                 "type": "Float"
+            },
+            "outflow_boundaries": {
+                "description": "No description",
+                "key": "outflow_boundaries",
+                "label": "Outflow Boundaries",
+                "type": "Bool"
             },
             "post_filter": {
                 "description": "No description",

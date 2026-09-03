@@ -27,7 +27,6 @@ constexpr const char *P_DEPTH_OUT     = "depth";
 constexpr const char *A_INITIAL_DEPTH      = "initial_depth";
 constexpr const char *A_DURATION           = "simulation_duration";
 constexpr const char *A_POWER              = "flow_power";
-constexpr const char *A_EVAP_RATE          = "evaporation_rate";
 constexpr const char *A_OUTFLOW_BOUNDARIES = "outflow_boundaries";
 constexpr const char *A_SOLVER_STRIDE      = "solver_stride";
 constexpr const char *A_DMAP_TYPE          = "depth_map_type";
@@ -52,13 +51,17 @@ void setup_flow_simulation_viscous_node(BaseNode &node)
 
   // attribute(s)
   // clang-format off
+  node.set_current_category("Depth Setup");
   add_float(node, A_INITIAL_DEPTH, "Initial Material Depth", 0.1f, 0.01f, 0.5f, "{:.2e}", /* log */ true);
+  add_enum(node, A_DMAP_TYPE, "Predefined Depth Map", DefaultMapOptions::type_map());
+
+  node.set_current_category("Solver");
   add_float(node, A_DURATION, "Simulation Duration", 1.f, 0.f, FLT_MAX);
   add_float(node, A_POWER, "Flow Power", 2.5f, 1.f, 4.f);
-  add_float(node, A_EVAP_RATE, "Evaporation Rate", 0.f, 0.f, 0.1f);
   add_bool(node, A_OUTFLOW_BOUNDARIES, "Outflow Boundaries", false);
   add_int(node, A_SOLVER_STRIDE, "Solver Iteration Stride", 8, 1, 32);
-  add_enum(node, A_DMAP_TYPE, "Predefined Depth Map", DefaultMapOptions::type_map());
+
+  node.set_current_category("Post-Filter");
   add_bool(node, A_POST_FILTER, "Enable Post Filtering", true);
   add_float(node, A_FILTER_RADIUS, "Filter Radius", 0.05f, 0.f, 0.2f);
   add_bool(node, A_SHIFT_TO_ZERO, "Rebase Depth to Zero", true);
@@ -91,7 +94,6 @@ void compute_flow_simulation_viscous_node(BaseNode &node)
     {
       float initial_depth;
       float power;
-      float evap_rate;
       bool  outflow_boundaries;
       int   solver_stride;
       int   dmap_type;
@@ -113,7 +115,6 @@ void compute_flow_simulation_viscous_node(BaseNode &node)
 
     return P{.initial_depth      = node.val<float>(A_INITIAL_DEPTH),
              .power              = node.val<float>(A_POWER),
-             .evap_rate          = node.val<float>(A_EVAP_RATE),
              .outflow_boundaries = node.val<bool>(A_OUTFLOW_BOUNDARIES),
              .solver_stride      = stride,
              .dmap_type          = node.val<int>(A_DMAP_TYPE),
@@ -187,7 +188,7 @@ void compute_flow_simulation_viscous_node(BaseNode &node)
                                                            /* dry_out_ratio */ 0.f,
                                                            /* viscosity */ 1.f,
                                                            params.power,
-                                                           params.evap_rate,
+                                                           /* evap_rate */ 0.f,
                                                            params.outflow_boundaries);
 
         *pa_z_out = *pa_z + *pa_depth_out;

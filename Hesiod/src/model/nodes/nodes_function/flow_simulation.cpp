@@ -27,8 +27,6 @@ constexpr const char *P_WATER_OUT = "water_depth";
 
 constexpr const char *A_WATER_DEPTH             = "water_depth";
 constexpr const char *A_DURATION                = "duration";
-constexpr const char *A_RAIN_RATE               = "rain_rate";
-constexpr const char *A_EVAP_RATE               = "evaporation_rate";
 constexpr const char *A_OUTFLOW_BOUNDARIES      = "outflow_boundaries";
 constexpr const char *A_DRY_OUT_RATIO           = "dry_out_ratio";
 constexpr const char *A_FLUX_DIFFUSION          = "flux_diffusion";
@@ -57,20 +55,23 @@ void setup_flow_simulation_node(BaseNode &node)
 
   // attributes
   // clang-format off
+  node.set_current_category("Water Setup");
   add_float(node, A_WATER_DEPTH, "Initial Water Depth", 0.01f, 0.001f, 0.5f, "{:.2e}", true);
+  add_enum(node, A_DEPTH_MAP_TYPE, "Predefined Depth Map", DefaultMapOptions::type_map());
+
+  node.set_current_category("Solver");
   add_float(node, A_DURATION, "Simulation Duration", 0.2f, 0.f, 8.f);
-  add_float(node, A_RAIN_RATE, "Rain Rate", 0.f, 0.f, 0.1f);
-  add_float(node, A_EVAP_RATE, "Evaporation Rate", 0.f, 0.f, 0.1f);
   add_bool(node, A_OUTFLOW_BOUNDARIES, "Outflow Boundaries", true);
   add_float(node, A_DRY_OUT_RATIO, "Dry-Out Threshold Ratio", 0.01f, 0.f, 1.f);
   add_bool(node, A_FLUX_DIFFUSION, "Enable Flux Diffusion", true);
   add_float(node, A_FLUX_DIFFUSION_STRENGTH, "Flux Diffusion Strength", 0.01f, 0.f, 0.1f);
-  add_int(node, A_SOLVER_STRIDE, "Solver Iteration Stride", 8, 1, 32);
-  add_enum(node, A_DEPTH_MAP_TYPE, "Predefined Depth Map", DefaultMapOptions::type_map());
-  add_bool(node, A_POST_FILTER, "Enable Filtering", false);
-  add_float(node, A_RADIUS, "Filter Radius", 0.05f, 0.f, 0.2f);
+  add_int(node, A_SOLVER_STRIDE, "Solver Iteration Stride", 4, 1, 32);
+
+  node.set_current_category("Post-Filter");
   add_bool(node, A_AREA_FILTER, "Remove Small Flow Regions", true);
   add_float(node, A_RADIUS_LIMIT, "Minimum Lake Radius", 0.01f, 1e-3f, 0.5f, "{:.2e}", true);
+  add_bool(node, A_POST_FILTER, "Enable Filtering", false);
+  add_float(node, A_RADIUS, "Filter Radius", 0.05f, 0.f, 0.2f);
   // clang-format on
 }
 
@@ -98,8 +99,6 @@ void compute_flow_simulation_node(BaseNode &node)
   // clang-format off
   const auto water_depth_init   = node.val<float>(A_WATER_DEPTH);
   const auto duration           = node.val<float>(A_DURATION);
-  const auto rain_rate          = node.val<float>(A_RAIN_RATE);
-  const auto evap_rate          = node.val<float>(A_EVAP_RATE);
   const auto outflow_boundaries = node.val<bool>(A_OUTFLOW_BOUNDARIES);
   const auto dry_out_ratio      = node.val<float>(A_DRY_OUT_RATIO);
   const auto flux_diffusion     = node.val<bool>(A_FLUX_DIFFUSION);
@@ -169,8 +168,8 @@ void compute_flow_simulation_node(BaseNode &node)
                                                flux_strength,
                                                dry_out_ratio,
                                                pa_rain,
-                                               rain_rate,
-                                               evap_rate,
+                                               /* rain_rate */ 0.f,
+                                               /* evap_rate */ 0.f,
                                                outflow_boundaries,
                                                /* pa_u */ nullptr,
                                                /* pa_v */ nullptr);
