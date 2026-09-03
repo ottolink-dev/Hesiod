@@ -3,9 +3,11 @@
  * this software. */
 #include <QComboBox>
 #include <QDialogButtonBox>
+#include <QFrame>
 #include <QGridLayout>
 #include <QPushButton>
 
+#include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/widgets/graph_config_widgets/graph_config_dialog.hpp"
 #include "hesiod/gui/widgets/graph_config_widgets/overlap_selector_widget.hpp"
 #include "hesiod/gui/widgets/graph_config_widgets/shape_selector_widget.hpp"
@@ -25,7 +27,39 @@ GraphConfigDialog::GraphConfigDialog(GraphConfig &config, QWidget *parent)
 
   int row = 0;
 
-  // --- shape
+  // --- helper for section title labels
+
+  auto add_section_title = [this, layout, &row](const std::string &title_text)
+  {
+    QLabel     *label = new QLabel(title_text.c_str(), this);
+    std::string style = std::format(
+        "font-weight: bold; color: {};",
+        HSD_CTX.app_settings.colors.text_primary.name().toStdString());
+    label->setStyleSheet(style.c_str());
+    layout->addWidget(label, row, 0, 1, 3);
+    row++;
+  };
+
+  // --- domain shape
+
+  add_section_title("Domain Shape");
+
+  QLabel *label_shape_note = new QLabel(
+      "Defines the spatial resolution and aspect ratio, directly impacting the "
+      "discretization and detail level of the current graph.",
+      this);
+
+  std::string shape_note_style = std::format(
+      "color: {};",
+      HSD_CTX.app_settings.colors.text_secondary.name().toStdString());
+
+  label_shape_note->setStyleSheet(shape_note_style.c_str());
+  label_shape_note->setWordWrap(true);
+  resize_font(label_shape_note, -1);
+
+  layout->addWidget(label_shape_note, row, 0, 1, 4);
+
+  row++;
 
   auto *shape_selector = new ShapeSelectorWidget(this->config.shape);
 
@@ -36,6 +70,27 @@ GraphConfigDialog::GraphConfigDialog(GraphConfig &config, QWidget *parent)
           [this](const glm::ivec2 &shape) { this->config.shape = shape; });
 
   row += 3;
+
+  // --- advanced parameters
+
+  add_section_title("Advanced Parameters");
+
+  QLabel *label_advanced_note = new QLabel(
+      "Advanced parameters configure the computation setup (distribution across "
+      "CPUs and GPU device) and do not impact the final result.",
+      this);
+
+  std::string note_style = std::format(
+      "color: {};",
+      HSD_CTX.app_settings.colors.text_secondary.name().toStdString());
+
+  label_advanced_note->setStyleSheet(note_style.c_str());
+  label_advanced_note->setWordWrap(true);
+  resize_font(label_advanced_note, -1);
+
+  layout->addWidget(label_advanced_note, row, 0, 1, 4);
+
+  row++;
 
   // --- tiling
 
