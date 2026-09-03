@@ -18,10 +18,6 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-// -----------------------------------------------------------------------------
-// Ports & Attributes
-// -----------------------------------------------------------------------------
-
 constexpr const char *P_OUT = "output";
 
 constexpr const char *A_FILENAME        = "fname"; // used in GraphNodeWidget

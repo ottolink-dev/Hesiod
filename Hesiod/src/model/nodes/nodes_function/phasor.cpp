@@ -19,10 +19,6 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-// -----------------------------------------------------------------------------
-// Ports & Attributes
-// -----------------------------------------------------------------------------
-
 constexpr const char *P_OUTPUT  = "phasor_fbm";
 constexpr const char *P_ANGLE   = "angle";
 constexpr const char *P_NOISE_X = "noise_x";

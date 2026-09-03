@@ -17,10 +17,6 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-// -----------------------------------------------------------------------------
-// Ports & Attributes
-// -----------------------------------------------------------------------------
-
 constexpr const char *P_ELEVATION_IN   = "elevation_in";
 constexpr const char *P_DEPTH_MAP      = "depth_map";
 constexpr const char *P_SNOW_DEPTH_IN  = "snow_depth_in";
