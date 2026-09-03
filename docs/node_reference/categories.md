@@ -30,8 +30,8 @@ Node Categories
 |Operator|Resynthesis|QuiltingBlend, QuiltingExpand, QuiltingShuffle|
 |Operator|Tiling|MakePeriodic, MakePeriodicStitching|
 |Operator|Transform|Rotate, Translate, Warp, Zoom|
-|Primitive|Authoring|Brush, Ridgelines|
-|Primitive|Coherent|GaborWaveFbm, Gavoronoise, HemisphereFieldFbm, Noise, NoiseFbm, NoiseIq, NoiseJordan, NoiseParberry, NoisePingpong, NoiseRidged, NoiseSwiss, Phasor, PolygonField, PolygonFieldFbm, Stamping, Vorolines, VorolinesFbm, Voronoi, VoronoiFbm, Voronoise, Vororand, WaveletNoise|
+|Primitive|Authoring|Brush, Ridgelines, Stamping|
+|Primitive|Coherent|CellularNoise, CoherentNoise, GaborWaveFbm, Gavoronoise, HemisphereFieldFbm, Phasor, PolygonField, PolygonFieldFbm, WaveletNoise|
 |Primitive|Function|Band, Bump, BumpLorentzian, Cone, ConeComplex, ConeSigmoid, Constant, GaussianPulse, Paraboloid, PolarShape, Slope, Step, WaveDune, WaveSine, WaveSquare, WaveTriangular|
 |Primitive|Geological|Badlands, BasaltField, Crater, Island, IslandChain, IslandLandMask, MountainCone, MountainInselberg, MountainStump, MountainTibesti, Multisteps, Plates, Rift, ShatteredPeak|
 |Primitive|Kernel|KernelCupola, KernelDiskSmooth, KernelGabor, KernelPrim|
@@ -44,5 +44,5 @@ Node Categories
 |Terrain Features|Mask Operations|CombineMask, ScanMask|
 |Terrain Features|Morphology|AreaRemove, DistanceTransform, MakeBinary, RelativeDistanceFromSkeleton, Skeleton|
 |Terrain Features|Selector|SelectAngle, SelectBlobLog, SelectCavities, SelectInterval, SelectInwardOutward, SelectMidrange, SelectMultiband3, SelectRivers, SelectSlope, SelectThreshold, SelectTransitions, SelectValley, SelectValue|
-|Texture||ColorAdjust, ColorizeGradient, ColorizeSolid, MixNormalMap, MixTexture, SetAlpha, TextureAdvectionParticle, TextureQuiltingExpand, TextureQuiltingShuffle, TextureSelectColor, TextureSplitChannels, TextureToHeightmap, TextureUvChecker|
-|WIP|DEPRECATED|AccumulationCurvature, Border, Closing, CurvatureMean, Dilation, Erosion, MorphologicalGradient, MorphologicalTopHat, Opening, PathBezier, PathBezierRound, PathBspline, PathDecasteljau, RelativeElevation, Ruggedness, ShapeIndex, Terrace, TextureAdvectionWarp, Unsphericity|
+|Texture||ColorAdjust, ColorizeBivariate, ColorizeGradient, ColorizeSolid, MixNormalMap, MixTexture, MixTextureMasked, SetAlpha, TextureAdvectionParticle, TextureQuiltingExpand, TextureQuiltingShuffle, TextureSelectColor, TextureSplitChannels, TextureToHeightmap, TextureTransform, TextureUvChecker|
+|WIP|DEPRECATED|AccumulationCurvature, Border, Closing, CurvatureMean, Dilation, Erosion, MorphologicalGradient, MorphologicalTopHat, Noise, NoiseFbm, NoiseIq, NoiseJordan, NoiseParberry, NoisePingpong, NoiseRidged, NoiseSwiss, Opening, PathBezier, PathBezierRound, PathBspline, PathDecasteljau, RelativeElevation, Ruggedness, ShapeIndex, Terrace, TextureAdvectionWarp, Unsphericity, Vorolines, VorolinesFbm, Voronoi, VoronoiFbm, Voronoise, Vororand|

@@ -20,6 +20,11 @@ namespace hesiod
 
 class BaseNode; // forward declaration
 
+// metadata key holding the human-readable attribute type used by the node
+// reference documentation ("Float", "Value range", ...); stamped by the
+// builders below and read back by BaseNode::node_parameters_to_json
+inline constexpr char ATTR_DOC_TYPE_KEY[] = "doc.type";
+
 // -----------------------------------------------------------------------------
 // Pure Attribute Builders (Alphabetical Order in namespace hesiod)
 // -----------------------------------------------------------------------------

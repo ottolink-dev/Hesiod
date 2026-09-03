@@ -23,6 +23,11 @@ static void apply_category_if_set(BaseNode &node, meta::AbstractAttribute &a)
                          std::string(node.get_current_category()));
 }
 
+static void set_doc_type(meta::AbstractAttribute &a, const char *type_name)
+{
+  a.metadata().try_add(std::string(ATTR_DOC_TYPE_KEY), std::string(type_name));
+}
+
 meta::Attribute<float> &add_angle(BaseNode          &node,
                                   const std::string &key,
                                   const std::string &label,
@@ -48,6 +53,7 @@ meta::Attribute<meta::Array> &add_array(BaseNode          &node,
   a->metadata().try_add(meta::keys::ui::width, shape.x);
   a->metadata().try_add(meta::keys::ui::height, shape.y);
 
+  set_doc_type(*a, "Array");
   apply_category_if_set(node, *a);
 
   return *a;
@@ -62,6 +68,7 @@ meta::Attribute<bool> &add_bool(BaseNode          &node,
                                          key,
                                          label,
                                          default_val);
+  set_doc_type(a, "Bool");
   apply_category_if_set(node, a);
   return a;
 }
@@ -79,6 +86,7 @@ meta::Attribute<bool> &add_bool(BaseNode          &node,
                                           label_true,
                                           label_false,
                                           default_val);
+  set_doc_type(a, "Bool");
   apply_category_if_set(node, a);
   return a;
 }
@@ -98,6 +106,7 @@ meta::Attribute<std::string> &add_choice(BaseNode                       &node,
                                          label,
                                          choices,
                                          value);
+  set_doc_type(a, "Choice");
   apply_category_if_set(node, a);
   return a;
 }
@@ -108,6 +117,7 @@ meta::Attribute<std::vector<glm::vec3>> &add_cloud(BaseNode          &node,
 {
   auto &a = meta::presets::points(node.get_meta_group().current(), key, label);
   a.metadata().try_add(meta::keys::ui::widget_type, std::string("PointsEditor"));
+  set_doc_type(a, "Cloud");
   apply_category_if_set(node, a);
   return a;
 }
@@ -121,6 +131,7 @@ meta::Attribute<glm::vec4> &add_color(BaseNode          &node,
                                  key,
                                  label,
                                  default_color);
+  set_doc_type(a, "Color");
   apply_category_if_set(node, a);
   return a;
 }
@@ -131,6 +142,7 @@ meta::Attribute<meta::ColorGradient> &add_color_gradient(BaseNode          &node
 {
   auto &a = meta::presets::color_gradient(node.get_meta_group().current(), key, label);
   a.metadata().try_add(meta::keys::ui::presets, meta::GradientPresets{});
+  set_doc_type(a, "Color gradient");
   apply_category_if_set(node, a);
   return a;
 }
@@ -148,6 +160,7 @@ meta::Attribute<std::vector<float>> &add_curve(BaseNode                 &node,
                                  default_points,
                                  vmin,
                                  vmax);
+  set_doc_type(a, "Vector of floats");
   apply_category_if_set(node, a);
   return a;
 }
@@ -163,6 +176,7 @@ meta::Attribute<int> &add_enum(BaseNode                                       &n
                                        label,
                                        items,
                                        default_val);
+  set_doc_type(a, "Enumeration");
   apply_category_if_set(node, a);
   return a;
 }
@@ -198,6 +212,7 @@ meta::Attribute<std::filesystem::path> &add_filename(
                                 default_path,
                                 filter,
                                 is_save);
+  set_doc_type(a, "Filename");
   apply_category_if_set(node, a);
   return a;
 }
@@ -219,6 +234,7 @@ meta::Attribute<float> &add_float(BaseNode          &node,
                                         vmax,
                                         value_format,
                                         log_scale);
+  set_doc_type(a, "Float");
   apply_category_if_set(node, a);
   return a;
 }
@@ -238,6 +254,7 @@ meta::Attribute<int> &add_int(BaseNode          &node,
                                       vmin,
                                       vmax,
                                       value_format);
+  set_doc_type(a, "Integer");
   apply_category_if_set(node, a);
   return a;
 }
@@ -250,6 +267,7 @@ meta::Attribute<std::vector<glm::vec3>> &add_path(BaseNode          &node,
   auto &a = meta::presets::points(node.get_meta_group().current(), key, label);
   a.metadata().try_add(meta::keys::ui::widget_type, std::string("PathEditor"));
   a.metadata().try_add(std::string(meta::keys::ui::closed), closed);
+  set_doc_type(a, "Path");
   apply_category_if_set(node, a);
   return a;
 }
@@ -271,6 +289,7 @@ meta::Attribute<glm::vec2> &add_range(BaseNode          &node,
                                  vmax,
                                  is_active,
                                  value_format);
+  set_doc_type(a, "Value range");
   apply_category_if_set(node, a);
   return a;
 }
@@ -296,6 +315,7 @@ meta::Attribute<int> &add_seed(BaseNode          &node,
                                 key,
                                 label,
                                 static_cast<int>(default_val));
+  set_doc_type(a, "Random seed number");
   apply_category_if_set(node, a);
   return a;
 }
@@ -311,6 +331,7 @@ meta::Attribute<std::string> &add_string(BaseNode          &node,
                                 label,
                                 default_val,
                                 multiline);
+  set_doc_type(a, "String");
   apply_category_if_set(node, a);
   return a;
 }
@@ -332,6 +353,7 @@ meta::Attribute<glm::vec2> &add_wavenumber(BaseNode          &node,
                                       vmax,
                                       link_xy,
                                       value_format);
+  set_doc_type(a, "Wavenumber");
   apply_category_if_set(node, a);
   return a;
 }
@@ -353,6 +375,7 @@ meta::Attribute<glm::vec2> &add_xy(BaseNode          &node,
                               xmax,
                               ymin,
                               ymax);
+  set_doc_type(a, "Vec2Float");
   apply_category_if_set(node, a);
   return a;
 }

@@ -24,12 +24,14 @@ Export
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
-|Add Project Name as Prefix|Bool|No description|
 |Auto Export on Node Update|Bool|No description|
 |PNG Bit Depth|Choice|No description|
+|Flip-X|Bool|No description|
+|Flip-Y|Bool|No description|
 |fname|Filename|No description|
 |Leading Zeroes|Integer|No description|
 |Overlapping Edges|Bool|No description|
+|Filename Pattern|String|No description|
 |Reverse y-indexing|Bool|No description|
 |Nb. of Tiles (x)|Integer|No description|
 |Nb. of Tiles (y)|Integer|No description|
@@ -45,4 +47,4 @@ Corresponding Hesiod file: [ExportTiled.hsd](../../examples/ExportTiled.hsd). Us
     Example files are kept up-to-date with the latest version of [Hesiod](https://github.com/otto-link/Hesiod).
     If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).
 
-  
+
