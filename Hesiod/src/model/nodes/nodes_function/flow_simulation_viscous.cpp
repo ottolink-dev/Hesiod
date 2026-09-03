@@ -24,14 +24,16 @@ constexpr const char *P_DEPTH_IN      = "depth_in";
 constexpr const char *P_ELEVATION_OUT = "elevation";
 constexpr const char *P_DEPTH_OUT     = "depth";
 
-constexpr const char *A_INITIAL_DEPTH = "initial_depth";
-constexpr const char *A_DURATION      = "simulation_duration";
-constexpr const char *A_POWER         = "flow_power";
-constexpr const char *A_SOLVER_STRIDE = "solver_stride";
-constexpr const char *A_DMAP_TYPE     = "depth_map_type";
-constexpr const char *A_POST_FILTER   = "post_filter";
-constexpr const char *A_FILTER_RADIUS = "filter_radius";
-constexpr const char *A_SHIFT_TO_ZERO = "shift_to_zero";
+constexpr const char *A_INITIAL_DEPTH      = "initial_depth";
+constexpr const char *A_DURATION           = "simulation_duration";
+constexpr const char *A_POWER              = "flow_power";
+constexpr const char *A_EVAP_RATE          = "evaporation_rate";
+constexpr const char *A_OUTFLOW_BOUNDARIES = "outflow_boundaries";
+constexpr const char *A_SOLVER_STRIDE      = "solver_stride";
+constexpr const char *A_DMAP_TYPE          = "depth_map_type";
+constexpr const char *A_POST_FILTER        = "post_filter";
+constexpr const char *A_FILTER_RADIUS      = "filter_radius";
+constexpr const char *A_SHIFT_TO_ZERO      = "shift_to_zero";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -53,6 +55,8 @@ void setup_flow_simulation_viscous_node(BaseNode &node)
   add_float(node, A_INITIAL_DEPTH, "Initial Material Depth", 0.1f, 0.01f, 0.5f, "{:.2e}", /* log */ true);
   add_float(node, A_DURATION, "Simulation Duration", 1.f, 0.f, FLT_MAX);
   add_float(node, A_POWER, "Flow Power", 2.5f, 1.f, 4.f);
+  add_float(node, A_EVAP_RATE, "Evaporation Rate", 0.f, 0.f, 0.1f);
+  add_bool(node, A_OUTFLOW_BOUNDARIES, "Outflow Boundaries", false);
   add_int(node, A_SOLVER_STRIDE, "Solver Iteration Stride", 8, 1, 32);
   add_enum(node, A_DMAP_TYPE, "Predefined Depth Map", DefaultMapOptions::type_map());
   add_bool(node, A_POST_FILTER, "Enable Post Filtering", true);
@@ -87,6 +91,8 @@ void compute_flow_simulation_viscous_node(BaseNode &node)
     {
       float initial_depth;
       float power;
+      float evap_rate;
+      bool  outflow_boundaries;
       int   solver_stride;
       int   dmap_type;
       bool  post_filter;
@@ -105,12 +111,14 @@ void compute_flow_simulation_viscous_node(BaseNode &node)
     const int   iterations = int(duration * nx_strided);
     const int   ir         = std::max(1, int(radius * nx));
 
-    return P{.initial_depth = node.val<float>(A_INITIAL_DEPTH),
-             .power         = node.val<float>(A_POWER),
-             .solver_stride = stride,
-             .dmap_type     = node.val<int>(A_DMAP_TYPE),
-             .post_filter   = node.val<bool>(A_POST_FILTER),
-             .shift_to_zero = node.val<bool>(A_SHIFT_TO_ZERO),
+    return P{.initial_depth      = node.val<float>(A_INITIAL_DEPTH),
+             .power              = node.val<float>(A_POWER),
+             .evap_rate          = node.val<float>(A_EVAP_RATE),
+             .outflow_boundaries = node.val<bool>(A_OUTFLOW_BOUNDARIES),
+             .solver_stride      = stride,
+             .dmap_type          = node.val<int>(A_DMAP_TYPE),
+             .post_filter        = node.val<bool>(A_POST_FILTER),
+             .shift_to_zero      = node.val<bool>(A_SHIFT_TO_ZERO),
              //
              .nx_strided = nx_strided,
              .iterations = iterations,
@@ -178,7 +186,9 @@ void compute_flow_simulation_viscous_node(BaseNode &node)
                                                            /* dt */ 1e-5f,
                                                            /* dry_out_ratio */ 0.f,
                                                            /* viscosity */ 1.f,
-                                                           params.power);
+                                                           params.power,
+                                                           params.evap_rate,
+                                                           params.outflow_boundaries);
 
         *pa_z_out = *pa_z + *pa_depth_out;
       },
