@@ -10907,6 +10907,63 @@
             }
         }
     },
+    "MixTextureMasked": {
+        "category": "Texture",
+        "description": "Mix two textures using a mask with transparency or Poisson blending.",
+        "label": "MixTextureMasked",
+        "parameters": {
+            "gain": {
+                "description": "Gain factor applied to the mask.",
+                "key": "gain",
+                "label": "Gain",
+                "type": "Float"
+            },
+            "iterations": {
+                "description": "Number of iterations for Poisson blending.",
+                "key": "iterations",
+                "label": "Iterations",
+                "type": "Int"
+            },
+            "mask_threshold": {
+                "description": "Threshold value to shift the mask so that it corresponds to zero for Poisson blending.",
+                "key": "mask_threshold",
+                "label": "Mask Threshold",
+                "type": "Float"
+            },
+            "mix_method": {
+                "description": "Color mixing method for transparency blending (Linear, Square Averaged, Mixbox).",
+                "key": "mix_method",
+                "label": "Color Mix Method",
+                "type": "Enum"
+            }
+        },
+        "ports": {
+            "mask": {
+                "caption": "mask",
+                "data_type": "VirtualArray",
+                "description": "Mask controlling the blending between textures.",
+                "type": "input"
+            },
+            "texture": {
+                "caption": "texture",
+                "data_type": "VirtualTexture",
+                "description": "Output mixed texture.",
+                "type": "output"
+            },
+            "texture1": {
+                "caption": "texture1",
+                "data_type": "VirtualTexture",
+                "description": "First input texture (background).",
+                "type": "input"
+            },
+            "texture2": {
+                "caption": "texture2",
+                "data_type": "VirtualTexture",
+                "description": "Second input texture (foreground).",
+                "type": "input"
+            }
+        }
+    },
     "Mixer": {
         "category": "Operator/Blend",
         "description": "The Mixer operator takes several input heightmaps and blend them according to a mixing parameter expected in [0, 1].",

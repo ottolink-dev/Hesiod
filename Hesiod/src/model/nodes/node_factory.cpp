@@ -284,6 +284,7 @@ std::map<std::string, std::string> get_node_inventory()
       {"MergeWaterDepths", "Hydrology"},
       {"MixNormalMap", "Texture"},
       {"MixTexture", "Texture"},
+      {"MixTextureMasked", "Texture"},
       {"Mixer", "Operator/Blend"},
       {"MorphologicalGradient", "WIP/DEPRECATED"},
       {"MorphologicalOperators", "Terrain Features"},
@@ -632,6 +633,7 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
     SETUP_NODE(Mixer, mixer);
     SETUP_NODE(MixNormalMap, mix_normal_map);
     SETUP_NODE(MixTexture, mix_texture);
+    SETUP_NODE(MixTextureMasked, mix_texture_masked);
     SETUP_NODE(MorphologicalGradient, morphological_gradient);
     SETUP_NODE(MorphologicalOperators, morphological_operators);
     SETUP_NODE(MorphologicalTopHat, morphological_top_hat);
