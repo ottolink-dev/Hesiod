@@ -309,12 +309,32 @@ void GraphNodeWidget::json_from(nlohmann::json const &json)
   Logger::log()->trace("GraphNodeWidget::json_from");
   this->clear_graphic_scene();
 
+  // legacy projects may reference output ports by their pre-consolidation
+  // label "out"; the model applies the same rename in GraphNode::json_from,
+  // and the graphics links need it too or their port lookup fails
+  nlohmann::json gui_json = json;
+
+  if (auto gno = this->p_graph_node.lock())
+    if (gui_json.contains("links") && gui_json["links"].is_array())
+      for (auto &json_link : gui_json["links"])
+      {
+        const std::string node_out_id = json_link.value("node_out_id", "");
+        const std::string port_out_id = json_link.value("port_out_id", "");
+
+        if (auto *p_from = gno->get_node(node_out_id))
+          if (port_out_id == "out" && p_from->get_port_index("out") == -1 &&
+              p_from->get_port_index("output") != -1)
+          {
+            json_link["port_out_id"] = "output";
+          }
+      }
+
   // the graph model loading and updating is taken care of by
   // GraphNode (model) and does not need to be updated again when the
   // graphics object are recreated (and are going to trigger signals
   // requesting some model updates...)
   this->set_block_graph_model_updates(true);
-  GraphViewer::json_from(json);
+  GraphViewer::json_from(gui_json);
   this->set_block_graph_model_updates(false);
 
   // viewers (skipped in headless CLI modes, e.g. --snapshot: no 3D viewer is
