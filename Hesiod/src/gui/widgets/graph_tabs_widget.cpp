@@ -33,6 +33,7 @@ GraphTabsWidget::GraphTabsWidget(std::weak_ptr<GraphManager> p_graph_manager,
   GN_STYLE->viewer.add_group = ctx.app_settings.node_editor.enable_node_groups;
   GN_STYLE->node.color_port_data = ctx.style_settings.data_color_map;
   GN_STYLE->node.color_category = ctx.style_settings.category_color_map;
+  GN_STYLE->node.port_radius = ctx.app_settings.node_editor.port_radius;
 
   this->main_layout = new QHBoxLayout(this);
   this->main_layout->setContentsMargins(2, 2, 2, 2);

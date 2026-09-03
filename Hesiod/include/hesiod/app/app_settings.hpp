@@ -111,6 +111,7 @@ struct AppSettings
     bool        disable_during_update = false;
     bool        enable_node_groups = true;
     bool        live_update = false;
+    float       port_radius = 7.f;
   } node_editor;
 
   struct Viewer
