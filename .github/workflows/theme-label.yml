@@ -1,0 +1,93 @@
+name: Theme label
+
+on:
+  issues:
+    types: [opened]
+  discussion:
+    types: [created]
+
+permissions:
+  issues: write
+  discussions: write
+  contents: read
+
+jobs:
+  theme:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const DROPDOWN = {
+              "Erosion & hydrology": "theme: erosion-hydrology",
+              "Nodes & algorithms": "theme: nodes-algorithms",
+              "Graph editor UX": "theme: graph-editor-ux",
+              "Attributes & widgets": "theme: attributes-widgets",
+              "Rendering & viewport": "theme: rendering-viewport",
+              "Terrain semantics": "theme: terrain-semantics",
+              "Serialization & compat": "theme: serialization-compat",
+              "Performance & memory": "theme: performance-memory",
+              "Textures": "theme: textures",
+              "Export & integrations": "theme: export-integrations",
+              "Docs & examples": "theme: docs-examples",
+              "Build & platform": "theme: build-platform",
+              "Application & CLI": "theme: application"
+            };
+            const KEYWORDS = {
+              "theme: erosion-hydrology": ["erosion", "hydraulic", "river", "rivers", "water", "flood", "flooding", "flow", "sediment", "snow", "coastal", "talus", "thermal", "watershed", "rain", "lake", "drainage"],
+              "theme: nodes-algorithms": ["node", "nodes", "primitive", "noise", "blend", "mask", "kernel", "voronoi", "path", "cloud", "carve", "carving", "stamp", "crater", "rift", "warp", "algorithm", "heightmap"],
+              "theme: graph-editor-ux": ["graph", "link", "links", "menu", "keyboard", "selection", "shortcut", "layout", "clipboard", "port", "ports", "undo", "redo", "zoom", "drag"],
+              "theme: attributes-widgets": ["attribute", "attributes", "widget", "slider", "palette", "brush", "canvas", "curve", "gradient", "tooltip"],
+              "theme: rendering-viewport": ["render", "rendering", "viewport", "shader", "camera", "tessellation", "lighting", "mesh", "skybox", "opengl", "imgui", "fog"],
+              "theme: terrain-semantics": ["settlement", "settlements", "vegetation", "semantic", "semantics", "landscape", "placement"],
+              "theme: serialization-compat": ["serialize", "serialization", "save", "load", "hsd", "legacy", "autosave", "json", "compat", "compatibility", "project"],
+              "theme: performance-memory": ["performance", "perf", "optimize", "optimization", "memory", "footprint", "slow", "allocation", "freeze"],
+              "theme: textures": ["texture", "textures", "download", "ambientcg"],
+              "theme: export-integrations": ["export", "blender", "bridge", "cubemap", "ply", "integration", "obj", "gltf"],
+              "theme: docs-examples": ["documentation", "docs", "example", "examples", "tutorial", "reference", "guide"],
+              "theme: build-platform": ["build", "msvc", "windows", "cmake", "packaging", "compile", "compilation", "portability", "appimage", "linux", "macos"],
+              "theme: application": ["cli", "settings", "window", "startup", "application", "headless", "launcher"]
+            };
+
+            const isDiscussion = !!context.payload.discussion;
+            const target = context.payload.discussion || context.payload.issue;
+            const existing = (target.labels || []).map(l => (typeof l === "string" ? l : l.name));
+            if (existing.some(l => l.startsWith("theme:"))) return;
+
+            let label = null;
+            const m = (target.body || "").match(/###\s*Theme\s*\n+\s*(.+)/i);
+            if (m) label = DROPDOWN[m[1].trim()] || null;
+
+            if (!label) {
+              const words = s => (s || "").toLowerCase().match(/[a-z]{2,}/g) || [];
+              const title = new Set(words(target.title));
+              const body = new Set(words(target.body).slice(0, 250));
+              let best = 0;
+              for (const [lbl, kws] of Object.entries(KEYWORDS)) {
+                let score = 0;
+                for (const k of kws) score += (title.has(k) ? 3 : 0) + (body.has(k) ? 1 : 0);
+                if (score > best) { best = score; label = lbl; }
+              }
+              if (best < 3) label = null; // require a title hit or several body hits
+            }
+
+            const apply = label || "needs-theme";
+            if (isDiscussion) {
+              const q = await github.graphql(
+                `query($owner:String!,$repo:String!,$name:String!){repository(owner:$owner,name:$repo){label(name:$name){id}}}`,
+                { owner: context.repo.owner, repo: context.repo.repo, name: apply }
+              );
+              const labelId = q.repository.label && q.repository.label.id;
+              if (!labelId) return core.warning(`label not found: ${apply}`);
+              await github.graphql(
+                `mutation($l:ID!,$ids:[ID!]!){addLabelsToLabelable(input:{labelableId:$l,labelIds:$ids}){clientMutationId}}`,
+                { l: target.node_id, ids: [labelId] }
+              );
+            } else {
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: target.number,
+                labels: [apply]
+              });
+            }
