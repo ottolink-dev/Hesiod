@@ -1,0 +1,33 @@
+name: Feature request
+description: An idea for a node, a workflow, or an improvement
+labels: []
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: What would you like?
+      description: The feature, and the terrain/workflow problem it solves
+    validations:
+      required: true
+  - type: dropdown
+    id: theme
+    attributes:
+      label: Theme
+      description: Which part of Hesiod is this about? "Not sure" is a fine answer.
+      options:
+        - Not sure
+        - Erosion & hydrology
+        - Nodes & algorithms
+        - Graph editor UX
+        - Attributes & widgets
+        - Rendering & viewport
+        - Terrain semantics
+        - Serialization & compat
+        - Performance & memory
+        - Textures
+        - Export & integrations
+        - Docs & examples
+        - Build & platform
+        - Application & CLI
+    validations:
+      required: true

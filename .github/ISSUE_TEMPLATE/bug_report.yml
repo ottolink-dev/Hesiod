@@ -1,0 +1,48 @@
+name: Bug report
+description: Something broken or behaving unexpectedly
+labels: []
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe the bug
+      description: What happens, and what you expected instead
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open ...
+        2. Add a ... node
+        3. See ...
+    validations:
+      required: true
+  - type: dropdown
+    id: theme
+    attributes:
+      label: Theme
+      description: Which part of Hesiod is this about? "Not sure" is a fine answer.
+      options:
+        - Not sure
+        - Erosion & hydrology
+        - Nodes & algorithms
+        - Graph editor UX
+        - Attributes & widgets
+        - Rendering & viewport
+        - Terrain semantics
+        - Serialization & compat
+        - Performance & memory
+        - Textures
+        - Export & integrations
+        - Docs & examples
+        - Build & platform
+        - Application & CLI
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Hesiod version / platform
+      placeholder: e.g. v0.6.0 dev build, Windows 11 / NixOS
