@@ -169,6 +169,7 @@ std::map<std::string, std::string> get_node_inventory()
       {"CloudRandomPowerLaw", "Geometry/Cloud"},
       {"CloudRandomWeibull", "Geometry/Cloud"},
       {"CloudRemapValues", "Geometry/Cloud"},
+      {"CloudScale", "Geometry/Cloud"},
       {"CloudSDF", "Geometry/Cloud"},
       {"CloudSetValuesFromBorderDistance", "Geometry/Cloud"},
       {"CloudSetValuesFromHeightmap", "Geometry/Cloud"},
@@ -321,6 +322,7 @@ std::map<std::string, std::string> get_node_inventory()
       {"PathInflate", "Geometry/Path"},
       {"PathMeanderize", "Geometry/Path"},
       {"PathResample", "Geometry/Path"},
+      {"PathScale", "Geometry/Path"},
       {"PathSDF", "Geometry/Path"},
       {"PathShuffle", "Geometry/Path"},
       {"PathSmooth", "Geometry/Path"},
@@ -523,6 +525,7 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
     SETUP_NODE(CloudRandomPowerLaw, cloud_random_power_law);
     SETUP_NODE(CloudRandomWeibull, cloud_random_weibull);
     SETUP_NODE(CloudRemapValues, cloud_remap_values);
+    SETUP_NODE(CloudScale, cloud_scale);
     SETUP_NODE(CloudSDF, cloud_sdf);
     SETUP_NODE(CloudSetValuesFromBorderDistance, cloud_set_values_from_border_distance);
     SETUP_NODE(CloudSetValuesFromHeightmap, cloud_set_values_from_heightmap);
@@ -668,6 +671,7 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
     SETUP_NODE(PathInflate, path_inflate);
     SETUP_NODE(PathMeanderize, path_meanderize);
     SETUP_NODE(PathResample, path_resample);
+    SETUP_NODE(PathScale, path_scale);
     SETUP_NODE(PathSDF, path_sdf);
     SETUP_NODE(PathShuffle, path_shuffle);
     SETUP_NODE(PathSmooth, path_smooth);
