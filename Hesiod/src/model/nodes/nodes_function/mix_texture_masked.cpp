@@ -60,7 +60,7 @@ void setup_mix_texture_masked_node(BaseNode &node)
   // Group: Poisson
   {
     node.set_current_group(G_POISSON);
-    add_int(node, A_ITERATIONS, "Iterations", 500, 1, 2000);
+    add_int(node, A_ITERATIONS, "Iterations", 100, 1, 2000);
     add_float(node, A_MASK_THRESHOLD, "Mask Threshold", 0.f, 0.f, 1.f);
     add_float(node, A_GAIN, "Gain", 1.f, 0.01f, 10.f);
   }
@@ -82,7 +82,7 @@ void compute_mix_texture_masked_node(BaseNode &node)
   hmap::VirtualArray   *p_mask = node.get_value_ref<hmap::VirtualArray>(P_MASK);
   hmap::VirtualTexture *p_out  = node.get_value_ref<hmap::VirtualTexture>(P_TEXTURE);
 
-  if (!p_in1 || !p_in2 || !p_mask || !p_out)
+  if (!p_in1 || !p_in2 || !p_out)
     return;
 
   const std::string current_group = node.get_meta_group()
@@ -110,12 +110,13 @@ void compute_mix_texture_masked_node(BaseNode &node)
       // In1: 4..7
       // In2: 8..11
       // Mask: 12
-      hmap::Array &mask = *p_arrays[12];
+      hmap::Array *pa_mask = p_arrays[12];
 
       hmap::Texture t1(*p_arrays[4], *p_arrays[5], *p_arrays[6], *p_arrays[7]);
       hmap::Texture t2(*p_arrays[8], *p_arrays[9], *p_arrays[10], *p_arrays[11]);
 
-      hmap::Texture blended = hmap::mix(t1, t2, mask, mix_method, gain);
+      hmap::Texture blended = pa_mask ? hmap::mix(t1, t2, *pa_mask, mix_method, gain)
+                                      : hmap::mix(t1, t2, mix_method);
 
       for (int c = 0; c < 4; ++c)
       {
@@ -139,22 +140,33 @@ void compute_mix_texture_masked_node(BaseNode &node)
       // In1: 4..7
       // In2: 8..11
       // Mask: 12
-      hmap::Array mask_proc = *p_arrays[12];
+      hmap::Array *pa_mask = p_arrays[12];
 
       hmap::Texture t1(*p_arrays[4], *p_arrays[5], *p_arrays[6], *p_arrays[7]);
       hmap::Texture t2(*p_arrays[8], *p_arrays[9], *p_arrays[10], *p_arrays[11]);
 
-      if (threshold != 0.f)
-      {
-        mask_proc -= threshold;
-        hmap::clamp_min(mask_proc, 0.f);
-      }
-      if (gain != 1.f)
-      {
-        hmap::gain(mask_proc, gain);
-      }
+      hmap::Texture blended;
 
-      hmap::Texture blended = hmap::gpu::blend_poisson_bf(t1, t2, iterations, &mask_proc);
+      if (pa_mask)
+      {
+        hmap::Array mask_proc = *pa_mask;
+
+        if (threshold != 0.f)
+        {
+          mask_proc -= threshold;
+          hmap::clamp_min(mask_proc, 0.f);
+        }
+        if (gain != 1.f)
+        {
+          hmap::gain(mask_proc, gain);
+        }
+
+        blended = hmap::gpu::blend_poisson_bf(t1, t2, iterations, &mask_proc);
+      }
+      else
+      {
+        blended = hmap::gpu::blend_poisson_bf(t1, t2, iterations);
+      }
 
       for (int c = 0; c < 4; ++c)
       {
