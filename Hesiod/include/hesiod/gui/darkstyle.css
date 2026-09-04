@@ -113,7 +113,8 @@ QCheckBox::indicator {
 }
 
 QCheckBox::indicator:checked {
-    background-color: COLOR_TEXT_PRIMARY;
+    background-color: transparent;
+    image: url(ICON_CHECK_PATH);
 }
 
 /* QSplitter --------------------------------------------------------------- */
