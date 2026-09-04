@@ -13,25 +13,12 @@
 #include "hesiod/gui/widgets/node_attributes_widget.hpp"
 #include "hesiod/gui/widgets/node_library_widget.hpp"
 #include "hesiod/gui/widgets/node_settings_widget.hpp"
+#include "hesiod/gui/widgets/properties_panel_design.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/utils.hpp"
 
 namespace hesiod
 {
-
-namespace
-{
-
-/// Scrollbar chrome for the panel, taken from the active theme.
-QString panel_scrollbar_style()
-{
-  const auto &theme = meta::qt::ThemeRegistry::instance().get(
-      HSD_CTX.app_settings.interface.properties_panel_theme);
-
-  return meta::qt::industrial::scrollbar_stylesheet(theme);
-}
-
-} // namespace
 
 NodeSettingsWidget::NodeSettingsWidget(QPointer<GraphNodeWidget> p_graph_node_widget,
                                        QWidget                  *parent)
@@ -85,33 +72,48 @@ void NodeSettingsWidget::setup_layout()
   layout->setSpacing(4);
   this->setLayout(layout);
 
-
   // --- attributes widget
 
   {
+    // Every bit of panel chrome below is gated on this, so a design that does
+    // not bring its own gets exactly the panel it had before.
+    const PropertiesPanelDesign &panel = properties_panel_design();
+
     auto *container = new QWidget();
     this->attr_layout = new QVBoxLayout(container);
     this->attr_layout->setAlignment(Qt::AlignTop);
 
-    // No horizontal margin: section headers are meant to span the full width of
-    // the panel. Sections apply their own padding to their contents instead.
-    this->attr_layout->setContentsMargins(0, 0, 0, 0);
+    // Section headers are meant to span the full width of the panel, and the
+    // sections apply their own padding to their contents instead. Only the
+    // designs that draw section cards, though: without one, dropping the
+    // margin just leaves every row flush against the edge.
+    if (panel.has_own_chrome)
+      this->attr_layout->setContentsMargins(0, 0, 0, 0);
+
     this->attr_layout->setSpacing(2);
 
     auto *scroll = new QScrollArea();
-    scroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
-    // Reserve the vertical scrollbar permanently. An as-needed bar appearing on
-    // expand narrows the viewport and reflows every row, so padding jumps
-    // sideways for reasons unrelated to what was clicked. Costs a few pixels
-    // and removes a whole class of confusion.
-    scroll->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+    // As-needed, not off. Some canvases are sized from the array resolution
+    // rather than the dock, so on a narrow dock turning this off left the
+    // right-hand side of a Brush clipped with no way to reach it.
+    scroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+
+    if (panel.has_own_chrome)
+    {
+      // Reserve the vertical scrollbar permanently. An as-needed bar appearing
+      // on expand narrows the viewport and reflows every row, so padding jumps
+      // sideways for reasons unrelated to what was clicked. Costs a few pixels
+      // and removes a whole class of confusion.
+      scroll->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+      scroll->setStyleSheet(
+          meta::qt::industrial::scrollbar_stylesheet(*panel.theme));
+    }
 
     scroll->setWidget(container);
     scroll->setWidgetResizable(true);
     scroll->setFrameShape(QFrame::NoFrame);
     scroll->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    scroll->setStyleSheet(panel_scrollbar_style());
 
     layout->addWidget(scroll);
   }

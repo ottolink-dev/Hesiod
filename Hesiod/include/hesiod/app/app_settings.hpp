@@ -95,8 +95,9 @@ struct AppSettings
     //
     // "industrial" and "stock" are peer designs, so selecting "stock" gives
     // the unmodified Qt look -- that is how the two are A/B compared without a
-    // rebuild. A widget type "industrial" has not covered yet resolves through
-    // stock via the design's fallback chain.
+    // rebuild. A widget type "industrial" does not cover yet resolves through
+    // stock via the design's fallback chain. An unregistered name falls back
+    // to stock with a warning rather than drawing an empty panel.
     //
     // Applied at panel construction. Changing either takes effect on restart --
     // see meta_qt/ui/theme.hpp for why live re-theming is deliberately not

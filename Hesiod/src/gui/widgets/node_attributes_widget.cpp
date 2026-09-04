@@ -12,8 +12,6 @@
 #include <QToolButton>
 
 #include "meta_qt/container_group_widget.hpp"
-#include "meta_qt/designs/industrial/industrial.hpp"
-#include "meta_qt/designs/industrial/section.hpp"
 #include "meta_qt/ui/design_registry.hpp"
 #include "meta_qt/ui/theme.hpp"
 #include "meta_qt/widgets/collapsible_section.hpp"
@@ -21,6 +19,7 @@
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/widgets/documentation_popup.hpp"
 #include "hesiod/gui/widgets/node_attributes_widget.hpp"
+#include "hesiod/gui/widgets/properties_panel_design.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 
@@ -30,105 +29,28 @@ namespace hesiod
 namespace
 {
 
-/** @brief Look up an attribute's default value from a node's initial state.
+/** @brief True when any attribute anywhere in the group declares a ui.category.
  *
- * The panel needs this because "modified" means `|value - default| > 1e-4`,
- * not "changed since the panel opened", and a Meta attribute does not carry
- * its own default. BaseNode captures one in finalize_attributes().
- *
- * The initial state is a ContainerGroup snapshot:
- *   { "current": name, "containers": { <container>: { <attr>: { "value": ... } } } }
- *
- * Returns an empty std::any for anything it cannot resolve -- an unknown
- * default is reported as *not* modified, since a panel that paints every row
- * as modified is worse than one that paints none.
+ * A node that builds its own sections does not want a root one wrapped around
+ * them. Every container is checked, not just the current one, because the root
+ * category is decided once for the whole group: reading only the current
+ * container meant switching to a container whose attributes are all
+ * uncategorised put a second card around the sections of the others.
  */
-std::any lookup_default(const nlohmann::json    &initial_state,
-                        const std::string       &container_name,
-                        const std::string       &key,
-                        const std::type_index   &type)
-{
-  if (!initial_state.contains("containers")) return {};
-
-  const auto &containers = initial_state["containers"];
-  if (!containers.contains(container_name)) return {};
-
-  const auto &container = containers[container_name];
-  if (!container.contains(key)) return {};
-
-  const auto &entry = container[key];
-  if (!entry.contains("value")) return {};
-
-  const auto &value = entry["value"];
-
-  try
-  {
-    // Only the types the design actually renders need converting; anything
-    // else falls through to "unknown", which is harmless.
-    if (type == std::type_index(typeid(float))) return value.get<float>();
-    if (type == std::type_index(typeid(bool))) return value.get<bool>();
-    if (type == std::type_index(typeid(int))) return value.get<int>();
-  }
-  catch (const nlohmann::json::exception &)
-  {
-    // A snapshot whose shape disagrees with the live attribute is a host bug,
-    // not a reason to refuse to draw the row.
-  }
-
-  return {};
-}
-
-/// True when any attribute declares a ui.category, i.e. the node builds its own
-/// sections and does not need a root one wrapped around them.
 bool has_categorised_attributes(BaseNode &node)
 {
-  auto &container = node.get_meta_group().current();
+  for (const auto &[name, p_container] : node.get_meta_group().containers())
+  {
+    if (!p_container)
+      continue;
 
-  for (const auto &key : container.insertion_order())
-    if (const auto *p_attr = container.find(key))
-      if (!meta::common::category(*p_attr).empty())
-        return true;
+    for (const auto &key : p_container->insertion_order())
+      if (const auto *p_attr = p_container->find(key))
+        if (!meta::common::category(*p_attr).empty())
+          return true;
+  }
 
   return false;
-}
-
-/** @brief Register a "palette" theme derived from Hesiod's own colours.
- *
- * Meta derives the base theme from a QPalette so the design fits whatever
- * colour scheme the host runs. Hesiod never sets an application palette
- * though: it keeps its colours in AppSettings::Colors and applies them through
- * per-widget stylesheets. Left alone, meta_qt would therefore derive from the
- * *system* palette and the panel would follow Windows rather than Hesiod.
- *
- * So map the app settings onto a palette and hand that over. Meta does the
- * derivation; Hesiod supplies the colours, which keeps the split intact.
- *
- * Note this makes the rails take the app accent (blue by default) rather than
- * the reference orange. Set interface.properties_panel_theme to
- * "industrial-dark" to pin the reference colourway instead.
- */
-void register_hesiod_palette_theme()
-{
-  static bool done = false;
-  if (done) return;
-  done = true;
-
-  const AppSettings::Colors &c = HSD_CTX.app_settings.colors;
-
-  QPalette palette = QApplication::palette();
-  palette.setColor(QPalette::Window, c.bg_primary);
-  palette.setColor(QPalette::Base, c.bg_deep);
-  palette.setColor(QPalette::Text, c.text_primary);
-  palette.setColor(QPalette::WindowText, c.text_primary);
-  palette.setColor(QPalette::BrightText, c.accent_bw);
-  palette.setColor(QPalette::Mid, c.border);
-  palette.setColor(QPalette::Light, c.text_primary);
-  palette.setColor(QPalette::Highlight, c.accent);
-  palette.setColor(QPalette::Disabled, QPalette::Text, c.text_disabled);
-
-  // Registering under the same name replaces the system-derived default.
-  meta::qt::ThemeRegistry::instance().add(
-      meta::qt::Theme::from_palette(palette, meta::qt::ThemeRegistry::kPaletteTheme));
 }
 
 } // namespace
@@ -427,28 +349,20 @@ void NodeAttributesWidget::setup_layout()
 
   // --- Meta ContainerGroupWidget
 
-  // Designs register once per process; calling this unconditionally is cheap
-  // and keeps the registration next to the only thing that consumes it.
-  meta::qt::industrial::register_design();
-  register_hesiod_palette_theme();
+  // Registers the designs on first call and validates the configured name.
 
-  const AppSettings &settings = HSD_CTX.app_settings;
-  const std::string  design = settings.interface.properties_panel_design;
-  const meta::qt::Theme &theme = meta::qt::ThemeRegistry::instance().get(
-      settings.interface.properties_panel_theme);
+  const PropertiesPanelDesign &panel = properties_panel_design();
 
   meta::qt::RowContext row_ctx;
-  row_ctx.theme = &theme;
+  row_ctx.theme = panel.theme;
 
-  // Captures by value: the row renderer outlives this function, and the widget
-  // owns the node only weakly.
-  const nlohmann::json initial_state = p_node->get_initial_meta_state();
-  const std::string    container_name = p_node->get_meta_group()
-                                         .current_container_name()
-                                         .value_or(std::string{});
-
-  row_ctx.default_value = [initial_state, container_name, this](
-                              const std::string &key) -> std::any
+  // Only `this` is captured. The defaults live on the node, so reading them
+  // through the live node keeps the lookup correct after the node switches
+  // container: capturing the container name at build time meant a CoherentNoise
+  // switched to Ridged still resolved its defaults against the fbm container,
+  // and nothing ever showed as modified. It also avoids copying the whole
+  // initial state into the closure, which on a Brush node is a heightmap.
+  row_ctx.default_value = [this](const std::string &key) -> std::any
   {
     auto gno = this->p_graph_node.lock();
     if (!gno) return {};
@@ -456,13 +370,16 @@ void NodeAttributesWidget::setup_layout()
     BaseNode *p_current = gno->get_node_ref_by_id<BaseNode>(this->node_id);
     if (!p_current) return {};
 
-    auto *p_attr = p_current->get_meta_group().current().find(key);
-    if (!p_attr) return {};
+    const std::string container_name = p_current->get_meta_group()
+                                           .current_container_name()
+                                           .value_or(std::string{});
 
-    return lookup_default(initial_state, container_name, key, p_attr->type());
+    return p_current->get_initial_default(container_name, key);
   };
 
   auto options = meta::qt::ContainerRenderOptions{
+      .design = panel.design,
+      .row_context = row_ctx,
       .category_policy = meta::qt::CategoryPolicy::CP_MERGED,
       // Uncategorised attributes would otherwise sit bare under the toolbar
       // with no card behind them, which on a node with a single parameter looks
@@ -471,21 +388,10 @@ void NodeAttributesWidget::setup_layout()
       // Only when the node has no categories of its own, though: adding a root
       // section to a node that already has some wraps every real section in a
       // second card, which reads as nested boxes rather than grouping.
-      .root_category_name = (design == meta::qt::industrial::kDesignName &&
+      .root_category_name = (panel.has_own_chrome &&
                              !has_categorised_attributes(*p_node))
                                 ? std::string{"Parameters"}
                                 : std::string{}};
-
-  // An unregistered design name resolves nothing and every row falls back to
-  // the stock renderer, so "stock" is a working value here rather than a error.
-  options.row_renderer = [design, row_ctx](meta::AbstractAttribute *p_attr)
-  { return meta::qt::render_row(p_attr, design, row_ctx); };
-
-  // Section chrome is not bound to an attribute, so it cannot go through the
-  // design registry. Only the industrial design supplies one; any other design
-  // keeps the stock section.
-  if (design == meta::qt::industrial::kDesignName)
-    options.section_factory = meta::qt::industrial::make_section_factory(theme);
 
   this->meta_widget = meta::qt::render(p_node->get_meta_group(),
                                        options,
