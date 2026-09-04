@@ -16,7 +16,7 @@ TilingSelectorWidget::TilingSelectorWidget(const glm::ivec2 &tiling, QWidget *pa
   layout->addWidget(new QLabel("Tiling"), 0, 0);
 
   this->slider_tiling = new QSlider(Qt::Horizontal);
-  this->slider_tiling->setRange(1, 4); // 2 -> 16
+  this->slider_tiling->setRange(0, 4); // 2 -> 16
   this->slider_tiling->setSingleStep(1);
   this->slider_tiling->setPageStep(1);
   this->slider_tiling->setValue(static_cast<int>(std::log2(tiling.x)));
