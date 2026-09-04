@@ -19,6 +19,8 @@
 
 #include <omp.h>
 
+#include "meta_qt/designs/stock/stock.hpp"
+
 #include "highmap/opencl/gpu_opencl.hpp"
 #include "highmap/openmp.hpp"
 
@@ -79,6 +81,9 @@ HesiodApplication::HesiodApplication(int &argc, char **argv) : QApplication(argc
 
   // Blender streamer
   this->blender_streamer.start();
+
+  // meta design registration
+  meta::qt::stock::register_design();
 
   // --- Batch CLI mode if requested
 
