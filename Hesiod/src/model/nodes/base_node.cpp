@@ -469,8 +469,41 @@ void BaseNode::finalize_attributes()
   // initial state for toolbar Reset and sync common attributes accros
   // group containers
   this->initial_meta_state = group.json_to(meta::SerializationMode::state);
+
+  // The same snapshot kept as live values. The panel needs defaults to decide
+  // what is modified, and reading them back out of the json only ever worked
+  // for the types json round-trips cleanly, which silently left every other
+  // row looking untouched.
+  this->initial_meta_defaults.clear();
+
+  for (const auto &[container_name, p_container] : group.containers())
+  {
+    if (!p_container)
+      continue;
+
+    auto &defaults = this->initial_meta_defaults[container_name];
+
+    for (const auto &key : p_container->insertion_order())
+      if (const auto *p_attr = p_container->find(key))
+        defaults[key] = p_attr->to_any();
+  }
+
   group.synchronize_all();
   group.set_current_to_first();
+}
+
+std::any BaseNode::get_initial_default(const std::string &container_name,
+                                       const std::string &key) const
+{
+  auto container_it = this->initial_meta_defaults.find(container_name);
+  if (container_it == this->initial_meta_defaults.end())
+    return {};
+
+  auto key_it = container_it->second.find(key);
+  if (key_it == container_it->second.end())
+    return {};
+
+  return key_it->second;
 }
 
 void BaseNode::json_from(nlohmann::json const &json)
