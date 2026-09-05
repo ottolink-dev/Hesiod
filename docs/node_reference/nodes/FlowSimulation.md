@@ -20,6 +20,7 @@ Hydrology
 | :--- | :--- | :--- |
 |depth_map|VirtualArray|No description|
 |elevation|VirtualArray|No description|
+|rain_map|VirtualArray|No description|
 |water_depth_in|VirtualArray|No description|
 
 ## Outputs
@@ -38,10 +39,11 @@ Hydrology
 |Simulation Duration|Float|No description|
 |Enable Flux Diffusion|Bool|No description|
 |Flux Diffusion Strength|Float|No description|
+|Outflow Boundaries|Bool|No description|
 |Enable Filtering|Bool|No description|
 |Filter Radius|Float|No description|
 |Minimum Lake Radius|Float|No description|
-|Solver Iteration Stride|Integer|Grid sampling stride used by the solver. Higher values process the snow field at a lower spatial resolution, reducing computation time at the cost of fine detail.|
+|Solver Iteration Stride|Integer|Grid sampling stride used by the solver. 1 (default) runs the simulation at full resolution. Higher values run it on a coarser grid and upsample the result, which is faster on very large maps but smears fine flow structure.|
 |Initial Water Depth|Float|No description|
 
 ## Example
