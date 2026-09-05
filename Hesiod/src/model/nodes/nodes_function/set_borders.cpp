@@ -25,6 +25,7 @@ constexpr const char *A_RADIUS_WEST    = "radius_west";
 constexpr const char *A_RADIUS_EAST    = "radius_east";
 constexpr const char *A_RADIUS_NORTH   = "radius_north";
 constexpr const char *A_RADIUS_SOUTH   = "radius_south";
+constexpr const char *A_VALUE          = "value";
 constexpr const char *A_UNIFORM_VALUE  = "uniform_value";
 constexpr const char *A_VALUE_WEST     = "value_west";
 constexpr const char *A_VALUE_EAST     = "value_east";
@@ -47,13 +48,17 @@ void setup_set_borders_node(BaseNode &node)
   // --- Attributes
 
   // clang-format off
-  add_float(node, A_RADIUS, "Radius", 0.4f, 0.f, 0.5f);
+  node.set_current_category("Radius");
   add_bool(node, A_UNIFORM_RADIUS, "Uniform Radius", true);
+  add_float(node, A_RADIUS, "Radius", 0.4f, 0.f, 0.5f);
   add_float(node, A_RADIUS_WEST, "West", 0.4f, 0.f, 0.5f);
   add_float(node, A_RADIUS_EAST, "East", 0.4f, 0.f, 0.5f);
   add_float(node, A_RADIUS_NORTH, "North", 0.4f, 0.f, 0.5f);
   add_float(node, A_RADIUS_SOUTH, "South", 0.4f, 0.f, 0.5f);
+
+  node.set_current_category("Value");
   add_bool(node, A_UNIFORM_VALUE, "Uniform Value", false);
+  add_float(node, A_VALUE, "Value", 0.f, -FLT_MAX, FLT_MAX);
   add_float(node, A_VALUE_WEST, "West", -0.5f, -FLT_MAX, FLT_MAX);
   add_float(node, A_VALUE_EAST, "East", 0.5f, -FLT_MAX, FLT_MAX);
   add_float(node, A_VALUE_NORTH, "North", 0.5f, -FLT_MAX, FLT_MAX);
@@ -111,19 +116,20 @@ void compute_set_borders_node(BaseNode &node)
 
   // --- Border values
 
-  const float vw = node.val<float>(A_VALUE_WEST);
-  const float ve = node.val<float>(A_VALUE_EAST);
-  const float vn = node.val<float>(A_VALUE_NORTH);
-  const float vs = node.val<float>(A_VALUE_SOUTH);
-
   glm::vec4 border_values;
 
   if (node.val<bool>(A_UNIFORM_VALUE))
   {
-    border_values = {vw, vw, vw, vw};
+    const float v = node.val<float>(A_VALUE);
+    border_values = {v, v, v, v};
   }
   else
   {
+    const float vw = node.val<float>(A_VALUE_WEST);
+    const float ve = node.val<float>(A_VALUE_EAST);
+    const float vn = node.val<float>(A_VALUE_NORTH);
+    const float vs = node.val<float>(A_VALUE_SOUTH);
+
     // engine order: {west, east, south, north}
     border_values = {vw, ve, vs, vn};
   }
