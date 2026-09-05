@@ -14,6 +14,7 @@
 #include "hesiod/gui/widgets/node_library_widget.hpp"
 #include "hesiod/gui/widgets/node_settings_widget.hpp"
 #include "hesiod/gui/widgets/properties_panel_design.hpp"
+#include "hesiod/gui/widgets/properties_panel_header.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/utils.hpp"
 
@@ -133,7 +134,11 @@ void NodeSettingsWidget::update_content()
   if (!p_gno)
     return;
 
-  this->attr_layout->addWidget(new QLabel()); // space
+  const PropertiesPanelDesign &panel = properties_panel_design();
+  if (panel.has_own_chrome)
+    this->attr_layout->addSpacing(4);
+  else
+    this->attr_layout->addWidget(new QLabel()); // space
 
   // refill based on selected nodes (and pinned nodes)
   std::vector<std::string> selected_ids = this->p_graph_node_widget
@@ -162,7 +167,37 @@ void NodeSettingsWidget::update_content()
 
     const QString node_caption = QString::fromStdString(p_node->get_caption());
 
+    const bool add_toolbar = HSD_CTX.app_settings.node_editor.show_node_toolbar_in_settings_pan;
+    auto *attr_widget = new NodeAttributesWidget(p_gno->get_shared(), node_id,
+                                                 this->p_graph_node_widget,
+                                                 add_toolbar && !panel.has_own_chrome);
+
+    if (panel.has_own_chrome)
+    {
+      auto *pin = new QToolButton;
+      QIcon pin_icon = HSD_ICON("push_pin");
+      pin_icon.addPixmap(HSD_ICON("push_pin_accent").pixmap(16, 16),
+                         QIcon::Normal, QIcon::On);
+      pin->setIcon(pin_icon);
+      pin->setCheckable(true);
+      pin->setChecked(contains(this->pinned_node_ids, node_id));
+      pin->setAccessibleName("Pin " + node_caption);
+      pin->setToolTip("Keep this node in the properties panel");
+      pin->setCursor(Qt::PointingHandCursor);
+      connect(pin, &QToolButton::toggled, this, [this, node_id](bool checked)
+              {
+                if (checked && !contains(this->pinned_node_ids, node_id))
+                  this->pinned_node_ids.push_back(node_id);
+                else if (!checked)
+                  remove_all_occurrences(this->pinned_node_ids, node_id);
+              });
+      this->attr_layout->addWidget(new PropertiesPanelHeader(
+          node_caption, *panel.theme, pin,
+          add_toolbar ? attr_widget->create_toolbar() : nullptr));
+    }
+
     // pinned checkbox button
+    else
     {
       auto *button_pin = new IconCheckBox(this);
       button_pin->set_label(node_caption);
@@ -188,18 +223,11 @@ void NodeSettingsWidget::update_content()
                     });
     }
 
-    bool add_toolbar = HSD_CTX.app_settings.node_editor.show_node_toolbar_in_settings_pan;
-
-    auto *attr_widget = new NodeAttributesWidget(p_gno->get_shared(),
-                                                 node_id,
-                                                 this->p_graph_node_widget,
-                                                 add_toolbar,
-                                                 /* parent */ nullptr);
-    if (!attr_widget)
-      continue;
-
     this->attr_layout->addWidget(attr_widget);
-    this->attr_layout->addWidget(new QLabel()); // space
+    if (panel.has_own_chrome)
+      this->attr_layout->addSpacing(8);
+    else
+      this->attr_layout->addWidget(new QLabel()); // space
 
     this->attr_widgets.push_back(attr_widget);
   }
