@@ -8346,7 +8346,7 @@
                 "type": "Float"
             },
             "solver_stride": {
-                "description": "Grid sampling stride used by the solver. Higher values process the snow field at a lower spatial resolution, reducing computation time at the cost of fine detail.",
+                "description": "Grid sampling stride used by the solver. 1 (default) runs the simulation at full resolution. Higher values run it on a coarser grid and upsample the result, which is faster on very large maps but smears fine flow structure.",
                 "key": "solver_stride",
                 "label": "Solver Iteration Stride",
                 "type": "Integer"
