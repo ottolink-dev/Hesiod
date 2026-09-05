@@ -44,9 +44,8 @@ const PropertiesPanelDesign &properties_panel_design()
     // "what is this design drawn with", rather than the panel reading a theme
     // the design itself knows nothing about.
     if (!settings.properties_panel_theme.empty())
-      meta::qt::DesignRegistry::instance().set_theme(
-          out.design,
-          settings.properties_panel_theme);
+      meta::qt::DesignRegistry::instance().set_theme(out.design,
+                                                     settings.properties_panel_theme);
 
     out.theme = &meta::qt::DesignRegistry::instance().theme(out.design);
     out.has_own_chrome = out.design == meta::qt::industrial::kDesignName;

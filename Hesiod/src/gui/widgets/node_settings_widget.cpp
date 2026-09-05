@@ -106,8 +106,7 @@ void NodeSettingsWidget::setup_layout()
       // sideways for reasons unrelated to what was clicked. Costs a few pixels
       // and removes a whole class of confusion.
       scroll->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
-      scroll->setStyleSheet(
-          meta::qt::industrial::scrollbar_stylesheet(*panel.theme));
+      scroll->setStyleSheet(meta::qt::industrial::scrollbar_stylesheet(*panel.theme));
     }
 
     scroll->setWidget(container);

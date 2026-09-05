@@ -365,10 +365,12 @@ void NodeAttributesWidget::setup_layout()
   row_ctx.default_value = [this](const std::string &key) -> std::any
   {
     auto gno = this->p_graph_node.lock();
-    if (!gno) return {};
+    if (!gno)
+      return {};
 
     BaseNode *p_current = gno->get_node_ref_by_id<BaseNode>(this->node_id);
-    if (!p_current) return {};
+    if (!p_current)
+      return {};
 
     const std::string container_name = p_current->get_meta_group()
                                            .current_container_name()
@@ -388,8 +390,7 @@ void NodeAttributesWidget::setup_layout()
       // Only when the node has no categories of its own, though: adding a root
       // section to a node that already has some wraps every real section in a
       // second card, which reads as nested boxes rather than grouping.
-      .root_category_name = (panel.has_own_chrome &&
-                             !has_categorised_attributes(*p_node))
+      .root_category_name = (panel.has_own_chrome && !has_categorised_attributes(*p_node))
                                 ? std::string{"Parameters"}
                                 : std::string{}};
 
