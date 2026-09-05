@@ -24,7 +24,7 @@ Primitive/Geological
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
-|out|VirtualArray|Generated island-chain land mask.|
+|output|VirtualArray|Generated island-chain land mask.|
 
 ## Parameters
 

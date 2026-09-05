@@ -18,7 +18,7 @@ Primitive/Geological
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
-|out|VirtualArray|No description|
+|output|VirtualArray|No description|
 
 ## Parameters
 

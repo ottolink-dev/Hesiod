@@ -21,7 +21,7 @@ namespace hesiod
 
 constexpr const char *P_LAND  = "land_mask";
 constexpr const char *P_DR    = "dr";
-constexpr const char *P_OUT   = "out";
+constexpr const char *P_OUT   = "output";
 constexpr const char *P_DEPTH = "water_depth";
 constexpr const char *P_MASK  = "inland_mask";
 

@@ -26,7 +26,7 @@ WIP/DEPRECATED
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
-|out|VirtualArray|No description|
+|output|VirtualArray|No description|
 
 ## Parameters
 

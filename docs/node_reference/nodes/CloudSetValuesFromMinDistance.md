@@ -24,7 +24,7 @@ Geometry/Cloud
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
-|out|Cloud|No description|
+|output|Cloud|No description|
 
 ## Example
 

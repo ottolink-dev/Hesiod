@@ -21,7 +21,7 @@ namespace hesiod
 constexpr const char *P_DX       = "dx";
 constexpr const char *P_DY       = "dy";
 constexpr const char *P_ENVELOPE = "envelope";
-constexpr const char *P_OUT      = "out";
+constexpr const char *P_OUT      = "output";
 
 constexpr const char *A_ADD_DEPOSITION     = "add_deposition";
 constexpr const char *A_ANGLE              = "angle";

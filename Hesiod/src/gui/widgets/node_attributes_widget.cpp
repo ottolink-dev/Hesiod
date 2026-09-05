@@ -3,6 +3,7 @@
  * this software. */
 #include <fstream>
 
+#include <QApplication>
 #include <QDesktopServices>
 #include <QFileDialog>
 #include <QLayout>
@@ -11,16 +12,48 @@
 #include <QToolButton>
 
 #include "meta_qt/container_group_widget.hpp"
+#include "meta_qt/ui/design_registry.hpp"
+#include "meta_qt/ui/theme.hpp"
 #include "meta_qt/widgets/collapsible_section.hpp"
 
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/widgets/documentation_popup.hpp"
 #include "hesiod/gui/widgets/node_attributes_widget.hpp"
+#include "hesiod/gui/widgets/properties_panel_design.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 
 namespace hesiod
 {
+
+namespace
+{
+
+/** @brief True when any attribute anywhere in the group declares a ui.category.
+ *
+ * A node that builds its own sections does not want a root one wrapped around
+ * them. Every container is checked, not just the current one, because the root
+ * category is decided once for the whole group: reading only the current
+ * container meant switching to a container whose attributes are all
+ * uncategorised put a second card around the sections of the others.
+ */
+bool has_categorised_attributes(BaseNode &node)
+{
+  for (const auto &[name, p_container] : node.get_meta_group().containers())
+  {
+    if (!p_container)
+      continue;
+
+    for (const auto &key : p_container->insertion_order())
+      if (const auto *p_attr = p_container->find(key))
+        if (!meta::common::category(*p_attr).empty())
+          return true;
+  }
+
+  return false;
+}
+
+} // namespace
 
 NodeAttributesWidget::NodeAttributesWidget(std::weak_ptr<GraphNode>  p_graph_node,
                                            const std::string        &node_id,
@@ -316,9 +349,49 @@ void NodeAttributesWidget::setup_layout()
 
   // --- Meta ContainerGroupWidget
 
+  // Registers the designs on first call and validates the configured name.
+
+  const PropertiesPanelDesign &panel = properties_panel_design();
+
+  meta::qt::RowContext row_ctx;
+  row_ctx.theme = panel.theme;
+
+  // Only `this` is captured. The defaults live on the node, so reading them
+  // through the live node keeps the lookup correct after the node switches
+  // container: capturing the container name at build time meant a CoherentNoise
+  // switched to Ridged still resolved its defaults against the fbm container,
+  // and nothing ever showed as modified. It also avoids copying the whole
+  // initial state into the closure, which on a Brush node is a heightmap.
+  row_ctx.default_value = [this](const std::string &key) -> std::any
+  {
+    auto gno = this->p_graph_node.lock();
+    if (!gno) return {};
+
+    BaseNode *p_current = gno->get_node_ref_by_id<BaseNode>(this->node_id);
+    if (!p_current) return {};
+
+    const std::string container_name = p_current->get_meta_group()
+                                           .current_container_name()
+                                           .value_or(std::string{});
+
+    return p_current->get_initial_default(container_name, key);
+  };
+
   auto options = meta::qt::ContainerRenderOptions{
+      .design = panel.design,
+      .row_context = row_ctx,
       .category_policy = meta::qt::CategoryPolicy::CP_MERGED,
-      .root_category_name = std::string{}};
+      // Uncategorised attributes would otherwise sit bare under the toolbar
+      // with no card behind them, which on a node with a single parameter looks
+      // like an unfinished panel rather than a small one.
+      //
+      // Only when the node has no categories of its own, though: adding a root
+      // section to a node that already has some wraps every real section in a
+      // second card, which reads as nested boxes rather than grouping.
+      .root_category_name = (panel.has_own_chrome &&
+                             !has_categorised_attributes(*p_node))
+                                ? std::string{"Parameters"}
+                                : std::string{}};
 
   this->meta_widget = meta::qt::render(p_node->get_meta_group(),
                                        options,

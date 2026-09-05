@@ -9,6 +9,7 @@
 #include "meta/ext/array/array.hpp"
 #include "meta/ext/color_gradient/color_gradient.hpp"
 
+#include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/legacy/legacy_converter.hpp"
 
@@ -17,6 +18,34 @@ namespace hesiod
 
 namespace
 {
+
+bool is_output_port_virtual_array(const std::string &node_label)
+{
+  const nlohmann::json &docs = HSD_CTX.node_documentation;
+  if (!docs.is_object() || !docs.contains(node_label))
+    return false;
+
+  const auto &node_doc = docs[node_label];
+  if (!node_doc.is_object() || !node_doc.contains("ports") ||
+      !node_doc["ports"].is_object())
+    return false;
+
+  const auto &ports = node_doc["ports"];
+  if (ports.contains("output") && ports["output"].is_object())
+  {
+    const auto &p = ports["output"];
+    if (p.value("type", "") == "output" && p.value("data_type", "") == "VirtualArray")
+      return true;
+  }
+  if (ports.contains("out") && ports["out"].is_object())
+  {
+    const auto &p = ports["out"];
+    if (p.value("type", "") == "output" && p.value("data_type", "") == "VirtualArray")
+      return true;
+  }
+
+  return false;
+}
 
 std::string resolve_legacy_group_name(const meta::ContainerGroup &group,
                                       const nlohmann::json       &j)
@@ -65,6 +94,36 @@ std::string resolve_legacy_group_name(const meta::ContainerGroup &group,
     return group.insertion_order().front();
 
   return "main";
+}
+
+void rename_out_to_output(nlohmann::json &j, const std::string &node_label)
+{
+  if (!j.is_object())
+    return;
+
+  // only rename if the output port is of type VirtualArray
+  if (!is_output_port_virtual_array(node_label))
+    return;
+
+  if (j.contains("containers") && j["containers"].is_object())
+  {
+    for (auto &[cname, cjson] : j["containers"].items())
+    {
+      if (cjson.is_object() && cjson.contains("out") && !cjson.contains("output"))
+      {
+        cjson["output"] = cjson["out"];
+        cjson.erase("out");
+      }
+    }
+  }
+  else
+  {
+    if (j.contains("out") && !j.contains("output"))
+    {
+      j["output"] = j["out"];
+      j.erase("out");
+    }
+  }
 }
 
 } // namespace
@@ -186,11 +245,16 @@ nlohmann::json convert_legacy_node_json(const nlohmann::json &json_node)
         converted_node["value"] = converted_node["value_west"];
       }
     }
+    rename_out_to_output(converted_node, "SetBorders");
     return converted_node;
   }
 
   if (target_label.empty() || group_name.empty())
-    return json_node;
+  {
+    nlohmann::json converted_node = json_node;
+    rename_out_to_output(converted_node, label);
+    return converted_node;
+  }
 
   nlohmann::json converted_node = json_node;
   converted_node["label"] = target_label;
@@ -265,6 +329,7 @@ nlohmann::json convert_legacy_node_json(const nlohmann::json &json_node)
     converted_node["containers"][group_name] = container_json;
   }
 
+  rename_out_to_output(converted_node, target_label);
   return converted_node;
 }
 
@@ -473,6 +538,12 @@ nlohmann::json convert_legacy_container_group_json(const meta::ContainerGroup &g
             cjson["value"] = cjson["value_west"];
           }
 
+          if (container->find("output") && !cjson.contains("output") &&
+              cjson.contains("out"))
+          {
+            cjson["output"] = cjson["out"];
+          }
+
           for (const auto &key : container->insertion_order())
           {
             auto *attr = container->find(key);
@@ -512,6 +583,11 @@ nlohmann::json convert_legacy_container_group_json(const meta::ContainerGroup &g
         j_copy.contains("value_west"))
     {
       j_copy["value"] = j_copy["value_west"];
+    }
+
+    if (container->find("output") && !j_copy.contains("output") && j_copy.contains("out"))
+    {
+      j_copy["output"] = j_copy["out"];
     }
 
     for (const auto &key : container->insertion_order())
