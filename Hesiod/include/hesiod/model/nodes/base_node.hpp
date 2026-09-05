@@ -1,9 +1,11 @@
 /* Copyright (c) 2023 Otto Link. Distributed under the terms of the GNU General Public
    License. The full license is in the file LICENSE, distributed with this software. */
 #pragma once
+#include <any>
 #include <array>
 #include <chrono>
 #include <functional>
+#include <map>
 #include <stdexcept>
 #include <tuple>
 #include <utility>
@@ -143,6 +145,16 @@ public:
     return this->initial_meta_state;
   }
 
+  /** @brief Default value of an attribute, or an empty any if there is none.
+   *
+   * Taken straight off the attribute at finalize time, so it covers every type
+   * the node can hold rather than the handful that survive a round trip
+   * through json. The properties panel uses it to decide what counts as
+   * modified.
+   */
+  std::any get_initial_default(const std::string &container_name,
+                               const std::string &key) const;
+
   void reseed(bool backward);
 
   // --- Callbacks - "signals" equivalent
@@ -152,10 +164,13 @@ public:
 private:
   // --- Members ---
   std::unique_ptr<meta::ContainerGroup> meta_group; // attribute storage
-  std::string                           current_category;
+  std::string                           current_category = "Main Parameters";
 
   // container state captured at finalize time; toolbar "Reset Settings" restores it
   nlohmann::json initial_meta_state;
+
+  // the same snapshot as live values, keyed by container then attribute name
+  std::map<std::string, std::map<std::string, std::any>> initial_meta_defaults;
 
   std::string                         category;
   std::string                         comment;
