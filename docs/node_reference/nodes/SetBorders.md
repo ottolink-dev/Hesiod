@@ -37,6 +37,7 @@ Boundaries
 |West|Float|West-edge buffer thickness (fraction of width).|
 |Uniform Radius|Bool|No description|
 |Uniform Value|Bool|No description|
+|Value|Float|No description|
 |East|Float|TODO|
 |North|Float|TODO|
 |South|Float|TODO|

@@ -37,6 +37,7 @@ Hydrology
 |Filter Radius|Float|No description|
 |Flow Power|Float|No description|
 |Initial Material Depth|Float|No description|
+|Outflow Boundaries|Bool|No description|
 |Enable Post Filtering|Bool|No description|
 |Rebase Depth to Zero|Bool|No description|
 |Simulation Duration|Float|No description|

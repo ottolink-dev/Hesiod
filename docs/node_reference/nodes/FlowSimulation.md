@@ -20,6 +20,7 @@ Hydrology
 | :--- | :--- | :--- |
 |depth_map|VirtualArray|No description|
 |elevation|VirtualArray|No description|
+|rain_map|VirtualArray|No description|
 |water_depth_in|VirtualArray|No description|
 
 ## Outputs
@@ -38,6 +39,7 @@ Hydrology
 |Simulation Duration|Float|No description|
 |Enable Flux Diffusion|Bool|No description|
 |Flux Diffusion Strength|Float|No description|
+|Outflow Boundaries|Bool|No description|
 |Enable Filtering|Bool|No description|
 |Filter Radius|Float|No description|
 |Minimum Lake Radius|Float|No description|
