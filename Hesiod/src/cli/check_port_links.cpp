@@ -246,7 +246,7 @@ int run_check_port_links()
   expect_selected("Bump", "VirtualArray", gngui::PortType::IN, "dx");
 
   // Backwards drag: wanting an OUTPUT of type VirtualArray.
-  expect_selected("IslandChain", "VirtualArray", gngui::PortType::OUT, "out");
+  expect_selected("IslandChain", "VirtualArray", gngui::PortType::OUT, "output");
 
   // Forwards drag onto IslandChain has no VirtualArray input at all.
   expect_selected("IslandChain", "VirtualArray", gngui::PortType::IN, "<none>");

@@ -409,8 +409,8 @@
                 "description": "Heightmap used as a post-process amplitude multiplier for the generated noise.",
                 "type": "input"
             },
-            "out": {
-                "caption": "out",
+            "output": {
+                "caption": "output",
                 "data_type": "VirtualArray",
                 "description": "No description",
                 "type": "output"
@@ -797,8 +797,8 @@
                 "description": "Heightmap used as a post-process amplitude multiplier for the generated noise.",
                 "type": "input"
             },
-            "out": {
-                "caption": "out",
+            "output": {
+                "caption": "output",
                 "data_type": "VirtualArray",
                 "description": "The generated heightmap from brush strokes.",
                 "type": "output"
@@ -1401,8 +1401,8 @@
                 "description": "No description",
                 "type": "input"
             },
-            "out": {
-                "caption": "out",
+            "output": {
+                "caption": "output",
                 "data_type": "VirtualArray",
                 "description": "The generated heightmap from brush strokes.",
                 "type": "output"
@@ -3040,8 +3040,8 @@
                 "description": "Set of points (x, y) and elevations z.",
                 "type": "input"
             },
-            "out": {
-                "caption": "out",
+            "output": {
+                "caption": "output",
                 "data_type": "Cloud",
                 "description": "No description",
                 "type": "output"
@@ -3072,8 +3072,8 @@
                 "description": "No description",
                 "type": "input"
             },
-            "out": {
-                "caption": "out",
+            "output": {
+                "caption": "output",
                 "data_type": "Cloud",
                 "description": "Set of points (x, y) and elevations z.",
                 "type": "output"
@@ -3098,8 +3098,8 @@
                 "description": "No description",
                 "type": "input"
             },
-            "out": {
-                "caption": "out",
+            "output": {
+                "caption": "output",
                 "data_type": "Cloud",
                 "description": "No description",
                 "type": "output"
@@ -5660,8 +5660,8 @@
                 "description": "Heightmap used as a post-process amplitude multiplier for the generated noise.",
                 "type": "input"
             },
-            "out": {
-                "caption": "out",
+            "output": {
+                "caption": "output",
                 "data_type": "VirtualArray",
                 "description": "TODO",
                 "type": "output"
@@ -12397,8 +12397,8 @@
                 "description": "Binary mask defining the island’s footprint; nonzero pixels are considered land. Consider using the node IslandLandMask to generate this mask.",
                 "type": "input"
             },
-            "out": {
-                "caption": "out",
+            "output": {
+                "caption": "output",
                 "data_type": "VirtualArray",
                 "description": "No description",
                 "type": "output"
@@ -12572,8 +12572,8 @@
             }
         },
         "ports": {
-            "out": {
-                "caption": "out",
+            "output": {
+                "caption": "output",
                 "data_type": "VirtualArray",
                 "description": "Generated island-chain land mask.",
                 "type": "output"
@@ -12726,8 +12726,8 @@
             }
         },
         "ports": {
-            "out": {
-                "caption": "out",
+            "output": {
+                "caption": "output",
                 "data_type": "VirtualArray",
                 "description": "No description",
                 "type": "output"
@@ -14681,8 +14681,8 @@
                 "description": "Heightmap used as a post-process amplitude multiplier for the generated noise.",
                 "type": "input"
             },
-            "out": {
-                "caption": "out",
+            "output": {
+                "caption": "output",
                 "data_type": "VirtualArray",
                 "description": "No description",
                 "type": "output"
@@ -14868,8 +14868,8 @@
                 "description": "Heightmap used as a post-process amplitude multiplier for the generated noise.",
                 "type": "input"
             },
-            "out": {
-                "caption": "out",
+            "output": {
+                "caption": "output",
                 "data_type": "VirtualArray",
                 "description": "No description",
                 "type": "output"
@@ -15205,8 +15205,8 @@
                 "description": "Heightmap used as a post-process amplitude multiplier for the generated noise.",
                 "type": "input"
             },
-            "out": {
-                "caption": "out",
+            "output": {
+                "caption": "output",
                 "data_type": "VirtualArray",
                 "description": "No description",
                 "type": "output"
@@ -15392,8 +15392,8 @@
                 "description": "Heightmap used as a post-process amplitude multiplier for the generated noise.",
                 "type": "input"
             },
-            "out": {
-                "caption": "out",
+            "output": {
+                "caption": "output",
                 "data_type": "VirtualArray",
                 "description": "No description",
                 "type": "output"
@@ -15833,8 +15833,8 @@
                 "description": "Heightmap used as a post-process amplitude multiplier for the generated noise.",
                 "type": "input"
             },
-            "out": {
-                "caption": "out",
+            "output": {
+                "caption": "output",
                 "data_type": "VirtualArray",
                 "description": "TODO",
                 "type": "output"
@@ -19213,8 +19213,8 @@
                 "description": "No description",
                 "type": "input"
             },
-            "out": {
-                "caption": "out",
+            "output": {
+                "caption": "output",
                 "data_type": "VirtualArray",
                 "description": "No description",
                 "type": "output"
@@ -23691,8 +23691,8 @@
                 "description": "Heightmap used as a post-process amplitude multiplier for the generated noise.",
                 "type": "input"
             },
-            "out": {
-                "caption": "out",
+            "output": {
+                "caption": "output",
                 "data_type": "VirtualArray",
                 "description": "No description",
                 "type": "output"
@@ -28106,8 +28106,8 @@
                 "description": "Heightmap used as a post-process amplitude multiplier for the generated noise.",
                 "type": "input"
             },
-            "out": {
-                "caption": "out",
+            "output": {
+                "caption": "output",
                 "data_type": "VirtualArray",
                 "description": "No description",
                 "type": "output"
@@ -28272,8 +28272,8 @@
                 "description": "Heightmap used as a post-process amplitude multiplier for the generated noise.",
                 "type": "input"
             },
-            "out": {
-                "caption": "out",
+            "output": {
+                "caption": "output",
                 "data_type": "VirtualArray",
                 "description": "No description",
                 "type": "output"
@@ -28416,8 +28416,8 @@
                 "description": "Heightmap used as a post-process amplitude multiplier for the generated noise.",
                 "type": "input"
             },
-            "out": {
-                "caption": "out",
+            "output": {
+                "caption": "output",
                 "data_type": "VirtualArray",
                 "description": "Resulting heightmap generated by the Voronoi algorithm.",
                 "type": "output"
@@ -28835,8 +28835,8 @@
                 "description": "Heightmap used as a post-process amplitude multiplier for the generated noise.",
                 "type": "input"
             },
-            "out": {
-                "caption": "out",
+            "output": {
+                "caption": "output",
                 "data_type": "VirtualArray",
                 "description": "No description",
                 "type": "output"

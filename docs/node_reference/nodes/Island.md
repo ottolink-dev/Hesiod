@@ -26,7 +26,7 @@ Primitive/Geological
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |inland_mask|VirtualArray|Output buffer receiving a mask of inland pixels (non-coastal land).|
-|out|VirtualArray|No description|
+|output|VirtualArray|No description|
 |water_depth|VirtualArray|Output water depth map representing flooded areas.|
 
 ## Parameters

@@ -13,7 +13,7 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 constexpr const char *P_BACKGROUND = "background";
-constexpr const char *P_OUT        = "out";
+constexpr const char *P_OUT        = "output";
 
 void setup_brush_node(BaseNode &node)
 {

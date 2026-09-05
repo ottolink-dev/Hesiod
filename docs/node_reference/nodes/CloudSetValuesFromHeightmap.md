@@ -25,7 +25,7 @@ Geometry/Cloud
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
-|out|Cloud|Set of points (x, y) and elevations z.|
+|output|Cloud|Set of points (x, y) and elevations z.|
 
 ## Example
 
