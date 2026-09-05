@@ -163,6 +163,31 @@ nlohmann::json convert_legacy_node_json(const nlohmann::json &json_node)
     target_label = "PathFractalize";
     group_name = "Fractalize";
   }
+  // --- SetBorders ---
+  else if (label == "SetBorders")
+  {
+    nlohmann::json converted_node = json_node;
+    if (converted_node.contains("containers") && converted_node["containers"].is_object())
+    {
+      if (converted_node["containers"].contains("main") &&
+          converted_node["containers"]["main"].is_object())
+      {
+        auto &main_json = converted_node["containers"]["main"];
+        if (!main_json.contains("value") && main_json.contains("value_west"))
+        {
+          main_json["value"] = main_json["value_west"];
+        }
+      }
+    }
+    else
+    {
+      if (!converted_node.contains("value") && converted_node.contains("value_west"))
+      {
+        converted_node["value"] = converted_node["value_west"];
+      }
+    }
+    return converted_node;
+  }
 
   if (target_label.empty() || group_name.empty())
     return json_node;
@@ -442,6 +467,12 @@ nlohmann::json convert_legacy_container_group_json(const meta::ContainerGroup &g
 
         if (container)
         {
+          if (container->find("value") && !cjson.contains("value") &&
+              cjson.contains("value_west"))
+          {
+            cjson["value"] = cjson["value_west"];
+          }
+
           for (const auto &key : container->insertion_order())
           {
             auto *attr = container->find(key);
@@ -476,12 +507,19 @@ nlohmann::json convert_legacy_container_group_json(const meta::ContainerGroup &g
 
   if (container)
   {
+    nlohmann::json j_copy = j;
+    if (container->find("value") && !j_copy.contains("value") &&
+        j_copy.contains("value_west"))
+    {
+      j_copy["value"] = j_copy["value_west"];
+    }
+
     for (const auto &key : container->insertion_order())
     {
       auto *attr = container->find(key);
-      if (j.contains(key))
+      if (j_copy.contains(key))
       {
-        target_container_json[key] = convert_legacy_attribute_json(attr, j[key]);
+        target_container_json[key] = convert_legacy_attribute_json(attr, j_copy[key]);
       }
     }
   }

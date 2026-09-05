@@ -1773,12 +1773,12 @@
             {
                 "keys": [
                     "radius",
+                    "z_bottom",
+                    "center",
                     "sigma_inner",
                     "sigma_outer",
                     "noise_r_amp",
-                    "z_bottom",
                     "noise_ratio_z",
-                    "center",
                     "post_inverse",
                     "post_gamma",
                     "post_gain",
@@ -2898,48 +2898,6 @@
             }
         }
     },
-    "CloudScale": {
-        "category": "Geometry/Cloud",
-        "description": "CloudScale scales the coordinates of the points in a cloud relative to a specified center point.",
-        "label": "CloudScale",
-        "parameter_groups": [
-            {
-                "keys": [
-                    "scale",
-                    "center"
-                ],
-                "name": "main"
-            }
-        ],
-        "parameters": {
-            "center": {
-                "description": "Center of scaling.",
-                "key": "center",
-                "label": "Center",
-                "type": "Vec2Float"
-            },
-            "scale": {
-                "description": "Scale factor.",
-                "key": "scale",
-                "label": "Scale",
-                "type": "Float"
-            }
-        },
-        "ports": {
-            "input": {
-                "caption": "input",
-                "data_type": "Cloud",
-                "description": "Input cloud.",
-                "type": "input"
-            },
-            "output": {
-                "caption": "output",
-                "data_type": "Cloud",
-                "description": "Output scaled cloud.",
-                "type": "output"
-            }
-        }
-    },
     "CloudSDF": {
         "category": "Geometry/Cloud",
         "description": "CloudSDF evaluates the signed distance function of a set of points. It assigns a signed distance value to every point in space.",
@@ -3018,6 +2976,48 @@
                 "caption": "sdf",
                 "data_type": "VirtualArray",
                 "description": "Signed distance as an heightmap.",
+                "type": "output"
+            }
+        }
+    },
+    "CloudScale": {
+        "category": "Geometry/Cloud",
+        "description": "CloudScale scales the coordinates of the points in a cloud relative to a specified center point.",
+        "label": "CloudScale",
+        "parameter_groups": [
+            {
+                "keys": [
+                    "scale",
+                    "center"
+                ],
+                "name": "main"
+            }
+        ],
+        "parameters": {
+            "center": {
+                "description": "Center of scaling.",
+                "key": "center",
+                "label": "Center",
+                "type": "Vec2Float"
+            },
+            "scale": {
+                "description": "Scale factor.",
+                "key": "scale",
+                "label": "Scale",
+                "type": "Float"
+            }
+        },
+        "ports": {
+            "input": {
+                "caption": "input",
+                "data_type": "Cloud",
+                "description": "Input cloud.",
+                "type": "input"
+            },
+            "output": {
+                "caption": "output",
+                "data_type": "Cloud",
+                "description": "Output scaled cloud.",
                 "type": "output"
             }
         }
@@ -3943,10 +3943,10 @@
                     "saturation",
                     "temperature",
                     "gamma",
-                    "dither_amp",
                     "filmic_tonemap",
                     "aces_tonemap",
-                    "agx_tonemap"
+                    "agx_tonemap",
+                    "dither_amp"
                 ],
                 "name": "main"
             }
@@ -8269,17 +8269,17 @@
             {
                 "keys": [
                     "water_depth",
+                    "depth_map_type",
                     "duration",
                     "outflow_boundaries",
                     "dry_out_ratio",
                     "flux_diffusion",
                     "flux_diffusion_strength",
                     "solver_stride",
-                    "depth_map_type",
-                    "post_filter",
-                    "radius",
                     "area_filter",
-                    "radius_limit"
+                    "radius_limit",
+                    "post_filter",
+                    "radius"
                 ],
                 "name": "main"
             }
@@ -8399,11 +8399,11 @@
             {
                 "keys": [
                     "initial_depth",
+                    "depth_map_type",
                     "simulation_duration",
                     "flow_power",
                     "outflow_boundaries",
                     "solver_stride",
-                    "depth_map_type",
                     "post_filter",
                     "filter_radius",
                     "shift_to_zero"
@@ -17833,48 +17833,6 @@
             }
         }
     },
-    "PathScale": {
-        "category": "Geometry/Path",
-        "description": "PathScale scales the coordinates of the points in a path relative to a specified center point.",
-        "label": "PathScale",
-        "parameter_groups": [
-            {
-                "keys": [
-                    "scale",
-                    "center"
-                ],
-                "name": "main"
-            }
-        ],
-        "parameters": {
-            "center": {
-                "description": "Center of scaling.",
-                "key": "center",
-                "label": "Center",
-                "type": "Vec2Float"
-            },
-            "scale": {
-                "description": "Scale factor.",
-                "key": "scale",
-                "label": "Scale",
-                "type": "Float"
-            }
-        },
-        "ports": {
-            "input": {
-                "caption": "input",
-                "data_type": "Path",
-                "description": "Input path.",
-                "type": "input"
-            },
-            "output": {
-                "caption": "output",
-                "data_type": "Path",
-                "description": "Output scaled path.",
-                "type": "output"
-            }
-        }
-    },
     "PathSDF": {
         "category": "Geometry/Path",
         "description": "PathSDF evaluates the signed distance function of a polyline. It assigns a signed distance value to every point in space. For points outside the polyline, the distance is positive, while for points inside, it's negative. The zero level set of this function precisely defines the polyline's path Project path points to an heightmap.",
@@ -17953,6 +17911,48 @@
                 "caption": "sdf",
                 "data_type": "VirtualArray",
                 "description": "Signed distance as an heightmap.",
+                "type": "output"
+            }
+        }
+    },
+    "PathScale": {
+        "category": "Geometry/Path",
+        "description": "PathScale scales the coordinates of the points in a path relative to a specified center point.",
+        "label": "PathScale",
+        "parameter_groups": [
+            {
+                "keys": [
+                    "scale",
+                    "center"
+                ],
+                "name": "main"
+            }
+        ],
+        "parameters": {
+            "center": {
+                "description": "Center of scaling.",
+                "key": "center",
+                "label": "Center",
+                "type": "Vec2Float"
+            },
+            "scale": {
+                "description": "Scale factor.",
+                "key": "scale",
+                "label": "Scale",
+                "type": "Float"
+            }
+        },
+        "ports": {
+            "input": {
+                "caption": "input",
+                "data_type": "Path",
+                "description": "Input path.",
+                "type": "input"
+            },
+            "output": {
+                "caption": "output",
+                "data_type": "Path",
+                "description": "Output scaled path.",
                 "type": "output"
             }
         }
@@ -23302,6 +23302,7 @@
                     "radius_east",
                     "radius_north",
                     "radius_south",
+                    "value",
                     "uniform_value",
                     "value_west",
                     "value_east",
@@ -23353,6 +23354,12 @@
                 "key": "uniform_value",
                 "label": "Uniform Value",
                 "type": "Bool"
+            },
+            "value": {
+                "description": "No description",
+                "key": "value",
+                "label": "Value",
+                "type": "Float"
             },
             "value_east": {
                 "description": "TODO",
