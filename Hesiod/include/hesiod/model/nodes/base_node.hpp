@@ -164,7 +164,7 @@ public:
 private:
   // --- Members ---
   std::unique_ptr<meta::ContainerGroup> meta_group; // attribute storage
-  std::string                           current_category;
+  std::string                           current_category = "Main Parameters";
 
   // container state captured at finalize time; toolbar "Reset Settings" restores it
   nlohmann::json initial_meta_state;
