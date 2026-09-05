@@ -24,7 +24,7 @@ Primitive/Authoring
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
-|out|VirtualArray|The generated heightmap from brush strokes.|
+|output|VirtualArray|The generated heightmap from brush strokes.|
 
 ## Parameters
 

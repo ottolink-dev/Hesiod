@@ -17,7 +17,7 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 constexpr const char *P_IN  = "in";
-constexpr const char *P_OUT = "out";
+constexpr const char *P_OUT = "output";
 
 void setup_post_process_node(BaseNode &node)
 {

@@ -27,7 +27,7 @@ WIP
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
-|out|VirtualArray|TODO|
+|output|VirtualArray|TODO|
 
 ## Parameters
 
