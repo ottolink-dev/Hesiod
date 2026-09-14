@@ -28,6 +28,7 @@ constexpr const char *A_UPWARD_PENALIZATION      = "upward_penalization";
 constexpr const char *A_VALLEY_AFFINITY          = "valley_affinity";
 constexpr const char *A_PREFILTER_RADIUS         = "prefilter_radius";
 constexpr const char *A_MINIMUM_DEPTH            = "minimum_depth";
+constexpr const char *A_USE_MIDPOINT             = "use_midpoint";
 constexpr const char *A_CARVE_RIVERBED           = "carve_riverbed";
 constexpr const char *A_MERGING_RADIUS           = "merging_radius";
 constexpr const char *A_RADIAL_PROFILE           = "radial_profile";
@@ -50,13 +51,16 @@ void setup_flow_fixing_mst_node(BaseNode &node)
   // --- Attributes
 
   // clang-format off
-  node.set_current_category("Riverbed Slope & Pathfinding");
-  add_float(node, A_RIVERBED_SLOPE, "Riverbed Slope", 0.1f, 0.f, 1.f);
+  node.set_current_category("Pathfinding");
+  add_bool(node, A_USE_MIDPOINT, "Use Midpoint", true);
   add_float(node, A_ELEVATION_RATIO, "Elevation vs Slope Weight", 0.95f, 0.f, 0.99f);
   add_float(node, A_DISTANCE_EXPONENT, "Distance Exponent", 2.f, 0.1f, 4.f);
   add_float(node, A_UPWARD_PENALIZATION, "Upward Penalization", 0.05f, 0.f, 1.f);
   add_float(node, A_VALLEY_AFFINITY, "Valley Affinity", 0.5f, 0.f, 1.f);
   add_float(node, A_PREFILTER_RADIUS, "Prefilter Radius", 0.02f, 0.f, 0.1f);
+
+  node.set_current_category("Riverbed Slope");
+  add_float(node, A_RIVERBED_SLOPE, "Riverbed Slope", 0.1f, 0.f, 1.f);
   add_float(node, A_MINIMUM_DEPTH, "Minimum Depth", 1e-2f, 1e-4f, 1e-1f, "{:.2e}", true);
 
   node.set_current_category("Riverbank Carving");
@@ -96,6 +100,7 @@ void compute_flow_fixing_mst_node(BaseNode &node)
   const auto valley_affinity     = node.val<float>(A_VALLEY_AFFINITY);
   const auto prefilter_ir        = int(node.val<float>(A_PREFILTER_RADIUS) * nx);
   const auto minimum_depth       = node.val<float>(A_MINIMUM_DEPTH);
+  const auto use_midpoint        = node.val<bool>(A_USE_MIDPOINT);
   const auto carve_riverbed      = node.val<bool>(A_CARVE_RIVERBED);
   const auto merging_distance    = node.val<float>(A_MERGING_RADIUS) * nx;
   const auto radial_profile      = hmap::RadialProfile(node.val<int>(A_RADIAL_PROFILE));
@@ -131,7 +136,8 @@ void compute_flow_fixing_mst_node(BaseNode &node)
                                         merging_distance,
                                         radial_profile,
                                         radial_profile_parameter,
-                                        pa_noise_r);
+                                        pa_noise_r,
+                                        use_midpoint);
       },
       node.cfg().cm_single_array); // forced, not tileable
 

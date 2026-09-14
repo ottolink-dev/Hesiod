@@ -8099,12 +8099,13 @@
         "parameter_groups": [
             {
                 "keys": [
-                    "riverbed_slope",
+                    "use_midpoint",
                     "elevation_ratio",
                     "distance_exponent",
                     "upward_penalization",
                     "valley_affinity",
                     "prefilter_radius",
+                    "riverbed_slope",
                     "minimum_depth",
                     "carve_riverbed",
                     "merging_radius",
@@ -8273,6 +8274,12 @@
                 "label": "Upward Penalization",
                 "type": "Float"
             },
+            "use_midpoint": {
+                "description": "No description",
+                "key": "use_midpoint",
+                "label": "Use Midpoint",
+                "type": "Bool"
+            },
             "valley_affinity": {
                 "description": "No description",
                 "key": "valley_affinity",
@@ -8386,7 +8393,7 @@
                 "type": "Float"
             },
             "solver_stride": {
-                "description": "Grid sampling stride used by the solver. 1 (default) runs the simulation at full resolution. Higher values run it on a coarser grid and upsample the result, which is faster on very large maps but smears fine flow structure.",
+                "description": "Grid sampling stride used by the solver. Higher values process the snow field at a lower spatial resolution, reducing computation time at the cost of fine detail.",
                 "key": "solver_stride",
                 "label": "Solver Iteration Stride",
                 "type": "Integer"
@@ -17422,7 +17429,6 @@
         "label": "PathNoise",
         "parameter_groups": [
             {
-                "name": "Fractalize",
                 "keys": [
                     "iterations",
                     "seed",
@@ -17430,20 +17436,20 @@
                     "orientation",
                     "persistence",
                     "remove_loops"
-                ]
+                ],
+                "name": "Fractalize"
             },
             {
-                "name": "Squiggle",
                 "keys": [
                     "iterations",
                     "seed",
                     "height_ratio",
                     "orientation",
                     "remove_loops"
-                ]
+                ],
+                "name": "Squiggle"
             },
             {
-                "name": "Meanderize",
                 "keys": [
                     "ratio",
                     "noise_ratio",
@@ -17451,78 +17457,25 @@
                     "iterations",
                     "edge_divisions",
                     "remove_loops"
-                ]
+                ],
+                "name": "Meanderize"
             },
             {
-                "name": "Shuffle",
                 "keys": [
                     "dx",
                     "dy",
                     "dv",
                     "seed"
-                ]
+                ],
+                "name": "Shuffle"
             }
         ],
         "parameters": {
-            "iterations": {
-                "description": "Number of procedural displacement or solver iterations.",
-                "key": "iterations",
-                "label": "Iterations",
-                "type": "Integer"
-            },
-            "seed": {
-                "description": "Random seed number.",
-                "key": "seed",
-                "label": "Random Seed",
-                "type": "Random seed number"
-            },
-            "sigma": {
-                "description": "Half-width of the random Gaussian displacement.",
-                "key": "sigma",
-                "label": "Sigma",
+            "dv": {
+                "description": "Random elevation / value displacement.",
+                "key": "dv",
+                "label": "dv",
                 "type": "Float"
-            },
-            "orientation": {
-                "description": "Displacement orientation (0 for random, 1 for outward/inflate, -1 for inward/deflate).",
-                "key": "orientation",
-                "label": "Orientation",
-                "type": "Integer"
-            },
-            "persistence": {
-                "description": "Amplitude scaling factor across displacement iterations.",
-                "key": "persistence",
-                "label": "Persistence",
-                "type": "Float"
-            },
-            "height_ratio": {
-                "description": "Height ratio for squiggle displacements.",
-                "key": "height_ratio",
-                "label": "Height Ratio",
-                "type": "Float"
-            },
-            "ratio": {
-                "description": "Meander amplitude ratio.",
-                "key": "ratio",
-                "label": "Meander Ratio",
-                "type": "Float"
-            },
-            "noise_ratio": {
-                "description": "Meander randomness noise ratio.",
-                "key": "noise_ratio",
-                "label": "Noise Ratio",
-                "type": "Float"
-            },
-            "edge_divisions": {
-                "description": "Edge sub-divisions for meander arcs.",
-                "key": "edge_divisions",
-                "label": "Edge Divisions",
-                "type": "Integer"
-            },
-            "remove_loops": {
-                "description": "Removes self-intersecting geometric loops from the path.",
-                "key": "remove_loops",
-                "label": "Remove Geometric Loops",
-                "type": "Bool"
             },
             "dx": {
                 "description": "Random displacement along X axis.",
@@ -17536,10 +17489,64 @@
                 "label": "dy",
                 "type": "Float"
             },
-            "dv": {
-                "description": "Random elevation / value displacement.",
-                "key": "dv",
-                "label": "dv",
+            "edge_divisions": {
+                "description": "Edge sub-divisions for meander arcs.",
+                "key": "edge_divisions",
+                "label": "Edge Divisions",
+                "type": "Integer"
+            },
+            "height_ratio": {
+                "description": "Height ratio for squiggle displacements.",
+                "key": "height_ratio",
+                "label": "Height Ratio",
+                "type": "Float"
+            },
+            "iterations": {
+                "description": "Number of procedural displacement or solver iterations.",
+                "key": "iterations",
+                "label": "Iterations",
+                "type": "Integer"
+            },
+            "noise_ratio": {
+                "description": "Meander randomness noise ratio.",
+                "key": "noise_ratio",
+                "label": "Noise Ratio",
+                "type": "Float"
+            },
+            "orientation": {
+                "description": "Displacement orientation (0 for random, 1 for outward/inflate, -1 for inward/deflate).",
+                "key": "orientation",
+                "label": "Orientation",
+                "type": "Integer"
+            },
+            "persistence": {
+                "description": "The amplitude scaling factor for subsequent noise octaves. Lower values reduce the contribution of higher octaves.",
+                "key": "persistence",
+                "label": "Persistence",
+                "type": "Float"
+            },
+            "ratio": {
+                "description": "Meander amplitude ratio.",
+                "key": "ratio",
+                "label": "Meander Ratio",
+                "type": "Float"
+            },
+            "remove_loops": {
+                "description": "Removes self-intersecting geometric loops from the path.",
+                "key": "remove_loops",
+                "label": "Remove Geometric Loops",
+                "type": "Bool"
+            },
+            "seed": {
+                "description": "Random seed number. The random seed is an offset to the randomized process. A different seed will produce a new result.",
+                "key": "seed",
+                "label": "Random Seed",
+                "type": "Random seed number"
+            },
+            "sigma": {
+                "description": "Half-width of the random Gaussian displacement.",
+                "key": "sigma",
+                "label": "Sigma",
                 "type": "Float"
             }
         },
@@ -17564,7 +17571,6 @@
         "label": "PathResample",
         "parameter_groups": [
             {
-                "name": "Interpolate",
                 "keys": [
                     "delta",
                     "method",
@@ -17572,40 +17578,29 @@
                     "closed_path",
                     "enable_decimate",
                     "decimate_sampling"
-                ]
+                ],
+                "name": "Interpolate"
             },
             {
-                "name": "Decimate",
                 "keys": [
                     "npoints"
-                ]
+                ],
+                "name": "Decimate"
             },
             {
-                "name": "Smooth",
                 "keys": [
                     "navg",
                     "averaging_intensity",
                     "inertia"
-                ]
+                ],
+                "name": "Smooth"
             }
         ],
         "parameters": {
-            "delta": {
-                "description": "Target distance between points for resampling.",
-                "key": "delta",
-                "label": "Step Size",
-                "type": "Float"
-            },
-            "method": {
-                "description": "Curve interpolation method (Bezier, BSpline, Catmullrom, Decasteljau, Cubic, Akima, Linear).",
-                "key": "method",
-                "label": "Interpolation",
-                "type": "Choice"
-            },
-            "curvature_ratio": {
-                "description": "Curvature ratio used by Bezier interpolation algorithms.",
-                "key": "curvature_ratio",
-                "label": "Curvature Ratio",
+            "averaging_intensity": {
+                "description": "Intensity of smoothing displacement.",
+                "key": "averaging_intensity",
+                "label": "Averaging Intensity",
                 "type": "Float"
             },
             "closed_path": {
@@ -17614,11 +17609,11 @@
                 "label": "Close Path",
                 "type": "Bool"
             },
-            "enable_decimate": {
-                "description": "Enables pre-decimation before curve interpolation.",
-                "key": "enable_decimate",
-                "label": "Enable Decimation",
-                "type": "Bool"
+            "curvature_ratio": {
+                "description": "Curvature ratio used by Bezier interpolation algorithms.",
+                "key": "curvature_ratio",
+                "label": "Curvature Ratio",
+                "type": "Float"
             },
             "decimate_sampling": {
                 "description": "Sampling rate/target point count for pre-decimation.",
@@ -17626,11 +17621,29 @@
                 "label": "Sampling Rate",
                 "type": "Integer"
             },
-            "npoints": {
-                "description": "Target number of points after decimation.",
-                "key": "npoints",
-                "label": "Point Count Target",
-                "type": "Integer"
+            "delta": {
+                "description": "Target distance between points for resampling.",
+                "key": "delta",
+                "label": "Step Size",
+                "type": "Float"
+            },
+            "enable_decimate": {
+                "description": "Enables pre-decimation before curve interpolation.",
+                "key": "enable_decimate",
+                "label": "Enable Decimation",
+                "type": "Bool"
+            },
+            "inertia": {
+                "description": "Inertia factor preserving original vertex positions during smoothing.",
+                "key": "inertia",
+                "label": "Inertia",
+                "type": "Float"
+            },
+            "method": {
+                "description": "Curve interpolation method (Bezier, BSpline, Catmullrom, Decasteljau, Cubic, Akima, Linear).",
+                "key": "method",
+                "label": "Interpolation",
+                "type": "Choice"
             },
             "navg": {
                 "description": "Averaging window size for path smoothing.",
@@ -17638,17 +17651,11 @@
                 "label": "Averaging Window",
                 "type": "Integer"
             },
-            "averaging_intensity": {
-                "description": "Intensity of smoothing displacement.",
-                "key": "averaging_intensity",
-                "label": "Averaging Intensity",
-                "type": "Float"
-            },
-            "inertia": {
-                "description": "Inertia factor preserving original vertex positions during smoothing.",
-                "key": "inertia",
-                "label": "Inertia",
-                "type": "Float"
+            "npoints": {
+                "description": "Target number of points after decimation.",
+                "key": "npoints",
+                "label": "Point Count Target",
+                "type": "Integer"
             }
         },
         "ports": {
@@ -17857,39 +17864,27 @@
         "label": "PathTransform",
         "parameter_groups": [
             {
-                "name": "Scale",
                 "keys": [
                     "scale",
                     "center"
-                ]
+                ],
+                "name": "Scale"
             },
             {
-                "name": "Inflate",
                 "keys": [
                     "radius",
                     "enable_resampling",
                     "resample_delta"
-                ]
+                ],
+                "name": "Inflate"
             }
         ],
         "parameters": {
-            "scale": {
-                "description": "Scale factor.",
-                "key": "scale",
-                "label": "Scale",
-                "type": "Float"
-            },
             "center": {
                 "description": "Center coordinates for scaling transformation.",
                 "key": "center",
                 "label": "Center",
                 "type": "Vec2Float"
-            },
-            "radius": {
-                "description": "Inflation/offset radius.",
-                "key": "radius",
-                "label": "Inflation Radius",
-                "type": "Float"
             },
             "enable_resampling": {
                 "description": "Resample path vertices before inflation.",
@@ -17897,10 +17892,22 @@
                 "label": "Enable Resampling",
                 "type": "Bool"
             },
+            "radius": {
+                "description": "Inflation/offset radius.",
+                "key": "radius",
+                "label": "Inflation Radius",
+                "type": "Float"
+            },
             "resample_delta": {
                 "description": "Step size distance for resampling before inflation.",
                 "key": "resample_delta",
                 "label": "Step Size",
+                "type": "Float"
+            },
+            "scale": {
+                "description": "Scale factor.",
+                "key": "scale",
+                "label": "Scale",
                 "type": "Float"
             }
         },
