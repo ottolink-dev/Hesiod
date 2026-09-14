@@ -57,7 +57,7 @@ void setup_flow_fixing_mst_node(BaseNode &node)
   add_float(node, A_DISTANCE_EXPONENT, "Distance Exponent", 2.f, 0.1f, 4.f);
   add_float(node, A_UPWARD_PENALIZATION, "Upward Penalization", 0.05f, 0.f, 1.f);
   add_float(node, A_VALLEY_AFFINITY, "Valley Affinity", 0.5f, 0.f, 1.f);
-  add_float(node, A_PREFILTER_RADIUS, "Prefilter Radius", 0.02f, 0.f, 0.1f);
+  add_float(node, A_PREFILTER_RADIUS, "Prefilter Radius", 0.05f, 0.f, 0.1f);
 
   node.set_current_category("Riverbed Slope");
   add_float(node, A_RIVERBED_SLOPE, "Riverbed Slope", 0.1f, 0.f, 1.f);
