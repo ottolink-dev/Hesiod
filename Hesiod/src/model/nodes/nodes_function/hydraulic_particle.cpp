@@ -109,7 +109,7 @@ void setup_hydraulic_particle_node(BaseNode &node)
 
     node.set_current_category("Simulation");
     add_seed(node, A_SEED, "Seed");
-    add_float(node, A_PARTICLE_DENSITY, "Particle Density", 0.5f, 0.f, 4.f);
+    add_float(node, A_PARTICLE_DENSITY, "Particle Density", 0.15f, 0.f, 4.f);
 
     setup_common_particle_attributes(node);
   }
@@ -120,9 +120,9 @@ void setup_hydraulic_particle_node(BaseNode &node)
 
     node.set_current_category("Simulation");
     add_seed(node, A_SEED, "Seed");
-    add_int(node, A_LEVELS, "Levels", 3, 1, 6);
+    add_int(node, A_LEVELS, "Levels", 4, 1, 6);
     add_float(node, A_MIX, "Mix", 0.5f, 0.f, 1.f);
-    add_float(node, A_PARTICLE_DENSITY, "Particle Density", 0.5f, 0.f, 4.f);
+    add_float(node, A_PARTICLE_DENSITY, "Particle Density", 0.15f, 0.f, 4.f);
 
     setup_common_particle_attributes(node);
   }
