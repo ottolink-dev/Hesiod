@@ -1,6 +1,9 @@
 name: Windows Build and Package
 
 on:
+  schedule:
+    # Runs every day at 02:00 UTC
+    - cron: '0 2 * * *'
   push:
     branches: [ "main", "dev" ]
     paths-ignore:
@@ -14,6 +17,9 @@ on:
       - ".readthedocs.yaml"
       - "docs/**"
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   build:
@@ -110,3 +116,16 @@ jobs:
         with:
           name: Hesiod-Windows-x64
           path: hesiod-windows-x64.zip
+
+      - name: Publish Nightly Release
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: nightly
+          name: "Hesiod Nightly Build"
+          body: "Automated nightly build for Windows (x64)."
+          prerelease: true
+          make_latest: false
+          files: hesiod-windows-x64.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
