@@ -51,13 +51,16 @@ void setup_strata_terrace_node(BaseNode &node)
   // --- Attributes
 
   // clang-format off
+  node.set_current_category("Strata");
   add_float(node, A_KZ, "Number of Strata", 8.f, 0.f, FLT_MAX);
   add_float(node, A_GAMMA, "Profile Gamma", 0.5f, 0.01f, 2.f);
-  add_seed(node, A_SEED, "Seed");
   add_bool(node, A_LINEAR_GAMMA, "Use Linear Terrace Profile", false);
-  add_float(node, A_GAMMA_NOISE_RATIO, "Gamma Noise Influence", 0.5f, 0.f, 1.f);
   add_float(node, A_SLOPE, "Slope", 0.f, 0.f, 10.f);
   add_float(node, A_ANGLE, "Angle", 0.f, -180.f, 180.f, "{:.1f}°");
+  add_seed(node, A_SEED, "Seed");
+
+  node.set_current_category("Noise");
+  add_float(node, A_GAMMA_NOISE_RATIO, "Gamma Noise Influence", 0.5f, 0.f, 1.f);
   // clang-format on
 
   // --- Attribute(s) order
