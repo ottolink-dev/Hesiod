@@ -31,7 +31,7 @@ GraphManagerWidget::GraphManagerWidget(std::weak_ptr<GraphManager> p_graph_manag
   if (!gm)
     return;
 
-  this->setWindowTitle(tr("Hesiod - GraphManager"));
+  this->setWindowTitle(tr("Hesiod - Graph Layout Manager"));
 
   // --- build widget layout
   int row = 0;
