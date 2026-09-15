@@ -434,10 +434,19 @@ nlohmann::json convert_legacy_node_json(const nlohmann::json &json_node)
 nlohmann::json convert_legacy_attribute_json(const meta::AbstractAttribute *attr,
                                              const nlohmann::json          &j)
 {
-  if (!j.is_object() || !attr)
+  if (!attr)
     return j;
 
   nlohmann::json converted = j;
+  if (j.is_array() || j.is_number() || j.is_string() || j.is_boolean())
+  {
+    converted = nlohmann::json::object();
+    converted["value"] = j;
+  }
+  else if (!j.is_object())
+  {
+    return j;
+  }
 
   // Cloud conversion: meta::Attribute<std::vector<glm::vec3>>
   if (attr->try_cast<meta::Attribute<std::vector<glm::vec3>>>())
@@ -478,6 +487,10 @@ nlohmann::json convert_legacy_attribute_json(const meta::AbstractAttribute *attr
       {
         Logger::log()->warn("Legacy converter: Vec2 conversion failed: {}", e.what());
       }
+    }
+    else if (!j.contains("value") && j.contains("x") && j.contains("y"))
+    {
+      converted["value"] = {{"x", j["x"]}, {"y", j["y"]}};
     }
   }
   // Color conversion: meta::Attribute<glm::vec4>
@@ -581,14 +594,46 @@ nlohmann::json convert_legacy_attribute_json(const meta::AbstractAttribute *attr
     }
   }
 
-  // Translate legacy metadata fields to Meta's native metadata structure
+  // Translate legacy metadata and state fields
   if (j.contains("is_active"))
   {
+    converted["state"]["active"]["value"] = j["is_active"];
     converted["metadata"]["ui.active"]["value"] = j["is_active"];
   }
   if (j.contains("link_xy"))
   {
+    converted["state"]["locked_xy"]["value"] = j["link_xy"];
     converted["metadata"]["ui.locked_xy"]["value"] = j["link_xy"];
+  }
+  if (j.contains("state") && j["state"].is_object())
+  {
+    if (j["state"].contains("active") && !j["state"]["active"].is_object())
+    {
+      converted["state"]["active"] = {{"value", j["state"]["active"]}};
+    }
+    if (j["state"].contains("locked_xy") && !j["state"]["locked_xy"].is_object())
+    {
+      converted["state"]["locked_xy"] = {{"value", j["state"]["locked_xy"]}};
+    }
+  }
+  if (j.contains("metadata") && j["metadata"].is_object())
+  {
+    if (j["metadata"].contains("ui.active"))
+    {
+      auto ui_act = j["metadata"]["ui.active"];
+      if (ui_act.is_object() && ui_act.contains("value"))
+        converted["state"]["active"]["value"] = ui_act["value"];
+      else if (ui_act.is_boolean())
+        converted["state"]["active"]["value"] = ui_act;
+    }
+    if (j["metadata"].contains("ui.locked_xy"))
+    {
+      auto ui_lock = j["metadata"]["ui.locked_xy"];
+      if (ui_lock.is_object() && ui_lock.contains("value"))
+        converted["state"]["locked_xy"]["value"] = ui_lock["value"];
+      else if (ui_lock.is_boolean())
+        converted["state"]["locked_xy"]["value"] = ui_lock;
+    }
   }
 
   return converted;
