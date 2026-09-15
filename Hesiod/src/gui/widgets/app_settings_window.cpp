@@ -157,8 +157,9 @@ void AppSettingsWindow::setup_layout()
   this->bind_bool("Enable node settings in node body",
                   ctx.app_settings.interface.enable_node_settings_in_node_body);
   this->bind_bool("Enable tool tips", ctx.app_settings.interface.enable_tool_tips);
-  this->bind_bool("Enable texture downloader",
-                  ctx.app_settings.interface.enable_texture_downloader);
+  // deactivated for this version due to unresolved bugs on those tools
+  // this->bind_bool("Enable texture downloader",
+  //                 ctx.app_settings.interface.enable_texture_downloader);
   this->bind_bool("Enable example selector at startup",
                   ctx.app_settings.interface.enable_example_selector_at_startup);
 

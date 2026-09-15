@@ -977,7 +977,8 @@ void HesiodApplication::setup_menu_bar()
       this->context.app_settings.window.show_graph_manager_widget);
   view_menu->addAction(show_layout_manager);
 
-  // texture dld
+  // deactivated for this version due to unresolved bugs on those tools
+  /*
   auto *show_texture_downloader = new QAction("Texture Downloader", this);
   show_texture_downloader->setIcon(HSD_ICON("cloud_download"));
   if (this->context.app_settings.interface.enable_texture_downloader)
@@ -992,6 +993,7 @@ void HesiodApplication::setup_menu_bar()
   {
     view_menu->addAction(show_heightmapper_widget);
   }
+  */
 
   view_menu->addSeparator();
 
@@ -1106,6 +1108,8 @@ void HesiodApplication::setup_menu_bar()
         show_layout_manager->setChecked(!state);
       });
 
+  // deactivated for this version due to unresolved bugs on those tools
+  /*
   if (this->context.app_settings.interface.enable_texture_downloader)
   {
     this->connect(
@@ -1136,6 +1140,7 @@ void HesiodApplication::setup_menu_bar()
           show_heightmapper_widget->setChecked(!state);
         });
   }
+  */
 
   // graphs
   this->connect(

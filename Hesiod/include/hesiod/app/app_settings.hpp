@@ -84,8 +84,9 @@ struct AppSettings
   {
     bool enable_data_preview_in_node_body = true;
     bool enable_node_settings_in_node_body = false;
-    bool enable_texture_downloader = true;
-    bool enable_heightmapper_widget = true;
+    // deactivated for this version due to unresolved bugs on those tools
+    bool enable_texture_downloader = false;
+    bool enable_heightmapper_widget = false;
     bool enable_tool_tips = true;
     bool enable_example_selector_at_startup = true;
 
