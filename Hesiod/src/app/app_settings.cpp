@@ -1,6 +1,9 @@
 /* Copyright (c) 2025 Otto Link. Distributed under the terms of the GNU General
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
+#include <algorithm>
+#include <cmath>
+
 #include <QBuffer>
 #include <QByteArray>
 #include <QDir>
@@ -13,6 +16,7 @@
 #include "highmap/opencl/gpu_opencl.hpp"
 
 #include "hesiod/app/app_settings.hpp"
+#include "hesiod/app/ui_scale.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/utils.hpp"
 
@@ -151,6 +155,89 @@ void AppSettings::json_from(nlohmann::json const &json)
   json_safe_get(json,
                 "interface.properties_panel_theme",
                 interface.properties_panel_theme);
+  json_safe_get(json,
+                "interface.enable_node_palette_sidebar",
+                interface.enable_node_palette_sidebar);
+  json_safe_get(json, "interface.enable_ui_animations", interface.enable_ui_animations);
+
+  // The interface scale is the one setting a bad value makes the application
+  // unusable with, so it is read by hand rather than through json_safe_get: a
+  // string, an object or a NaN here has to degrade to 100%, not throw out of
+  // the whole settings load.
+  {
+    interface.ui_scale = ui_scale::kDefault;
+
+    if (json.contains("interface.ui_scale"))
+    {
+      const nlohmann::json &entry = json.at("interface.ui_scale");
+
+      if (entry.is_number())
+      {
+        bool clean = false;
+        interface.ui_scale = ui_scale::sanitize(entry.get<double>(), &clean);
+
+        if (!clean)
+          Logger::log()->warn("AppSettings: interface.ui_scale {} is outside the "
+                              "supported [{}, {}] range, using {}",
+                              entry.dump(),
+                              ui_scale::kMin,
+                              ui_scale::kMax,
+                              interface.ui_scale);
+      }
+      else
+      {
+        Logger::log()->error("AppSettings: interface.ui_scale is not a number ({}), "
+                             "using {}",
+                             entry.type_name(),
+                             ui_scale::kDefault);
+      }
+    }
+  }
+
+  // node palette look; every entry is optional so an older config keeps the
+  // compiled defaults instead of a half-populated style
+  {
+    auto get_color = [&json](const std::string &key, QColor &value)
+    {
+      if (json.contains(key) && json.at(key).is_string())
+      {
+        const QString name = QString::fromStdString(json.at(key).get<std::string>());
+        if (QColor::isValidColorName(name))
+          value = QColor(name);
+      }
+    };
+
+    auto get_metric = [&json](const std::string &key, int &value, int lo, int hi)
+    {
+      if (json.contains(key) && json.at(key).is_number())
+        value = std::clamp(json.at(key).get<int>(), lo, hi);
+    };
+
+    get_color("node_palette.surface", node_palette.surface);
+    get_color("node_palette.surface_hover", node_palette.surface_hover);
+    get_color("node_palette.surface_selected", node_palette.surface_selected);
+    get_color("node_palette.flyout_bg", node_palette.flyout_bg);
+    get_color("node_palette.flyout_border", node_palette.flyout_border);
+    get_color("node_palette.text", node_palette.text);
+    get_color("node_palette.text_active", node_palette.text_active);
+
+    get_metric("node_palette.button_height", node_palette.button_height, 20, 120);
+    get_metric("node_palette.button_spacing", node_palette.button_spacing, 0, 40);
+    get_metric("node_palette.rail_padding", node_palette.rail_padding, 0, 40);
+    get_metric("node_palette.icon_size", node_palette.icon_size, 8, 64);
+    get_metric("node_palette.corner_radius", node_palette.corner_radius, 0, 24);
+    get_metric("node_palette.flyout_row_height", node_palette.flyout_row_height, 14, 80);
+    get_metric("node_palette.flyout_padding", node_palette.flyout_padding, 0, 24);
+    get_metric("node_palette.animation_ms", node_palette.animation_ms, 0, 1000);
+
+    if (json.contains("node_palette.accent_strength") &&
+        json.at("node_palette.accent_strength").is_number())
+    {
+      const double value = json.at("node_palette.accent_strength").get<double>();
+      node_palette.accent_strength = std::isfinite(value) ? std::clamp(value, 0.0, 1.0)
+                                                          : 1.0;
+    }
+  }
 
   // OpenCL device
   {
@@ -271,6 +358,27 @@ nlohmann::json AppSettings::json_to() const
       interface.enable_example_selector_at_startup;
   json["interface.properties_panel_design"] = interface.properties_panel_design;
   json["interface.properties_panel_theme"] = interface.properties_panel_theme;
+  json["interface.ui_scale"] = ui_scale::sanitize(interface.ui_scale);
+  json["interface.enable_node_palette_sidebar"] = interface.enable_node_palette_sidebar;
+  json["interface.enable_ui_animations"] = interface.enable_ui_animations;
+
+  json["node_palette.surface"] = node_palette.surface.name().toStdString();
+  json["node_palette.surface_hover"] = node_palette.surface_hover.name().toStdString();
+  json["node_palette.surface_selected"] = node_palette.surface_selected.name()
+                                              .toStdString();
+  json["node_palette.flyout_bg"] = node_palette.flyout_bg.name().toStdString();
+  json["node_palette.flyout_border"] = node_palette.flyout_border.name().toStdString();
+  json["node_palette.text"] = node_palette.text.name().toStdString();
+  json["node_palette.text_active"] = node_palette.text_active.name().toStdString();
+  json["node_palette.button_height"] = node_palette.button_height;
+  json["node_palette.button_spacing"] = node_palette.button_spacing;
+  json["node_palette.rail_padding"] = node_palette.rail_padding;
+  json["node_palette.icon_size"] = node_palette.icon_size;
+  json["node_palette.corner_radius"] = node_palette.corner_radius;
+  json["node_palette.flyout_row_height"] = node_palette.flyout_row_height;
+  json["node_palette.flyout_padding"] = node_palette.flyout_padding;
+  json["node_palette.animation_ms"] = node_palette.animation_ms;
+  json["node_palette.accent_strength"] = node_palette.accent_strength;
 
   json["node_editor.gpu_device_name"] = node_editor.gpu_device_name;
   json["node_editor.default_resolution"] = node_editor.default_resolution;

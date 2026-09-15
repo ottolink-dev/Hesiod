@@ -6,6 +6,8 @@
 
 #include "nlohmann/json.hpp"
 
+#include "hesiod/gui/node_palette_style.hpp"
+
 #define HSD_ICON(name)                                                                   \
   static_cast<hesiod::HesiodApplication *>(QCoreApplication::instance())                 \
       ->get_context()                                                                    \
@@ -107,7 +109,25 @@ struct AppSettings
     // "industrial-dark" pins the reference colourway instead.
     std::string properties_panel_design = "industrial";
     std::string properties_panel_theme = "palette";
+
+    // Application-wide interface scale. Handed to Qt as QT_SCALE_FACTOR before
+    // QApplication exists, so it multiplies into the per-monitor DPI factor
+    // instead of fighting it, and every logical metric follows. Applied at
+    // startup only -- see ui_scale.hpp for why, and for the validation rules.
+    double ui_scale = 1.0;
+
+    // Gaea-style category rail with hierarchical flyouts instead of the dense
+    // library tree. Off by default: the tree is the shipped sidebar and this is
+    // an alternative, not a replacement.
+    bool enable_node_palette_sidebar = false;
+
+    // Interface motion (rail cross-fades, menu/tooltip effects, tree expand
+    // animation). Turning it off settles running animations immediately.
+    bool enable_ui_animations = true;
   } interface;
+
+  /// Look of the node palette sidebar. Only read when it is enabled.
+  NodePaletteStyle node_palette;
 
   struct NodeEditor
   {

@@ -4,6 +4,7 @@
 #include <memory>
 
 #include "hesiod/gui/widgets/node_library_widget.hpp"
+#include "hesiod/gui/widgets/node_palette_sidebar.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 
 class QToolButton;
@@ -46,9 +47,14 @@ private:
   std::weak_ptr<GraphNode> p_graph_node;
   GraphNodeWidget         *graph_node_widget = nullptr;
   NodeSettingsWidget      *node_settings_widget = nullptr;
-  NodeLibraryWidget       *node_library_widget = nullptr;
-  Viewer3D                *viewer = nullptr;
-  QToolButton             *node_library_toggle_button = nullptr;
+
+  // exactly one of these is built, chosen by
+  // interface.enable_node_palette_sidebar; the other stays null
+  NodeLibraryWidget  *node_library_widget = nullptr;
+  NodePaletteSidebar *node_palette_sidebar = nullptr;
+
+  Viewer3D    *viewer = nullptr;
+  QToolButton *node_library_toggle_button = nullptr;
 };
 
 } // namespace hesiod

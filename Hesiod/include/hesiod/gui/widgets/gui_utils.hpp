@@ -10,12 +10,26 @@
 #include <QLayout>
 #include <QWidget>
 
+#include "hesiod/gui/node_palette_style.hpp"
+
 namespace hesiod
 {
 
 void add_qmenu_spacer(QMenu *menu, int height = 8);
 
 void apply_global_style(QApplication &app);
+
+/** @brief Switch interface motion on or off across the application.
+ *
+ * Covers Qt's own menu/combo/tooltip effects and any node palette sidebar that
+ * is already open. Called at startup and again whenever the setting changes,
+ * because "disable animations" that only applies to windows opened afterwards
+ * reads as the setting not working.
+ */
+void apply_animation_settings(bool enabled);
+
+/// The node palette style currently configured in the application settings.
+NodePaletteStyle current_node_palette_style();
 
 void clear_layout(QLayout *layout);
 

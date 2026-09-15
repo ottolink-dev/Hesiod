@@ -10,12 +10,42 @@
 #include <QWidget>
 #include <QWidgetAction>
 
+#include <QApplication>
+
+#include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/widgets/gui_utils.hpp"
+#include "hesiod/gui/widgets/node_palette_sidebar.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/utils.hpp"
 
 namespace hesiod
 {
+
+void apply_animation_settings(bool enabled)
+{
+  Logger::log()->trace("apply_animation_settings: {}", enabled);
+
+  for (const Qt::UIEffect effect : {Qt::UI_AnimateMenu,
+                                    Qt::UI_FadeMenu,
+                                    Qt::UI_AnimateCombo,
+                                    Qt::UI_AnimateTooltip,
+                                    Qt::UI_FadeTooltip,
+                                    Qt::UI_AnimateToolBox})
+    QApplication::setEffectEnabled(effect, enabled);
+
+  // reach the sidebars that already exist: a motion setting that only applies
+  // to widgets created later looks like it did nothing
+  NodePaletteStyle style = current_node_palette_style();
+  style.animations = enabled;
+  NodePaletteSidebar::restyle_all(style);
+}
+
+NodePaletteStyle current_node_palette_style()
+{
+  NodePaletteStyle style = HSD_CTX.app_settings.node_palette;
+  style.animations = HSD_CTX.app_settings.interface.enable_ui_animations;
+  return style;
+}
 
 void add_qmenu_spacer(QMenu *menu, int height)
 {

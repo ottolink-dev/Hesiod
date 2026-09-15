@@ -36,6 +36,7 @@
 #include "hesiod/gui/widgets/graph_tabs_widget.hpp"
 #include "hesiod/gui/widgets/gui_utils.hpp"
 #include "hesiod/gui/widgets/project_settings_dialog.hpp"
+#include "hesiod/gui/widgets/scrollable_dialog.hpp"
 #include "hesiod/gui/widgets/splash_screen.hpp"
 #include "hesiod/gui/widgets/tool_tip_blocker.hpp"
 #include "hesiod/logger.hpp"
@@ -111,6 +112,7 @@ HesiodApplication::HesiodApplication(int &argc, char **argv) : QApplication(argc
   // apply style
   this->setWindowIcon(QIcon(this->context.app_settings.global.icon_path.c_str()));
   apply_global_style(this->get_qapp());
+  apply_animation_settings(this->context.app_settings.interface.enable_ui_animations);
 
   // main window
   this->main_window = new MainWindow();
@@ -401,20 +403,15 @@ void HesiodApplication::on_application_settings_action()
 {
   Logger::log()->trace("HesiodApplication::on_application_settings_action");
 
-  // initialize app settings widget
-  AppSettingsWindow *settings_window = new AppSettingsWindow(this->main_window);
+  // The settings pane is long and gets longer with the interface scale, so it
+  // goes in a scrolling dialog capped to the screen; a plain QDialog takes the
+  // pane's full height and pushes OK off the bottom at 200%.
+  AppSettingsWindow *settings_window = new AppSettingsWindow();
 
-  // open in a dialog
-  QDialog dialog(this->main_window);
-  dialog.setWindowTitle("Application Settings");
-
-  QVBoxLayout *layout = new QVBoxLayout(&dialog);
-  layout->addWidget(settings_window);
-
-  QDialogButtonBox *button_box = new QDialogButtonBox(QDialogButtonBox::Ok);
-  button_box->button(QDialogButtonBox::Ok)->setDefault(true);
-  this->connect(button_box, &QDialogButtonBox::accepted, &dialog, &QDialog::accept);
-  layout->addWidget(button_box);
+  ScrollableDialog dialog(settings_window,
+                          "Application Settings",
+                          QDialogButtonBox::Ok,
+                          this->main_window);
 
   dialog.setModal(true);
   dialog.exec();
