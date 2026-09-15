@@ -157,6 +157,7 @@ std::map<std::string, std::string> get_node_inventory()
       {"Caldera", "WIP"}, // "Primitive/Geological"},
       {"Clamp", "Filter/Range"},
       {"ClampOblique", "Filter/Range"},
+      {"Circus", "Primitive/Geological"},
       {"Closing", "WIP/DEPRECATED"},
       {"Cloud", "Geometry/Cloud"},
       {"CloudFromCsv", "Geometry/Cloud"},
@@ -504,6 +505,7 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
     SETUP_NODE(Caldera, caldera);
     SETUP_NODE(Clamp, clamp);
     SETUP_NODE(ClampOblique, clamp_oblique);
+    SETUP_NODE(Circus, circus);
     SETUP_NODE(Closing, closing);
     SETUP_NODE(CellularNoise, cellular_noise);
     SETUP_NODE(Cloud, cloud);
