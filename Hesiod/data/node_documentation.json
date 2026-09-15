@@ -2059,6 +2059,193 @@
             }
         }
     },
+    "Circus": {
+        "category": "Primitive/Geological",
+        "description": "Generate a procedural circus (glacial cirque / amphitheatre basin) heightmap elevation envelope with a low exit point, central depression, and elevated ridge arc.",
+        "label": "Circus",
+        "parameter_groups": [
+            {
+                "keys": [
+                    "radius",
+                    "angle",
+                    "center",
+                    "exit_width",
+                    "exit_depth",
+                    "center_depth",
+                    "ridge_height",
+                    "ridge_width",
+                    "outer_falloff",
+                    "dn_add_default_noise",
+                    "dn_noise_type",
+                    "dn_seed",
+                    "dn_noise_amp",
+                    "dn_kw",
+                    "dn_smoothness",
+                    "post_inverse",
+                    "post_gamma",
+                    "post_gain",
+                    "post_smoothing_radius",
+                    "post_remap",
+                    "post_saturate"
+                ],
+                "name": "main"
+            }
+        ],
+        "parameters": {
+            "angle": {
+                "description": "Exit point direction angle in degrees.",
+                "key": "angle",
+                "label": "Angle",
+                "type": "Float"
+            },
+            "center": {
+                "description": "Center position in normalized domain coordinates.",
+                "key": "center",
+                "label": "Center",
+                "type": "Vec2Float"
+            },
+            "center_depth": {
+                "description": "Elevation in the central basin depression.",
+                "key": "center_depth",
+                "label": "Center Depth",
+                "type": "Float"
+            },
+            "dn_add_default_noise": {
+                "description": "Enables or disables the built-in procedural noise. If an external noise input is provided, it overrides this default noise.",
+                "key": "dn_add_default_noise",
+                "label": "Activate",
+                "type": "Bool"
+            },
+            "dn_kw": {
+                "description": "Base spatial frequencies in the X and Y directions.",
+                "key": "dn_kw",
+                "label": "Spatial Frequency",
+                "type": "Float"
+            },
+            "dn_noise_amp": {
+                "description": "Noise amplitude.",
+                "key": "dn_noise_amp",
+                "label": "Amplitude",
+                "type": "Float"
+            },
+            "dn_noise_type": {
+                "description": "Noise type.",
+                "key": "dn_noise_type",
+                "label": "Type",
+                "type": "Enumeration"
+            },
+            "dn_seed": {
+                "description": "Random seed number. The random seed is an offset to the randomized process. A different seed will produce a new result.",
+                "key": "dn_seed",
+                "label": "Seed",
+                "type": "Random seed number"
+            },
+            "dn_smoothness": {
+                "description": "Controls the resulting smoothness of the fractal layering process.",
+                "key": "dn_smoothness",
+                "label": "Smoothness",
+                "type": "Float"
+            },
+            "exit_depth": {
+                "description": "Elevation at the low exit point.",
+                "key": "exit_depth",
+                "label": "Exit Depth",
+                "type": "Float"
+            },
+            "exit_width": {
+                "description": "Angular opening/width factor of the low exit.",
+                "key": "exit_width",
+                "label": "Exit Width",
+                "type": "Float"
+            },
+            "outer_falloff": {
+                "description": "Exponent controlling the outer slope falloff outside the ridge.",
+                "key": "outer_falloff",
+                "label": "Outer Falloff",
+                "type": "Float"
+            },
+            "post_gain": {
+                "description": "Mid-centered gain transformation applied to the elevation values. This is a non-linear recurve operator centered around the mid elevation (typically 0.5). Increasing the gain pushes values toward the minimum and maximum elevations, creating flatter low/high regions with a steeper transition around the midpoint.",
+                "key": "post_gain",
+                "label": "Gain",
+                "type": "Float"
+            },
+            "post_gamma": {
+                "description": "Standard gamma correction applied to the elevation values. This is a monotonic power-law remapping that shifts emphasis toward low or high elevations, making the overall shape sharper or bulkier without changing its ordering.",
+                "key": "post_gamma",
+                "label": "Gamma",
+                "type": "Float"
+            },
+            "post_inverse": {
+                "description": "Inverts the output values after processing, flipping low and high values across the midrange.",
+                "key": "post_inverse",
+                "label": "Invert Output",
+                "type": "Bool"
+            },
+            "post_remap": {
+                "description": "Linearly remaps the output values to a specified target range (default is [0, 1]).",
+                "key": "post_remap",
+                "label": "Remap Range",
+                "type": "Value range"
+            },
+            "post_saturate": {
+                "description": "Modifies the amplitude of elevations by first clamping them to a given interval and then scaling them so that the restricted interval matches the original input range. This enhances contrast in elevation variations while maintaining overall structure.",
+                "key": "post_saturate",
+                "label": "Saturation Range",
+                "type": "Value range"
+            },
+            "post_smoothing_radius": {
+                "description": "Defines the radius for post-processing smoothing, determining the size of the neighborhood used to average local values and reduce high-frequency detail. A radius of 0 disables smoothing.",
+                "key": "post_smoothing_radius",
+                "label": "Smoothing Radius",
+                "type": "Float"
+            },
+            "radius": {
+                "description": "Circus basin and ridge radius.",
+                "key": "radius",
+                "label": "Radius",
+                "type": "Float"
+            },
+            "ridge_height": {
+                "description": "Elevation of the opposite ridge arc.",
+                "key": "ridge_height",
+                "label": "Ridge Height",
+                "type": "Float"
+            },
+            "ridge_width": {
+                "description": "Radial width of the ridge crest.",
+                "key": "ridge_width",
+                "label": "Ridge Width",
+                "type": "Float"
+            }
+        },
+        "ports": {
+            "dr": {
+                "caption": "dr",
+                "data_type": "VirtualArray",
+                "description": "Radial noise distortion input.",
+                "type": "input"
+            },
+            "envelope": {
+                "caption": "envelope",
+                "data_type": "VirtualArray",
+                "description": "Optional envelope heightmap multiplied with the output.",
+                "type": "input"
+            },
+            "mask": {
+                "caption": "mask",
+                "data_type": "VirtualArray",
+                "description": "Smooth mask of the circus shape.",
+                "type": "output"
+            },
+            "output": {
+                "caption": "output",
+                "data_type": "VirtualArray",
+                "description": "Output heightmap elevation envelope.",
+                "type": "output"
+            }
+        }
+    },
     "Clamp": {
         "category": "Filter/Range",
         "description": "Clamp restrict a value within a specified range. Essentially, it ensures that a value does not exceed a defined upper limit or fall below a defined lower limit.",
