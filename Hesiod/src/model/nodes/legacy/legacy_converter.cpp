@@ -768,4 +768,137 @@ nlohmann::json convert_legacy_container_group_json(const meta::ContainerGroup &g
   return group_json;
 }
 
+static bool is_path_modifier_node(const std::string &label)
+{
+  return label == "PathResample" || label == "PathBezier" || label == "PathBezierRound" ||
+         label == "PathBspline" || label == "PathDecasteljau" ||
+         label == "PathDecimate" || label == "PathSmooth" || label == "PathNoise" ||
+         label == "PathFractalize" || label == "PathMeanderize" ||
+         label == "PathShuffle" || label == "PathTransform" || label == "PathScale" ||
+         label == "PathInflate";
+}
+
+nlohmann::json convert_legacy_graph_json(const nlohmann::json &graph_json)
+{
+  if (!graph_json.is_object())
+    return graph_json;
+
+  nlohmann::json                               converted_graph = graph_json;
+  std::unordered_map<std::string, std::string> node_labels;
+
+  if (converted_graph.contains("nodes") && converted_graph["nodes"].is_array())
+  {
+    for (auto &json_node : converted_graph["nodes"])
+    {
+      std::string id = "";
+      std::string label = "";
+      if (json_node.contains("id") && json_node["id"].is_string())
+        id = json_node["id"].get<std::string>();
+      if (json_node.contains("label") && json_node["label"].is_string())
+        label = json_node["label"].get<std::string>();
+
+      node_labels[id] = label;
+      json_node = convert_legacy_node_json(json_node);
+    }
+  }
+
+  if (converted_graph.contains("links") && converted_graph["links"].is_array())
+  {
+    for (auto &json_link : converted_graph["links"])
+    {
+      if (!json_link.is_object())
+        continue;
+
+      std::string node_id_from = json_link.value("node_id_from", "");
+      std::string port_id_from = json_link.value("port_id_from", "");
+      std::string node_id_to = json_link.value("node_id_to", "");
+      std::string port_id_to = json_link.value("port_id_to", "");
+
+      std::string from_label = node_labels[node_id_from];
+      std::string to_label = node_labels[node_id_to];
+
+      if (port_id_from == "out")
+      {
+        json_link["port_id_from"] = "output";
+      }
+      else if (port_id_from == "path" && is_path_modifier_node(from_label))
+      {
+        json_link["port_id_from"] = "output";
+      }
+
+      if (port_id_to == "in")
+      {
+        json_link["port_id_to"] = "input";
+      }
+      else if (port_id_to == "path" && is_path_modifier_node(to_label))
+      {
+        json_link["port_id_to"] = "input";
+      }
+    }
+  }
+
+  return converted_graph;
+}
+
+nlohmann::json convert_legacy_graph_widget_json(const nlohmann::json &widget_json)
+{
+  if (!widget_json.is_object())
+    return widget_json;
+
+  nlohmann::json                               converted_widget = widget_json;
+  std::unordered_map<std::string, std::string> node_captions;
+
+  if (converted_widget.contains("nodes") && converted_widget["nodes"].is_array())
+  {
+    for (const auto &json_node : converted_widget["nodes"])
+    {
+      std::string id = "";
+      std::string caption = "";
+      if (json_node.contains("id") && json_node["id"].is_string())
+        id = json_node["id"].get<std::string>();
+      if (json_node.contains("caption") && json_node["caption"].is_string())
+        caption = json_node["caption"].get<std::string>();
+
+      node_captions[id] = caption;
+    }
+  }
+
+  if (converted_widget.contains("links") && converted_widget["links"].is_array())
+  {
+    for (auto &json_link : converted_widget["links"])
+    {
+      if (!json_link.is_object())
+        continue;
+
+      std::string node_out_id = json_link.value("node_out_id", "");
+      std::string port_out_id = json_link.value("port_out_id", "");
+      std::string node_in_id = json_link.value("node_in_id", "");
+      std::string port_in_id = json_link.value("port_in_id", "");
+
+      std::string from_label = node_captions[node_out_id];
+      std::string to_label = node_captions[node_in_id];
+
+      if (port_out_id == "out")
+      {
+        json_link["port_out_id"] = "output";
+      }
+      else if (port_out_id == "path" && is_path_modifier_node(from_label))
+      {
+        json_link["port_out_id"] = "output";
+      }
+
+      if (port_in_id == "in")
+      {
+        json_link["port_in_id"] = "input";
+      }
+      else if (port_in_id == "path" && is_path_modifier_node(to_label))
+      {
+        json_link["port_in_id"] = "input";
+      }
+    }
+  }
+
+  return converted_widget;
+}
+
 } // namespace hesiod
