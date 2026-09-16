@@ -125,6 +125,8 @@ void GraphNode::json_from(nlohmann::json const &json, GraphConfig *p_input_confi
 {
   Logger::log()->trace("GraphNode::json_from, graph {}", this->get_id());
 
+  nlohmann::json converted_json = convert_legacy_graph_json(json);
+
   // override the current config if one is provided
   if (p_input_config)
   {
@@ -134,9 +136,9 @@ void GraphNode::json_from(nlohmann::json const &json, GraphConfig *p_input_confi
   }
   else
   {
-    if (json.contains("model_config"))
+    if (converted_json.contains("model_config"))
     {
-      this->config->json_from(json["model_config"]);
+      this->config->json_from(converted_json["model_config"]);
     }
     else
     {
@@ -147,8 +149,8 @@ void GraphNode::json_from(nlohmann::json const &json, GraphConfig *p_input_confi
   std::string id = "";
   uint        id_count = 0;
 
-  json_safe_get(json, "id", id);
-  json_safe_get(json, "id_count", id_count);
+  json_safe_get(converted_json, "id", id);
+  json_safe_get(converted_json, "id_count", id_count);
 
   this->set_id(id);
   this->set_id_count(id_count);
@@ -157,27 +159,25 @@ void GraphNode::json_from(nlohmann::json const &json, GraphConfig *p_input_confi
   std::vector<float> vo = {};
   std::vector<float> vs = {};
 
-  json_safe_get(json, "origin", vo);
-  json_safe_get(json, "size", vs);
+  json_safe_get(converted_json, "origin", vo);
+  json_safe_get(converted_json, "size", vs);
 
   this->set_origin(glm::vec2(vo[0], vo[1]));
   this->set_size(glm::vec2(vs[0], vs[1]));
 
   float rotation_angle = 0.f;
-  json_safe_get(json, "rotation_angle", rotation_angle);
+  json_safe_get(converted_json, "rotation_angle", rotation_angle);
 
   this->set_rotation_angle(rotation_angle);
 
   // populate nodes
-  if (json.contains("nodes"))
+  if (converted_json.contains("nodes"))
   {
-    for (auto &json_node : json["nodes"])
+    for (auto &json_node : converted_json["nodes"])
     {
-      nlohmann::json converted_node = convert_legacy_node_json(json_node);
-
       std::string node_type = "";
 
-      json_safe_get(converted_node, "label", node_type);
+      json_safe_get(json_node, "label", node_type);
 
       Logger::log()->trace("GraphNode::json_from, node type: {}", node_type);
 
@@ -185,12 +185,12 @@ void GraphNode::json_from(nlohmann::json const &json, GraphConfig *p_input_confi
       std::shared_ptr<gnode::Node> node = node_factory(node_type, this->config);
 
       std::string id = "";
-      json_safe_get(converted_node, "id", id);
+      json_safe_get(json_node, "id", id);
 
       this->add_node(node, id);
 
       // set its parameters
-      dynamic_cast<BaseNode *>(node.get())->json_from(converted_node);
+      dynamic_cast<BaseNode *>(node.get())->json_from(json_node);
     }
   }
   else
@@ -199,9 +199,9 @@ void GraphNode::json_from(nlohmann::json const &json, GraphConfig *p_input_confi
   }
 
   // links
-  if (json.contains("links"))
+  if (converted_json.contains("links"))
   {
-    for (auto &json_link : json["links"])
+    for (auto &json_link : converted_json["links"])
     {
       std::string node_id_from = "", port_id_from = "", node_id_to = "", port_id_to = "";
 
@@ -209,15 +209,6 @@ void GraphNode::json_from(nlohmann::json const &json, GraphConfig *p_input_confi
       json_safe_get(json_link, "port_id_from", port_id_from);
       json_safe_get(json_link, "node_id_to", node_id_to);
       json_safe_get(json_link, "port_id_to", port_id_to);
-
-      if (auto *p_from = this->get_node(node_id_from))
-      {
-        if (port_id_from == "out" && p_from->get_port_index("out") == -1 &&
-            p_from->get_port_index("output") != -1)
-        {
-          port_id_from = "output";
-        }
-      }
 
       Logger::log()->trace("GraphNode::json_from, new link request: {}/{} => {}/{}",
                            node_id_from,

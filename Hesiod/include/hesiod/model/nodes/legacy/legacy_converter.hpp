@@ -37,4 +37,20 @@ nlohmann::json convert_legacy_attribute_json(const meta::AbstractAttribute *attr
  */
 nlohmann::json convert_legacy_container_group_json(const meta::ContainerGroup &group,
                                                    const nlohmann::json       &j);
+
+/**
+ * @brief Converts a legacy graph JSON object (including legacy nodes and links)
+ *        into modern GraphNode format.
+ * @param graph_json The serialized graph JSON object.
+ * @return A converted graph JSON object.
+ */
+nlohmann::json convert_legacy_graph_json(const nlohmann::json &graph_json);
+
+/**
+ * @brief Converts a legacy graph widget JSON object (including legacy links)
+ *        into modern GraphNodeWidget format.
+ * @param widget_json The serialized graph widget JSON object.
+ * @return A converted graph widget JSON object.
+ */
+nlohmann::json convert_legacy_graph_widget_json(const nlohmann::json &widget_json);
 } // namespace hesiod
