@@ -14,6 +14,7 @@
 #include "hesiod/model/graph/graph_manager.hpp"
 #include "hesiod/model/nodes/node_factory.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
+#include "hesiod/model/utils.hpp"
 
 namespace hesiod::cli
 {
@@ -130,11 +131,12 @@ int parse_args(args::ArgumentParser &parser,
   return -1;
 }
 
-void run_batch_mode(const std::string &filename,
-                    const glm::ivec2  &shape,
-                    const glm::ivec2  &tiling,
-                    float              overlap,
-                    const GraphConfig *p_input_model_config)
+void run_batch_mode(const std::string                  &filename,
+                    const glm::ivec2                   &shape,
+                    const glm::ivec2                   &tiling,
+                    float                               overlap,
+                    const GraphConfig                  *p_input_model_config,
+                    std::function<void(GraphManager &)> setup_callbacks)
 {
   Logger::log()->info("executing Hesiod in batch mode");
   Logger::log()->trace("file: {}", filename);
@@ -180,7 +182,15 @@ void run_batch_mode(const std::string &filename,
   }
 
   GraphManager graph_manager;
-  graph_manager.load_from_file(filename, &config);
+
+  // load graph structure without running update yet
+  nlohmann::json json = json_from_file(filename);
+  graph_manager.json_from(json["graph_manager"], &config);
+
+  if (setup_callbacks)
+    setup_callbacks(graph_manager);
+
+  graph_manager.update();
 
   // flatten & export if there is a configuration defined
   if (!graph_manager.get_export_param().export_path.empty())

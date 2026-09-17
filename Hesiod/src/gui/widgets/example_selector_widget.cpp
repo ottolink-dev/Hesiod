@@ -910,6 +910,7 @@ void ExampleSelectorDialog::on_accept()
 {
   if (!this->selected_card || this->selected_filename.isEmpty())
     return;
+  this->result = Outcome::OpenFile;
   this->accept();
 }
 

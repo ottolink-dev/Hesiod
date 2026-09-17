@@ -13,3 +13,5 @@ site/
 docs/superpowers/
 .pytest_cache/
 output/
+result
+result-*

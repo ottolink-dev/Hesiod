@@ -77,6 +77,7 @@ message(STATUS "└────────────────────�
 # ------------------------------
 add_subdirectory(external)
 add_subdirectory(Hesiod)
+add_subdirectory(bridges)
 
 if(HESIOD_ENABLE_UI_TESTS)
   add_subdirectory(tests)

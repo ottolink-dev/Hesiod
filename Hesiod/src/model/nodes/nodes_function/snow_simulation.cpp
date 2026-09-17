@@ -27,15 +27,17 @@ constexpr const char *P_SNOW_DEPTH_OUT = "snow_depth";
 constexpr const char *A_SNOW_DEPTH          = "snow_depth";
 constexpr const char *A_TALUS_GLOBAL        = "talus_global";
 constexpr const char *A_DURATION            = "duration";
-constexpr const char *A_SOLVER_STRIDE       = "solver_stride";
+constexpr const char *A_OUTFLOW_BOUNDARIES  = "outflow_boundaries";
 constexpr const char *A_DMAP_TYPE           = "depth_map_type";
 constexpr const char *A_POST_FILTER         = "post_filter";
 constexpr const char *A_THERMAL_TALUS_RATIO = "thermal_talus_ratio";
 constexpr const char *A_K_SNOW              = "k_snow";
 constexpr const char *A_K_VISC              = "k_visc";
+constexpr const char *A_K_CREEP             = "k_creep";
 constexpr const char *A_K_MELT_FACTOR       = "k_melt_factor";
 constexpr const char *A_K_DEPTH_RATIO       = "k_depth_ratio";
 constexpr const char *A_K_DEPTH_SLOPE_RATIO = "k_depth_slope_ratio";
+constexpr const char *A_CLAMP_MIN_RATIO     = "clamp_min_ratio";
 constexpr const char *A_SHIFT_TO_ZERO       = "shift_to_zero";
 
 // -----------------------------------------------------------------------------
@@ -61,20 +63,22 @@ void setup_snow_simulation_node(BaseNode &node)
   add_enum(node, A_DMAP_TYPE, "Predefined Depth Map", DefaultMapOptions::type_map(), "Uniform");
 
   node.set_current_category("Solver");
-  add_float(node, A_DURATION, "Simulation Duration", 1.f, 0.f, 2.f);
-  add_int(node, A_SOLVER_STRIDE, "Solver Stride", 1, 1, 32);
+  add_float(node, A_DURATION, "Simulation Duration", 2.f, 0.f, FLT_MAX);
+  add_bool(node, A_OUTFLOW_BOUNDARIES, "Outflow Boundaries", true);
 
   node.set_current_category("Physics");
   add_float(node, A_TALUS_GLOBAL, "Base Repose Slope", 1.5f, 0.f, FLT_MAX);
   add_float(node, A_K_SNOW, "Avalanche Strength", 0.5f, 0.f, 1.f);
-  add_float(node, A_K_VISC, "Thermal Creep Strength", 0.01f, 0.f, 0.2f);
+  add_float(node, A_K_VISC, "Viscosity Strength", 0.2f, 0.f, 0.5f);
+  add_float(node, A_K_CREEP, "Creep Strength", 0.1f, 0.f, 0.5f);
   add_float(node, A_K_MELT_FACTOR, "Melting Strength", 0.8f, 0.f, 1.f);
-  add_float(node, A_K_DEPTH_RATIO, "Depth Stiffening", 1.f, 0.f, 1.f);
-  add_float(node, A_K_DEPTH_SLOPE_RATIO, "Depth Repose Boost", 2.f, 0.f, 32.f);
-  add_float(node, A_THERMAL_TALUS_RATIO, "Thermal Repose Ratio", 0.05f, 0.01f, 1.f);
+  add_float(node, A_K_DEPTH_RATIO, "Depth Stiffening", 0.8f, 0.f, 1.5f);
+  add_float(node, A_K_DEPTH_SLOPE_RATIO, "Depth Repose Boost", 1.5f, 0.f, 4.f);
+  add_float(node, A_THERMAL_TALUS_RATIO, "Thermal Repose Ratio", 0.8f, 0.01f, 1.f);
 
   node.set_current_category("Post-Filter");
-  add_bool(node, A_POST_FILTER, "Enable Thermal Relaxation", true);
+  add_bool(node, A_POST_FILTER, "Enable Thermal Relaxation", false);
+  add_float(node, A_CLAMP_MIN_RATIO, "Lower Threshold Ratio", 0.f, 0.f, 0.5f, "{:.2f}");
   add_bool(node, A_SHIFT_TO_ZERO, "Rebase Snow to Zero", true);
   // clang-format on
 }
@@ -103,27 +107,25 @@ void compute_snow_simulation_node(BaseNode &node)
   const auto snow_depth          = node.val<float>(A_SNOW_DEPTH);
   const auto talus_global        = node.val<float>(A_TALUS_GLOBAL);
   const auto duration           = node.val<float>(A_DURATION);
-  const auto solver_stride      = node.val<int>(A_SOLVER_STRIDE);
+  const auto outflow_boundaries = node.val<bool>(A_OUTFLOW_BOUNDARIES);
   const auto dmap_type          = node.val<int>(A_DMAP_TYPE);
   const auto post_filter        = node.val<bool>(A_POST_FILTER);
   const auto thermal_talus_ratio = node.val<float>(A_THERMAL_TALUS_RATIO);
   const auto k_snow             = node.val<float>(A_K_SNOW);
   const auto k_visc             = node.val<float>(A_K_VISC);
+  const auto k_creep            = node.val<float>(A_K_CREEP);
   const auto k_melt_factor      = node.val<float>(A_K_MELT_FACTOR);
   const auto k_depth_ratio      = node.val<float>(A_K_DEPTH_RATIO);
   const auto k_depth_slope_ratio= node.val<float>(A_K_DEPTH_SLOPE_RATIO);
+  const auto clamp_min_ratio    = node.val<float>(A_CLAMP_MIN_RATIO);
   const auto shift_to_zero      = node.val<bool>(A_SHIFT_TO_ZERO);
   // clang-format on
 
   // --- Compute mode
 
-  hmap::ComputeMode cm = node.cfg().cm_gpu;
-  cm.stride            = solver_stride;
-
   const int   nx         = p_z->shape.x;
-  const int   nx_strided = int(float(nx) / cm.stride);
-  const int   iterations = int(duration * nx_strided);
-  const float talus      = talus_global / nx_strided;
+  const int   iterations = int(duration * nx);
+  const float talus      = talus_global / nx;
 
   // --- Create talus virtual array
 
@@ -175,7 +177,7 @@ void compute_snow_simulation_node(BaseNode &node)
     dmax = 1.f;
   }
 
-  // eventually compute
+  // compute
   hmap::for_each_tile(
       {p_z, p_depth_map, p_melting_map, &talus_map},
       {p_z_out, p_snow_depth},
@@ -202,18 +204,29 @@ void compute_snow_simulation_node(BaseNode &node)
                                                     k_melt_factor,
                                                     k_depth_ratio,
                                                     k_depth_slope_ratio,
+                                                    k_creep,
                                                     post_filter,
-                                                    thermal_talus_ratio);
+                                                    thermal_talus_ratio,
+                                                    outflow_boundaries);
+
+        // clamp lower threshold and rebound minimum to zero
+        if (clamp_min_ratio > 0.f)
+        {
+          const float s_min = clamp_min_ratio * snow_depth_updated;
+          hmap::clamp_min(*pa_snow_depth, s_min);
+          *pa_snow_depth -= s_min;
+        }
+
+        // force minimum snow depth to be actually "zero" (more convenient)
+        if (shift_to_zero)
+        {
+          float smax = pa_snow_depth->max();
+          hmap::remap(*pa_snow_depth, 0.f, smax);
+        }
 
         *pa_z_out = *pa_z + *pa_snow_depth;
       },
-      cm);
-
-  // --- clean-up output
-
-  // force minimum snow depth to be actually "zero" (more convenient)
-  if (shift_to_zero)
-    p_snow_depth->remap(0.f, p_snow_depth->max(node.cfg().cm_cpu), node.cfg().cm_cpu);
+      node.cfg().cm_gpu);
 }
 
 } // namespace hesiod

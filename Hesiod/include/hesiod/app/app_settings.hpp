@@ -164,10 +164,10 @@ struct AppSettings
   {
     struct WindowGeometry
     {
-      int x = 0;
-      int y = 0;
+      int x = -1;
+      int y = -1;
       int w = 1024;
-      int h = 1024;
+      int h = 768;
     };
 
     WindowGeometry geom_main;

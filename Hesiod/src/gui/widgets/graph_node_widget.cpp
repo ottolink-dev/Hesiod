@@ -28,6 +28,7 @@
 #include "hesiod/logger.hpp"
 #include "hesiod/model/graph/graph_node.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
+#include "hesiod/model/nodes/legacy/legacy_converter.hpp"
 #include "hesiod/model/nodes/node_factory.hpp"
 #include "hesiod/model/nodes/port_catalog.hpp"
 #include "hesiod/model/utils.hpp"
@@ -312,22 +313,7 @@ void GraphNodeWidget::json_from(nlohmann::json const &json)
   // legacy projects may reference output ports by their pre-consolidation
   // label "out"; the model applies the same rename in GraphNode::json_from,
   // and the graphics links need it too or their port lookup fails
-  nlohmann::json gui_json = json;
-
-  if (auto gno = this->p_graph_node.lock())
-    if (gui_json.contains("links") && gui_json["links"].is_array())
-      for (auto &json_link : gui_json["links"])
-      {
-        const std::string node_out_id = json_link.value("node_out_id", "");
-        const std::string port_out_id = json_link.value("port_out_id", "");
-
-        if (auto *p_from = gno->get_node(node_out_id))
-          if (port_out_id == "out" && p_from->get_port_index("out") == -1 &&
-              p_from->get_port_index("output") != -1)
-          {
-            json_link["port_out_id"] = "output";
-          }
-      }
+  nlohmann::json gui_json = convert_legacy_graph_widget_json(json);
 
   // the graph model loading and updating is taken care of by
   // GraphNode (model) and does not need to be updated again when the

@@ -51,6 +51,7 @@ void setup_strata_plates_node(BaseNode &node)
   // --- Attributes
 
   // clang-format off
+  node.set_current_category("Strata");
   add_float(node, A_SLOPE, "Slope", 1.f, 0.f, FLT_MAX);
   add_float(node, A_SKEW, "Skew", 0.5f, 0.f, 8.f);
   add_int(node, A_DIRECTION_COUNT, "Direction Count", 4, 1, 8);

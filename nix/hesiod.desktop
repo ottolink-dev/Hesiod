@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=Hesiod
+Comment=Node-based procedural terrain generator
+Exec=hesiod %f
+Icon=hesiod
+Terminal=false
+Categories=Graphics;3DGraphics;Development;
+MimeType=application/x-hesiod-project;
+StartupNotify=false

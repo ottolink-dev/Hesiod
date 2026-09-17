@@ -32,6 +32,7 @@ Export
 |Normal Map Scale|Float|Scaling factor applied to the detail normal map.|
 |Elevation Scale|Float|Factor used to scale elevation values.|
 |Export Format:|Enumeration|Defines the file format for export. Available formats include Assimp Binary (*.assbin), Assxml Document (*.assxml), Autodesk 3DS (*.3ds), Autodesk FBX (ASCII/Binary) (*.fbx), COLLADA (*.dae), Extensible 3D (*.x3d), GL Transmission Format (GLB/GLTF v1 & v2), Stanford Polygon Library (*.ply), Step Files (*.stp), Stereolithography (*.stl), 3MF (*.3mf), and Wavefront OBJ (*.obj) with or without material files.|
+|Fit Boundaries|Bool|If enabled, domain coordinates are scaled to exactly [0, 1] x [0, 1] to fit the boundary. Default is false (coordinates scaled to [0, 1 - 1/shape.x] x [0, 1 - 1/shape.y]).|
 |Flip-X|Bool|No description|
 |Flip-Y|Bool|No description|
 |Export File|Filename|Specifies the name of the exported file.|

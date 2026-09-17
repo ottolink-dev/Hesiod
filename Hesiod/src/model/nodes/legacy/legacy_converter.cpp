@@ -80,9 +80,40 @@ std::string resolve_legacy_group_name(const meta::ContainerGroup &group,
   if (label == "Voronoise")
     return "Voronoise";
 
-  // Path fractalize mappings
-  if (label == "PathFractalize")
+  // Bump mappings
+  if (label == "Bump")
+    return "Cosine";
+  if (label == "BumpLorentzian")
+    return "Lorentzian";
+
+  // Cone mappings
+  if (label == "Cone")
+    return "Simple";
+  if (label == "ConeComplex")
+    return "Complex";
+  if (label == "ConeSigmoid")
+    return "Sigmoid";
+
+  // Path mappings
+  if (label == "PathResample" || label == "PathBezier" || label == "PathBezierRound" ||
+      label == "PathBspline" || label == "PathDecasteljau")
+    return "Interpolate";
+  if (label == "PathDecimate")
+    return "Decimate";
+  if (label == "PathSmooth")
+    return "Smooth";
+
+  if (label == "PathNoise" || label == "PathFractalize")
     return "Fractalize";
+  if (label == "PathMeanderize")
+    return "Meanderize";
+  if (label == "PathShuffle")
+    return "Shuffle";
+
+  if (label == "PathTransform" || label == "PathScale")
+    return "Scale";
+  if (label == "PathInflate")
+    return "Inflate";
 
   if (group.current_container_name().has_value() &&
       group.contains(*group.current_container_name()))
@@ -216,11 +247,77 @@ nlohmann::json convert_legacy_node_json(const nlohmann::json &json_node)
     target_label = "CellularNoise";
     group_name = "Voronoise";
   }
-  // --- Path Fractalize ---
-  else if (label == "PathFractalize")
+  // --- Bump family ---
+  else if (label == "Bump")
   {
-    target_label = "PathFractalize";
+    target_label = "Bump";
+    group_name = "Cosine";
+  }
+  else if (label == "BumpLorentzian")
+  {
+    target_label = "Bump";
+    group_name = "Lorentzian";
+  }
+  // --- Cone family ---
+  else if (label == "Cone")
+  {
+    target_label = "Cone";
+    group_name = "Simple";
+  }
+  else if (label == "ConeComplex")
+  {
+    target_label = "Cone";
+    group_name = "Complex";
+  }
+  else if (label == "ConeSigmoid")
+  {
+    target_label = "Cone";
+    group_name = "Sigmoid";
+  }
+  // --- Path Resample family ---
+  else if (label == "PathResample" || label == "PathBezier" ||
+           label == "PathBezierRound" || label == "PathBspline" ||
+           label == "PathDecasteljau")
+  {
+    target_label = "PathResample";
+    group_name = "Interpolate";
+  }
+  else if (label == "PathDecimate")
+  {
+    target_label = "PathResample";
+    group_name = "Decimate";
+  }
+  else if (label == "PathSmooth")
+  {
+    target_label = "PathResample";
+    group_name = "Smooth";
+  }
+  // --- Path Noise family ---
+  else if (label == "PathNoise" || label == "PathFractalize")
+  {
+    target_label = "PathNoise";
     group_name = "Fractalize";
+  }
+  else if (label == "PathMeanderize")
+  {
+    target_label = "PathNoise";
+    group_name = "Meanderize";
+  }
+  else if (label == "PathShuffle")
+  {
+    target_label = "PathNoise";
+    group_name = "Shuffle";
+  }
+  // --- Path Transform family ---
+  else if (label == "PathTransform" || label == "PathScale")
+  {
+    target_label = "PathTransform";
+    group_name = "Scale";
+  }
+  else if (label == "PathInflate")
+  {
+    target_label = "PathTransform";
+    group_name = "Inflate";
   }
   // --- SetBorders ---
   else if (label == "SetBorders")
@@ -258,7 +355,6 @@ nlohmann::json convert_legacy_node_json(const nlohmann::json &json_node)
 
   nlohmann::json converted_node = json_node;
   converted_node["label"] = target_label;
-  converted_node["current"] = group_name;
 
   // If the node already has a "containers" object
   if (converted_node.contains("containers") && converted_node["containers"].is_object())
@@ -278,10 +374,12 @@ nlohmann::json convert_legacy_node_json(const nlohmann::json &json_node)
           main_json["lacunarity"] = {{"value", 2.0f}};
       }
       converted_node["containers"][group_name] = main_json;
+      converted_node["current"] = group_name;
     }
   }
   else
   {
+    converted_node["current"] = group_name;
     // Legacy format: flat attributes at the node level
     static const std::unordered_set<std::string> node_keys = {"id",
                                                               "label",
@@ -336,10 +434,19 @@ nlohmann::json convert_legacy_node_json(const nlohmann::json &json_node)
 nlohmann::json convert_legacy_attribute_json(const meta::AbstractAttribute *attr,
                                              const nlohmann::json          &j)
 {
-  if (!j.is_object() || !attr)
+  if (!attr)
     return j;
 
   nlohmann::json converted = j;
+  if (j.is_array() || j.is_number() || j.is_string() || j.is_boolean())
+  {
+    converted = nlohmann::json::object();
+    converted["value"] = j;
+  }
+  else if (!j.is_object())
+  {
+    return j;
+  }
 
   // Cloud conversion: meta::Attribute<std::vector<glm::vec3>>
   if (attr->try_cast<meta::Attribute<std::vector<glm::vec3>>>())
@@ -380,6 +487,10 @@ nlohmann::json convert_legacy_attribute_json(const meta::AbstractAttribute *attr
       {
         Logger::log()->warn("Legacy converter: Vec2 conversion failed: {}", e.what());
       }
+    }
+    else if (!j.contains("value") && j.contains("x") && j.contains("y"))
+    {
+      converted["value"] = {{"x", j["x"]}, {"y", j["y"]}};
     }
   }
   // Color conversion: meta::Attribute<glm::vec4>
@@ -483,14 +594,46 @@ nlohmann::json convert_legacy_attribute_json(const meta::AbstractAttribute *attr
     }
   }
 
-  // Translate legacy metadata fields to Meta's native metadata structure
+  // Translate legacy metadata and state fields
   if (j.contains("is_active"))
   {
+    converted["state"]["active"]["value"] = j["is_active"];
     converted["metadata"]["ui.active"]["value"] = j["is_active"];
   }
   if (j.contains("link_xy"))
   {
+    converted["state"]["locked_xy"]["value"] = j["link_xy"];
     converted["metadata"]["ui.locked_xy"]["value"] = j["link_xy"];
+  }
+  if (j.contains("state") && j["state"].is_object())
+  {
+    if (j["state"].contains("active") && !j["state"]["active"].is_object())
+    {
+      converted["state"]["active"] = {{"value", j["state"]["active"]}};
+    }
+    if (j["state"].contains("locked_xy") && !j["state"]["locked_xy"].is_object())
+    {
+      converted["state"]["locked_xy"] = {{"value", j["state"]["locked_xy"]}};
+    }
+  }
+  if (j.contains("metadata") && j["metadata"].is_object())
+  {
+    if (j["metadata"].contains("ui.active"))
+    {
+      auto ui_act = j["metadata"]["ui.active"];
+      if (ui_act.is_object() && ui_act.contains("value"))
+        converted["state"]["active"]["value"] = ui_act["value"];
+      else if (ui_act.is_boolean())
+        converted["state"]["active"]["value"] = ui_act;
+    }
+    if (j["metadata"].contains("ui.locked_xy"))
+    {
+      auto ui_lock = j["metadata"]["ui.locked_xy"];
+      if (ui_lock.is_object() && ui_lock.contains("value"))
+        converted["state"]["locked_xy"]["value"] = ui_lock["value"];
+      else if (ui_lock.is_boolean())
+        converted["state"]["locked_xy"]["value"] = ui_lock;
+    }
   }
 
   return converted;
@@ -623,6 +766,139 @@ nlohmann::json convert_legacy_container_group_json(const meta::ContainerGroup &g
 
   group_json["containers"][target_container_name] = target_container_json;
   return group_json;
+}
+
+static bool is_path_modifier_node(const std::string &label)
+{
+  return label == "PathResample" || label == "PathBezier" || label == "PathBezierRound" ||
+         label == "PathBspline" || label == "PathDecasteljau" ||
+         label == "PathDecimate" || label == "PathSmooth" || label == "PathNoise" ||
+         label == "PathFractalize" || label == "PathMeanderize" ||
+         label == "PathShuffle" || label == "PathTransform" || label == "PathScale" ||
+         label == "PathInflate";
+}
+
+nlohmann::json convert_legacy_graph_json(const nlohmann::json &graph_json)
+{
+  if (!graph_json.is_object())
+    return graph_json;
+
+  nlohmann::json                               converted_graph = graph_json;
+  std::unordered_map<std::string, std::string> node_labels;
+
+  if (converted_graph.contains("nodes") && converted_graph["nodes"].is_array())
+  {
+    for (auto &json_node : converted_graph["nodes"])
+    {
+      std::string id = "";
+      std::string label = "";
+      if (json_node.contains("id") && json_node["id"].is_string())
+        id = json_node["id"].get<std::string>();
+      if (json_node.contains("label") && json_node["label"].is_string())
+        label = json_node["label"].get<std::string>();
+
+      node_labels[id] = label;
+      json_node = convert_legacy_node_json(json_node);
+    }
+  }
+
+  if (converted_graph.contains("links") && converted_graph["links"].is_array())
+  {
+    for (auto &json_link : converted_graph["links"])
+    {
+      if (!json_link.is_object())
+        continue;
+
+      std::string node_id_from = json_link.value("node_id_from", "");
+      std::string port_id_from = json_link.value("port_id_from", "");
+      std::string node_id_to = json_link.value("node_id_to", "");
+      std::string port_id_to = json_link.value("port_id_to", "");
+
+      std::string from_label = node_labels[node_id_from];
+      std::string to_label = node_labels[node_id_to];
+
+      if (port_id_from == "out")
+      {
+        json_link["port_id_from"] = "output";
+      }
+      else if (port_id_from == "path" && is_path_modifier_node(from_label))
+      {
+        json_link["port_id_from"] = "output";
+      }
+
+      if (port_id_to == "in")
+      {
+        json_link["port_id_to"] = "input";
+      }
+      else if (port_id_to == "path" && is_path_modifier_node(to_label))
+      {
+        json_link["port_id_to"] = "input";
+      }
+    }
+  }
+
+  return converted_graph;
+}
+
+nlohmann::json convert_legacy_graph_widget_json(const nlohmann::json &widget_json)
+{
+  if (!widget_json.is_object())
+    return widget_json;
+
+  nlohmann::json                               converted_widget = widget_json;
+  std::unordered_map<std::string, std::string> node_captions;
+
+  if (converted_widget.contains("nodes") && converted_widget["nodes"].is_array())
+  {
+    for (const auto &json_node : converted_widget["nodes"])
+    {
+      std::string id = "";
+      std::string caption = "";
+      if (json_node.contains("id") && json_node["id"].is_string())
+        id = json_node["id"].get<std::string>();
+      if (json_node.contains("caption") && json_node["caption"].is_string())
+        caption = json_node["caption"].get<std::string>();
+
+      node_captions[id] = caption;
+    }
+  }
+
+  if (converted_widget.contains("links") && converted_widget["links"].is_array())
+  {
+    for (auto &json_link : converted_widget["links"])
+    {
+      if (!json_link.is_object())
+        continue;
+
+      std::string node_out_id = json_link.value("node_out_id", "");
+      std::string port_out_id = json_link.value("port_out_id", "");
+      std::string node_in_id = json_link.value("node_in_id", "");
+      std::string port_in_id = json_link.value("port_in_id", "");
+
+      std::string from_label = node_captions[node_out_id];
+      std::string to_label = node_captions[node_in_id];
+
+      if (port_out_id == "out")
+      {
+        json_link["port_out_id"] = "output";
+      }
+      else if (port_out_id == "path" && is_path_modifier_node(from_label))
+      {
+        json_link["port_out_id"] = "output";
+      }
+
+      if (port_in_id == "in")
+      {
+        json_link["port_in_id"] = "input";
+      }
+      else if (port_in_id == "path" && is_path_modifier_node(to_label))
+      {
+        json_link["port_in_id"] = "input";
+      }
+    }
+  }
+
+  return converted_widget;
 }
 
 } // namespace hesiod

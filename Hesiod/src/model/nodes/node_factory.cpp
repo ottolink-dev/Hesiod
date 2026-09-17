@@ -154,10 +154,10 @@ std::map<std::string, std::string> get_node_inventory()
       {"Broadcast", "Routing"},
       {"Bulkify", "Boundaries"},
       {"Bump", "Primitive/Function"},
-      {"BumpLorentzian", "Primitive/Function"},
       {"Caldera", "WIP"}, // "Primitive/Geological"},
       {"Clamp", "Filter/Range"},
       {"ClampOblique", "Filter/Range"},
+      {"Circus", "Primitive/Geological"},
       {"Closing", "WIP/DEPRECATED"},
       {"Cloud", "Geometry/Cloud"},
       {"CloudFromCsv", "Geometry/Cloud"},
@@ -190,8 +190,8 @@ std::map<std::string, std::string> get_node_inventory()
       {"CombineMask", "Terrain Features/Mask Operations"},
       {"Compare", "Debug"},
       {"Cone", "Primitive/Function"},
-      {"ConeComplex", "Primitive/Function"},
-      {"ConeSigmoid", "Primitive/Function"},
+      {"ConeComplex", "WIP/DEPRECATED"},
+      {"ConeSigmoid", "WIP/DEPRECATED"},
       {"Constant", "Primitive/Function"},
       {"ConvolveSVD", "Math/Convolution"},
       {"Cos", "Math/Base"},
@@ -310,24 +310,15 @@ std::map<std::string, std::string> get_node_inventory()
       {"Opening", "WIP/DEPRECATED"},
       {"Paraboloid", "Primitive/Function"},
       {"Path", "Geometry/Path"},
-      {"PathBezier", "WIP/DEPRECATED"},
-      {"PathBezierRound", "WIP/DEPRECATED"},
-      {"PathBspline", "WIP/DEPRECATED"},
-      {"PathDecasteljau", "WIP/DEPRECATED"},
-      {"PathDecimate", "Geometry/Path"},
       {"PathDig", "Geometry/Path"},
       {"PathFind", "Geometry/Path"},
-      {"PathFractalize", "Geometry/Path"},
       {"PathFromCsv", "Geometry/Path"},
-      {"PathInflate", "Geometry/Path"},
-      {"PathMeanderize", "Geometry/Path"},
+      {"PathNoise", "Geometry/Path"},
       {"PathResample", "Geometry/Path"},
-      {"PathScale", "Geometry/Path"},
       {"PathSDF", "Geometry/Path"},
-      {"PathShuffle", "Geometry/Path"},
-      {"PathSmooth", "Geometry/Path"},
       {"PathToCloud", "Geometry/Path"},
       {"PathToHeightmap", "Geometry/Path"},
+      {"PathTransform", "Geometry/Path"},
       {"Phasor", "Primitive/Coherent"},
       {"Plateau", "Filter/Recurve"},
       {"Plates", "Primitive/Geological"},
@@ -356,6 +347,7 @@ std::map<std::string, std::string> get_node_inventory()
       {"Rescale", "Filter/Range"},
       {"ReverseAboveThreshold", "Filter/Recurve"},
       {"ReverseMidpoint", "WIP"}, // Primitive/Authoring
+      {"RidgeAccentuate", "Filter/Advanced Filters"},
       {"Ridgelines", "Primitive/Authoring"},
       {"Rift", "Primitive/Geological"},
       {"Rifts", "Erosion/Hydraulic"},
@@ -424,6 +416,7 @@ std::map<std::string, std::string> get_node_inventory()
       {"Translate", "Operator/Transform"},
       {"Unsphericity", "WIP/DEPRECATED"},
       {"ValleyFill", "Erosion/Deposition"},
+      {"ValleyHead", "Primitive/Geological"},
       {"ValleyWidth", "Terrain Features/Landform"},
       {"Vorolines", "WIP/DEPRECATED"},
       {"VorolinesFbm", "WIP/DEPRECATED"},
@@ -509,10 +502,10 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
     SETUP_NODE(Brush, brush);
     SETUP_NODE(Bulkify, bulkify);
     SETUP_NODE(Bump, bump);
-    SETUP_NODE(BumpLorentzian, bump_lorentzian);
     SETUP_NODE(Caldera, caldera);
     SETUP_NODE(Clamp, clamp);
     SETUP_NODE(ClampOblique, clamp_oblique);
+    SETUP_NODE(Circus, circus);
     SETUP_NODE(Closing, closing);
     SETUP_NODE(CellularNoise, cellular_noise);
     SETUP_NODE(Cloud, cloud);
@@ -659,24 +652,15 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
     SETUP_NODE(Opening, opening);
     SETUP_NODE(Paraboloid, paraboloid);
     SETUP_NODE(Path, path);
-    SETUP_NODE(PathBezier, path_bezier);
-    SETUP_NODE(PathBezierRound, path_bezier_round);
-    SETUP_NODE(PathBspline, path_bspline);
-    SETUP_NODE(PathDecasteljau, path_decasteljau);
-    SETUP_NODE(PathDecimate, path_decimate);
     SETUP_NODE(PathDig, path_dig);
     SETUP_NODE(PathFind, path_find);
-    SETUP_NODE(PathFractalize, path_fractalize);
     SETUP_NODE(PathFromCsv, path_from_csv);
-    SETUP_NODE(PathInflate, path_inflate);
-    SETUP_NODE(PathMeanderize, path_meanderize);
+    SETUP_NODE(PathNoise, path_noise);
     SETUP_NODE(PathResample, path_resample);
-    SETUP_NODE(PathScale, path_scale);
     SETUP_NODE(PathSDF, path_sdf);
-    SETUP_NODE(PathShuffle, path_shuffle);
-    SETUP_NODE(PathSmooth, path_smooth);
     SETUP_NODE(PathToCloud, path_to_cloud);
     SETUP_NODE(PathToHeightmap, path_to_heightmap);
+    SETUP_NODE(PathTransform, path_transform);
     SETUP_NODE(Phasor, phasor);
     SETUP_NODE(Plateau, plateau);
     SETUP_NODE(Plates, plates);
@@ -703,6 +687,7 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
     SETUP_NODE(Rescale, rescale);
     SETUP_NODE(ReverseAboveThreshold, reverse_above_theshold);
     SETUP_NODE(ReverseMidpoint, reverse_midpoint);
+    SETUP_NODE(RidgeAccentuate, ridge_accentuate);
     SETUP_NODE(Ridgelines, ridgelines);
     SETUP_NODE(Rift, rift);
     SETUP_NODE(Rifts, rifts);
@@ -768,6 +753,7 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
     SETUP_NODE(ThermalScree, thermal_scree);
     SETUP_NODE(Unsphericity, unsphericity);
     SETUP_NODE(ValleyFill, valley_fill);
+    SETUP_NODE(ValleyHead, valley_head);
     SETUP_NODE(ValleyWidth, valley_width);
     SETUP_NODE(Vorolines, vorolines);
     SETUP_NODE(VorolinesFbm, vorolines_fbm);

@@ -2,6 +2,9 @@
    License. The full license is in the file LICENSE, distributed with this software. */
 #pragma once
 #include <fstream>
+#include <functional>
+#include <string>
+#include <vector>
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-function"
@@ -21,6 +24,11 @@ static std::istream &operator>>(std::istream &is, glm::ivec2 &vec2)
 
 #include "hesiod/model/graph/graph_config.hpp"
 
+namespace hesiod
+{
+class GraphManager;
+}
+
 namespace hesiod::cli
 {
 
@@ -32,11 +40,12 @@ int parse_args(args::ArgumentParser &parser,
                char                 *argv[],
                std::string          &startup_file);
 
-void run_batch_mode(const std::string &filename,
-                    const glm::ivec2  &shape,
-                    const glm::ivec2  &tiling,
-                    float              overlap,
-                    const GraphConfig *p_input_model_config = nullptr);
+void run_batch_mode(const std::string                  &filename,
+                    const glm::ivec2                   &shape,
+                    const glm::ivec2                   &tiling,
+                    float                               overlap,
+                    const GraphConfig                  *p_input_model_config = nullptr,
+                    std::function<void(GraphManager &)> setup_callbacks = nullptr);
 void run_node_inventory();
 void run_snapshot_generation();
 
