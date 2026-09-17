@@ -69,10 +69,26 @@ void AppContext::load_settings()
 {
   Logger::log()->trace("AppContext::load_settings");
 
-  std::string    fname = get_config_file_path_auto("hesiod");
-  nlohmann::json json = json_from_file(fname);
+  std::string fname = get_config_file_path_auto("hesiod");
 
-  this->settings_json_from(json);
+  // A settings file the user cannot open the application to fix is a dead end:
+  // an unparseable number, a truncated write or a type that does not match what
+  // a key expects used to escape all the way out of main() and kill startup
+  // before any window appeared. Fall back to the compiled defaults and say so.
+  try
+  {
+    nlohmann::json json = json_from_file(fname);
+    this->settings_json_from(json);
+  }
+  catch (const std::exception &e)
+  {
+    Logger::log()->error("AppContext::load_settings: could not read the settings "
+                         "file, starting from defaults instead ({}): {}",
+                         fname,
+                         e.what());
+
+    this->reset_settings();
+  }
 }
 
 void AppContext::new_project()

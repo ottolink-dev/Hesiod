@@ -20,6 +20,9 @@ add_compile_definitions(
 # ------------------------------
 option(HESIOD_ENABLE_GENERATE_APP_IMAGE "Enable AppImage generation" ON)
 
+option(HESIOD_ENABLE_UI_TESTS
+       "Build the interface scale / node palette regression tests" ON)
+
 option(HESIOD_MINIMAL_NODE_SET
        "Use a minimal set of nodes (ADVANCED DEV ONLY!!!)" OFF)
 
@@ -75,6 +78,10 @@ message(STATUS "└────────────────────�
 add_subdirectory(external)
 add_subdirectory(Hesiod)
 add_subdirectory(bridges)
+
+if(HESIOD_ENABLE_UI_TESTS)
+  add_subdirectory(tests)
+endif()
 
 if(HESIOD_ENABLE_GENERATE_APP_IMAGE)
   add_subdirectory(scripts/generate_appimage)
