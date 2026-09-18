@@ -222,10 +222,10 @@ void AppSettingsWindow::setup_interface_scale_row()
     }
 
     note->setText(text);
-    note->setStyleSheet(
-        QString("color: %1;")
-            .arg(highlight ? ctx.app_settings.colors.accent.name()
-                           : ctx.app_settings.colors.text_secondary.name()));
+    note->setStyleSheet(QString("color: %1;")
+                            .arg(highlight
+                                     ? ctx.app_settings.colors.accent.name()
+                                     : ctx.app_settings.colors.text_secondary.name()));
   };
 
   update_note();

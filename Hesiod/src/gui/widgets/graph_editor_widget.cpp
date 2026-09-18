@@ -17,10 +17,10 @@
 #include "hesiod/gui/widgets/node_library_widget.hpp"
 #include "hesiod/gui/widgets/node_palette_sidebar.hpp"
 #include "hesiod/gui/widgets/node_settings_widget.hpp"
-#include "hesiod/model/nodes/node_factory.hpp"
 #include "hesiod/gui/widgets/viewers/viewer_3d.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/graph/graph_node.hpp"
+#include "hesiod/model/nodes/node_factory.hpp"
 
 namespace hesiod
 {
@@ -295,7 +295,6 @@ void GraphEditorWidget::setup_layout()
                   &NodeLibraryWidget::node_type_selected_ctrl,
                   this->graph_node_widget,
                   &GraphNodeWidget::on_new_node_request_replace);
-
   }
 
   // the palette sidebar creates nodes through exactly the same slots as the

@@ -61,13 +61,13 @@ void compute_ridgelines_node(BaseNode &node)
 
       for (size_t k = 0; k < p_path->size() - 1; k++)
       {
-        xs.push_back(p_path->points[k].x);
-        ys.push_back(p_path->points[k].y);
-        zs.push_back(p_path->points[k].v);
+        xs.push_back((*p_path)[k].x);
+        ys.push_back((*p_path)[k].y);
+        zs.push_back((*p_path)[k].v);
 
-        xs.push_back(p_path->points[k + 1].x);
-        ys.push_back(p_path->points[k + 1].y);
-        zs.push_back(p_path->points[k + 1].v);
+        xs.push_back((*p_path)[k + 1].x);
+        ys.push_back((*p_path)[k + 1].y);
+        zs.push_back((*p_path)[k + 1].v);
       }
 
       hmap::for_each_tile(
