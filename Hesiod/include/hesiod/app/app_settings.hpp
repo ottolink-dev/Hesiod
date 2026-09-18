@@ -119,7 +119,7 @@ struct AppSettings
     // Gaea-style category rail with hierarchical flyouts instead of the dense
     // library tree. Off by default: the tree is the shipped sidebar and this is
     // an alternative, not a replacement.
-    bool enable_node_palette_sidebar = false;
+    bool enable_node_palette_sidebar = true;
 
     // Interface motion (rail cross-fades, menu/tooltip effects, tree expand
     // animation). Turning it off settles running animations immediately.
