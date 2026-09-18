@@ -152,7 +152,7 @@ meta::Attribute<glm::vec2> &add_wavenumber(BaseNode          &node,
                                            const std::string &label = "Spatial Frequency",
                                            const glm::vec2   &default_val = {2.f, 2.f},
                                            float              vmin = 0.f,
-                                           float              vmax = 64.f,
+                                           float              vmax = FLT_MAX,
                                            bool               link_xy = true,
                                            const std::string &value_format = "{:.2f}");
 

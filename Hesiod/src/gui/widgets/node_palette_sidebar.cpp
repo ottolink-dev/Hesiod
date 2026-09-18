@@ -257,16 +257,51 @@ CategoryRailButton::CategoryRailButton(const QString          &category,
                   this->surface = value.value<QColor>();
                   this->update();
                 });
+  this->connect(&this->surface_animation,
+                &QVariantAnimation::finished,
+                this,
+                [this]()
+                {
+                  this->surface = this->target_surface();
+                  this->update();
+                });
 }
 
 QColor CategoryRailButton::current_surface() const { return this->surface; }
 
 void CategoryRailButton::enterEvent(QEnterEvent *event)
 {
+  const bool was_hovering = this->hovering;
   this->hovering = true;
   this->retarget_surface();
-  Q_EMIT this->hovered();
+  if (!was_hovering)
+    Q_EMIT this->hovered();
   QAbstractButton::enterEvent(event);
+}
+
+bool CategoryRailButton::event(QEvent *event)
+{
+  switch (event->type())
+  {
+  case QEvent::HoverEnter:
+  {
+    const bool was_hovering = this->hovering;
+    this->hovering = true;
+    this->retarget_surface();
+    if (!was_hovering)
+      Q_EMIT this->hovered();
+    break;
+  }
+  case QEvent::HoverLeave:
+  {
+    this->hovering = false;
+    this->retarget_surface();
+    break;
+  }
+  default:
+    break;
+  }
+  return QAbstractButton::event(event);
 }
 
 bool CategoryRailButton::is_open() const { return this->open; }
@@ -280,6 +315,16 @@ void CategoryRailButton::leaveEvent(QEvent *event)
 
 void CategoryRailButton::paintEvent(QPaintEvent *)
 {
+  if (!this->open && this->hovering)
+  {
+    const QPoint global_mouse = QCursor::pos();
+    if (!this->rect().contains(this->mapFromGlobal(global_mouse)))
+    {
+      this->hovering = false;
+      this->retarget_surface();
+    }
+  }
+
   QPainter painter(this);
   painter.setRenderHint(QPainter::Antialiasing, true);
 
@@ -335,9 +380,6 @@ void CategoryRailButton::retarget_surface()
 {
   const QColor target = this->target_surface();
 
-  if (this->surface == target)
-    return;
-
   if (!this->style.animations || this->style.animation_ms <= 0)
   {
     // "off" has to mean off *now*, not after the current fade finishes
@@ -347,7 +389,27 @@ void CategoryRailButton::retarget_surface()
     return;
   }
 
+  // if already animating towards target, let it continue
+  if (this->surface_animation.state() == QAbstractAnimation::Running &&
+      this->surface_animation.endValue().value<QColor>() == target)
+  {
+    return;
+  }
+
+  // if already at target and not animating, nothing to do
+  if (this->surface_animation.state() == QAbstractAnimation::Stopped &&
+      this->surface == target)
+  {
+    return;
+  }
+
   this->surface_animation.stop();
+  if (this->surface == target)
+  {
+    this->update();
+    return;
+  }
+
   this->surface_animation.setDuration(this->style.animation_ms);
   this->surface_animation.setStartValue(this->surface);
   this->surface_animation.setEndValue(target);
@@ -360,6 +422,11 @@ void CategoryRailButton::set_open(bool state)
     return;
 
   this->open = state;
+  if (!state)
+  {
+    const QPoint global_mouse = QCursor::pos();
+    this->hovering = this->rect().contains(this->mapFromGlobal(global_mouse));
+  }
   this->retarget_surface();
   this->update();
 }
@@ -620,6 +687,15 @@ void NodePaletteSidebar::build_rail(const std::map<std::string, std::string> &in
     this->menus.push_back(menu);
     this->node_types.push_back(std::move(types));
 
+    this->connect(menu,
+                  &QMenu::aboutToHide,
+                  this,
+                  [this, index]()
+                  {
+                    if (this->open_index == index)
+                      this->close_flyout();
+                  });
+
     this->connect(button,
                   &QAbstractButton::clicked,
                   this,
@@ -687,6 +763,8 @@ void NodePaletteSidebar::close_flyout()
 
 void NodePaletteSidebar::emit_for_type(const QString &node_type)
 {
+  this->close_flyout();
+
   const std::string type = node_type.toStdString();
   const auto        modifiers = QApplication::keyboardModifiers();
 

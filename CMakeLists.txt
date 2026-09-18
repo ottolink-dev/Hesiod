@@ -70,6 +70,8 @@ message(STATUS "│ HESIOD_PROFILE_BUILD:               ${HESIOD_PROFILE_BUILD}"
 message(STATUS "│ HESIOD_ENABLE_PCH:                  ${HESIOD_ENABLE_PCH}")
 message(STATUS "│ CMAKE_BUILD_TYPE:                   ${CMAKE_BUILD_TYPE}")
 message(STATUS "│ CMAKE_CXX_COMPILER_ID:              ${CMAKE_CXX_COMPILER_ID}")
+message(STATUS "│ QT_VERSION:                         ${Qt6_VERSION}")
+message(STATUS "│ QT_DIR:                             ${Qt6_DIR}")
 message(STATUS "└─────────────────────────────────────")
 
 # ------------------------------

@@ -561,6 +561,11 @@ void test_node_creation_signal()
   QAction  *thermal = find_action(sidebar.menu_at(erosion), "Thermal");
   check(thermal != nullptr, "the Thermal action exists");
 
+  // Open the flyout first, then trigger action to simulate user click
+  sidebar.open_category(erosion);
+  check(sidebar.open_category_index() == erosion, "erosion category is open");
+  check(sidebar.button_at(erosion)->is_open(), "erosion button is open before selection");
+
   if (thermal)
   {
     thermal->trigger();
@@ -568,6 +573,9 @@ void test_node_creation_signal()
     if (spy.count() == 1)
       check(spy.front().front().value<std::string>() == "Thermal",
             "the requested node type is the one that was picked");
+    check(sidebar.open_category_index() == -1, "selecting a node closes the flyout");
+    check(!sidebar.button_at(erosion)->is_open(),
+          "selecting a node unmarks the rail button as open");
   }
 
   // a submenu entry must work without the menu ever having been popped up along
@@ -730,6 +738,88 @@ void test_animation_toggle()
         "and entering settles immediately too");
 
   sidebar.hide();
+}
+
+void test_hover_quick_leave()
+{
+  section("sidebar: hover quick leave");
+
+  NodePaletteStyle style;
+  style.animations = false;
+
+  NodePaletteSidebar sidebar(sample_inventory(), sample_colors(), style);
+  sidebar.resize(240, 600);
+  sidebar.show();
+  QApplication::processEvents();
+
+  CategoryRailButton *button = sidebar.button_at(0);
+  check(button->current_surface() == style.surface, "button starts at base surface");
+
+  // HoverEnter via QEvent
+  QEvent hover_enter(QEvent::HoverEnter);
+  QApplication::sendEvent(button, &hover_enter);
+  check(button->current_surface() == style.surface_hover,
+        "HoverEnter transitions button to hover surface");
+
+  // Quick HoverLeave via QEvent::HoverLeave
+  QEvent hover_leave(QEvent::HoverLeave);
+  QApplication::sendEvent(button, &hover_leave);
+  check(button->current_surface() == style.surface,
+        "HoverLeave immediately reverses highlight to base surface");
+
+  // QEnterEvent followed quickly by QEvent::Leave
+  QEnterEvent enter_event(QPointF(1, 1), QPointF(1, 1), QPointF(1, 1));
+  QApplication::sendEvent(button, &enter_event);
+  check(button->current_surface() == style.surface_hover,
+        "EnterEvent transitions button to hover surface");
+
+  QEvent leave_event(QEvent::Leave);
+  QApplication::sendEvent(button, &leave_event);
+  check(button->current_surface() == style.surface,
+        "LeaveEvent reverses highlight to base surface");
+
+  // Open category and then close: button must not retain hover highlight
+  sidebar.open_category(0);
+  check(button->is_open(), "category 0 is open");
+  check(button->current_surface() == style.surface_selected, "open button has selected surface");
+  sidebar.close_flyout();
+  check(!button->is_open(), "category 0 is closed");
+  check(button->current_surface() == style.surface,
+        "closing flyout returns button to resting surface when not hovered");
+
+  sidebar.hide();
+
+  // Test with animations enabled: rapid enter immediately followed by leave (0ms delay)
+  // must stop the fade-in and settle back on base surface, never reaching hover surface.
+  NodePaletteStyle anim_style;
+  anim_style.animations = true;
+  anim_style.animation_ms = 400;
+
+  NodePaletteSidebar anim_sidebar(sample_inventory(), sample_colors(), anim_style);
+  anim_sidebar.resize(240, 600);
+  anim_sidebar.show();
+  QApplication::processEvents();
+
+  CategoryRailButton *anim_button = anim_sidebar.button_at(0);
+  check(anim_button->current_surface() == anim_style.surface,
+        "animated button starts at base surface");
+
+  // Instant enter then leave before animation ticks
+  QApplication::sendEvent(anim_button, &enter_event);
+  QApplication::sendEvent(anim_button, &leave_event);
+  QTest::qWait(450); // wait longer than animation duration
+  check(anim_button->current_surface() == anim_style.surface,
+        "instant enter and leave with animations on settles on base surface, not hover surface");
+
+  // Enter, wait a bit, then leave partway
+  QApplication::sendEvent(anim_button, &enter_event);
+  QTest::qWait(50);
+  QApplication::sendEvent(anim_button, &leave_event);
+  QTest::qWait(450);
+  check(anim_button->current_surface() == anim_style.surface,
+        "partway enter and leave with animations on settles back to base surface");
+
+  anim_sidebar.hide();
 }
 
 void test_restyle()
@@ -1095,6 +1185,7 @@ int main(int argc, char *argv[])
   test_search();
   test_flyout_geometry();
   test_animation_toggle();
+  test_hover_quick_leave();
   test_restyle();
   test_real_dpi();
   render_reference_images();
