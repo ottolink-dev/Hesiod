@@ -8,6 +8,7 @@
 #include "meta/core/container_group.hpp"
 #include "meta/ext/array/array.hpp"
 #include "meta/ext/color_gradient/color_gradient.hpp"
+#include "meta/metadata/keys.hpp"
 
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/logger.hpp"
@@ -597,23 +598,47 @@ nlohmann::json convert_legacy_attribute_json(const meta::AbstractAttribute *attr
   // Translate legacy metadata and state fields
   if (j.contains("is_active"))
   {
-    converted["state"]["active"]["value"] = j["is_active"];
-    converted["metadata"]["ui.active"]["value"] = j["is_active"];
+    converted["state"][meta::keys::state::active]["value"] = j["is_active"];
   }
   if (j.contains("link_xy"))
   {
-    converted["state"]["locked_xy"]["value"] = j["link_xy"];
-    converted["metadata"]["ui.locked_xy"]["value"] = j["link_xy"];
+    converted["state"][meta::keys::state::locked_xy]["value"] = j["link_xy"];
   }
   if (j.contains("state") && j["state"].is_object())
   {
-    if (j["state"].contains("active") && !j["state"]["active"].is_object())
+    if (j["state"].contains("active"))
     {
-      converted["state"]["active"] = {{"value", j["state"]["active"]}};
+      if (!j["state"]["active"].is_object())
+        converted["state"][meta::keys::state::active] = {{"value", j["state"]["active"]}};
+      else
+        converted["state"][meta::keys::state::active] = j["state"]["active"];
     }
-    if (j["state"].contains("locked_xy") && !j["state"]["locked_xy"].is_object())
+    if (j["state"].contains(meta::keys::state::active))
     {
-      converted["state"]["locked_xy"] = {{"value", j["state"]["locked_xy"]}};
+      if (!j["state"][meta::keys::state::active].is_object())
+        converted["state"][meta::keys::state::active] = {
+            {"value", j["state"][meta::keys::state::active]}};
+      else
+        converted["state"][meta::keys::state::active] = j["state"]
+                                                         [meta::keys::state::active];
+    }
+    if (j["state"].contains("locked_xy"))
+    {
+      if (!j["state"]["locked_xy"].is_object())
+        converted["state"][meta::keys::state::locked_xy] = {
+            {"value", j["state"]["locked_xy"]}};
+      else
+        converted["state"][meta::keys::state::locked_xy] = j["state"]["locked_xy"];
+    }
+    if (j["state"].contains(meta::keys::state::locked_xy))
+    {
+      if (!j["state"][meta::keys::state::locked_xy].is_object())
+        converted["state"][meta::keys::state::locked_xy] = {
+            {"value", j["state"][meta::keys::state::locked_xy]}};
+      else
+        converted["state"]
+                 [meta::keys::state::locked_xy] = j["state"]
+                                                   [meta::keys::state::locked_xy];
     }
   }
   if (j.contains("metadata") && j["metadata"].is_object())
@@ -622,17 +647,17 @@ nlohmann::json convert_legacy_attribute_json(const meta::AbstractAttribute *attr
     {
       auto ui_act = j["metadata"]["ui.active"];
       if (ui_act.is_object() && ui_act.contains("value"))
-        converted["state"]["active"]["value"] = ui_act["value"];
+        converted["state"][meta::keys::state::active]["value"] = ui_act["value"];
       else if (ui_act.is_boolean())
-        converted["state"]["active"]["value"] = ui_act;
+        converted["state"][meta::keys::state::active]["value"] = ui_act;
     }
     if (j["metadata"].contains("ui.locked_xy"))
     {
       auto ui_lock = j["metadata"]["ui.locked_xy"];
       if (ui_lock.is_object() && ui_lock.contains("value"))
-        converted["state"]["locked_xy"]["value"] = ui_lock["value"];
+        converted["state"][meta::keys::state::locked_xy]["value"] = ui_lock["value"];
       else if (ui_lock.is_boolean())
-        converted["state"]["locked_xy"]["value"] = ui_lock;
+        converted["state"][meta::keys::state::locked_xy]["value"] = ui_lock;
     }
   }
 
