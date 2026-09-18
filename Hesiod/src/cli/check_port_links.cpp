@@ -23,7 +23,7 @@ int conventional_rule_changed_outcome = 0;
 void expect_offerable(const PortCatalog &catalog,
                       const std::string &node_type,
                       const std::string &data_type,
-                      gngui::PortType    wanted,
+                      gnode::PortType    wanted,
                       bool               expected)
 {
   const bool got = catalog.is_offerable(node_type, data_type, wanted);
@@ -32,7 +32,7 @@ void expect_offerable(const PortCatalog &catalog,
     Logger::log()->error("check-port-links: {} [{}, want {}]: offerable={} expected={}",
                          node_type,
                          data_type,
-                         wanted == gngui::PortType::IN ? "IN" : "OUT",
+                         wanted == gnode::PortType::IN ? "IN" : "OUT",
                          got,
                          expected);
     failures++;
@@ -41,7 +41,7 @@ void expect_offerable(const PortCatalog &catalog,
 
 void expect_selected(const std::string &node_type,
                      const std::string &data_type,
-                     gngui::PortType    wanted,
+                     gnode::PortType    wanted,
                      const std::string &expected_port)
 {
   auto  config = std::make_shared<hesiod::GraphConfig>();
@@ -64,7 +64,7 @@ void expect_selected(const std::string &node_type,
         "check-port-links: {} [{}, want {}]: selected '{}' expected '{}'",
         node_type,
         data_type,
-        wanted == gngui::PortType::IN ? "IN" : "OUT",
+        wanted == gnode::PortType::IN ? "IN" : "OUT",
         got_str,
         expected_port);
     failures++;
@@ -110,7 +110,7 @@ void sweep_all_node_types(const PortCatalog &catalog)
     }
 
     for (const std::string &data_type : data_types)
-      for (gngui::PortType wanted : {gngui::PortType::IN, gngui::PortType::OUT})
+      for (gnode::PortType wanted : {gnode::PortType::IN, gnode::PortType::OUT})
       {
         const bool offered = catalog.is_offerable(node_type, data_type, wanted);
         const std::optional<std::string> selected = hesiod::select_port(*p_base,
@@ -125,7 +125,7 @@ void sweep_all_node_types(const PortCatalog &catalog)
               "node selected={} (documentation drift?)",
               node_type,
               data_type,
-              wanted == gngui::PortType::IN ? "IN" : "OUT",
+              wanted == gnode::PortType::IN ? "IN" : "OUT",
               offered,
               selected.has_value());
           failures++;
@@ -164,7 +164,7 @@ void sweep_all_node_types(const PortCatalog &catalog)
           std::string lower;
           for (char c : label)
             lower += static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
-          const bool conventional = (wanted == gngui::PortType::IN)
+          const bool conventional = (wanted == gnode::PortType::IN)
                                         ? (lower == "input" || lower == "in")
                                         : (lower == "output" || lower == "out");
           if (conventional)
@@ -182,7 +182,7 @@ void sweep_all_node_types(const PortCatalog &catalog)
               "check-port-links: {} [{}, want {}]: oracle expected='{}' got='{}'",
               node_type,
               data_type,
-              wanted == gngui::PortType::IN ? "IN" : "OUT",
+              wanted == gnode::PortType::IN ? "IN" : "OUT",
               expected ? *expected : std::string("<none>"),
               selected ? *selected : std::string("<none>"));
           failures++;
@@ -216,40 +216,40 @@ int run_check_port_links()
   // IslandChain's only VirtualArray port is its OUTPUT, so dragging a
   // VirtualArray from an output (wanting an input) must NOT offer it.
   // This is the case that aborted the application.
-  expect_offerable(catalog, "IslandChain", "VirtualArray", gngui::PortType::IN, false);
+  expect_offerable(catalog, "IslandChain", "VirtualArray", gnode::PortType::IN, false);
 
   // Dragging backwards from an input (wanting an output) must offer it.
-  expect_offerable(catalog, "IslandChain", "VirtualArray", gngui::PortType::OUT, true);
+  expect_offerable(catalog, "IslandChain", "VirtualArray", gnode::PortType::OUT, true);
 
   // Its Path input is offerable when a Path is dragged from an output.
-  expect_offerable(catalog, "IslandChain", "Path", gngui::PortType::IN, true);
+  expect_offerable(catalog, "IslandChain", "Path", gnode::PortType::IN, true);
 
   // Ordinary filters accept a VirtualArray input.
-  expect_offerable(catalog, "Laplace", "VirtualArray", gngui::PortType::IN, true);
-  expect_offerable(catalog, "Bump", "VirtualArray", gngui::PortType::IN, true);
+  expect_offerable(catalog, "Laplace", "VirtualArray", gnode::PortType::IN, true);
+  expect_offerable(catalog, "Bump", "VirtualArray", gnode::PortType::IN, true);
 
   // Incompatible type is never offered.
-  expect_offerable(catalog, "Laplace", "VirtualTexture", gngui::PortType::IN, false);
+  expect_offerable(catalog, "Laplace", "VirtualTexture", gnode::PortType::IN, false);
 
   // Unknown node type fails OPEN (never hide a real node if docs drift).
-  expect_offerable(catalog, "NoSuchNodeType", "VirtualArray", gngui::PortType::IN, true);
+  expect_offerable(catalog, "NoSuchNodeType", "VirtualArray", gnode::PortType::IN, true);
 
   // --- pinned port-selection cases (live node, true declaration order)
 
   // Conventional name wins: Laplace declares an "input" port.
-  expect_selected("Laplace", "VirtualArray", gngui::PortType::IN, "input");
+  expect_selected("Laplace", "VirtualArray", gnode::PortType::IN, "input");
 
   // No conventional name: Bump declares dx, dy, control, envelope -> first
   // declared wins. NOTE this is "dx" only because selection reads the LIVE
   // node; the documentation's alphabetical key order would have given
   // "control", which is why the catalog must never be used for selection.
-  expect_selected("Bump", "VirtualArray", gngui::PortType::IN, "dx");
+  expect_selected("Bump", "VirtualArray", gnode::PortType::IN, "dx");
 
   // Backwards drag: wanting an OUTPUT of type VirtualArray.
-  expect_selected("IslandChain", "VirtualArray", gngui::PortType::OUT, "output");
+  expect_selected("IslandChain", "VirtualArray", gnode::PortType::OUT, "output");
 
   // Forwards drag onto IslandChain has no VirtualArray input at all.
-  expect_selected("IslandChain", "VirtualArray", gngui::PortType::IN, "<none>");
+  expect_selected("IslandChain", "VirtualArray", gnode::PortType::IN, "<none>");
 
   sweep_all_node_types(catalog);
 

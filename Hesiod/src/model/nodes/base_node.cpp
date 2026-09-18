@@ -76,7 +76,7 @@ const GraphConfig &BaseNode::cfg() const
   if (!ptr)
   {
     Logger::log()->critical("BaseNode::get_category: Config ptr is nullptr, node: {}/{}",
-                            this->get_caption(),
+                            this->get_label(),
                             this->get_id());
     throw std::runtime_error("Config ptr is nullptr.");
   }
@@ -197,7 +197,7 @@ std::shared_ptr<const GraphConfig> BaseNode::get_config_ref() const
   if (!ptr)
   {
     Logger::log()->critical("BaseNode::get_category: Config ptr is nullptr, node: {}/{}",
-                            this->get_caption(),
+                            this->get_label(),
                             this->get_id());
     throw std::runtime_error("Config ptr is nullptr.");
   }
@@ -391,6 +391,13 @@ std::string BaseNode::get_documentation_short_html() const
   return html;
 }
 
+std::string BaseNode::get_comment() const { return this->comment; }
+
+gnode::PortType BaseNode::get_port_type(int port_index) const
+{
+  return gnode::Node::get_port_type(this->get_port_label(port_index));
+}
+
 std::string BaseNode::get_id() const { return gnode::Node::get_id(); }
 
 float BaseNode::get_memory_usage() const
@@ -404,7 +411,7 @@ float BaseNode::get_memory_usage() const
   for (int k = 0; k < this->get_nports(); k++)
   {
     // only outputs carry data
-    if (this->get_port_type(k) == gngui::PortType::IN)
+    if (this->get_port_type(k) == gnode::PortType::IN)
       continue;
 
     if (this->get_data_type(k) == typeid(hmap::VirtualArray).name())
@@ -571,9 +578,9 @@ nlohmann::json BaseNode::node_parameters_to_json() const
     for (int k = 0; k < this->get_nports(); k++)
     {
       nlohmann::json    port_info;
-      const std::string caption = this->get_port_caption(k);
+      const std::string caption = this->get_port_label(k);
 
-      port_info["type"] = (this->get_port_type(k) == gngui::PortType::IN) ? "input"
+      port_info["type"] = (this->get_port_type(k) == gnode::PortType::IN) ? "input"
                                                                           : "output";
       port_info["caption"] = caption;
       port_info["data_type"] = map_type_name(this->get_data_type(k));
@@ -650,14 +657,14 @@ nlohmann::json BaseNode::node_parameters_to_json() const
 void BaseNode::propagate_config_change()
 {
   Logger::log()->trace("BaseNode::propagate_config_change: node {}/{}",
-                       this->get_caption(),
+                       this->get_label(),
                        this->get_id());
 
   const GraphConfig &cfg = *this->get_config_ref();
 
   // go through the data and modify is needed (only outputs hold data)
   for (int k = 0; k < this->get_nports(); k++)
-    if (this->get_port_type(k) == gngui::PortType::OUT)
+    if (this->get_port_type(k) == gnode::PortType::OUT)
     {
       const std::string type = this->get_data_type(k);
 

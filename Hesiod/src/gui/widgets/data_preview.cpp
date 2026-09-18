@@ -28,7 +28,7 @@ DataPreview::DataPreview(std::weak_ptr<BaseNode> model, QWidget *parent)
     throw std::invalid_argument("DataPreview::DataPreview: p_model_node is nullptr");
 
   Logger::log()->trace("DataPreview::DataPreview, node {}({})",
-                       p_model->get_caption(),
+                       p_model->get_label(),
                        p_model->get_id());
 
   AppContext &ctx = HSD_CTX;
@@ -43,7 +43,7 @@ DataPreview::DataPreview(std::weak_ptr<BaseNode> model, QWidget *parent)
   // Select first output, or fallback to first port
   this->preview_port_index = 0;
   for (int k = 0; k < p_model->get_nports(); ++k)
-    if (p_model->get_port_type(k) == gngui::PortType::OUT)
+    if (p_model->get_port_type(k) == gnode::PortType::OUT)
     {
       this->preview_port_index = k;
       break;
@@ -89,7 +89,7 @@ void DataPreview::contextMenuEvent(QContextMenuEvent *event)
   context_menu.addSection("Data");
   for (int k = 0; k < p_model->get_nports(); ++k)
   {
-    const std::string caption = p_model->get_port_caption(k);
+    const std::string caption = p_model->get_port_label(k);
     QAction          *action = context_menu.addAction(QString::fromStdString(caption));
     action->setCheckable(true);
     if (k == preview_port_index)
@@ -110,7 +110,7 @@ void DataPreview::contextMenuEvent(QContextMenuEvent *event)
 
     // Port selection
     for (int k = 0; k < p_model->get_nports(); ++k)
-      if (p_model->get_port_caption(k) == label)
+      if (p_model->get_port_label(k) == label)
       {
         preview_port_index = k;
         update_preview();
@@ -130,7 +130,7 @@ void DataPreview::update_preview()
     return;
   }
 
-  void             *blind_ptr = p_model->get_data_ref(preview_port_index);
+  void             *blind_ptr = p_model->get_value_ref_void(preview_port_index);
   const std::string data_type = p_model->get_data_type(preview_port_index);
 
   AppContext &ctx = HSD_CTX;

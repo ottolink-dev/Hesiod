@@ -165,7 +165,7 @@ void NodeSettingsWidget::update_content()
       continue;
     }
 
-    const QString node_caption = QString::fromStdString(p_node->get_caption());
+    const QString node_caption = QString::fromStdString(p_node->get_label());
 
     const bool add_toolbar = HSD_CTX.app_settings.node_editor
                                  .show_node_toolbar_in_settings_pan;

@@ -14,6 +14,7 @@
 #include "gnodegui/style.hpp"
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/graph_editor.hpp"
+#include "hesiod/gui/hesiod_node_proxy.hpp"
 #include "hesiod/gui/widgets/graph_node_widget.hpp"
 #include "hesiod/model/graph/graph_manager.hpp"
 #include "hesiod/model/graph/graph_node.hpp"
@@ -58,13 +59,13 @@ bool consistent(GraphNode &graph, gngui::GraphViewer &view)
          view_links.size() == json.at("links").size();
 }
 
-class UnavailableOutputProxy : public gngui::TypedNodeProxy<BaseNode>
+class UnavailableOutputProxy : public HesiodNodeProxy
 {
 public:
-  using gngui::TypedNodeProxy<BaseNode>::TypedNodeProxy;
+  using HesiodNodeProxy::HesiodNodeProxy;
   std::string get_port_id(int index) const override
   {
-    return index == 1 ? "unavailable" : TypedNodeProxy::get_port_id(index);
+    return index == 1 ? "unavailable" : HesiodNodeProxy::get_port_id(index);
   }
 };
 
@@ -97,9 +98,8 @@ struct Fixture
       auto              node = graph->get_node_ref_by_id<BaseNode>(id)->get_shared();
       gngui::NodeProxy *proxy = fail_reconnection
                                     ? static_cast<gngui::NodeProxy *>(
-                                          new UnavailableOutputProxy(node))
-                                    : new gngui::TypedNodeProxy<BaseNode>(node);
-      proxy->setParent(&view);
+                                          new UnavailableOutputProxy(node, &view))
+                                    : new HesiodNodeProxy(node, &view);
       view.add_node(proxy, position, id);
       if (fail_presentation)
         throw std::runtime_error("Injected presentation failure");
@@ -153,6 +153,74 @@ class GraphEditorTest : public QObject
 {
   Q_OBJECT
 private Q_SLOTS:
+  void proxy_preserves_node_identity_and_port_values()
+  {
+    Fixture     f;
+    const auto  id = f.add();
+    auto       *node = f.graph->get_node_ref_by_id<BaseNode>(id);
+    const auto *proxy = f.view.get_graphics_node_by_id(id)->get_proxy_ref();
+    QVERIFY(dynamic_cast<const HesiodNodeProxy *>(proxy));
+    QCOMPARE(proxy->get_id(), id);
+    QCOMPARE(proxy->get_caption(), std::string("Thru"));
+    QCOMPARE(proxy->get_category(), node->get_category());
+    QCOMPARE(proxy->get_tool_tip_text(), node->get_documentation_short_html());
+    QCOMPARE(proxy->get_nports(), 2);
+    QCOMPARE(proxy->get_port_id(0), std::string("input"));
+    QCOMPARE(proxy->get_port_id(1), std::string("output"));
+    QCOMPARE(proxy->get_port_caption(0), std::string("input"));
+    QCOMPARE(proxy->get_port_caption(1), std::string("output"));
+    QCOMPARE(proxy->get_port_type(0), gngui::PortType::IN);
+    QCOMPARE(proxy->get_port_type(1), gngui::PortType::OUT);
+    QCOMPARE(proxy->get_data_type(1), std::string(typeid(hmap::VirtualArray).name()));
+    QCOMPARE(proxy->get_data_ref(1), node->get_value_ref_void(1));
+    node->set_comment("Updated comment");
+    QCOMPARE(proxy->get_comment(), std::string("Updated comment"));
+    QCOMPARE(f.view.json_to()["nodes"][0]["id"].get<std::string>(), id);
+    QCOMPARE(node->json_to()["id"].get<std::string>(), id);
+  }
+
+  void proxy_does_not_extend_model_lifetime()
+  {
+    QObject owner;
+    auto    node = std::make_shared<BaseNode>();
+    node->set_id("before");
+    auto *proxy = new HesiodNodeProxy(node, &owner);
+    proxy->set_id("after");
+    QCOMPARE(node->get_id(), std::string("after"));
+    std::weak_ptr<BaseNode> weak = node;
+    node.reset();
+    QVERIFY(weak.expired());
+    proxy->set_id("expired");
+    QVERIFY(proxy->get_id().empty());
+    QVERIFY(proxy->get_caption().empty());
+    QVERIFY(proxy->get_category().empty());
+    QVERIFY(proxy->get_comment().empty());
+    QVERIFY(proxy->get_tool_tip_text().empty());
+    QCOMPARE(proxy->get_nports(), 0);
+    QVERIFY(proxy->get_port_id(0).empty());
+    QVERIFY(proxy->get_port_caption(0).empty());
+    QVERIFY(proxy->get_data_type(0).empty());
+    QCOMPARE(proxy->get_port_type(0), gngui::PortType::IN);
+    QVERIFY(proxy->get_data_ref(0) == nullptr);
+  }
+
+  void widget_owns_its_node_proxies()
+  {
+    auto graph = std::make_shared<GraphNode>("owner", small_config());
+    QPointer<const gngui::NodeProxy> proxy;
+    {
+      GraphNodeWidget widget(graph);
+      widget.scene()->setParent(&widget);
+      const auto id = widget.on_new_node_request("Thru", {});
+      proxy = widget.get_graphics_node_by_id(id)->get_proxy_ref();
+      QCOMPARE(proxy->parent(), &widget);
+      widget.erase_node(id);
+      QVERIFY(proxy);
+    }
+    QVERIFY(proxy.isNull());
+    QCOMPARE(graph->get_nodes().size(), size_t(1));
+  }
+
   void nested_batches_compute_only_after_commit()
   {
     Fixture            f;

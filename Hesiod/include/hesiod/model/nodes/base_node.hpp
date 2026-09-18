@@ -11,7 +11,6 @@
 #include <utility>
 
 #include "gnode/node.hpp"
-#include "gnodegui/node_proxy.hpp"
 
 #include "meta/core/container_group.hpp"
 
@@ -57,6 +56,7 @@ public:
   std::string get_id() const;
   void        set_id(const std::string &new_id);
   std::string get_category() const;
+  std::string get_comment() const;
   void        set_comment(const std::string &new_comment);
   std::string get_node_type() const;
 
@@ -76,15 +76,8 @@ public:
   std::string    get_documentation_short_html() const;
   void           update_attributes_tool_tip();
 
-  // --- Proxy (most of it) ---
-  std::string     get_caption() const;
-  std::string     get_comment() const;
-  void           *get_data_ref(int port_index);
-  std::string     get_data_type(int port_index) const;
-  int             get_nports() const;
-  std::string     get_port_caption(int port_index) const;
-  gngui::PortType get_port_type(int port_index) const;
-  std::string     get_tool_tip_text();
+  using gnode::Node::get_port_type;
+  gnode::PortType get_port_type(int port_index) const;
 
   // --- Meta Accessors & Helpers ---
   template <typename T> decltype(auto) val(const std::string &key) const

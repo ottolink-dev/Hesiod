@@ -565,7 +565,7 @@ void HesiodApplication::on_export_batch()
             BaseNode        *p_base = p_graph->get_node_ref_by_id<BaseNode>(nid);
             NodeExportStatus st;
             st.node_id = nid;
-            st.node_label = p_base ? p_base->get_caption() : nid;
+            st.node_label = p_base ? p_base->get_label() : nid;
             st.node_type = p_base ? p_base->get_node_type() : "";
             st.state = NodeComputeState::Pending;
             scheduled_nodes.push_back(st);

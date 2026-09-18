@@ -18,6 +18,7 @@
 
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/graph_editor.hpp"
+#include "hesiod/gui/hesiod_node_proxy.hpp"
 #include "hesiod/gui/widgets/custom_qmenu.hpp"
 #include "hesiod/gui/widgets/graph_config_widgets/graph_config_dialog.hpp"
 #include "hesiod/gui/widgets/graph_node_widget.hpp"
@@ -426,10 +427,10 @@ void GraphNodeWidget::on_connection_dropped(const std::string &node_id,
         const std::string dragged_type = map_type_name(
             p_node_from->get_data_type(from_index));
 
-        const gngui::PortType dragged_dir = p_node_from->get_port_type(from_index);
-        const gngui::PortType wanted_dir = (dragged_dir == gngui::PortType::OUT)
-                                               ? gngui::PortType::IN
-                                               : gngui::PortType::OUT;
+        const gnode::PortType dragged_dir = p_node_from->get_port_type(from_index);
+        const gnode::PortType wanted_dir = (dragged_dir == gnode::PortType::OUT)
+                                               ? gnode::PortType::IN
+                                               : gnode::PortType::OUT;
 
         // Filter GraphViewer's inventory for the duration of its blocking menu.
         const std::map<std::string, std::string> full_inventory = get_node_inventory();
@@ -477,13 +478,13 @@ void GraphNodeWidget::on_connection_dropped(const std::string &node_id,
                                "{} port of type {}, "
                                "leaving it unconnected",
                                node_to,
-                               wanted_dir == gngui::PortType::IN ? "input" : "output",
+                               wanted_dir == gnode::PortType::IN ? "input" : "output",
                                dragged_type);
           batch.commit();
           return;
         }
 
-        const bool dragged_is_output = (dragged_dir == gngui::PortType::OUT);
+        const bool dragged_is_output = (dragged_dir == gnode::PortType::OUT);
 
         const std::string id_out = dragged_is_output ? node_id : node_to;
         const std::string port_out = dragged_is_output ? port_id : *port_to;
@@ -654,9 +655,8 @@ void GraphNodeWidget::on_new_graphics_node_request(const std::string &node_id,
   BaseNode *p_node = gno->get_node_ref_by_id<BaseNode>(node_id);
   if (!p_node)
     throw std::runtime_error("Cannot display a missing model node.");
-  auto *p_proxy = new gngui::TypedNodeProxy<BaseNode>(p_node->get_shared());
-  p_proxy->setParent(this);
-  auto *widget = node_widget_factory(p_node->get_caption(), p_node->get_shared(), this);
+  auto *p_proxy = new HesiodNodeProxy(p_node->get_shared(), this);
+  auto *widget = node_widget_factory(p_node->get_label(), p_node->get_shared(), this);
 
   this->add_node(p_proxy, scene_pos, node_id);
   this->get_graphics_node_by_id(node_id)->set_widget(widget);

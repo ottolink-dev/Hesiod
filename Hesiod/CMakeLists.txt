@@ -134,7 +134,14 @@ message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 
 if(HESIOD_ENABLE_TESTS)
   find_package(Qt6 REQUIRED COMPONENTS Test)
+  add_library(test_model_headers OBJECT ${CMAKE_SOURCE_DIR}/tests/model/model_headers.cpp)
+  set_target_properties(test_model_headers PROPERTIES AUTOMOC OFF)
+  target_include_directories(test_model_headers PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+  target_link_libraries(test_model_headers PRIVATE gnode highmap meta)
+  target_compile_features(test_model_headers PRIVATE cxx_std_20)
+
   add_executable(test_graph_editor ${CMAKE_SOURCE_DIR}/tests/gui/test_graph_editor.cpp)
+  add_dependencies(test_graph_editor test_model_headers)
   target_link_libraries(test_graph_editor PRIVATE hesiod_core Qt6::Test)
   add_test(NAME graph_editor COMMAND test_graph_editor)
   set_tests_properties(graph_editor PROPERTIES

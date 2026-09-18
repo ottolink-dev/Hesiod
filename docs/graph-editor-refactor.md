@@ -30,7 +30,7 @@ deletion. They do not yet test Hesiod model computation.
 GNodeGUI PR #12 is merged. It supplies the dependency for the Hesiod extraction
 below; by itself it retains the legacy behavior for existing callers.
 
-## 2. Extract GraphEditor and move topology edits (this change)
+## 2. Extract GraphEditor and move topology edits (PR #771)
 
 GraphNodeWidget now owns one GraphEditor and delegates node creation/deletion,
 connection/disconnection, replacement, chain insertion, paste/duplicate, import
@@ -79,18 +79,19 @@ cmake --build build --target hesiod test_graph_editor
 ctest --test-dir build -R '^graph_editor$' --output-on-failure
 ```
 
-## 3. Move the Hesiod node proxy into the GUI layer
+## 3. Move the Hesiod node proxy into the GUI layer (this change)
 
-Introduce an explicit Hesiod adapter implementing GNodeGUI's NodeProxy interface.
-Move GUI port conversion and presentation responsibilities out of BaseNode. Use
-GNode's port direction type in model APIs and convert it at the adapter boundary.
-Give the proxy a clear owner and make identifier/lifetime behavior explicit.
+`HesiodNodeProxy` adapts GNode's accessors and port directions to GNodeGUI.
+BaseNode no longer includes GNodeGUI or implements its proxy interface.
+PortCatalog and select_port also use GNode's direction type.
 
-BaseNode currently includes `gnodegui/node_proxy.hpp`, which includes Qt. Thus
-GraphNode's header has no direct Qt include, but the model implementation is not
-yet Qt-independent. Verify removal with a model-header compilation check without
-Qt include paths, as well as the normal application build. Avoid changing saved
-node identifiers, port IDs or captions as an incidental effect of this move.
+The widget owns each proxy through QObject parenting; the model reference is weak.
+Identifiers, captions and serialized fields retain their previous values. Expired
+models return empty proxy values.
+
+Tests cover the adapter, ownership and model expiry. Building `test_graph_editor`
+also compiles BaseNode, GraphNode and PortCatalog headers without Qt or GNodeGUI
+include paths. Model implementations still use Qt and application services.
 
 ## 4. Loading, settings and remaining update paths
 
@@ -102,8 +103,9 @@ widgets and retain legacy port migration behavior.
 Route GUI settings, configuration and reload requests through the editor's update
 policy. Inventory other direct calls, including NodeAttributesWidget and special
 node widgets, to complete the editor update policy. The widget blocker was removed
-in step 2. Domain-driven broadcasting and headless execution remain valid model callers; the editor is the single entry
-point for interactive edits, not a compulsory Qt dependency for all computation.
+in step 2. Domain-driven broadcasting and headless execution remain valid model
+callers; the editor is the single entry point for interactive edits, not a
+compulsory Qt dependency for all computation.
 
 Finish with project round-trip, paste/import, legacy project, selection/viewer
 lifetime and Broadcast/Receive regression checks. The existing editor widget API
