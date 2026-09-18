@@ -234,6 +234,9 @@ void setup_coherent_noise_node(BaseNode &node)
         node,
         {.add_mix = false, .remap_active_state = true});
   }
+
+  // Reset active group to first
+  node.set_current_group(G_FBM);
 }
 
 // -----------------------------------------------------------------------------
