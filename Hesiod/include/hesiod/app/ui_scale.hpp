@@ -77,8 +77,8 @@ double scale_from_config(const std::string &config_path);
  */
 struct Resolution
 {
-  double configured = kDefault; ///< the persisted preference, sanitized
-  double effective = kDefault;  ///< what Qt will actually scale by
+  double configured = kDefault;        ///< the persisted preference, sanitized
+  double effective = kDefault;         ///< what Qt will actually scale by
   bool   environment_override = false; ///< QT_SCALE_FACTOR came from outside
 };
 

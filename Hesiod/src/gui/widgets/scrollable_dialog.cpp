@@ -96,8 +96,7 @@ void ScrollableDialog::fit_to(const QRect &available)
 
   if (this->body)
   {
-    const QSize hint = this->body->sizeHint().expandedTo(
-        this->body->minimumSizeHint());
+    const QSize hint = this->body->sizeHint().expandedTo(this->body->minimumSizeHint());
 
     // room for the vertical scrollbar, so the content is not squeezed sideways
     // the moment it becomes tall enough to need one

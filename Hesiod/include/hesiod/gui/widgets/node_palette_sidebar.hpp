@@ -150,8 +150,8 @@ private:
   QWidget   *rail = nullptr;
   QLineEdit *search = nullptr;
 
-  std::vector<CategoryRailButton *>   buttons;
-  std::vector<QPointer<QMenu>>        menus;
+  std::vector<CategoryRailButton *>     buttons;
+  std::vector<QPointer<QMenu>>          menus;
   std::vector<std::vector<std::string>> node_types; // per category, sorted
 
   /// search display string -> node type

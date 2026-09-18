@@ -75,8 +75,8 @@ void MainWindow::restore_geometry()
       geom.setSize(QSize(available.width() * 3 / 4, available.height() * 3 / 4));
 
     geom.setSize(geom.size().boundedTo(available.size()));
-    geom.moveLeft(std::clamp(geom.left(), available.left(), available.right() -
-                                                                geom.width() + 1));
+    geom.moveLeft(
+        std::clamp(geom.left(), available.left(), available.right() - geom.width() + 1));
     geom.moveTop(
         std::clamp(geom.top(), available.top(), available.bottom() - geom.height() + 1));
   }

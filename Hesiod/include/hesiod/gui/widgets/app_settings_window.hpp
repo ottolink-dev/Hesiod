@@ -23,8 +23,8 @@ private:
 
   void add_description(const std::string &description, int max_length = 64);
   void add_title(const std::string &label, int font_size_delta = 2);
-  void bind_bool(const std::string    &label,
-                 bool                 &state,
+  void bind_bool(const std::string        &label,
+                 bool                     &state,
                  std::function<void(bool)> on_changed = nullptr);
   void bind_int(const std::string &label, int &value);
   /// Spin box over an explicit range, for a metric with real bounds.

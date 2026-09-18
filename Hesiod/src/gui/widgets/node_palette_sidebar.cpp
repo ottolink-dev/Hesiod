@@ -11,7 +11,6 @@ namespace
 constexpr double kPi = 3.14159265358979323846;
 }
 
-
 #include <QApplication>
 #include <QCompleter>
 #include <QEnterEvent>
@@ -304,10 +303,7 @@ void CategoryRailButton::paintEvent(QPaintEvent *)
   const double icon = this->style.icon_size;
   const double pad = this->style.rail_padding;
 
-  const QRectF glyph_box(box.left() + pad,
-                         box.center().y() - icon * 0.5,
-                         icon,
-                         icon);
+  const QRectF glyph_box(box.left() + pad, box.center().y() - icon * 0.5, icon, icon);
 
   const QColor glyph_color = blend(this->style.text,
                                    this->accent,
@@ -328,10 +324,10 @@ void CategoryRailButton::paintEvent(QPaintEvent *)
                         box.right() - glyph_box.right() - 2.0 * pad,
                         box.height());
 
-  const QString elided = QFontMetrics(font).elidedText(this->category,
-                                                       Qt::ElideRight,
-                                                       static_cast<int>(
-                                                           text_box.width()));
+  const QString elided = QFontMetrics(font).elidedText(
+      this->category,
+      Qt::ElideRight,
+      static_cast<int>(text_box.width()));
   painter.drawText(text_box, Qt::AlignVCenter | Qt::AlignLeft, elided);
 }
 
@@ -471,48 +467,48 @@ std::vector<std::string> NodePaletteSidebar::all_node_types() const
 
 void NodePaletteSidebar::apply_menu_style(QMenu *menu, const QColor &accent)
 {
-  const QString sheet =
-      QString("QMenu {"
-              "  background-color: %1;"
-              "  color: %2;"
-              "  border: 1px solid %3;"
-              "  border-left: 2px solid %4;"
-              "  border-radius: %5px;"
-              "  padding: %6px;"
-              // Without this a category with more entries than the screen is
-              // tall gets laid out in multiple columns, which overshoots the
-              // screen by the frame and puts the last column off the edge. A
-              // scrolling single column is both correct and easier to read.
-              "  menu-scrollable: 1;"
-              "}"
-              "QMenu::item {"
-              "  background: transparent;"
-              "  height: %7px;"
-              "  padding-left: 14px;"
-              "  padding-right: 28px;"
-              "  border-radius: %8px;"
-              "}"
-              "QMenu::item:selected {"
-              "  background-color: %9;"
-              "  color: %10;"
-              "}"
-              "QMenu::item:disabled { color: %3; }"
-              "QMenu::separator {"
-              "  height: 1px;"
-              "  background: %3;"
-              "  margin: %6px 8px;"
-              "}"
-              "QMenu::icon { padding-left: 10px; }")
-          .arg(this->style.flyout_bg.name())
-          .arg(this->style.text.name())
-          .arg(this->style.flyout_border.name())
-          .arg(accent.name())
-          .arg(std::max(0, this->style.corner_radius))
-          .arg(std::max(0, this->style.flyout_padding))
-          .arg(std::max(12, this->style.flyout_row_height))
-          .arg(std::max(0, this->style.corner_radius / 2))
-          .arg(this->style.surface_selected.name())
-          .arg(this->style.text_active.name());
+  const QString
+      sheet = QString("QMenu {"
+                      "  background-color: %1;"
+                      "  color: %2;"
+                      "  border: 1px solid %3;"
+                      "  border-left: 2px solid %4;"
+                      "  border-radius: %5px;"
+                      "  padding: %6px;"
+                      // Without this a category with more entries than the screen is
+                      // tall gets laid out in multiple columns, which overshoots the
+                      // screen by the frame and puts the last column off the edge. A
+                      // scrolling single column is both correct and easier to read.
+                      "  menu-scrollable: 1;"
+                      "}"
+                      "QMenu::item {"
+                      "  background: transparent;"
+                      "  height: %7px;"
+                      "  padding-left: 14px;"
+                      "  padding-right: 28px;"
+                      "  border-radius: %8px;"
+                      "}"
+                      "QMenu::item:selected {"
+                      "  background-color: %9;"
+                      "  color: %10;"
+                      "}"
+                      "QMenu::item:disabled { color: %3; }"
+                      "QMenu::separator {"
+                      "  height: 1px;"
+                      "  background: %3;"
+                      "  margin: %6px 8px;"
+                      "}"
+                      "QMenu::icon { padding-left: 10px; }")
+                  .arg(this->style.flyout_bg.name())
+                  .arg(this->style.text.name())
+                  .arg(this->style.flyout_border.name())
+                  .arg(accent.name())
+                  .arg(std::max(0, this->style.corner_radius))
+                  .arg(std::max(0, this->style.flyout_padding))
+                  .arg(std::max(12, this->style.flyout_row_height))
+                  .arg(std::max(0, this->style.corner_radius / 2))
+                  .arg(this->style.surface_selected.name())
+                  .arg(this->style.text_active.name());
 
   menu->setStyleSheet(sheet);
 
@@ -607,7 +603,7 @@ void NodePaletteSidebar::build_rail(const std::map<std::string, std::string> &in
     watch(menu);
 
     // collect every leaf under this category, for the tests and for the search
-    std::vector<std::string> types;
+    std::vector<std::string>              types;
     std::function<void(const TreeNode &)> collect = [&](const TreeNode &node)
     {
       for (const QString &leaf : node.leaves)
@@ -719,7 +715,7 @@ bool NodePaletteSidebar::eventFilter(QObject *watched, QEvent *event)
 
   if (event->type() == QEvent::MouseMove && this->open_index >= 0)
   {
-    auto *move = static_cast<QMouseEvent *>(event);
+    auto        *move = static_cast<QMouseEvent *>(event);
     const QPoint global = move->globalPosition().toPoint();
 
     for (int i = 0; i < static_cast<int>(this->buttons.size()); ++i)
@@ -848,8 +844,7 @@ void NodePaletteSidebar::set_style(const NodePaletteStyle &new_style)
   this->update();
 }
 
-void NodePaletteSidebar::setup_search(
-    const std::map<std::string, std::string> &inventory)
+void NodePaletteSidebar::setup_search(const std::map<std::string, std::string> &inventory)
 {
   QStringList entries;
 
