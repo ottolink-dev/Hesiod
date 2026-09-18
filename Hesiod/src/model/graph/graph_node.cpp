@@ -51,7 +51,6 @@ std::string GraphNode::add_node(const std::string &node_type)
   Logger::log()->trace("GraphNode::add_node: node_type = {}", node_type);
 
   std::shared_ptr<gnode::Node> node = node_factory(node_type, this->config);
-  node->compute();
 
   std::string node_id = this->add_node(node);
 

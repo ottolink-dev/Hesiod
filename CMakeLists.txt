@@ -26,6 +26,11 @@ option(HESIOD_ENABLE_UI_TESTS
 option(HESIOD_MINIMAL_NODE_SET
        "Use a minimal set of nodes (ADVANCED DEV ONLY!!!)" OFF)
 
+option(HESIOD_ENABLE_TESTS "Build Hesiod integration tests" OFF)
+if(HESIOD_ENABLE_TESTS)
+  enable_testing()
+endif()
+
 option(HESIOD_ENABLE_LTO "Enable LTO and unused-function detection" OFF)
 option(HESIOD_UNUSED_FUNCTIONS "Detect unused static functions" OFF)
 option(HESIOD_PROFILE_BUILD "Enable build time profiling (-ftime-trace)" OFF)

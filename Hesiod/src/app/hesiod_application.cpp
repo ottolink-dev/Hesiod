@@ -51,7 +51,8 @@ namespace fs = std::filesystem;
 namespace hesiod
 {
 
-HesiodApplication::HesiodApplication(int &argc, char **argv) : QApplication(argc, argv)
+HesiodApplication::HesiodApplication(int &argc, char **argv, StartupMode mode)
+    : QApplication(argc, argv)
 {
   Logger::log()->trace("HesiodApplication::HesiodApplication");
 
@@ -59,6 +60,14 @@ HesiodApplication::HesiodApplication(int &argc, char **argv) : QApplication(argc
 
   // context
   this->context.initialize();
+
+  if (mode == StartupMode::ContextOnly)
+  {
+    meta::qt::stock::register_design();
+    this->headless = true;
+    this->context.headless = true;
+    return;
+  }
 
   // force icons visibility in the menu bar
   this->setAttribute(Qt::AA_DontShowIconsInMenus, false);

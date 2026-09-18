@@ -36,7 +36,13 @@ class HesiodApplication : public QApplication
 {
   Q_OBJECT
 public:
-  HesiodApplication(int &argc, char **argv);
+  enum class StartupMode
+  {
+    Normal,
+    ContextOnly // CPU/Qt integration tests: no engine, services or main window
+  };
+
+  HesiodApplication(int &argc, char **argv, StartupMode mode = StartupMode::Normal);
   ~HesiodApplication();
 
   bool is_headless() const;
