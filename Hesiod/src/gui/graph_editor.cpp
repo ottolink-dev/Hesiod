@@ -44,6 +44,7 @@ void GraphEditor::Batch::commit()
 {
   if (!active)
     return;
+
   active = false;
   if (--editor.batch_depth == 0)
     editor.finish_batch();
@@ -54,6 +55,7 @@ std::shared_ptr<GraphNode> GraphEditor::graph() const
   auto graph = model.lock();
   if (!graph)
     throw std::runtime_error("The graph is no longer available.");
+
   return graph;
 }
 
@@ -95,10 +97,12 @@ void GraphEditor::finish_batch()
 void GraphEditor::request_update(const std::vector<std::string> &ids)
 {
   Batch batch(*this);
+
   if (ids.empty())
     full_update = true;
   else
     dirty.insert(ids.begin(), ids.end());
+
   batch.commit();
 }
 
@@ -163,8 +167,10 @@ std::string GraphEditor::add_node(const std::string                     &type,
     auto *node = graph->get_node_ref_by_id<BaseNode>(id);
     if (initialize)
       initialize(*node);
+
     node->set_id(id); // imported settings must not restore the original ID
     presentation.create(id, position);
+
     if (!view.get_graphics_node_by_id(id))
       throw std::runtime_error("Could not create the graphics node.");
   }
@@ -220,6 +226,7 @@ bool GraphEditor::connect(const Link &link)
   {
     graph->remove_link(link.node_out, link.port_out, link.node_in, link.port_in);
     view.erase_link(link);
+
     for (const auto &old : previous)
     {
       graph->new_link(old.node_out, old.port_out, old.node_in, old.port_in);
@@ -228,9 +235,11 @@ bool GraphEditor::connect(const Link &link)
     }
     throw;
   }
+
   dirty.insert(link.node_in);
   changed = true;
   batch.commit();
+
   return true;
 }
 
@@ -243,11 +252,13 @@ bool GraphEditor::disconnect(const Link &link)
                                           link.node_in,
                                           link.port_in);
   view.erase_link(link);
+
   if (removed)
   {
     dirty.insert(link.node_in);
     changed = true;
   }
+
   batch.commit();
   return removed;
 }
@@ -258,6 +269,7 @@ void GraphEditor::erase(const std::vector<std::string> &node_ids,
   auto graph = this->graph();
 
   Batch batch(*this);
+
   for (const auto &link : links)
     disconnect(link);
 
@@ -266,16 +278,20 @@ void GraphEditor::erase(const std::vector<std::string> &node_ids,
   {
     if (!graph->get_node(id))
       continue;
+
     for (const auto &link : links_for(id))
       if (link.node_out == id)
         dirty.insert(link.node_in);
+
     view.erase_node(id);
+
     // GraphNode owns Broadcast/Receive cleanup; never bypass its remove_node.
     graph->remove_node(id);
     notifications.push_back({id, false});
     changed = true;
     dirty.erase(id);
   }
+
   batch.commit();
 }
 
@@ -284,6 +300,7 @@ void GraphEditor::clear()
   std::vector<std::string> ids;
   for (const auto &[id, node] : graph()->get_nodes())
     ids.push_back(id);
+
   erase(ids);
   view.clear(); // comments and groups also belong to the cleared scene
 }
@@ -298,13 +315,17 @@ std::string GraphEditor::replace_node(const std::string &id, const std::string &
 {
   auto  graph = this->graph();
   auto *graphics = view.get_graphics_node_by_id(id);
+
   if (!graph->get_node(id) || !graphics)
     throw std::invalid_argument("Select an existing node to replace.");
+
   const auto        previous = links_for(id);
   Batch             batch(*this);
   const std::string replacement = add_node(type, graphics->pos());
+
   if (replacement.empty())
     return {};
+
   try
   {
     for (auto link : previous)
@@ -323,9 +344,11 @@ std::string GraphEditor::replace_node(const std::string &id, const std::string &
     restore_links(previous);
     throw;
   }
+
   // Keep the original node until replacement creation and reconnection succeed.
   erase({id});
   batch.commit();
+
   return replacement;
 }
 
@@ -336,20 +359,26 @@ std::string GraphEditor::insert_node(const std::string &id,
   auto graph = this->graph();
   if (!graph->get_node(id) || !view.get_graphics_node_by_id(id))
     throw std::invalid_argument("Select an existing node to insert after.");
+
   const auto        previous = links_for(id);
   Batch             batch(*this);
   const std::string inserted = add_node(type, position);
+
   if (inserted.empty())
     return {};
+
   try
   {
     bool connected = false;
+
     for (const auto &old : previous)
     {
       if (old.node_out != id)
         continue;
+
       const Link upstream{id, old.port_out, inserted, old.port_in};
       const Link downstream{inserted, old.port_out, old.node_in, old.port_in};
+
       // Preserve branches unless both halves can reconnect.
       if (compatible(upstream) && compatible(downstream))
       {
@@ -358,10 +387,12 @@ std::string GraphEditor::insert_node(const std::string &id,
         connected = true;
       }
     }
+
     if (!connected)
     {
       auto *from = graph->get_node(id);
       auto *to = graph->get_node(inserted);
+
       for (int out = 0; out < from->get_nports() && !connected; ++out)
         for (int in = 0; in < to->get_nports() && !connected; ++in)
         {
@@ -380,6 +411,7 @@ std::string GraphEditor::insert_node(const std::string &id,
     restore_links(previous);
     throw;
   }
+
   batch.commit();
   return inserted;
 }
@@ -389,11 +421,14 @@ nlohmann::json GraphEditor::import_nodes(const nlohmann::json &json, QPointF ori
   nlohmann::json result = convert_legacy_graph_widget_json(json);
   if (!result.contains("nodes") || result["nodes"].is_null())
     return result;
+
   if (!result["nodes"].is_array())
     throw std::invalid_argument("Imported nodes must be an array.");
+
   Batch                              batch(*this);
   std::map<std::string, std::string> ids;
   std::vector<std::string>           created;
+
   try
   {
     for (auto &node : result["nodes"])
@@ -401,9 +436,11 @@ nlohmann::json GraphEditor::import_nodes(const nlohmann::json &json, QPointF ori
       const auto old_id = node.at("id").get<std::string>();
       if (ids.contains(old_id))
         throw std::invalid_argument("Duplicate node ID in the imported graph.");
+
       const QPointF offset(node.at("scene_position.x").get<double>(),
                            node.at("scene_position.y").get<double>());
-      const auto    id = add_node(node.at("caption").get<std::string>(),
+
+      const auto id = add_node(node.at("caption").get<std::string>(),
                                origin + offset,
                                [&](BaseNode &model)
                                {
@@ -411,24 +448,30 @@ nlohmann::json GraphEditor::import_nodes(const nlohmann::json &json, QPointF ori
                                  settings["id"] = model.get_id();
                                  model.json_from(settings);
                                });
+
       if (id.empty())
         throw std::invalid_argument("Missing node type in the imported graph.");
+
       created.push_back(id);
       ids.emplace(old_id, id);
       node["id"] = id;
       node["settings"]["id"] = id;
     }
+
     if (result.contains("links") && !result["links"].is_null())
     {
       if (!result["links"].is_array())
         throw std::invalid_argument("Imported links must be an array.");
+
       for (auto &link : result["links"])
       {
         const auto from = ids.at(link.at("node_out_id").get<std::string>());
         const auto to = ids.at(link.at("node_in_id").get<std::string>());
         const auto out = link.at("port_out_id").get<std::string>();
         const auto in = link.at("port_in_id").get<std::string>();
+
         connect({from, out, to, in});
+
         link["node_out_id"] = from;
         link["node_in_id"] = to;
       }
@@ -439,6 +482,7 @@ nlohmann::json GraphEditor::import_nodes(const nlohmann::json &json, QPointF ori
     erase(created);
     throw;
   }
+
   batch.commit();
   return result;
 }
