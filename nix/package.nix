@@ -68,6 +68,8 @@ stdenv.mkDerivation (finalAttrs: {
 
   cmakeFlags = [
     (lib.cmakeBool "HESIOD_ENABLE_GENERATE_APP_IMAGE" false)
+    # flake.nix excludes tests/ from the packaged source.
+    (lib.cmakeBool "HESIOD_ENABLE_UI_TESTS" false)
     # HighMap's benchmarks FetchContent google/benchmark at configure time;
     # the sandbox has no network and Hesiod never runs them.
     (lib.cmakeBool "HIGHMAP_ENABLE_BENCHMARKS" false)
