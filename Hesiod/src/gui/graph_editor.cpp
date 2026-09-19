@@ -82,9 +82,11 @@ void GraphEditor::finish_batch()
   else
   {
     std::vector<std::string> ids;
+
     for (const auto &id : pending_dirty)
       if (graph->get_node(id))
         ids.push_back(id);
+
     if (!ids.empty())
       graph->update(ids);
   }
@@ -103,8 +105,10 @@ void GraphEditor::request_update(const std::vector<std::string> &ids)
 std::vector<GraphEditor::Link> GraphEditor::links_for(const std::string &id) const
 {
   std::vector<Link> result;
+
   for (const auto &link : graph()->get_link_views(id))
     result.push_back({link.from, link.port_label_from, link.to, link.port_label_to});
+
   return result;
 }
 
@@ -113,10 +117,13 @@ bool GraphEditor::compatible(const Link &link) const
   auto  graph = this->graph();
   auto *from = graph->get_node(link.node_out);
   auto *to = graph->get_node(link.node_in);
+
   if (!from || !to || from == to)
     return false;
+
   const int output = from->get_port_index(link.port_out);
   const int input = to->get_port_index(link.port_in);
+
   return output >= 0 && input >= 0 &&
          from->get_port_type(link.port_out) == gnode::PortType::OUT &&
          to->get_port_type(link.port_in) == gnode::PortType::IN &&
@@ -127,11 +134,14 @@ void GraphEditor::validate_connection(const Link &link) const
 {
   if (!compatible(link))
     throw std::invalid_argument("Cannot connect the selected nodes: incompatible ports.");
+
   if (graph()->is_reachable(link.node_in, link.node_out))
     throw std::invalid_argument(
         "Cannot connect the selected nodes: this would create a cycle.");
+
   auto *from = view.get_graphics_node_by_id(link.node_out);
   auto *to = view.get_graphics_node_by_id(link.node_in);
+
   if (!from || !to || from->get_port_index(link.port_out) < 0 ||
       to->get_port_index(link.port_in) < 0)
     throw std::runtime_error("Cannot connect nodes missing from the scene.");
@@ -143,9 +153,11 @@ std::string GraphEditor::add_node(const std::string                     &type,
 {
   if (type.empty())
     return {};
+
   auto              graph = this->graph();
   Batch             batch(*this);
   const std::string id = graph->add_node(type);
+
   try
   {
     auto *node = graph->get_node_ref_by_id<BaseNode>(id);
@@ -164,10 +176,12 @@ std::string GraphEditor::add_node(const std::string                     &type,
     graph->remove_node(id);
     throw;
   }
+
   notifications.push_back({id, true});
   changed = true;
   dirty.insert(id);
   batch.commit();
+
   return id;
 }
 
@@ -175,6 +189,7 @@ bool GraphEditor::connect(const Link &link)
 {
   auto graph = this->graph();
   validate_connection(link);
+
   const auto adjacent = links_for(link.node_in);
   if (hesiod::contains(adjacent, link))
     return false;
@@ -185,16 +200,20 @@ bool GraphEditor::connect(const Link &link)
       previous.push_back(old);
 
   Batch batch(*this);
+
   // Validate before disturbing the old input, and keep its graphics until the
   // model accepts the replacement. Restore both sides if synchronization fails.
   try
   {
     for (const auto &old : previous)
       graph->remove_link(old.node_out, old.port_out, old.node_in, old.port_in);
+
     if (!graph->new_link(link.node_out, link.port_out, link.node_in, link.port_in))
       throw std::runtime_error("The graph did not accept the connection.");
+
     for (const auto &old : previous)
       view.erase_link(old);
+
     view.add_link(link.node_out, link.port_out, link.node_in, link.port_in);
   }
   catch (...)
@@ -236,10 +255,12 @@ bool GraphEditor::disconnect(const Link &link)
 void GraphEditor::erase(const std::vector<std::string> &node_ids,
                         const std::vector<Link>        &links)
 {
-  auto  graph = this->graph();
+  auto graph = this->graph();
+
   Batch batch(*this);
   for (const auto &link : links)
     disconnect(link);
+
   const std::set<std::string> unique_ids(node_ids.begin(), node_ids.end());
   for (const auto &id : unique_ids)
   {

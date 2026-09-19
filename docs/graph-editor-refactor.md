@@ -79,6 +79,34 @@ cmake --build build --target hesiod test_graph_editor
 ctest --test-dir build -R '^graph_editor$' --output-on-failure
 ```
 
+### Batch lifecycle and deferred evaluation
+
+The `GraphEditor::Batch` RAII mechanism coordinates atomic edits across nested operations, decoupling graph mutations from evaluations and UI notifications:
+
+- **Change staging**: During nested operations (e.g. importing a subgraph, replacing a node), mutations stage dirty node IDs and queue presentation events without computing or emitting UI signals.
+- **Outermost commit**: When the outermost batch successfully commits, the editor dispatches deferred notifications (`created`, `deleted`, `changed`) and triggers a single topological recomputation pass over all accumulated dirty nodes.
+- **Exception safety**: If a batch scope exits without committing (e.g. due to validation or connection errors), the destructor rolls back tracking state to its snapshot without triggering computation during stack unwinding.
+
+```mermaid
+sequenceDiagram
+    participant Caller as UI / Action
+    participant Outer as Batch (import_nodes)
+    participant Inner1 as Batch (add_node)
+    participant Inner2 as Batch (connect)
+    participant GE as GraphEditor
+    participant GN as GraphNode (Model)
+
+    Caller->>Outer: Batch batch(*this) [depth=1]
+    Outer->>Inner1: add_node() -> Batch batch(*this) [depth=2]
+    Inner1->>GE: dirty.insert(node_id), push notification
+    Inner1->>Outer: inner_batch.commit() [depth: 2->1] (NO evaluation)
+    Outer->>Inner2: connect() -> Batch batch(*this) [depth=2]
+    Inner2->>GE: dirty.insert(dest_id), changed=true
+    Inner2->>Outer: inner_batch.commit() [depth: 2->1] (NO evaluation)
+    Outer->>GE: outer_batch.commit() [depth: 1->0] -> finish_batch()
+    GE->>GN: graph->update(ids) (Single recomputation pass)
+```
+
 ## 3. Move the Hesiod node proxy into the GUI layer
 
 Introduce an explicit Hesiod adapter implementing GNodeGUI's NodeProxy interface.
