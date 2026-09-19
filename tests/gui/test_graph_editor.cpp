@@ -570,8 +570,6 @@ private Q_SLOTS:
     QCOMPARE(loaded->get_links().size(), size_t(1));
     QVERIFY(consistent(*loaded, widget));
 
-    // Re-saving must use the canonical names in both model and presentation,
-    // and a second load must retain the connection (issue #775).
     const auto saved_model = loaded->json_to();
     const auto saved_widget = widget.json_to();
     QVERIFY(saved_model["links"][0]["port_id_to"] == "input");
