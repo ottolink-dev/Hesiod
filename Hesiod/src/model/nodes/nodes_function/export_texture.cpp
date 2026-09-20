@@ -64,8 +64,18 @@ void compute_export_texture_node(BaseNode &node)
 
   hmap::VirtualTexture *p_in = node.get_value_ref<hmap::VirtualTexture>(P_TEXTURE);
 
-  if (!p_in || !node.val<bool>(A_AUTO_EXPORT))
+  if (!p_in)
     return;
+
+  const bool auto_export = node.val<bool>(A_AUTO_EXPORT);
+  if (!auto_export)
+  {
+    Logger::log()->trace(
+        "compute_export_texture_node: [{}]/[{}]: auto export is disabled",
+        node.get_node_type(),
+        node.get_id());
+    return;
+  }
 
   std::filesystem::path fname = node.val<std::filesystem::path>(A_FNAME);
   fname                       = ensure_extension(fname, ".png");
@@ -79,6 +89,11 @@ void compute_export_texture_node(BaseNode &node)
                                                            pattern,
                                                            replacements);
 
+  Logger::log()->trace("compute_export_texture_node: [{}]/[{}]: export path = {}",
+                       node.get_node_type(),
+                       node.get_id(),
+                       export_path.string());
+
   const bool flip_x = node.val<bool>(A_FLIP_X);
   const bool flip_y = node.val<bool>(A_FLIP_Y);
   const int  depth  = node.val<bool>(A_16_BIT) ? CV_16U : CV_8U;
@@ -88,7 +103,7 @@ void compute_export_texture_node(BaseNode &node)
     hmap::flip_lr(t);
   if (flip_y)
     hmap::flip_ud(t);
-  t.to_png(fname.string(), depth);
+  t.to_png(export_path.string(), depth);
 }
 
 } // namespace hesiod

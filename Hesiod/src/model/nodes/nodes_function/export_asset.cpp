@@ -108,7 +108,12 @@ void compute_export_asset_node(BaseNode &node)
 
   const bool auto_export = node.val<bool>(A_AUTO_EXPORT);
   if (!auto_export)
+  {
+    Logger::log()->trace("compute_export_asset_node: [{}]/[{}]: auto export is disabled",
+                         node.get_node_type(),
+                         node.get_id());
     return;
+  }
 
   // --- Params
 
@@ -135,6 +140,11 @@ void compute_export_asset_node(BaseNode &node)
   std::filesystem::path export_path = make_unique_filename(fpath.parent_path(),
                                                            pattern,
                                                            replacements);
+
+  Logger::log()->trace("compute_export_asset_node: [{}]/[{}]: export path = {}",
+                       node.get_node_type(),
+                       node.get_id(),
+                       export_path.string());
 
   const std::string fname = export_path.string();
 
