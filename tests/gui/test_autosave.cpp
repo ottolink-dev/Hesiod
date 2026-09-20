@@ -104,6 +104,20 @@ private Q_SLOTS:
     QCOMPARE(qs(AutosaveManager::snapshot_key(fs::path())), qs(untitled));
   }
 
+  void deferred_path_parks_a_snapshot_beside_the_live_key()
+  {
+    const fs::path live = fs::path("/d/x-abcd1234.autosave.hsd");
+    const fs::path deferred = AutosaveManager::deferred_path(live);
+
+    QCOMPARE(qs(deferred.string()), QString("/d/x-abcd1234.deferred.autosave.hsd"));
+
+    // parking an already parked file, or an unrelated one, changes nothing
+    QCOMPARE(qs(AutosaveManager::deferred_path(deferred).string()),
+             qs(deferred.string()));
+    QCOMPARE(qs(AutosaveManager::deferred_path(fs::path("/d/notes.txt")).string()),
+             QString("/d/notes.txt"));
+  }
+
   void default_directory_is_an_absolute_autosave_folder()
   {
     const fs::path dir = AutosaveManager::default_directory();
@@ -333,6 +347,17 @@ private Q_SLOTS:
     QVERIFY(!entries[2].readable);
     QCOMPARE(qs(entries[2].snapshot.filename().string()),
              QString("garbage.autosave.hsd"));
+
+    // a snapshot parked by "Later" is still listed, in the same place
+    const fs::path parked = AutosaveManager::deferred_path(newer.get_snapshot_path());
+    fs::rename(newer.get_snapshot_path(), parked);
+
+    const auto deferred_entries = scanner.scan();
+
+    QCOMPARE(deferred_entries.size(), size_t(3));
+    QVERIFY(deferred_entries[0].readable);
+    QCOMPARE(qs(deferred_entries[0].saved_at), QString("2026-02-02_00-00-00"));
+    QCOMPARE(qs(deferred_entries[0].snapshot.string()), qs(parked.string()));
   }
 
   void scan_skips_own_untitled_snapshot_and_missing_directory()

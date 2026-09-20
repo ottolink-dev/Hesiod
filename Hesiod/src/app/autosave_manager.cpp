@@ -7,6 +7,7 @@
 #include <format>
 #include <fstream>
 #include <stdexcept>
+#include <string_view>
 #include <system_error>
 
 #include <QCoreApplication>
@@ -26,6 +27,7 @@ namespace
 {
 
 constexpr const char *snapshot_suffix = ".autosave.hsd";
+constexpr const char *deferred_suffix = ".deferred.autosave.hsd";
 constexpr const char *tmp_suffix = ".tmp";
 
 // fs::absolute(p) throws if current_path() fails (e.g. a deleted/inaccessible
@@ -86,6 +88,18 @@ std::string AutosaveManager::snapshot_key(const fs::path &project_path)
   const fs::path abs = normalised_absolute(project_path);
   const size_t   hash = std::hash<std::string>{}(abs.generic_string());
   return std::format("{}-{:08x}", abs.stem().string(), static_cast<uint32_t>(hash));
+}
+
+fs::path AutosaveManager::deferred_path(const fs::path &snapshot)
+{
+  const std::string      name = snapshot.filename().string();
+  const std::string_view suffix(snapshot_suffix);
+
+  if (name.ends_with(deferred_suffix) || !name.ends_with(suffix))
+    return snapshot;
+
+  return snapshot.parent_path() /
+         (name.substr(0, name.size() - suffix.size()) + deferred_suffix);
 }
 
 // --- Configuration

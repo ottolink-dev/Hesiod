@@ -52,6 +52,12 @@ public:
   /// process's pid does not take the stale snapshot for its own.
   static std::string snapshot_key(const std::filesystem::path &project_path);
 
+  /// The snapshot renamed to "<key>.deferred.autosave.hsd": where a snapshot
+  /// the user chose to keep for later is parked, out of reach of this
+  /// session's live snapshot. Pure; already deferred or foreign names come
+  /// back unchanged.
+  static std::filesystem::path deferred_path(const std::filesystem::path &snapshot);
+
   // --- Configuration
   void set_enabled(bool enabled);
   void set_interval(std::chrono::milliseconds interval); // <= 0 disables

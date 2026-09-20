@@ -728,7 +728,8 @@ bool HesiodApplication::offer_recovery()
     box.setWindowTitle("Recover unsaved work");
     box.setText("Unsaved work from a previous session was found.");
     box.setInformativeText(QString::fromStdString(
-        std::format("Project: {}\nFile: {}\nSnapshot taken: {}\n\nRestore it now?",
+        std::format("Project: {}\nFile: {}\nSnapshot taken: {}\n\nRestore it "
+                    "now?\n\nLater keeps the snapshot for the next launch.",
                     name,
                     file,
                     entry.saved_at)));
@@ -749,7 +750,28 @@ bool HesiodApplication::offer_recovery()
     }
 
     if (box.clickedButton() != restore_button)
-      continue; // Later: the file stays and is offered again next launch
+    {
+      // Later: park the snapshot under a deferred name, out of reach of this
+      // session's live snapshot, which would otherwise overwrite it on the next
+      // tick or delete it on the next save. scan() still lists it and adopt()
+      // re-keys it if it is restored later.
+      const fs::path parked = AutosaveManager::deferred_path(entry.snapshot);
+
+      if (parked != entry.snapshot)
+      {
+        std::error_code ec;
+        fs::rename(entry.snapshot, parked, ec);
+
+        if (ec)
+          Logger::log()->warn("HesiodApplication::offer_recovery: could not park {} as "
+                              "{}: {}",
+                              entry.snapshot.string(),
+                              parked.string(),
+                              ec.message());
+      }
+
+      continue;
+    }
 
     if (this->restore_snapshot(entry))
       return true;
