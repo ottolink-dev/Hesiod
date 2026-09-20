@@ -66,7 +66,7 @@ void setup_jagged_node(BaseNode &node)
   add_int(node, A_OCTAVES, "Octaves", 8, 1, 32);
   add_float(node, A_PERSISTENCE, "Persistence", 0.5f, 0.f, 1.f);
   add_float(node, A_LACUNARITY, "Lacunarity", 2.f, 0.01f, 4.f);
-  add_bool(node, A_SWITCH_KX_KY, "switch_kx_ky", false);
+  add_bool(node, A_SWITCH_KX_KY, "switch_kx_ky", true);
   // clang-format on
 
   setup_default_noise(node, {.noise_amp = 0.025f, .kw = 8.f, .smoothness = 0.f});
