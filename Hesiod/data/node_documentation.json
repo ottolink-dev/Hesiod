@@ -13977,6 +13977,69 @@
             }
         }
     },
+    "LooseSymmetry": {
+        "category": "Operator/Transform",
+        "description": "Synthesizes a heightmap with natural, approximate symmetry using exemplar-based super-resolution, preserving macro symmetry while retaining non-mirrored fine procedural detail.",
+        "label": "LooseSymmetry",
+        "parameter_groups": [
+            {
+                "keys": [
+                    "symmetry_type",
+                    "strength",
+                    "factor",
+                    "patch_radius",
+                    "sparsity"
+                ],
+                "name": "main"
+            }
+        ],
+        "parameters": {
+            "factor": {
+                "description": "Super-resolution downsampling and amplification factor for the macro base.",
+                "key": "factor",
+                "label": "Factor",
+                "type": "Integer"
+            },
+            "patch_radius": {
+                "description": "Patch size specified as a fraction of the domain width [0, 1].",
+                "key": "patch_radius",
+                "label": "Patch Radius",
+                "type": "Float"
+            },
+            "sparsity": {
+                "description": "Maximum number of atoms used to code each patch during sparse reconstruction.",
+                "key": "sparsity",
+                "label": "Sparsity",
+                "type": "Integer"
+            },
+            "strength": {
+                "description": "Symmetry strength in [0, 1] controlling interpolation between the original macro base and the symmetrical guide.",
+                "key": "strength",
+                "label": "Strength",
+                "type": "Float"
+            },
+            "symmetry_type": {
+                "description": "Type of symmetry operation to apply to the guide field.",
+                "key": "symmetry_type",
+                "label": "Symmetry Type",
+                "type": "Enumeration"
+            }
+        },
+        "ports": {
+            "input": {
+                "caption": "input",
+                "data_type": "VirtualArray",
+                "description": "Input heightmap providing exemplar features.",
+                "type": "input"
+            },
+            "output": {
+                "caption": "output",
+                "data_type": "VirtualArray",
+                "description": "Synthesized heightmap with loose symmetry.",
+                "type": "output"
+            }
+        }
+    },
     "MakeBinary": {
         "category": "Terrain Features/Morphology",
         "description": "No description available",
