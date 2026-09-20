@@ -265,6 +265,7 @@ std::map<std::string, std::string> get_node_inventory()
       {"Island", "Primitive/Geological"},
       {"IslandChain", "Primitive/Geological"},
       {"IslandLandMask", "Primitive/Geological"},
+      {"Jagged", "Filter/Advanced Filters"},
       {"KernelCupola", "Primitive/Kernel"},
       {"KernelDiskSmooth", "Primitive/Kernel"},
       {"KernelGabor", "Primitive/Kernel"},
@@ -608,6 +609,7 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
     SETUP_NODE(Island, island);
     SETUP_NODE(IslandChain, island_chain);
     SETUP_NODE(IslandLandMask, island_land_mask);
+    SETUP_NODE(Jagged, jagged);
     SETUP_NODE(KernelCupola, kernel_cupola);
     SETUP_NODE(KernelDiskSmooth, kernel_disk_smooth);
     SETUP_NODE(KernelGabor, kernel_gabor);

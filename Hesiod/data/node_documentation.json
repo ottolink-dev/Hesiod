@@ -19155,8 +19155,8 @@
             }
         },
         "ports": {
-            "in": {
-                "caption": "in",
+            "input": {
+                "caption": "input",
                 "data_type": "VirtualArray",
                 "description": "No description",
                 "type": "input"
