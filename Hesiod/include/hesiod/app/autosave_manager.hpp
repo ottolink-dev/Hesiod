@@ -47,7 +47,9 @@ public:
   static std::filesystem::path default_directory();
 
   /// "<stem>-<8 hex of the absolute path hash>" for a named project,
-  /// "untitled-<pid>" for an unnamed one.
+  /// "untitled-<pid>-<launch token>" for an unnamed one. The launch token is
+  /// computed once per process, so a relaunch that is handed the crashed
+  /// process's pid does not take the stale snapshot for its own.
   static std::string snapshot_key(const std::filesystem::path &project_path);
 
   // --- Configuration

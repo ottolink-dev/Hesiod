@@ -94,8 +94,13 @@ private Q_SLOTS:
     QVERIFY(AutosaveManager::snapshot_key(a).starts_with("one-"));
     QCOMPARE(AutosaveManager::snapshot_key(a).size(), size_t(4 + 8)); // "one-" + 8 hex
 
-    const std::string untitled = "untitled-" +
-                                 std::to_string(QCoreApplication::applicationPid());
+    // untitled work is keyed by pid plus a per-launch token, so a relaunch that
+    // reuses the crashed process's pid does not claim the stale snapshot
+    const std::string prefix = "untitled-" +
+                               std::to_string(QCoreApplication::applicationPid()) + "-";
+    const std::string untitled = AutosaveManager::snapshot_key(fs::path());
+    QVERIFY(untitled.starts_with(prefix));
+    QVERIFY(untitled.size() > prefix.size());
     QCOMPARE(qs(AutosaveManager::snapshot_key(fs::path())), qs(untitled));
   }
 

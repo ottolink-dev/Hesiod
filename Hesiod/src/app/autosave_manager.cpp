@@ -2,6 +2,7 @@
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
 #include <algorithm>
+#include <chrono>
 #include <cstdint>
 #include <format>
 #include <fstream>
@@ -64,7 +65,20 @@ fs::path AutosaveManager::default_directory()
 std::string AutosaveManager::snapshot_key(const fs::path &project_path)
 {
   if (project_path.empty())
-    return std::format("untitled-{}", QCoreApplication::applicationPid());
+  {
+    // the pid alone is not unique enough: a relaunch after a crash can be
+    // handed the crashed process's pid (Windows reuses pids aggressively), and
+    // the stale snapshot would then be mistaken for this process's own
+    static const std::string launch_token = std::format(
+        "{:x}",
+        std::chrono::duration_cast<std::chrono::seconds>(
+            std::chrono::system_clock::now().time_since_epoch())
+            .count());
+
+    return std::format("untitled-{}-{}",
+                       QCoreApplication::applicationPid(),
+                       launch_token);
+  }
 
   const fs::path abs = normalised_absolute(project_path);
   const size_t   hash = std::hash<std::string>{}(abs.generic_string());
