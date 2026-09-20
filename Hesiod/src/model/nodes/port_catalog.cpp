@@ -36,8 +36,8 @@ PortCatalog PortCatalog::from_documentation()
       info.name = port_name;
       info.data_type = port["data_type"].get<std::string>();
       info.direction = (port["type"].get<std::string>() == "input")
-                           ? gngui::PortType::IN
-                           : gngui::PortType::OUT;
+                           ? gnode::PortType::IN
+                           : gnode::PortType::OUT;
       infos.push_back(std::move(info));
     }
 
@@ -55,7 +55,7 @@ const std::vector<PortInfo> *PortCatalog::find(const std::string &node_type) con
 
 bool PortCatalog::is_offerable(const std::string &node_type,
                                const std::string &data_type,
-                               gngui::PortType    wanted_direction) const
+                               gnode::PortType    wanted_direction) const
 {
   const std::vector<PortInfo> *infos = this->find(node_type);
 
@@ -73,14 +73,14 @@ bool PortCatalog::is_offerable(const std::string &node_type,
 namespace
 {
 
-bool is_conventional_name(const std::string &name, gngui::PortType direction)
+bool is_conventional_name(const std::string &name, gnode::PortType direction)
 {
   std::string lower;
   lower.reserve(name.size());
   for (char c : name)
     lower += static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
 
-  if (direction == gngui::PortType::IN)
+  if (direction == gnode::PortType::IN)
     return lower == "input" || lower == "in";
 
   return lower == "output" || lower == "out";
@@ -90,7 +90,7 @@ bool is_conventional_name(const std::string &name, gngui::PortType direction)
 
 std::optional<std::string> select_port(const BaseNode    &node,
                                        const std::string &data_type,
-                                       gngui::PortType    wanted_direction)
+                                       gnode::PortType    wanted_direction)
 {
   std::optional<std::string> first_match;
 

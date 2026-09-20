@@ -339,6 +339,10 @@ void GraphTabsWidget::update_tab_widget()
     // Connect signals
     auto *gnw = editor_widget->get_graph_node_widget();
     this->connect(gnw,
+                  &GraphNodeWidget::graph_edited,
+                  this,
+                  &GraphTabsWidget::has_changed);
+    this->connect(gnw,
                   &GraphNodeWidget::has_been_cleared,
                   this,
                   &GraphTabsWidget::on_has_been_cleared);

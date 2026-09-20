@@ -10,8 +10,8 @@ set(CMAKE_AUTOMOC_VERBOSE ON)
 # Source files
 # ------------------------------
 file(GLOB_RECURSE HESIOD_GUI_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/include/*.hpp)
-file(GLOB_RECURSE HESIOD_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp
-     ${CMAKE_CURRENT_SOURCE_DIR}/app/main.cpp)
+file(GLOB_RECURSE HESIOD_SOURCES CONFIGURE_DEPENDS
+     ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 
 if(HESIOD_MINIMAL_NODE_SET)
   # option for a minimal set of nodes for quick compile time when tempering with
@@ -49,54 +49,56 @@ endif()
 # ------------------------------
 # Executable
 # ------------------------------
-add_executable(${PROJECT_NAME})
-target_sources(${PROJECT_NAME} PRIVATE ${HESIOD_SOURCES} ${HESIOD_GUI_INCLUDES})
+# Share the application implementation with integration tests; compile it once.
+add_library(hesiod_core OBJECT ${HESIOD_SOURCES} ${HESIOD_GUI_INCLUDES})
+add_executable(${PROJECT_NAME} app/main.cpp)
+target_link_libraries(${PROJECT_NAME} PRIVATE hesiod_core)
 
 # ------------------------------
 # Include directories
 # ------------------------------
 target_include_directories(
-  ${PROJECT_NAME}
-  PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_BINARY_DIR}/include
-          ${OPENGL_INCLUDE_DIRS} ${GLEW_INCLUDE_DIRS} ${GLUT_INCLUDE_DIRS})
+  hesiod_core
+  PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_BINARY_DIR}/include
+         ${OPENGL_INCLUDE_DIRS} ${GLEW_INCLUDE_DIRS} ${GLUT_INCLUDE_DIRS})
 
 # ------------------------------
 # Compiler features
 # ------------------------------
-target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_20)
+target_compile_features(hesiod_core PUBLIC cxx_std_20)
 
 # ------------------------------
 # Link libraries
 # ------------------------------
 target_link_libraries(
-  ${PROJECT_NAME}
-  PRIVATE hesiod_options
-          hesiod_platform
-          hesiod_qt_logging
-          args
-          spdlog::spdlog
-          nlohmann_json::nlohmann_json
-          highmap
-          gnode
-          gnodegui
-          meta
-          meta_qt
-          Qt6::Core
-          Qt6::OpenGL
-          Qt6::Widgets
-          Qt6::OpenGLWidgets
-          Qt6::WebEngineWidgets
-          qterrain-renderer
-          qtexture_downloader
-          ZLIB::ZLIB)
+  hesiod_core
+  PUBLIC hesiod_options
+         hesiod_platform
+         hesiod_qt_logging
+         args
+         spdlog::spdlog
+         nlohmann_json::nlohmann_json
+         highmap
+         gnode
+         gnodegui
+         meta
+         meta_qt
+         Qt6::Core
+         Qt6::OpenGL
+         Qt6::Widgets
+         Qt6::OpenGLWidgets
+         Qt6::WebEngineWidgets
+         qterrain-renderer
+         qtexture_downloader
+         ZLIB::ZLIB)
 
 # ------------------------------
 # Precompiled Headers (PCH)
 # ------------------------------
 if(HESIOD_ENABLE_PCH)
-  message(STATUS "Precompiled Headers (PCH) enabled for target ${PROJECT_NAME}")
+  message(STATUS "Precompiled Headers (PCH) enabled for target hesiod_core")
   target_precompile_headers(
-    ${PROJECT_NAME}
+    hesiod_core
     PRIVATE
     <vector>
     <string>
@@ -130,3 +132,31 @@ file(COPY ${CMAKE_SOURCE_DIR}/Hesiod/data
 # Build information messages
 # ------------------------------
 message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
+
+if(HESIOD_ENABLE_TESTS)
+  find_package(Qt6 REQUIRED COMPONENTS Test)
+  add_library(test_model_headers OBJECT
+              ${CMAKE_SOURCE_DIR}/tests/model/model_headers.cpp)
+  set_target_properties(test_model_headers PROPERTIES AUTOMOC OFF)
+  target_include_directories(test_model_headers
+                             PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+  target_link_libraries(test_model_headers PRIVATE gnode highmap meta)
+  target_compile_features(test_model_headers PRIVATE cxx_std_20)
+
+  add_executable(test_graph_editor
+                 ${CMAKE_SOURCE_DIR}/tests/gui/test_graph_editor.cpp)
+  add_dependencies(test_graph_editor test_model_headers)
+  target_link_libraries(test_graph_editor PRIVATE hesiod_core Qt6::Test)
+  add_test(NAME graph_editor COMMAND test_graph_editor)
+  set_tests_properties(
+    graph_editor PROPERTIES WORKING_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}
+                            ENVIRONMENT "QT_QPA_PLATFORM=offscreen")
+
+  add_executable(test_autosave ${CMAKE_SOURCE_DIR}/tests/gui/test_autosave.cpp)
+  add_dependencies(test_autosave test_model_headers)
+  target_link_libraries(test_autosave PRIVATE hesiod_core Qt6::Test)
+  add_test(NAME autosave COMMAND test_autosave)
+  set_tests_properties(
+    autosave PROPERTIES WORKING_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}
+                        ENVIRONMENT "QT_QPA_PLATFORM=offscreen")
+endif()

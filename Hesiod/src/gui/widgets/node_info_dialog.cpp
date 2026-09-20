@@ -160,7 +160,7 @@ void NodeInfoDialog::setup_layout()
   // --- main label
 
   {
-    std::string str = ptrs.node->get_caption() + "/" + ptrs.node->get_id();
+    std::string str = ptrs.node->get_label() + "/" + ptrs.node->get_id();
     QLabel     *label = new QLabel(str.c_str());
     this->layout->addWidget(label);
   }
@@ -251,7 +251,7 @@ void NodeInfoDialog::update_info_content()
   auto            cfg = ptrs.node->get_config_ref();
 
   std::vector<Row> rows = {
-      {"Type", ptrs.node->get_caption()},
+      {"Type", ptrs.node->get_label()},
       {"Category", ptrs.node->get_category()},
       {"ID", ptrs.node->get_id()},
       {"Created", timestamp(info.time_creation)},
@@ -310,14 +310,14 @@ void NodeInfoDialog::update_ports_content()
   for (int k = 0; k < ptrs.node->get_nports(); k++)
   {
     Row new_row;
-    new_row.caption = ptrs.node->get_port_caption(k);
+    new_row.caption = ptrs.node->get_port_label(k);
     new_row.is_connected = ptrs.node->is_port_connected(k);
 
     std::string str_ct = new_row.is_connected ? "✓" : " ";
     std::string str_in = std::format("→[{}] ", str_ct);
     std::string str_out = std::format(" [{}]→", str_ct);
 
-    new_row.type = (ptrs.node->get_port_type(k) == gngui::PortType::IN) ? str_in
+    new_row.type = (ptrs.node->get_port_type(k) == gnode::PortType::IN) ? str_in
                                                                         : str_out;
     new_row.data_type = map_type_name(ptrs.node->get_data_type(k));
 

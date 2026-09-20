@@ -86,9 +86,12 @@ std::filesystem::path prepend_project_name_to_path(
 // --- json
 
 nlohmann::json json_from_file(const std::string &fname);
-void           json_to_file(const nlohmann::json &json,
-                            const std::string    &fname,
-                            bool                  merge_with_existing_content = false);
+
+/// Writes the json to fname, optionally merged into what the file already
+/// holds. Returns false, and logs, when the file could not be written.
+bool json_to_file(const nlohmann::json &json,
+                  const std::string    &fname,
+                  bool                  merge_with_existing_content = false);
 
 template <typename T>
 inline void json_safe_get(const nlohmann::json &j, const std::string &key, T &value)

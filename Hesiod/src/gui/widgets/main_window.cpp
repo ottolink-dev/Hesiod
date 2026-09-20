@@ -34,6 +34,10 @@ void MainWindow::closeEvent(QCloseEvent *event)
     return;
   }
 
+  // a clean exit: whatever is on disk is either saved or explicitly discarded
+  if (AutosaveManager *autosave = HSD_APP->get_autosave_manager_ref())
+    autosave->discard();
+
   this->save_geometry();
   HSD_CTX.save_settings();
 

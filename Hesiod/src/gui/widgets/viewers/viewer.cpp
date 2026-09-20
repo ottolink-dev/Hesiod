@@ -452,10 +452,10 @@ void Viewer::update_widgets()
   }
   else if (BaseNode *p_node = this->safe_get_node())
   {
-    std::string new_title = this->label + " - " + p_node->get_caption() + "(" +
+    std::string new_title = this->label + " - " + p_node->get_label() + "(" +
                             p_node->get_id() + ")";
     this->setWindowTitle(new_title.c_str());
-    this->button_pin_current_node->set_label(p_node->get_caption().c_str());
+    this->button_pin_current_node->set_label(p_node->get_label().c_str());
   }
 
   // --- update combo content
@@ -469,7 +469,7 @@ void Viewer::update_widgets()
     {
       combo_options.reserve(p_node->get_nports());
       for (int k = 0; k < p_node->get_nports(); ++k)
-        combo_options.push_back(p_node->get_port_caption(k));
+        combo_options.push_back(p_node->get_port_label(k));
     }
   }
 
