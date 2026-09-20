@@ -2,6 +2,7 @@
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
 #include <algorithm>
+#include <chrono>
 #include <cmath>
 
 #include <QColorDialog>
@@ -65,20 +66,25 @@ void AppSettingsWindow::add_title(const std::string &text, int font_size_delta)
   this->layout->addRow(label);
 }
 
-void AppSettingsWindow::bind_int(const std::string &label, int &value)
+void AppSettingsWindow::bind_int(const std::string       &label,
+                                 int                     &value,
+                                 int                      min,
+                                 int                      max,
+                                 std::function<void(int)> on_changed)
 {
   auto *spin_box = new QSpinBox();
-
-  // initialize with current value
-  spin_box->setValue(value);
-
-  // set a reasonable range...
-  spin_box->setRange(1, 64);
+  spin_box->setRange(min, max);
+  spin_box->setValue(std::clamp(value, min, max));
 
   this->connect(spin_box,
                 QOverload<int>::of(&QSpinBox::valueChanged),
                 this,
-                [&value](int v) { value = v; });
+                [&value, on_changed](int v)
+                {
+                  value = v;
+                  if (on_changed)
+                    on_changed(v);
+                });
 
   this->layout->addRow(label.c_str(), spin_box);
 }
@@ -291,6 +297,22 @@ void AppSettingsWindow::setup_layout()
                   ctx.app_settings.global.save_backup_file);
   this->bind_int("Number of threads used for OpenMP",
                  ctx.app_settings.global.omp_num_threads);
+  this->bind_bool("Enable autosave (crash-recovery snapshots)",
+                  ctx.app_settings.global.enable_autosave,
+                  [](bool enabled)
+                  {
+                    if (AutosaveManager *autosave = HSD_APP->get_autosave_manager_ref())
+                      autosave->set_enabled(enabled);
+                  });
+  this->bind_int("Autosave interval (seconds)",
+                 ctx.app_settings.global.autosave_interval_s,
+                 10,
+                 3600,
+                 [](int seconds)
+                 {
+                   if (AutosaveManager *autosave = HSD_APP->get_autosave_manager_ref())
+                     autosave->set_interval(std::chrono::seconds(seconds));
+                 });
   this->add_description("\n");
 
   // --- Interface

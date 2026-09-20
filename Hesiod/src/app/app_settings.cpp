@@ -130,6 +130,8 @@ void AppSettings::json_from(nlohmann::json const &json)
   if (global.default_startup_project_file == "data/default.hsd")
     global.default_startup_project_file = "";
   json_safe_get(json, "global.save_backup_file", global.save_backup_file);
+  json_safe_get(json, "global.enable_autosave", global.enable_autosave);
+  json_safe_get(json, "global.autosave_interval_s", global.autosave_interval_s);
   json_safe_get(json, "global.recent_files", global.recent_files);
   json_safe_get(json, "global.max_recent_files", global.max_recent_files);
 
@@ -344,6 +346,8 @@ nlohmann::json AppSettings::json_to() const
   json["global.icon_path"] = global.icon_path;
   json["global.default_startup_project_file"] = global.default_startup_project_file;
   json["global.save_backup_file"] = global.save_backup_file;
+  json["global.enable_autosave"] = global.enable_autosave;
+  json["global.autosave_interval_s"] = global.autosave_interval_s;
   json["global.recent_files"] = global.recent_files;
   json["global.max_recent_files"] = global.max_recent_files;
 

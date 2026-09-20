@@ -120,14 +120,6 @@ void AppContext::restore_state()
   }
 }
 
-void AppContext::save_project_model(const std::string &fname) const
-{
-  Logger::log()->trace("AppContext::save_project_model: {}", fname);
-
-  nlohmann::json json = this->project_model->json_to();
-  json_to_file(json, fname, /* merge_with_existing_content */ true);
-}
-
 void AppContext::save_state() const { this->saved_state = this->settings_json_to(); }
 
 void AppContext::save_settings() const
@@ -199,16 +191,18 @@ std::string get_config_file_path(const QString &app_name, bool portable_mode)
   return path.toStdString();
 }
 
-std::string get_config_file_path_auto(const QString &app_name)
+bool is_portable_mode(const QString &app_name)
 {
   QDir    app_dir(QCoreApplication::applicationDirPath());
   QString portable_path = app_dir.filePath(app_name + ".json");
   QString portable_flag = app_dir.filePath("portable.flag");
 
-  bool use_portable = QFileInfo::exists(portable_path) ||
-                      QFileInfo::exists(portable_flag);
+  return QFileInfo::exists(portable_path) || QFileInfo::exists(portable_flag);
+}
 
-  return get_config_file_path(app_name, use_portable);
+std::string get_config_file_path_auto(const QString &app_name)
+{
+  return get_config_file_path(app_name, is_portable_mode(app_name));
 }
 
 } // namespace hesiod
