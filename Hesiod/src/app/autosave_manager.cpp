@@ -2,6 +2,7 @@
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
 #include <algorithm>
+#include <cstdint>
 #include <format>
 #include <fstream>
 #include <system_error>
@@ -24,6 +25,15 @@ namespace
 
 constexpr const char *snapshot_suffix = ".autosave.hsd";
 constexpr const char *tmp_suffix = ".tmp";
+
+// fs::absolute(p) throws if current_path() fails (e.g. a deleted/inaccessible
+// cwd); fall back to the input path, normalised, rather than propagate.
+fs::path normalised_absolute(const fs::path &p)
+{
+  std::error_code ec;
+  fs::path        abs = fs::absolute(p, ec);
+  return (ec ? p : abs).lexically_normal();
+}
 
 } // namespace
 
@@ -55,7 +65,7 @@ std::string AutosaveManager::snapshot_key(const fs::path &project_path)
   if (project_path.empty())
     return std::format("untitled-{}", QCoreApplication::applicationPid());
 
-  const fs::path abs = fs::absolute(project_path).lexically_normal();
+  const fs::path abs = normalised_absolute(project_path);
   const size_t   hash = std::hash<std::string>{}(abs.generic_string());
   return std::format("{}-{:08x}", abs.stem().string(), static_cast<uint32_t>(hash));
 }
@@ -88,8 +98,7 @@ void AutosaveManager::restart_timer()
 
 void AutosaveManager::set_project_path(const fs::path &path)
 {
-  const fs::path new_project_path = path.empty() ? fs::path()
-                                                 : fs::absolute(path).lexically_normal();
+  const fs::path new_project_path = path.empty() ? fs::path() : normalised_absolute(path);
   const fs::path new_snapshot = this->directory /
                                 (snapshot_key(new_project_path) + snapshot_suffix);
 
@@ -147,11 +156,14 @@ bool AutosaveManager::write_snapshot()
     return false;
   }
 
-  nlohmann::json json;
+  std::string payload;
 
   try
   {
-    json = this->provider();
+    nlohmann::json json = this->provider();
+    json["autosave"] = {{"project_path", this->project_path.string()},
+                        {"saved_at", timestamp()}};
+    payload = json.dump(4, ' ', false, nlohmann::json::error_handler_t::replace);
   }
   catch (const std::exception &e)
   {
@@ -160,9 +172,6 @@ bool AutosaveManager::write_snapshot()
                         e.what());
     return false;
   }
-
-  json["autosave"] = {{"project_path", this->project_path.string()},
-                      {"saved_at", timestamp()}};
 
   std::error_code ec;
   fs::create_directories(this->directory, ec);
@@ -188,7 +197,7 @@ bool AutosaveManager::write_snapshot()
       return false;
     }
 
-    out << json.dump(4);
+    out << payload;
     out.flush();
 
     if (!out.good())
