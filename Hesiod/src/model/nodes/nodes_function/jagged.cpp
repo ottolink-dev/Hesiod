@@ -22,13 +22,17 @@ constexpr const char *P_DY     = "dy";
 constexpr const char *P_MASK   = "mask";
 constexpr const char *P_OUTPUT = "output";
 
-constexpr const char *A_AMP      = "amp";
-constexpr const char *A_ANGLE    = "angle";
-constexpr const char *A_GAMMA    = "gamma";
-constexpr const char *A_JITTER_X = "jitter.x";
-constexpr const char *A_JITTER_Y = "jitter.y";
-constexpr const char *A_KW       = "kw";
-constexpr const char *A_SEED     = "seed";
+constexpr const char *A_AMP          = "amp";
+constexpr const char *A_ANGLE        = "angle";
+constexpr const char *A_GAMMA        = "gamma";
+constexpr const char *A_JITTER_X     = "jitter.x";
+constexpr const char *A_JITTER_Y     = "jitter.y";
+constexpr const char *A_KW           = "kw";
+constexpr const char *A_LACUNARITY   = "lacunarity";
+constexpr const char *A_OCTAVES      = "octaves";
+constexpr const char *A_PERSISTENCE  = "persistence";
+constexpr const char *A_SEED         = "seed";
+constexpr const char *A_SWITCH_KX_KY = "switch_kx_ky";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -53,10 +57,16 @@ void setup_jagged_node(BaseNode &node)
   add_wavenumber(node, A_KW, "Spatial Frequency", glm::vec2(32.f, 32.f), 0.f, FLT_MAX, true);
   add_seed(node, A_SEED, "Seed");
   add_angle(node, A_ANGLE, "Angle", 0.f, -180.f, 180.f);
-  add_float(node, A_AMP, "Amplitude", 0.01f, 0.001f, 0.1f);
-  add_float(node, A_GAMMA, "Gamma", 1.f, 0.01f, 4.f);
+  add_float(node, A_AMP, "Amplitude", 0.04f, 0.001f, 0.2f);
+  add_float(node, A_GAMMA, "Gamma", 0.3f, 0.05f, 2.f);
   add_float(node, A_JITTER_X, "jitter.x", 1.f, 0.f, 1.f);
   add_float(node, A_JITTER_Y, "jitter.y", 1.f, 0.f, 1.f);
+
+  node.set_current_category("FBM Layers");
+  add_int(node, A_OCTAVES, "Octaves", 8, 1, 32);
+  add_float(node, A_PERSISTENCE, "Persistence", 0.5f, 0.f, 1.f);
+  add_float(node, A_LACUNARITY, "Lacunarity", 2.f, 0.01f, 4.f);
+  add_bool(node, A_SWITCH_KX_KY, "switch_kx_ky", false);
   // clang-format on
 
   setup_default_noise(node, {.noise_amp = 0.025f, .kw = 8.f, .smoothness = 0.f});
@@ -90,6 +100,10 @@ void compute_jagged_node(BaseNode &node)
   const auto jitter = glm::vec2(node.val<float>(A_JITTER_X), node.val<float>(A_JITTER_Y));
   const auto gamma  = node.val<float>(A_GAMMA);
   const auto angle  = node.val<float>(A_ANGLE);
+  const auto octaves      = node.val<int>(A_OCTAVES);
+  const auto persistence  = node.val<float>(A_PERSISTENCE);
+  const auto lacunarity   = node.val<float>(A_LACUNARITY);
+  const auto switch_kx_ky = node.val<bool>(A_SWITCH_KX_KY);
 
   // --- Prepare mask
 
@@ -108,24 +122,37 @@ void compute_jagged_node(BaseNode &node)
   hmap::for_each_tile(
       {p_in, p_dx, p_dy, p_mask},
       {p_out},
-      [kw, amp, seed, jitter, gamma, angle](std::vector<const hmap::Array *> p_arrays_in,
-                                            std::vector<hmap::Array *>       p_arrays_out,
-                                            const hmap::TileRegion          &region)
+      [kw,
+       amp,
+       seed,
+       octaves,
+       persistence,
+       lacunarity,
+       switch_kx_ky,
+       jitter,
+       gamma,
+       angle](std::vector<const hmap::Array *> p_arrays_in,
+              std::vector<hmap::Array *>       p_arrays_out,
+              const hmap::TileRegion          &region)
       {
         const auto [pa_in, pa_dx, pa_dy, pa_mask] = unpack<4>(p_arrays_in);
         auto [pa_out]                             = unpack<1>(p_arrays_out);
 
-        *pa_out = hmap::gpu::jagged(*pa_in,
-                                    kw,
-                                    amp,
-                                    seed,
-                                    jitter,
-                                    gamma,
-                                    angle,
-                                    pa_mask,
-                                    pa_dx,
-                                    pa_dy,
-                                    region.bbox);
+        *pa_out = hmap::gpu::jagged_fbm(*pa_in,
+                                        kw,
+                                        amp,
+                                        seed,
+                                        octaves,
+                                        persistence,
+                                        lacunarity,
+                                        switch_kx_ky,
+                                        jitter,
+                                        gamma,
+                                        angle,
+                                        pa_mask,
+                                        pa_dx,
+                                        pa_dy,
+                                        region.bbox);
       },
       node.cfg().cm_gpu);
 

@@ -41,7 +41,8 @@ void override_export_nodes_settings(const std::string           &fname,
           if (container.contains("octaves"))
           {
             int octaves_max = int(bake_settings.resolution / 128.f); // heuristic...
-            if (container["octaves"].is_object() && container["octaves"].contains("value"))
+            if (container["octaves"].is_object() &&
+                container["octaves"].contains("value"))
               container["octaves"]["value"] = octaves_max;
             else if (container["octaves"].is_number())
               container["octaves"] = octaves_max;
@@ -72,7 +73,8 @@ void override_export_nodes_settings(const std::string           &fname,
         }
 
         // Export nodes tweaking
-        if (node_label.find("Export") != std::string::npos || container.contains("auto_export"))
+        if (node_label.find("Export") != std::string::npos ||
+            container.contains("auto_export"))
         {
           // force node auto export
           if (bake_settings.force_auto_export)
@@ -103,8 +105,8 @@ void override_export_nodes_settings(const std::string           &fname,
 
             if (!current_fname.empty())
             {
-              std::filesystem::path basename =
-                  std::filesystem::path(current_fname).filename();
+              std::filesystem::path basename = std::filesystem::path(current_fname)
+                                                   .filename();
 
               std::string new_name = node_label + "_" + node_id + "_" + basename.string();
 
