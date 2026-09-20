@@ -31,8 +31,9 @@ public:
   /// Deletes the parentless top-level windows - see the definition.
   ~ProjectUI() override;
 
-  void load_ui_state(const std::string &fname);
-  void save_ui_state(const std::string &fname) const;
+  void           load_ui_state(const std::string &fname);
+  void           save_ui_state(const std::string &fname) const;
+  nlohmann::json ui_state_json_to() const;
 
   void cleanup();
   void initialize(ProjectModel *project);

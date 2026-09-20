@@ -43,6 +43,9 @@ public:
   // --- Callbacks
   std::function<void()> project_name_changed;
   std::function<void()> is_dirty_changed;
+  // fired on every change, unlike is_dirty_changed which only fires on the
+  // clean -> dirty transition; feeds the autosave "changed since snapshot" flag
+  std::function<void()> has_changed;
 
   void on_has_changed();
 

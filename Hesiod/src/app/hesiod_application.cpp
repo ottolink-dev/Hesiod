@@ -791,6 +791,21 @@ void HesiodApplication::on_toggle_node_library_pan()
     this->project_ui->get_graph_tabs_widget_ref()->set_show_node_library_pan(new_state);
 }
 
+nlohmann::json HesiodApplication::project_file_json() const
+{
+  nlohmann::json json = this->context.project_model->json_to();
+
+  // UI state travels with the project; there is none in headless modes
+  if (this->project_ui)
+    json.update(this->project_ui->ui_state_json_to());
+
+  json["Hesiod version"] = "v" + std::to_string(HESIOD_VERSION_MAJOR) + "." +
+                           std::to_string(HESIOD_VERSION_MINOR) + "." +
+                           std::to_string(HESIOD_VERSION_PATCH);
+  json["saved_at"] = timestamp();
+  return json;
+}
+
 void HesiodApplication::save_backup(const std::string &fname)
 {
   Logger::log()->trace("HesiodApplication::save_backup: {}", fname);
@@ -860,18 +875,8 @@ void HesiodApplication::save_project_model_and_ui(const std::string &fname)
   }
 
   // proceed with saving
-  this->context.save_project_model(fname);
+  json_to_file(this->project_file_json(), fname, /* merge_with_existing_content */ true);
   this->context.project_model->set_is_dirty(false);
-  this->project_ui->save_ui_state(fname);
-
-  // add some global info
-  nlohmann::json json;
-  json["Hesiod version"] = "v" + std::to_string(HESIOD_VERSION_MAJOR) + "." +
-                           std::to_string(HESIOD_VERSION_MINOR) + "." +
-                           std::to_string(HESIOD_VERSION_PATCH);
-
-  json["saved_at"] = timestamp();
-  json_to_file(json, fname, /* merge_with_existing_content */ true);
 
   this->notify(std::format("Project saved successfully, {}.", fname));
 }

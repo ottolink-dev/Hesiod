@@ -50,7 +50,10 @@ public:
   void load_project_model_and_ui(const std::string &fname = "", bool keep_name = true);
   void save_project_model_and_ui(const std::string &fname);
   void save_backup(const std::string &fname);
-  void show();
+  /// Everything a .hsd file holds: model, UI state (when a ProjectUI exists),
+  /// version and timestamp. Shared by the real save and the autosave snapshot.
+  nlohmann::json project_file_json() const;
+  void           show();
 
   void notify(const std::string &msg = "", int timeout = 5000);
 
