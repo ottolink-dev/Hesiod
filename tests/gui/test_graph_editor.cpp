@@ -530,21 +530,34 @@ private Q_SLOTS:
 
   void loading_an_existing_model_is_presentation_only_data()
   {
+    QTest::addColumn<QString>("target_type");
     QTest::addColumn<QString>("output_port");
-    QTest::newRow("current-port") << QString("output");
-    QTest::newRow("legacy-port") << QString("out");
+    QTest::addColumn<QString>("input_port");
+    QTest::newRow("current-port") << QString("Thru") << QString("output")
+                                 << QString("input");
+    QTest::newRow("legacy-port") << QString("Thru") << QString("out")
+                                << QString("in");
+    QTest::newRow("post-process-current-port")
+        << QString("PostProcess") << QString("output") << QString("input");
+    QTest::newRow("post-process-legacy-port")
+        << QString("PostProcess") << QString("output") << QString("in");
   }
 
   void loading_an_existing_model_is_presentation_only()
   {
+    QFETCH(QString, target_type);
     QFETCH(QString, output_port);
+    QFETCH(QString, input_port);
     Fixture    f;
-    const auto a = f.add(), b = f.add();
-    f.editor.connect({a, "output", b, "input"});
+    const auto a = f.add(), b = f.add(target_type.toStdString());
+    const auto input = f.graph->get_node(b)->get_port_label(0);
+    f.editor.connect({a, "output", b, input});
     auto saved = f.view.json_to();
     saved["links"][0]["port_out_id"] = output_port.toStdString();
+    saved["links"][0]["port_in_id"] = input_port.toStdString();
     auto model = f.graph->json_to();
     model["links"][0]["port_id_from"] = output_port.toStdString();
+    model["links"][0]["port_id_to"] = input_port.toStdString();
     auto loaded = std::make_shared<GraphNode>("loaded", f.config);
     loaded->json_from(model);
     GraphNodeWidget widget(loaded);
@@ -556,6 +569,20 @@ private Q_SLOTS:
     QCOMPARE(updates.count(), 0);
     QCOMPARE(loaded->get_links().size(), size_t(1));
     QVERIFY(consistent(*loaded, widget));
+
+    const auto saved_model = loaded->json_to();
+    const auto saved_widget = widget.json_to();
+    QVERIFY(saved_model["links"][0]["port_id_to"] == "input");
+    QVERIFY(saved_widget["links"][0]["port_in_id"] == "input");
+    auto reloaded = std::make_shared<GraphNode>("reloaded", f.config);
+    reloaded->json_from(saved_model);
+    GraphNodeWidget reloaded_widget(reloaded);
+    reloaded_widget.scene()->setParent(&reloaded_widget);
+    reloaded_widget.json_from(saved_widget);
+    QCOMPARE(reloaded->get_links().size(), size_t(1));
+    QVERIFY(consistent(*reloaded, reloaded_widget));
+    reloaded_widget.erase_node(a);
+    reloaded_widget.erase_node(b);
     widget.erase_node(a);
     widget.erase_node(b);
   }

@@ -18,7 +18,7 @@ Filter
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
-|in|VirtualArray|No description|
+|input|VirtualArray|No description|
 
 ## Outputs
 
