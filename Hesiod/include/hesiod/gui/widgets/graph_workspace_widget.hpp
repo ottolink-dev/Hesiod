@@ -18,15 +18,15 @@ class NodeSettingsWidget;
 class Viewer3D;
 
 // =====================================
-// GraphEditorWidget
+// GraphWorkspaceWidget
 // =====================================
-class GraphEditorWidget : public QWidget
+class GraphWorkspaceWidget : public QWidget
 {
   Q_OBJECT
 
 public:
   // --- Constructor and Setup ---
-  GraphEditorWidget(std::weak_ptr<GraphNode> p_graph_node, QWidget *parent = nullptr);
+  GraphWorkspaceWidget(std::weak_ptr<GraphNode> p_graph_node, QWidget *parent = nullptr);
 
   // --- Serialization ---
   void           json_from(nlohmann::json const &json);
