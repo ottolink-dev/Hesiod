@@ -75,7 +75,7 @@ static void setup_common_particle_attributes(BaseNode &node)
 
   node.set_current_category("Bedrock");
   add_bool(node, A_ENABLE_DEFAULT_BEDROCK, "Enable Bedrock Resistance", true);
-  add_float(node, A_BD_ELEVATION_STRENGTH, "Bedrock Elevation Gap", 0.2f, 0.f, 1.f);
+  add_float(node, A_BD_ELEVATION_STRENGTH, "Bedrock Elevation Gap", 0.2f, 0.f, 0.2f);
   add_float(node, A_BD_SLOPE_STRENGTH, "Bedrock Slope Gap", 0.f, 0.f, 1.f);
   add_float(node, A_BD_SLOPE, "Bedrock Slope Limit", 2.f, 0.f, FLT_MAX);
 

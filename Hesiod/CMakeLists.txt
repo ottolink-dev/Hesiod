@@ -157,6 +157,6 @@ if(HESIOD_ENABLE_TESTS)
   target_link_libraries(test_autosave PRIVATE hesiod_core Qt6::Test)
   add_test(NAME autosave COMMAND test_autosave)
   set_tests_properties(
-    autosave PROPERTIES WORKING_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}
-                        ENVIRONMENT "QT_QPA_PLATFORM=offscreen")
+    autosave PROPERTIES WORKING_DIRECTORY ${EXECUTABLE_OUTPUT_PATH} ENVIRONMENT
+                        "QT_QPA_PLATFORM=offscreen")
 endif()

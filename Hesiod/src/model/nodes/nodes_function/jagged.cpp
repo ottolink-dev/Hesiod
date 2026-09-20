@@ -22,14 +22,13 @@ constexpr const char *P_DY     = "dy";
 constexpr const char *P_MASK   = "mask";
 constexpr const char *P_OUTPUT = "output";
 
-constexpr const char *A_ANGLE       = "angle";
-constexpr const char *A_FACTOR      = "factor";
-constexpr const char *A_GAMMA       = "gamma";
-constexpr const char *A_JITTER_X    = "jitter.x";
-constexpr const char *A_JITTER_Y    = "jitter.y";
-constexpr const char *A_KW          = "kw";
-constexpr const char *A_SEED        = "seed";
-constexpr const char *A_SHAPE_GAMMA = "shape_gamma";
+constexpr const char *A_AMP      = "amp";
+constexpr const char *A_ANGLE    = "angle";
+constexpr const char *A_GAMMA    = "gamma";
+constexpr const char *A_JITTER_X = "jitter.x";
+constexpr const char *A_JITTER_Y = "jitter.y";
+constexpr const char *A_KW       = "kw";
+constexpr const char *A_SEED     = "seed";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -54,9 +53,8 @@ void setup_jagged_node(BaseNode &node)
   add_wavenumber(node, A_KW, "Spatial Frequency", glm::vec2(32.f, 32.f), 0.f, FLT_MAX, true);
   add_seed(node, A_SEED, "Seed");
   add_angle(node, A_ANGLE, "Angle", 0.f, -180.f, 180.f);
-  add_float(node, A_FACTOR, "Strength", 0.1f, 0.f, 0.5f);
-  add_float(node, A_GAMMA, "Gamma", 0.05f, 0.01f, 2.f);
-  add_float(node, A_SHAPE_GAMMA, "Shape Gamma", 0.05f, 0.01f, 2.f);
+  add_float(node, A_AMP, "Amplitude", 0.01f, 0.001f, 0.1f);
+  add_float(node, A_GAMMA, "Gamma", 1.f, 0.01f, 4.f);
   add_float(node, A_JITTER_X, "jitter.x", 1.f, 0.f, 1.f);
   add_float(node, A_JITTER_Y, "jitter.y", 1.f, 0.f, 1.f);
   // clang-format on
@@ -86,13 +84,12 @@ void compute_jagged_node(BaseNode &node)
 
   // --- Parameters
 
-  const auto     kw    = node.val<glm::vec2>(A_KW);
-  const uint32_t seed  = static_cast<uint32_t>(node.val<int>(A_SEED));
-  const auto     angle = node.val<float>(A_ANGLE);
+  const auto     kw   = node.val<glm::vec2>(A_KW);
+  const auto     amp  = node.val<float>(A_AMP);
+  const uint32_t seed = static_cast<uint32_t>(node.val<int>(A_SEED));
   const auto jitter = glm::vec2(node.val<float>(A_JITTER_X), node.val<float>(A_JITTER_Y));
-  const auto factor = node.val<float>(A_FACTOR);
   const auto gamma  = node.val<float>(A_GAMMA);
-  const auto shape_gamma = node.val<float>(A_SHAPE_GAMMA);
+  const auto angle  = node.val<float>(A_ANGLE);
 
   // --- Prepare mask
 
@@ -111,21 +108,19 @@ void compute_jagged_node(BaseNode &node)
   hmap::for_each_tile(
       {p_in, p_dx, p_dy, p_mask},
       {p_out},
-      [kw, seed, jitter, gamma, shape_gamma, factor, angle](
-          std::vector<const hmap::Array *> p_arrays_in,
-          std::vector<hmap::Array *>       p_arrays_out,
-          const hmap::TileRegion          &region)
+      [kw, amp, seed, jitter, gamma, angle](std::vector<const hmap::Array *> p_arrays_in,
+                                            std::vector<hmap::Array *>       p_arrays_out,
+                                            const hmap::TileRegion          &region)
       {
         const auto [pa_in, pa_dx, pa_dy, pa_mask] = unpack<4>(p_arrays_in);
         auto [pa_out]                             = unpack<1>(p_arrays_out);
 
         *pa_out = hmap::gpu::jagged(*pa_in,
                                     kw,
+                                    amp,
                                     seed,
                                     jitter,
                                     gamma,
-                                    shape_gamma,
-                                    factor,
                                     angle,
                                     pa_mask,
                                     pa_dx,
