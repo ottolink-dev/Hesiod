@@ -256,6 +256,9 @@ void HesiodApplication::cleanup()
 {
   Logger::log()->trace("HesiodApplication::cleanup");
 
+  // the event loop is pumped below while the model and UI are inconsistent
+  AutosaveSuspender suspend_autosave(this->autosave.get());
+
   // the project on its way out is either saved or explicitly discarded
   if (this->autosave)
     this->autosave->discard();
@@ -315,6 +318,9 @@ void HesiodApplication::load_project_model_and_ui(const std::string &fname,
                                                   bool               keep_name)
 {
   Logger::log()->trace("HesiodApplication::load_project_model_and_ui: fname [{}]", fname);
+
+  // the event loop is pumped below while the model and UI are inconsistent
+  AutosaveSuspender suspend_autosave(this->autosave.get());
 
   this->notify(std::format("Loading project... {}", fname));
 

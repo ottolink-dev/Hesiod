@@ -258,6 +258,9 @@ void AutosaveManager::discard()
 
   // a stray temp file from an interrupted write is never worth keeping
   fs::remove(fs::path(this->snapshot_path.string() + tmp_suffix), ec);
+
+  // whatever was pending is saved or gone
+  this->pending = false;
 }
 
 void AutosaveManager::adopt(const fs::path &snapshot)

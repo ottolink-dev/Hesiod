@@ -222,8 +222,10 @@ private Q_SLOTS:
     QVERIFY(m.write_snapshot());
     QVERIFY(fs::exists(m.get_snapshot_path()));
 
+    m.mark_changed();
     m.discard();
     QVERIFY(!fs::exists(m.get_snapshot_path()));
+    QVERIFY(!m.has_pending_changes());
 
     m.discard();
     QVERIFY(!fs::exists(m.get_snapshot_path()));
