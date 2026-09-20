@@ -13,6 +13,7 @@
 #include <QMenuBar>
 #include <QMessageBox>
 #include <QProgressDialog>
+#include <QPushButton>
 #include <QStatusBar>
 #include <QTimer>
 #include <QUrl>
@@ -141,53 +142,58 @@ HesiodApplication::HesiodApplication(int &argc, char **argv, StartupMode mode)
   // (after MainWindow creation)
   splash->show_message("Loading project...");
 
-  std::string fname = "";
-  bool        keep_name = false; // project name not kept (examples, default project)
-
-  if (!startup_file.empty())
+  // a pending recovery snapshot wins over the command-line file and the
+  // example selector: the user has unsaved work to decide about first
+  if (!this->offer_recovery())
   {
-    if (fs::exists(startup_file))
+    std::string fname = "";
+    bool        keep_name = false; // project name not kept (examples, default project)
+
+    if (!startup_file.empty())
     {
-      fname = fs::absolute(fs::path(startup_file)).lexically_normal().string();
-      keep_name = true; // opened as a regular project, saving writes back to it
+      if (fs::exists(startup_file))
+      {
+        fname = fs::absolute(fs::path(startup_file)).lexically_normal().string();
+        keep_name = true; // opened as a regular project, saving writes back to it
+      }
+      else
+      {
+        Logger::log()->warn("HesiodApplication::HesiodApplication: project file "
+                            "requested on the command line does not exist, falling back "
+                            "to normal startup: {}",
+                            startup_file);
+      }
     }
-    else
+
+    if (fname.empty() &&
+        this->context.app_settings.interface.enable_example_selector_at_startup)
     {
-      Logger::log()->warn("HesiodApplication::HesiodApplication: project file "
-                          "requested on the command line does not exist, falling back "
-                          "to normal startup: {}",
-                          startup_file);
+      std::string           path = this->context.app_settings.global.ready_made_path;
+      ExampleSelectorDialog ex_dialog(QString::fromStdString(path));
+      ex_dialog.exec();
+
+      // Closing the window is a decision not to open anything, so the app stops
+      // rather than dropping the user into a project they never asked for. New
+      // Project falls through with an empty filename, which is what starts one.
+      if (ex_dialog.outcome() == ExampleSelectorDialog::Outcome::Closed)
+      {
+        splash->close();
+        delete splash;
+        ::exit(0);
+      }
+
+      if (ex_dialog.outcome() == ExampleSelectorDialog::Outcome::OpenFile)
+      {
+        fname = ex_dialog.selected_file().toStdString();
+        keep_name = ex_dialog.selected_is_project();
+      }
     }
+
+    this->load_project_model_and_ui(fname, keep_name);
+
+    if (keep_name)
+      this->add_recent_file(fname);
   }
-
-  if (fname.empty() &&
-      this->context.app_settings.interface.enable_example_selector_at_startup)
-  {
-    std::string           path = this->context.app_settings.global.ready_made_path;
-    ExampleSelectorDialog ex_dialog(QString::fromStdString(path));
-    ex_dialog.exec();
-
-    // Closing the window is a decision not to open anything, so the app stops
-    // rather than dropping the user into a project they never asked for. New
-    // Project falls through with an empty filename, which is what starts one.
-    if (ex_dialog.outcome() == ExampleSelectorDialog::Outcome::Closed)
-    {
-      splash->close();
-      delete splash;
-      ::exit(0);
-    }
-
-    if (ex_dialog.outcome() == ExampleSelectorDialog::Outcome::OpenFile)
-    {
-      fname = ex_dialog.selected_file().toStdString();
-      keep_name = ex_dialog.selected_is_project();
-    }
-  }
-
-  this->load_project_model_and_ui(fname, keep_name);
-
-  if (keep_name)
-    this->add_recent_file(fname);
 
   // others
   splash->show_message("Opening UI...");
@@ -677,6 +683,117 @@ void HesiodApplication::on_open_recent(const std::string &fname)
 
   this->load_project_model_and_ui(fname);
   this->add_recent_file(fname);
+}
+
+bool HesiodApplication::offer_recovery()
+{
+  Logger::log()->trace("HesiodApplication::offer_recovery");
+
+  if (!this->autosave)
+    return false;
+
+  for (const AutosaveManager::Entry &entry : this->autosave->scan())
+  {
+    const QString snapshot = QString::fromStdString(entry.snapshot.string());
+
+    if (!entry.readable)
+    {
+      QMessageBox box(this->main_window);
+      box.setIcon(QMessageBox::Warning);
+      box.setWindowTitle("Recover unsaved work");
+      box.setText("A recovery file could not be read.");
+      box.setInformativeText(snapshot);
+      QPushButton *delete_button = box.addButton("Delete", QMessageBox::DestructiveRole);
+      QPushButton *keep_button = box.addButton("Keep", QMessageBox::RejectRole);
+      box.setDefaultButton(keep_button);
+      box.setEscapeButton(keep_button);
+      box.exec();
+
+      if (box.clickedButton() == delete_button)
+      {
+        std::error_code ec;
+        fs::remove(entry.snapshot, ec);
+      }
+      continue;
+    }
+
+    const std::string name = entry.project_path.empty()
+                                 ? "Untitled project"
+                                 : entry.project_path.stem().string();
+    const std::string file = entry.project_path.empty() ? "(never saved)"
+                                                        : entry.project_path.string();
+
+    QMessageBox box(this->main_window);
+    box.setIcon(QMessageBox::Question);
+    box.setWindowTitle("Recover unsaved work");
+    box.setText("Unsaved work from a previous session was found.");
+    box.setInformativeText(QString::fromStdString(
+        std::format("Project: {}\nFile: {}\nSnapshot taken: {}\n\nRestore it now?",
+                    name,
+                    file,
+                    entry.saved_at)));
+    QPushButton *restore_button = box.addButton("Restore", QMessageBox::AcceptRole);
+    QPushButton *discard_button = box.addButton("Discard", QMessageBox::DestructiveRole);
+    QPushButton *later_button = box.addButton("Later", QMessageBox::RejectRole);
+    box.setDefaultButton(restore_button);
+    box.setEscapeButton(later_button);
+    box.exec();
+
+    if (box.clickedButton() == discard_button)
+    {
+      std::error_code ec;
+      fs::remove(entry.snapshot, ec);
+      Logger::log()->info("HesiodApplication::offer_recovery: discarded {}",
+                          entry.snapshot.string());
+      continue;
+    }
+
+    if (box.clickedButton() != restore_button)
+      continue; // Later: the file stays and is offered again next launch
+
+    if (this->restore_snapshot(entry))
+      return true;
+  }
+
+  return false;
+}
+
+bool HesiodApplication::restore_snapshot(const AutosaveManager::Entry &entry)
+{
+  Logger::log()->info("HesiodApplication::restore_snapshot: {}", entry.snapshot.string());
+
+  try
+  {
+    this->load_project_model_and_ui(entry.snapshot.string(), /* keep_name */ false);
+  }
+  catch (const std::exception &e)
+  {
+    Logger::log()->error("HesiodApplication::restore_snapshot: could not load {}: {}",
+                         entry.snapshot.string(),
+                         e.what());
+    QMessageBox::warning(
+        this->main_window,
+        "Recover unsaved work",
+        QString("The recovery file could not be loaded and has been kept:\n%1\n\n%2")
+            .arg(QString::fromStdString(entry.snapshot.string()), e.what()));
+    this->load_project_model_and_ui("", false);
+    return false;
+  }
+
+  if (!entry.project_path.empty())
+  {
+    this->context.project_model->set_path(entry.project_path);
+    this->add_recent_file(entry.project_path.string());
+  }
+
+  // recovered work is unsaved by definition; the snapshot becomes this
+  // instance's live one and is refreshed on the next tick
+  this->context.project_model->set_is_dirty(true);
+  this->autosave->adopt(entry.snapshot);
+  this->autosave->mark_changed();
+
+  this->notify(std::format("Recovered unsaved work from {}", entry.snapshot.string()));
+  return true;
 }
 
 void HesiodApplication::on_load_ready_made()

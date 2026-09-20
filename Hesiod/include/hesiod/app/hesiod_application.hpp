@@ -95,6 +95,9 @@ private slots:
 private:
   void add_recent_file(const std::string &fname);
   void cleanup();
+  // startup: prompt for each pending recovery snapshot; true when one was restored
+  bool offer_recovery();
+  bool restore_snapshot(const AutosaveManager::Entry &entry);
   void rebuild_recent_files_menu();
   void setup_menu_bar();
 
