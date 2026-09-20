@@ -46,7 +46,10 @@ AutosaveManager::AutosaveManager(fs::path directory, QObject *parent)
 
   this->set_project_path(fs::path());
 
-  this->timer.setTimerType(Qt::VeryCoarseTimer);
+  // VeryCoarseTimer would round the interval up to whole seconds, which the
+  // tests' millisecond intervals cannot express; production intervals are
+  // seconds-scale anyway, so coarse accuracy costs nothing in wakeups
+  this->timer.setTimerType(Qt::CoarseTimer);
   this->connect(&this->timer, &QTimer::timeout, this, [this]() { this->snapshot_now(); });
 }
 
