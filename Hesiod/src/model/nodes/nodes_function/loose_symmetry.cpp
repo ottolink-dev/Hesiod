@@ -39,6 +39,7 @@ void setup_loose_symmetry_node(BaseNode &node)
   node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_OUT, CONFIG(node));
 
   // attribute(s)
+  node.set_current_category("Symmetry");
   add_enum(node,
            A_SYMMETRY_TYPE,
            "Symmetry Type",
@@ -46,8 +47,13 @@ void setup_loose_symmetry_node(BaseNode &node)
            "Left to Right");
   add_float(node, A_STRENGTH, "Strength", 1.f, 0.f, 1.f);
   add_int(node, A_FACTOR, "Factor", 4, 1, 32);
-  add_float(node, A_PATCH_RADIUS, "Patch Radius", 0.05f, 0.01f, 0.2f);
+
+  node.set_current_category("Synthesis");
+  add_float(node, A_PATCH_RADIUS, "Patch Radius", 0.05f, 0.f, 1.f);
   add_int(node, A_SPARSITY, "Sparsity", 1, 1, 16);
+
+  setup_post_process_heightmap_attributes(node,
+                                          {.add_mix = true, .remap_active_state = false});
 }
 
 // -----------------------------------------------------------------------------
@@ -83,6 +89,10 @@ void compute_loose_symmetry_node(BaseNode &node)
         node.val<int>(A_SPARSITY));
 
     p_out->from_array(out_array, node.cfg().cm_cpu);
+
+    // --- Post-process
+
+    post_process_heightmap(node, *p_out, p_in);
   }
 }
 
