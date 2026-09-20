@@ -168,6 +168,109 @@ private Q_SLOTS:
     QVERIFY(!m.write_snapshot());
     QVERIFY(!fs::exists(m.get_snapshot_path()));
   }
+
+  void suspend_blocks_writes_until_fully_resumed()
+  {
+    QTemporaryDir   tmp;
+    AutosaveManager m(fs::path(tmp.path().toStdString()));
+    m.set_project_json_provider(sample_project_json);
+    m.mark_changed();
+
+    m.suspend();
+    m.suspend();
+    QVERIFY(m.is_suspended());
+    QVERIFY(!m.snapshot_now());
+    QVERIFY(m.has_pending_changes());
+
+    m.resume();
+    QVERIFY(m.is_suspended());
+    QVERIFY(!m.snapshot_now());
+
+    m.resume();
+    QVERIFY(!m.is_suspended());
+    QVERIFY(m.snapshot_now());
+
+    // an extra resume never goes negative
+    m.resume();
+    QVERIFY(!m.is_suspended());
+
+    {
+      AutosaveSuspender guard(&m);
+      QVERIFY(m.is_suspended());
+    }
+    QVERIFY(!m.is_suspended());
+
+    AutosaveSuspender null_guard(nullptr); // tolerated: no manager in headless modes
+  }
+
+  void discard_removes_snapshot_and_is_idempotent()
+  {
+    QTemporaryDir   tmp;
+    AutosaveManager m(fs::path(tmp.path().toStdString()));
+    m.set_project_json_provider(sample_project_json);
+    QVERIFY(m.write_snapshot());
+    QVERIFY(fs::exists(m.get_snapshot_path()));
+
+    m.discard();
+    QVERIFY(!fs::exists(m.get_snapshot_path()));
+
+    m.discard();
+    QVERIFY(!fs::exists(m.get_snapshot_path()));
+  }
+
+  void set_project_path_moves_live_snapshot_to_new_key()
+  {
+    QTemporaryDir   tmp;
+    const fs::path  dir = fs::path(tmp.path().toStdString());
+    AutosaveManager m(dir);
+    m.set_project_json_provider(sample_project_json);
+    m.mark_changed();
+    QVERIFY(m.snapshot_now());
+
+    const fs::path old_snapshot = m.get_snapshot_path();
+    QVERIFY(old_snapshot.filename().string().starts_with("untitled-"));
+
+    m.set_project_path(dir / "named.hsd");
+
+    QVERIFY(!fs::exists(old_snapshot));
+    QVERIFY(fs::exists(m.get_snapshot_path()));
+    QVERIFY(m.get_snapshot_path().filename().string().starts_with("named-"));
+
+    // the same path again is a no-op
+    const fs::path before = m.get_snapshot_path();
+    m.set_project_path(dir / "named.hsd");
+    QCOMPARE(qs(m.get_snapshot_path().string()), qs(before.string()));
+    QVERIFY(fs::exists(before));
+
+    // the moved file carries the new project path on its next write
+    QVERIFY(m.write_snapshot());
+    const nlohmann::json json = json_from_file(m.get_snapshot_path().string());
+    QCOMPARE(qs(json["autosave"]["project_path"].get<std::string>()),
+             qs(fs::absolute(dir / "named.hsd").lexically_normal().string()));
+  }
+
+  void adopt_moves_a_recovered_file_under_the_current_key()
+  {
+    QTemporaryDir  tmp;
+    const fs::path dir = fs::path(tmp.path().toStdString());
+    const fs::path foreign = dir / "untitled-999.autosave.hsd";
+    {
+      std::ofstream out(foreign);
+      out << sample_project_json().dump();
+    }
+
+    AutosaveManager m(dir);
+    m.adopt(foreign);
+
+    QVERIFY(!fs::exists(foreign));
+    QVERIFY(fs::exists(m.get_snapshot_path()));
+
+    // adopting the current file, or nothing, is a no-op
+    m.adopt(m.get_snapshot_path());
+    QVERIFY(fs::exists(m.get_snapshot_path()));
+    m.adopt(fs::path());
+    QVERIFY(fs::exists(m.get_snapshot_path()));
+  }
 };
 
 int main(int argc, char **argv)

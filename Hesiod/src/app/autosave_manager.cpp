@@ -107,7 +107,18 @@ void AutosaveManager::set_project_path(const fs::path &path)
   if (new_snapshot == this->snapshot_path)
     return;
 
-  // Task 3: move an existing snapshot to the new key
+  // keep the live snapshot when the project is renamed (untitled -> save as)
+  std::error_code ec;
+  if (!this->snapshot_path.empty() && fs::exists(this->snapshot_path, ec))
+  {
+    fs::rename(this->snapshot_path, new_snapshot, ec);
+    if (ec)
+      Logger::log()->warn(
+          "AutosaveManager::set_project_path: could not move {} to {}: {}",
+          this->snapshot_path.string(),
+          new_snapshot.string(),
+          ec.message());
+  }
 
   this->snapshot_path = new_snapshot;
 }
@@ -122,14 +133,12 @@ void AutosaveManager::mark_changed() { this->pending = true; }
 
 bool AutosaveManager::has_pending_changes() const { return this->pending; }
 
-void AutosaveManager::suspend()
-{
-  // Task 3
-}
+void AutosaveManager::suspend() { ++this->suspend_depth; }
 
 void AutosaveManager::resume()
 {
-  // Task 3
+  if (this->suspend_depth > 0)
+    --this->suspend_depth;
 }
 
 bool AutosaveManager::is_suspended() const { return this->suspend_depth > 0; }
@@ -230,12 +239,45 @@ bool AutosaveManager::write_snapshot()
 
 void AutosaveManager::discard()
 {
-  // Task 3
+  std::error_code ec;
+
+  if (fs::exists(this->snapshot_path, ec))
+  {
+    fs::remove(this->snapshot_path, ec);
+    if (ec)
+      Logger::log()->warn("AutosaveManager::discard: could not remove {}: {}",
+                          this->snapshot_path.string(),
+                          ec.message());
+    else
+      Logger::log()->trace("AutosaveManager::discard: {}", this->snapshot_path.string());
+  }
+
+  // a stray temp file from an interrupted write is never worth keeping
+  fs::remove(fs::path(this->snapshot_path.string() + tmp_suffix), ec);
 }
 
-void AutosaveManager::adopt(const fs::path & /* snapshot */)
+void AutosaveManager::adopt(const fs::path &snapshot)
 {
-  // Task 3
+  if (snapshot.empty())
+    return;
+
+  const fs::path from = normalised_absolute(snapshot);
+  const fs::path to = normalised_absolute(this->snapshot_path);
+
+  if (from == to)
+    return;
+
+  std::error_code ec;
+  fs::create_directories(this->directory, ec);
+  fs::rename(from, to, ec);
+
+  if (ec)
+    Logger::log()->warn("AutosaveManager::adopt: could not move {} to {}: {}",
+                        from.string(),
+                        to.string(),
+                        ec.message());
+  else
+    Logger::log()->trace("AutosaveManager::adopt: {} -> {}", from.string(), to.string());
 }
 
 // --- Recovery
