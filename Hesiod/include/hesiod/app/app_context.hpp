@@ -58,6 +58,9 @@ private:
 
 // helpers
 
+/// True when a hesiod.json or a portable.flag sits beside the executable.
+bool is_portable_mode(const QString &app_name = "hesiod");
+
 std::string get_config_file_path(const QString &app_name, bool portable_mode);
 std::string get_config_file_path_auto(const QString &app_name);
 
