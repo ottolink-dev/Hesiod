@@ -10,6 +10,8 @@ A: To be transparent — the application is still under active development and *
 
 Use **"Ctrl+S"** to save, and **"Ctrl+Alt+S"** to save a timestamped backup copy. This helps protect your work in case of crashes or unexpected behavior.
 
+Hesiod also keeps a **crash-recovery snapshot**: every two minutes (when something changed) the open project is written to `hesiod/autosave/` in your local application data folder (`~/.local/share` on Linux, `%LOCALAPPDATA%` on Windows, `~/Library/Application Support` on macOS; next to the executable in portable mode). If Hesiod did not shut down cleanly, the next launch offers to restore that snapshot. It is removed whenever you save, open another project or quit normally. The interval and the feature itself can be changed under *Application Settings > Global*.
+
 ---
 
 ## Q: Why isn’t the application production-ready?
