@@ -129,6 +129,15 @@ HesiodApplication::HesiodApplication(int &argc, char **argv, StartupMode mode)
   // main window
   this->main_window = new MainWindow();
 
+  // crash-recovery snapshots (GUI mode only: headless runs never edit)
+  this->autosave = std::make_unique<AutosaveManager>(
+      AutosaveManager::default_directory());
+  this->autosave->set_project_json_provider([this]()
+                                            { return this->project_file_json(); });
+  this->autosave->set_enabled(this->context.app_settings.global.enable_autosave);
+  this->autosave->set_interval(
+      std::chrono::seconds(this->context.app_settings.global.autosave_interval_s));
+
   // (after MainWindow creation)
   splash->show_message("Loading project...");
 
@@ -247,6 +256,10 @@ void HesiodApplication::cleanup()
 {
   Logger::log()->trace("HesiodApplication::cleanup");
 
+  // the project on its way out is either saved or explicitly discarded
+  if (this->autosave)
+    this->autosave->discard();
+
   if (this->project_ui)
     this->project_ui->cleanup();
 
@@ -286,6 +299,11 @@ AppContext &HesiodApplication::get_context() { return this->context; }
 const AppContext &HesiodApplication::get_context() const { return this->context; }
 
 ProjectUI *HesiodApplication::get_project_ui_ref() { return this->project_ui.get(); }
+
+AutosaveManager *HesiodApplication::get_autosave_manager_ref()
+{
+  return this->autosave.get();
+}
 
 QApplication &HesiodApplication::get_qapp() { return *static_cast<QApplication *>(this); }
 
@@ -393,6 +411,19 @@ void HesiodApplication::load_project_model_and_ui(const std::string &fname,
   this->context.project_model->is_dirty_changed = [this]()
   { this->on_project_name_changed(); };
 
+  this->context.project_model->has_changed = [this]()
+  {
+    if (this->autosave)
+      this->autosave->mark_changed();
+  };
+
+  // re-key now: cleanup() reset the model path without firing
+  // project_name_changed, so a blank or example project must not keep
+  // writing under the previous project's key. The keep_name set_path()
+  // below re-keys again to the named file.
+  if (this->autosave)
+    this->autosave->set_project_path(this->context.project_model->get_path());
+
   // Project model and UI -> MainWindow
   if (this->main_window)
     this->main_window->setup_connections_with_project();
@@ -444,6 +475,9 @@ void HesiodApplication::on_export_batch()
     return;
 
   bake_settings = dialog.get_bake_settings();
+
+  // the variant loop pumps the event loop while it touches the model
+  AutosaveSuspender suspend_autosave(this->autosave.get());
 
   Logger::log()->trace("HesiodApplication::on_export_batch: size = {}, nvariants = {}",
                        bake_settings.resolution,
@@ -695,6 +729,9 @@ void HesiodApplication::on_online_help()
 
 void HesiodApplication::on_project_name_changed()
 {
+  if (this->autosave)
+    this->autosave->set_project_path(this->context.project_model->get_path());
+
   std::string title = this->context.project_model->get_name() + " [" +
                       this->context.project_model->get_path().string() + "]";
 
@@ -877,6 +914,10 @@ void HesiodApplication::save_project_model_and_ui(const std::string &fname)
   // proceed with saving
   json_to_file(this->project_file_json(), fname, /* merge_with_existing_content */ true);
   this->context.project_model->set_is_dirty(false);
+
+  // the saved file now holds everything the recovery snapshot did
+  if (this->autosave)
+    this->autosave->discard();
 
   this->notify(std::format("Project saved successfully, {}.", fname));
 }

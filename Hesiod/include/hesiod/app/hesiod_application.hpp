@@ -13,6 +13,7 @@
 #include "nlohmann/json.hpp"
 
 #include "hesiod/app/app_context.hpp"
+#include "hesiod/app/autosave_manager.hpp"
 #include "hesiod/bridges/blender/blender_streamer.hpp"
 #include "hesiod/gui/widgets/app_settings_window.hpp"
 #include "hesiod/gui/widgets/graph_config_widgets/bake_config_dialog.hpp"
@@ -68,6 +69,7 @@ public:
   AppContext       &get_context();
   const AppContext &get_context() const;
   ProjectUI        *get_project_ui_ref();
+  AutosaveManager  *get_autosave_manager_ref(); // null in headless/test modes
 
 private slots:
   // --- User actions
@@ -97,10 +99,11 @@ private:
   void setup_menu_bar();
 
   // --- Members (respect order for deletion)
-  AppContext                 context;
-  MainWindow                *main_window = nullptr; // null in headless CLI modes
-  std::unique_ptr<ProjectUI> project_ui;            // because top-level UI
-  AppSettingsWindow         *app_settings_window;   // owned by MainWindow
+  AppContext                       context;
+  MainWindow                      *main_window = nullptr; // null in headless CLI modes
+  std::unique_ptr<ProjectUI>       project_ui;            // because top-level UI
+  std::unique_ptr<AutosaveManager> autosave;              // GUI mode only
+  AppSettingsWindow               *app_settings_window;   // owned by MainWindow
 
   QMenu            *recent_files_menu = nullptr;  // owned by the menu bar
   QPointer<QAction> show_node_library_pan_action; // owned by the menu bar

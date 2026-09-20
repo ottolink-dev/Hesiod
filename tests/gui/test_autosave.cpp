@@ -14,6 +14,8 @@
 #include "hesiod/app/app_settings.hpp"
 #include "hesiod/app/autosave_manager.hpp"
 #include "hesiod/app/hesiod_application.hpp"
+#include "hesiod/model/graph/graph_manager.hpp"
+#include "hesiod/model/graph/graph_node.hpp"
 #include "hesiod/model/project_model.hpp"
 #include "hesiod/model/utils.hpp"
 
@@ -401,6 +403,44 @@ private Q_SLOTS:
     t.json_from(json);
     QVERIFY(!t.global.enable_autosave);
     QCOMPARE(t.global.autosave_interval_s, 45);
+  }
+
+  void snapshot_round_trips_through_project_model()
+  {
+    auto config = std::make_shared<GraphConfig>();
+    config->set_shape({8, 8});
+    config->set_tiling({1, 1});
+    config->set_overlap(0.f);
+    config->storage_mode = hmap::StorageMode::VA_RAM;
+
+    ProjectModel model;
+    auto         graph = std::make_shared<GraphNode>("graph", config);
+    model.get_graph_manager_ref()->add_graph_node(graph, "graph");
+    const std::string a = graph->add_node("Thru");
+    const std::string b = graph->add_node("Thru");
+    QVERIFY(graph->new_link(a, "output", b, "input"));
+
+    QTemporaryDir   tmp;
+    AutosaveManager m(fs::path(tmp.path().toStdString()));
+    m.set_project_json_provider([&model]() { return model.json_to(); });
+    QVERIFY(m.write_snapshot());
+
+    ProjectModel restored;
+    restored.json_from(json_from_file(m.get_snapshot_path().string()));
+
+    GraphNode *rg = restored.get_graph_manager_ref()->get_graph_ref_by_id("graph");
+    QVERIFY(rg);
+    QCOMPARE(rg->get_nodes().size(), size_t(2));
+    QCOMPARE(rg->get_links().size(), size_t(1));
+    QVERIFY(rg->get_node(a));
+    QVERIFY(rg->get_node(b));
+    QCOMPARE(qs(rg->get_links().front().from), qs(a));
+    QCOMPARE(qs(rg->get_links().front().to), qs(b));
+  }
+
+  void autosave_manager_is_absent_in_context_only_mode()
+  {
+    QVERIFY(HSD_APP->get_autosave_manager_ref() == nullptr);
   }
 };
 

@@ -2,6 +2,7 @@
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
 #include <algorithm>
+#include <chrono>
 #include <cmath>
 
 #include <QColorDialog>
@@ -297,11 +298,21 @@ void AppSettingsWindow::setup_layout()
   this->bind_int("Number of threads used for OpenMP",
                  ctx.app_settings.global.omp_num_threads);
   this->bind_bool("Enable autosave (crash-recovery snapshots)",
-                  ctx.app_settings.global.enable_autosave);
+                  ctx.app_settings.global.enable_autosave,
+                  [](bool enabled)
+                  {
+                    if (AutosaveManager *autosave = HSD_APP->get_autosave_manager_ref())
+                      autosave->set_enabled(enabled);
+                  });
   this->bind_int("Autosave interval (seconds)",
                  ctx.app_settings.global.autosave_interval_s,
                  10,
-                 3600);
+                 3600,
+                 [](int seconds)
+                 {
+                   if (AutosaveManager *autosave = HSD_APP->get_autosave_manager_ref())
+                     autosave->set_interval(std::chrono::seconds(seconds));
+                 });
   this->add_description("\n");
 
   // --- Interface
