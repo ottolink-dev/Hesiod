@@ -166,12 +166,6 @@ void ProjectUI::initialize(ProjectModel *project)
   this->setup_connections();
 }
 
-void ProjectUI::save_ui_state(const std::string &fname) const
-{
-  Logger::log()->trace("ProjectUI::save: {}", fname);
-  json_to_file(this->ui_state_json_to(), fname, /* merge_with_existing_content */ true);
-}
-
 nlohmann::json ProjectUI::ui_state_json_to() const
 {
   nlohmann::json json;

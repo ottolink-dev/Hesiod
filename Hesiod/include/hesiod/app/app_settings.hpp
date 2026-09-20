@@ -76,7 +76,8 @@ struct AppSettings
     std::string ready_made_path = "data/bootstraps";
     bool        save_backup_file = true;
     // crash-recovery snapshots of the live project (see AutosaveManager);
-    // interval in seconds, 0 disables the timer
+    // interval in seconds; 0 disables the timer (config file only — the
+    // settings window offers 10..3600)
     bool        enable_autosave = true;
     int         autosave_interval_s = 120;
     std::string online_help_url = "https://hesioddoc.readthedocs.io/en/latest/";

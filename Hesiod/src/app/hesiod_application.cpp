@@ -713,6 +713,15 @@ bool HesiodApplication::offer_recovery()
       {
         std::error_code ec;
         fs::remove(entry.snapshot, ec);
+
+        if (ec)
+          Logger::log()->warn("HesiodApplication::offer_recovery: could not remove {}: "
+                              "{}",
+                              entry.snapshot.string(),
+                              ec.message());
+
+        // a stray temp file from an interrupted write goes with it
+        fs::remove(fs::path(entry.snapshot.string() + ".tmp"), ec);
       }
       continue;
     }
@@ -744,8 +753,18 @@ bool HesiodApplication::offer_recovery()
     {
       std::error_code ec;
       fs::remove(entry.snapshot, ec);
-      Logger::log()->info("HesiodApplication::offer_recovery: discarded {}",
-                          entry.snapshot.string());
+
+      if (ec)
+        Logger::log()->warn("HesiodApplication::offer_recovery: could not remove {}: {}",
+                            entry.snapshot.string(),
+                            ec.message());
+      else
+        Logger::log()->info("HesiodApplication::offer_recovery: discarded {}",
+                            entry.snapshot.string());
+
+      // a stray temp file from an interrupted write goes with it
+      fs::remove(fs::path(entry.snapshot.string() + ".tmp"), ec);
+
       continue;
     }
 

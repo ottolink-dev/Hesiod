@@ -120,14 +120,6 @@ void AppContext::restore_state()
   }
 }
 
-void AppContext::save_project_model(const std::string &fname) const
-{
-  Logger::log()->trace("AppContext::save_project_model: {}", fname);
-
-  nlohmann::json json = this->project_model->json_to();
-  json_to_file(json, fname, /* merge_with_existing_content */ true);
-}
-
 void AppContext::save_state() const { this->saved_state = this->settings_json_to(); }
 
 void AppContext::save_settings() const

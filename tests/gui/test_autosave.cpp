@@ -447,6 +447,16 @@ private Q_SLOTS:
     t.json_from(json);
     QVERIFY(!t.global.enable_autosave);
     QCOMPARE(t.global.autosave_interval_s, 45);
+
+    // a configuration file written before the feature existed keeps the defaults
+    nlohmann::json older = s.json_to();
+    older.erase("global.enable_autosave");
+    older.erase("global.autosave_interval_s");
+
+    AppSettings u;
+    u.json_from(older);
+    QVERIFY(u.global.enable_autosave);
+    QCOMPARE(u.global.autosave_interval_s, 120);
   }
 
   void snapshot_round_trips_through_project_model()

@@ -35,7 +35,6 @@ public:
   // --- Project management
   void new_project();
   void load_project_model(const std::string &fname);
-  void save_project_model(const std::string &fname) const;
 
   // --- Data
   void load_node_documentation();
