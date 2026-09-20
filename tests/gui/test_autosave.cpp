@@ -36,6 +36,14 @@ fs::path tmp_path(const AutosaveManager &m)
   return fs::path(m.get_snapshot_path().string() + ".tmp");
 }
 
+void patch_saved_at(const fs::path &snapshot, const std::string &saved_at)
+{
+  nlohmann::json json = json_from_file(snapshot.string());
+  json["autosave"]["saved_at"] = saved_at;
+  std::ofstream out(snapshot, std::ios::trunc);
+  out << json.dump();
+}
+
 } // namespace
 
 class AutosaveTest : public QObject
@@ -269,6 +277,108 @@ private Q_SLOTS:
     m.adopt(m.get_snapshot_path());
     QVERIFY(fs::exists(m.get_snapshot_path()));
     m.adopt(fs::path());
+    QVERIFY(fs::exists(m.get_snapshot_path()));
+  }
+
+  void scan_lists_newest_first_and_flags_unreadable()
+  {
+    QTemporaryDir  tmp;
+    const fs::path dir = fs::path(tmp.path().toStdString());
+
+    AutosaveManager older(dir);
+    older.set_project_json_provider(sample_project_json);
+    older.set_project_path(dir / "a" / "one.hsd");
+    QVERIFY(older.write_snapshot());
+    patch_saved_at(older.get_snapshot_path(), "2026-01-01_00-00-00");
+
+    AutosaveManager newer(dir);
+    newer.set_project_json_provider(sample_project_json);
+    newer.set_project_path(dir / "b" / "two.hsd");
+    QVERIFY(newer.write_snapshot());
+    patch_saved_at(newer.get_snapshot_path(), "2026-02-02_00-00-00");
+
+    // noise: a corrupt snapshot, an in-progress temp file, an unrelated file
+    {
+      std::ofstream(dir / "garbage.autosave.hsd") << "{ not json";
+      std::ofstream(dir / "partial.autosave.hsd.tmp") << "{}";
+      std::ofstream(dir / "notes.txt") << "hello";
+    }
+
+    AutosaveManager scanner(dir);
+    const auto      entries = scanner.scan();
+
+    QCOMPARE(entries.size(), size_t(3));
+
+    QVERIFY(entries[0].readable);
+    QCOMPARE(qs(entries[0].saved_at), QString("2026-02-02_00-00-00"));
+    QCOMPARE(qs(entries[0].project_path.string()),
+             qs(fs::absolute(dir / "b" / "two.hsd").lexically_normal().string()));
+    QCOMPARE(qs(entries[0].snapshot.string()), qs(newer.get_snapshot_path().string()));
+
+    QVERIFY(entries[1].readable);
+    QCOMPARE(qs(entries[1].saved_at), QString("2026-01-01_00-00-00"));
+    QCOMPARE(qs(entries[1].project_path.string()),
+             qs(fs::absolute(dir / "a" / "one.hsd").lexically_normal().string()));
+
+    QVERIFY(!entries[2].readable);
+    QCOMPARE(qs(entries[2].snapshot.filename().string()),
+             QString("garbage.autosave.hsd"));
+  }
+
+  void scan_skips_own_untitled_snapshot_and_missing_directory()
+  {
+    QTemporaryDir   tmp;
+    const fs::path  dir = fs::path(tmp.path().toStdString()) / "nested" / "autosave";
+    AutosaveManager m(dir);
+    QVERIFY(m.scan().empty()); // directory does not exist yet
+
+    m.set_project_json_provider(sample_project_json);
+    QVERIFY(m.write_snapshot());
+    QVERIFY(fs::exists(m.get_snapshot_path()));
+    QVERIFY(m.scan().empty()); // this process's own untitled file
+
+    m.set_project_path(dir / "named.hsd");
+    QCOMPARE(m.scan().size(), size_t(1)); // a named snapshot is always listed
+  }
+
+  void timer_writes_when_enabled_and_changed()
+  {
+    QTemporaryDir   tmp;
+    AutosaveManager m(fs::path(tmp.path().toStdString()));
+    m.set_project_json_provider(sample_project_json);
+    QSignalSpy spy(&m, &AutosaveManager::snapshot_written);
+
+    m.set_interval(std::chrono::milliseconds(20));
+    m.mark_changed();
+
+    QVERIFY(spy.wait(2000));
+    QCOMPARE(spy.count(), 1);
+    QVERIFY(fs::exists(m.get_snapshot_path()));
+
+    // nothing changed: the timer keeps ticking but writes nothing
+    QVERIFY(!spy.wait(150));
+    QCOMPARE(spy.count(), 1);
+  }
+
+  void timer_is_idle_when_disabled_or_interval_is_zero()
+  {
+    QTemporaryDir   tmp;
+    AutosaveManager m(fs::path(tmp.path().toStdString()));
+    m.set_project_json_provider(sample_project_json);
+    QSignalSpy spy(&m, &AutosaveManager::snapshot_written);
+
+    m.set_interval(std::chrono::milliseconds(0));
+    m.mark_changed();
+    QVERIFY(!spy.wait(100));
+    QVERIFY(!fs::exists(m.get_snapshot_path()));
+
+    m.set_enabled(false);
+    m.set_interval(std::chrono::milliseconds(20));
+    QVERIFY(!spy.wait(100));
+    QVERIFY(!fs::exists(m.get_snapshot_path()));
+
+    m.set_enabled(true);
+    QVERIFY(spy.wait(2000));
     QVERIFY(fs::exists(m.get_snapshot_path()));
   }
 };

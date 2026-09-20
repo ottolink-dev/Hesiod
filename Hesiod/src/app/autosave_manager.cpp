@@ -5,6 +5,7 @@
 #include <cstdint>
 #include <format>
 #include <fstream>
+#include <stdexcept>
 #include <system_error>
 
 #include <QCoreApplication>
@@ -91,7 +92,10 @@ void AutosaveManager::set_project_json_provider(std::function<nlohmann::json()> 
 
 void AutosaveManager::restart_timer()
 {
-  // Task 4
+  this->timer.stop();
+
+  if (this->enabled && this->interval.count() > 0)
+    this->timer.start(this->interval);
 }
 
 // --- Identity
@@ -284,8 +288,72 @@ void AutosaveManager::adopt(const fs::path &snapshot)
 
 std::vector<AutosaveManager::Entry> AutosaveManager::scan() const
 {
-  // Task 4
-  return {};
+  std::vector<Entry> entries;
+  std::error_code    ec;
+
+  if (!fs::is_directory(this->directory, ec))
+    return entries;
+
+  const std::string own_untitled = snapshot_key(fs::path()) + snapshot_suffix;
+
+  try
+  {
+    for (const fs::directory_entry &it : fs::directory_iterator(this->directory, ec))
+    {
+      const fs::path    path = it.path();
+      const std::string name = path.filename().string();
+
+      // ends_with also rejects in-progress "*.autosave.hsd.tmp" files
+      if (!name.ends_with(snapshot_suffix) || name == own_untitled)
+        continue;
+
+      Entry entry;
+      entry.snapshot = path;
+      entry.modified = fs::last_write_time(path, ec);
+
+      try
+      {
+        const nlohmann::json json = json_from_file(path.string());
+
+        if (!json.is_object() || !json.contains("graph_manager"))
+          throw std::runtime_error("not a project file");
+
+        if (json.contains("autosave"))
+        {
+          entry.project_path = fs::path(json["autosave"].value("project_path", ""));
+          entry.saved_at = json["autosave"].value("saved_at", "");
+        }
+      }
+      catch (const std::exception &e)
+      {
+        Logger::log()->warn("AutosaveManager::scan: unreadable recovery file {}: {}",
+                            path.string(),
+                            e.what());
+        entry.readable = false;
+      }
+
+      entries.push_back(std::move(entry));
+    }
+  }
+  catch (const std::exception &e)
+  {
+    Logger::log()->warn("AutosaveManager::scan: could not list {}: {}",
+                        this->directory.string(),
+                        e.what());
+  }
+
+  // timestamps are "%Y-%m-%d_%H-%M-%S", so string order is time order;
+  // unreadable files have none and sink to the end
+  std::sort(entries.begin(),
+            entries.end(),
+            [](const Entry &a, const Entry &b)
+            {
+              if (a.saved_at != b.saved_at)
+                return a.saved_at > b.saved_at;
+              return a.modified > b.modified;
+            });
+
+  return entries;
 }
 
 } // namespace hesiod
