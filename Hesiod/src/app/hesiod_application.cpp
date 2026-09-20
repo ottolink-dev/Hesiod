@@ -891,9 +891,11 @@ void HesiodApplication::on_save()
     this->on_save_as();
   else
   {
-    this->save_project_model_and_ui(path.string());
-    this->context.project_model->set_path(path);
-    this->add_recent_file(path.string());
+    if (this->save_project_model_and_ui(path.string()))
+    {
+      this->context.project_model->set_path(path);
+      this->add_recent_file(path.string());
+    }
   }
 }
 
@@ -916,9 +918,11 @@ void HesiodApplication::on_save_as()
     Logger::log()->trace("HesiodApplication::on_save_as: clean_path: {}",
                          clean_path.string());
 
-    this->save_project_model_and_ui(clean_path.string());
-    this->context.project_model->set_path(clean_path.string());
-    this->add_recent_file(clean_path.string());
+    if (this->save_project_model_and_ui(clean_path.string()))
+    {
+      this->context.project_model->set_path(clean_path.string());
+      this->add_recent_file(clean_path.string());
+    }
   }
 }
 
@@ -994,7 +998,7 @@ void HesiodApplication::save_backup(const std::string &fname)
   }
 }
 
-void HesiodApplication::save_project_model_and_ui(const std::string &fname)
+bool HesiodApplication::save_project_model_and_ui(const std::string &fname)
 {
   Logger::log()->trace("HesiodApplication::save_project_model_and_ui: {}", fname);
 
@@ -1035,7 +1039,25 @@ void HesiodApplication::save_project_model_and_ui(const std::string &fname)
   }
 
   // proceed with saving
-  json_to_file(this->project_file_json(), fname, /* merge_with_existing_content */ true);
+  if (!json_to_file(this->project_file_json(),
+                    fname,
+                    /* merge_with_existing_content */ true))
+  {
+    Logger::log()->error("HesiodApplication::save_project_model_and_ui: could not write "
+                         "{}",
+                         fname);
+
+    // the project stays dirty and keeps its recovery snapshot
+    if (this->main_window)
+      QMessageBox::warning(this->main_window,
+                           "Save",
+                           QString("Could not write the project file:\n%1\n\nThe "
+                                   "project is still unsaved.")
+                               .arg(QString::fromStdString(fname)));
+
+    return false;
+  }
+
   this->context.project_model->set_is_dirty(false);
 
   // the saved file now holds everything the recovery snapshot did
@@ -1043,6 +1065,7 @@ void HesiodApplication::save_project_model_and_ui(const std::string &fname)
     this->autosave->discard();
 
   this->notify(std::format("Project saved successfully, {}.", fname));
+  return true;
 }
 
 void HesiodApplication::setup_menu_bar()

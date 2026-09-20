@@ -392,6 +392,18 @@ private Q_SLOTS:
     QVERIFY(fs::exists(m.get_snapshot_path()));
   }
 
+  void json_to_file_reports_failure()
+  {
+    // a save that cannot be written must say so: the caller keeps the project
+    // dirty and keeps its recovery snapshot
+    QVERIFY(
+        !json_to_file(nlohmann::json::object(), "/nonexistent-dir-xyz/out.json", false));
+
+    QTemporaryDir  tmp;
+    const fs::path ok = fs::path(tmp.path().toStdString()) / "ok.json";
+    QVERIFY(json_to_file(nlohmann::json::object(), ok.string(), false));
+  }
+
   void settings_round_trip_autosave_keys()
   {
     AppSettings defaults;

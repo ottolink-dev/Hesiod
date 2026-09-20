@@ -49,7 +49,10 @@ public:
   bool is_headless() const;
   int  get_exit_code() const;
   void load_project_model_and_ui(const std::string &fname = "", bool keep_name = true);
-  void save_project_model_and_ui(const std::string &fname);
+  /// Writes the project file. Returns false, after warning the user, when the
+  /// file could not be written; the project then stays dirty and keeps its
+  /// recovery snapshot.
+  bool save_project_model_and_ui(const std::string &fname);
   void save_backup(const std::string &fname);
   /// Everything a .hsd file holds: model, UI state (when a ProjectUI exists),
   /// version and timestamp. Shared by the real save and the autosave snapshot.
