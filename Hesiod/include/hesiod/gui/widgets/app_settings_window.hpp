@@ -26,7 +26,11 @@ private:
   void bind_bool(const std::string        &label,
                  bool                     &state,
                  std::function<void(bool)> on_changed = nullptr);
-  void bind_int(const std::string &label, int &value);
+  void bind_int(const std::string       &label,
+                int                     &value,
+                int                      min = 1,
+                int                      max = 64,
+                std::function<void(int)> on_changed = nullptr);
   /// Spin box over an explicit range, for a metric with real bounds.
   void bind_int_range(const std::string &label,
                       int               &value,

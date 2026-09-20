@@ -11,6 +11,7 @@
 
 #include "nlohmann/json.hpp"
 
+#include "hesiod/app/app_settings.hpp"
 #include "hesiod/app/autosave_manager.hpp"
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/model/project_model.hpp"
@@ -380,6 +381,26 @@ private Q_SLOTS:
     m.set_enabled(true);
     QVERIFY(spy.wait(2000));
     QVERIFY(fs::exists(m.get_snapshot_path()));
+  }
+
+  void settings_round_trip_autosave_keys()
+  {
+    AppSettings defaults;
+    QVERIFY(defaults.global.enable_autosave);
+    QCOMPARE(defaults.global.autosave_interval_s, 120);
+
+    AppSettings s;
+    s.global.enable_autosave = false;
+    s.global.autosave_interval_s = 45;
+
+    const nlohmann::json json = s.json_to();
+    QCOMPARE(json.at("global.enable_autosave").get<bool>(), false);
+    QCOMPARE(json.at("global.autosave_interval_s").get<int>(), 45);
+
+    AppSettings t;
+    t.json_from(json);
+    QVERIFY(!t.global.enable_autosave);
+    QCOMPARE(t.global.autosave_interval_s, 45);
   }
 };
 
