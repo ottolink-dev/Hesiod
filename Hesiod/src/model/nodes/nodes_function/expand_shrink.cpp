@@ -78,7 +78,7 @@ void compute_expand_shrink_node(BaseNode &node)
       glm::ivec2 kernel_shape = {2 * ir + 1, 2 * ir + 1};
 
       kernel_array = hmap::get_kernel(kernel_shape,
-                                      (hmap::KernelType)node.val<int>(A_KERNEL));
+                                      node.val_enum<hmap::KernelType>(A_KERNEL));
     }
 
     // core operator

@@ -212,7 +212,7 @@ void compute_cone_node(BaseNode &node)
               node.val<int>(A_VALLEY_NB),
               node.val<float>(A_VALLEY_DECAY_RATIO),
               node.val<float>(A_VALLEY_ANGLE0),
-              (hmap::ErosionProfile)node.val<int>(A_EROSION_PROFILE),
+              node.val_enum<hmap::ErosionProfile>(A_EROSION_PROFILE),
               node.val<float>(A_EROSION_DELTA),
               node.val<float>(A_RADIAL_WAVINESS_AMP),
               node.val<float>(A_RADIAL_WAVINESS_KW),

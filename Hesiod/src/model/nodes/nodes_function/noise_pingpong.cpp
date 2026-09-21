@@ -71,7 +71,7 @@ void compute_noise_pingpong_node(BaseNode &node)
       {
         auto [pa_out, pa_dx, pa_dy, pa_ctrl] = unpack<4>(p_arrays);
 
-        *pa_out = hmap::noise_pingpong((hmap::NoiseType)node.val<int>(A_NOISE_TYPE),
+        *pa_out = hmap::noise_pingpong(node.val_enum<hmap::NoiseType>(A_NOISE_TYPE),
                                        region.shape,
                                        node.val_wavenumber(A_KW),
                                        node.val<int>(A_SEED),

@@ -72,7 +72,7 @@ void compute_local_metrics_node(BaseNode &node)
   // --- Params
 
   // clang-format off
-  const auto metric   = hmap::gpu::LocalMetrics(node.val<int>(A_METRIC));
+  const auto metric   = node.val_enum<hmap::gpu::LocalMetrics>(A_METRIC);
   const auto sat_perc = 0.01f * node.val<float>(A_SATMAX);
   // clang-format on
 

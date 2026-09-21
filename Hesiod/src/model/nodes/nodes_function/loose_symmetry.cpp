@@ -84,7 +84,7 @@ void compute_loose_symmetry_node(BaseNode &node)
 
   hmap::Array out_array = hmap::loose_symmetry(
       in_array,
-      static_cast<hmap::SymmetryType>(node.val<int>(A_SYMMETRY_TYPE)),
+      node.val_enum<hmap::SymmetryType>(A_SYMMETRY_TYPE),
       node.val<float>(A_STRENGTH),
       node.val<int>(A_FACTOR),
       patch_size,

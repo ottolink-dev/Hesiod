@@ -65,7 +65,7 @@ void compute_morphological_operators_node(BaseNode &node)
   // --- Params
 
   // clang-format off
-  const auto op = hmap::MorphologyOperation(node.val<int>(A_OPERATOR));
+  const auto op = node.val_enum<hmap::MorphologyOperation>(A_OPERATOR);
   const auto sat_ratio = node.val<float>(A_SAT_RATIO);
   //
   const int  ir     = node.val_pixel_radius(A_RADIUS);

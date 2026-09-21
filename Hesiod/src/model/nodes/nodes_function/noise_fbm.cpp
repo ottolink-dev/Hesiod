@@ -89,7 +89,7 @@ void compute_noise_fbm_node(BaseNode &node)
   // --- Params
 
   // clang-format off
-  const auto noise_type  = hmap::NoiseType(node.val<int>(A_NOISE_TYPE));
+  const auto noise_type  = node.val_enum<hmap::NoiseType>(A_NOISE_TYPE);
   const auto kw          = node.val_wavenumber(A_KW);
   const auto seed        = node.val<int>(A_SEED);
   const auto octaves     = node.val<int>(A_OCTAVES);

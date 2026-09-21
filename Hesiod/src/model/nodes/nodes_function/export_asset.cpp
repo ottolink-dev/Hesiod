@@ -120,12 +120,12 @@ void compute_export_asset_node(BaseNode &node)
   // clang-format off
   auto       fpath           = node.val<std::filesystem::path>(A_FNAME);
   const auto pattern         = node.val<std::string>(A_PATTERN);
-  const auto export_format   = node.val<int>(A_EXPORT_FORMAT);
-  const auto mesh_type       = node.val<int>(A_MESH_TYPE);
+  const auto export_format   = node.val_enum<hmap::AssetExportFormat>(A_EXPORT_FORMAT);
+  const auto mesh_type       = node.val_enum<hmap::MeshType>(A_MESH_TYPE);
   const auto max_error       = node.val<float>(A_MAX_ERROR);
   const auto elev_scale      = node.val<float>(A_ELEVATION_SCALING);
   const auto detail_scale    = node.val<float>(A_DETAIL_SCALING);
-  const auto blending_method = node.val<int>(A_BLENDING_METHOD);
+  const auto blending_method = node.val_enum<hmap::NormalMapBlendingMethod>(A_BLENDING_METHOD);
   const auto fit_boundaries  = node.val<bool>(A_FIT_BOUNDARIES);
   const auto flip_x          = node.val<bool>(A_FLIP_X);
   const auto flip_y          = node.val<bool>(A_FLIP_Y);
@@ -205,7 +205,7 @@ void compute_export_asset_node(BaseNode &node)
                          flipped_nmap,
                          node.cfg().cm_cpu,
                          detail_scale,
-                         (hmap::NormalMapBlendingMethod)blending_method);
+                         blending_method);
   }
 
   normal_map.to_png(nmap_fname, node.cfg().cm_cpu, CV_16U);
@@ -224,7 +224,7 @@ void compute_export_asset_node(BaseNode &node)
     hmap::export_asset(fname,
                        array,
                        mask,
-                       (hmap::AssetExportFormat)export_format,
+                       export_format,
                        elev_scale,
                        texture_fname,
                        nmap_fname,
@@ -234,8 +234,8 @@ void compute_export_asset_node(BaseNode &node)
   {
     hmap::export_asset(fname,
                        array,
-                       (hmap::MeshType)mesh_type,
-                       (hmap::AssetExportFormat)export_format,
+                       mesh_type,
+                       export_format,
                        elev_scale,
                        texture_fname,
                        nmap_fname,

@@ -79,7 +79,7 @@ void compute_export_heightmap_node(BaseNode &node)
   const auto auto_export = node.val<bool>(A_AUTO_EXPORT);
   auto       fname       = node.val<std::filesystem::path>(A_FILENAME);
   const auto pattern     = node.val<std::string>(A_PATTERN);
-  const auto format      = node.val<int>(A_FORMAT);
+  const auto format      = node.val_enum<ExportFormat>(A_FORMAT);
   const auto force_shape = node.val<std::string>(A_FORCE_SHAPE);
   const auto flip_x      = node.val<bool>(A_FLIP_X);
   const auto flip_y      = node.val<bool>(A_FLIP_Y);

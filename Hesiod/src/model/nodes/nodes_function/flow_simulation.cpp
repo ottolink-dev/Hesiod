@@ -130,7 +130,7 @@ void compute_flow_simulation_node(BaseNode &node)
   }
   else if (!p_depth_map)
   {
-    auto map_type = DefaultMapOptions::Type(node.val<int>(A_DEPTH_MAP_TYPE));
+    auto map_type = node.val_enum<DefaultMapOptions::Type>(A_DEPTH_MAP_TYPE);
 
     generate_map(node, p_depth_map, dmap, DefaultMapOptions{.map_type = map_type});
   }

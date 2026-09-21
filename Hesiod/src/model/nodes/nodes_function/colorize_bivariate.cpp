@@ -94,9 +94,9 @@ void compute_colorize_bivariate_node(BaseNode &node)
 
   // --- Params
 
-  const auto &gradient1  = node.val<meta::ColorGradient>(A_GRADIENT1).value();
-  const auto &gradient2  = node.val<meta::ColorGradient>(A_GRADIENT2).value();
-  const auto  mix_method = static_cast<hmap::MixMethod>(node.val<int>(A_MIX_METHOD));
+  const auto &gradient1         = node.val<meta::ColorGradient>(A_GRADIENT1).value();
+  const auto &gradient2         = node.val<meta::ColorGradient>(A_GRADIENT2).value();
+  const auto  mix_method        = node.val_enum<hmap::MixMethod>(A_MIX_METHOD);
   const auto  reverse_colormap1 = node.val<bool>(A_REVERSE_COLORMAP1);
   const auto  reverse_colormap2 = node.val<bool>(A_REVERSE_COLORMAP2);
   const auto  sat_perc1         = 0.01f * node.val<float>(A_SAT_PERC1);

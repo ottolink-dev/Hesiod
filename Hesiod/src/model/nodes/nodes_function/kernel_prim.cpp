@@ -46,7 +46,7 @@ void compute_kernel_prim_node(BaseNode &node)
   // kernel definition
   glm::ivec2 kernel_shape = {2 * ir + 1, 2 * ir + 1};
 
-  *p_out = hmap::get_kernel(kernel_shape, (hmap::KernelType)node.val<int>(A_KERNEL));
+  *p_out = hmap::get_kernel(kernel_shape, node.val_enum<hmap::KernelType>(A_KERNEL));
 
   if (node.val<bool>(A_NORMALIZE))
     *p_out /= p_out->sum();

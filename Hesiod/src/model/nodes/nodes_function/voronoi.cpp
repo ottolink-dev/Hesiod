@@ -78,7 +78,7 @@ void compute_voronoi_node(BaseNode &node)
       {
         auto [pa_out, pa_dx, pa_dy, pa_ctrl] = unpack<4>(p_arrays);
 
-        hmap::VoronoiReturnType rtype = (hmap::VoronoiReturnType)node.val<int>(
+        hmap::VoronoiReturnType rtype = node.val_enum<hmap::VoronoiReturnType>(
             A_RETURN_TYPE);
 
         glm::vec2 jitter(node.val<float>(A_JITTER_X), node.val<float>(A_JITTER_Y));

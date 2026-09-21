@@ -77,7 +77,7 @@ void compute_curvatures_node(BaseNode &node)
 
   // --- Params
 
-  const auto ctype       = hmap::CurvatureType(node.val<int>(A_CTYPE));
+  const auto ctype       = node.val_enum<hmap::CurvatureType>(A_CTYPE);
   const auto clamping    = node.val<std::string>(A_CLAMPING);
   const auto approx_algo = node.val<bool>(A_APPROX);
   const auto sat_perc    = 0.01f * node.val<float>(A_SATMAX);

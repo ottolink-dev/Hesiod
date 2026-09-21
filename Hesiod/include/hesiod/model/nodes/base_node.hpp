@@ -85,6 +85,11 @@ public:
     return this->get_meta_group().current().value<T>(key);
   }
 
+  template <typename T> T val_enum(const std::string &key) const
+  {
+    return static_cast<T>(this->val<int>(key));
+  }
+
   glm::vec2 val_wavenumber(const std::string &key) const
   {
     return this->cfg().scale_wavenumber(this->val<glm::vec2>(key));

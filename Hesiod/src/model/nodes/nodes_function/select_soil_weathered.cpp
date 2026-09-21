@@ -111,7 +111,7 @@ void compute_select_soil_weathered_node(BaseNode &node)
           hmap::Array *pa_in        = p_arrays[1];
           hmap::Array *pa_grad_norm = p_arrays[2];
 
-          auto mode = static_cast<hmap::ClampMode>(node.val<int>(A_CURVATURE_CLAMP_MODE));
+          auto mode = node.val_enum<hmap::ClampMode>(A_CURVATURE_CLAMP_MODE);
 
           *pa_out = hmap::gpu::select_soil_weathered(
               *pa_in,

@@ -71,7 +71,7 @@ void compute_heightmap_to_kernel_node(BaseNode &node)
   // clang-format off
   const auto normalize       = node.val<bool>(A_NORMALIZE);
   const auto envelope        = node.val<bool>(A_ENVELOPE);
-  const auto envelope_kernel = static_cast<hmap::KernelType>(node.val<int>(A_ENVELOPE_KERNEL));
+  const auto envelope_kernel = node.val_enum<hmap::KernelType>(A_ENVELOPE_KERNEL);
   // clang-format on
 
   const int        ir           = node.val_pixel_radius(A_RADIUS);
