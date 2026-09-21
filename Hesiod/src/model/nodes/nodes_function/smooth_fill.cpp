@@ -81,12 +81,11 @@ void compute_smooth_fill_node(BaseNode &node)
   // --- Params
 
   // clang-format off
-  const auto radius     = node.val<float>(A_RADIUS);
   const auto k          = node.val<float>(A_K);
   const auto normalized = node.val<bool>(A_NORMALIZED);
   // clang-format on
 
-  const int ir = std::max(1, int(radius * p_out->shape.x));
+  const int ir = node.val_pixel_radius(A_RADIUS);
 
   // --- Compute
 

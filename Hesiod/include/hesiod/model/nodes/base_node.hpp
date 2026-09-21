@@ -85,6 +85,27 @@ public:
     return this->get_meta_group().current().value<T>(key);
   }
 
+  template <typename T> T val_enum(const std::string &key) const
+  {
+    return static_cast<T>(this->val<int>(key));
+  }
+
+  glm::vec2 val_wavenumber(const std::string &key) const
+  {
+    return this->cfg().scale_wavenumber(this->val<glm::vec2>(key));
+  }
+
+  int val_pixel_radius(const std::string &key, int min_val = 1) const
+  {
+    return std::max(min_val,
+                    static_cast<int>(this->val<float>(key) * this->cfg().shape.x));
+  }
+
+  int val_radius(const std::string &key, int min_val = 1) const
+  {
+    return this->val_pixel_radius(key, min_val);
+  }
+
   template <typename T> void set_value(const std::string &key, T new_value)
   {
     this->get_meta_group().current().value<T>(key) = new_value;

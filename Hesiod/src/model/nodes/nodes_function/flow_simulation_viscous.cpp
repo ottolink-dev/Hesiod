@@ -94,7 +94,7 @@ void compute_flow_simulation_viscous_node(BaseNode &node)
   const auto power              = node.val<float>(A_POWER);
   const auto outflow_boundaries = node.val<bool>(A_OUTFLOW_BOUNDARIES);
   const auto solver_stride      = node.val<int>(A_SOLVER_STRIDE);
-  const auto dmap_type          = node.val<int>(A_DMAP_TYPE);
+  const auto dmap_type          = node.val_enum<DefaultMapOptions::Type>(A_DMAP_TYPE);
   const auto post_filter        = node.val<bool>(A_POST_FILTER);
   const auto filter_radius      = node.val<float>(A_FILTER_RADIUS);
   const auto shift_to_zero      = node.val<bool>(A_SHIFT_TO_ZERO);
@@ -124,7 +124,7 @@ void compute_flow_simulation_viscous_node(BaseNode &node)
   }
   else if (!p_depth_map)
   {
-    auto map_type = DefaultMapOptions::Type(dmap_type);
+    auto map_type = dmap_type;
     auto options  = DefaultMapOptions{.map_type = map_type};
 
     generate_map(node, p_depth_map, dmap, options);

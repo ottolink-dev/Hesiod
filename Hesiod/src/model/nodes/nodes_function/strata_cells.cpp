@@ -119,7 +119,7 @@ void compute_strata_cells_node(BaseNode &node)
     };
 
     return P{
-        .kw                    = node.val<glm::vec2>(A_KW),
+        .kw                    = node.val_wavenumber(A_KW),
         .amp                   = node.val<float>(A_AMP),
         .seed                  = uint(node.val<int>(A_SEED)),
         .gamma                 = node.val<float>(A_GAMMA),

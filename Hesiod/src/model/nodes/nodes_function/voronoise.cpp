@@ -62,7 +62,7 @@ void compute_voronoise_node(BaseNode &node)
         auto [pa_out, pa_dx, pa_dy] = unpack<3>(p_arrays);
 
         *pa_out = hmap::gpu::voronoise(region.shape,
-                                       node.val<glm::vec2>(A_KW),
+                                       node.val_wavenumber(A_KW),
                                        node.val<float>(A_U),
                                        node.val<float>(A_V),
                                        node.val<int>(A_SEED),

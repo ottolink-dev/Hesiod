@@ -106,7 +106,7 @@ void compute_flow_fixing_mst_node(BaseNode &node)
   const auto offset_ratio        = node.val<float>(A_OFFSET_RATIO);
   const auto carve_riverbed      = node.val<bool>(A_CARVE_RIVERBED);
   const auto merging_distance    = node.val<float>(A_MERGING_RADIUS) * nx;
-  const auto radial_profile      = hmap::RadialProfile(node.val<int>(A_RADIAL_PROFILE));
+  const auto radial_profile      = node.val_enum<hmap::RadialProfile>(A_RADIAL_PROFILE);
   const auto radial_profile_parameter = node.val<float>(A_RADIAL_PROFILE_PARAMETER);
 
   // --- Prepare default noise

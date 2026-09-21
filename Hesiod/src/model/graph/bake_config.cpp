@@ -14,6 +14,7 @@ void BakeConfig::json_from(nlohmann::json const &json)
   json_safe_get(json, "force_distributed", force_distributed);
   json_safe_get(json, "force_auto_export", force_auto_export);
   json_safe_get(json, "rename_export_files", rename_export_files);
+  json_safe_get(json, "force_maximum_fbm_octaves", force_maximum_fbm_octaves);
 }
 
 nlohmann::json BakeConfig::json_to() const
@@ -24,6 +25,7 @@ nlohmann::json BakeConfig::json_to() const
   json["force_distributed"] = force_distributed;
   json["force_auto_export"] = force_auto_export;
   json["rename_export_files"] = rename_export_files;
+  json["force_maximum_fbm_octaves"] = force_maximum_fbm_octaves;
   return json;
 }
 

@@ -78,7 +78,7 @@ void compute_bulkify_node(BaseNode &node)
   // --- Params
 
   const auto amplitude = node.val<float>(A_AMPLITUDE);
-  const auto bulk_type = static_cast<hmap::PrimitiveType>(node.val<int>(A_BULK_TYPE));
+  const auto bulk_type = node.val_enum<hmap::PrimitiveType>(A_BULK_TYPE);
   const auto center    = node.val<glm::vec2>(A_CENTER);
 
   // --- Compute

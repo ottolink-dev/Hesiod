@@ -89,7 +89,7 @@ void compute_stamping_node(BaseNode &node)
               ir,
               node.val<bool>(A_KERNEL_SCALE_RADIUS),
               node.val<bool>(A_KERNEL_SCALE_AMPLITUDE),
-              (hmap::StampingBlendMethod)node.val<int>(A_BLEND_METHOD),
+              node.val_enum<hmap::StampingBlendMethod>(A_BLEND_METHOD),
               seed++,
               node.val<float>(A_K_SMOOTHING),
               node.val<bool>(A_KERNEL_FLIP),

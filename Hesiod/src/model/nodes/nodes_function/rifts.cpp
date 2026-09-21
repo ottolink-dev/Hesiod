@@ -110,7 +110,7 @@ void compute_rifts_node(BaseNode &node)
           hmap::remap(*pa_out, 0.f, 1.f, hmin, hmax);
 
           hmap::gpu::rifts(*pa_out,
-                           node.val<glm::vec2>(A_KW),
+                           node.val_wavenumber(A_KW),
                            node.val<float>(A_ANGLE),
                            node.val<float>(A_AMPLITUDE),
                            node.val<int>(A_SEED),

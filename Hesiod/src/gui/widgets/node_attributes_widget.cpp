@@ -2,6 +2,7 @@
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
 #include <fstream>
+#include <regex>
 
 #include <QAction>
 #include <QApplication>
@@ -461,7 +462,9 @@ void NodeAttributesWidget::setup_layout()
       // second card, which reads as nested boxes rather than grouping.
       .root_category_name = (panel.has_own_chrome && !has_categorised_attributes(*p_node))
                                 ? std::string{"Parameters"}
-                                : std::string{}};
+                                : std::string{},
+      .collapse_regex = std::regex(
+          "Post-Process.*|Default Noise|Default Mask Definition")};
 
   this->meta_widget = meta::qt::render(p_node->get_meta_group(),
                                        options,

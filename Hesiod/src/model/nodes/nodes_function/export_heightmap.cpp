@@ -79,13 +79,19 @@ void compute_export_heightmap_node(BaseNode &node)
   const auto auto_export = node.val<bool>(A_AUTO_EXPORT);
   auto       fname       = node.val<std::filesystem::path>(A_FILENAME);
   const auto pattern     = node.val<std::string>(A_PATTERN);
-  const auto format      = node.val<int>(A_FORMAT);
+  const auto format      = node.val_enum<ExportFormat>(A_FORMAT);
   const auto force_shape = node.val<std::string>(A_FORCE_SHAPE);
   const auto flip_x      = node.val<bool>(A_FLIP_X);
   const auto flip_y      = node.val<bool>(A_FLIP_Y);
 
   if (!auto_export)
+  {
+    Logger::log()->trace(
+        "compute_export_heightmap_node: [{}]/[{}]: auto export is disabled",
+        node.get_node_type(),
+        node.get_id());
     return;
+  }
 
   // --- Prepare filename
 
@@ -146,6 +152,11 @@ void compute_export_heightmap_node(BaseNode &node)
   std::filesystem::path export_path = make_unique_filename(fname.parent_path(),
                                                            pattern,
                                                            replacements);
+
+  Logger::log()->trace("compute_export_heightmap_node: [{}]/[{}]: export path = {}",
+                       node.get_node_type(),
+                       node.get_id(),
+                       export_path.string());
 
   switch (format)
   {

@@ -9,9 +9,9 @@
 #include <QToolButton>
 
 #include "hesiod/app/hesiod_application.hpp"
-#include "hesiod/gui/widgets/graph_editor_widget.hpp"
 #include "hesiod/gui/widgets/graph_node_widget.hpp"
 #include "hesiod/gui/widgets/graph_toolbar.hpp"
+#include "hesiod/gui/widgets/graph_workspace_widget.hpp"
 #include "hesiod/gui/widgets/grip_splitter.hpp"
 #include "hesiod/gui/widgets/gui_utils.hpp"
 #include "hesiod/gui/widgets/node_library_widget.hpp"
@@ -25,11 +25,11 @@
 namespace hesiod
 {
 
-GraphEditorWidget::GraphEditorWidget(std::weak_ptr<GraphNode> p_graph_node,
-                                     QWidget                 *parent)
+GraphWorkspaceWidget::GraphWorkspaceWidget(std::weak_ptr<GraphNode> p_graph_node,
+                                           QWidget                 *parent)
     : QWidget(parent), p_graph_node(p_graph_node)
 {
-  Logger::log()->trace("GraphEditorWidget::GraphEditorWidget");
+  Logger::log()->trace("GraphWorkspaceWidget::GraphWorkspaceWidget");
 
   auto gno = this->p_graph_node.lock();
   if (!gno)
@@ -39,19 +39,19 @@ GraphEditorWidget::GraphEditorWidget(std::weak_ptr<GraphNode> p_graph_node,
   this->setup_connections();
 }
 
-GraphNodeWidget *GraphEditorWidget::get_graph_node_widget() const
+GraphNodeWidget *GraphWorkspaceWidget::get_graph_node_widget() const
 {
   return this->graph_node_widget;
 }
 
-NodeSettingsWidget *GraphEditorWidget::get_node_settings_widget() const
+NodeSettingsWidget *GraphWorkspaceWidget::get_node_settings_widget() const
 {
   return this->node_settings_widget;
 }
 
-Viewer3D *GraphEditorWidget::get_viewer() const { return this->viewer; }
+Viewer3D *GraphWorkspaceWidget::get_viewer() const { return this->viewer; }
 
-void GraphEditorWidget::json_from(nlohmann::json const &json)
+void GraphWorkspaceWidget::json_from(nlohmann::json const &json)
 {
   // GraphNodeWidget
   if (this->graph_node_widget)
@@ -61,24 +61,32 @@ void GraphEditorWidget::json_from(nlohmann::json const &json)
       this->graph_node_widget->json_from(json[graph_id]);
 
     // Viewer3D
-    if (this->viewer)
+    if (this->viewer && json.contains(graph_id))
     {
-      if (json.contains(graph_id) &&
-          json[graph_id].contains("graph_editor_widget.viewer3d"))
+      std::string key;
+      if (json[graph_id].contains("graph_workspace_widget.viewer3d"))
+        key = "graph_workspace_widget.viewer3d";
+      else if (json[graph_id].contains("graph_editor_widget.viewer3d"))
+        key = "graph_editor_widget.viewer3d";
+
+      if (!key.empty())
       {
         // defer to let OpenGL context settle
-        QTimer::singleShot(
-            0,
-            [this, json, graph_id]()
-            { this->viewer->json_from(json[graph_id]["graph_editor_widget.viewer3d"]); });
+        QTimer::singleShot(0,
+                           [this, json, graph_id, key]()
+                           { this->viewer->json_from(json[graph_id][key]); });
       }
     }
 
     // node library
-    if (this->node_library_widget)
+    if (this->node_library_widget && json.contains(graph_id))
     {
-      if (json.contains(graph_id) &&
-          json[graph_id].contains("graph_editor_widget.node_library_widget"))
+      if (json[graph_id].contains("graph_workspace_widget.node_library_widget"))
+      {
+        this->node_library_widget->json_from(
+            json[graph_id]["graph_workspace_widget.node_library_widget"]);
+      }
+      else if (json[graph_id].contains("graph_editor_widget.node_library_widget"))
       {
         this->node_library_widget->json_from(
             json[graph_id]["graph_editor_widget.node_library_widget"]);
@@ -87,7 +95,7 @@ void GraphEditorWidget::json_from(nlohmann::json const &json)
   }
 }
 
-nlohmann::json GraphEditorWidget::json_to() const
+nlohmann::json GraphWorkspaceWidget::json_to() const
 {
   nlohmann::json json;
 
@@ -97,17 +105,17 @@ nlohmann::json GraphEditorWidget::json_to() const
     json = this->graph_node_widget->json_to();
 
     if (this->viewer)
-      json["graph_editor_widget.viewer3d"] = this->viewer->json_to();
+      json["graph_workspace_widget.viewer3d"] = this->viewer->json_to();
 
     if (this->node_library_widget)
-      json["graph_editor_widget.node_library_widget"] = this->node_library_widget
-                                                            ->json_to();
+      json["graph_workspace_widget.node_library_widget"] = this->node_library_widget
+                                                               ->json_to();
   }
 
   return json;
 }
 
-void GraphEditorWidget::set_node_library_visible(bool new_state)
+void GraphWorkspaceWidget::set_node_library_visible(bool new_state)
 {
   if (this->node_library_widget)
     this->node_library_widget->setVisible(new_state);
@@ -126,9 +134,9 @@ void GraphEditorWidget::set_node_library_visible(bool new_state)
                                                              : Qt::RightArrow);
 }
 
-void GraphEditorWidget::setup_connections()
+void GraphWorkspaceWidget::setup_connections()
 {
-  Logger::log()->trace("GraphEditorWidget::setup_connections");
+  Logger::log()->trace("GraphWorkspaceWidget::setup_connections");
 
   if (!this->graph_node_widget)
     return;
@@ -136,9 +144,9 @@ void GraphEditorWidget::setup_connections()
   // nothing here... for now
 }
 
-void GraphEditorWidget::setup_layout()
+void GraphWorkspaceWidget::setup_layout()
 {
-  Logger::log()->trace("GraphEditorWidget::setup_layout");
+  Logger::log()->trace("GraphWorkspaceWidget::setup_layout");
 
   auto gno = this->p_graph_node.lock();
   if (!gno)

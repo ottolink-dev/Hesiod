@@ -65,7 +65,7 @@ struct AppSettings
 
   struct Global
   {
-    int         omp_num_threads = 8;
+    int         omp_num_threads = -1; // let CLWrapper decides
     std::string icon_path = "data/hesiod_icon.png";
     // empty = start with a blank project; set to a .hsd path to load that
     // file at startup instead

@@ -63,7 +63,7 @@ void compute_combine_mask_node(BaseNode &node)
   std::function<void(std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)>
       lambda;
 
-  int method = node.val<int>(A_METHOD);
+  const auto method = node.val_enum<MaskCombineMethod>(A_METHOD);
 
   switch (method)
   {

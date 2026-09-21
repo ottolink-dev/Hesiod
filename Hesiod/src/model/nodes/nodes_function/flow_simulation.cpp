@@ -130,7 +130,7 @@ void compute_flow_simulation_node(BaseNode &node)
   }
   else if (!p_depth_map)
   {
-    auto map_type = DefaultMapOptions::Type(node.val<int>(A_DEPTH_MAP_TYPE));
+    auto map_type = node.val_enum<DefaultMapOptions::Type>(A_DEPTH_MAP_TYPE);
 
     generate_map(node, p_depth_map, dmap, DefaultMapOptions{.map_type = map_type});
   }
@@ -195,7 +195,7 @@ void compute_flow_simulation_node(BaseNode &node)
 
   if (post_filter)
   {
-    int ir = std::max(1, int(radius * p_z->shape.x));
+    int ir = node.val_pixel_radius(A_RADIUS);
 
     hmap::for_each_tile(
         {p_z, p_water_out},

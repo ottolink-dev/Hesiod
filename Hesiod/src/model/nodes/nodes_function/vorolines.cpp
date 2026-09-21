@@ -75,7 +75,7 @@ void compute_vorolines_node(BaseNode &node)
       {
         auto [pa_out, pa_dx, pa_dy] = unpack<3>(p_arrays);
 
-        hmap::VoronoiReturnType rtype = (hmap::VoronoiReturnType)node.val<int>(
+        hmap::VoronoiReturnType rtype = node.val_enum<hmap::VoronoiReturnType>(
             A_RETURN_TYPE);
 
         *pa_out = hmap::gpu::vorolines(region.shape,

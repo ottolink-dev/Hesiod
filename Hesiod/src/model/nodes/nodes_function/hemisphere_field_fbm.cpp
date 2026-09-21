@@ -96,7 +96,7 @@ void compute_hemisphere_field_fbm_node(BaseNode &node)
 
         *pa_out = hmap::gpu::hemisphere_field_fbm(
             region.shape,
-            node.val<glm::vec2>(A_KW),
+            node.val_wavenumber(A_KW),
             node.val<int>(A_SEED),
             node.val<float>(A_RMIN),
             node.val<float>(A_RMAX),

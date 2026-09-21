@@ -66,8 +66,7 @@ void compute_distance_transform_node(BaseNode &node)
           if (node.val<bool>(A_REVERSE_INPUT))
             *pa_out = 1.f - *pa_out;
 
-          auto type = static_cast<hmap::DistanceTransformType>(
-              node.val<int>(A_TRANSFORM_TYPE));
+          auto type = node.val_enum<hmap::DistanceTransformType>(A_TRANSFORM_TYPE);
 
           switch (type)
           {

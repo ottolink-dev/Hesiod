@@ -88,7 +88,7 @@ void compute_badlands_node(BaseNode &node)
 
   // clang-format off
   const auto elevation      = node.val<float>(A_ELEVATION);
-  const auto kw             = node.val<glm::vec2>(A_KW);
+  const auto kw             = node.val_wavenumber(A_KW);
   const auto seed           = node.val<int>(A_SEED);
   const auto octaves        = node.val<int>(A_OCTAVES);
   const auto rugosity       = node.val<float>(A_RUGOSITY);

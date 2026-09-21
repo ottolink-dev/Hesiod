@@ -276,6 +276,7 @@ std::map<std::string, std::string> get_node_inventory()
       {"Laplace", "Filter/Smoothing"},
       {"Lerp", "Math/Base"},
       {"LocalMetrics", "Terrain Features"},
+      {"LooseSymmetry", "Operator/Transform"},
       {"LevelSetCurvature", "WIP"}, // "Terrain Features/Advanced"},
       {"MakeBinary", "Terrain Features/Morphology"},
       {"MakePeriodic", "Operator/Tiling"},
@@ -621,6 +622,7 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
     SETUP_NODE(Lerp, lerp);
     SETUP_NODE(LevelSetCurvature, level_set_curvature);
     SETUP_NODE(LocalMetrics, local_metrics);
+    SETUP_NODE(LooseSymmetry, loose_symmetry);
     SETUP_NODE(MakeBinary, make_binary);
     SETUP_NODE(MakePeriodic, make_periodic);
     SETUP_NODE(MakePeriodicStitching, make_periodic_stitching);

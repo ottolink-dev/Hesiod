@@ -20,6 +20,8 @@ struct GraphConfig
   void           json_from(nlohmann::json const &json);
   nlohmann::json json_to() const;
 
+  float       aspect_ratio() const;
+  glm::vec2   scale_wavenumber(const glm::vec2 &kw) const;
   std::string info_string() const;
   void        log_debug() const;
   void        set_shape(const glm::ivec2 &new_shape);

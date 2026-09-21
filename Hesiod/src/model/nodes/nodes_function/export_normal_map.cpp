@@ -53,38 +53,53 @@ void compute_export_normal_map_node(BaseNode &node)
 
   hmap::VirtualArray *p_in = node.get_value_ref<hmap::VirtualArray>(P_IN);
 
-  if (p_in && node.val<bool>(A_AUTO_EXPORT))
+  if (!p_in)
+    return;
+
+  const bool auto_export = node.val<bool>(A_AUTO_EXPORT);
+  if (!auto_export)
   {
-    std::filesystem::path fname = node.val<std::filesystem::path>(A_FNAME);
-    fname                       = ensure_extension(fname, ".png");
-    const auto pattern          = node.val<std::string>(A_PATTERN);
-
-    std::unordered_map<std::string, std::string> replacements = get_standard_replacements(
-        node,
-        fname);
-
-    std::filesystem::path export_path = make_unique_filename(fname.parent_path(),
-                                                             pattern,
-                                                             replacements);
-
-    hmap::Array array  = p_in->to_array(node.cfg().cm_cpu);
-    const bool  flip_x = node.val<bool>(A_FLIP_X);
-    const bool  flip_y = node.val<bool>(A_FLIP_Y);
-
-    if (flip_x)
-      hmap::flip_lr(array);
-    if (flip_y)
-      hmap::flip_ud(array);
-
-    if (node.val<bool>(A_16BIT))
-      hmap::export_normal_map_png(export_path.string(),
-                                  p_in->to_array(node.cfg().cm_cpu),
-                                  CV_16U);
-    else
-      hmap::export_normal_map_png(export_path.string(),
-                                  p_in->to_array(node.cfg().cm_cpu),
-                                  CV_8U);
+    Logger::log()->trace(
+        "compute_export_normal_map_node: [{}]/[{}]: auto export is disabled",
+        node.get_node_type(),
+        node.get_id());
+    return;
   }
+
+  std::filesystem::path fname = node.val<std::filesystem::path>(A_FNAME);
+  fname                       = ensure_extension(fname, ".png");
+  const auto pattern          = node.val<std::string>(A_PATTERN);
+
+  std::unordered_map<std::string, std::string> replacements = get_standard_replacements(
+      node,
+      fname);
+
+  std::filesystem::path export_path = make_unique_filename(fname.parent_path(),
+                                                           pattern,
+                                                           replacements);
+
+  Logger::log()->trace("compute_export_normal_map_node: [{}]/[{}]: export path = {}",
+                       node.get_node_type(),
+                       node.get_id(),
+                       export_path.string());
+
+  hmap::Array array  = p_in->to_array(node.cfg().cm_cpu);
+  const bool  flip_x = node.val<bool>(A_FLIP_X);
+  const bool  flip_y = node.val<bool>(A_FLIP_Y);
+
+  if (flip_x)
+    hmap::flip_lr(array);
+  if (flip_y)
+    hmap::flip_ud(array);
+
+  if (node.val<bool>(A_16BIT))
+    hmap::export_normal_map_png(export_path.string(),
+                                p_in->to_array(node.cfg().cm_cpu),
+                                CV_16U);
+  else
+    hmap::export_normal_map_png(export_path.string(),
+                                p_in->to_array(node.cfg().cm_cpu),
+                                CV_8U);
 }
 
 } // namespace hesiod

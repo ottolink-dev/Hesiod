@@ -100,7 +100,7 @@ void compute_mix_texture_masked_node(BaseNode &node)
 
   if (current_group == G_TRANSPARENCY)
   {
-    const auto mix_method = static_cast<hmap::MixMethod>(node.val<int>(A_MIX_METHOD));
+    const auto mix_method = node.val_enum<hmap::MixMethod>(A_MIX_METHOD);
     const auto gain       = node.val<float>(A_GAIN);
 
     auto lambda =

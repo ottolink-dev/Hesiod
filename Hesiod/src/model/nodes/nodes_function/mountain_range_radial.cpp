@@ -85,7 +85,7 @@ void compute_mountain_range_radial_node(BaseNode &node)
         hmap::Array *pa_angle = p_arrays[4];
 
         *pa_out = hmap::gpu::mountain_range_radial(region.shape,
-                                                   node.val<glm::vec2>(A_KW),
+                                                   node.val_wavenumber(A_KW),
                                                    node.val<int>(A_SEED),
                                                    node.val<float>(A_HALF_WIDTH),
                                                    node.val<float>(A_ANGLE_SPREAD_RATIO),

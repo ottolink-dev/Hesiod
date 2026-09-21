@@ -60,7 +60,7 @@ void compute_make_periodic_node(BaseNode &node)
 
           hmap::make_periodic(*pa_out,
                               nbuffer,
-                              (hmap::PeriodicityType)node.val<int>(A_PERIODICITY_TYPE));
+                              node.val_enum<hmap::PeriodicityType>(A_PERIODICITY_TYPE));
         },
         node.cfg().cm_single_array);
   }

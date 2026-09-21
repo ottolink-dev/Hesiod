@@ -49,7 +49,7 @@ void compute_morphological_gradient_node(BaseNode &node)
   {
     hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
-    int ir = std::max(1, (int)(node.val<float>(A_RADIUS) * p_out->shape.x));
+    int ir = node.val_pixel_radius(A_RADIUS);
 
     hmap::for_each_tile(
         {p_out, p_in},

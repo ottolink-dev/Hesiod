@@ -30,7 +30,7 @@ void generate_noise(BaseNode            &node,
         float     kw_x = node.val<float>("dn_kw");
         glm::vec2 kw = {kw_x, kw_x};
 
-        auto ntype = hmap::NoiseType(node.val<int>("dn_noise_type"));
+        auto ntype = node.val_enum<hmap::NoiseType>("dn_noise_type");
         uint seed = node.val<int>("dn_seed") + seed_increment;
 
         *pa_noise_default = hmap::gpu::noise_fbm(ntype,

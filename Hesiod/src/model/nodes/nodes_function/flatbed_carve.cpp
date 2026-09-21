@@ -95,7 +95,7 @@ void compute_flatbed_carve_node(BaseNode &node)
                                 falloff,
                                 node.val<float>(A_OUTER_SLOPE),
                                 node.val<bool>(A_PRESERVE_BEDSHAPE),
-                                (hmap::RadialProfile)node.val<int>(A_RADIAL_PROFILE),
+                                node.val_enum<hmap::RadialProfile>(A_RADIAL_PROFILE),
                                 node.val<float>(A_RADIAL_PROFILE_PARAMETER),
                                 pa_mask,
                                 pa_dr,

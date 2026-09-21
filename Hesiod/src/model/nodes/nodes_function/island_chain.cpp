@@ -98,7 +98,7 @@ void compute_island_chain_node(BaseNode &node)
   const auto size_jitter   = node.val<float>(A_SIZE_JITTER);
   const auto scatter       = node.val<float>(A_SCATTER);
   const auto displacement  = node.val<float>(A_DISPLACEMENT);
-  const auto noise_type    = hmap::NoiseType(node.val<int>(A_NOISE_TYPE));
+  const auto noise_type    = node.val_enum<hmap::NoiseType>(A_NOISE_TYPE);
   const auto kw            = node.val<float>(A_KW);
   const auto octaves       = node.val<int>(A_OCTAVES);
   const auto weight        = node.val<float>(A_WEIGHT);

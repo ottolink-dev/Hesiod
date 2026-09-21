@@ -42,7 +42,7 @@ void setup_gamma_correction_local_node(BaseNode &node)
   // --- Attributes
 
   add_float(node, A_RADIUS, "Radius", 0.05f, 0.01f, 0.2f);
-  add_float(node, A_GAMMA, "Gamma Exponent", 2.f, 0.01f, 10.f);
+  add_float(node, A_GAMMA, "Gamma Exponent", 2.f, 0.01f, 4.f);
   add_float(node, A_K, "Smoothing", 0.1f, 0.f, 0.5f);
 
   // --- Attribute(s) order
@@ -72,12 +72,11 @@ void compute_gamma_correction_local_node(BaseNode &node)
   // --- Params
 
   // clang-format off
-  const auto radius = node.val<float>(A_RADIUS);
   const auto gamma  = node.val<float>(A_GAMMA);
   const auto k      = node.val<float>(A_K);
   // clang-format on
 
-  int ir = std::max(1, (int)(radius * p_in->shape.x));
+  int ir = node.val_pixel_radius(A_RADIUS);
 
   // --- Prepare mask
 

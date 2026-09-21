@@ -99,7 +99,7 @@ void compute_gabor_wave_fbm_node(BaseNode &node)
           angle_deg += (*pa_angle) * 180.f / M_PI;
 
         *pa_out = hmap::gpu::gabor_wave_fbm(region.shape,
-                                            node.val<glm::vec2>(A_KW),
+                                            node.val_wavenumber(A_KW),
                                             node.val<int>(A_SEED),
                                             angle_deg,
                                             node.val<float>(A_ANGLE_SPREAD_RATIO),

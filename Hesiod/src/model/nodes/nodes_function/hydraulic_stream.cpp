@@ -54,7 +54,7 @@ void compute_hydraulic_stream_node(BaseNode &node)
     hmap::VirtualArray *p_mask        = node.get_value_ref<hmap::VirtualArray>(P_MASK);
     hmap::VirtualArray *p_erosion_map = node.get_value_ref<hmap::VirtualArray>(P_EROSION);
 
-    int ir = (int)(node.val<float>(A_RADIUS) * p_out->shape.x);
+    int ir = node.val_pixel_radius(A_RADIUS, 0);
 
     hmap::for_each_tile(
         {p_out, p_in, p_mask, p_erosion_map},

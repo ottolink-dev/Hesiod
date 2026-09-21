@@ -85,7 +85,7 @@ void compute_band_node(BaseNode &node)
   const auto angle         = node.val<float>(A_ANGLE);
   const auto length        = node.val<float>(A_LENGTH);
   const auto width         = node.val<float>(A_WIDTH);
-  const auto profile       = hmap::RadialProfile(node.val<int>(A_PROFILE));
+  const auto profile       = node.val_enum<hmap::RadialProfile>(A_PROFILE);
   const auto profile_param = node.val<float>(A_PROFILE_PARAM);
   const auto center        = node.val<glm::vec2>(A_CENTER);
 

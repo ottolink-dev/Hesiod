@@ -272,7 +272,7 @@ void compute_coherent_noise_node(BaseNode &node)
 
   // --- Common parameters
 
-  const auto kw          = node.val<glm::vec2>(A_KW);
+  const auto kw          = node.val_wavenumber(A_KW);
   const auto seed        = node.val<int>(A_SEED);
   const auto octaves     = node.val<int>(A_OCTAVES);
   const auto weight      = node.val<float>(A_WEIGHT);
@@ -283,7 +283,7 @@ void compute_coherent_noise_node(BaseNode &node)
 
   if (current_group == G_FBM)
   {
-    const auto noise_type = hmap::NoiseType(node.val<int>(A_NOISE_TYPE));
+    const auto noise_type = node.val_enum<hmap::NoiseType>(A_NOISE_TYPE);
     const auto periodic   = node.val<bool>(A_PERIODIC);
 
     hmap::for_each_tile(
@@ -329,7 +329,7 @@ void compute_coherent_noise_node(BaseNode &node)
   }
   else if (current_group == G_RIDGED)
   {
-    const auto noise_type  = hmap::NoiseType(node.val<int>(A_NOISE_TYPE));
+    const auto noise_type  = node.val_enum<hmap::NoiseType>(A_NOISE_TYPE);
     const auto k_smoothing = node.val<float>(A_K_SMOOTHING);
 
     hmap::for_each_tile(
@@ -360,7 +360,7 @@ void compute_coherent_noise_node(BaseNode &node)
   }
   else if (current_group == G_IQ)
   {
-    const auto noise_type     = hmap::NoiseType(node.val<int>(A_NOISE_TYPE));
+    const auto noise_type     = node.val_enum<hmap::NoiseType>(A_NOISE_TYPE);
     const auto gradient_scale = node.val<float>(A_GRADIENT_SCALE);
 
     hmap::for_each_tile(
@@ -391,7 +391,7 @@ void compute_coherent_noise_node(BaseNode &node)
   }
   else if (current_group == G_JORDAN)
   {
-    const auto noise_type = hmap::NoiseType(node.val<int>(A_NOISE_TYPE));
+    const auto noise_type = node.val_enum<hmap::NoiseType>(A_NOISE_TYPE);
     const auto warp0      = node.val<float>(A_WARP0);
     const auto damp0      = node.val<float>(A_DAMP0);
     const auto warp_scale = node.val<float>(A_WARP_SCALE);
@@ -457,7 +457,7 @@ void compute_coherent_noise_node(BaseNode &node)
   }
   else if (current_group == G_PINGPONG)
   {
-    const auto noise_type = hmap::NoiseType(node.val<int>(A_NOISE_TYPE));
+    const auto noise_type = node.val_enum<hmap::NoiseType>(A_NOISE_TYPE);
 
     hmap::for_each_tile(
         {p_dx, p_dy, p_ctrl},
@@ -486,7 +486,7 @@ void compute_coherent_noise_node(BaseNode &node)
   }
   else if (current_group == G_SWISS)
   {
-    const auto noise_type = hmap::NoiseType(node.val<int>(A_NOISE_TYPE));
+    const auto noise_type = node.val_enum<hmap::NoiseType>(A_NOISE_TYPE);
     const auto warp_scale = node.val<float>(A_WARP_SCALE);
 
     hmap::for_each_tile(

@@ -2111,7 +2111,7 @@
                 "type": "Float"
             },
             "dn_add_default_noise": {
-                "description": "Enables or disables the built-in procedural noise. If an external noise input is provided, it overrides this default noise.",
+                "description": "Enables or disables the built-in drainage noise. If an external noise input is provided, it overrides this default noise.",
                 "key": "dn_add_default_noise",
                 "label": "Activate",
                 "type": "Bool"
@@ -2229,7 +2229,7 @@
             "envelope": {
                 "caption": "envelope",
                 "data_type": "VirtualArray",
-                "description": "Optional envelope heightmap multiplied with the output.",
+                "description": "Heightmap used as a post-process amplitude multiplier for the generated noise.",
                 "type": "input"
             },
             "mask": {
@@ -12968,6 +12968,234 @@
             }
         }
     },
+    "Jagged": {
+        "category": "Filter/Advanced Filters",
+        "description": "Applies a Voronoi-based jagged bubble dome filter that adds localized dome profiles to the elevation within Voronoi cells.",
+        "label": "Jagged",
+        "parameter_groups": [
+            {
+                "keys": [
+                    "kw",
+                    "seed",
+                    "angle",
+                    "amp",
+                    "gamma",
+                    "jitter.x",
+                    "jitter.y",
+                    "dn_add_default_noise",
+                    "dn_kw",
+                    "dn_noise_amp",
+                    "dn_noise_type",
+                    "dn_seed",
+                    "dn_smoothness",
+                    "mask_activate",
+                    "mask_gain",
+                    "mask_inverse",
+                    "mask_radius",
+                    "mask_type",
+                    "post_mix_method",
+                    "post_mix",
+                    "post_inverse",
+                    "post_gamma",
+                    "post_gain",
+                    "post_smoothing_radius",
+                    "post_remap",
+                    "post_saturate"
+                ],
+                "name": "main"
+            }
+        ],
+        "parameters": {
+            "amp": {
+                "description": "Amplitude of the bubble dome elevation.",
+                "key": "amp",
+                "label": "Amplitude",
+                "type": "Float"
+            },
+            "angle": {
+                "description": "Orientation angle in degrees for rotating the Voronoi pattern.",
+                "key": "angle",
+                "label": "Angle",
+                "type": "Angle (degrees)"
+            },
+            "dn_add_default_noise": {
+                "description": "Enables or disables the built-in drainage noise. If an external noise input is provided, it overrides this default noise.",
+                "key": "dn_add_default_noise",
+                "label": "dn_add_default_noise",
+                "type": "Bool"
+            },
+            "dn_kw": {
+                "description": "Base spatial frequencies in the X and Y directions.",
+                "key": "dn_kw",
+                "label": "dn_kw",
+                "type": "Wavenumber"
+            },
+            "dn_noise_amp": {
+                "description": "Noise amplitude.",
+                "key": "dn_noise_amp",
+                "label": "dn_noise_amp",
+                "type": "Float"
+            },
+            "dn_noise_type": {
+                "description": "Noise type.",
+                "key": "dn_noise_type",
+                "label": "dn_noise_type",
+                "type": "Enumeration"
+            },
+            "dn_seed": {
+                "description": "Random seed number. The random seed is an offset to the randomized process. A different seed will produce a new result.",
+                "key": "dn_seed",
+                "label": "dn_seed",
+                "type": "Random seed number"
+            },
+            "dn_smoothness": {
+                "description": "Controls the resulting smoothness of the fractal layering process.",
+                "key": "dn_smoothness",
+                "label": "dn_smoothness",
+                "type": "Float"
+            },
+            "gamma": {
+                "description": "Shape exponent for the dome curvature.",
+                "key": "gamma",
+                "label": "Gamma",
+                "type": "Float"
+            },
+            "jitter.x": {
+                "description": "Jitter amount along X controlling cell randomness.",
+                "key": "jitter.x",
+                "label": "jitter.x",
+                "type": "Float"
+            },
+            "jitter.y": {
+                "description": "Jitter amount along Y controlling cell randomness.",
+                "key": "jitter.y",
+                "label": "jitter.y",
+                "type": "Float"
+            },
+            "kw": {
+                "description": "Base spatial frequencies in the X and Y directions. The frequencies are defined with respect to the entire domain: for example, kw = 2 produces two full oscillations across the domain width (and similarly for the Y direction).",
+                "key": "kw",
+                "label": "Spatial Frequency",
+                "type": "Wavenumber"
+            },
+            "mask_activate": {
+                "description": "Enables or disables the internal mask. If the node's 'mask' input is connected, this setting is bypassed and the input mask is used instead.",
+                "key": "mask_activate",
+                "label": "mask_activate",
+                "type": "Bool"
+            },
+            "mask_gain": {
+                "description": "Controls the intensity or influence of the internal mask. Bypassed if the 'mask' input is connected.",
+                "key": "mask_gain",
+                "label": "mask_gain",
+                "type": "Float"
+            },
+            "mask_inverse": {
+                "description": "Inverts the internal mask, applying the operator where the mask is low. Ignored if a 'mask' input is provided.",
+                "key": "mask_inverse",
+                "label": "mask_inverse",
+                "type": "Bool"
+            },
+            "mask_radius": {
+                "description": "Defines the smoothing radius for the internal mask. A value of 0 disables smoothing. This is bypassed if the 'mask' input is used.",
+                "key": "mask_radius",
+                "label": "mask_radius",
+                "type": "Float"
+            },
+            "mask_type": {
+                "description": "Specifies how the internal mask is computed: 'Elevation' uses height, 'Gradient Norm' uses slope, and 'Elevation mid-range' selects the middle portion of the height range. This parameter is ignored when a 'mask' input is connected.",
+                "key": "mask_type",
+                "label": "mask_type",
+                "type": "Enumeration"
+            },
+            "post_gain": {
+                "description": "Mid-centered gain transformation applied to the elevation values. This is a non-linear recurve operator centered around the mid elevation (typically 0.5). Increasing the gain pushes values toward the minimum and maximum elevations, creating flatter low/high regions with a steeper transition around the midpoint.",
+                "key": "post_gain",
+                "label": "Gain",
+                "type": "Float"
+            },
+            "post_gamma": {
+                "description": "Standard gamma correction applied to the elevation values. This is a monotonic power-law remapping that shifts emphasis toward low or high elevations, making the overall shape sharper or bulkier without changing its ordering.",
+                "key": "post_gamma",
+                "label": "Gamma",
+                "type": "Float"
+            },
+            "post_inverse": {
+                "description": "Inverts the output values after processing, flipping low and high values across the midrange.",
+                "key": "post_inverse",
+                "label": "Invert Output",
+                "type": "Bool"
+            },
+            "post_mix": {
+                "description": "Mixing factor for blending input and output values. A value of 0 uses only the input, 1 uses only the output, and intermediate values perform a linear interpolation.",
+                "key": "post_mix",
+                "label": "Mix Factor",
+                "type": "Float"
+            },
+            "post_mix_method": {
+                "description": "Method used to combine input and output values. Options include linear interpolation (default), min, max, smooth min, smooth max, add, and subtract.",
+                "key": "post_mix_method",
+                "label": "Mix Method",
+                "type": "Enumeration"
+            },
+            "post_remap": {
+                "description": "Linearly remaps the output values to a specified target range (default is [0, 1]).",
+                "key": "post_remap",
+                "label": "Remap Range",
+                "type": "Value range"
+            },
+            "post_saturate": {
+                "description": "Modifies the amplitude of elevations by first clamping them to a given interval and then scaling them so that the restricted interval matches the original input range. This enhances contrast in elevation variations while maintaining overall structure.",
+                "key": "post_saturate",
+                "label": "Saturation Range",
+                "type": "Value range"
+            },
+            "post_smoothing_radius": {
+                "description": "Defines the radius for post-processing smoothing, determining the size of the neighborhood used to average local values and reduce high-frequency detail. A radius of 0 disables smoothing.",
+                "key": "post_smoothing_radius",
+                "label": "Smoothing Radius",
+                "type": "Float"
+            },
+            "seed": {
+                "description": "Random seed number. The random seed is an offset to the randomized process. A different seed will produce a new result.",
+                "key": "seed",
+                "label": "Seed",
+                "type": "Random seed number"
+            }
+        },
+        "ports": {
+            "dx": {
+                "caption": "dx",
+                "data_type": "VirtualArray",
+                "description": "Displacement with respect to the domain size (x-direction).",
+                "type": "input"
+            },
+            "dy": {
+                "caption": "dy",
+                "data_type": "VirtualArray",
+                "description": "Displacement with respect to the domain size (y-direction).",
+                "type": "input"
+            },
+            "input": {
+                "caption": "input",
+                "data_type": "VirtualArray",
+                "description": "Input heightmap.",
+                "type": "input"
+            },
+            "mask": {
+                "caption": "mask",
+                "data_type": "VirtualArray",
+                "description": "Mask heightmap for localized effect.",
+                "type": "input"
+            },
+            "output": {
+                "caption": "output",
+                "data_type": "VirtualArray",
+                "description": "Output heightmap.",
+                "type": "output"
+            }
+        }
+    },
     "KernelCupola": {
         "category": "Primitive/Kernel",
         "description": "No description available",
@@ -13745,6 +13973,149 @@
                 "caption": "mask",
                 "data_type": "VirtualArray",
                 "description": "Output heightmap containing the computed local metric values after optional saturation and post-processing.",
+                "type": "output"
+            }
+        }
+    },
+    "LooseSymmetry": {
+        "category": "Operator/Transform",
+        "description": "Synthesizes a heightmap with natural, approximate symmetry using exemplar-based super-resolution, preserving macro symmetry while retaining non-mirrored fine procedural detail.",
+        "label": "LooseSymmetry",
+        "parameter_groups": [
+            {
+                "keys": [
+                    "symmetry_type",
+                    "strength",
+                    "factor",
+                    "flatten_center",
+                    "flatten_radius"
+                ],
+                "name": "Symmetry"
+            },
+            {
+                "keys": [
+                    "patch_radius",
+                    "sparsity"
+                ],
+                "name": "Synthesis"
+            },
+            {
+                "keys": [
+                    "post_mix_method",
+                    "post_mix",
+                    "post_inverse",
+                    "post_gamma",
+                    "post_gain",
+                    "post_smoothing_radius",
+                    "post_remap",
+                    "post_saturate"
+                ],
+                "name": "Post-Processing"
+            }
+        ],
+        "parameters": {
+            "factor": {
+                "description": "Super-resolution downsampling and amplification factor for the macro base.",
+                "key": "factor",
+                "label": "Factor",
+                "type": "Integer"
+            },
+            "flatten_center": {
+                "description": "If true, flattens the elevation along the symmetry axis or center point towards minimum elevation.",
+                "key": "flatten_center",
+                "label": "Flatten Center",
+                "type": "Bool"
+            },
+            "flatten_radius": {
+                "description": "Radius (in normalized [0, 1] units) around the symmetry axis or center for the flattening transition.",
+                "key": "flatten_radius",
+                "label": "Flatten Radius",
+                "type": "Float"
+            },
+            "patch_radius": {
+                "description": "Patch size specified as a fraction of the domain width [0, 1].",
+                "key": "patch_radius",
+                "label": "Patch Radius",
+                "type": "Float"
+            },
+            "post_gain": {
+                "description": "Mid-centered gain transformation applied to the elevation values. This is a non-linear recurve operator centered around the mid elevation (typically 0.5). Increasing the gain pushes values toward the minimum and maximum elevations, creating flatter low/high regions with a steeper transition around the midpoint.",
+                "key": "post_gain",
+                "label": "Gain",
+                "type": "Float"
+            },
+            "post_gamma": {
+                "description": "Standard gamma correction applied to the elevation values. This is a monotonic power-law remapping that shifts emphasis toward low or high elevations, making the overall shape sharper or bulkier without changing its ordering.",
+                "key": "post_gamma",
+                "label": "Gamma",
+                "type": "Float"
+            },
+            "post_inverse": {
+                "description": "Inverts the output values after processing, flipping low and high values across the midrange.",
+                "key": "post_inverse",
+                "label": "Invert Output",
+                "type": "Bool"
+            },
+            "post_mix": {
+                "description": "Mixing factor for blending input and output values. A value of 0 uses only the input, 1 uses only the output, and intermediate values perform a linear interpolation.",
+                "key": "post_mix",
+                "label": "Mix Factor",
+                "type": "Float"
+            },
+            "post_mix_method": {
+                "description": "Method used to combine input and output values. Options include linear interpolation (default), min, max, smooth min, smooth max, add, and subtract.",
+                "key": "post_mix_method",
+                "label": "Mix Method",
+                "type": "Enumeration"
+            },
+            "post_remap": {
+                "description": "Linearly remaps the output values to a specified target range (default is [0, 1]).",
+                "key": "post_remap",
+                "label": "Remap Range",
+                "type": "Value range"
+            },
+            "post_saturate": {
+                "description": "Modifies the amplitude of elevations by first clamping them to a given interval and then scaling them so that the restricted interval matches the original input range. This enhances contrast in elevation variations while maintaining overall structure.",
+                "key": "post_saturate",
+                "label": "Saturation Range",
+                "type": "Value range"
+            },
+            "post_smoothing_radius": {
+                "description": "Defines the radius for post-processing smoothing, determining the size of the neighborhood used to average local values and reduce high-frequency detail. A radius of 0 disables smoothing.",
+                "key": "post_smoothing_radius",
+                "label": "Smoothing Radius",
+                "type": "Float"
+            },
+            "sparsity": {
+                "description": "Maximum number of atoms used to code each patch during sparse reconstruction.",
+                "key": "sparsity",
+                "label": "Sparsity",
+                "type": "Integer"
+            },
+            "strength": {
+                "description": "Symmetry strength in [0, 1] controlling interpolation between the original macro base and the symmetrical guide.",
+                "key": "strength",
+                "label": "Strength",
+                "type": "Float"
+            },
+            "symmetry_type": {
+                "description": "Type of symmetry operation to apply to the guide field.",
+                "key": "symmetry_type",
+                "label": "Symmetry Type",
+                "type": "Enumeration"
+            }
+        },
+        "ports": {
+            "input": {
+                "caption": "input",
+                "data_type": "VirtualArray",
+                "description": "Input heightmap providing exemplar features.",
+                "type": "input"
+            },
+            "output": {
+                "caption": "output",
+                "data_type": "VirtualArray",
+                "description": "Synthesized heightmap with loose symmetry.",
                 "type": "output"
             }
         }
