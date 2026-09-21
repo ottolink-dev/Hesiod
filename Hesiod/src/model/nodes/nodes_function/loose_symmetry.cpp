@@ -64,36 +64,39 @@ void compute_loose_symmetry_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  hmap::VirtualArray *p_in = node.get_value_ref<hmap::VirtualArray>(P_IN);
+  // --- Inputs / Outputs
 
-  if (p_in)
-  {
-    hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
+  hmap::VirtualArray *p_in  = node.get_value_ref<hmap::VirtualArray>(P_IN);
+  hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
-    int patch_size       = node.val_pixel_radius(A_PATCH_RADIUS, 2);
-    int analysis_stride  = std::max(1, patch_size / 8);
-    int synthesis_stride = std::max(1, patch_size / 2);
+  if (!p_in)
+    return;
 
-    // --- Work on a single array (i.e. not-tiled algo)
+  // --- Params
 
-    hmap::Array in_array = p_in->to_array(node.cfg().cm_cpu);
+  int patch_size       = node.val_pixel_radius(A_PATCH_RADIUS, 2);
+  int analysis_stride  = std::max(1, patch_size / 8);
+  int synthesis_stride = std::max(1, patch_size / 2);
 
-    hmap::Array out_array = hmap::loose_symmetry(
-        in_array,
-        static_cast<hmap::SymmetryType>(node.val<int>(A_SYMMETRY_TYPE)),
-        node.val<float>(A_STRENGTH),
-        node.val<int>(A_FACTOR),
-        patch_size,
-        analysis_stride,
-        synthesis_stride,
-        node.val<int>(A_SPARSITY));
+  // --- Work on a single array (i.e. not-tiled algo)
 
-    p_out->from_array(out_array, node.cfg().cm_cpu);
+  hmap::Array in_array = p_in->to_array(node.cfg().cm_cpu);
 
-    // --- Post-process
+  hmap::Array out_array = hmap::loose_symmetry(
+      in_array,
+      static_cast<hmap::SymmetryType>(node.val<int>(A_SYMMETRY_TYPE)),
+      node.val<float>(A_STRENGTH),
+      node.val<int>(A_FACTOR),
+      patch_size,
+      analysis_stride,
+      synthesis_stride,
+      node.val<int>(A_SPARSITY));
 
-    post_process_heightmap(node, *p_out, p_in);
-  }
+  p_out->from_array(out_array, node.cfg().cm_cpu);
+
+  // --- Post-process
+
+  post_process_heightmap(node, *p_out, p_in);
 }
 
 } // namespace hesiod
