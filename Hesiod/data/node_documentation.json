@@ -13986,7 +13986,9 @@
                 "keys": [
                     "symmetry_type",
                     "strength",
-                    "factor"
+                    "factor",
+                    "flatten_center",
+                    "flatten_radius"
                 ],
                 "name": "Symmetry"
             },
@@ -14017,6 +14019,18 @@
                 "key": "factor",
                 "label": "Factor",
                 "type": "Integer"
+            },
+            "flatten_center": {
+                "description": "If true, flattens the elevation along the symmetry axis or center point towards minimum elevation.",
+                "key": "flatten_center",
+                "label": "Flatten Center",
+                "type": "Bool"
+            },
+            "flatten_radius": {
+                "description": "Radius (in normalized [0, 1] units) around the symmetry axis or center for the flattening transition.",
+                "key": "flatten_radius",
+                "label": "Flatten Radius",
+                "type": "Float"
             },
             "patch_radius": {
                 "description": "Patch size specified as a fraction of the domain width [0, 1].",

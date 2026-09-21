@@ -20,11 +20,13 @@ namespace hesiod
 constexpr const char *P_IN  = "input";
 constexpr const char *P_OUT = "output";
 
-constexpr const char *A_FACTOR        = "factor";
-constexpr const char *A_PATCH_RADIUS  = "patch_radius";
-constexpr const char *A_SPARSITY      = "sparsity";
-constexpr const char *A_STRENGTH      = "strength";
-constexpr const char *A_SYMMETRY_TYPE = "symmetry_type";
+constexpr const char *A_FACTOR         = "factor";
+constexpr const char *A_FLATTEN_CENTER = "flatten_center";
+constexpr const char *A_FLATTEN_RADIUS = "flatten_radius";
+constexpr const char *A_PATCH_RADIUS   = "patch_radius";
+constexpr const char *A_SPARSITY       = "sparsity";
+constexpr const char *A_STRENGTH       = "strength";
+constexpr const char *A_SYMMETRY_TYPE  = "symmetry_type";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -47,10 +49,12 @@ void setup_loose_symmetry_node(BaseNode &node)
            "Left to Right");
   add_float(node, A_STRENGTH, "Strength", 1.f, 0.f, 1.f);
   add_int(node, A_FACTOR, "Factor", 4, 1, 32);
+  add_bool(node, A_FLATTEN_CENTER, "Flatten Center", false);
+  add_float(node, A_FLATTEN_RADIUS, "Flatten Radius", 0.25f, 0.f, 1.f);
 
   node.set_current_category("Synthesis");
-  add_float(node, A_PATCH_RADIUS, "Patch Radius", 0.05f, 0.f, 1.f);
-  add_int(node, A_SPARSITY, "Sparsity", 1, 1, 16);
+  add_float(node, A_PATCH_RADIUS, "Patch Radius", 0.1f, 0.f, 1.f);
+  add_int(node, A_SPARSITY, "Sparsity", 4, 1, 16);
 
   setup_post_process_heightmap_attributes(node,
                                           {.add_mix = true, .remap_active_state = false});
@@ -90,7 +94,9 @@ void compute_loose_symmetry_node(BaseNode &node)
       patch_size,
       analysis_stride,
       synthesis_stride,
-      node.val<int>(A_SPARSITY));
+      node.val<int>(A_SPARSITY),
+      node.val<bool>(A_FLATTEN_CENTER),
+      node.val<float>(A_FLATTEN_RADIUS));
 
   p_out->from_array(out_array, node.cfg().cm_cpu);
 
