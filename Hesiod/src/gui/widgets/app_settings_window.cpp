@@ -296,7 +296,10 @@ void AppSettingsWindow::setup_layout()
   this->bind_bool("Create a backup file whenever saving",
                   ctx.app_settings.global.save_backup_file);
   this->bind_int("Number of threads used for OpenMP",
-                 ctx.app_settings.global.omp_num_threads);
+                 ctx.app_settings.global.omp_num_threads,
+                 -1,
+                 64);
+  this->add_description("Set OpenMP threads to -1 to let CLWrapper decide.");
   this->bind_bool("Enable autosave (crash-recovery snapshots)",
                   ctx.app_settings.global.enable_autosave,
                   [](bool enabled)
