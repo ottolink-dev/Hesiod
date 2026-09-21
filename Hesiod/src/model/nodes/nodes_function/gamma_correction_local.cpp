@@ -72,12 +72,11 @@ void compute_gamma_correction_local_node(BaseNode &node)
   // --- Params
 
   // clang-format off
-  const auto radius = node.val<float>(A_RADIUS);
   const auto gamma  = node.val<float>(A_GAMMA);
   const auto k      = node.val<float>(A_K);
   // clang-format on
 
-  int ir = std::max(1, (int)(radius * p_in->shape.x));
+  int ir = node.val_pixel_radius(A_RADIUS);
 
   // --- Prepare mask
 

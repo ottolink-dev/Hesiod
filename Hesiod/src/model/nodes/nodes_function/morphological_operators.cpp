@@ -65,11 +65,10 @@ void compute_morphological_operators_node(BaseNode &node)
   // --- Params
 
   // clang-format off
-  const auto radius = node.val<float>(A_RADIUS);
   const auto op = hmap::MorphologyOperation(node.val<int>(A_OPERATOR));
   const auto sat_ratio = node.val<float>(A_SAT_RATIO);
   //
-  const int  ir     = std::max(1, (int)(radius * p_out->shape.x));
+  const int  ir     = node.val_pixel_radius(A_RADIUS);
   const float satmax = (1.f - 0.01f * sat_ratio);
   // clang-format on
 

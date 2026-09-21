@@ -52,7 +52,7 @@ void compute_smooth_fill_smear_peaks_node(BaseNode &node)
     // prepare mask
     std::shared_ptr<hmap::VirtualArray> sp_mask = pre_process_mask(node, p_mask, *p_in);
 
-    int ir = std::max(1, (int)(node.val<float>(A_RADIUS) * p_out->shape.x));
+    int ir = node.val_pixel_radius(A_RADIUS);
 
     hmap::for_each_tile(
         {p_out, p_in, p_mask},

@@ -87,12 +87,11 @@ void compute_blend_node(BaseNode &node)
     std::swap(p_in1, p_in2);
 
   const auto k             = node.val<float>(A_K);
-  const auto radius        = node.val<float>(A_RADIUS);
   const auto method        = node.val<int>(A_METHOD);
   const auto input1_weight = node.val<float>(A_INPUT1_WEIGHT);
   const auto input2_weight = node.val<float>(A_INPUT2_WEIGHT);
 
-  const int ir = std::max(1, (int)(radius * p_out->shape.x));
+  const int ir = node.val_pixel_radius(A_RADIUS);
 
   // --- Compute
 

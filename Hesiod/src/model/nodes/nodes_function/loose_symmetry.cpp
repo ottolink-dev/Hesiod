@@ -70,7 +70,7 @@ void compute_loose_symmetry_node(BaseNode &node)
   {
     hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
-    int patch_size = std::max(2, (int)(node.val<float>(A_PATCH_RADIUS) * p_out->shape.x));
+    int patch_size       = node.val_pixel_radius(A_PATCH_RADIUS, 2);
     int analysis_stride  = std::max(1, patch_size / 8);
     int synthesis_stride = std::max(1, patch_size / 2);
 

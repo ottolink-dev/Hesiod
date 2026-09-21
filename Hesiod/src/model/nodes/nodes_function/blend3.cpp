@@ -110,17 +110,15 @@ void compute_blend3_node(BaseNode &node)
     std::swap(p_in2, p_in3);
 
   const auto k1            = node.val<float>(A_K1);
-  const auto radius1       = node.val<float>(A_RADIUS1);
   const auto method1       = node.val<int>(A_METHOD1);
   const auto k2            = node.val<float>(A_K2);
-  const auto radius2       = node.val<float>(A_RADIUS2);
   const auto method2       = node.val<int>(A_METHOD2);
   const auto input1_weight = node.val<float>(A_INPUT1_WEIGHT);
   const auto input2_weight = node.val<float>(A_INPUT2_WEIGHT);
   const auto input3_weight = node.val<float>(A_INPUT3_WEIGHT);
 
-  const int ir1 = std::max(1, (int)(radius1 * p_out->shape.x));
-  const int ir2 = std::max(1, (int)(radius2 * p_out->shape.x));
+  const int ir1 = node.val_pixel_radius(A_RADIUS1);
+  const int ir2 = node.val_pixel_radius(A_RADIUS2);
 
   // --- Compute
 

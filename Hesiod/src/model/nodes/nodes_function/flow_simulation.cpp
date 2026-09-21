@@ -195,7 +195,7 @@ void compute_flow_simulation_node(BaseNode &node)
 
   if (post_filter)
   {
-    int ir = std::max(1, int(radius * p_z->shape.x));
+    int ir = node.val_pixel_radius(A_RADIUS);
 
     hmap::for_each_tile(
         {p_z, p_water_out},

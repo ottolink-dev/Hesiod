@@ -74,7 +74,7 @@ void compute_expand_shrink_node(BaseNode &node)
     }
     else
     {
-      int        ir = std::max(1, (int)(node.val<float>(A_RADIUS) * p_out->shape.x));
+      int        ir           = node.val_pixel_radius(A_RADIUS);
       glm::ivec2 kernel_shape = {2 * ir + 1, 2 * ir + 1};
 
       kernel_array = hmap::get_kernel(kernel_shape,

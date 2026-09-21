@@ -72,12 +72,11 @@ void compute_local_metrics_node(BaseNode &node)
   // --- Params
 
   // clang-format off
-  const auto radius   = node.val<float>(A_RADIUS);
   const auto metric   = hmap::gpu::LocalMetrics(node.val<int>(A_METRIC));
   const auto sat_perc = 0.01f * node.val<float>(A_SATMAX);
   // clang-format on
 
-  const int   ir     = std::max(1, int(radius * p_out->shape.x));
+  const int   ir     = node.val_pixel_radius(A_RADIUS);
   const float satmin = sat_perc;
   const float satmax = 1.f - sat_perc;
 

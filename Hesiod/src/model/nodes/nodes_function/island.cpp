@@ -142,8 +142,7 @@ void compute_island_node(BaseNode &node)
   const auto lee_angle              = node.val<float>(A_LEE_ANGLE);
   const auto lee_amp                = node.val<float>(A_LEE_AMP);
   const auto uplift_amp             = node.val<float>(A_UPLIFT_AMP);
-
-  const auto ir = static_cast<int>(node.val<float>(A_FILTER_RADIUS) * p_out->shape.x);
+  const auto ir                     = node.val_pixel_radius(A_FILTER_RADIUS, 0);
 
   hmap::for_each_tile(
       {p_out, p_land, p_dr, p_depth, p_mask},

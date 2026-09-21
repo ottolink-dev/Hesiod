@@ -69,7 +69,7 @@ void compute_ridge_accentuate_node(BaseNode &node)
 
   const auto strength = node.val<float>(A_STRENGTH);
   const auto reverse  = node.val<bool>(A_REVERSE);
-  const int  ir       = std::max(0, (int)(node.val<float>(A_RADIUS) * p_out->shape.x));
+  const int  ir       = node.val_pixel_radius(A_RADIUS, 0);
 
   hmap::for_each_tile(
       {p_in, p_mask},
