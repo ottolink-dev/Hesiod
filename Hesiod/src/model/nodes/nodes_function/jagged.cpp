@@ -54,11 +54,11 @@ void setup_jagged_node(BaseNode &node)
 
   // clang-format off
   node.set_current_category("Main Parameters");
-  add_wavenumber(node, A_KW, "Spatial Frequency", glm::vec2(32.f, 32.f), 0.f, FLT_MAX, true);
+  add_wavenumber(node, A_KW, "Spatial Frequency", glm::vec2(4.f, 4.f), 0.f, FLT_MAX, true);
   add_seed(node, A_SEED, "Seed");
   add_angle(node, A_ANGLE, "Angle", 0.f, -180.f, 180.f);
-  add_float(node, A_AMP, "Amplitude", 0.04f, 0.001f, 0.2f);
-  add_float(node, A_GAMMA, "Gamma", 0.3f, 0.05f, 2.f);
+  add_float(node, A_AMP, "Amplitude", 0.15f, 0.001f, 0.2f);
+  add_float(node, A_GAMMA, "Gamma", 0.5f, 0.05f, 2.f);
   add_float(node, A_JITTER_X, "jitter.x", 1.f, 0.f, 1.f);
   add_float(node, A_JITTER_Y, "jitter.y", 1.f, 0.f, 1.f);
 
@@ -157,6 +157,10 @@ void compute_jagged_node(BaseNode &node)
       node.cfg().cm_gpu);
 
   p_out->smooth_overlap_buffers();
+
+  p_out->remap(p_in->min(node.cfg().cm_cpu),
+               p_in->max(node.cfg().cm_cpu),
+               node.cfg().cm_cpu);
 
   // --- Post-process
 
