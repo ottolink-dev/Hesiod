@@ -89,7 +89,7 @@ void compute_dendry_node(BaseNode &node)
           hmap::Array *pa_dy  = p_arrays[2];
 
           *pa_out = hmap::dendry(region.shape,
-                                 node.val<glm::vec2>(A_KW),
+                                 node.val_wavenumber(A_KW),
                                  node.val<int>(A_SEED),
                                  ctrl_array,
                                  node.val<float>(A_EPS),

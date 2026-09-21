@@ -85,6 +85,11 @@ public:
     return this->get_meta_group().current().value<T>(key);
   }
 
+  glm::vec2 val_wavenumber(const std::string &key) const
+  {
+    return this->cfg().scale_wavenumber(this->val<glm::vec2>(key));
+  }
+
   template <typename T> void set_value(const std::string &key, T new_value)
   {
     this->get_meta_group().current().value<T>(key) = new_value;

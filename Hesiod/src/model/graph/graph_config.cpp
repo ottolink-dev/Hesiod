@@ -25,12 +25,26 @@ GraphConfig::GraphConfig()
   this->update_parameters();
 }
 
+float GraphConfig::aspect_ratio() const
+{
+  return this->shape.y > 0
+             ? static_cast<float>(this->shape.x) / static_cast<float>(this->shape.y)
+             : 1.f;
+}
+
+glm::vec2 GraphConfig::scale_wavenumber(const glm::vec2 &kw) const
+{
+  float ar = this->aspect_ratio();
+  return glm::vec2(kw.x, ar > 0.f ? kw.y / ar : kw.y);
+}
+
 std::string GraphConfig::info_string() const
 {
   std::ostringstream oss;
 
   oss << "GraphConfig\n";
   oss << "  Shape          : " << shape.x << " x " << shape.y << "\n";
+  oss << "  Aspect ratio   : " << aspect_ratio() << "\n";
   oss << "  Tiling         : " << tiling.x << " x " << tiling.y << "\n";
   oss << "  Overlap        : " << overlap << "\n";
   oss << "  Tile shape     : " << tile_shape.x << " x " << tile_shape.y << "\n";

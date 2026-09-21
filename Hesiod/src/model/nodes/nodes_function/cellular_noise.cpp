@@ -189,7 +189,7 @@ void compute_cellular_noise_node(BaseNode &node)
   if (current_group == G_GRID)
   {
     const auto rtype = static_cast<hmap::VoronoiReturnType>(node.val<int>(A_RETURN_TYPE));
-    const auto kw    = node.val<glm::vec2>(A_KW);
+    const auto kw    = node.val_wavenumber(A_KW);
     const auto seed  = node.val<int>(A_SEED);
     const auto jitter      = glm::vec2(node.val<float>(A_JITTER_X),
                                   node.val<float>(A_JITTER_Y));
@@ -395,7 +395,7 @@ void compute_cellular_noise_node(BaseNode &node)
   }
   else if (current_group == G_VORONOISE)
   {
-    const auto kw   = node.val<glm::vec2>(A_KW);
+    const auto kw   = node.val_wavenumber(A_KW);
     const auto u    = node.val<float>(A_U);
     const auto v    = node.val<float>(A_V);
     const auto seed = node.val<int>(A_SEED);

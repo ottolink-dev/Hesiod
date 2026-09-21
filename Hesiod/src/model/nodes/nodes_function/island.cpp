@@ -123,7 +123,7 @@ void compute_island_node(BaseNode &node)
 
   const auto seed                   = node.val<int>(A_SEED);
   const auto noise_amp              = node.val<float>(A_NOISE_AMP);
-  const auto noise_kw               = node.val<glm::vec2>(A_NOISE_KW);
+  const auto noise_kw               = node.val_wavenumber(A_NOISE_KW);
   const auto noise_octaves          = node.val<int>(A_NOISE_OCTAVES);
   const auto noise_rugosity         = node.val<float>(A_NOISE_RUGOSITY);
   const auto noise_angle            = node.val<float>(A_NOISE_ANGLE);

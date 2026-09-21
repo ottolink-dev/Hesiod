@@ -272,7 +272,7 @@ void compute_coherent_noise_node(BaseNode &node)
 
   // --- Common parameters
 
-  const auto kw          = node.val<glm::vec2>(A_KW);
+  const auto kw          = node.val_wavenumber(A_KW);
   const auto seed        = node.val<int>(A_SEED);
   const auto octaves     = node.val<int>(A_OCTAVES);
   const auto weight      = node.val<float>(A_WEIGHT);

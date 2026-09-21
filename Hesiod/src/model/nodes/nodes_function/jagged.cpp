@@ -94,7 +94,7 @@ void compute_jagged_node(BaseNode &node)
 
   // --- Parameters
 
-  const auto     kw   = node.val<glm::vec2>(A_KW);
+  const auto     kw   = node.val_wavenumber(A_KW);
   const auto     amp  = node.val<float>(A_AMP);
   const uint32_t seed = static_cast<uint32_t>(node.val<int>(A_SEED));
   const auto jitter = glm::vec2(node.val<float>(A_JITTER_X), node.val<float>(A_JITTER_Y));

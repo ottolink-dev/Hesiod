@@ -106,7 +106,7 @@ void compute_multisteps_node(BaseNode &node)
   const auto elevation_exp  = node.val<float>(A_ELEVATION_EXP);
   const auto shape_gain     = node.val<float>(A_SHAPE_GAIN);
   const auto seed           = node.val<int>(A_SEED);
-  const auto kw             = node.val<glm::vec2>(A_KW);
+  const auto kw             = node.val_wavenumber(A_KW);
   const auto noise_amp      = node.val<float>(A_NOISE_AMP);
   const auto noise_rugosity = node.val<float>(A_NOISE_RUGOSITY);
   const auto noise_inflate  = node.val<bool>(A_NOISE_INFLATE);

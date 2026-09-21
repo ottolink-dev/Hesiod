@@ -73,7 +73,7 @@ void compute_noise_pingpong_node(BaseNode &node)
 
         *pa_out = hmap::noise_pingpong((hmap::NoiseType)node.val<int>(A_NOISE_TYPE),
                                        region.shape,
-                                       node.val<glm::vec2>(A_KW),
+                                       node.val_wavenumber(A_KW),
                                        node.val<int>(A_SEED),
                                        node.val<int>(A_OCTAVES),
                                        node.val<float>(A_WEIGHT),

@@ -117,7 +117,7 @@ void compute_basalt_field_node(BaseNode &node)
 
   // --- Params
 
-  const auto kw                      = node.val<glm::vec2>(A_KW);
+  const auto kw                      = node.val_wavenumber(A_KW);
   const auto seed                    = static_cast<uint>(node.val<int>(A_SEED));
   const auto warp_kw                 = node.val<float>(A_WARP_KW);
   const auto large_scale_warp_amp    = node.val<float>(A_LARGE_SCALE_WARP_AMP);

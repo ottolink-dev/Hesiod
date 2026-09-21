@@ -71,7 +71,7 @@ void compute_plates_node(BaseNode &node)
         auto [pa_out] = unpack<1>(p_arrays);
 
         *pa_out = hmap::gpu::plates(region.shape,
-                                    node.val<glm::vec2>(A_KW),
+                                    node.val_wavenumber(A_KW),
                                     node.val<int>(A_SEED),
                                     talus,
                                     node.val<int>(A_DIRECTION),

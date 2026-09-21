@@ -84,7 +84,7 @@ void compute_voronoi_node(BaseNode &node)
         glm::vec2 jitter(node.val<float>(A_JITTER_X), node.val<float>(A_JITTER_Y));
 
         *pa_out = hmap::gpu::voronoi(region.shape,
-                                     node.val<glm::vec2>(A_KW),
+                                     node.val_wavenumber(A_KW),
                                      node.val<int>(A_SEED),
                                      jitter,
                                      node.val<float>(A_K_SMOOTHING),
