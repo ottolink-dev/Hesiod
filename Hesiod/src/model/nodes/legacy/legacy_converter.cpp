@@ -116,6 +116,42 @@ std::string resolve_legacy_group_name(const meta::ContainerGroup &group,
   if (label == "PathInflate")
     return "Inflate";
 
+  // SelectValue mappings
+  if (label == "SelectInterval")
+    return "Interval";
+  if (label == "SelectThreshold")
+    return "Threshold";
+  if (label == "SelectValue")
+    return "Target";
+  if (label == "SelectMidrange")
+    return "Midrange";
+
+  // SelectSlope mappings
+  if (label == "SelectSlope")
+    return "Slope";
+  if (label == "SelectAngle")
+    return "Angle";
+  if (label == "SelectInwardOutward")
+    return "Inward / Outward";
+
+  // SelectCurvature mappings
+  if (label == "SelectCavities")
+    return "Cavities";
+  if (label == "SelectValley")
+    return "Valley";
+  if (label == "SelectBlobLog")
+    return "Blob (LoG)";
+
+  // SelectSoil mappings
+  if (label == "SelectSoilFlow")
+    return "Flow";
+  if (label == "SelectSoilRocks")
+    return "Rocks";
+  if (label == "SelectSoilWeathered")
+    return "Weathered";
+  if (label == "SelectRivers")
+    return "Rivers";
+
   if (group.current_container_name().has_value() &&
       group.contains(*group.current_container_name()))
   {
@@ -319,6 +355,80 @@ nlohmann::json convert_legacy_node_json(const nlohmann::json &json_node)
   {
     target_label = "PathTransform";
     group_name = "Inflate";
+  }
+  // --- SelectValue family ---
+  else if (label == "SelectInterval")
+  {
+    target_label = "SelectValue";
+    group_name = "Interval";
+  }
+  else if (label == "SelectThreshold")
+  {
+    target_label = "SelectValue";
+    group_name = "Threshold";
+  }
+  else if (label == "SelectValue")
+  {
+    target_label = "SelectValue";
+    group_name = "Target";
+  }
+  else if (label == "SelectMidrange")
+  {
+    target_label = "SelectValue";
+    group_name = "Midrange";
+  }
+  // --- SelectSlope family ---
+  else if (label == "SelectSlope")
+  {
+    target_label = "SelectSlope";
+    group_name = "Slope";
+  }
+  else if (label == "SelectAngle")
+  {
+    target_label = "SelectSlope";
+    group_name = "Angle";
+  }
+  else if (label == "SelectInwardOutward")
+  {
+    target_label = "SelectSlope";
+    group_name = "Inward / Outward";
+  }
+  // --- SelectCurvature family ---
+  else if (label == "SelectCavities")
+  {
+    target_label = "SelectCurvature";
+    group_name = "Cavities";
+  }
+  else if (label == "SelectValley")
+  {
+    target_label = "SelectCurvature";
+    group_name = "Valley";
+  }
+  else if (label == "SelectBlobLog")
+  {
+    target_label = "SelectCurvature";
+    group_name = "Blob (LoG)";
+  }
+  // --- SelectSoil family ---
+  else if (label == "SelectSoilFlow")
+  {
+    target_label = "SelectSoil";
+    group_name = "Flow";
+  }
+  else if (label == "SelectSoilRocks")
+  {
+    target_label = "SelectSoil";
+    group_name = "Rocks";
+  }
+  else if (label == "SelectSoilWeathered")
+  {
+    target_label = "SelectSoil";
+    group_name = "Weathered";
+  }
+  else if (label == "SelectRivers")
+  {
+    target_label = "SelectSoil";
+    group_name = "Rivers";
   }
   // --- SetBorders ---
   else if (label == "SetBorders")
