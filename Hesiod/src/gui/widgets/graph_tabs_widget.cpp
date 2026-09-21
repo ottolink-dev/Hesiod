@@ -6,9 +6,9 @@
 #include "gnodegui/style.hpp"
 
 #include "hesiod/app/hesiod_application.hpp"
-#include "hesiod/gui/widgets/graph_editor_widget.hpp"
 #include "hesiod/gui/widgets/graph_node_widget.hpp"
 #include "hesiod/gui/widgets/graph_tabs_widget.hpp"
+#include "hesiod/gui/widgets/graph_workspace_widget.hpp"
 #include "hesiod/gui/widgets/node_settings_widget.hpp"
 #include "hesiod/gui/widgets/viewers/viewer_3d.hpp"
 #include "hesiod/logger.hpp"
@@ -33,6 +33,7 @@ GraphTabsWidget::GraphTabsWidget(std::weak_ptr<GraphManager> p_graph_manager,
   GN_STYLE->viewer.add_group = ctx.app_settings.node_editor.enable_node_groups;
   GN_STYLE->node.color_port_data = ctx.style_settings.data_color_map;
   GN_STYLE->node.color_category = ctx.style_settings.category_color_map;
+  GN_STYLE->node.port_radius = ctx.app_settings.node_editor.port_radius;
 
   this->main_layout = new QHBoxLayout(this);
   this->main_layout->setContentsMargins(2, 2, 2, 2);
@@ -55,16 +56,16 @@ void GraphTabsWidget::clear()
   while (this->tab_widget->count() > 0)
     this->tab_widget->removeTab(0);
 
-  for (auto &[id, gew] : this->graph_editor_widget_map)
+  for (auto &[id, gww] : this->graph_workspace_widget_map)
   {
-    if (gew && gew->get_graph_node_widget())
+    if (gww && gww->get_graph_node_widget())
     {
-      gew->get_graph_node_widget()->clear_graphic_scene();
-      gew->get_graph_node_widget()->close();
+      gww->get_graph_node_widget()->clear_graphic_scene();
+      gww->get_graph_node_widget()->close();
     }
   }
 
-  this->graph_editor_widget_map.clear();
+  this->graph_workspace_widget_map.clear();
 }
 
 std::string GraphTabsWidget::get_selected_graph_id() const
@@ -83,9 +84,9 @@ void GraphTabsWidget::on_heightmap_download_ready(
 
   std::string graph_id = this->get_selected_graph_id();
 
-  QPointer<GraphEditorWidget> gew = this->graph_editor_widget_map.at(graph_id);
-  if (gew && gew->get_graph_node_widget())
-    gew->get_graph_node_widget()->add_import_heightmap_node(img);
+  QPointer<GraphWorkspaceWidget> gww = this->graph_workspace_widget_map.at(graph_id);
+  if (gww && gww->get_graph_node_widget())
+    gww->get_graph_node_widget()->add_import_heightmap_node(img);
   else
     Logger::log()->error("GraphTabsWidget::on_heightmap_download_ready: dangling ptr");
 }
@@ -99,9 +100,9 @@ void GraphTabsWidget::on_textures_request(const std::vector<std::string> &textur
 
   std::string graph_id = this->get_selected_graph_id();
 
-  QPointer<GraphEditorWidget> gew = this->graph_editor_widget_map.at(graph_id);
-  if (gew && gew->get_graph_node_widget())
-    gew->get_graph_node_widget()->add_import_texture_nodes(texture_paths);
+  QPointer<GraphWorkspaceWidget> gww = this->graph_workspace_widget_map.at(graph_id);
+  if (gww && gww->get_graph_node_widget())
+    gww->get_graph_node_widget()->add_import_texture_nodes(texture_paths);
   else
     Logger::log()->error("GraphTabsWidget::on_textures_request: dangling ptr");
 }
@@ -111,18 +112,18 @@ void GraphTabsWidget::json_from(nlohmann::json const &json)
   this->update_tab_widget();
 
   if (json.contains("graph_node_widgets"))
-    for (auto &[id, gew] : this->graph_editor_widget_map)
-      if (gew)
-        gew->json_from(json["graph_node_widgets"]);
+    for (auto &[id, gww] : this->graph_workspace_widget_map)
+      if (gww)
+        gww->json_from(json["graph_node_widgets"]);
 }
 
 nlohmann::json GraphTabsWidget::json_to() const
 {
   nlohmann::json json;
 
-  for (auto &[id, gew] : this->graph_editor_widget_map)
-    if (gew)
-      json["graph_node_widgets"][id] = gew->json_to();
+  for (auto &[id, gww] : this->graph_workspace_widget_map)
+    if (gww)
+      json["graph_node_widgets"][id] = gww->json_to();
 
   return json;
 }
@@ -132,9 +133,9 @@ void GraphTabsWidget::on_copy_buffer_has_changed(const nlohmann::json &new_json)
   Logger::log()->trace("GraphTabsWidget::on_copy_buffer_has_changed");
 
   // redispatch the copy buffer to all the graphs
-  for (auto &[_, gew] : this->graph_editor_widget_map)
-    if (gew && gew->get_graph_node_widget())
-      gew->get_graph_node_widget()->set_json_copy_buffer(new_json);
+  for (auto &[_, gww] : this->graph_workspace_widget_map)
+    if (gww && gww->get_graph_node_widget())
+      gww->get_graph_node_widget()->set_json_copy_buffer(new_json);
 }
 
 void GraphTabsWidget::on_has_been_cleared(const std::string &graph_id)
@@ -185,9 +186,9 @@ void GraphTabsWidget::on_node_deleted(const std::string &graph_id, const std::st
 
 void GraphTabsWidget::set_show_node_library_pan(bool new_state)
 {
-  for (auto &[id, gew] : this->graph_editor_widget_map)
-    if (gew)
-      gew->set_node_library_visible(new_state);
+  for (auto &[id, gww] : this->graph_workspace_widget_map)
+    if (gww)
+      gww->set_node_library_visible(new_state);
 }
 
 void GraphTabsWidget::set_show_node_settings_widget(bool new_state)
@@ -195,10 +196,10 @@ void GraphTabsWidget::set_show_node_settings_widget(bool new_state)
   this->show_node_settings_widget = new_state;
 
   // pass info to each node settings widget
-  for (auto &[id, gew] : this->graph_editor_widget_map)
+  for (auto &[id, gww] : this->graph_workspace_widget_map)
   {
-    if (gew && gew->get_node_settings_widget())
-      gew->get_node_settings_widget()->setVisible(new_state);
+    if (gww && gww->get_node_settings_widget())
+      gww->get_node_settings_widget()->setVisible(new_state);
   }
 }
 
@@ -207,10 +208,10 @@ void GraphTabsWidget::set_show_viewer(bool new_state)
   this->show_viewer = new_state;
 
   // pass info to each node settings widget
-  for (auto &[id, gew] : this->graph_editor_widget_map)
+  for (auto &[id, gww] : this->graph_workspace_widget_map)
   {
-    if (gew && gew->get_viewer())
-      gew->get_viewer()->setVisible(show_viewer);
+    if (gww && gww->get_viewer())
+      gww->get_viewer()->setVisible(show_viewer);
   }
 }
 
@@ -303,13 +304,13 @@ void GraphTabsWidget::update_tab_widget()
       if (tab)
         tab->deleteLater();
 
-      // remove corresponding GraphEditorWidget
-      auto it = this->graph_editor_widget_map.find(id);
-      if (it != this->graph_editor_widget_map.end())
+      // remove corresponding GraphWorkspaceWidget
+      auto it = this->graph_workspace_widget_map.find(id);
+      if (it != this->graph_workspace_widget_map.end())
       {
         if (it->second)
           it->second->close();
-        this->graph_editor_widget_map.erase(it);
+        this->graph_workspace_widget_map.erase(it);
       }
     }
   }
@@ -318,10 +319,10 @@ void GraphTabsWidget::update_tab_widget()
 
   for (auto &id : gm->get_graph_order())
   {
-    if (this->graph_editor_widget_map.contains(id))
+    if (this->graph_workspace_widget_map.contains(id))
       continue; // widget already exists
 
-    Logger::log()->trace("creating GraphEditorWidget for {}", id);
+    Logger::log()->trace("creating GraphWorkspaceWidget for {}", id);
     GraphNode *p_graph_node = gm->get_graph_ref_by_id(id);
     if (!p_graph_node)
     {
@@ -331,12 +332,17 @@ void GraphTabsWidget::update_tab_widget()
       continue;
     }
 
-    // Create GraphEditorWidget
-    GraphEditorWidget *editor_widget = new GraphEditorWidget(p_graph_node->get_shared());
-    this->graph_editor_widget_map[id] = editor_widget;
+    // Create GraphWorkspaceWidget
+    GraphWorkspaceWidget *workspace_widget = new GraphWorkspaceWidget(
+        p_graph_node->get_shared());
+    this->graph_workspace_widget_map[id] = workspace_widget;
 
     // Connect signals
-    auto *gnw = editor_widget->get_graph_node_widget();
+    auto *gnw = workspace_widget->get_graph_node_widget();
+    this->connect(gnw,
+                  &GraphNodeWidget::graph_edited,
+                  this,
+                  &GraphTabsWidget::has_changed);
     this->connect(gnw,
                   &GraphNodeWidget::has_been_cleared,
                   this,
@@ -361,8 +367,8 @@ void GraphTabsWidget::update_tab_widget()
                   &GraphNodeWidget::update_finished,
                   this,
                   [this]() { emit update_finished(); });
-    this->connect(editor_widget,
-                  &GraphEditorWidget::node_library_toggle_requested,
+    this->connect(workspace_widget,
+                  &GraphWorkspaceWidget::node_library_toggle_requested,
                   this,
                   &GraphTabsWidget::node_library_toggle_requested);
 
@@ -371,7 +377,7 @@ void GraphTabsWidget::update_tab_widget()
     auto    *layout = new QHBoxLayout(tab);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
-    layout->addWidget(editor_widget, 3);
+    layout->addWidget(workspace_widget, 3);
     tab->setLayout(layout);
 
     this->tab_widget->addTab(tab, QString::fromStdString(id));
@@ -394,10 +400,10 @@ void GraphTabsWidget::update_tab_widget()
 
 void GraphTabsWidget::zoom_to_content()
 {
-  for (auto &[id, gew] : this->graph_editor_widget_map)
+  for (auto &[id, gww] : this->graph_workspace_widget_map)
   {
-    if (gew && gew->get_graph_node_widget())
-      gew->get_graph_node_widget()->zoom_to_content();
+    if (gww && gww->get_graph_node_widget())
+      gww->get_graph_node_widget()->zoom_to_content();
   }
 }
 

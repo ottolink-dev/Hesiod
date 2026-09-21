@@ -21,8 +21,13 @@ constexpr const char *P_CTRL = "control";
 constexpr const char *P_ENV  = "envelope";
 constexpr const char *P_OUT  = "output";
 
-constexpr const char *A_GAIN   = "gain";
-constexpr const char *A_CENTER = "center";
+constexpr const char *A_GAIN         = "gain";
+constexpr const char *A_WIDTH_FACTOR = "width_factor";
+constexpr const char *A_RADIUS       = "radius";
+constexpr const char *A_CENTER       = "center";
+
+constexpr const char *G_COSINE     = "Cosine";
+constexpr const char *G_LORENTZIAN = "Lorentzian";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -40,14 +45,37 @@ void setup_bump_node(BaseNode &node)
   node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_ENV);
   node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_OUT, CONFIG(node));
 
-  // --- Attributes
+  // --- Group 1: Cosine
 
-  node.set_current_category("Main Parameters");
-  add_float(node, A_GAIN, "gain", 1.f, 0.01f, 10.f);
-  add_xy(node, A_CENTER, "center");
+  {
+    node.set_current_group(G_COSINE);
 
-  setup_post_process_heightmap_attributes(node,
-                                          {.add_mix = true, .remap_active_state = true});
+    node.set_current_category("Main Parameters");
+    add_float(node, A_GAIN, "gain", 1.f, 0.01f, 10.f);
+    add_xy(node, A_CENTER, "center");
+
+    setup_post_process_heightmap_attributes(
+        node,
+        {.add_mix = true, .remap_active_state = true});
+  }
+
+  // --- Group 2: Lorentzian
+
+  {
+    node.set_current_group(G_LORENTZIAN);
+
+    node.set_current_category("Main Parameters");
+    add_float(node, A_WIDTH_FACTOR, "width_factor", 0.2f, 0.01f, 2.f);
+    add_float(node, A_RADIUS, "radius", 0.7072f, 0.01f, FLT_MAX);
+    add_xy(node, A_CENTER, "center");
+
+    setup_post_process_heightmap_attributes(
+        node,
+        {.add_mix = true, .remap_active_state = true});
+  }
+
+  // Reset active group to first
+  node.set_current_group(G_COSINE);
 }
 
 // -----------------------------------------------------------------------------
@@ -69,28 +97,67 @@ void compute_bump_node(BaseNode &node)
   if (!p_out)
     return;
 
-  // --- Params
+  // --- Current group
 
-  const auto gain   = node.val<float>(A_GAIN);
-  const auto center = node.val<glm::vec2>(A_CENTER);
+  const std::optional<std::string> current_group_name = node.get_meta_group()
+                                                            .current_container_name();
+
+  if (!current_group_name)
+  {
+    Logger::log()->error("compute_bump_node: no group selected");
+    return;
+  }
+
+  const std::string current_group = *current_group_name;
+
+  Logger::log()->trace("compute_bump_node: current_group {}", current_group);
 
   // --- Compute
 
-  hmap::for_each_tile(
-      {p_out, p_dx, p_dy, p_ctrl},
-      [&](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &region)
-      {
-        auto [pa_out, pa_dx, pa_dy, pa_ctrl] = unpack<4>(p_arrays);
+  if (current_group == G_COSINE)
+  {
+    const auto gain   = node.val<float>(A_GAIN);
+    const auto center = node.val<glm::vec2>(A_CENTER);
 
-        *pa_out = hmap::bump(region.shape,
-                             gain,
-                             pa_ctrl,
-                             pa_dx,
-                             pa_dy,
-                             center,
-                             region.bbox);
-      },
-      node.cfg().cm_cpu);
+    hmap::for_each_tile(
+        {p_out, p_dx, p_dy, p_ctrl},
+        [&](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &region)
+        {
+          auto [pa_out, pa_dx, pa_dy, pa_ctrl] = unpack<4>(p_arrays);
+
+          *pa_out = hmap::bump(region.shape,
+                               gain,
+                               pa_ctrl,
+                               pa_dx,
+                               pa_dy,
+                               center,
+                               region.bbox);
+        },
+        node.cfg().cm_cpu);
+  }
+  else if (current_group == G_LORENTZIAN)
+  {
+    const auto width_factor = node.val<float>(A_WIDTH_FACTOR);
+    const auto radius       = node.val<float>(A_RADIUS);
+    const auto center       = node.val<glm::vec2>(A_CENTER);
+
+    hmap::for_each_tile(
+        {p_out, p_dx, p_dy, p_ctrl},
+        [&](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &region)
+        {
+          auto [pa_out, pa_dx, pa_dy, pa_ctrl] = unpack<4>(p_arrays);
+
+          *pa_out = hmap::bump_lorentzian(region.shape,
+                                          width_factor,
+                                          radius,
+                                          pa_ctrl,
+                                          pa_dx,
+                                          pa_dy,
+                                          center,
+                                          region.bbox);
+        },
+        node.cfg().cm_cpu);
+  }
 
   // --- Post-process
 

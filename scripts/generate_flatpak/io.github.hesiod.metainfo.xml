@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>io.github.hesiod</id>
+
+  <name>Hesiod</name>
+  <summary>A desktop application for node-based procedural terrain generation.</summary>
+
+  <metadata_license>MIT</metadata_license>
+  <project_license>GPL-3.0-only</project_license>
+
+  <description>
+    <p>
+      Hesiod is an application which makes it easy to create node-based procedural terrain generation, including but not limited to a Blender Bridge.
+    </p>
+  </description>
+
+  <launchable type="desktop-id">io.github.hesiod.desktop</launchable>
+  <screenshots>
+    <screenshot type="default">
+      <image>https://private-user-images.githubusercontent.com/121820229/578226515-d891c078-a385-467a-9fb6-7c6565bf29c2.png?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3ODg5ODAyMTUsIm5iZiI6MTc4ODk3OTkxNSwicGF0aCI6Ii8xMjE4MjAyMjkvNTc4MjI2NTE1LWQ4OTFjMDc4LWEzODUtNDY3YS05ZmI2LTdjNjU2NWJmMjljMi5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjYwOTA5JTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI2MDkwOVQxODUxNTVaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT1lNzlmOWFmMDc2ZjY5MGJkZDA0YWM2NWJkZDUzZGQ5NTZkMzBjYzQ0NGY3Yzk0NzBlN2Y5ODg3NThjOGZjM2ZkJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCZyZXNwb25zZS1jb250ZW50LXR5cGU9aW1hZ2UlMkZwbmcifQ.xTwrQTyD8MXUZ5lwIiRftX11FiHgXEmRK6xsid3FmQM</image>
+    </screenshot>
+    <screenshot>
+      <image>https://private-user-images.githubusercontent.com/121820229/523294001-46d66c8e-752b-4a83-b1e5-4b309820ed70.png?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3ODg5ODAyMTUsIm5iZiI6MTc4ODk3OTkxNSwicGF0aCI6Ii8xMjE4MjAyMjkvNTIzMjk0MDAxLTQ2ZDY2YzhlLTc1MmItNGE4My1iMWU1LTRiMzA5ODIwZWQ3MC5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjYwOTA5JTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI2MDkwOVQxODUxNTVaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT1mMWVkMTI1MGE1YmFkN2RhZWM4NjdiZWE5NzdiZTNlYWVmMDUzMWU3YTQ4NjczZmUwZmZhNDMzM2RlNTg5MjY5JlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCZyZXNwb25zZS1jb250ZW50LXR5cGU9aW1hZ2UlMkZwbmcifQ.tMnyEKoYSmM4BZmgB1GPsfcqTmst2gDEal3PaL6WUvw</image>
+    </screenshot>
+  </screenshots>
+</component>

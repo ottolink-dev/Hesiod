@@ -17,10 +17,6 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-// -----------------------------------------------------------------------------
-// Ports & Attributes
-// -----------------------------------------------------------------------------
-
 constexpr const char *P_INPUT         = "input";
 constexpr const char *P_NOISE_X       = "noise_x";
 constexpr const char *P_NOISE_Y       = "noise_y";
@@ -143,7 +139,7 @@ void compute_hydraulic_procedural_node(BaseNode &node)
     const int   nx        = p_in->shape.x;
     const float talus_ref = node.val<float>(A_TALUS_REF);
     const float talus     = talus_ref / float(nx);
-    const auto  ep        = hmap::ErosionProfile(node.val<int>(A_EROSION_PROFILE));
+    const auto  ep        = node.val_enum<hmap::ErosionProfile>(A_EROSION_PROFILE);
 
     return P{
         .kp_global                 = node.val<float>(A_KP_GLOBAL),

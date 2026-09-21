@@ -1,15 +1,16 @@
 /* Copyright (c) 2023 Otto Link. Distributed under the terms of the GNU General Public
    License. The full license is in the file LICENSE, distributed with this software. */
 #pragma once
+#include <any>
 #include <array>
 #include <chrono>
 #include <functional>
+#include <map>
 #include <stdexcept>
 #include <tuple>
 #include <utility>
 
 #include "gnode/node.hpp"
-#include "gnodegui/node_proxy.hpp"
 
 #include "meta/core/container_group.hpp"
 
@@ -55,6 +56,7 @@ public:
   std::string get_id() const;
   void        set_id(const std::string &new_id);
   std::string get_category() const;
+  std::string get_comment() const;
   void        set_comment(const std::string &new_comment);
   std::string get_node_type() const;
 
@@ -74,20 +76,34 @@ public:
   std::string    get_documentation_short_html() const;
   void           update_attributes_tool_tip();
 
-  // --- Proxy (most of it) ---
-  std::string     get_caption() const;
-  std::string     get_comment() const;
-  void           *get_data_ref(int port_index);
-  std::string     get_data_type(int port_index) const;
-  int             get_nports() const;
-  std::string     get_port_caption(int port_index) const;
-  gngui::PortType get_port_type(int port_index) const;
-  std::string     get_tool_tip_text();
+  using gnode::Node::get_port_type;
+  gnode::PortType get_port_type(int port_index) const;
 
   // --- Meta Accessors & Helpers ---
   template <typename T> decltype(auto) val(const std::string &key) const
   {
     return this->get_meta_group().current().value<T>(key);
+  }
+
+  template <typename T> T val_enum(const std::string &key) const
+  {
+    return static_cast<T>(this->val<int>(key));
+  }
+
+  glm::vec2 val_wavenumber(const std::string &key) const
+  {
+    return this->cfg().scale_wavenumber(this->val<glm::vec2>(key));
+  }
+
+  int val_pixel_radius(const std::string &key, int min_val = 1) const
+  {
+    return std::max(min_val,
+                    static_cast<int>(this->val<float>(key) * this->cfg().shape.x));
+  }
+
+  int val_radius(const std::string &key, int min_val = 1) const
+  {
+    return this->val_pixel_radius(key, min_val);
   }
 
   template <typename T> void set_value(const std::string &key, T new_value)
@@ -143,6 +159,16 @@ public:
     return this->initial_meta_state;
   }
 
+  /** @brief Default value of an attribute, or an empty any if there is none.
+   *
+   * Taken straight off the attribute at finalize time, so it covers every type
+   * the node can hold rather than the handful that survive a round trip
+   * through json. The properties panel uses it to decide what counts as
+   * modified.
+   */
+  std::any get_initial_default(const std::string &container_name,
+                               const std::string &key) const;
+
   void reseed(bool backward);
 
   // --- Callbacks - "signals" equivalent
@@ -152,10 +178,13 @@ public:
 private:
   // --- Members ---
   std::unique_ptr<meta::ContainerGroup> meta_group; // attribute storage
-  std::string                           current_category;
+  std::string                           current_category = "Main Parameters";
 
   // container state captured at finalize time; toolbar "Reset Settings" restores it
   nlohmann::json initial_meta_state;
+
+  // the same snapshot as live values, keyed by container then attribute name
+  std::map<std::string, std::map<std::string, std::any>> initial_meta_defaults;
 
   std::string                         category;
   std::string                         comment;

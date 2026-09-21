@@ -1,7 +1,11 @@
 /* Copyright (c) 2025 Otto Link. Distributed under the terms of the GNU General
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
+#include <algorithm>
+
+#include <QGuiApplication>
 #include <QMessageBox>
+#include <QScreen>
 #include <QStatusBar>
 
 #include "hesiod/app/hesiod_application.hpp"
@@ -30,6 +34,10 @@ void MainWindow::closeEvent(QCloseEvent *event)
     return;
   }
 
+  // a clean exit: whatever is on disk is either saved or explicitly discarded
+  if (AutosaveManager *autosave = HSD_APP->get_autosave_manager_ref())
+    autosave->discard();
+
   this->save_geometry();
   HSD_CTX.save_settings();
 
@@ -47,10 +55,37 @@ void MainWindow::restore_geometry()
 
   AppContext &ctx = HSD_CTX;
 
-  this->setGeometry(ctx.app_settings.window.geom_main.x,
-                    ctx.app_settings.window.geom_main.y,
-                    ctx.app_settings.window.geom_main.w,
-                    ctx.app_settings.window.geom_main.h);
+  QRect geom(ctx.app_settings.window.geom_main.x,
+             ctx.app_settings.window.geom_main.y,
+             ctx.app_settings.window.geom_main.w,
+             ctx.app_settings.window.geom_main.h);
+
+  // Saved geometry is in logical pixels, and raising the interface scale
+  // shrinks the screen measured in those: a window saved full-screen at 100%
+  // is larger than the whole desktop at 200%, with its title bar off the top
+  // and no way to drag it back. Clamp to whatever screen it lands on.
+  const QScreen *screen = QGuiApplication::screenAt(geom.center());
+  if (!screen)
+    screen = QGuiApplication::primaryScreen();
+
+  if (screen)
+  {
+    const QRect available = screen->availableGeometry();
+
+    // A geometry that is not usable at all is a stale one, not a preference:
+    // fall back to a comfortable fraction of the screen rather than restoring a
+    // sliver. Guards a config written before the window ever had a real size.
+    if (geom.width() < 320 || geom.height() < 240)
+      geom.setSize(QSize(available.width() * 3 / 4, available.height() * 3 / 4));
+
+    geom.setSize(geom.size().boundedTo(available.size()));
+    geom.moveLeft(
+        std::clamp(geom.left(), available.left(), available.right() - geom.width() + 1));
+    geom.moveTop(
+        std::clamp(geom.top(), available.top(), available.bottom() - geom.height() + 1));
+  }
+
+  this->setGeometry(geom);
 }
 
 void MainWindow::save_geometry() const

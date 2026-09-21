@@ -18,10 +18,6 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-// -----------------------------------------------------------------------------
-// Ports & Attributes
-// -----------------------------------------------------------------------------
-
 constexpr const char *P_IN  = "input";
 constexpr const char *P_OUT = "output";
 
@@ -75,12 +71,11 @@ void compute_level_set_curvature_node(BaseNode &node)
   // --- Params
 
   // clang-format off
-  const auto radius      = node.val<float>(A_RADIUS);
   const auto values_kept = node.val<std::string>(A_VALUES_KEPT);
   // clang-format on
 
   bool keep_both = (values_kept == "both");
-  int  ir        = std::max(1, int(radius * p_out->shape.x));
+  int  ir        = node.val_pixel_radius(A_RADIUS);
 
   // --- Compute
 

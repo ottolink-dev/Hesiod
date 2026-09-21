@@ -20,6 +20,11 @@ namespace hesiod
 
 class BaseNode; // forward declaration
 
+// metadata key holding the human-readable attribute type used by the node
+// reference documentation ("Float", "Value range", ...); stamped by the
+// builders below and read back by BaseNode::node_parameters_to_json
+inline constexpr char ATTR_DOC_TYPE_KEY[] = "doc.type";
+
 // -----------------------------------------------------------------------------
 // Pure Attribute Builders (Alphabetical Order in namespace hesiod)
 // -----------------------------------------------------------------------------
@@ -88,12 +93,12 @@ meta::Attribute<int> &add_enum(BaseNode                         &node,
                                const std::string                &default_choice = "");
 
 meta::Attribute<std::filesystem::path> &add_filename(
-    BaseNode          &node,
-    const std::string &key,
-    const std::string &label,
-    const std::string &default_path = "",
-    const std::string &filter = "All Files (*.*)",
-    bool               is_save = false);
+    BaseNode                    &node,
+    const std::string           &key,
+    const std::string           &label,
+    const std::filesystem::path &default_path = {},
+    const std::string           &filter = "All Files (*.*)",
+    bool                         is_save = false);
 
 meta::Attribute<float> &add_float(BaseNode          &node,
                                   const std::string &key,
@@ -147,7 +152,7 @@ meta::Attribute<glm::vec2> &add_wavenumber(BaseNode          &node,
                                            const std::string &label = "Spatial Frequency",
                                            const glm::vec2   &default_val = {2.f, 2.f},
                                            float              vmin = 0.f,
-                                           float              vmax = 64.f,
+                                           float              vmax = FLT_MAX,
                                            bool               link_xy = true,
                                            const std::string &value_format = "{:.2f}");
 

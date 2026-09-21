@@ -17,14 +17,10 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-// -----------------------------------------------------------------------------
-// Ports & Attributes
-// -----------------------------------------------------------------------------
-
 constexpr const char *P_DX  = "dx";
 constexpr const char *P_DY  = "dy";
 constexpr const char *P_ENV = "envelope";
-constexpr const char *P_OUT = "out";
+constexpr const char *P_OUT = "output";
 
 constexpr const char *A_ELEVATION      = "elevation";
 constexpr const char *A_KW             = "kw";
@@ -92,7 +88,7 @@ void compute_badlands_node(BaseNode &node)
 
   // clang-format off
   const auto elevation      = node.val<float>(A_ELEVATION);
-  const auto kw             = node.val<glm::vec2>(A_KW);
+  const auto kw             = node.val_wavenumber(A_KW);
   const auto seed           = node.val<int>(A_SEED);
   const auto octaves        = node.val<int>(A_OCTAVES);
   const auto rugosity       = node.val<float>(A_RUGOSITY);

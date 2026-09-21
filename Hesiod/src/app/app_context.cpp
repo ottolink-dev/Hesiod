@@ -69,10 +69,26 @@ void AppContext::load_settings()
 {
   Logger::log()->trace("AppContext::load_settings");
 
-  std::string    fname = get_config_file_path_auto("hesiod");
-  nlohmann::json json = json_from_file(fname);
+  std::string fname = get_config_file_path_auto("hesiod");
 
-  this->settings_json_from(json);
+  // A settings file the user cannot open the application to fix is a dead end:
+  // an unparseable number, a truncated write or a type that does not match what
+  // a key expects used to escape all the way out of main() and kill startup
+  // before any window appeared. Fall back to the compiled defaults and say so.
+  try
+  {
+    nlohmann::json json = json_from_file(fname);
+    this->settings_json_from(json);
+  }
+  catch (const std::exception &e)
+  {
+    Logger::log()->error("AppContext::load_settings: could not read the settings "
+                         "file, starting from defaults instead ({}): {}",
+                         fname,
+                         e.what());
+
+    this->reset_settings();
+  }
 }
 
 void AppContext::new_project()
@@ -102,14 +118,6 @@ void AppContext::restore_state()
     Logger::log()->error("Failed to restore state: {}", e.what());
     return;
   }
-}
-
-void AppContext::save_project_model(const std::string &fname) const
-{
-  Logger::log()->trace("AppContext::save_project_model: {}", fname);
-
-  nlohmann::json json = this->project_model->json_to();
-  json_to_file(json, fname, /* merge_with_existing_content */ true);
 }
 
 void AppContext::save_state() const { this->saved_state = this->settings_json_to(); }
@@ -183,16 +191,18 @@ std::string get_config_file_path(const QString &app_name, bool portable_mode)
   return path.toStdString();
 }
 
-std::string get_config_file_path_auto(const QString &app_name)
+bool is_portable_mode(const QString &app_name)
 {
   QDir    app_dir(QCoreApplication::applicationDirPath());
   QString portable_path = app_dir.filePath(app_name + ".json");
   QString portable_flag = app_dir.filePath("portable.flag");
 
-  bool use_portable = QFileInfo::exists(portable_path) ||
-                      QFileInfo::exists(portable_flag);
+  return QFileInfo::exists(portable_path) || QFileInfo::exists(portable_flag);
+}
 
-  return get_config_file_path(app_name, use_portable);
+std::string get_config_file_path_auto(const QString &app_name)
+{
+  return get_config_file_path(app_name, is_portable_mode(app_name));
 }
 
 } // namespace hesiod

@@ -15,7 +15,7 @@ namespace hesiod
 {
 
 class GraphManager; // forward
-class GraphEditorWidget;
+class GraphWorkspaceWidget;
 
 // =====================================
 // GraphTabsWidget
@@ -70,12 +70,12 @@ private:
   void setup_connections();
 
   // --- Members ---
-  std::weak_ptr<GraphManager>                        p_graph_manager; // own by MainWindow
-  QTabWidget                                        *tab_widget;      // own by this
-  std::map<std::string, QPointer<GraphEditorWidget>> graph_editor_widget_map;
-  bool                                               show_node_settings_widget;
-  bool                                               show_viewer;
-  QHBoxLayout                                       *main_layout;
+  std::weak_ptr<GraphManager> p_graph_manager; // own by MainWindow
+  QTabWidget                 *tab_widget;      // own by this
+  std::map<std::string, QPointer<GraphWorkspaceWidget>> graph_workspace_widget_map;
+  bool                                                  show_node_settings_widget;
+  bool                                                  show_viewer;
+  QHBoxLayout                                          *main_layout;
 };
 
 } // namespace hesiod

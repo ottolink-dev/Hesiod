@@ -81,10 +81,10 @@ void post_process_heightmap(BaseNode           &node,
   if (p_in)
   {
     // mix
-    float k = 0.1f; // TODO hardcoded?
-    int   ir = 0;
-    int   method = node.val<int>("post_mix_method");
-    blend_heightmaps(node, h, *p_in, h, static_cast<BlendingMethod>(method), k, ir);
+    float      k = 0.1f; // TODO hardcoded?
+    int        ir = 0;
+    const auto method = node.val_enum<BlendingMethod>("post_mix_method");
+    blend_heightmaps(node, h, *p_in, h, method, k, ir);
 
     // lerp between input and output
     float t = node.val<float>("post_mix");

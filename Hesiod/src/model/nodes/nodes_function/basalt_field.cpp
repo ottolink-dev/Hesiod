@@ -19,7 +19,7 @@ namespace hesiod
 constexpr const char *P_DX  = "dx";
 constexpr const char *P_DY  = "dy";
 constexpr const char *P_ENV = "envelope";
-constexpr const char *P_OUT = "out";
+constexpr const char *P_OUT = "output";
 
 constexpr const char *A_KW                      = "kw";
 constexpr const char *A_SEED                    = "seed";
@@ -117,7 +117,7 @@ void compute_basalt_field_node(BaseNode &node)
 
   // --- Params
 
-  const auto kw                      = node.val<glm::vec2>(A_KW);
+  const auto kw                      = node.val_wavenumber(A_KW);
   const auto seed                    = static_cast<uint>(node.val<int>(A_SEED));
   const auto warp_kw                 = node.val<float>(A_WARP_KW);
   const auto large_scale_warp_amp    = node.val<float>(A_LARGE_SCALE_WARP_AMP);

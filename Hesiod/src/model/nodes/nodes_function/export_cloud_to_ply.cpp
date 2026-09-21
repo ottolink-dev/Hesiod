@@ -69,51 +69,66 @@ void compute_export_cloud_to_ply_node(BaseNode &node)
 
   hmap::Cloud *p_in = node.get_value_ref<hmap::Cloud>(P_CLOUD);
 
-  if (p_in && node.val<bool>(A_AUTO_EXPORT))
+  if (!p_in)
+    return;
+
+  const bool auto_export = node.val<bool>(A_AUTO_EXPORT);
+  if (!auto_export)
   {
-    std::filesystem::path fname = node.val<std::filesystem::path>(A_FNAME);
-    fname                       = ensure_extension(fname, ".ply");
-    const auto pattern          = node.val<std::string>(A_PATTERN);
-
-    std::unordered_map<std::string, std::string> replacements = get_standard_replacements(
-        node,
-        fname);
-
-    std::filesystem::path export_path = make_unique_filename(fname.parent_path(),
-                                                             pattern,
-                                                             replacements);
-
-    // --- create custom fields
-
-    std::map<std::string, std::vector<float>> custom_fields = {};
-
-    std::vector<std::string> labels = {"label1", "label2", "label3"};
-
-    std::vector<std::vector<float> *> data_ptrs = {
-        node.get_value_ref<std::vector<float>>("point_data1"),
-        node.get_value_ref<std::vector<float>>("point_data2"),
-        node.get_value_ref<std::vector<float>>("point_data3")};
-
-    for (size_t k = 0; k < labels.size(); ++k)
-    {
-      if (data_ptrs[k])
-        custom_fields[node.val<std::string>(labels[k])] = *data_ptrs[k];
-    }
-
-    // --- export
-
-    auto xr = hmap::rescaled_vector(p_in->get_x(),
-                                    node.val<float>(A_XMIN),
-                                    node.val<float>(A_XMAX));
-    auto yr = hmap::rescaled_vector(p_in->get_y(),
-                                    node.val<float>(A_YMIN),
-                                    node.val<float>(A_YMAX));
-    auto zr = hmap::rescaled_vector(p_in->get_values(),
-                                    node.val<float>(A_ZMIN),
-                                    node.val<float>(A_ZMAX));
-
-    hmap::export_points_to_ply(export_path.string(), xr, yr, zr, custom_fields);
+    Logger::log()->trace(
+        "compute_export_cloud_to_ply_node: [{}]/[{}]: auto export is disabled",
+        node.get_node_type(),
+        node.get_id());
+    return;
   }
+
+  std::filesystem::path fname = node.val<std::filesystem::path>(A_FNAME);
+  fname                       = ensure_extension(fname, ".ply");
+  const auto pattern          = node.val<std::string>(A_PATTERN);
+
+  std::unordered_map<std::string, std::string> replacements = get_standard_replacements(
+      node,
+      fname);
+
+  std::filesystem::path export_path = make_unique_filename(fname.parent_path(),
+                                                           pattern,
+                                                           replacements);
+
+  Logger::log()->trace("compute_export_cloud_to_ply_node: [{}]/[{}]: export path = {}",
+                       node.get_node_type(),
+                       node.get_id(),
+                       export_path.string());
+
+  // --- create custom fields
+
+  std::map<std::string, std::vector<float>> custom_fields = {};
+
+  std::vector<std::string> labels = {"label1", "label2", "label3"};
+
+  std::vector<std::vector<float> *> data_ptrs = {
+      node.get_value_ref<std::vector<float>>("point_data1"),
+      node.get_value_ref<std::vector<float>>("point_data2"),
+      node.get_value_ref<std::vector<float>>("point_data3")};
+
+  for (size_t k = 0; k < labels.size(); ++k)
+  {
+    if (data_ptrs[k])
+      custom_fields[node.val<std::string>(labels[k])] = *data_ptrs[k];
+  }
+
+  // --- export
+
+  auto xr = hmap::rescaled_vector(p_in->get_x(),
+                                  node.val<float>(A_XMIN),
+                                  node.val<float>(A_XMAX));
+  auto yr = hmap::rescaled_vector(p_in->get_y(),
+                                  node.val<float>(A_YMIN),
+                                  node.val<float>(A_YMAX));
+  auto zr = hmap::rescaled_vector(p_in->get_values(),
+                                  node.val<float>(A_ZMIN),
+                                  node.val<float>(A_ZMAX));
+
+  hmap::export_points_to_ply(export_path.string(), xr, yr, zr, custom_fields);
 }
 
 } // namespace hesiod

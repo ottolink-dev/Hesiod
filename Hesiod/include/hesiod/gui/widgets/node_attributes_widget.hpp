@@ -31,9 +31,11 @@ public:
   Q_INVOKABLE void sync_from_model();
   bool             is_meta_backed() const;
 
-private:
+  /// Build the node actions for either the attributes view or its panel header.
   QWidget *create_toolbar();
-  void     setup_layout();
+
+private:
+  void setup_layout();
 
   std::weak_ptr<GraphNode>  p_graph_node;
   std::string               node_id;

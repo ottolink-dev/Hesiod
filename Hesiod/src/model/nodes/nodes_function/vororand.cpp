@@ -21,7 +21,7 @@ constexpr const char *P_CLOUD    = "cloud";
 constexpr const char *P_DX       = "dx";
 constexpr const char *P_DY       = "dy";
 constexpr const char *P_ENVELOPE = "envelope";
-constexpr const char *P_OUT      = "out";
+constexpr const char *P_OUT      = "output";
 
 constexpr const char *A_DENSITY     = "density";
 constexpr const char *A_EXP_SIGMA   = "exp_sigma";
@@ -78,7 +78,7 @@ void compute_vororand_node(BaseNode &node)
       {
         auto [pa_out, pa_dx, pa_dy] = unpack<3>(p_arrays);
 
-        hmap::VoronoiReturnType rtype = (hmap::VoronoiReturnType)node.val<int>(
+        hmap::VoronoiReturnType rtype = node.val_enum<hmap::VoronoiReturnType>(
             A_RETURN_TYPE);
 
         if (p_cloud)

@@ -33,7 +33,6 @@ Hydrology
 | :--- | :--- | :--- |
 |Max Iterations|Integer|Maximum number of SOR iterations used to solve the harmonic interpolation.|
 |Mask Activation Threshold|Float|Threshold used to convert the input mask into a binary field. Values above the threshold define flooded regions, while lower values act as boundaries.|
-|Relaxation Factor|Float|Relaxation factor for the SOR solver. Values between 1 and 2 are recommended for faster convergence.|
 |Convergence Tolerance|Float|Convergence tolerance. The solver stops when the maximum update between iterations falls below this value.|
 
 ## Example
@@ -47,4 +46,4 @@ Corresponding Hesiod file: [WaterDepthFromMask.hsd](../../examples/WaterDepthFro
     Example files are kept up-to-date with the latest version of [Hesiod](https://github.com/otto-link/Hesiod).
     If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).
 
-  
+

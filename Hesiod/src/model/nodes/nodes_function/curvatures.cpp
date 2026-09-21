@@ -19,10 +19,6 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-// -----------------------------------------------------------------------------
-// Ports & Attributes
-// -----------------------------------------------------------------------------
-
 constexpr const char *P_IN  = "input";
 constexpr const char *P_OUT = "mask";
 
@@ -81,16 +77,14 @@ void compute_curvatures_node(BaseNode &node)
 
   // --- Params
 
-  // clang-format off
-  const auto radius      = node.val<float>(A_RADIUS);
-  const auto ctype       = hmap::CurvatureType(node.val<int>(A_CTYPE));
+  const auto ctype       = node.val_enum<hmap::CurvatureType>(A_CTYPE);
   const auto clamping    = node.val<std::string>(A_CLAMPING);
   const auto approx_algo = node.val<bool>(A_APPROX);
   const auto sat_perc    = 0.01f * node.val<float>(A_SATMAX);
   // clang-format on
 
   const bool  keep_both = (clamping == "Both");
-  const int   ir        = std::max(1, int(radius * p_out->shape.x));
+  const int   ir        = node.val_pixel_radius(A_RADIUS);
   const float satmin    = sat_perc;
   const float satmax    = 1.f - sat_perc;
 

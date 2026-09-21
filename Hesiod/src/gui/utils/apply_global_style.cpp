@@ -39,6 +39,11 @@ void apply_global_style(QApplication &app)
   for (auto &[p, color] : place_holders)
     hesiod::replace_all(style_sheet, p, color.name().toStdString());
 
+  if (ctx.app_settings.icons.icon_paths.contains("check"))
+    hesiod::replace_all(style_sheet,
+                        "ICON_CHECK_PATH",
+                        ctx.app_settings.icons.icon_paths.at("check"));
+
   // The theme has to reach the palette as well as the stylesheet: custom-painted
   // widgets (the MetaUI sliders, range bars and canvases) query QPalette
   // directly, and a stylesheet `color:` rule only ever reaches widgets that Qt

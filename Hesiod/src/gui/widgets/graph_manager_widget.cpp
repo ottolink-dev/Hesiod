@@ -2,8 +2,10 @@
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
 #include <QGridLayout>
+#include <QGuiApplication>
 #include <QMenu>
 #include <QPushButton>
+#include <QScreen>
 #include <QSettings>
 
 #include "hesiod/app/hesiod_application.hpp"
@@ -31,7 +33,7 @@ GraphManagerWidget::GraphManagerWidget(std::weak_ptr<GraphManager> p_graph_manag
   if (!gm)
     return;
 
-  this->setWindowTitle(tr("Hesiod - GraphManager"));
+  this->setWindowTitle(tr("Hesiod - Graph Layout Manager"));
 
   // --- build widget layout
   int row = 0;
@@ -414,11 +416,25 @@ void GraphManagerWidget::reset()
 void GraphManagerWidget::restore_window_state()
 {
   AppContext &ctx = HSD_CTX;
+  const auto &geom = ctx.app_settings.window.geom_graph_manager;
 
-  this->setGeometry(ctx.app_settings.window.geom_graph_manager.x,
-                    ctx.app_settings.window.geom_graph_manager.y,
-                    ctx.app_settings.window.geom_graph_manager.w,
-                    ctx.app_settings.window.geom_graph_manager.h);
+  // default to center of the main screen
+  if (geom.x <= 0 && geom.y <= 0)
+  {
+    QScreen *screen = QGuiApplication::primaryScreen();
+    if (screen)
+    {
+      QRect screen_geom = screen->availableGeometry();
+      int   w = std::min(geom.w > 0 ? geom.w : 1024, screen_geom.width());
+      int   h = std::min(geom.h > 0 ? geom.h : 768, screen_geom.height());
+      int   x = screen_geom.x() + (screen_geom.width() - w) / 2;
+      int   y = screen_geom.y() + (screen_geom.height() - h) / 2;
+      this->setGeometry(x, y, w, h);
+      return;
+    }
+  }
+
+  this->setGeometry(geom.x, geom.y, geom.w, geom.h);
 }
 
 void GraphManagerWidget::save_window_state() const

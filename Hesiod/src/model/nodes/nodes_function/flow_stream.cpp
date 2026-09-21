@@ -77,7 +77,7 @@ void compute_flow_stream_node(BaseNode &node)
           // find a flow stream for each source
           std::vector<hmap::Path> path_list;
 
-          for (auto p : p_cloud->points)
+          for (auto p : *p_cloud)
           {
             int        i = (int)(p.x * (region.shape.x - 1.f));
             int        j = (int)(p.y * (region.shape.y - 1.f));

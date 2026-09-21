@@ -71,7 +71,7 @@ void compute_falloff_node(BaseNode &node)
 
             hmap::falloff(*pa_out,
                           strength,
-                          (hmap::DistanceFunction)node.val<int>(A_DISTANCE_FUNCTION),
+                          node.val_enum<hmap::DistanceFunction>(A_DISTANCE_FUNCTION),
                           pa_dr,
                           region.bbox);
           },

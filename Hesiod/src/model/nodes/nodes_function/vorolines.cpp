@@ -20,7 +20,7 @@ namespace hesiod
 constexpr const char *P_DX       = "dx";
 constexpr const char *P_DY       = "dy";
 constexpr const char *P_ENVELOPE = "envelope";
-constexpr const char *P_OUT      = "out";
+constexpr const char *P_OUT      = "output";
 
 constexpr const char *A_ANGLE       = "angle";
 constexpr const char *A_ANGLE_SPAN  = "angle_span";
@@ -75,7 +75,7 @@ void compute_vorolines_node(BaseNode &node)
       {
         auto [pa_out, pa_dx, pa_dy] = unpack<3>(p_arrays);
 
-        hmap::VoronoiReturnType rtype = (hmap::VoronoiReturnType)node.val<int>(
+        hmap::VoronoiReturnType rtype = node.val_enum<hmap::VoronoiReturnType>(
             A_RETURN_TYPE);
 
         *pa_out = hmap::gpu::vorolines(region.shape,

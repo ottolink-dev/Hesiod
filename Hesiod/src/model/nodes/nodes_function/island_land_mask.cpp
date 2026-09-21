@@ -17,7 +17,7 @@ namespace hesiod
 // -----------------------------------------------------------------------------
 // Ports & Attributes
 // -----------------------------------------------------------------------------
-constexpr const char *P_OUT = "out";
+constexpr const char *P_OUT = "output";
 
 constexpr const char *A_CENTER       = "center";
 constexpr const char *A_DISPLACEMENT = "displacement";
@@ -70,7 +70,7 @@ void compute_island_land_mask_node(BaseNode &node)
                                          node.val<float>(A_RADIUS),
                                          node.val<int>(A_SEED),
                                          node.val<float>(A_DISPLACEMENT),
-                                         (hmap::NoiseType)node.val<int>(A_NOISE_TYPE),
+                                         node.val_enum<hmap::NoiseType>(A_NOISE_TYPE),
                                          node.val<float>(A_KW),
                                          node.val<int>(A_OCTAVES),
                                          node.val<float>(A_WEIGHT),

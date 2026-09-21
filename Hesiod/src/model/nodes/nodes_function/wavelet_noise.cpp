@@ -76,7 +76,7 @@ void compute_wavelet_noise_node(BaseNode &node)
         auto [pa_out, pa_dx, pa_dy, pa_ctrl] = unpack<4>(p_arrays);
 
         *pa_out = hmap::gpu::wavelet_noise(region.shape,
-                                           node.val<glm::vec2>(A_KW),
+                                           node.val_wavenumber(A_KW),
                                            node.val<int>(A_SEED),
                                            node.val<float>(A_KW_MULTIPLIER),
                                            node.val<float>(A_VORTICITY),

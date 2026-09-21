@@ -3,6 +3,7 @@
  * this software. */
 #include <exception>
 #include <optional>
+#include <type_traits>
 
 #include <QApplication>
 #include <QFileDialog>
@@ -16,6 +17,8 @@
 #include <QWidgetAction>
 
 #include "hesiod/app/hesiod_application.hpp"
+#include "hesiod/gui/graph_editor.hpp"
+#include "hesiod/gui/hesiod_node_proxy.hpp"
 #include "hesiod/gui/widgets/custom_qmenu.hpp"
 #include "hesiod/gui/widgets/graph_config_widgets/graph_config_dialog.hpp"
 #include "hesiod/gui/widgets/graph_node_widget.hpp"
@@ -28,17 +31,51 @@
 #include "hesiod/logger.hpp"
 #include "hesiod/model/graph/graph_node.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
+#include "hesiod/model/nodes/legacy/legacy_converter.hpp"
 #include "hesiod/model/nodes/node_factory.hpp"
 #include "hesiod/model/nodes/port_catalog.hpp"
 #include "hesiod/model/utils.hpp"
 
 namespace hesiod
 {
+namespace
+{
+// Qt event handlers report an edit failure without unwinding through the event loop.
+template <typename F> auto perform_graph_edit(F &&edit) -> std::invoke_result_t<F>
+{
+  try
+  {
+    return edit();
+  }
+  catch (const std::exception &error)
+  {
+    Logger::log()->error("Graph edit failed: {}", error.what());
+    if (!HSD_CTX.headless)
+      HSD_APP->notify(error.what());
+    if constexpr (!std::is_void_v<std::invoke_result_t<F>>)
+      return {};
+  }
+}
+} // namespace
 
 GraphNodeWidget::GraphNodeWidget(std::weak_ptr<GraphNode> p_graph_node, QWidget *parent)
     : GraphViewer("", parent), p_graph_node(p_graph_node)
 {
   Logger::log()->trace("GraphNodeWidget::GraphNodeWidget: id: {}", this->get_id());
+
+  this->editor = std::make_unique<GraphEditor>(
+      p_graph_node,
+      *this,
+      GraphEditor::NodePresentation{[this](const std::string &id, QPointF pos)
+                                    { this->on_new_graphics_node_request(id, pos); },
+                                    [this](const std::string &id)
+                                    {
+                                      this->last_node_created_id = id;
+                                      Q_EMIT this->new_node_created(this->get_id(), id);
+                                    },
+                                    [this](const std::string &id)
+                                    { Q_EMIT this->node_deleted(this->get_id(), id); },
+                                    [this]() { Q_EMIT this->graph_edited(); }});
 
   auto gno = this->p_graph_node.lock();
   if (!gno)
@@ -62,83 +99,56 @@ GraphNodeWidget::~GraphNodeWidget()
 
 void GraphNodeWidget::add_import_heightmap_node(const QImage &img)
 {
-  Logger::log()->trace("GraphNodeWidget::add_import_heightmap_node");
-
-  auto gno = this->p_graph_node.lock();
-  if (!gno)
-    return;
-
-  // --- Crop and save heightmap file
-
-  const std::filesystem::path path = HSD_CTX.project_model->get_path();
-  const glm::ivec2            model_shape = gno->get_config_ref()->shape;
-
-  float aspect_ratio = model_shape.x / model_shape.y;
-
-  // --- Create new import node
-
-  Logger::log()->trace("GraphNodeWidget::add_import_heightmap_node: creating new node");
-
-  // create both model and graphic nodes
-  std::string node_id = this->on_new_node_request("ImportHeightmap", this->get_center());
-
-  // setup attributes
-  BaseNode *p_node = gno->get_node_ref_by_id<BaseNode>(node_id);
-
-  if (p_node)
-  {
-    // create filename and save image
-    std::filesystem::path fpath = path / ("heightmapper_import_" + node_id + ".png");
-    save_heightmap(img, fpath, aspect_ratio);
-
-    // adjust node parameter accordingly
-    p_node->set_value<std::filesystem::path>("fname", fpath.string());
-    p_node->set_value<bool>("dequantize", true);
-
-    p_node->compute();
-  }
-  else
-  {
-    Logger::log()->error(
-        "GraphNodeWidget::add_import_heightmap_node: dangling ptr for node_id {}",
-        node_id);
-  }
+  perform_graph_edit(
+      [&]()
+      {
+        auto graph = this->p_graph_node.lock();
+        if (!graph)
+          return;
+        const auto path = HSD_CTX.project_model->get_path();
+        const auto shape = graph->get_config_ref()->shape;
+        this->editor->add_node(
+            "ImportHeightmap",
+            this->get_center(),
+            [&](BaseNode &node)
+            {
+              const auto file = path / ("heightmapper_import_" + node.get_id() + ".png");
+              save_heightmap(img, file, static_cast<float>(shape.x) / shape.y);
+              node.set_value<std::filesystem::path>("fname", file);
+              node.set_value<bool>("dequantize", true);
+            });
+      });
 }
 
-void GraphNodeWidget::add_import_texture_nodes(
-    const std::vector<std::string> &texture_paths)
+void GraphNodeWidget::add_import_texture_nodes(const std::vector<std::string> &paths)
 {
-  auto gno = this->p_graph_node.lock();
-  if (!gno)
-    return;
-
-  float dx = HSD_CTX.app_settings.node_editor.position_delta_when_duplicating_node;
-  float dy = 0.f;
-
-  for (auto &fname : texture_paths)
-  {
-    Logger::log()->trace("GraphNodeWidget::add_import_texture_nodes: {}", fname);
-
-    // create both model and graphic nodes
-    QPointF     pos = this->get_center() + QPointF(dx, dy);
-    std::string node_id = this->on_new_node_request("ImportTexture", pos);
-
-    // setup attributes
-    BaseNode *p_node = gno->get_node_ref_by_id<BaseNode>(node_id);
-    if (p_node)
-    {
-      p_node->set_value<std::filesystem::path>("fname", fname);
-      p_node->compute();
-    }
-    else
-    {
-      Logger::log()->error(
-          "GraphNodeWidget::add_import_texture_nodes: dangling ptr for node_id {}",
-          node_id);
-    }
-
-    dy += dx;
-  }
+  perform_graph_edit(
+      [&]()
+      {
+        GraphEditor::Batch batch(*this->editor);
+        const float        delta = HSD_CTX.app_settings.node_editor
+                                .position_delta_when_duplicating_node;
+        float                    y = 0.f;
+        std::vector<std::string> created;
+        try
+        {
+          for (const auto &path : paths)
+          {
+            created.push_back(this->editor->add_node(
+                "ImportTexture",
+                this->get_center() + QPointF(delta, y),
+                [&](BaseNode &node)
+                { node.set_value<std::filesystem::path>("fname", path); }));
+            y += delta;
+          }
+        }
+        catch (...)
+        {
+          this->editor->erase(created);
+          throw;
+        }
+        batch.commit();
+      });
 }
 
 void GraphNodeWidget::apply_new_config(int new_resolution)
@@ -217,7 +227,7 @@ void GraphNodeWidget::automatic_node_layout()
       p_gfx_node->setPos(scene_pos);
   }
 
-  QTimer::singleShot(0, [this]() { this->zoom_to_content(); });
+  QTimer::singleShot(0, this, [this]() { this->zoom_to_content(); });
 }
 
 void GraphNodeWidget::backup_selected_ids()
@@ -227,9 +237,13 @@ void GraphNodeWidget::backup_selected_ids()
 
 void GraphNodeWidget::clear_all()
 {
-  this->clear_graphic_scene();
-
-  Q_EMIT this->has_been_cleared(this->get_id());
+  perform_graph_edit(
+      [&]()
+      {
+        this->clear_data_viewers();
+        this->editor->clear();
+        Q_EMIT this->has_been_cleared(this->get_id());
+      });
 }
 
 void GraphNodeWidget::clear_data_viewers()
@@ -299,23 +313,15 @@ GraphNode *GraphNodeWidget::get_p_graph_node()
   return gno.get();
 }
 
-bool GraphNodeWidget::is_graph_model_updates_blocked() const
-{
-  return this->block_graph_model_updates;
-}
-
 void GraphNodeWidget::json_from(nlohmann::json const &json)
 {
   Logger::log()->trace("GraphNodeWidget::json_from");
   this->clear_graphic_scene();
 
-  // the graph model loading and updating is taken care of by
-  // GraphNode (model) and does not need to be updated again when the
-  // graphics object are recreated (and are going to trigger signals
-  // requesting some model updates...)
-  this->set_block_graph_model_updates(true);
-  GraphViewer::json_from(json);
-  this->set_block_graph_model_updates(false);
+  nlohmann::json gui_json = convert_legacy_graph_widget_json(json);
+
+  // Loading graphics is presentation-only; edit requests are not emitted.
+  GraphViewer::json_from(gui_json);
 
   // viewers (skipped in headless CLI modes, e.g. --snapshot: no 3D viewer is
   // created there, so there is nothing to restore state into)
@@ -353,6 +359,7 @@ void GraphNodeWidget::json_from(nlohmann::json const &json)
 
   // defer
   QTimer::singleShot(0,
+                     this,
                      [this]()
                      {
                        this->update();
@@ -362,65 +369,8 @@ void GraphNodeWidget::json_from(nlohmann::json const &json)
 
 nlohmann::json GraphNodeWidget::json_import(nlohmann::json const &json, QPointF scene_pos)
 {
-  // import used when copy/pasting only
-  Logger::log()->trace("GraphNodeWidget::json_import");
-
-  auto gno = this->p_graph_node.lock();
-  if (!gno)
-    return nlohmann::json();
-
-  // work on a copy of the json to modify the node IDs and return it
-  nlohmann::json json_copy = json;
-
-  // nodes
-  if (!json_copy["nodes"].is_null())
-  {
-    // storage of id correspondance storage between original node and it copied version
-    std::map<std::string, std::string> copy_id_map = {};
-
-    for (auto &json_node : json_copy["nodes"])
-    {
-      QPointF pos = scene_pos;
-      QPointF delta = QPointF(json_node["scene_position.x"],
-                              json_node["scene_position.y"]);
-
-      // create both model and graphic nodes
-      std::string node_id = this->on_new_node_request(json_node["caption"], pos + delta);
-
-      // use this new node id and backup it for links
-      copy_id_map[json_node["id"].get<std::string>()] = node_id;
-      json_node["id"] = node_id;
-
-      // setup attributes
-      BaseNode *p_node = gno->get_node_ref_by_id<BaseNode>(node_id);
-      p_node->json_from(json_node["settings"]);
-      p_node->set_id(node_id);
-    }
-
-    // links
-    if (!json_copy["links"].is_null())
-      for (auto &json_link : json_copy["links"])
-      {
-        std::string node_id_from = json_link["node_out_id"].get<std::string>();
-        std::string node_id_to = json_link["node_in_id"].get<std::string>();
-
-        node_id_from = copy_id_map.at(node_id_from);
-        node_id_to = copy_id_map.at(node_id_to);
-
-        std::string port_out_id = json_link["port_out_id"];
-        std::string port_in_id = json_link["port_in_id"];
-
-        // add graphics link
-        this->add_link(node_id_from, port_out_id, node_id_to, port_in_id);
-
-        // add model link
-        gno->new_link(node_id_from, port_out_id, node_id_to, port_in_id);
-      }
-
-    this->update_graph_model();
-  }
-
-  return json_copy;
+  return perform_graph_edit([&]()
+                            { return this->editor->import_nodes(json, scene_pos); });
 }
 
 nlohmann::json GraphNodeWidget::json_to() const
@@ -439,168 +389,111 @@ nlohmann::json GraphNodeWidget::json_to() const
   return json;
 }
 
-void GraphNodeWidget::on_connection_deleted(const std::string &id_out,
-                                            const std::string &port_id_out,
-                                            const std::string &id_in,
-                                            const std::string &port_id_in,
-                                            bool               prevent_graph_update)
+void GraphNodeWidget::request_connection(const gngui::LinkEndpoints &link)
 {
-  Logger::log()->trace("GraphNodeWidget::on_connection_deleted, {}/{} -> {}/{}",
-                       id_out,
-                       port_id_out,
-                       id_in,
-                       port_id_in);
+  perform_graph_edit([&]() { this->editor->connect(link); });
+}
 
-  auto gno = this->p_graph_node.lock();
-  if (!gno)
-    return;
-
-  Logger::log()->debug("BLOCKED? {}",
-                       this->is_graph_model_updates_blocked() ? "TRUE" : "FALSE");
-
-  this->set_enabled(false);
-
-  // see GraphNodeWidget::on_node_deleted
-  QCoreApplication::processEvents();
-
-  gno->remove_link(id_out, port_id_out, id_in, port_id_in);
-
-  // see GraphNodeWidget::on_node_deleted
-  QCoreApplication::processEvents();
-
-  if (!prevent_graph_update)
-    this->update_graph_model(id_in);
-
-  this->set_enabled(true);
+void GraphNodeWidget::request_deletion(const std::vector<std::string>          &ids,
+                                       const std::vector<gngui::LinkEndpoints> &links)
+{
+  perform_graph_edit([&]() { this->editor->erase(ids, links); });
 }
 
 void GraphNodeWidget::on_connection_dropped(const std::string &node_id,
                                             const std::string &port_id,
                                             QPointF /*scene_pos*/)
 {
-  Logger::log()->trace("GraphNodeWidget::on_connection_dropped: {}/{}", node_id, port_id);
+  perform_graph_edit(
+      [&]()
+      {
+        Logger::log()->trace("GraphNodeWidget::on_connection_dropped: {}/{}",
+                             node_id,
+                             port_id);
 
-  auto gno = this->p_graph_node.lock();
-  if (!gno)
-    return;
+        auto gno = this->p_graph_node.lock();
+        if (!gno)
+          return;
 
-  BaseNode *p_node_from = gno->get_node_ref_by_id<BaseNode>(node_id);
-  if (!p_node_from)
-    return;
+        BaseNode *p_node_from = gno->get_node_ref_by_id<BaseNode>(node_id);
+        if (!p_node_from)
+          return;
 
-  // --- what was dragged, and what would we need on the other end?
+        const int from_index = p_node_from->get_port_index(port_id);
+        if (from_index < 0)
+          return;
 
-  const int from_index = p_node_from->get_port_index(port_id);
+        // The catalog and select_port use documentation names, not typeid names.
+        const std::string dragged_type = map_type_name(
+            p_node_from->get_data_type(from_index));
 
-  // NOTE: get_data_type() returns a MANGLED typeid name (e.g.
-  // "N4hmap12VirtualArrayE"). The catalog and select_port both speak the
-  // friendly name the documentation uses ("VirtualArray") — the documentation
-  // is literally built with map_type_name(get_data_type(k)) (base_node.cpp).
-  // Convert once, here at the boundary.
-  const std::string dragged_type = map_type_name(p_node_from->get_data_type(from_index));
+        const gnode::PortType dragged_dir = p_node_from->get_port_type(from_index);
+        const gnode::PortType wanted_dir = (dragged_dir == gnode::PortType::OUT)
+                                               ? gnode::PortType::IN
+                                               : gnode::PortType::OUT;
 
-  const gngui::PortType dragged_dir = p_node_from->get_port_type(from_index);
-  const gngui::PortType wanted_dir = (dragged_dir == gngui::PortType::OUT)
-                                         ? gngui::PortType::IN
-                                         : gngui::PortType::OUT;
+        // Filter GraphViewer's inventory for the duration of its blocking menu.
+        const std::map<std::string, std::string> full_inventory = get_node_inventory();
+        const PortCatalog catalog = PortCatalog::from_documentation();
 
-  // --- offer only node types that can actually connect
-  //
-  // The menu is built by GraphViewer from its node inventory, so filtering is
-  // done by swapping the inventory around the (blocking) menu call and putting
-  // the full one back afterwards.
+        std::map<std::string, std::string> filtered;
+        for (const auto &[node_type, category] : full_inventory)
+          if (catalog.is_offerable(node_type, dragged_type, wanted_dir))
+            filtered[node_type] = category;
 
-  const std::map<std::string, std::string> full_inventory = get_node_inventory();
-  const PortCatalog                        catalog = PortCatalog::from_documentation();
+        // Fall back to the full inventory if no compatible types are documented.
+        const bool use_filtered = !filtered.empty();
 
-  std::map<std::string, std::string> filtered;
-  for (const auto &[node_type, category] : full_inventory)
-    if (catalog.is_offerable(node_type, dragged_type, wanted_dir))
-      filtered[node_type] = category;
+        if (use_filtered)
+          this->set_node_inventory(filtered);
 
-  // if nothing accepts this type, fall back to the full list rather than
-  // opening an empty menu
-  const bool use_filtered = !filtered.empty();
+        GraphEditor::Batch batch(*this->editor);
+        this->last_node_created_id.clear();
+        const bool created = this->execute_new_node_context_menu();
 
-  if (use_filtered)
-    this->set_node_inventory(filtered);
+        if (use_filtered)
+          this->set_node_inventory(full_inventory);
 
-  const bool created = this->execute_new_node_context_menu();
+        if (!created)
+          return;
 
-  if (use_filtered)
-    this->set_node_inventory(full_inventory);
+        const std::string node_to = this->last_node_created_id;
+        BaseNode         *p_node_to = gno->get_node_ref_by_id<BaseNode>(node_to);
 
-  if (!created)
-    return;
+        if (!p_node_to)
+        {
+          Logger::log()->trace(
+              "GraphNodeWidget::on_connection_dropped: p_node_to is nullptr");
+          batch.commit();
+          return;
+        }
 
-  // --- connect the node that was just created
+        const std::optional<std::string> port_to = select_port(*p_node_to,
+                                                               dragged_type,
+                                                               wanted_dir);
 
-  const std::string node_to = this->last_node_created_id;
-  BaseNode         *p_node_to = gno->get_node_ref_by_id<BaseNode>(node_to);
+        if (!port_to)
+        {
+          Logger::log()->trace("GraphNodeWidget::on_connection_dropped: node '{}' has no "
+                               "{} port of type {}, "
+                               "leaving it unconnected",
+                               node_to,
+                               wanted_dir == gnode::PortType::IN ? "input" : "output",
+                               dragged_type);
+          batch.commit();
+          return;
+        }
 
-  if (!p_node_to)
-  {
-    Logger::log()->trace("GraphNodeWidget::on_connection_dropped: p_node_to is nullptr");
-    return;
-  }
+        const bool dragged_is_output = (dragged_dir == gnode::PortType::OUT);
 
-  const std::optional<std::string> port_to = select_port(*p_node_to,
-                                                         dragged_type,
-                                                         wanted_dir);
+        const std::string id_out = dragged_is_output ? node_id : node_to;
+        const std::string port_out = dragged_is_output ? port_id : *port_to;
+        const std::string id_in = dragged_is_output ? node_to : node_id;
+        const std::string port_in = dragged_is_output ? *port_to : port_id;
 
-  if (!port_to)
-  {
-    Logger::log()->trace(
-        "GraphNodeWidget::on_connection_dropped: node '{}' has no {} port of type {}, "
-        "leaving it unconnected",
-        node_to,
-        wanted_dir == gngui::PortType::IN ? "input" : "output",
-        dragged_type);
-    return;
-  }
-
-  // order the operands so that 'from' is always the OUTPUT side
-  const bool dragged_is_output = (dragged_dir == gngui::PortType::OUT);
-
-  const std::string id_out = dragged_is_output ? node_id : node_to;
-  const std::string port_out = dragged_is_output ? port_id : *port_to;
-  const std::string id_in = dragged_is_output ? node_to : node_id;
-  const std::string port_in = dragged_is_output ? *port_to : port_id;
-
-  // model first: only draw the GUI link if the model accepted it
-  try
-  {
-    gno->new_link(id_out, port_out, id_in, port_in);
-  }
-  catch (const std::exception &e)
-  {
-    Logger::log()->error("GraphNodeWidget::on_connection_dropped: link refused: {}",
-                         e.what());
-    return;
-  }
-
-  this->add_link(id_out, port_out, id_in, port_in);
-  gno->update(node_to);
-}
-
-void GraphNodeWidget::on_connection_finished(const std::string &id_out,
-                                             const std::string &port_id_out,
-                                             const std::string &id_in,
-                                             const std::string &port_id_in)
-{
-  Logger::log()->trace("GraphNodeWidget::on_connection_finished, {}/{} -> {}/{}",
-                       id_out,
-                       port_id_out,
-                       id_in,
-                       port_id_in);
-
-  auto gno = this->p_graph_node.lock();
-  if (!gno)
-    return;
-
-  gno->new_link(id_out, port_id_out, id_in, port_id_in);
-
-  this->update_graph_model(id_in);
+        this->request_connection({id_out, port_out, id_in, port_in});
+        batch.commit();
+      });
 }
 
 void GraphNodeWidget::on_graph_clear_request()
@@ -701,15 +594,13 @@ void GraphNodeWidget::on_graph_import_request()
 
     for (auto &json_node : json_mod["nodes"])
     {
-      const std::string    node_id = json_node["id"].get<std::string>();
-      gngui::GraphicsNode *p_gfx_node = this->get_graphics_node_by_id(node_id);
-
-      // Qt mystery, this needs to be delayed to be effective
+      const std::string node_id = json_node["id"].get<std::string>();
       QTimer::singleShot(0,
-                         [p_gfx_node]()
+                         this,
+                         [this, node_id]()
                          {
-                           if (p_gfx_node)
-                             p_gfx_node->setSelected(true);
+                           if (auto *node = this->get_graphics_node_by_id(node_id))
+                             node->setSelected(true);
                          });
     }
 
@@ -751,18 +642,7 @@ void GraphNodeWidget::on_graph_settings_request()
 void GraphNodeWidget::on_new_graphics_node_request(const std::string &node_id,
                                                    QPointF            scene_pos)
 {
-  // GraphicsNodes cannot generated by the GraphViewer instance by
-  // itself, it is outsourced to the outer nodes manager (this
-  // class). This slot respond to a request for the creation of a
-  // GraphicsNodes (only). This is different from
-  // GraphNodeWidget::on_new_node_request which generates both the
-  // model and the GUI nodes...
-
-  // This one is actually used for serialization, when the graph
-  // viewer requests the creation of a graphics node while the base
-  // node has aldready been created when the GraphNode has been
-  // deserialized
-
+  // Also used when loading a scene for nodes already present in the model.
   Logger::log()->trace("GraphNodeWidget::on_new_graphics_node_request: {} {},{}",
                        node_id,
                        scene_pos.x(),
@@ -773,8 +653,10 @@ void GraphNodeWidget::on_new_graphics_node_request(const std::string &node_id,
     return;
 
   BaseNode *p_node = gno->get_node_ref_by_id<BaseNode>(node_id);
-  auto     *p_proxy = new gngui::TypedNodeProxy<BaseNode>(p_node->get_shared());
-  auto *widget = node_widget_factory(p_node->get_caption(), p_node->get_shared(), this);
+  if (!p_node)
+    throw std::runtime_error("Cannot display a missing model node.");
+  auto *p_proxy = new HesiodNodeProxy(p_node->get_shared(), this);
+  auto *widget = node_widget_factory(p_node->get_label(), p_node->get_shared(), this);
 
   this->add_node(p_proxy, scene_pos, node_id);
   this->get_graphics_node_by_id(node_id)->set_widget(widget);
@@ -783,297 +665,54 @@ void GraphNodeWidget::on_new_graphics_node_request(const std::string &node_id,
 std::string GraphNodeWidget::on_new_node_request(const std::string &node_type,
                                                  QPointF            scene_pos)
 {
-  Logger::log()->trace("GraphNodeWidget::on_new_node_request: node_type {}", node_type);
-
-  auto gno = this->p_graph_node.lock();
-  if (!gno)
-    return "";
-
-  if (node_type == "")
-    return "";
-
-  // add control node (compute)
-  std::string node_id = gno->add_node(node_type);
-
-  // add corresponding graphics node (GUI)
-  this->on_new_graphics_node_request(node_id, scene_pos);
-
-  Q_EMIT this->new_node_created(this->get_id(), node_id);
-
-  this->last_node_created_id = node_id;
-
-  return node_id;
+  const auto id = perform_graph_edit(
+      [&]() { return this->editor->add_node(node_type, scene_pos); });
+  // A drag-to-create gesture needs the ID before its outer batch commits.
+  this->last_node_created_id = id;
+  return id;
 }
 
 std::string GraphNodeWidget::on_new_node_request_chain(const std::string &node_type)
 {
-  Logger::log()->trace("GraphNodeWidget::on_new_node_request_chain: node_type {}",
-                       node_type);
-
-  // --- Safeguards
-
-  auto gno = this->p_graph_node.lock();
-  if (!gno)
-    return "";
-
-  if (node_type == "")
-    return "";
-
-  // get current node selection
-  std::vector<std::string> selected_ids = this->get_selected_node_ids();
-
-  // empty selection => skip
-  if (selected_ids.empty())
+  const auto ids = this->get_selected_node_ids();
+  if (ids.empty())
   {
     HSD_APP->notify("Select a node before inserting a new node.");
-    return "";
+    return {};
   }
-
-  // --- Backup selected node connections
-
-  const std::string selected_id = selected_ids.back();
-
-  // position
-  gngui::GraphicsNode *p_gx_node = this->get_graphics_node_by_id(selected_id);
-  if (!p_gx_node)
+  auto *graphics = this->get_graphics_node_by_id(ids.back());
+  if (!graphics)
+    return {};
+  const auto position = graphics->pos() +
+                        QPointF(HSD_CTX.app_settings.node_editor
+                                    .position_delta_when_duplicating_node,
+                                0.f);
+  const auto id = perform_graph_edit(
+      [&]() { return this->editor->insert_node(ids.back(), node_type, position); });
+  if (!id.empty())
   {
-    Logger::log()->error(
-        "GraphNodeWidget::on_new_node_request_replace: p_gx_node is nullptr");
-    return "";
+    this->deselect_all();
+    this->set_node_as_selected(id);
   }
-  QPointF node_pos = p_gx_node->pos();
-
-  float dx = HSD_CTX.app_settings.node_editor.position_delta_when_duplicating_node;
-  node_pos = node_pos + QPointF(dx, 0.f);
-
-  // backup links
-  std::vector<gnode::LinkView> link_views = gno->get_link_views(selected_id);
-
-  // --- BLOCK model updates
-
-  this->set_block_graph_model_updates(true);
-
-  // --- Delete downstream links of selected node
-
-  for (const auto &data : link_views)
-  {
-    if (data.from == selected_id)
-    {
-      // graphics object first and then the model link
-      this->remove_link(data.from, data.port_from, data.to, data.port_to);
-      // gno->remove_link(data.from, data.port_from, data.to, data.port_to);
-    }
-  }
-
-  // --- Create new node
-
-  this->deselect_all();
-  std::string new_id = this->on_new_node_request(node_type, node_pos);
-  this->set_node_as_selected(new_id);
-
-  // --- Recreate the links if possible
-
-  int link_creation_count = 0;
-
-  for (const auto &data : link_views)
-  {
-    // change only the output links of the selected node
-    if (data.from != selected_id)
-      continue;
-
-    gnode::Node *p_new_node = gno->get_node_ref_by_id(new_id);
-
-    // reconnect selected_id (output) => new_id (input)
-    {
-      std::string from = data.from;
-      std::string to = new_id;
-
-      // check the port exists
-      int port_id = p_new_node->get_port_index(data.port_label_to);
-      if (port_id < 0)
-        continue;
-
-      this->add_link(from, data.port_label_from, to, data.port_label_to);
-      gno->new_link(from, data.port_label_from, to, data.port_label_to);
-      link_creation_count++;
-    }
-
-    // connect new_id (output) => some downstream node (input)
-    {
-      std::string from = new_id;
-      std::string to = data.to;
-
-      // check the port exists
-      int port_id = p_new_node->get_port_index(data.port_label_from);
-      if (port_id < 0)
-        continue;
-
-      this->add_link(from, data.port_label_from, to, data.port_label_to);
-      gno->new_link(from, data.port_label_from, to, data.port_label_to);
-      link_creation_count++;
-    }
-  }
-
-  // if no link has been created, try to connect the first output of
-  // 'selected_id' to the first input of 'new_id'
-  if (link_creation_count == 0)
-  {
-    BaseNode *p_bnode_from = gno->get_node_ref_by_id<BaseNode>(selected_id);
-    BaseNode *p_bnode_to = gno->get_node_ref_by_id<BaseNode>(new_id);
-
-    if (p_bnode_from && p_bnode_to)
-    {
-      // 1st outlet
-      int kfrom = -1;
-
-      for (int k = 0; k < p_bnode_from->get_nports(); ++k)
-        if (p_bnode_from->get_port_type(k) == gngui::PortType::OUT)
-        {
-          kfrom = k;
-          break;
-        }
-
-      // 1st inlet
-      if (kfrom != -1)
-      {
-        std::string data_type = p_bnode_from->get_data_type(kfrom);
-        int         kto = -1;
-        for (int k = 0; k < p_bnode_to->get_nports(); ++k)
-          if (p_bnode_to->get_port_type(k) == gngui::PortType::IN &&
-              p_bnode_to->get_data_type(k) == data_type)
-          {
-            kto = k;
-            break;
-          }
-
-        if (kto != -1)
-        {
-          std::string port_label_from = p_bnode_from->get_port_label(kfrom);
-          std::string port_label_to = p_bnode_to->get_port_label(kto);
-
-          this->add_link(selected_id, port_label_from, new_id, port_label_to);
-          gno->new_link(selected_id, port_label_from, new_id, port_label_to);
-        }
-      }
-    }
-  }
-
-  // --- UNBLOCK model updates
-
-  this->set_block_graph_model_updates(false);
-
-  // --- Update and exit
-
-  this->update_graph_model(selected_id);
-  return new_id;
+  return id;
 }
 
 std::string GraphNodeWidget::on_new_node_request_replace(const std::string &node_type)
 {
-  Logger::log()->trace("GraphNodeWidget::on_new_node_request_replace: node_type {}",
-                       node_type);
-
-  // --- Safeguards
-
-  auto gno = this->p_graph_node.lock();
-  if (!gno)
-    return "";
-
-  if (node_type == "")
-    return "";
-
-  // get current node selection
-  std::vector<std::string> selected_ids = this->get_selected_node_ids();
-
-  // empty selection => skip
-  if (selected_ids.empty())
+  const auto ids = this->get_selected_node_ids();
+  if (ids.empty())
   {
     HSD_APP->notify("Select a node before replacing it.");
-    return "";
+    return {};
   }
-
-  // --- Backup selected node connections
-
-  const std::string selected_id = selected_ids.back();
-
-  // position
-  gngui::GraphicsNode *p_gx_node = this->get_graphics_node_by_id(selected_id);
-  if (!p_gx_node)
+  const auto id = perform_graph_edit(
+      [&]() { return this->editor->replace_node(ids.back(), node_type); });
+  if (!id.empty())
   {
-    Logger::log()->error(
-        "GraphNodeWidget::on_new_node_request_replace: p_gx_node is nullptr");
-    return "";
+    this->deselect_all();
+    this->set_node_as_selected(id);
   }
-  const QPointF node_pos = p_gx_node->pos();
-
-  // backup links
-  std::vector<gnode::LinkView> link_views = gno->get_link_views(selected_id);
-
-  // --- BLOCK model updates
-
-  this->set_block_graph_model_updates(true);
-
-  // --- Remove selected node
-
-  this->remove_node(selected_id);             // graphics object first
-  this->on_node_deleted_request(selected_id); // then propagate
-
-  // --- Create new node
-
-  this->deselect_all();
-  std::string new_id = this->on_new_node_request(node_type, node_pos);
-  this->set_node_as_selected(new_id);
-
-  // --- Recreate the links if possible
-
-  for (const auto &data : link_views)
-  {
-    // replace former ID by new one
-    std::string from = (data.from == selected_id) ? new_id : data.from;
-    std::string to = (data.to == selected_id) ? new_id : data.to;
-
-    // check if the port to be connected actually exists on the new
-    // node before continuing
-    std::string port_label = (from == new_id) ? data.port_label_from : data.port_label_to;
-    gnode::Node *p_new_node = gno->get_node_ref_by_id(new_id);
-    int          port_id = p_new_node->get_port_index(port_label);
-
-    if (port_id < 0)
-      continue;
-
-    // add graphics link and then model link
-    this->add_link(from, data.port_label_from, to, data.port_label_to);
-    gno->new_link(from, data.port_label_from, to, data.port_label_to);
-  }
-
-  // --- UNBLOCK model updates
-
-  this->set_block_graph_model_updates(false);
-
-  // --- Update and exit
-
-  this->update_graph_model(new_id);
-  return new_id;
-}
-
-void GraphNodeWidget::on_node_deleted_request(const std::string &node_id)
-{
-  Logger::log()->trace("GraphNodeWidget::on_node_deleted_request, node {}", node_id);
-
-  auto gno = this->p_graph_node.lock();
-  if (!gno)
-    return;
-
-  // block connection-related updates
-  this->set_block_graph_model_updates(true);
-
-  this->set_enabled(false);
-  gno->remove_node(node_id);
-  this->set_enabled(true);
-
-  this->set_block_graph_model_updates(false);
-
-  Q_EMIT this->node_deleted(this->get_id(), node_id);
+  return id;
 }
 
 void GraphNodeWidget::on_node_info(const std::string &node_id)
@@ -1319,6 +958,7 @@ void GraphNodeWidget::reselect_backup_ids()
 {
   QTimer::singleShot(
       0,
+      this,
       [this]()
       {
         for (size_t k = 0; k < this->selected_ids.size(); ++k)
@@ -1329,14 +969,6 @@ void GraphNodeWidget::reselect_backup_ids()
         }
         this->selected_ids.clear();
       });
-}
-
-void GraphNodeWidget::set_block_graph_model_updates(bool new_state)
-{
-  Logger::log()->trace("GraphNodeWidget::set_block_graph_model_updates: state is now {}",
-                       new_state ? "BLOCKED" : "UNBLOCKED");
-
-  this->block_graph_model_updates = new_state;
 }
 
 void GraphNodeWidget::set_json_copy_buffer(nlohmann::json const &new_json_copy_buffer)
@@ -1391,19 +1023,9 @@ void GraphNodeWidget::setup_connections()
 
   // GraphViewer -> GraphNodeWidget
   this->connect(this,
-                &gngui::GraphViewer::connection_deleted,
-                this,
-                &GraphNodeWidget::on_connection_deleted);
-
-  this->connect(this,
                 &gngui::GraphViewer::connection_dropped,
                 this,
                 &GraphNodeWidget::on_connection_dropped);
-
-  this->connect(this,
-                &gngui::GraphViewer::connection_finished,
-                this,
-                &GraphNodeWidget::on_connection_finished);
 
   this->connect(this,
                 &gngui::GraphViewer::new_graphics_node_request,
@@ -1414,11 +1036,6 @@ void GraphNodeWidget::setup_connections()
                 &gngui::GraphViewer::new_node_request,
                 this,
                 &GraphNodeWidget::on_new_node_request);
-
-  this->connect(this,
-                &gngui::GraphViewer::node_deleted,
-                this,
-                &GraphNodeWidget::on_node_deleted_request);
 
   this->connect(this,
                 &gngui::GraphViewer::node_reload_request,
@@ -1507,27 +1124,7 @@ void GraphNodeWidget::setup_connections()
 
 void GraphNodeWidget::update_graph_model(const std::vector<std::string> &node_ids)
 {
-  Logger::log()->trace("GraphNodeWidget::update_graph_model");
-
-  if (this->is_graph_model_updates_blocked())
-  {
-    Logger::log()->trace("GraphNodeWidget::update_graph_model: graph model updates are "
-                         "blocked, no update");
-    return;
-  }
-
-  auto gno = this->p_graph_node.lock();
-  if (!gno)
-  {
-    Logger::log()->error(
-        "GraphNodeWidget::update_graph_model: graph node model ptr is nullptr");
-    return;
-  }
-
-  if (node_ids.empty())
-    gno->update();
-  else
-    gno->update(node_ids);
+  perform_graph_edit([&]() { this->editor->request_update(node_ids); });
 }
 
 void GraphNodeWidget::update_graph_model(const std::string &node_id)

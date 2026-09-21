@@ -79,7 +79,13 @@ nlohmann::json ProjectModel::json_to() const
   return json;
 }
 
-void ProjectModel::on_has_changed() { this->set_is_dirty(true); }
+void ProjectModel::on_has_changed()
+{
+  if (this->has_changed)
+    this->has_changed();
+
+  this->set_is_dirty(true);
+}
 
 void ProjectModel::set_bake_config(const BakeConfig &new_bake_config)
 {

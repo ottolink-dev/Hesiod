@@ -13,6 +13,7 @@
 #include "nlohmann/json.hpp"
 
 #include "hesiod/app/app_context.hpp"
+#include "hesiod/app/autosave_manager.hpp"
 #include "hesiod/bridges/blender/blender_streamer.hpp"
 #include "hesiod/gui/widgets/app_settings_window.hpp"
 #include "hesiod/gui/widgets/graph_config_widgets/bake_config_dialog.hpp"
@@ -36,15 +37,27 @@ class HesiodApplication : public QApplication
 {
   Q_OBJECT
 public:
-  HesiodApplication(int &argc, char **argv);
+  enum class StartupMode
+  {
+    Normal,
+    ContextOnly // CPU/Qt integration tests: no engine, services or main window
+  };
+
+  HesiodApplication(int &argc, char **argv, StartupMode mode = StartupMode::Normal);
   ~HesiodApplication();
 
   bool is_headless() const;
   int  get_exit_code() const;
   void load_project_model_and_ui(const std::string &fname = "", bool keep_name = true);
-  void save_project_model_and_ui(const std::string &fname);
+  /// Writes the project file. Returns false, after warning the user, when the
+  /// file could not be written; the project then stays dirty and keeps its
+  /// recovery snapshot.
+  bool save_project_model_and_ui(const std::string &fname);
   void save_backup(const std::string &fname);
-  void show();
+  /// Everything a .hsd file holds: model, UI state (when a ProjectUI exists),
+  /// version and timestamp. Shared by the real save and the autosave snapshot.
+  nlohmann::json project_file_json() const;
+  void           show();
 
   void notify(const std::string &msg = "", int timeout = 5000);
 
@@ -59,6 +72,7 @@ public:
   AppContext       &get_context();
   const AppContext &get_context() const;
   ProjectUI        *get_project_ui_ref();
+  AutosaveManager  *get_autosave_manager_ref(); // null in headless/test modes
 
 private slots:
   // --- User actions
@@ -84,14 +98,18 @@ private slots:
 private:
   void add_recent_file(const std::string &fname);
   void cleanup();
+  // startup: prompt for each pending recovery snapshot; true when one was restored
+  bool offer_recovery();
+  bool restore_snapshot(const AutosaveManager::Entry &entry);
   void rebuild_recent_files_menu();
   void setup_menu_bar();
 
   // --- Members (respect order for deletion)
-  AppContext                 context;
-  MainWindow                *main_window = nullptr; // null in headless CLI modes
-  std::unique_ptr<ProjectUI> project_ui;            // because top-level UI
-  AppSettingsWindow         *app_settings_window;   // owned by MainWindow
+  AppContext                       context;
+  MainWindow                      *main_window = nullptr; // null in headless CLI modes
+  std::unique_ptr<ProjectUI>       project_ui;            // because top-level UI
+  std::unique_ptr<AutosaveManager> autosave;              // GUI mode only
+  AppSettingsWindow               *app_settings_window;   // owned by MainWindow
 
   QMenu            *recent_files_menu = nullptr;  // owned by the menu bar
   QPointer<QAction> show_node_library_pan_action; // owned by the menu bar

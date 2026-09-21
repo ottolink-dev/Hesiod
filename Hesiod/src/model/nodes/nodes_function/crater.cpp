@@ -16,10 +16,6 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-// -----------------------------------------------------------------------------
-// Ports & Attributes
-// -----------------------------------------------------------------------------
-
 constexpr const char *P_NOISE       = "noise";
 constexpr const char *P_ENVELOPE    = "envelope";
 constexpr const char *P_OUT         = "output";

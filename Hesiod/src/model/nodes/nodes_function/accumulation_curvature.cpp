@@ -68,11 +68,10 @@ void compute_accumulation_curvature_node(BaseNode &node)
 
   // --- Params
 
-  const auto radius    = node.val<float>(A_RADIUS);
   const auto clamp_max = node.val<bool>(A_CLAMP_MAX);
   const auto vc_max    = node.val<float>(A_VC_MAX);
 
-  const int ir = std::max(1, (int)(radius * p_out->shape.x));
+  const int ir = node.val_pixel_radius(A_RADIUS);
   const int nx = p_out->shape.x; // for gradient scaling
 
   // --- Compute

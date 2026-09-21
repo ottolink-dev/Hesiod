@@ -54,7 +54,7 @@ void compute_flooding_from_point_node(BaseNode &node)
           // convert point positions to cell indices
           std::vector<int> i, j;
 
-          for (const auto &p : p_cloud->points)
+          for (const auto &p : *p_cloud)
           {
             int ip = static_cast<int>((p.x - region.bbox.x) /
                                       (region.bbox.y - region.bbox.x) *

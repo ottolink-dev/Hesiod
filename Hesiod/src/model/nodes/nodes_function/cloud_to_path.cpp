@@ -43,7 +43,7 @@ void compute_cloud_to_path_node(BaseNode &node)
     return;
 
   // convert the input
-  *p_out = hmap::Path(p_in->points);
+  *p_out = hmap::Path(*p_in);
 
   p_out->set_closed(node.val<bool>(A_CLOSED));
 

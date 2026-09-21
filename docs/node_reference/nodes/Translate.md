@@ -46,4 +46,4 @@ Corresponding Hesiod file: [Translate.hsd](../../examples/Translate.hsd). Use [C
     Example files are kept up-to-date with the latest version of [Hesiod](https://github.com/otto-link/Hesiod).
     If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).
 
-  
+

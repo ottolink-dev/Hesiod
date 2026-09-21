@@ -1,6 +1,8 @@
 /* Copyright (c) 2023 Otto Link. Distributed under the terms of the GNU General
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
+#include "meta/metadata/keys.hpp"
+
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/attributes.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
@@ -13,7 +15,7 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 constexpr const char *P_BACKGROUND = "background";
-constexpr const char *P_OUT        = "out";
+constexpr const char *P_OUT        = "output";
 
 void setup_brush_node(BaseNode &node)
 {
@@ -24,7 +26,12 @@ void setup_brush_node(BaseNode &node)
   node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_OUT, CONFIG(node));
 
   // attribute(s)
-  add_array(node, "hmap", "HeightMap");
+  // Categorised so the industrial panel gives the canvas its own section
+  // rather than dropping it into the node's root group.
+  auto &paint = add_array(node, "hmap", "HeightMap");
+  paint.metadata()
+      .try_add(std::string(meta::keys::ui::category), std::string("Brush"))
+      ->value() = "Brush";
 
   setup_post_process_heightmap_attributes(node,
                                           {.add_mix = true, .remap_active_state = true});

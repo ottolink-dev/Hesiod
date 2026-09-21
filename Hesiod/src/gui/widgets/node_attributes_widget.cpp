@@ -2,25 +2,62 @@
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
 #include <fstream>
+#include <regex>
 
+#include <QAction>
+#include <QApplication>
 #include <QDesktopServices>
 #include <QFileDialog>
 #include <QLayout>
+#include <QMenu>
 #include <QStackedWidget>
 #include <QStyle>
 #include <QToolButton>
 
 #include "meta_qt/container_group_widget.hpp"
+#include "meta_qt/ui/design_registry.hpp"
+#include "meta_qt/ui/theme.hpp"
 #include "meta_qt/widgets/collapsible_section.hpp"
 
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/widgets/documentation_popup.hpp"
 #include "hesiod/gui/widgets/node_attributes_widget.hpp"
+#include "hesiod/gui/widgets/properties_panel_design.hpp"
+#include "hesiod/gui/widgets/properties_panel_header.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 
 namespace hesiod
 {
+
+namespace
+{
+
+/** @brief True when any attribute anywhere in the group declares a ui.category.
+ *
+ * A node that builds its own sections does not want a root one wrapped around
+ * them. Every container is checked, not just the current one, because the root
+ * category is decided once for the whole group: reading only the current
+ * container meant switching to a container whose attributes are all
+ * uncategorised put a second card around the sections of the others.
+ */
+bool has_categorised_attributes(BaseNode &node)
+{
+  for (const auto &[name, p_container] : node.get_meta_group().containers())
+  {
+    if (!p_container)
+      continue;
+
+    for (const auto &key : p_container->insertion_order())
+      if (const auto *p_attr = p_container->find(key))
+        if (!meta::common::category(*p_attr).empty())
+          return true;
+  }
+
+  return false;
+}
+
+} // namespace
 
 NodeAttributesWidget::NodeAttributesWidget(std::weak_ptr<GraphNode>  p_graph_node,
                                            const std::string        &node_id,
@@ -44,45 +81,103 @@ QWidget *NodeAttributesWidget::create_toolbar()
   QWidget     *toolbar = new QWidget(this);
   QHBoxLayout *layout = new QHBoxLayout(toolbar);
   layout->setContentsMargins(0, 0, 0, 0);
+  const PropertiesPanelDesign &panel = properties_panel_design();
+  if (panel.has_own_chrome)
+  {
+    layout->setSpacing(2);
+    toolbar->setObjectName("PropertiesPanelActions");
+    toolbar->setStyleSheet(properties_action_style(*panel.theme));
+    toolbar->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+  }
 
-  auto make_button = [&](const QIcon &icon, const QString &tooltip)
+  // Every entry is a QAction rather than a bare button, because the same
+  // handful of them now appear in two places: three as buttons on the bar and
+  // the rest as rows in the overflow menu. An action carries its own icon and
+  // label, so a menu row and a button tooltip cannot drift apart, and each
+  // behaviour is still connected exactly once.
+  auto make_action = [&](const QIcon &icon, const QString &text)
+  { return new QAction(icon, text, toolbar); };
+
+  auto *update_act = make_action(HSD_ICON("refresh"), "Force Update");
+  auto *reset_act = make_action(HSD_ICON("settings_backup_restore"), "Reset Settings");
+  auto *help_act = make_action(HSD_ICON("help"), "Help");
+  auto *info_act = make_action(HSD_ICON("info"), "Node Information");
+  auto *bckp_act = make_action(HSD_ICON("bookmark"), "Backup State");
+  auto *revert_act = make_action(HSD_ICON("u_turn_left"), "Revert State");
+  auto *load_act = make_action(HSD_ICON("file_open"), "Load Preset");
+  auto *save_act = make_action(HSD_ICON("save"), "Save Preset");
+  auto *doc_act = make_action(HSD_ICON("link"), "Online Documentation");
+
+  // Visible on the bar: the three that get reached while actually working on a
+  // node. Nine unlabelled icons of equal weight gave no clue which of them a
+  // user wants most of the time, and re-running the node is not the same kind
+  // of thing as exporting a preset to disk.
+  for (auto *action : {update_act, reset_act, help_act})
   {
     QToolButton *btn = new QToolButton;
-    btn->setToolTip(tooltip);
-    btn->setIcon(icon);
-    // btn->setStyleSheet("border: 0px;");
-    return btn;
-  };
-
-  auto *update_btn = make_button(HSD_ICON("refresh"), "Force Update");
-  auto *info_btn = make_button(HSD_ICON("info"), "Node Information");
-  auto *bckp_btn = make_button(HSD_ICON("bookmark"), "Backup State");
-  auto *revert_btn = make_button(HSD_ICON("u_turn_left"), "Revert State");
-  auto *load_btn = make_button(HSD_ICON("file_open"), "Load Preset");
-  auto *save_btn = make_button(HSD_ICON("save"), "Save Preset");
-  auto *reset_btn = make_button(HSD_ICON("settings_backup_restore"), "Reset Settings");
-  auto *help_btn = make_button(HSD_ICON("help"), "Help!");
-  auto *doc_btn = make_button(HSD_ICON("link"), "Online Documentation");
-
-  for (auto *btn : {update_btn,
-                    info_btn,
-                    bckp_btn,
-                    revert_btn,
-                    load_btn,
-                    save_btn,
-                    reset_btn,
-                    help_btn,
-                    doc_btn})
+    btn->setDefaultAction(action);
     layout->addWidget(btn);
+  }
 
-  // layout->addStretch();
+  if (!panel.has_own_chrome)
+    layout->addStretch();
+
+  // Everything else, by name. These are the occasional ones, and a menu row
+  // spelling out "Backup State" is easier to find than a bookmark glyph the
+  // user has to hover to identify.
+  auto *overflow_btn = new QToolButton;
+  overflow_btn->setIcon(HSD_ICON("more_horiz"));
+  overflow_btn->setToolTip("More Actions");
+  overflow_btn->setAccessibleName("More Actions");
+  overflow_btn->setPopupMode(QToolButton::InstantPopup);
+
+  auto *overflow_menu = new QMenu(overflow_btn);
+  overflow_menu->addAction(info_act);
+  overflow_menu->addSeparator();
+  overflow_menu->addAction(bckp_act);
+  overflow_menu->addAction(revert_act);
+  overflow_menu->addSeparator();
+  overflow_menu->addAction(load_act);
+  overflow_menu->addAction(save_act);
+  overflow_menu->addSeparator();
+  overflow_menu->addAction(doc_act);
+
+  if (panel.has_own_chrome)
+  {
+    const auto &theme = *panel.theme;
+    overflow_menu->setWindowFlag(Qt::NoDropShadowWindowHint);
+    overflow_menu->setFont(meta::qt::ui_font(12));
+    overflow_menu->setStyleSheet(
+        QString("QMenu { background: %1; color: %2; border: 1px solid %3;"
+                " border-radius: 8px; padding: 6px; }"
+                "QMenu::item { padding: 7px 18px 7px 10px; border-radius: 4px; }"
+                "QMenu::item:selected { background: %4; }"
+                "QMenu::separator { height: 1px; background: %3; margin: 5px 8px; }")
+            .arg(theme.bar.name(),
+                 theme.ink_primary.name(),
+                 theme.field_border.name(),
+                 theme.section_header_hover.name()));
+  }
+
+  overflow_btn->setMenu(overflow_menu);
+  layout->addWidget(overflow_btn);
+  if (panel.has_own_chrome)
+    for (auto *button : toolbar->findChildren<QToolButton *>())
+    {
+      button->setFixedSize(28, 28);
+      button->setIconSize(QSize(16, 16));
+      button->setCursor(Qt::PointingHandCursor);
+      if (button->defaultAction())
+        button->setAccessibleName(button->defaultAction()->text());
+    }
 
   // --- connections
 
   // use node id + graph_node instead of the node pointer for safety
   // (no lifetime warranty on p_node)
-  this->connect(update_btn,
-                &QToolButton::pressed,
+  this->connect(update_act,
+                &QAction::triggered,
+                this,
                 [this]()
                 {
                   auto gno = this->p_graph_node.lock();
@@ -92,8 +187,9 @@ QWidget *NodeAttributesWidget::create_toolbar()
                   gno->update(this->node_id);
                 });
 
-  this->connect(info_btn,
-                &QToolButton::pressed,
+  this->connect(info_act,
+                &QAction::triggered,
+                this,
                 [this]()
                 {
                   auto gno = this->p_graph_node.lock();
@@ -117,16 +213,18 @@ QWidget *NodeAttributesWidget::create_toolbar()
     return &p_node->get_meta_group().current();
   };
 
-  this->connect(bckp_btn,
-                &QToolButton::pressed,
+  this->connect(bckp_act,
+                &QAction::triggered,
+                this,
                 [this, meta_container]()
                 {
                   if (auto *c = meta_container())
                     c->snapshot_manager().save("user_state", c->json_to());
                 });
 
-  this->connect(revert_btn,
-                &QToolButton::pressed,
+  this->connect(revert_act,
+                &QAction::triggered,
+                this,
                 [this, meta_container]()
                 {
                   if (auto *c = meta_container())
@@ -141,8 +239,9 @@ QWidget *NodeAttributesWidget::create_toolbar()
                   }
                 });
 
-  this->connect(load_btn,
-                &QToolButton::pressed,
+  this->connect(load_act,
+                &QAction::triggered,
+                this,
                 [this, meta_container]()
                 {
                   auto *c = meta_container();
@@ -186,8 +285,9 @@ QWidget *NodeAttributesWidget::create_toolbar()
                   }
                 });
 
-  this->connect(save_btn,
-                &QToolButton::pressed,
+  this->connect(save_act,
+                &QAction::triggered,
+                this,
                 [this, meta_container]()
                 {
                   auto *c = meta_container();
@@ -214,8 +314,9 @@ QWidget *NodeAttributesWidget::create_toolbar()
                   }
                 });
 
-  this->connect(reset_btn,
-                &QToolButton::pressed,
+  this->connect(reset_act,
+                &QAction::triggered,
+                this,
                 [this, meta_container]()
                 {
                   auto gno = this->p_graph_node.lock();
@@ -234,8 +335,9 @@ QWidget *NodeAttributesWidget::create_toolbar()
                   }
                 });
 
-  this->connect(help_btn,
-                &QToolButton::pressed,
+  this->connect(help_act,
+                &QAction::triggered,
+                this,
                 [this]()
                 {
                   auto gno = this->p_graph_node.lock();
@@ -253,8 +355,9 @@ QWidget *NodeAttributesWidget::create_toolbar()
                 });
 
   this->connect(
-      doc_btn,
-      &QToolButton::pressed,
+      doc_act,
+      &QAction::triggered,
+      this,
       [this]()
       {
         auto gno = this->p_graph_node.lock();
@@ -316,9 +419,52 @@ void NodeAttributesWidget::setup_layout()
 
   // --- Meta ContainerGroupWidget
 
+  // Registers the designs on first call and validates the configured name.
+
+  const PropertiesPanelDesign &panel = properties_panel_design();
+
+  meta::qt::RowContext row_ctx;
+  row_ctx.theme = panel.theme;
+
+  // Only `this` is captured. The defaults live on the node, so reading them
+  // through the live node keeps the lookup correct after the node switches
+  // container: capturing the container name at build time meant a CoherentNoise
+  // switched to Ridged still resolved its defaults against the fbm container,
+  // and nothing ever showed as modified. It also avoids copying the whole
+  // initial state into the closure, which on a Brush node is a heightmap.
+  row_ctx.default_value = [this](const std::string &key) -> std::any
+  {
+    auto gno = this->p_graph_node.lock();
+    if (!gno)
+      return {};
+
+    BaseNode *p_current = gno->get_node_ref_by_id<BaseNode>(this->node_id);
+    if (!p_current)
+      return {};
+
+    const std::string container_name = p_current->get_meta_group()
+                                           .current_container_name()
+                                           .value_or(std::string{});
+
+    return p_current->get_initial_default(container_name, key);
+  };
+
   auto options = meta::qt::ContainerRenderOptions{
+      .design = panel.design,
+      .row_context = row_ctx,
       .category_policy = meta::qt::CategoryPolicy::CP_MERGED,
-      .root_category_name = std::string{}};
+      // Uncategorised attributes would otherwise sit bare under the toolbar
+      // with no card behind them, which on a node with a single parameter looks
+      // like an unfinished panel rather than a small one.
+      //
+      // Only when the node has no categories of its own, though: adding a root
+      // section to a node that already has some wraps every real section in a
+      // second card, which reads as nested boxes rather than grouping.
+      .root_category_name = (panel.has_own_chrome && !has_categorised_attributes(*p_node))
+                                ? std::string{"Parameters"}
+                                : std::string{},
+      .collapse_regex = std::regex(
+          "Post-Process.*|Default Noise|Default Mask Definition")};
 
   this->meta_widget = meta::qt::render(p_node->get_meta_group(),
                                        options,
@@ -340,8 +486,7 @@ void NodeAttributesWidget::setup_layout()
     }
   }
 
-  for (auto *section :
-       this->meta_widget->findChildren<meta::qt::CollapsibleSection *>())
+  for (auto *section : this->meta_widget->findChildren<meta::qt::CollapsibleSection *>())
   {
     this->connect(section,
                   &meta::qt::CollapsibleSection::expanded_state_changed,

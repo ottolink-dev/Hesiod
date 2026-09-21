@@ -17,10 +17,6 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-// -----------------------------------------------------------------------------
-// Ports & Attributes
-// -----------------------------------------------------------------------------
-
 constexpr const char *P_PATH = "path";
 constexpr const char *P_IN   = "input";
 
@@ -79,8 +75,8 @@ void compute_find_cut_path_node(BaseNode &node)
   // --- Params
 
   // clang-format off
-  const auto start                 = hmap::DomainBoundary(node.val<int>(A_START));
-  const auto end                   = hmap::DomainBoundary(node.val<int>(A_END));
+  const auto start                 = node.val_enum<hmap::DomainBoundary>(A_START);
+  const auto end                   = node.val_enum<hmap::DomainBoundary>(A_END);
   const auto seed                  = node.val<int>(A_SEED);
   const auto offset_ratio          = node.val<float>(A_OFFSET_RATIO);
   const auto steps                 = node.val<int>(A_STEPS);
@@ -149,8 +145,8 @@ void compute_find_cut_path_node(BaseNode &node)
 
 //     // clang-format off
 //     return P{
-//       .start = hmap::DomainBoundary(node.val<int>(A_START)),
-//       .end = hmap::DomainBoundary(node.val<int>(A_END)),
+//       .start = node.val_enum<hmap::DomainBoundary>(A_START),
+//       .end = node.val_enum<hmap::DomainBoundary>(A_END),
 //       .seed = node.val<int>(A_SEED),
 //       .offset_ratio = node.val<float>(A_OFFSET_RATIO),
 //       .steps = node.val<int>(A_STEPS),

@@ -16,10 +16,6 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-// -----------------------------------------------------------------------------
-// Ports & Attributes
-// -----------------------------------------------------------------------------
-
 constexpr const char *P_IN         = "input";
 constexpr const char *P_MASK       = "mask";
 constexpr const char *P_OUT        = "output";
@@ -80,12 +76,11 @@ void compute_deposition_fill_holes_node(BaseNode &node)
   // --- Params
 
   // clang-format off
-  const auto radius     = node.val<float>(A_RADIUS);
   const auto strength   = node.val<float>(A_STRENGTH);
   const auto iterations = node.val<int>(A_ITERATIONS);
   // clang-format on
 
-  const int ir = std::max(1, int(radius * p_out->shape.x));
+  const int ir = node.val_pixel_radius(A_RADIUS);
 
   // --- Prepare mask
 

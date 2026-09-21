@@ -1,0 +1,60 @@
+/* Copyright (c) 2025 Otto Link. Distributed under the terms of the GNU General Public
+   License. The full license is in the file LICENSE, distributed with this software. */
+#pragma once
+#include <memory>
+
+#include "hesiod/gui/widgets/node_library_widget.hpp"
+#include "hesiod/gui/widgets/node_palette_sidebar.hpp"
+#include "hesiod/model/nodes/base_node.hpp"
+
+class QToolButton;
+
+namespace hesiod
+{
+
+class GraphNode; // forward
+class GraphNodeWidget;
+class NodeSettingsWidget;
+class Viewer3D;
+
+// =====================================
+// GraphWorkspaceWidget
+// =====================================
+class GraphWorkspaceWidget : public QWidget
+{
+  Q_OBJECT
+
+public:
+  // --- Constructor and Setup ---
+  GraphWorkspaceWidget(std::weak_ptr<GraphNode> p_graph_node, QWidget *parent = nullptr);
+
+  // --- Serialization ---
+  void           json_from(nlohmann::json const &json);
+  nlohmann::json json_to() const;
+
+  GraphNodeWidget    *get_graph_node_widget() const;
+  NodeSettingsWidget *get_node_settings_widget() const;
+  Viewer3D           *get_viewer() const;
+  void                set_node_library_visible(bool new_state);
+
+signals:
+  void node_library_toggle_requested();
+
+private:
+  void setup_connections();
+  void setup_layout();
+
+  std::weak_ptr<GraphNode> p_graph_node;
+  GraphNodeWidget         *graph_node_widget = nullptr;
+  NodeSettingsWidget      *node_settings_widget = nullptr;
+
+  // exactly one of these is built, chosen by
+  // interface.enable_node_palette_sidebar; the other stays null
+  NodeLibraryWidget  *node_library_widget = nullptr;
+  NodePaletteSidebar *node_palette_sidebar = nullptr;
+
+  Viewer3D    *viewer = nullptr;
+  QToolButton *node_library_toggle_button = nullptr;
+};
+
+} // namespace hesiod

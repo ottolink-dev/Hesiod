@@ -48,38 +48,47 @@ void setup_strata_node(BaseNode &node)
 {
   Logger::log()->trace("setup node {}", node.get_label());
 
-  // port(s)
+  // --- Ports
+
   node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_IN);
   node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_MASK);
   node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_OUT, CONFIG(node));
 
-  // attribute(s)
-  glm::vec2 kw_default;
-  add_float(node, A_ANGLE, "angle", 0.f, -180.f, 180.f);
-  add_float(node, A_SLOPE, "slope", 2.f, 0.01f, 10.f);
-  add_float(node, A_KZ, "kz", 1.f, 0.f, FLT_MAX);
-  add_float(node, A_GAMMA, "gamma", 0.5f, 0.01f, 2.f);
+  // --- Attributes
+
+  // clang-format off
+  node.set_current_category("Strata");
+  add_angle(node, A_ANGLE, "Angle", 0.f, -180.f, 180.f);
+  add_float(node, A_SLOPE, "Slope", 2.f, 0.01f, 10.f);
+  add_float(node, A_KZ, "Number of Strata", 1.f, 0.f, FLT_MAX);
+  add_float(node, A_GAMMA, "Profile Gamma", 0.5f, 0.01f, 2.f);
+  add_bool(node, A_LINEAR_GAMMA, "Use Linear Profile", true);
   add_seed(node, A_SEED, "Seed");
-  add_bool(node, A_LINEAR_GAMMA, "linear_gamma", true);
+
+  node.set_current_category("FBM Layers");
   add_int(node, A_OCTAVES, "Octaves", 4, 0, 32);
   add_float(node, A_LACUNARITY, "Lacunarity", 2.f, 0.01f, 4.f);
-  add_float(node, A_GAMMA_NOISE_RATIO, "gamma_noise_ratio", 0.5f, 0.f, 1.f);
-  add_float(node, A_NOISE_AMP, "noise_amp", 0.4f, 0.f, 1.f);
 
-  kw_default = {4.f, 4.f};
-  add_wavenumber(node, A_NOISE_KW, "Spatial Frequency", kw_default, 0.f, 32.f, true);
+  node.set_current_category("Noise");
+  add_wavenumber(node, A_NOISE_KW, "Spatial Frequency", glm::vec2(4.f, 4.f), 0.f, 32.f, true);
+  add_float(node, A_NOISE_AMP, "Noise Amplitude", 0.4f, 0.f, 1.f);
+  add_float(node, A_GAMMA_NOISE_RATIO, "Gamma Noise Influence", 0.5f, 0.f, 1.f);
 
-  add_bool(node, A_ENABLE_RIDGE_NOISE, "enable_ridge_noise", true);
+  node.set_current_category("Ridge Noise");
+  add_bool(node, A_ENABLE_RIDGE_NOISE, "Enable Ridge Noise", true);
+  add_wavenumber(node, A_RIDGE_NOISE_KW, "Ridge Spatial Frequency", glm::vec2(4.f, 1.5f), 0.f, 32.f, false);
+  add_float(node, A_RIDGE_ANGLE_SHIFT, "Ridge Angle Shift", 45.f, -180.f, 180.f, "{:.1f}°");
+  add_float(node, A_RIDGE_NOISE_AMP, "Ridge Noise Amplitude", 0.4f, 0.f, 1.f);
+  add_float(node, A_RIDGE_CLAMP_VMIN, "Ridge Clamp Min", 0.5f, 0.f, 1.f);
+  add_float(node, A_RIDGE_REMAP_VMIN, "Ridge Remap Min", 0.6f, 0.f, 1.f);
 
-  kw_default = {4.f, 1.5f};
-  add_wavenumber(node, A_RIDGE_NOISE_KW, "ridge_noise_kw", kw_default, 0.f, 32.f, false);
-  add_float(node, A_RIDGE_ANGLE_SHIFT, "ridge_angle_shift", 45.f, -180.f, 180.f);
-  add_float(node, A_RIDGE_NOISE_AMP, "ridge_noise_amp", 0.4f, 0.f, 1.f);
-  add_float(node, A_RIDGE_CLAMP_VMIN, "ridge_clamp_vmin", 0.5f, 0.f, 1.f);
-  add_float(node, A_RIDGE_REMAP_VMIN, "ridge_remap_vmin", 0.6f, 0.f, 1.f);
-  add_bool(node, A_APPLY_ELEVATION_MASK, "apply_elevation_mask", true);
-  add_bool(node, A_APPLY_RIDGE_MASK, "apply_ridge_mask", true);
-  add_float(node, A_MASK_GAMMA, "mask_gamma", 1.f, 0.01f, 4.f);
+  node.set_current_category("Masking");
+  add_bool(node, A_APPLY_ELEVATION_MASK, "Apply Elevation Mask", true);
+  add_bool(node, A_APPLY_RIDGE_MASK, "Apply Ridge Mask", true);
+  add_float(node, A_MASK_GAMMA, "Mask Gamma", 1.f, 0.01f, 4.f);
+  // clang-format on
+
+  // --- Attribute(s) order
 
   setup_pre_process_mask_attributes(node);
   setup_post_process_heightmap_attributes(node,
@@ -126,9 +135,9 @@ void compute_strata_node(BaseNode &node)
                             node.val<float>(A_LACUNARITY),
                             node.val<float>(A_GAMMA_NOISE_RATIO),
                             node.val<float>(A_NOISE_AMP),
-                            node.val<glm::vec2>(A_NOISE_KW),
+                            node.val_wavenumber(A_NOISE_KW),
                             node.val<bool>(A_ENABLE_RIDGE_NOISE),
-                            node.val<glm::vec2>(A_RIDGE_NOISE_KW),
+                            node.val_wavenumber(A_RIDGE_NOISE_KW),
                             node.val<float>(A_RIDGE_ANGLE_SHIFT),
                             node.val<float>(A_RIDGE_NOISE_AMP),
                             node.val<float>(A_RIDGE_CLAMP_VMIN),

@@ -101,7 +101,7 @@ void compute_polygon_field_fbm_node(BaseNode &node)
         glm::vec2 jitter(node.val<float>(A_JITTER_X), node.val<float>(A_JITTER_Y));
 
         *pa_out = hmap::gpu::polygon_field_fbm(region.shape,
-                                               node.val<glm::vec2>(A_KW),
+                                               node.val_wavenumber(A_KW),
                                                node.val<int>(A_SEED),
                                                node.val<float>(A_RMIN),
                                                node.val<float>(A_RMAX),

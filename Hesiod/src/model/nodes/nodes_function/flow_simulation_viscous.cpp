@@ -18,24 +18,21 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-// -----------------------------------------------------------------------------
-// Ports & Attributes
-// -----------------------------------------------------------------------------
-
 constexpr const char *P_ELEVATION     = "elevation_in";
 constexpr const char *P_DEPTH_MAP     = "depth_map";
 constexpr const char *P_DEPTH_IN      = "depth_in";
 constexpr const char *P_ELEVATION_OUT = "elevation";
 constexpr const char *P_DEPTH_OUT     = "depth";
 
-constexpr const char *A_INITIAL_DEPTH = "initial_depth";
-constexpr const char *A_DURATION      = "simulation_duration";
-constexpr const char *A_POWER         = "flow_power";
-constexpr const char *A_SOLVER_STRIDE = "solver_stride";
-constexpr const char *A_DMAP_TYPE     = "depth_map_type";
-constexpr const char *A_POST_FILTER   = "post_filter";
-constexpr const char *A_FILTER_RADIUS = "filter_radius";
-constexpr const char *A_SHIFT_TO_ZERO = "shift_to_zero";
+constexpr const char *A_INITIAL_DEPTH      = "initial_depth";
+constexpr const char *A_DURATION           = "simulation_duration";
+constexpr const char *A_POWER              = "flow_power";
+constexpr const char *A_OUTFLOW_BOUNDARIES = "outflow_boundaries";
+constexpr const char *A_SOLVER_STRIDE      = "solver_stride";
+constexpr const char *A_DMAP_TYPE          = "depth_map_type";
+constexpr const char *A_POST_FILTER        = "post_filter";
+constexpr const char *A_FILTER_RADIUS      = "filter_radius";
+constexpr const char *A_SHIFT_TO_ZERO      = "shift_to_zero";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -54,11 +51,17 @@ void setup_flow_simulation_viscous_node(BaseNode &node)
 
   // attribute(s)
   // clang-format off
+  node.set_current_category("Depth Setup");
   add_float(node, A_INITIAL_DEPTH, "Initial Material Depth", 0.1f, 0.01f, 0.5f, "{:.2e}", /* log */ true);
+  add_enum(node, A_DMAP_TYPE, "Predefined Depth Map", DefaultMapOptions::type_map());
+
+  node.set_current_category("Solver");
   add_float(node, A_DURATION, "Simulation Duration", 1.f, 0.f, FLT_MAX);
   add_float(node, A_POWER, "Flow Power", 2.5f, 1.f, 4.f);
+  add_bool(node, A_OUTFLOW_BOUNDARIES, "Outflow Boundaries", false);
   add_int(node, A_SOLVER_STRIDE, "Solver Iteration Stride", 8, 1, 32);
-  add_enum(node, A_DMAP_TYPE, "Predefined Depth Map", DefaultMapOptions::type_map());
+
+  node.set_current_category("Post-Filter");
   add_bool(node, A_POST_FILTER, "Enable Post Filtering", true);
   add_float(node, A_FILTER_RADIUS, "Filter Radius", 0.05f, 0.f, 0.2f);
   add_bool(node, A_SHIFT_TO_ZERO, "Rebase Depth to Zero", true);
@@ -83,54 +86,33 @@ void compute_flow_simulation_viscous_node(BaseNode &node)
   auto *p_z_out     = node.get_value_ref<hmap::VirtualArray>(P_ELEVATION_OUT);
   auto *p_depth_out = node.get_value_ref<hmap::VirtualArray>(P_DEPTH_OUT);
 
-  // --- Parameters wrapper
+  // --- Params
 
-  const auto params = [&node, p_depth_out]()
-  {
-    struct P
-    {
-      float initial_depth;
-      float power;
-      int   solver_stride;
-      int   dmap_type;
-      bool  post_filter;
-      bool  shift_to_zero;
-      //
-      int nx_strided;
-      int iterations;
-      int ir;
-    };
+  // clang-format off
+  const auto initial_depth      = node.val<float>(A_INITIAL_DEPTH);
+  const auto duration           = node.val<float>(A_DURATION);
+  const auto power              = node.val<float>(A_POWER);
+  const auto outflow_boundaries = node.val<bool>(A_OUTFLOW_BOUNDARIES);
+  const auto solver_stride      = node.val<int>(A_SOLVER_STRIDE);
+  const auto dmap_type          = node.val_enum<DefaultMapOptions::Type>(A_DMAP_TYPE);
+  const auto post_filter        = node.val<bool>(A_POST_FILTER);
+  const auto filter_radius      = node.val<float>(A_FILTER_RADIUS);
+  const auto shift_to_zero      = node.val<bool>(A_SHIFT_TO_ZERO);
+  // clang-format on
 
-    const int   nx         = p_depth_out->shape.x;
-    const int   stride     = node.val<int>(A_SOLVER_STRIDE);
-    const float radius     = node.val<float>(A_FILTER_RADIUS);
-    const float duration   = node.val<float>(A_DURATION);
-    const int   nx_strided = int(float(nx) / stride);
-    const int   iterations = int(duration * nx_strided);
-    const int   ir         = std::max(1, int(radius * nx));
+  // --- Compute mode
 
-    return P{.initial_depth = node.val<float>(A_INITIAL_DEPTH),
-             .power         = node.val<float>(A_POWER),
-             .solver_stride = stride,
-             .dmap_type     = node.val<int>(A_DMAP_TYPE),
-             .post_filter   = node.val<bool>(A_POST_FILTER),
-             .shift_to_zero = node.val<bool>(A_SHIFT_TO_ZERO),
-             //
-             .nx_strided = nx_strided,
-             .iterations = iterations,
-             .ir         = ir};
-  }();
-
-  // --- Adjust compute mode (stride)
-
-  // override compute mode (but keep storage mode)
   hmap::ComputeMode cm = node.cfg().cm_gpu;
-  cm.stride            = params.solver_stride;
+  cm.stride            = solver_stride;
+
+  const int nx         = p_depth_out->shape.x;
+  const int nx_strided = int(float(nx) / cm.stride);
+  const int iterations = int(duration * nx_strided);
 
   // --- Resolve depth map source
 
-  // may be overriden when tne snow depth is set as an input
-  float mat_depth_updated = params.initial_depth;
+  // may be overriden when the depth is set as an input
+  float mat_depth_updated = initial_depth;
 
   hmap::VirtualArray dmap(CONFIG(node));
 
@@ -142,7 +124,7 @@ void compute_flow_simulation_viscous_node(BaseNode &node)
   }
   else if (!p_depth_map)
   {
-    auto map_type = DefaultMapOptions::Type(params.dmap_type);
+    auto map_type = dmap_type;
     auto options  = DefaultMapOptions{.map_type = map_type};
 
     generate_map(node, p_depth_map, dmap, options);
@@ -164,8 +146,7 @@ void compute_flow_simulation_viscous_node(BaseNode &node)
   hmap::for_each_tile(
       {p_z, p_depth_map},
       {p_z_out, p_depth_out},
-      [&node, &params, dmin, dmax, mat_depth_updated](
-          std::vector<const hmap::Array *> p_arrays_in,
+      [&](std::vector<const hmap::Array *> p_arrays_in,
           std::vector<hmap::Array *>       p_arrays_out,
           const hmap::TileRegion &)
       {
@@ -178,11 +159,13 @@ void compute_flow_simulation_viscous_node(BaseNode &node)
         *pa_depth_out = hmap::gpu::flow_simulation_viscous(*pa_z,
                                                            mat_depth_updated,
                                                            depth_map_scaled,
-                                                           params.iterations,
-                                                           /* dt */ 1e-5f,
+                                                           iterations,
+                                                           /* dt */ -1.f,
                                                            /* dry_out_ratio */ 0.f,
                                                            /* viscosity */ 1.f,
-                                                           params.power);
+                                                           power,
+                                                           /* evap_rate */ 0.f,
+                                                           outflow_boundaries);
 
         *pa_z_out = *pa_z + *pa_depth_out;
       },
@@ -191,22 +174,22 @@ void compute_flow_simulation_viscous_node(BaseNode &node)
   // --- clean-up output
 
   // post-filter
-  if (params.post_filter)
+  if (post_filter)
   {
+    const int ir = std::max(1, int(filter_radius * nx));
 
     hmap::for_each_tile(
         {p_z, p_depth_out},
-        [&node, &params](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
+        [&](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
         {
           auto [pa_z, pa_depth_out] = unpack<2>(p_arrays);
-          hmap::gpu::water_depth_filter(*pa_depth_out, *pa_z, params.ir);
+          hmap::gpu::water_depth_filter(*pa_depth_out, *pa_z, ir);
         },
         node.cfg().cm_gpu);
   }
 
-  // force minimum snow depth to be actually "zero" (more
-  // convenient)
-  if (params.shift_to_zero)
+  // force minimum depth to be actually "zero" (more convenient)
+  if (shift_to_zero)
     p_depth_out->remap(0.f, p_depth_out->max(node.cfg().cm_cpu), node.cfg().cm_cpu);
 }
 

@@ -6,6 +6,8 @@
 
 #include "nlohmann/json.hpp"
 
+#include "hesiod/gui/node_palette_style.hpp"
+
 #define HSD_ICON(name)                                                                   \
   static_cast<hesiod::HesiodApplication *>(QCoreApplication::instance())                 \
       ->get_context()                                                                    \
@@ -63,7 +65,7 @@ struct AppSettings
 
   struct Global
   {
-    int         omp_num_threads = 8;
+    int         omp_num_threads = -1; // let CLWrapper decides
     std::string icon_path = "data/hesiod_icon.png";
     // empty = start with a blank project; set to a .hsd path to load that
     // file at startup instead
@@ -73,6 +75,11 @@ struct AppSettings
     std::string git_version_file = "data/git_version.txt";
     std::string ready_made_path = "data/bootstraps";
     bool        save_backup_file = true;
+    // crash-recovery snapshots of the live project (see AutosaveManager);
+    // interval in seconds; 0 disables the timer (config file only — the
+    // settings window offers 10..3600)
+    bool        enable_autosave = true;
+    int         autosave_interval_s = 120;
     std::string online_help_url = "https://hesioddoc.readthedocs.io/en/latest/";
 
     // recently opened/saved project files, most recent first
@@ -88,7 +95,44 @@ struct AppSettings
     bool enable_heightmapper_widget = true;
     bool enable_tool_tips = true;
     bool enable_example_selector_at_startup = true;
+
+    // Node properties panel look. Both are names resolved at runtime, not
+    // enums, so registering a new design or colourway does not mean editing
+    // this struct.
+    //
+    // "industrial" and "stock" are peer designs, so selecting "stock" gives
+    // the unmodified Qt look -- that is how the two are A/B compared without a
+    // rebuild. A widget type "industrial" does not cover yet resolves through
+    // stock via the design's fallback chain. An unregistered name falls back
+    // to stock with a warning rather than drawing an empty panel.
+    //
+    // Applied at panel construction. Changing either takes effect on restart --
+    // see meta_qt/ui/theme.hpp for why live re-theming is deliberately not
+    // supported yet.
+    // "palette" derives every colour from the application palette, so the
+    // panel follows the app's colour scheme rather than imposing its own.
+    // "industrial-dark" pins the reference colourway instead.
+    std::string properties_panel_design = "industrial";
+    std::string properties_panel_theme = "palette";
+
+    // Application-wide interface scale. Handed to Qt as QT_SCALE_FACTOR before
+    // QApplication exists, so it multiplies into the per-monitor DPI factor
+    // instead of fighting it, and every logical metric follows. Applied at
+    // startup only -- see ui_scale.hpp for why, and for the validation rules.
+    double ui_scale = 1.0;
+
+    // Gaea-style category rail with hierarchical flyouts instead of the dense
+    // library tree. Off by default: the tree is the shipped sidebar and this is
+    // an alternative, not a replacement.
+    bool enable_node_palette_sidebar = true;
+
+    // Interface motion (rail cross-fades, menu/tooltip effects, tree expand
+    // animation). Turning it off settles running animations immediately.
+    bool enable_ui_animations = true;
   } interface;
+
+  /// Look of the node palette sidebar. Only read when it is enabled.
+  NodePaletteStyle node_palette;
 
   struct NodeEditor
   {
@@ -104,12 +148,14 @@ struct AppSettings
     float       auto_layout_dy = 384.f;
     bool        show_node_library_pan = true;
     bool        show_node_settings_pan = true;
+    int         node_settings_panel_width = 500;
     bool        show_node_toolbar_in_settings_pan = true;
     bool        show_viewer = true;
     int         max_bake_resolution = 8192 * 4;
     bool        disable_during_update = false;
     bool        enable_node_groups = true;
     bool        live_update = false;
+    float       port_radius = 7.f;
   } node_editor;
 
   struct Viewer
@@ -123,10 +169,10 @@ struct AppSettings
   {
     struct WindowGeometry
     {
-      int x = 0;
-      int y = 0;
+      int x = -1;
+      int y = -1;
       int w = 1024;
-      int h = 1024;
+      int h = 768;
     };
 
     WindowGeometry geom_main;

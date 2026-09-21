@@ -25,9 +25,11 @@ Export
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |16 bit|Bool|Decides whether the output is an 8 bit or a 16 bit PNG file.|
-|Add Project Name as Prefix|Bool|No description|
 |Auto Export on Node Update|Bool|Controls whether the output file is automatically written when the node is updated. Default is false. When set to true, the file is saved automatically on updates. If false, use the 'Force Reload' button on the node to manually trigger the export.|
+|Flip-X|Bool|No description|
+|Flip-Y|Bool|No description|
 |fname|Filename|Export file name.|
+|Filename Pattern|String|No description|
 
 ## Example
 
@@ -40,4 +42,4 @@ Corresponding Hesiod file: [ExportTexture.hsd](../../examples/ExportTexture.hsd)
     Example files are kept up-to-date with the latest version of [Hesiod](https://github.com/otto-link/Hesiod).
     If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).
 
-  
+

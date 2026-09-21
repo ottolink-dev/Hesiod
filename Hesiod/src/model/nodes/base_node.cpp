@@ -76,7 +76,7 @@ const GraphConfig &BaseNode::cfg() const
   if (!ptr)
   {
     Logger::log()->critical("BaseNode::get_category: Config ptr is nullptr, node: {}/{}",
-                            this->get_caption(),
+                            this->get_label(),
                             this->get_id());
     throw std::runtime_error("Config ptr is nullptr.");
   }
@@ -103,6 +103,7 @@ void BaseNode::compute()
   }
   catch (const std::bad_alloc &)
   {
+    this->runtime_info.error_count++;
     Logger::log()->critical("BaseNode::compute: out of memory computing node '{}' "
                             "({}); abandoning this graph update - lower the "
                             "resolution and try again",
@@ -112,6 +113,7 @@ void BaseNode::compute()
   }
   catch (const std::exception &e)
   {
+    this->runtime_info.error_count++;
     Logger::log()->critical("BaseNode::compute: node '{}' ({}) failed: {}",
                             this->get_id(),
                             this->get_node_type(),
@@ -119,6 +121,7 @@ void BaseNode::compute()
   }
   catch (...)
   {
+    this->runtime_info.error_count++;
     Logger::log()->critical("BaseNode::compute: node '{}' ({}) failed with an "
                             "unknown exception",
                             this->get_id(),
@@ -194,7 +197,7 @@ std::shared_ptr<const GraphConfig> BaseNode::get_config_ref() const
   if (!ptr)
   {
     Logger::log()->critical("BaseNode::get_category: Config ptr is nullptr, node: {}/{}",
-                            this->get_caption(),
+                            this->get_label(),
                             this->get_id());
     throw std::runtime_error("Config ptr is nullptr.");
   }
@@ -388,6 +391,13 @@ std::string BaseNode::get_documentation_short_html() const
   return html;
 }
 
+std::string BaseNode::get_comment() const { return this->comment; }
+
+gnode::PortType BaseNode::get_port_type(int port_index) const
+{
+  return gnode::Node::get_port_type(this->get_port_label(port_index));
+}
+
 std::string BaseNode::get_id() const { return gnode::Node::get_id(); }
 
 float BaseNode::get_memory_usage() const
@@ -401,7 +411,7 @@ float BaseNode::get_memory_usage() const
   for (int k = 0; k < this->get_nports(); k++)
   {
     // only outputs carry data
-    if (this->get_port_type(k) == gngui::PortType::IN)
+    if (this->get_port_type(k) == gnode::PortType::IN)
       continue;
 
     if (this->get_data_type(k) == typeid(hmap::VirtualArray).name())
@@ -463,8 +473,44 @@ void BaseNode::finalize_attributes()
 {
   auto &group = this->get_meta_group();
 
-  // initial state for toolbar Reset
+  // initial state for toolbar Reset and sync common attributes accros
+  // group containers
   this->initial_meta_state = group.json_to(meta::SerializationMode::state);
+
+  // The same snapshot kept as live values. The panel needs defaults to decide
+  // what is modified, and reading them back out of the json only ever worked
+  // for the types json round-trips cleanly, which silently left every other
+  // row looking untouched.
+  this->initial_meta_defaults.clear();
+
+  for (const auto &[container_name, p_container] : group.containers())
+  {
+    if (!p_container)
+      continue;
+
+    auto &defaults = this->initial_meta_defaults[container_name];
+
+    for (const auto &key : p_container->insertion_order())
+      if (const auto *p_attr = p_container->find(key))
+        defaults[key] = p_attr->to_any();
+  }
+
+  group.synchronize_all();
+  group.set_current_to_first();
+}
+
+std::any BaseNode::get_initial_default(const std::string &container_name,
+                                       const std::string &key) const
+{
+  auto container_it = this->initial_meta_defaults.find(container_name);
+  if (container_it == this->initial_meta_defaults.end())
+    return {};
+
+  auto key_it = container_it->second.find(key);
+  if (key_it == container_it->second.end())
+    return {};
+
+  return key_it->second;
 }
 
 void BaseNode::json_from(nlohmann::json const &json)
@@ -532,9 +578,9 @@ nlohmann::json BaseNode::node_parameters_to_json() const
     for (int k = 0; k < this->get_nports(); k++)
     {
       nlohmann::json    port_info;
-      const std::string caption = this->get_port_caption(k);
+      const std::string caption = this->get_port_label(k);
 
-      port_info["type"] = (this->get_port_type(k) == gngui::PortType::IN) ? "input"
+      port_info["type"] = (this->get_port_type(k) == gnode::PortType::IN) ? "input"
                                                                           : "output";
       port_info["caption"] = caption;
       port_info["data_type"] = map_type_name(this->get_data_type(k));
@@ -546,25 +592,57 @@ nlohmann::json BaseNode::node_parameters_to_json() const
     }
     json["ports"] = ports_json;
 
-    // Attribute information
+    // Attribute information: walk every container of the meta group, not just
+    // the current one, so grouped nodes document the parameters of all their
+    // groups. "parameters" stays a flat key->info map (tooltip lookups address
+    // it by key); "parameter_groups" preserves the group structure and order.
     nlohmann::json params_json;
+    nlohmann::json groups_json = nlohmann::json::array();
 
-    for (const auto &key : this->get_meta_group().current().insertion_order())
+    const auto &group = this->get_meta_group();
+
+    for (const auto &group_name : group.insertion_order())
     {
-      const auto *p = this->get_meta_group().current().find(key);
-      if (!p)
+      const auto *container = group.find(group_name);
+      if (!container)
         continue;
-      nlohmann::json param_info;
-      param_info["key"] = key;
-      const std::string *lbl = p->metadata().try_value<std::string>(
-          meta::keys::ui::label);
-      param_info["label"] = lbl ? *lbl : key;
-      auto json_ptr = nlohmann::json::json_pointer("/parameters/" + key + "/description");
-      param_info["description"] = this->documentation.value(json_ptr, "No description");
-      params_json[key] = param_info;
+
+      nlohmann::json group_info;
+      group_info["name"] = group_name;
+      std::vector<std::string> group_keys;
+
+      for (const auto &key : container->insertion_order())
+      {
+        const auto *p = container->find(key);
+        if (!p)
+          continue;
+
+        group_keys.push_back(key);
+
+        // an attribute shared between groups is documented once
+        if (params_json.contains(key))
+          continue;
+
+        nlohmann::json param_info;
+        param_info["key"] = key;
+        const std::string *lbl = p->metadata().try_value<std::string>(
+            meta::keys::ui::label);
+        param_info["label"] = lbl ? *lbl : key;
+        const std::string *doc_type = p->metadata().try_value<std::string>(
+            ATTR_DOC_TYPE_KEY);
+        param_info["type"] = doc_type ? *doc_type : "";
+        auto json_ptr = nlohmann::json::json_pointer("/parameters/" + key +
+                                                     "/description");
+        param_info["description"] = this->documentation.value(json_ptr, "No description");
+        params_json[key] = param_info;
+      }
+
+      group_info["keys"] = group_keys;
+      groups_json.push_back(group_info);
     }
 
     json["parameters"] = params_json;
+    json["parameter_groups"] = groups_json;
   }
   catch (const std::exception &e)
   {
@@ -579,14 +657,14 @@ nlohmann::json BaseNode::node_parameters_to_json() const
 void BaseNode::propagate_config_change()
 {
   Logger::log()->trace("BaseNode::propagate_config_change: node {}/{}",
-                       this->get_caption(),
+                       this->get_label(),
                        this->get_id());
 
   const GraphConfig &cfg = *this->get_config_ref();
 
   // go through the data and modify is needed (only outputs hold data)
   for (int k = 0; k < this->get_nports(); k++)
-    if (this->get_port_type(k) == gngui::PortType::OUT)
+    if (this->get_port_type(k) == gnode::PortType::OUT)
     {
       const std::string type = this->get_data_type(k);
 
@@ -677,39 +755,46 @@ void BaseNode::update_attributes_tool_tip()
 
   size_t width = 64;
 
-  for (const auto &key : this->get_meta_group().current().insertion_order())
+  for (const auto &[container_name, p_container] : this->get_meta_group().containers())
   {
-    auto *p = this->get_meta_group().current().find(key);
-    if (!p)
+    if (!p_container)
       continue;
 
-    const std::string *lbl = p->metadata().try_value<std::string>(meta::keys::ui::label);
-    std::string        label = lbl ? *lbl : key;
-
-    if (this->documentation.contains("parameters") &&
-        this->documentation["parameters"].contains(key))
+    for (const auto &key : p_container->insertion_order())
     {
-      std::string description = "<div><font size=\"+1\"><b>" +
-                                remove_trailing_char(label, ':') + "</font></b><br>";
+      auto *p = p_container->find(key);
+      if (!p)
+        continue;
 
-      description += "<font color='COLOR_TEXT_SECONDARY'>";
+      const std::string *lbl = p->metadata().try_value<std::string>(
+          meta::keys::ui::label);
+      std::string label = lbl ? *lbl : key;
 
-      replace_all(description,
-                  "COLOR_TEXT_SECONDARY",
-                  HSD_CTX.app_settings.colors.text_secondary.name().toStdString());
-
-      if (this->documentation["parameters"][key].contains("description"))
+      if (this->documentation.contains("parameters") &&
+          this->documentation["parameters"].contains(key))
       {
-        std::string base_desc = this->documentation["parameters"][key]["description"];
-        base_desc = wrap_text(base_desc, width);
-        description += base_desc;
+        std::string description = "<div><font size=\"+1\"><b>" +
+                                  remove_trailing_char(label, ':') + "</font></b><br>";
+
+        description += "<font color='COLOR_TEXT_SECONDARY'>";
+
+        replace_all(description,
+                    "COLOR_TEXT_SECONDARY",
+                    HSD_CTX.app_settings.colors.text_secondary.name().toStdString());
+
+        if (this->documentation["parameters"][key].contains("description"))
+        {
+          std::string base_desc = this->documentation["parameters"][key]["description"];
+          base_desc = wrap_text(base_desc, width);
+          description += base_desc;
+        }
+
+        description += "</div>";
+
+        p->metadata()
+            .try_add(std::string(meta::keys::ui::tooltip), std::string(description))
+            ->value() = description;
       }
-
-      description += "</div>";
-
-      p->metadata()
-          .try_add(std::string(meta::keys::ui::tooltip), std::string(description))
-          ->value() = description;
     }
   }
 }

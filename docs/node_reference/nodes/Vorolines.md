@@ -13,7 +13,7 @@ This function generates a Voronoi-like pattern based on the distance from each p
 ## Category
 
 
-Primitive/Coherent
+WIP/DEPRECATED
 ## Inputs
 
 |Name|Type|Description|
@@ -26,7 +26,7 @@ Primitive/Coherent
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
-|out|VirtualArray|No description|
+|output|VirtualArray|No description|
 
 ## Parameters
 
@@ -58,4 +58,4 @@ Corresponding Hesiod file: [Vorolines.hsd](../../examples/Vorolines.hsd). Use [C
     Example files are kept up-to-date with the latest version of [Hesiod](https://github.com/otto-link/Hesiod).
     If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).
 
-  
+

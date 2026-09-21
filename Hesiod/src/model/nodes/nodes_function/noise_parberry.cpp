@@ -71,7 +71,7 @@ void compute_noise_parberry_node(BaseNode &node)
         auto [pa_out, pa_dx, pa_dy, pa_ctrl] = unpack<4>(p_arrays);
 
         *pa_out = hmap::noise_parberry(region.shape,
-                                       node.val<glm::vec2>(A_KW),
+                                       node.val_wavenumber(A_KW),
                                        node.val<int>(A_SEED),
                                        node.val<int>(A_OCTAVES),
                                        node.val<float>(A_WEIGHT),

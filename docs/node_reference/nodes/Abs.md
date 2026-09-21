@@ -30,7 +30,7 @@ Math/Base
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
-|vshift|Float|Reference value for the zero-equivalent value of the absolute value.|
+|Vertical Shift|Float|Reference value for the zero-equivalent value of the absolute value.|
 
 ## Example
 
@@ -43,4 +43,4 @@ Corresponding Hesiod file: [Abs.hsd](../../examples/Abs.hsd). Use [Ctrl+I] in th
     Example files are kept up-to-date with the latest version of [Hesiod](https://github.com/otto-link/Hesiod).
     If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).
 
-  
+

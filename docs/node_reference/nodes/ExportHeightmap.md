@@ -24,11 +24,13 @@ Export
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
-|Add Project Name as Prefix|Bool|No description|
 |Auto Export on Node Update|Bool|Controls whether the output file is automatically written when the node is updated. Default is false. When set to true, the file is saved automatically on updates. If false, use the 'Force Reload' button on the node to manually trigger the export.|
+|Flip-X|Bool|No description|
+|Flip-Y|Bool|No description|
 |Filename|Filename|Export file name.|
 |Force Export Shape|Choice|No description|
 |File Format|Enumeration|Export format. Available values: png (16 bit), png (8 bit), raw (16 bit, Unity).|
+|Filename Pattern|String|No description|
 
 ## Example
 
@@ -41,4 +43,4 @@ Corresponding Hesiod file: [ExportHeightmap.hsd](../../examples/ExportHeightmap.
     Example files are kept up-to-date with the latest version of [Hesiod](https://github.com/otto-link/Hesiod).
     If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).
 
-  
+

@@ -17,10 +17,6 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-// -----------------------------------------------------------------------------
-// Ports & Attributes
-// -----------------------------------------------------------------------------
-
 constexpr const char *P_DR          = "dr";
 constexpr const char *P_DS          = "offset";
 constexpr const char *P_ENV         = "envelope";
@@ -117,11 +113,11 @@ void compute_rift_node(BaseNode &node)
   const auto axial_slope            =  node.val<float>(A_AXIAL_SLOPE);
   const auto depth                  = node.val<float>(A_DEPTH);
   const auto scale_with_depth       = node.val<bool>(A_SCALE_WITH_DEPTH);
-  const auto profile                = hmap::RadialProfile(node.val<int>(A_PROFILE));
+  const auto profile                = node.val_enum<hmap::RadialProfile>(A_PROFILE);
   const auto profile_param          = node.val<float>(A_PROFILE_PARAM);
   const auto bottom_extent          = node.val<float>(A_BOTTOM_EXTENT);
   const auto bottom_depth           = node.val<float>(A_BOTTOM_DEPTH);
-  const auto bottom_profile         = hmap::RadialProfile(node.val<int>(A_BOTTOM_PROFILE));
+  const auto bottom_profile         = node.val_enum<hmap::RadialProfile>(A_BOTTOM_PROFILE);
   const auto bottom_profile_param   = node.val<float>(A_BOTTOM_PROFILE_PARAM);
   const auto bottom_force_min_depth = node.val<bool>(A_BOTTOM_MIN_DEPTH); 
   const auto outer_slope            = node.val<float>(A_OUTER_SLOPE);

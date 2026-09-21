@@ -15,7 +15,7 @@ namespace hesiod
 // -----------------------------------------------------------------------------
 constexpr const char *P_CLOUD     = "cloud";
 constexpr const char *P_HEIGHTMAP = "heightmap";
-constexpr const char *P_OUT       = "out";
+constexpr const char *P_OUT       = "output";
 
 void setup_cloud_set_values_from_heightmap_node(BaseNode &node)
 {

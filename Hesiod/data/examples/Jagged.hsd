@@ -1,0 +1,1481 @@
+{
+    "Hesiod version": "v0.6.0",
+    "bake_config": {
+        "force_auto_export": true,
+        "force_distributed": true,
+        "force_maximum_fbm_octaves": false,
+        "nvariants": 0,
+        "rename_export_files": true,
+        "resolution": 1024
+    },
+    "comment": "",
+    "graph_manager": {
+        "export_param": {
+            "export_path": "",
+            "ids": [],
+            "overlap": 0.5,
+            "shape.x": 1024,
+            "shape.y": 1024,
+            "tiling.x": 4,
+            "tiling.y": 4
+        },
+        "graph_nodes": {
+            "graph": {
+                "id": "graph",
+                "id_count": 7,
+                "links": [
+                    {
+                        "node_id_from": "2",
+                        "node_id_to": "5",
+                        "port_id_from": "output",
+                        "port_id_to": "input"
+                    },
+                    {
+                        "node_id_from": "0",
+                        "node_id_to": "6",
+                        "port_id_from": "output",
+                        "port_id_to": "input"
+                    },
+                    {
+                        "node_id_from": "6",
+                        "node_id_to": "2",
+                        "port_id_from": "output",
+                        "port_id_to": "input"
+                    }
+                ],
+                "model_config": {
+                    "overlap": 0.5,
+                    "shape.x": 1024,
+                    "shape.y": 1024,
+                    "tiling.x": 4,
+                    "tiling.y": 4
+                },
+                "nodes": [
+                    {
+                        "comment": "",
+                        "containers": {
+                            "FBM": {
+                                "kw": {
+                                    "state": {
+                                        "state.locked_xy": {
+                                            "type": "bool",
+                                            "value": true
+                                        }
+                                    },
+                                    "value": {
+                                        "x": 4.0,
+                                        "y": 4.0
+                                    }
+                                },
+                                "lacunarity": {
+                                    "value": 2.0
+                                },
+                                "noise_type": {
+                                    "value": 4
+                                },
+                                "octaves": {
+                                    "value": 8
+                                },
+                                "periodic": {
+                                    "value": false
+                                },
+                                "persistence": {
+                                    "value": 0.5
+                                },
+                                "post_gain": {
+                                    "value": 1.0
+                                },
+                                "post_gamma": {
+                                    "value": 1.0
+                                },
+                                "post_inverse": {
+                                    "value": false
+                                },
+                                "post_remap": {
+                                    "state": {
+                                        "state.active": {
+                                            "type": "bool",
+                                            "value": true
+                                        },
+                                        "state.last_active_value": {
+                                            "type": "glm::vec2",
+                                            "value": {
+                                                "x": 0.0,
+                                                "y": 1.0
+                                            }
+                                        }
+                                    },
+                                    "value": {
+                                        "x": 0.0,
+                                        "y": 1.0
+                                    }
+                                },
+                                "post_saturate": {
+                                    "state": {
+                                        "state.active": {
+                                            "type": "bool",
+                                            "value": false
+                                        },
+                                        "state.last_active_value": {
+                                            "type": "glm::vec2",
+                                            "value": {
+                                                "x": 0.0,
+                                                "y": 1.0
+                                            }
+                                        }
+                                    },
+                                    "value": {
+                                        "x": 0.0,
+                                        "y": 1.0
+                                    }
+                                },
+                                "post_smoothing_radius": {
+                                    "value": 0.0
+                                },
+                                "seed": {
+                                    "value": 0
+                                },
+                                "state": {
+                                    "FBM Layers.is_expanded": {
+                                        "type": "bool",
+                                        "value": true
+                                    },
+                                    "Noise.is_expanded": {
+                                        "type": "bool",
+                                        "value": true
+                                    },
+                                    "Post-Processing.is_expanded": {
+                                        "type": "bool",
+                                        "value": false
+                                    }
+                                },
+                                "weight": {
+                                    "value": 0.699999988079071
+                                }
+                            },
+                            "IQ": {
+                                "gradient_scale": {
+                                    "value": 0.05000000074505806
+                                },
+                                "kw": {
+                                    "state": {
+                                        "state.locked_xy": {
+                                            "type": "bool",
+                                            "value": true
+                                        }
+                                    },
+                                    "value": {
+                                        "x": 4.0,
+                                        "y": 4.0
+                                    }
+                                },
+                                "lacunarity": {
+                                    "value": 2.0
+                                },
+                                "noise_type": {
+                                    "value": 4
+                                },
+                                "octaves": {
+                                    "value": 8
+                                },
+                                "persistence": {
+                                    "value": 0.5
+                                },
+                                "post_gain": {
+                                    "value": 1.0
+                                },
+                                "post_gamma": {
+                                    "value": 1.0
+                                },
+                                "post_inverse": {
+                                    "value": false
+                                },
+                                "post_remap": {
+                                    "state": {
+                                        "state.active": {
+                                            "type": "bool",
+                                            "value": true
+                                        },
+                                        "state.last_active_value": {
+                                            "type": "glm::vec2",
+                                            "value": {
+                                                "x": 0.0,
+                                                "y": 1.0
+                                            }
+                                        }
+                                    },
+                                    "value": {
+                                        "x": 0.0,
+                                        "y": 1.0
+                                    }
+                                },
+                                "post_saturate": {
+                                    "state": {
+                                        "state.active": {
+                                            "type": "bool",
+                                            "value": false
+                                        },
+                                        "state.last_active_value": {
+                                            "type": "glm::vec2",
+                                            "value": {
+                                                "x": 0.0,
+                                                "y": 1.0
+                                            }
+                                        }
+                                    },
+                                    "value": {
+                                        "x": 0.0,
+                                        "y": 1.0
+                                    }
+                                },
+                                "post_smoothing_radius": {
+                                    "value": 0.0
+                                },
+                                "seed": {
+                                    "value": 0
+                                },
+                                "state": {
+                                    "FBM Layers.is_expanded": {
+                                        "type": "bool",
+                                        "value": true
+                                    },
+                                    "Noise.is_expanded": {
+                                        "type": "bool",
+                                        "value": true
+                                    },
+                                    "Post-Processing.is_expanded": {
+                                        "type": "bool",
+                                        "value": false
+                                    }
+                                },
+                                "weight": {
+                                    "value": 0.699999988079071
+                                }
+                            },
+                            "Jordan": {
+                                "damp0": {
+                                    "value": 1.0
+                                },
+                                "damp_scale": {
+                                    "value": 1.0
+                                },
+                                "kw": {
+                                    "state": {
+                                        "state.locked_xy": {
+                                            "type": "bool",
+                                            "value": true
+                                        }
+                                    },
+                                    "value": {
+                                        "x": 4.0,
+                                        "y": 4.0
+                                    }
+                                },
+                                "lacunarity": {
+                                    "value": 2.0
+                                },
+                                "noise_type": {
+                                    "value": 4
+                                },
+                                "octaves": {
+                                    "value": 8
+                                },
+                                "persistence": {
+                                    "value": 0.5
+                                },
+                                "post_gain": {
+                                    "value": 1.0
+                                },
+                                "post_gamma": {
+                                    "value": 1.0
+                                },
+                                "post_inverse": {
+                                    "value": false
+                                },
+                                "post_remap": {
+                                    "state": {
+                                        "state.active": {
+                                            "type": "bool",
+                                            "value": true
+                                        },
+                                        "state.last_active_value": {
+                                            "type": "glm::vec2",
+                                            "value": {
+                                                "x": 0.0,
+                                                "y": 1.0
+                                            }
+                                        }
+                                    },
+                                    "value": {
+                                        "x": 0.0,
+                                        "y": 1.0
+                                    }
+                                },
+                                "post_saturate": {
+                                    "state": {
+                                        "state.active": {
+                                            "type": "bool",
+                                            "value": false
+                                        },
+                                        "state.last_active_value": {
+                                            "type": "glm::vec2",
+                                            "value": {
+                                                "x": 0.0,
+                                                "y": 1.0
+                                            }
+                                        }
+                                    },
+                                    "value": {
+                                        "x": 0.0,
+                                        "y": 1.0
+                                    }
+                                },
+                                "post_smoothing_radius": {
+                                    "value": 0.0
+                                },
+                                "seed": {
+                                    "value": 0
+                                },
+                                "state": {
+                                    "FBM Layers.is_expanded": {
+                                        "type": "bool",
+                                        "value": true
+                                    },
+                                    "Noise.is_expanded": {
+                                        "type": "bool",
+                                        "value": true
+                                    },
+                                    "Post-Processing.is_expanded": {
+                                        "type": "bool",
+                                        "value": false
+                                    },
+                                    "Warp.is_expanded": {
+                                        "type": "bool",
+                                        "value": true
+                                    }
+                                },
+                                "warp0": {
+                                    "value": 0.20000000298023224
+                                },
+                                "warp_scale": {
+                                    "value": 0.20000000298023224
+                                },
+                                "weight": {
+                                    "value": 0.699999988079071
+                                }
+                            },
+                            "Parberry": {
+                                "kw": {
+                                    "state": {
+                                        "state.locked_xy": {
+                                            "type": "bool",
+                                            "value": true
+                                        }
+                                    },
+                                    "value": {
+                                        "x": 4.0,
+                                        "y": 4.0
+                                    }
+                                },
+                                "lacunarity": {
+                                    "value": 2.0
+                                },
+                                "mu": {
+                                    "value": 1.0199999809265137
+                                },
+                                "octaves": {
+                                    "value": 8
+                                },
+                                "persistence": {
+                                    "value": 0.5
+                                },
+                                "post_gain": {
+                                    "value": 1.0
+                                },
+                                "post_gamma": {
+                                    "value": 1.0
+                                },
+                                "post_inverse": {
+                                    "value": false
+                                },
+                                "post_remap": {
+                                    "state": {
+                                        "state.active": {
+                                            "type": "bool",
+                                            "value": true
+                                        },
+                                        "state.last_active_value": {
+                                            "type": "glm::vec2",
+                                            "value": {
+                                                "x": 0.0,
+                                                "y": 1.0
+                                            }
+                                        }
+                                    },
+                                    "value": {
+                                        "x": 0.0,
+                                        "y": 1.0
+                                    }
+                                },
+                                "post_saturate": {
+                                    "state": {
+                                        "state.active": {
+                                            "type": "bool",
+                                            "value": false
+                                        },
+                                        "state.last_active_value": {
+                                            "type": "glm::vec2",
+                                            "value": {
+                                                "x": 0.0,
+                                                "y": 1.0
+                                            }
+                                        }
+                                    },
+                                    "value": {
+                                        "x": 0.0,
+                                        "y": 1.0
+                                    }
+                                },
+                                "post_smoothing_radius": {
+                                    "value": 0.0
+                                },
+                                "seed": {
+                                    "value": 0
+                                },
+                                "state": {
+                                    "FBM Layers.is_expanded": {
+                                        "type": "bool",
+                                        "value": true
+                                    },
+                                    "Noise.is_expanded": {
+                                        "type": "bool",
+                                        "value": true
+                                    },
+                                    "Post-Processing.is_expanded": {
+                                        "type": "bool",
+                                        "value": false
+                                    }
+                                },
+                                "weight": {
+                                    "value": 0.699999988079071
+                                }
+                            },
+                            "PingPong": {
+                                "kw": {
+                                    "state": {
+                                        "state.locked_xy": {
+                                            "type": "bool",
+                                            "value": true
+                                        }
+                                    },
+                                    "value": {
+                                        "x": 4.0,
+                                        "y": 4.0
+                                    }
+                                },
+                                "lacunarity": {
+                                    "value": 2.0
+                                },
+                                "noise_type": {
+                                    "value": 4
+                                },
+                                "octaves": {
+                                    "value": 8
+                                },
+                                "persistence": {
+                                    "value": 0.5
+                                },
+                                "post_gain": {
+                                    "value": 1.0
+                                },
+                                "post_gamma": {
+                                    "value": 1.0
+                                },
+                                "post_inverse": {
+                                    "value": false
+                                },
+                                "post_remap": {
+                                    "state": {
+                                        "state.active": {
+                                            "type": "bool",
+                                            "value": true
+                                        },
+                                        "state.last_active_value": {
+                                            "type": "glm::vec2",
+                                            "value": {
+                                                "x": 0.0,
+                                                "y": 1.0
+                                            }
+                                        }
+                                    },
+                                    "value": {
+                                        "x": 0.0,
+                                        "y": 1.0
+                                    }
+                                },
+                                "post_saturate": {
+                                    "state": {
+                                        "state.active": {
+                                            "type": "bool",
+                                            "value": false
+                                        },
+                                        "state.last_active_value": {
+                                            "type": "glm::vec2",
+                                            "value": {
+                                                "x": 0.0,
+                                                "y": 1.0
+                                            }
+                                        }
+                                    },
+                                    "value": {
+                                        "x": 0.0,
+                                        "y": 1.0
+                                    }
+                                },
+                                "post_smoothing_radius": {
+                                    "value": 0.0
+                                },
+                                "seed": {
+                                    "value": 0
+                                },
+                                "state": {
+                                    "FBM Layers.is_expanded": {
+                                        "type": "bool",
+                                        "value": true
+                                    },
+                                    "Noise.is_expanded": {
+                                        "type": "bool",
+                                        "value": true
+                                    },
+                                    "Post-Processing.is_expanded": {
+                                        "type": "bool",
+                                        "value": false
+                                    }
+                                },
+                                "weight": {
+                                    "value": 0.699999988079071
+                                }
+                            },
+                            "Ridged": {
+                                "k_smoothing": {
+                                    "value": 0.20000000298023224
+                                },
+                                "kw": {
+                                    "state": {
+                                        "state.locked_xy": {
+                                            "type": "bool",
+                                            "value": true
+                                        }
+                                    },
+                                    "value": {
+                                        "x": 4.0,
+                                        "y": 4.0
+                                    }
+                                },
+                                "lacunarity": {
+                                    "value": 2.0
+                                },
+                                "noise_type": {
+                                    "value": 4
+                                },
+                                "octaves": {
+                                    "value": 8
+                                },
+                                "persistence": {
+                                    "value": 0.5
+                                },
+                                "post_gain": {
+                                    "value": 1.0
+                                },
+                                "post_gamma": {
+                                    "value": 1.0
+                                },
+                                "post_inverse": {
+                                    "value": false
+                                },
+                                "post_remap": {
+                                    "state": {
+                                        "state.active": {
+                                            "type": "bool",
+                                            "value": true
+                                        },
+                                        "state.last_active_value": {
+                                            "type": "glm::vec2",
+                                            "value": {
+                                                "x": 0.0,
+                                                "y": 1.0
+                                            }
+                                        }
+                                    },
+                                    "value": {
+                                        "x": 0.0,
+                                        "y": 1.0
+                                    }
+                                },
+                                "post_saturate": {
+                                    "state": {
+                                        "state.active": {
+                                            "type": "bool",
+                                            "value": false
+                                        },
+                                        "state.last_active_value": {
+                                            "type": "glm::vec2",
+                                            "value": {
+                                                "x": 0.0,
+                                                "y": 1.0
+                                            }
+                                        }
+                                    },
+                                    "value": {
+                                        "x": 0.0,
+                                        "y": 1.0
+                                    }
+                                },
+                                "post_smoothing_radius": {
+                                    "value": 0.0
+                                },
+                                "seed": {
+                                    "value": 0
+                                },
+                                "state": {
+                                    "FBM Layers.is_expanded": {
+                                        "type": "bool",
+                                        "value": true
+                                    },
+                                    "Noise.is_expanded": {
+                                        "type": "bool",
+                                        "value": true
+                                    },
+                                    "Post-Processing.is_expanded": {
+                                        "type": "bool",
+                                        "value": false
+                                    }
+                                },
+                                "weight": {
+                                    "value": 0.699999988079071
+                                }
+                            },
+                            "Swiss": {
+                                "kw": {
+                                    "state": {
+                                        "state.locked_xy": {
+                                            "type": "bool",
+                                            "value": true
+                                        }
+                                    },
+                                    "value": {
+                                        "x": 4.0,
+                                        "y": 4.0
+                                    }
+                                },
+                                "lacunarity": {
+                                    "value": 2.0
+                                },
+                                "noise_type": {
+                                    "value": 4
+                                },
+                                "octaves": {
+                                    "value": 8
+                                },
+                                "persistence": {
+                                    "value": 0.5
+                                },
+                                "post_gain": {
+                                    "value": 1.0
+                                },
+                                "post_gamma": {
+                                    "value": 1.0
+                                },
+                                "post_inverse": {
+                                    "value": false
+                                },
+                                "post_remap": {
+                                    "state": {
+                                        "state.active": {
+                                            "type": "bool",
+                                            "value": true
+                                        },
+                                        "state.last_active_value": {
+                                            "type": "glm::vec2",
+                                            "value": {
+                                                "x": 0.0,
+                                                "y": 1.0
+                                            }
+                                        }
+                                    },
+                                    "value": {
+                                        "x": 0.0,
+                                        "y": 1.0
+                                    }
+                                },
+                                "post_saturate": {
+                                    "state": {
+                                        "state.active": {
+                                            "type": "bool",
+                                            "value": false
+                                        },
+                                        "state.last_active_value": {
+                                            "type": "glm::vec2",
+                                            "value": {
+                                                "x": 0.0,
+                                                "y": 1.0
+                                            }
+                                        }
+                                    },
+                                    "value": {
+                                        "x": 0.0,
+                                        "y": 1.0
+                                    }
+                                },
+                                "post_smoothing_radius": {
+                                    "value": 0.0
+                                },
+                                "seed": {
+                                    "value": 0
+                                },
+                                "state": {
+                                    "FBM Layers.is_expanded": {
+                                        "type": "bool",
+                                        "value": true
+                                    },
+                                    "Noise.is_expanded": {
+                                        "type": "bool",
+                                        "value": true
+                                    },
+                                    "Post-Processing.is_expanded": {
+                                        "type": "bool",
+                                        "value": false
+                                    }
+                                },
+                                "warp_scale": {
+                                    "value": 0.20000000298023224
+                                },
+                                "weight": {
+                                    "value": 0.699999988079071
+                                }
+                            }
+                        },
+                        "current": "FBM",
+                        "id": "0",
+                        "label": "CoherentNoise",
+                        "runtime_info": {
+                            "error_count": 0,
+                            "eval_count": 6,
+                            "time_creation": 1790002744248,
+                            "time_last_update": 1790010216524,
+                            "update_time": 37.70561599731445
+                        },
+                        "synchronized_attributes": [
+                            "warp_scale",
+                            "noise_type",
+                            "kw",
+                            "seed",
+                            "weight",
+                            "octaves",
+                            "lacunarity",
+                            "post_inverse",
+                            "post_remap",
+                            "post_gain",
+                            "persistence",
+                            "post_smoothing_radius",
+                            "post_gamma",
+                            "post_saturate"
+                        ]
+                    },
+                    {
+                        "comment": "",
+                        "containers": {
+                            "main": {
+                                "amp": {
+                                    "value": 0.20000000298023224
+                                },
+                                "angle": {
+                                    "value": 0.0
+                                },
+                                "dn_add_default_noise": {
+                                    "value": true
+                                },
+                                "dn_kw": {
+                                    "value": 8.0
+                                },
+                                "dn_noise_amp": {
+                                    "value": 0.02500000037252903
+                                },
+                                "dn_noise_type": {
+                                    "value": 4
+                                },
+                                "dn_seed": {
+                                    "value": 0
+                                },
+                                "dn_smoothness": {
+                                    "value": 0.0
+                                },
+                                "gamma": {
+                                    "value": 0.5118421316146851
+                                },
+                                "jitter.x": {
+                                    "value": 1.0
+                                },
+                                "jitter.y": {
+                                    "value": 1.0
+                                },
+                                "kw": {
+                                    "state": {
+                                        "state.locked_xy": {
+                                            "type": "bool",
+                                            "value": true
+                                        }
+                                    },
+                                    "value": {
+                                        "x": 4.0,
+                                        "y": 4.0
+                                    }
+                                },
+                                "lacunarity": {
+                                    "value": 2.0
+                                },
+                                "mask_activate": {
+                                    "value": true
+                                },
+                                "mask_gain": {
+                                    "value": 1.0
+                                },
+                                "mask_inverse": {
+                                    "value": false
+                                },
+                                "mask_radius": {
+                                    "value": 0.0
+                                },
+                                "mask_type": {
+                                    "value": "Elevation"
+                                },
+                                "octaves": {
+                                    "value": 8
+                                },
+                                "persistence": {
+                                    "value": 0.5
+                                },
+                                "post_gain": {
+                                    "value": 1.0
+                                },
+                                "post_gamma": {
+                                    "value": 1.0
+                                },
+                                "post_inverse": {
+                                    "value": false
+                                },
+                                "post_mix": {
+                                    "value": 1.0
+                                },
+                                "post_mix_method": {
+                                    "value": 11
+                                },
+                                "post_remap": {
+                                    "state": {
+                                        "state.active": {
+                                            "type": "bool",
+                                            "value": false
+                                        },
+                                        "state.last_active_value": {
+                                            "type": "glm::vec2",
+                                            "value": {
+                                                "x": 0.0,
+                                                "y": 1.0
+                                            }
+                                        }
+                                    },
+                                    "value": {
+                                        "x": 0.0,
+                                        "y": 1.0
+                                    }
+                                },
+                                "post_saturate": {
+                                    "state": {
+                                        "state.active": {
+                                            "type": "bool",
+                                            "value": false
+                                        },
+                                        "state.last_active_value": {
+                                            "type": "glm::vec2",
+                                            "value": {
+                                                "x": 0.0,
+                                                "y": 1.0
+                                            }
+                                        }
+                                    },
+                                    "value": {
+                                        "x": 0.0,
+                                        "y": 1.0
+                                    }
+                                },
+                                "post_smoothing_radius": {
+                                    "value": 0.0
+                                },
+                                "seed": {
+                                    "value": 18
+                                },
+                                "state": {
+                                    "Default Mask Definition.is_expanded": {
+                                        "type": "bool",
+                                        "value": true
+                                    },
+                                    "Default Noise.is_expanded": {
+                                        "type": "bool",
+                                        "value": false
+                                    },
+                                    "FBM Layers.is_expanded": {
+                                        "type": "bool",
+                                        "value": true
+                                    },
+                                    "Main Parameters.is_expanded": {
+                                        "type": "bool",
+                                        "value": true
+                                    },
+                                    "Post-Processing.is_expanded": {
+                                        "type": "bool",
+                                        "value": false
+                                    }
+                                },
+                                "switch_kx_ky": {
+                                    "value": true
+                                }
+                            }
+                        },
+                        "current": "main",
+                        "id": "2",
+                        "label": "Jagged",
+                        "runtime_info": {
+                            "error_count": 0,
+                            "eval_count": 97,
+                            "time_creation": 1790002755000,
+                            "time_last_update": 1790010242451,
+                            "update_time": 282.35748291015625
+                        }
+                    },
+                    {
+                        "comment": "",
+                        "containers": {
+                            "main": {
+                                "k": {
+                                    "value": 0.009999999776482582
+                                },
+                                "mask_activate": {
+                                    "value": false
+                                },
+                                "mask_gain": {
+                                    "value": 1.0
+                                },
+                                "mask_inverse": {
+                                    "value": false
+                                },
+                                "mask_radius": {
+                                    "value": 0.009999999776482582
+                                },
+                                "mask_type": {
+                                    "value": "Elevation"
+                                },
+                                "normalized_map": {
+                                    "value": true
+                                },
+                                "post_gain": {
+                                    "value": 1.0
+                                },
+                                "post_gamma": {
+                                    "value": 1.0
+                                },
+                                "post_inverse": {
+                                    "value": false
+                                },
+                                "post_mix": {
+                                    "value": 1.0
+                                },
+                                "post_mix_method": {
+                                    "value": 11
+                                },
+                                "post_remap": {
+                                    "state": {
+                                        "state.active": {
+                                            "type": "bool",
+                                            "value": false
+                                        },
+                                        "state.last_active_value": {
+                                            "type": "glm::vec2",
+                                            "value": {
+                                                "x": 0.0,
+                                                "y": 1.0
+                                            }
+                                        }
+                                    },
+                                    "value": {
+                                        "x": 0.0,
+                                        "y": 1.0
+                                    }
+                                },
+                                "post_saturate": {
+                                    "state": {
+                                        "state.active": {
+                                            "type": "bool",
+                                            "value": false
+                                        },
+                                        "state.last_active_value": {
+                                            "type": "glm::vec2",
+                                            "value": {
+                                                "x": 0.0,
+                                                "y": 1.0
+                                            }
+                                        }
+                                    },
+                                    "value": {
+                                        "x": 0.0,
+                                        "y": 1.0
+                                    }
+                                },
+                                "post_smoothing_radius": {
+                                    "value": 0.0
+                                },
+                                "radius": {
+                                    "value": 0.05000000074505806
+                                },
+                                "state": {
+                                    "Default Mask Definition.is_expanded": {
+                                        "type": "bool",
+                                        "value": false
+                                    },
+                                    "Main Parameters.is_expanded": {
+                                        "type": "bool",
+                                        "value": true
+                                    },
+                                    "Post-Processing.is_expanded": {
+                                        "type": "bool",
+                                        "value": false
+                                    }
+                                }
+                            }
+                        },
+                        "current": "main",
+                        "id": "5",
+                        "label": "SmoothFill",
+                        "runtime_info": {
+                            "error_count": 0,
+                            "eval_count": 85,
+                            "time_creation": 1790002878671,
+                            "time_last_update": 1790010242558,
+                            "update_time": 106.62315368652344
+                        }
+                    },
+                    {
+                        "comment": "",
+                        "containers": {
+                            "main": {
+                                "amount": {
+                                    "value": 1.0
+                                },
+                                "center": {
+                                    "value": {
+                                        "x": 0.5,
+                                        "y": 0.5
+                                    }
+                                },
+                                "distance_axis": {
+                                    "value": 2
+                                },
+                                "distance_function": {
+                                    "value": 1
+                                },
+                                "post_gain": {
+                                    "value": 1.0
+                                },
+                                "post_gamma": {
+                                    "value": 1.0
+                                },
+                                "post_inverse": {
+                                    "value": false
+                                },
+                                "post_mix": {
+                                    "value": 1.0
+                                },
+                                "post_mix_method": {
+                                    "value": 11
+                                },
+                                "post_remap": {
+                                    "state": {
+                                        "state.active": {
+                                            "type": "bool",
+                                            "value": false
+                                        },
+                                        "state.last_active_value": {
+                                            "type": "glm::vec2",
+                                            "value": {
+                                                "x": 0.0,
+                                                "y": 1.0
+                                            }
+                                        }
+                                    },
+                                    "value": {
+                                        "x": 0.0,
+                                        "y": 1.0
+                                    }
+                                },
+                                "post_saturate": {
+                                    "state": {
+                                        "state.active": {
+                                            "type": "bool",
+                                            "value": false
+                                        },
+                                        "state.last_active_value": {
+                                            "type": "glm::vec2",
+                                            "value": {
+                                                "x": 0.0,
+                                                "y": 1.0
+                                            }
+                                        }
+                                    },
+                                    "value": {
+                                        "x": 0.0,
+                                        "y": 1.0
+                                    }
+                                },
+                                "post_smoothing_radius": {
+                                    "value": 0.0
+                                },
+                                "profile_param": {
+                                    "value": 2.0
+                                },
+                                "radial_profile": {
+                                    "value": 3
+                                },
+                                "radius": {
+                                    "value": 0.5
+                                },
+                                "state": {
+                                    "Main Parameters.is_expanded": {
+                                        "type": "bool",
+                                        "value": true
+                                    },
+                                    "Post-Processing.is_expanded": {
+                                        "type": "bool",
+                                        "value": false
+                                    }
+                                }
+                            }
+                        },
+                        "current": "main",
+                        "id": "6",
+                        "label": "ZeroedEdges",
+                        "runtime_info": {
+                            "error_count": 0,
+                            "eval_count": 11,
+                            "time_creation": 1790003147679,
+                            "time_last_update": 1790010216540,
+                            "update_time": 16.347108840942383
+                        }
+                    }
+                ],
+                "origin": [
+                    0.0,
+                    0.0
+                ],
+                "rotation_angle": 0.0,
+                "size": [
+                    1.0,
+                    1.0
+                ]
+            }
+        },
+        "graph_order": [
+            "graph"
+        ],
+        "id_count": 0
+    },
+    "graph_manager_widget": {
+        "frames": {
+            "graph": {
+                "current_bg_tag": "NONE"
+            }
+        }
+    },
+    "graph_tabs_widget": {
+        "graph_node_widgets": {
+            "graph": {
+                "comments": [],
+                "current_link_type": 2,
+                "graph_workspace_widget.viewer3d": {
+                    "current_node_id": "5",
+                    "height": 462,
+                    "is_node_pinned": false,
+                    "label": "3D Renderer",
+                    "renderer": {
+                        "add_ambiant_occlusion": true,
+                        "add_atmospheric_scattering": false,
+                        "add_fog": true,
+                        "add_water_foam": true,
+                        "add_water_waves": true,
+                        "alpha_x": 0.3955555856227875,
+                        "alpha_y": -65.36122131347656,
+                        "ambiant_occlusion_radius": 0.029999999329447746,
+                        "ambiant_occlusion_strength": 0.800000011920929,
+                        "angle_spread_ratio": 0.0,
+                        "animate_waves": false,
+                        "apply_tonemap": false,
+                        "auto_rotate_camera": false,
+                        "auto_rotate_light": false,
+                        "bypass_shadow_map": false,
+                        "bypass_texture_albedo": false,
+                        "camera": {
+                            "far_plane": 100.0,
+                            "fov": 0.7850000262260437,
+                            "near_plane": 0.10000000149011612,
+                            "position": {
+                                "x": -0.6799585223197937,
+                                "y": 0.4770966172218323,
+                                "z": -1.0193662643432617
+                            },
+                            "target": {
+                                "x": -0.005714446771889925,
+                                "y": -0.012803113088011742,
+                                "z": -0.05922611057758331
+                            },
+                            "up": {
+                                "x": 0.0,
+                                "y": 1.0,
+                                "z": 0.0
+                            }
+                        },
+                        "camera_move_speed": 1.0,
+                        "color_deep_water": {
+                            "x": 0.0,
+                            "y": 0.15000000596046448,
+                            "z": 0.3499999940395355
+                        },
+                        "color_shallow_water": {
+                            "x": 0.25,
+                            "y": 0.8500000238418579,
+                            "z": 0.800000011920929
+                        },
+                        "distance": 1.2714070081710815,
+                        "foam_color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        },
+                        "foam_depth": 0.004999999888241291,
+                        "fog_color": {
+                            "x": 1.0,
+                            "y": 1.0,
+                            "z": 1.0
+                        },
+                        "fog_density": 1.5,
+                        "fog_height": 0.10000000149011612,
+                        "fog_match_skybox": true,
+                        "fog_scattering_ratio": 0.699999988079071,
+                        "fog_strength": 0.5,
+                        "gamma_correction": 2.0,
+                        "height": 462,
+                        "hmap_h": 0.4000000059604645,
+                        "hmap_h0": 0.0,
+                        "hmap_wx": 2.0,
+                        "hmap_wy": 2.0,
+                        "keyboard_layout": 0,
+                        "keyboard_navigation_enabled": false,
+                        "light": {
+                            "position": {
+                                "x": -6.122223854064941,
+                                "y": 4.997701168060303,
+                                "z": 6.127100467681885
+                            },
+                            "target": {
+                                "x": 0.0,
+                                "y": 0.0,
+                                "z": 0.0
+                            }
+                        },
+                        "light_distance": 10.0,
+                        "light_phi": -0.7850000262260437,
+                        "light_theta": 0.5233333706855774,
+                        "mie_color": {
+                            "x": 1.0,
+                            "y": 0.800000011920929,
+                            "z": 0.699999988079071
+                        },
+                        "normal_map_scaling": 1.0,
+                        "normal_visualization": false,
+                        "pan_offset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "rayleigh_color": {
+                            "x": 0.4000000059604645,
+                            "y": 0.6000000238418579,
+                            "z": 1.0
+                        },
+                        "render_hmap": true,
+                        "render_leaves": true,
+                        "render_path": true,
+                        "render_plane": true,
+                        "render_points": true,
+                        "render_rocks": true,
+                        "render_trees": true,
+                        "render_type": 1,
+                        "render_water": true,
+                        "scale_h": 1.0,
+                        "scattering_density": 0.10000000149011612,
+                        "shadow_strength": 0.8999999761581421,
+                        "show_orientation_gizmo": true,
+                        "show_skybox": true,
+                        "skybox_color": {
+                            "x": 0.5299999713897705,
+                            "y": 0.8100000023841858,
+                            "z": 0.9200000166893005
+                        },
+                        "skybox_mode": 1,
+                        "skybox_rotation": 0.0,
+                        "target": {
+                            "x": -0.005714446771889925,
+                            "y": -0.012803113088011742,
+                            "z": -0.05922611057758331
+                        },
+                        "title": "",
+                        "viewer2d_settings.cmap": 3,
+                        "viewer2d_settings.hillshading": true,
+                        "viewer2d_settings.offset": {
+                            "x": 0.0,
+                            "y": 0.0
+                        },
+                        "viewer2d_settings.sun_azimuth": 1.5700000524520874,
+                        "viewer2d_settings.sun_zenith": 1.0466667413711548,
+                        "viewer2d_settings.zoom": 0.8999999761581421,
+                        "water_color_depth": 0.014999999664723873,
+                        "water_spec_strength": 0.5,
+                        "waves_alpha": 0.5233333706855774,
+                        "waves_amplitude": 0.004999999888241291,
+                        "waves_kw": 256.0,
+                        "waves_normal_amplitude": 0.019999999552965164,
+                        "waves_speed": 0.20000000298023224,
+                        "width": 1374,
+                        "wireframe_mode": false,
+                        "x": 2,
+                        "y": 0
+                    },
+                    "view_param_map": {
+                        "0": {
+                            "color": "",
+                            "elevation": "output",
+                            "normal_map": "",
+                            "path": "",
+                            "points": "",
+                            "water_depth": ""
+                        },
+                        "1": {
+                            "color": "",
+                            "elevation": "output",
+                            "normal_map": "",
+                            "path": "",
+                            "points": "",
+                            "water_depth": ""
+                        },
+                        "2": {
+                            "color": "mask",
+                            "elevation": "output",
+                            "normal_map": "",
+                            "path": "",
+                            "points": "",
+                            "water_depth": ""
+                        },
+                        "3": {
+                            "color": "mask",
+                            "elevation": "output",
+                            "normal_map": "",
+                            "path": "",
+                            "points": "",
+                            "water_depth": ""
+                        },
+                        "4": {
+                            "color": "mask",
+                            "elevation": "output",
+                            "normal_map": "",
+                            "path": "",
+                            "points": "",
+                            "water_depth": ""
+                        },
+                        "5": {
+                            "color": "mask",
+                            "elevation": "output",
+                            "normal_map": "",
+                            "path": "",
+                            "points": "",
+                            "water_depth": ""
+                        },
+                        "6": {
+                            "color": "",
+                            "elevation": "output",
+                            "normal_map": "",
+                            "path": "",
+                            "points": "",
+                            "water_depth": ""
+                        }
+                    },
+                    "viewer_type": 0,
+                    "width": 1378,
+                    "x": 0,
+                    "y": 0
+                },
+                "groups": [],
+                "id": "graph",
+                "links": [
+                    {
+                        "link_type": 2,
+                        "node_in_id": "5",
+                        "node_out_id": "2",
+                        "port_in_id": "input",
+                        "port_out_id": "output"
+                    },
+                    {
+                        "link_type": 2,
+                        "node_in_id": "6",
+                        "node_out_id": "0",
+                        "port_in_id": "input",
+                        "port_out_id": "output"
+                    },
+                    {
+                        "link_type": 2,
+                        "node_in_id": "2",
+                        "node_out_id": "6",
+                        "port_in_id": "input",
+                        "port_out_id": "output"
+                    }
+                ],
+                "nodes": [
+                    {
+                        "caption": "CoherentNoise",
+                        "id": "0",
+                        "is_widget_visible": true,
+                        "scene_position.x": -892.0,
+                        "scene_position.y": -301.0
+                    },
+                    {
+                        "caption": "Jagged",
+                        "id": "2",
+                        "is_widget_visible": true,
+                        "scene_position.x": -429.1009521484375,
+                        "scene_position.y": -282.6787414550781
+                    },
+                    {
+                        "caption": "SmoothFill",
+                        "id": "5",
+                        "is_widget_visible": true,
+                        "scene_position.x": -204.19622000305304,
+                        "scene_position.y": -238.67287405578736
+                    },
+                    {
+                        "caption": "ZeroedEdges",
+                        "id": "6",
+                        "is_widget_visible": true,
+                        "scene_position.x": -655.6846923828125,
+                        "scene_position.y": -272.811279296875
+                    }
+                ]
+            }
+        }
+    },
+    "saved_at": "2026-09-21_19-04-04"
+}

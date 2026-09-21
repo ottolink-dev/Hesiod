@@ -173,7 +173,7 @@ nlohmann::json json_from_file(const std::string &fname)
   return json;
 }
 
-void json_to_file(const nlohmann::json &json,
+bool json_to_file(const nlohmann::json &json,
                   const std::string    &fname,
                   bool                  merge_with_existing_content)
 {
@@ -209,16 +209,23 @@ void json_to_file(const nlohmann::json &json,
   }
 
   std::ofstream outfile(fname);
-  if (outfile.is_open())
-  {
-    outfile << final_json.dump(4);
-    outfile.close();
-    Logger::log()->trace("json_to_file: JSON successfully written to {}", fname);
-  }
-  else
+  if (!outfile.is_open())
   {
     Logger::log()->error("json_to_file: Could not open file {} to save JSON", fname);
+    return false;
   }
+
+  outfile << final_json.dump(4);
+  outfile.close();
+
+  if (!outfile.good())
+  {
+    Logger::log()->error("json_to_file: Could not write JSON to {}", fname);
+    return false;
+  }
+
+  Logger::log()->trace("json_to_file: JSON successfully written to {}", fname);
+  return true;
 }
 
 fs::path make_unique_filename(

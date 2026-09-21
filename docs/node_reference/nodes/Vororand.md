@@ -13,7 +13,7 @@ This function computes a Voronoi diagram or derived metric (such as F1, F2, or e
 ## Category
 
 
-Primitive/Coherent
+WIP/DEPRECATED
 ## Inputs
 
 |Name|Type|Description|
@@ -27,7 +27,7 @@ Primitive/Coherent
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
-|out|VirtualArray|No description|
+|output|VirtualArray|No description|
 
 ## Parameters
 
@@ -58,4 +58,4 @@ Corresponding Hesiod file: [Vororand.hsd](../../examples/Vororand.hsd). Use [Ctr
     Example files are kept up-to-date with the latest version of [Hesiod](https://github.com/otto-link/Hesiod).
     If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).
 
-  
+

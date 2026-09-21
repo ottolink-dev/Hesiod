@@ -33,7 +33,7 @@ Primitive/Function
 | :--- | :--- | :--- |
 |angle|Float|Angle in the horizontal plane. Expressed in degrees.|
 |center|Vec2Float|Reference center for the wave pattern within the heightmap.|
-|kw|Float|Base spatial frequencies in the X and Y directions. The frequencies are defined with respect to the entire domain: for example, kw = 2 produces two full oscillations across the domain width (and similarly for the Y direction). Wavenumber in cycles across the unit domain (applied to both X and Y).|
+|kw|Float|Base spatial frequencies in the X and Y directions. The frequencies are defined with respect to the entire domain: for example, kw = 2 produces two full oscillations across the domain width (and similarly for the Y direction).|
 |phase_shift|Float|Phase shift. In degrees. Phase offset of cos(2*pi*r + phase); the wave is measured from the domain origin (0,0) and is not symmetric about the centre.|
 |Gain|Float|Mid-centered gain transformation applied to the elevation values. This is a non-linear recurve operator centered around the mid elevation (typically 0.5). Increasing the gain pushes values toward the minimum and maximum elevations, creating flatter low/high regions with a steeper transition around the midpoint.|
 |Gamma|Float|Standard gamma correction applied to the elevation values. This is a monotonic power-law remapping that shifts emphasis toward low or high elevations, making the overall shape sharper or bulkier without changing its ordering.|
@@ -55,4 +55,4 @@ Corresponding Hesiod file: [WaveSine.hsd](../../examples/WaveSine.hsd). Use [Ctr
     Example files are kept up-to-date with the latest version of [Hesiod](https://github.com/otto-link/Hesiod).
     If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).
 
-  
+

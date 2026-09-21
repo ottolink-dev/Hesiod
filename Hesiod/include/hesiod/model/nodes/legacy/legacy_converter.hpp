@@ -10,6 +10,15 @@ class ContainerGroup;
 namespace hesiod
 {
 /**
+ * @brief Converts a legacy node JSON object into a CoherentNoise node JSON if it is
+ *        a former noise node (NoiseFbm, NoiseRidged, NoiseIq, NoiseJordan,
+ *        NoiseParberry, NoisePingpong, NoiseSwiss).
+ * @param json_node The serialized node JSON object.
+ * @return A converted node JSON object.
+ */
+nlohmann::json convert_legacy_node_json(const nlohmann::json &json_node);
+
+/**
  * @brief Converts a legacy serialized JSON attribute object into a standard
  *        Meta-compatible JSON attribute object based on its C++ attribute type.
  * @param attr The attribute instance.
@@ -28,4 +37,20 @@ nlohmann::json convert_legacy_attribute_json(const meta::AbstractAttribute *attr
  */
 nlohmann::json convert_legacy_container_group_json(const meta::ContainerGroup &group,
                                                    const nlohmann::json       &j);
+
+/**
+ * @brief Converts a legacy graph JSON object (including legacy nodes and links)
+ *        into modern GraphNode format.
+ * @param graph_json The serialized graph JSON object.
+ * @return A converted graph JSON object.
+ */
+nlohmann::json convert_legacy_graph_json(const nlohmann::json &graph_json);
+
+/**
+ * @brief Converts a legacy graph widget JSON object (including legacy links)
+ *        into modern GraphNodeWidget format.
+ * @param widget_json The serialized graph widget JSON object.
+ * @return A converted graph widget JSON object.
+ */
+nlohmann::json convert_legacy_graph_widget_json(const nlohmann::json &widget_json);
 } // namespace hesiod

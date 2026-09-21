@@ -17,10 +17,6 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-// -----------------------------------------------------------------------------
-// Ports & Attributes
-// -----------------------------------------------------------------------------
-
 constexpr const char *P_IN  = "input";
 constexpr const char *P_DR  = "dr";
 constexpr const char *P_OUT = "output";
@@ -85,13 +81,13 @@ void compute_zeroed_edges_node(BaseNode &node)
   // --- Params
 
   // clang-format off
-  const auto radial_profile = hmap::RadialProfile(node.val<int>(A_RADIAL_PROFILE));
+  const auto radial_profile = node.val_enum<hmap::RadialProfile>(A_RADIAL_PROFILE);
   const auto profile_param  = node.val<float>(A_PROFILE_PARAM);
   const auto amount         = node.val<float>(A_AMOUNT);
   const auto radius         = node.val<float>(A_RADIUS);
   const auto center         = node.val<glm::vec2>(A_CENTER);
-  const auto distance       = hmap::DistanceFunction(node.val<int>(A_DISTANCE));
-  const auto distance_axis  = hmap::DistanceFunctionAxis(node.val<int>(A_DISTANCE_AXIS));
+  const auto distance       = node.val_enum<hmap::DistanceFunction>(A_DISTANCE);
+  const auto distance_axis  = node.val_enum<hmap::DistanceFunctionAxis>(A_DISTANCE_AXIS);
   // clang-format on
 
   // --- Compute

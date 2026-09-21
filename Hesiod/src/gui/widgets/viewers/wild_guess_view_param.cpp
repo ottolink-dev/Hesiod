@@ -33,12 +33,12 @@ std::string helper_get_preferred_port_inout(const BaseNode                 &node
     {
       const std::string port_label = node.get_port_label(k);
 
-      if (node.get_port_type(k) == gngui::PortType::OUT && !is_excluded(port_label))
+      if (node.get_port_type(k) == gnode::PortType::OUT && !is_excluded(port_label))
       {
         value = port_label;
         break; // OUT has priority
       }
-      else if (in_candidate == -1 && node.get_port_type(k) == gngui::PortType::IN &&
+      else if (in_candidate == -1 && node.get_port_type(k) == gnode::PortType::IN &&
                !is_excluded(port_label))
       {
         in_candidate = k;

@@ -41,14 +41,18 @@ void setup_caldera_node(BaseNode &node)
 
   // --- Attributes
 
-  node.set_current_category("Main Parameters");
+  node.set_current_category("Geometry");
   add_float(node, A_RADIUS, "radius", 0.25f, 0.01f, 1.f);
+  add_float(node, A_Z_BOTTOM, "z_bottom", 0.5f, 0.f, 1.f);
+  add_xy(node, A_CENTER, "center");
+
+  node.set_current_category("Profile");
   add_float(node, A_SIGMA_INNER, "sigma_inner", 0.05f, 0.f, 0.3f);
   add_float(node, A_SIGMA_OUTER, "sigma_outer", 0.1f, 0.f, 0.3f);
+
+  node.set_current_category("Noise");
   add_float(node, A_NOISE_R_AMP, "noise_r_amp", 0.1f, 0.f, 0.3f);
-  add_float(node, A_Z_BOTTOM, "z_bottom", 0.5f, 0.f, 1.f);
   add_float(node, A_NOISE_RATIO_Z, "noise_ratio_z", 0.1f, 0.f, 1.f);
-  add_xy(node, A_CENTER, "center");
 
   setup_post_process_heightmap_attributes(node,
                                           {.add_mix = false, .remap_active_state = true});
@@ -80,11 +84,6 @@ void compute_caldera_node(BaseNode &node)
   const auto noise_ratio_z = node.val<float>(A_NOISE_RATIO_Z);
   const auto center        = node.val<glm::vec2>(A_CENTER);
 
-  const float radius_pixel      = std::max(1.f, radius * p_out->shape.x);
-  const float sigma_inner_pixel = std::max(1.f, sigma_inner * p_out->shape.x);
-  const float sigma_outer_pixel = std::max(1.f, sigma_outer * p_out->shape.x);
-  const float noise_r_amp_pixel = std::max(1.f, noise_r_amp * p_out->shape.x);
-
   // --- Compute
 
   hmap::for_each_tile(
@@ -95,12 +94,12 @@ void compute_caldera_node(BaseNode &node)
         hmap::Array *pa_dr  = p_arrays[1];
 
         *pa_out = hmap::caldera(region.shape,
-                                radius_pixel,
-                                sigma_inner_pixel,
-                                sigma_outer_pixel,
+                                radius,
+                                sigma_inner,
+                                sigma_outer,
                                 z_bottom,
                                 pa_dr,
-                                noise_r_amp_pixel,
+                                noise_r_amp,
                                 noise_ratio_z,
                                 center,
                                 region.bbox);

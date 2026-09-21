@@ -80,7 +80,7 @@ void compute_select_soil_rocks_node(BaseNode &node)
                                 const hmap::TileRegion &)
         {
           auto [pa_out, pa_in] = unpack<2>(p_arrays);
-          auto mode = static_cast<hmap::ClampMode>(node.val<int>(A_CURVATURE_CLAMP_MODE));
+          auto mode            = node.val_enum<hmap::ClampMode>(A_CURVATURE_CLAMP_MODE);
 
           *pa_out = hmap::gpu::select_soil_rocks(*pa_in,
                                                  ir_max,

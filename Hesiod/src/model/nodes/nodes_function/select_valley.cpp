@@ -49,7 +49,7 @@ void compute_select_valley_node(BaseNode &node)
   if (!p_in)
     return;
 
-  int ir = std::max(1, (int)(node.val<float>(A_RADIUS) * p_out->shape.x));
+  int ir = node.val_pixel_radius(A_RADIUS);
 
   hmap::for_each_tile(
       {p_out, p_in},

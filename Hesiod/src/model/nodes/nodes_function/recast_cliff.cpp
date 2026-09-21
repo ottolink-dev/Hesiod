@@ -52,7 +52,7 @@ void compute_recast_cliff_node(BaseNode &node)
     hmap::VirtualArray *p_out  = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
     float talus = node.val<float>(A_TALUS_GLOBAL) / (float)p_out->shape.x;
-    int   ir    = std::max(1, (int)(node.val<float>(A_RADIUS) * p_out->shape.x));
+    int   ir    = node.val_pixel_radius(A_RADIUS);
 
     hmap::for_each_tile(
         {p_out, p_in, p_mask},

@@ -6,7 +6,10 @@
 #include "highmap/morphology.hpp"
 #include "highmap/range.hpp"
 
+#include "qtr/keys.hpp"
+#include "qtr/primitives.hpp"
 #include "qtr/render_widget.hpp"
+#include "qtr/utils.hpp"
 
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/widgets/graph_node_widget.hpp"
@@ -134,13 +137,13 @@ bool Viewer3D::get_param_visibility_state(const std::string &param_name) const
     return true;
 
   if (param_name == "elevation")
-    return this->p_renderer->get_render_hmap();
+    return this->p_renderer->is_mesh_visible(qtr::keys::mesh::hmap);
   else if (param_name == "water_depth")
-    return this->p_renderer->get_render_water();
+    return this->p_renderer->is_mesh_visible(qtr::keys::mesh::water);
   else if (param_name == "points")
-    return this->p_renderer->get_render_points();
+    return this->p_renderer->is_mesh_visible(qtr::keys::mesh::points);
   else if (param_name == "path")
-    return this->p_renderer->get_render_path();
+    return this->p_renderer->is_mesh_visible(qtr::keys::mesh::path);
   else if (param_name == "color")
     return !this->p_renderer->get_bypass_texture_albedo();
   else if (param_name == "normal_map")
@@ -180,13 +183,13 @@ void Viewer3D::on_view_param_visibility_changed(const std::string &param_name,
     return;
 
   if (param_name == "elevation")
-    this->p_renderer->set_render_hmap(new_state);
+    this->p_renderer->set_mesh_visible(qtr::keys::mesh::hmap, new_state);
   else if (param_name == "water_depth")
-    this->p_renderer->set_render_water(new_state);
+    this->p_renderer->set_mesh_visible(qtr::keys::mesh::water, new_state);
   else if (param_name == "points")
-    this->p_renderer->set_render_points(new_state);
+    this->p_renderer->set_mesh_visible(qtr::keys::mesh::points, new_state);
   else if (param_name == "path")
-    this->p_renderer->set_render_path(new_state);
+    this->p_renderer->set_mesh_visible(qtr::keys::mesh::path, new_state);
   else if (param_name == "color")
     this->p_renderer->set_bypass_texture_albedo(!new_state);
   else if (param_name == "normal_map")
@@ -206,6 +209,33 @@ void Viewer3D::resizeEvent(QResizeEvent *)
   int   h = s.height();
 
   this->combo_container->setGeometry(x, y, w, h);
+}
+
+void Viewer3D::set_skybox(const std::filesystem::path path)
+{
+  Logger::log()->trace("Viewer3D::set_skybox, path={}", path.string());
+
+  if (!std::filesystem::exists(path))
+  {
+    Logger::log()->warn("Viewer3D::set_skybox: skybox image filepath does not exist: {}",
+                        path.string());
+    return;
+  }
+
+  try
+  {
+    int                  sky_width, sky_height;
+    std::vector<uint8_t> data = qtr::load_image_as_8bit_rgba(path.string(),
+                                                             sky_width,
+                                                             sky_height);
+    this->p_renderer->set_skybox_image(data, sky_width);
+  }
+  catch (const std::exception &e)
+  {
+    Logger::log()->warn("Viewer3D::set_skybox: could not load skybox image {}: {}",
+                        path.string(),
+                        e.what());
+  }
 }
 
 void Viewer3D::setup_connections()
@@ -234,6 +264,9 @@ void Viewer3D::setup_layout()
   // add viewer
   this->p_renderer = new qtr::RenderWidget("");
   grid->addWidget(dynamic_cast<QWidget *>(p_renderer), 0, 0, row_count, 1);
+
+  // TODO hardcoded
+  this->set_skybox("data/skybox/DaySkyHDRI057B_1K_TONEMAPPED.jpg");
 
   this->combo_container->setParent(this->p_renderer);
   this->combo_container->setStyleSheet(
@@ -286,8 +319,6 @@ void Viewer3D::update_renderer()
             {
               bool add_skirt = HSD_CTX.app_settings.viewer.add_heighmap_skirt;
 
-              Logger::log()->debug("SHAPE: {} {}", h.shape.x, h.shape.y);
-
               this->p_renderer->set_heightmap_geometry(arr.vector,
                                                        h.shape.x,
                                                        h.shape.y,
@@ -295,7 +326,7 @@ void Viewer3D::update_renderer()
             }
           }))
   {
-    this->p_renderer->reset_heightmap_geometry();
+    this->p_renderer->reset_mesh(qtr::keys::mesh::hmap);
   }
 
   // water
@@ -348,7 +379,7 @@ void Viewer3D::update_renderer()
                                                    cut_value);
           }))
   {
-    this->p_renderer->reset_water_geometry();
+    this->p_renderer->reset_mesh(qtr::keys::mesh::water);
   }
 
   // color
@@ -362,7 +393,7 @@ void Viewer3D::update_renderer()
               auto img = generate_selector_image(arr);
 
               if (this->p_renderer)
-                this->p_renderer->set_texture(QTR_TEX_ALBEDO, img, h.shape.x);
+                this->p_renderer->set_texture(qtr::keys::tex::albedo, img, h.shape.x);
             }) ||
         helper_try_set_from_port<hmap::VirtualTexture>(
             *p_node,
@@ -373,10 +404,10 @@ void Viewer3D::update_renderer()
               auto img = rgba.to_img_8bit(rgba.shape, p_node->cfg().cm_cpu, flip_y);
 
               if (this->p_renderer)
-                this->p_renderer->set_texture(QTR_TEX_ALBEDO, img, rgba.shape.x);
+                this->p_renderer->set_texture(qtr::keys::tex::albedo, img, rgba.shape.x);
             })))
   {
-    this->p_renderer->reset_texture(QTR_TEX_ALBEDO);
+    this->p_renderer->reset_texture(qtr::keys::tex::albedo);
   }
 
   // normal map
@@ -389,10 +420,10 @@ void Viewer3D::update_renderer()
             auto img = rgba.to_img_8bit(rgba.shape, p_node->cfg().cm_cpu, flip_y);
 
             if (this->p_renderer)
-              this->p_renderer->set_texture(QTR_TEX_NORMAL, img, rgba.shape.x);
+              this->p_renderer->set_texture(qtr::keys::tex::normal, img, rgba.shape.x);
           }))
   {
-    this->p_renderer->reset_texture(QTR_TEX_NORMAL);
+    this->p_renderer->reset_texture(qtr::keys::tex::normal);
   }
 
   // points
@@ -403,10 +434,10 @@ void Viewer3D::update_renderer()
           [this](const hmap::Cloud &c)
           {
             if (this->p_renderer)
-              this->p_renderer->set_points(c.get_x(), c.get_y(), c.get_values());
+              qtr::set_points(*p_renderer, c.get_x(), c.get_y(), c.get_values());
           }))
   {
-    this->p_renderer->reset_points();
+    this->p_renderer->reset_mesh(qtr::keys::mesh::points);
   }
 
   // path
@@ -417,10 +448,10 @@ void Viewer3D::update_renderer()
           [this](const hmap::Path &c)
           {
             if (this->p_renderer)
-              this->p_renderer->set_path(c.get_x(), c.get_y(), c.get_values());
+              qtr::set_path(*p_renderer, c.get_x(), c.get_y(), c.get_values());
           }))
   {
-    this->p_renderer->reset_path();
+    this->p_renderer->reset_mesh(qtr::keys::mesh::path);
   }
 }
 
