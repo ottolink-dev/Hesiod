@@ -22157,192 +22157,10 @@
             }
         }
     },
-    "SelectAngle": {
+    "SelectCurvature": {
         "category": "Terrain Features/Selector",
-        "description": "SelectAngle is a thresholding operator. It selects angle values within a specified range defined by the shape of a Gaussian pulse.",
-        "label": "SelectAngle",
-        "parameter_groups": [
-            {
-                "keys": [
-                    "angle",
-                    "sigma",
-                    "radius",
-                    "post_mix_method",
-                    "post_mix",
-                    "post_inverse",
-                    "post_gamma",
-                    "post_gain",
-                    "post_smoothing_radius",
-                    "post_remap",
-                    "post_saturate"
-                ],
-                "name": "main"
-            }
-        ],
-        "parameters": {
-            "angle": {
-                "description": "Selection center value. Expressed in degrees.",
-                "key": "angle",
-                "label": "angle",
-                "type": "Float"
-            },
-            "post_gain": {
-                "description": "Mid-centered gain transformation applied to the elevation values. This is a non-linear recurve operator centered around the mid elevation (typically 0.5). Increasing the gain pushes values toward the minimum and maximum elevations, creating flatter low/high regions with a steeper transition around the midpoint.",
-                "key": "post_gain",
-                "label": "Gain",
-                "type": "Float"
-            },
-            "post_gamma": {
-                "description": "Standard gamma correction applied to the elevation values. This is a monotonic power-law remapping that shifts emphasis toward low or high elevations, making the overall shape sharper or bulkier without changing its ordering.",
-                "key": "post_gamma",
-                "label": "Gamma",
-                "type": "Float"
-            },
-            "post_inverse": {
-                "description": "Inverts the output values after processing, flipping low and high values across the midrange.",
-                "key": "post_inverse",
-                "label": "Invert Output",
-                "type": "Bool"
-            },
-            "post_mix": {
-                "description": "Mixing factor for blending input and output values. A value of 0 uses only the input, 1 uses only the output, and intermediate values perform a linear interpolation.",
-                "key": "post_mix",
-                "label": "Mix Factor",
-                "type": "Float"
-            },
-            "post_mix_method": {
-                "description": "Method used to combine input and output values. Options include linear interpolation (default), min, max, smooth min, smooth max, add, and subtract.",
-                "key": "post_mix_method",
-                "label": "Mix Method",
-                "type": "Enumeration"
-            },
-            "post_remap": {
-                "description": "Linearly remaps the output values to a specified target range (default is [0, 1]).",
-                "key": "post_remap",
-                "label": "Remap Range",
-                "type": "Value range"
-            },
-            "post_saturate": {
-                "description": "Modifies the amplitude of elevations by first clamping them to a given interval and then scaling them so that the restricted interval matches the original input range. This enhances contrast in elevation variations while maintaining overall structure.",
-                "key": "post_saturate",
-                "label": "Saturation Range",
-                "type": "Value range"
-            },
-            "post_smoothing_radius": {
-                "description": "Defines the radius for post-processing smoothing, determining the size of the neighborhood used to average local values and reduce high-frequency detail. A radius of 0 disables smoothing.",
-                "key": "post_smoothing_radius",
-                "label": "Smoothing Radius",
-                "type": "Float"
-            },
-            "radius": {
-                "description": "Pre-filter radius.",
-                "key": "radius",
-                "label": "radius",
-                "type": "Float"
-            },
-            "sigma": {
-                "description": "Selection half-width.",
-                "key": "sigma",
-                "label": "sigma",
-                "type": "Float"
-            }
-        },
-        "ports": {
-            "input": {
-                "caption": "input",
-                "data_type": "VirtualArray",
-                "description": "Input heightmap.",
-                "type": "input"
-            },
-            "output": {
-                "caption": "output",
-                "data_type": "VirtualArray",
-                "description": "Mask heightmap (in [0, 1]).",
-                "type": "output"
-            }
-        }
-    },
-    "SelectBlobLog": {
-        "category": "Terrain Features/Selector",
-        "description": "SelectBlobLog performs 'blob' detection using oa Laplacian of Gaussian (log) method. Blobs are areas in an image that are either brighter or darker than the surrounding areas.",
-        "label": "SelectBlobLog",
-        "parameter_groups": [
-            {
-                "keys": [
-                    "radius",
-                    "post_inverse",
-                    "post_gamma",
-                    "post_gain",
-                    "post_smoothing_radius",
-                    "post_remap",
-                    "post_saturate"
-                ],
-                "name": "main"
-            }
-        ],
-        "parameters": {
-            "post_gain": {
-                "description": "Mid-centered gain transformation applied to the elevation values. This is a non-linear recurve operator centered around the mid elevation (typically 0.5). Increasing the gain pushes values toward the minimum and maximum elevations, creating flatter low/high regions with a steeper transition around the midpoint.",
-                "key": "post_gain",
-                "label": "Gain",
-                "type": "Float"
-            },
-            "post_gamma": {
-                "description": "Standard gamma correction applied to the elevation values. This is a monotonic power-law remapping that shifts emphasis toward low or high elevations, making the overall shape sharper or bulkier without changing its ordering.",
-                "key": "post_gamma",
-                "label": "Gamma",
-                "type": "Float"
-            },
-            "post_inverse": {
-                "description": "Inverts the output values after processing, flipping low and high values across the midrange.",
-                "key": "post_inverse",
-                "label": "Invert Output",
-                "type": "Bool"
-            },
-            "post_remap": {
-                "description": "Linearly remaps the output values to a specified target range (default is [0, 1]).",
-                "key": "post_remap",
-                "label": "Remap Range",
-                "type": "Value range"
-            },
-            "post_saturate": {
-                "description": "Modifies the amplitude of elevations by first clamping them to a given interval and then scaling them so that the restricted interval matches the original input range. This enhances contrast in elevation variations while maintaining overall structure.",
-                "key": "post_saturate",
-                "label": "Saturation Range",
-                "type": "Value range"
-            },
-            "post_smoothing_radius": {
-                "description": "Defines the radius for post-processing smoothing, determining the size of the neighborhood used to average local values and reduce high-frequency detail. A radius of 0 disables smoothing.",
-                "key": "post_smoothing_radius",
-                "label": "Smoothing Radius",
-                "type": "Float"
-            },
-            "radius": {
-                "description": "Detection radius with respect to the domain size.",
-                "key": "radius",
-                "label": "radius",
-                "type": "Float"
-            }
-        },
-        "ports": {
-            "input": {
-                "caption": "input",
-                "data_type": "VirtualArray",
-                "description": "Input heightmap.",
-                "type": "input"
-            },
-            "output": {
-                "caption": "output",
-                "data_type": "VirtualArray",
-                "description": "Mask heightmap (in [0, 1]).",
-                "type": "output"
-            }
-        }
-    },
-    "SelectCavities": {
-        "category": "Terrain Features/Selector",
-        "description": "SelectCavities analyzes the curvature of an heightmap to identify concave or convex features such as valleys, depressions, ridges, or peaks.",
-        "label": "SelectCavities",
+        "description": "Selects terrain features based on local curvature: Cavities (depressions/ridges), Valley (valley networks or ridges), or Blob (LoG) (Laplacian of Gaussian feature detection).",
+        "label": "SelectCurvature",
         "parameter_groups": [
             {
                 "keys": [
@@ -22358,347 +22176,119 @@
                     "post_remap",
                     "post_saturate"
                 ],
-                "name": "main"
+                "name": "Cavities"
+            },
+            {
+                "keys": [
+                    "radius",
+                    "ridge_select",
+                    "post_inverse",
+                    "post_gamma",
+                    "post_gain",
+                    "post_smoothing_radius",
+                    "post_remap",
+                    "post_saturate"
+                ],
+                "name": "Valley"
+            },
+            {
+                "keys": [
+                    "radius",
+                    "post_inverse",
+                    "post_gamma",
+                    "post_gain",
+                    "post_smoothing_radius",
+                    "post_remap",
+                    "post_saturate"
+                ],
+                "name": "Blob (LoG)"
             }
         ],
         "parameters": {
             "concave": {
-                "description": "Decides whether concave or convex features are detected.",
+                "description": "Decides whether concave (cavity/depression) or convex (ridge/peak) features are detected.",
                 "key": "concave",
                 "label": "",
                 "type": "Bool"
             },
             "post_filter": {
-                "description": "No description",
+                "description": "Enables smoothing filter on the extracted feature mask.",
                 "key": "post_filter",
                 "label": "Enable Smoothing",
                 "type": "Bool"
             },
             "post_gain": {
-                "description": "Mid-centered gain transformation applied to the elevation values. This is a non-linear recurve operator centered around the mid elevation (typically 0.5). Increasing the gain pushes values toward the minimum and maximum elevations, creating flatter low/high regions with a steeper transition around the midpoint.",
+                "description": "Mid-centered gain transformation applied to the elevation values.",
                 "key": "post_gain",
                 "label": "Gain",
                 "type": "Float"
             },
             "post_gamma": {
-                "description": "Standard gamma correction applied to the elevation values. This is a monotonic power-law remapping that shifts emphasis toward low or high elevations, making the overall shape sharper or bulkier without changing its ordering.",
+                "description": "Standard gamma correction applied to the elevation values.",
                 "key": "post_gamma",
                 "label": "Gamma",
                 "type": "Float"
             },
             "post_inverse": {
-                "description": "Inverts the output values after processing, flipping low and high values across the midrange.",
+                "description": "Inverts the output values after processing.",
                 "key": "post_inverse",
                 "label": "Invert Output",
                 "type": "Bool"
             },
             "post_mix": {
-                "description": "Mixing factor for blending input and output values. A value of 0 uses only the input, 1 uses only the output, and intermediate values perform a linear interpolation.",
+                "description": "Mixing factor for blending input and output values.",
                 "key": "post_mix",
                 "label": "Mix Factor",
                 "type": "Float"
             },
             "post_mix_method": {
-                "description": "Method used to combine input and output values. Options include linear interpolation (default), min, max, smooth min, smooth max, add, and subtract.",
+                "description": "Method used to combine input and output values.",
                 "key": "post_mix_method",
                 "label": "Mix Method",
                 "type": "Enumeration"
             },
             "post_remap": {
-                "description": "Linearly remaps the output values to a specified target range (default is [0, 1]).",
+                "description": "Linearly remaps the output values to a specified target range.",
                 "key": "post_remap",
                 "label": "Remap Range",
                 "type": "Value range"
             },
             "post_saturate": {
-                "description": "Modifies the amplitude of elevations by first clamping them to a given interval and then scaling them so that the restricted interval matches the original input range. This enhances contrast in elevation variations while maintaining overall structure.",
+                "description": "Modifies the amplitude of elevations by clamping and scaling to enhance contrast.",
                 "key": "post_saturate",
                 "label": "Saturation Range",
                 "type": "Value range"
             },
             "post_smoothing_radius": {
-                "description": "Defines the radius for post-processing smoothing, determining the size of the neighborhood used to average local values and reduce high-frequency detail. A radius of 0 disables smoothing.",
+                "description": "Defines the radius for post-processing smoothing.",
                 "key": "post_smoothing_radius",
                 "label": "Smoothing Radius",
                 "type": "Float"
             },
             "radius": {
-                "description": "Detection radius with respect to the domain size.",
+                "description": "Neighborhood radius or scale used for local feature analysis.",
                 "key": "radius",
                 "label": "Selection Scale",
                 "type": "Float"
-            }
-        },
-        "ports": {
-            "input": {
-                "caption": "input",
-                "data_type": "VirtualArray",
-                "description": "Input heightmap.",
-                "type": "input"
             },
-            "output": {
-                "caption": "output",
-                "data_type": "VirtualArray",
-                "description": "Mask heightmap (in [0, 1]).",
-                "type": "output"
-            }
-        }
-    },
-    "SelectInterval": {
-        "category": "Terrain Features/Selector",
-        "description": "SelectInterval is a thresholding operator. It transforms an input heightmap into a binary heightmap, where each pixel is assigned either a value of 0 or 1, depending on whether its intensity value is within an interval of values.",
-        "label": "SelectInterval",
-        "parameter_groups": [
-            {
-                "keys": [
-                    "value1",
-                    "value2",
-                    "width",
-                    "post_inverse",
-                    "post_gamma",
-                    "post_gain",
-                    "post_smoothing_radius",
-                    "post_remap",
-                    "post_saturate"
-                ],
-                "name": "main"
-            }
-        ],
-        "parameters": {
-            "post_gain": {
-                "description": "Mid-centered gain transformation applied to the elevation values. This is a non-linear recurve operator centered around the mid elevation (typically 0.5). Increasing the gain pushes values toward the minimum and maximum elevations, creating flatter low/high regions with a steeper transition around the midpoint.",
-                "key": "post_gain",
-                "label": "Gain",
-                "type": "Float"
-            },
-            "post_gamma": {
-                "description": "Standard gamma correction applied to the elevation values. This is a monotonic power-law remapping that shifts emphasis toward low or high elevations, making the overall shape sharper or bulkier without changing its ordering.",
-                "key": "post_gamma",
-                "label": "Gamma",
-                "type": "Float"
-            },
-            "post_inverse": {
-                "description": "Inverts the output values after processing, flipping low and high values across the midrange.",
-                "key": "post_inverse",
-                "label": "Invert Output",
+            "ridge_select": {
+                "description": "If enabled, selects ridges instead of valleys.",
+                "key": "ridge_select",
+                "label": "Ridge Select",
                 "type": "Bool"
-            },
-            "post_remap": {
-                "description": "Linearly remaps the output values to a specified target range (default is [0, 1]).",
-                "key": "post_remap",
-                "label": "Remap Range",
-                "type": "Value range"
-            },
-            "post_saturate": {
-                "description": "Modifies the amplitude of elevations by first clamping them to a given interval and then scaling them so that the restricted interval matches the original input range. This enhances contrast in elevation variations while maintaining overall structure.",
-                "key": "post_saturate",
-                "label": "Saturation Range",
-                "type": "Value range"
-            },
-            "post_smoothing_radius": {
-                "description": "Defines the radius for post-processing smoothing, determining the size of the neighborhood used to average local values and reduce high-frequency detail. A radius of 0 disables smoothing.",
-                "key": "post_smoothing_radius",
-                "label": "Smoothing Radius",
-                "type": "Float"
-            },
-            "value1": {
-                "description": "Selection value, lower bound.",
-                "key": "value1",
-                "label": "Lower Bound",
-                "type": "Float"
-            },
-            "value2": {
-                "description": "Selection value, upper bound.",
-                "key": "value2",
-                "label": "Upper Bound",
-                "type": "Float"
-            },
-            "width": {
-                "description": "No description",
-                "key": "width",
-                "label": "Width",
-                "type": "Float"
             }
         },
         "ports": {
             "input": {
                 "caption": "input",
                 "data_type": "VirtualArray",
-                "description": "Input heightmap.",
+                "description": "Input heightmap or feature map.",
                 "type": "input"
             },
             "output": {
                 "caption": "output",
                 "data_type": "VirtualArray",
-                "description": "Mask heightmap (in [0, 1]).",
-                "type": "output"
-            }
-        }
-    },
-    "SelectInwardOutward": {
-        "category": "Terrain Features/Selector",
-        "description": "SelectInwardOutward returns values > 0.5 if the slope is pointing to the center (slope is inward), and values < 0.5 otherwise (slope is outward).",
-        "label": "SelectInwardOutward",
-        "parameter_groups": [
-            {
-                "keys": [
-                    "center",
-                    "post_inverse",
-                    "post_gamma",
-                    "post_gain",
-                    "post_smoothing_radius",
-                    "post_remap",
-                    "post_saturate"
-                ],
-                "name": "main"
-            }
-        ],
-        "parameters": {
-            "center": {
-                "description": "Reference center within the heightmap. Coordinates are in domain units; center.y is measured from the bottom of the map (y increases upward).",
-                "key": "center",
-                "label": "center",
-                "type": "Vec2Float"
-            },
-            "post_gain": {
-                "description": "Mid-centered gain transformation applied to the elevation values. This is a non-linear recurve operator centered around the mid elevation (typically 0.5). Increasing the gain pushes values toward the minimum and maximum elevations, creating flatter low/high regions with a steeper transition around the midpoint.",
-                "key": "post_gain",
-                "label": "Gain",
-                "type": "Float"
-            },
-            "post_gamma": {
-                "description": "Standard gamma correction applied to the elevation values. This is a monotonic power-law remapping that shifts emphasis toward low or high elevations, making the overall shape sharper or bulkier without changing its ordering.",
-                "key": "post_gamma",
-                "label": "Gamma",
-                "type": "Float"
-            },
-            "post_inverse": {
-                "description": "Inverts the output values after processing, flipping low and high values across the midrange.",
-                "key": "post_inverse",
-                "label": "Invert Output",
-                "type": "Bool"
-            },
-            "post_remap": {
-                "description": "Linearly remaps the output values to a specified target range (default is [0, 1]).",
-                "key": "post_remap",
-                "label": "Remap Range",
-                "type": "Value range"
-            },
-            "post_saturate": {
-                "description": "Modifies the amplitude of elevations by first clamping them to a given interval and then scaling them so that the restricted interval matches the original input range. This enhances contrast in elevation variations while maintaining overall structure.",
-                "key": "post_saturate",
-                "label": "Saturation Range",
-                "type": "Value range"
-            },
-            "post_smoothing_radius": {
-                "description": "Defines the radius for post-processing smoothing, determining the size of the neighborhood used to average local values and reduce high-frequency detail. A radius of 0 disables smoothing.",
-                "key": "post_smoothing_radius",
-                "label": "Smoothing Radius",
-                "type": "Float"
-            }
-        },
-        "ports": {
-            "input": {
-                "caption": "input",
-                "data_type": "VirtualArray",
-                "description": "Input heightmap.",
-                "type": "input"
-            },
-            "output": {
-                "caption": "output",
-                "data_type": "VirtualArray",
-                "description": "Mask heightmap (in [0, 1]).",
-                "type": "output"
-            }
-        }
-    },
-    "SelectMidrange": {
-        "category": "Terrain Features/Selector",
-        "description": "TODO",
-        "label": "SelectMidrange",
-        "parameter_groups": [
-            {
-                "keys": [
-                    "gain",
-                    "post_mix_method",
-                    "post_mix",
-                    "post_inverse",
-                    "post_gamma",
-                    "post_gain",
-                    "post_smoothing_radius",
-                    "post_remap",
-                    "post_saturate"
-                ],
-                "name": "main"
-            }
-        ],
-        "parameters": {
-            "gain": {
-                "description": "TODO",
-                "key": "gain",
-                "label": "gain",
-                "type": "Float"
-            },
-            "post_gain": {
-                "description": "Mid-centered gain transformation applied to the elevation values. This is a non-linear recurve operator centered around the mid elevation (typically 0.5). Increasing the gain pushes values toward the minimum and maximum elevations, creating flatter low/high regions with a steeper transition around the midpoint.",
-                "key": "post_gain",
-                "label": "Gain",
-                "type": "Float"
-            },
-            "post_gamma": {
-                "description": "Standard gamma correction applied to the elevation values. This is a monotonic power-law remapping that shifts emphasis toward low or high elevations, making the overall shape sharper or bulkier without changing its ordering.",
-                "key": "post_gamma",
-                "label": "Gamma",
-                "type": "Float"
-            },
-            "post_inverse": {
-                "description": "Inverts the output values after processing, flipping low and high values across the midrange.",
-                "key": "post_inverse",
-                "label": "Invert Output",
-                "type": "Bool"
-            },
-            "post_mix": {
-                "description": "Mixing factor for blending input and output values. A value of 0 uses only the input, 1 uses only the output, and intermediate values perform a linear interpolation.",
-                "key": "post_mix",
-                "label": "Mix Factor",
-                "type": "Float"
-            },
-            "post_mix_method": {
-                "description": "Method used to combine input and output values. Options include linear interpolation (default), min, max, smooth min, smooth max, add, and subtract.",
-                "key": "post_mix_method",
-                "label": "Mix Method",
-                "type": "Enumeration"
-            },
-            "post_remap": {
-                "description": "Linearly remaps the output values to a specified target range (default is [0, 1]).",
-                "key": "post_remap",
-                "label": "Remap Range",
-                "type": "Value range"
-            },
-            "post_saturate": {
-                "description": "Modifies the amplitude of elevations by first clamping them to a given interval and then scaling them so that the restricted interval matches the original input range. This enhances contrast in elevation variations while maintaining overall structure.",
-                "key": "post_saturate",
-                "label": "Saturation Range",
-                "type": "Value range"
-            },
-            "post_smoothing_radius": {
-                "description": "Defines the radius for post-processing smoothing, determining the size of the neighborhood used to average local values and reduce high-frequency detail. A radius of 0 disables smoothing.",
-                "key": "post_smoothing_radius",
-                "label": "Smoothing Radius",
-                "type": "Float"
-            }
-        },
-        "ports": {
-            "input": {
-                "caption": "input",
-                "data_type": "VirtualArray",
-                "description": "TODO",
-                "type": "input"
-            },
-            "output": {
-                "caption": "output",
-                "data_type": "VirtualArray",
-                "description": "TODO",
+                "description": "Generated selection mask.",
                 "type": "output"
             }
         }
@@ -22806,93 +22396,9 @@
             }
         }
     },
-    "SelectRivers": {
-        "category": "Terrain Features/Selector",
-        "description": "SelectRivers is a thresholding operator. It creates a mask for river systems based on a flow accumulation threshold.",
-        "label": "SelectRivers",
-        "parameter_groups": [
-            {
-                "keys": [
-                    "talus_ref",
-                    "clipping_ratio",
-                    "post_inverse",
-                    "post_gamma",
-                    "post_gain",
-                    "post_smoothing_radius",
-                    "post_remap",
-                    "post_saturate"
-                ],
-                "name": "main"
-            }
-        ],
-        "parameters": {
-            "clipping_ratio": {
-                "description": "TODO",
-                "key": "clipping_ratio",
-                "label": "clipping_ratio",
-                "type": "Float"
-            },
-            "post_gain": {
-                "description": "Mid-centered gain transformation applied to the elevation values. This is a non-linear recurve operator centered around the mid elevation (typically 0.5). Increasing the gain pushes values toward the minimum and maximum elevations, creating flatter low/high regions with a steeper transition around the midpoint.",
-                "key": "post_gain",
-                "label": "Gain",
-                "type": "Float"
-            },
-            "post_gamma": {
-                "description": "Standard gamma correction applied to the elevation values. This is a monotonic power-law remapping that shifts emphasis toward low or high elevations, making the overall shape sharper or bulkier without changing its ordering.",
-                "key": "post_gamma",
-                "label": "Gamma",
-                "type": "Float"
-            },
-            "post_inverse": {
-                "description": "Inverts the output values after processing, flipping low and high values across the midrange.",
-                "key": "post_inverse",
-                "label": "Invert Output",
-                "type": "Bool"
-            },
-            "post_remap": {
-                "description": "Linearly remaps the output values to a specified target range (default is [0, 1]).",
-                "key": "post_remap",
-                "label": "Remap Range",
-                "type": "Value range"
-            },
-            "post_saturate": {
-                "description": "Modifies the amplitude of elevations by first clamping them to a given interval and then scaling them so that the restricted interval matches the original input range. This enhances contrast in elevation variations while maintaining overall structure.",
-                "key": "post_saturate",
-                "label": "Saturation Range",
-                "type": "Value range"
-            },
-            "post_smoothing_radius": {
-                "description": "Defines the radius for post-processing smoothing, determining the size of the neighborhood used to average local values and reduce high-frequency detail. A radius of 0 disables smoothing.",
-                "key": "post_smoothing_radius",
-                "label": "Smoothing Radius",
-                "type": "Float"
-            },
-            "talus_ref": {
-                "description": "Reference talus, with small values of talus_ref leading to thinner flow streams.",
-                "key": "talus_ref",
-                "label": "talus_ref",
-                "type": "Float"
-            }
-        },
-        "ports": {
-            "input": {
-                "caption": "input",
-                "data_type": "VirtualArray",
-                "description": "Input heightmap.",
-                "type": "input"
-            },
-            "output": {
-                "caption": "output",
-                "data_type": "VirtualArray",
-                "description": "Mask heightmap (in [0, 1]).",
-                "type": "output"
-            }
-        }
-    },
     "SelectSlope": {
         "category": "Terrain Features/Selector",
-        "description": "TODO",
+        "description": "Selects terrain regions based on slope and orientation properties: Slope (gradient steepness), Angle (directional aspect/orientation), or Inward / Outward (facing towards or away from a center point).",
         "label": "SelectSlope",
         "parameter_groups": [
             {
@@ -22905,50 +22411,108 @@
                     "post_remap",
                     "post_saturate"
                 ],
-                "name": "main"
+                "name": "Slope"
+            },
+            {
+                "keys": [
+                    "angle",
+                    "sigma",
+                    "radius",
+                    "post_mix_method",
+                    "post_mix",
+                    "post_inverse",
+                    "post_gamma",
+                    "post_gain",
+                    "post_smoothing_radius",
+                    "post_remap",
+                    "post_saturate"
+                ],
+                "name": "Angle"
+            },
+            {
+                "keys": [
+                    "center",
+                    "post_inverse",
+                    "post_gamma",
+                    "post_gain",
+                    "post_smoothing_radius",
+                    "post_remap",
+                    "post_saturate"
+                ],
+                "name": "Inward / Outward"
             }
         ],
         "parameters": {
+            "angle": {
+                "description": "Target orientation angle (in degrees) for aspect selection.",
+                "key": "angle",
+                "label": "Angle",
+                "type": "Float"
+            },
+            "center": {
+                "description": "Reference center within the heightmap. Coordinates are in domain units; center.y is measured from the bottom of the map (y increases upward).",
+                "key": "center",
+                "label": "Center",
+                "type": "Vec2Float"
+            },
             "post_gain": {
-                "description": "Mid-centered gain transformation applied to the elevation values. This is a non-linear recurve operator centered around the mid elevation (typically 0.5). Increasing the gain pushes values toward the minimum and maximum elevations, creating flatter low/high regions with a steeper transition around the midpoint.",
+                "description": "Mid-centered gain transformation applied to the elevation values.",
                 "key": "post_gain",
                 "label": "Gain",
                 "type": "Float"
             },
             "post_gamma": {
-                "description": "Standard gamma correction applied to the elevation values. This is a monotonic power-law remapping that shifts emphasis toward low or high elevations, making the overall shape sharper or bulkier without changing its ordering.",
+                "description": "Standard gamma correction applied to the elevation values.",
                 "key": "post_gamma",
                 "label": "Gamma",
                 "type": "Float"
             },
             "post_inverse": {
-                "description": "Inverts the output values after processing, flipping low and high values across the midrange.",
+                "description": "Inverts the output values after processing.",
                 "key": "post_inverse",
                 "label": "Invert Output",
                 "type": "Bool"
             },
+            "post_mix": {
+                "description": "Mixing factor for blending input and output values.",
+                "key": "post_mix",
+                "label": "Mix Factor",
+                "type": "Float"
+            },
+            "post_mix_method": {
+                "description": "Method used to combine input and output values.",
+                "key": "post_mix_method",
+                "label": "Mix Method",
+                "type": "Enumeration"
+            },
             "post_remap": {
-                "description": "Linearly remaps the output values to a specified target range (default is [0, 1]).",
+                "description": "Linearly remaps the output values to a specified target range.",
                 "key": "post_remap",
                 "label": "Remap Range",
                 "type": "Value range"
             },
             "post_saturate": {
-                "description": "Modifies the amplitude of elevations by first clamping them to a given interval and then scaling them so that the restricted interval matches the original input range. This enhances contrast in elevation variations while maintaining overall structure.",
+                "description": "Modifies the amplitude of elevations by clamping and scaling to enhance contrast.",
                 "key": "post_saturate",
                 "label": "Saturation Range",
                 "type": "Value range"
             },
             "post_smoothing_radius": {
-                "description": "Defines the radius for post-processing smoothing, determining the size of the neighborhood used to average local values and reduce high-frequency detail. A radius of 0 disables smoothing.",
+                "description": "Defines the radius for post-processing smoothing.",
                 "key": "post_smoothing_radius",
                 "label": "Smoothing Radius",
                 "type": "Float"
             },
             "radius": {
-                "description": "TODO",
+                "description": "Neighborhood radius or scale used for local feature analysis.",
                 "key": "radius",
-                "label": "radius",
+                "label": "Radius",
+                "type": "Float"
+            },
+            "sigma": {
+                "description": "Selection tolerance / half-width for angle matching.",
+                "key": "sigma",
+                "label": "Sigma",
                 "type": "Float"
             }
         },
@@ -22967,10 +22531,10 @@
             }
         }
     },
-    "SelectSoilFlow": {
+    "SelectSoil": {
         "category": "Terrain Features/ForTexturing",
-        "description": "Computes a soil–flow selection map based on the terrain gradient and the flow-accumulation map. This node can be for instance chained with ColorizeGradient for texturing.",
-        "label": "SelectSoilFlow",
+        "description": "Generates texturing and weathering masks based on physical terrain properties: Flow (sediment flow & accumulation), Rocks (multi-scale curvature rock detection), Weathered (combined slope and curvature weathering), or Rivers (drainage channel extraction).",
+        "label": "SelectSoil",
         "parameter_groups": [
             {
                 "keys": [
@@ -22989,115 +22553,8 @@
                     "post_remap",
                     "post_saturate"
                 ],
-                "name": "main"
-            }
-        ],
-        "parameters": {
-            "clipping_ratio": {
-                "description": "Flow accumulation clipping ratio. Smaller values will saturate the flow contrast.",
-                "key": "clipping_ratio",
-                "label": "Clipping Ratio",
-                "type": "Float"
+                "name": "Flow"
             },
-            "flow_gamma": {
-                "description": "Power-law (gamma) exponent applied to the flow values. Lower gamma flattens the distribution, higher gamma increases contrast and steepens the transition between low and high values.",
-                "key": "flow_gamma",
-                "label": "Flow Distrib. Exponent",
-                "type": "Float"
-            },
-            "flow_weight": {
-                "description": "Weight applied to the flow component in the final mix.",
-                "key": "flow_weight",
-                "label": "Flow Weight",
-                "type": "Float"
-            },
-            "gradient_weight": {
-                "description": "Weight applied to the gradient component in the final mix.",
-                "key": "gradient_weight",
-                "label": "Gradient Weight",
-                "type": "Float"
-            },
-            "post_gain": {
-                "description": "Mid-centered gain transformation applied to the elevation values. This is a non-linear recurve operator centered around the mid elevation (typically 0.5). Increasing the gain pushes values toward the minimum and maximum elevations, creating flatter low/high regions with a steeper transition around the midpoint.",
-                "key": "post_gain",
-                "label": "Gain",
-                "type": "Float"
-            },
-            "post_gamma": {
-                "description": "Standard gamma correction applied to the elevation values. This is a monotonic power-law remapping that shifts emphasis toward low or high elevations, making the overall shape sharper or bulkier without changing its ordering.",
-                "key": "post_gamma",
-                "label": "Gamma",
-                "type": "Float"
-            },
-            "post_inverse": {
-                "description": "Inverts the output values after processing, flipping low and high values across the midrange.",
-                "key": "post_inverse",
-                "label": "Invert Output",
-                "type": "Bool"
-            },
-            "post_mix": {
-                "description": "Mixing factor for blending input and output values. A value of 0 uses only the input, 1 uses only the output, and intermediate values perform a linear interpolation.",
-                "key": "post_mix",
-                "label": "Mix Factor",
-                "type": "Float"
-            },
-            "post_mix_method": {
-                "description": "Method used to combine input and output values. Options include linear interpolation (default), min, max, smooth min, smooth max, add, and subtract.",
-                "key": "post_mix_method",
-                "label": "Mix Method",
-                "type": "Enumeration"
-            },
-            "post_remap": {
-                "description": "Linearly remaps the output values to a specified target range (default is [0, 1]).",
-                "key": "post_remap",
-                "label": "Remap Range",
-                "type": "Value range"
-            },
-            "post_saturate": {
-                "description": "Modifies the amplitude of elevations by first clamping them to a given interval and then scaling them so that the restricted interval matches the original input range. This enhances contrast in elevation variations while maintaining overall structure.",
-                "key": "post_saturate",
-                "label": "Saturation Range",
-                "type": "Value range"
-            },
-            "post_smoothing_radius": {
-                "description": "Defines the radius for post-processing smoothing, determining the size of the neighborhood used to average local values and reduce high-frequency detail. A radius of 0 disables smoothing.",
-                "key": "post_smoothing_radius",
-                "label": "Smoothing Radius",
-                "type": "Float"
-            },
-            "radius_gradient": {
-                "description": "Radius used to compute local gradient magnitudes, defining the neighborhood size influencing slope estimation. Larger radii yield smooth gradients.",
-                "key": "radius_gradient",
-                "label": "Gradient Radius",
-                "type": "Float"
-            },
-            "talus_ref": {
-                "description": "Reference talus value for river extraction.",
-                "key": "talus_ref",
-                "label": "Ref. Talus",
-                "type": "Float"
-            }
-        },
-        "ports": {
-            "input": {
-                "caption": "input",
-                "data_type": "VirtualArray",
-                "description": "Input heightmap used to compute curvature and gradient contributions.",
-                "type": "input"
-            },
-            "output": {
-                "caption": "output",
-                "data_type": "VirtualArray",
-                "description": "Output soil-flow mask combining flow and gradient effects.",
-                "type": "output"
-            }
-        }
-    },
-    "SelectSoilRocks": {
-        "category": "Terrain Features/ForTexturing",
-        "description": "Computes a multi-scale soil/rock mask using curvature analysis across progressively larger smoothing radii.",
-        "label": "SelectSoilRocks",
-        "parameter_groups": [
             {
                 "keys": [
                     "rmax",
@@ -23115,115 +22572,8 @@
                     "post_remap",
                     "post_saturate"
                 ],
-                "name": "main"
-            }
-        ],
-        "parameters": {
-            "curvature_clamp_mode": {
-                "description": "Defines how curvature values are clamped before accumulation across scales.",
-                "key": "curvature_clamp_mode",
-                "label": "Clamp Mode",
-                "type": "Enumeration"
+                "name": "Rocks"
             },
-            "curvature_clamping": {
-                "description": "Threshold used to clamp curvature values at each scale.",
-                "key": "curvature_clamping",
-                "label": "Clamp Limit",
-                "type": "Float"
-            },
-            "k_saturation": {
-                "description": "Controls the smoothness of the saturation response applied after curvature aggregation.",
-                "key": "k_saturation",
-                "label": "Saturation Smoothing",
-                "type": "Float"
-            },
-            "post_gain": {
-                "description": "Mid-centered gain transformation applied to the elevation values. This is a non-linear recurve operator centered around the mid elevation (typically 0.5). Increasing the gain pushes values toward the minimum and maximum elevations, creating flatter low/high regions with a steeper transition around the midpoint.",
-                "key": "post_gain",
-                "label": "Gain",
-                "type": "Float"
-            },
-            "post_gamma": {
-                "description": "Standard gamma correction applied to the elevation values. This is a monotonic power-law remapping that shifts emphasis toward low or high elevations, making the overall shape sharper or bulkier without changing its ordering.",
-                "key": "post_gamma",
-                "label": "Gamma",
-                "type": "Float"
-            },
-            "post_inverse": {
-                "description": "Inverts the output values after processing, flipping low and high values across the midrange.",
-                "key": "post_inverse",
-                "label": "Invert Output",
-                "type": "Bool"
-            },
-            "post_remap": {
-                "description": "Linearly remaps the output values to a specified target range (default is [0, 1]).",
-                "key": "post_remap",
-                "label": "Remap Range",
-                "type": "Value range"
-            },
-            "post_saturate": {
-                "description": "Modifies the amplitude of elevations by first clamping them to a given interval and then scaling them so that the restricted interval matches the original input range. This enhances contrast in elevation variations while maintaining overall structure.",
-                "key": "post_saturate",
-                "label": "Saturation Range",
-                "type": "Value range"
-            },
-            "post_smoothing_radius": {
-                "description": "Defines the radius for post-processing smoothing, determining the size of the neighborhood used to average local values and reduce high-frequency detail. A radius of 0 disables smoothing.",
-                "key": "post_smoothing_radius",
-                "label": "Smoothing Radius",
-                "type": "Float"
-            },
-            "rmax": {
-                "description": "Maximum smoothing radius used when evaluating curvature across logarithmic scales.",
-                "key": "rmax",
-                "label": "Max Radius",
-                "type": "Float"
-            },
-            "rmin": {
-                "description": "Minimum smoothing radius.",
-                "key": "rmin",
-                "label": "Min Radius",
-                "type": "Float"
-            },
-            "saturation_limit": {
-                "description": "Limits the maximum saturation effect applied during the output shaping stage.",
-                "key": "saturation_limit",
-                "label": "Saturation Limit",
-                "type": "Float"
-            },
-            "smaller_scales_weight": {
-                "description": "Weight applied when descending to smaller smoothing radii, allowing fine-scale features to contribute more or less strongly.",
-                "key": "smaller_scales_weight",
-                "label": "Smaller-Scale Influence",
-                "type": "Float"
-            },
-            "steps": {
-                "description": "Number of logarithmic scales evaluated between rmin and rmax.",
-                "key": "steps",
-                "label": "Sampling Steps",
-                "type": "Integer"
-            }
-        },
-        "ports": {
-            "input": {
-                "caption": "input",
-                "data_type": "VirtualArray",
-                "description": "Input heightmap or scalar field used to compute curvature across scales.",
-                "type": "input"
-            },
-            "output": {
-                "caption": "output",
-                "data_type": "VirtualArray",
-                "description": "Computed multi-scale soil/rock selection mask.",
-                "type": "output"
-            }
-        }
-    },
-    "SelectSoilWeathered": {
-        "category": "Terrain Features/ForTexturing",
-        "description": "Generates a soil-weathering selection mask by combining curvature and gradient analysis from the input heightmap. This node can be for instance chained with ColorizeGradient for texturing.",
-        "label": "SelectSoilWeathered",
-        "parameter_groups": [
             {
                 "keys": [
                     "radius_curvature",
@@ -23240,115 +22590,12 @@
                     "post_remap",
                     "post_saturate"
                 ],
-                "name": "main"
-            }
-        ],
-        "parameters": {
-            "curvature_clamp_mode": {
-                "description": "Clamping mode applied to curvature values before mixing. Determines how positive and negative curvature values are limited. Positive curvature corresponds to convex terrain features such as bumps or ridges, while negative curvature corresponds to concave forms such as rifts, valleys, or depressions. Use the clamping mode to keep or suppress one of these curvature types depending on the effect you want to emphasize.",
-                "key": "curvature_clamp_mode",
-                "label": "Curvature Clamp Mode",
-                "type": "Enumeration"
+                "name": "Weathered"
             },
-            "curvature_clamping": {
-                "description": "Maximum absolute curvature value allowed after clamping. Smaller values will saturate the curvature contrast.",
-                "key": "curvature_clamping",
-                "label": "Curvature Clamp Limit",
-                "type": "Float"
-            },
-            "curvature_weight": {
-                "description": "Weight applied to the curvature component in the final weathering mix. Can be negative to invert curvature contribution.",
-                "key": "curvature_weight",
-                "label": "Curvature Weight",
-                "type": "Float"
-            },
-            "gradient_gain": {
-                "description": "Controls how sensitive the gradient contribution is to slope intensity. A higher gain produces a steeper, more contrast-like transition from 0 to 1, making the influence of slope change more abruptly.",
-                "key": "gradient_gain",
-                "label": "Gradient Gain",
-                "type": "Float"
-            },
-            "gradient_weight": {
-                "description": "Weight applied to the gradient component in the final weathering mix. Can be negative to invert the gradient contribution. Increasing the gradient weight will result in stronger selection based solely on elevation slope, independently of curvature, i.e. bumps, or ridge detection.",
-                "key": "gradient_weight",
-                "label": "Gradient Weight",
-                "type": "Float"
-            },
-            "post_gain": {
-                "description": "Mid-centered gain transformation applied to the elevation values. This is a non-linear recurve operator centered around the mid elevation (typically 0.5). Increasing the gain pushes values toward the minimum and maximum elevations, creating flatter low/high regions with a steeper transition around the midpoint.",
-                "key": "post_gain",
-                "label": "Gain",
-                "type": "Float"
-            },
-            "post_gamma": {
-                "description": "Standard gamma correction applied to the elevation values. This is a monotonic power-law remapping that shifts emphasis toward low or high elevations, making the overall shape sharper or bulkier without changing its ordering.",
-                "key": "post_gamma",
-                "label": "Gamma",
-                "type": "Float"
-            },
-            "post_inverse": {
-                "description": "Inverts the output values after processing, flipping low and high values across the midrange.",
-                "key": "post_inverse",
-                "label": "Invert Output",
-                "type": "Bool"
-            },
-            "post_remap": {
-                "description": "Linearly remaps the output values to a specified target range (default is [0, 1]).",
-                "key": "post_remap",
-                "label": "Remap Range",
-                "type": "Value range"
-            },
-            "post_saturate": {
-                "description": "Modifies the amplitude of elevations by first clamping them to a given interval and then scaling them so that the restricted interval matches the original input range. This enhances contrast in elevation variations while maintaining overall structure.",
-                "key": "post_saturate",
-                "label": "Saturation Range",
-                "type": "Value range"
-            },
-            "post_smoothing_radius": {
-                "description": "Defines the radius for post-processing smoothing, determining the size of the neighborhood used to average local values and reduce high-frequency detail. A radius of 0 disables smoothing.",
-                "key": "post_smoothing_radius",
-                "label": "Smoothing Radius",
-                "type": "Float"
-            },
-            "radius_curvature": {
-                "description": "Radius used for curvature computation. Larger radii capture broader-scale curvature.",
-                "key": "radius_curvature",
-                "label": "Curvature Radius",
-                "type": "Float"
-            },
-            "radius_gradient": {
-                "description": "Radius used to compute local gradient magnitudes, defining the neighborhood size influencing slope estimation. Larger radii yield smooth gradients.",
-                "key": "radius_gradient",
-                "label": "Gradient Radius",
-                "type": "Float"
-            }
-        },
-        "ports": {
-            "input": {
-                "caption": "input",
-                "data_type": "VirtualArray",
-                "description": "Input heightmap used to compute curvature and gradient contributions.",
-                "type": "input"
-            },
-            "output": {
-                "caption": "output",
-                "data_type": "VirtualArray",
-                "description": "Output soil-weathered mask combining curvature and gradient effects.",
-                "type": "output"
-            }
-        }
-    },
-    "SelectThreshold": {
-        "category": "Terrain Features/Selector",
-        "description": "No description available",
-        "label": "SelectThreshold",
-        "parameter_groups": [
             {
                 "keys": [
-                    "x0",
-                    "width",
-                    "post_mix_method",
-                    "post_mix",
+                    "talus_ref",
+                    "clipping_ratio",
                     "post_inverse",
                     "post_gamma",
                     "post_gain",
@@ -23356,68 +22603,158 @@
                     "post_remap",
                     "post_saturate"
                 ],
-                "name": "main"
+                "name": "Rivers"
             }
         ],
         "parameters": {
+            "clipping_ratio": {
+                "description": "Flow accumulation clipping ratio. Smaller values will saturate the flow contrast.",
+                "key": "clipping_ratio",
+                "label": "Clipping Ratio",
+                "type": "Float"
+            },
+            "curvature_clamp_mode": {
+                "description": "Clamping mode applied to curvature values before mixing.",
+                "key": "curvature_clamp_mode",
+                "label": "Clamp Mode",
+                "type": "Enumeration"
+            },
+            "curvature_clamping": {
+                "description": "Maximum absolute curvature value allowed after clamping.",
+                "key": "curvature_clamping",
+                "label": "Clamp Limit",
+                "type": "Float"
+            },
+            "curvature_weight": {
+                "description": "Weight applied to the curvature component in the final mix.",
+                "key": "curvature_weight",
+                "label": "Curvature Weight",
+                "type": "Float"
+            },
+            "flow_gamma": {
+                "description": "Power-law (gamma) exponent applied to the flow distribution.",
+                "key": "flow_gamma",
+                "label": "Flow Distrib. Exponent",
+                "type": "Float"
+            },
+            "flow_weight": {
+                "description": "Weight applied to the flow component in the final mix.",
+                "key": "flow_weight",
+                "label": "Flow Weight",
+                "type": "Float"
+            },
+            "gradient_gain": {
+                "description": "Controls sensitivity of the gradient contribution to slope intensity.",
+                "key": "gradient_gain",
+                "label": "Gradient Gain",
+                "type": "Float"
+            },
+            "gradient_weight": {
+                "description": "Weight applied to the gradient component in the final mix.",
+                "key": "gradient_weight",
+                "label": "Gradient Weight",
+                "type": "Float"
+            },
+            "k_saturation": {
+                "description": "Controls the smoothness of the saturation response applied after curvature aggregation.",
+                "key": "k_saturation",
+                "label": "Saturation Smoothing",
+                "type": "Float"
+            },
             "post_gain": {
-                "description": "Mid-centered gain transformation applied to the elevation values. This is a non-linear recurve operator centered around the mid elevation (typically 0.5). Increasing the gain pushes values toward the minimum and maximum elevations, creating flatter low/high regions with a steeper transition around the midpoint.",
+                "description": "Mid-centered gain transformation applied to the elevation values.",
                 "key": "post_gain",
                 "label": "Gain",
                 "type": "Float"
             },
             "post_gamma": {
-                "description": "Standard gamma correction applied to the elevation values. This is a monotonic power-law remapping that shifts emphasis toward low or high elevations, making the overall shape sharper or bulkier without changing its ordering.",
+                "description": "Standard gamma correction applied to the elevation values.",
                 "key": "post_gamma",
                 "label": "Gamma",
                 "type": "Float"
             },
             "post_inverse": {
-                "description": "Inverts the output values after processing, flipping low and high values across the midrange.",
+                "description": "Inverts the output values after processing.",
                 "key": "post_inverse",
                 "label": "Invert Output",
                 "type": "Bool"
             },
             "post_mix": {
-                "description": "Mixing factor for blending input and output values. A value of 0 uses only the input, 1 uses only the output, and intermediate values perform a linear interpolation.",
+                "description": "Mixing factor for blending input and output values.",
                 "key": "post_mix",
                 "label": "Mix Factor",
                 "type": "Float"
             },
             "post_mix_method": {
-                "description": "Method used to combine input and output values. Options include linear interpolation (default), min, max, smooth min, smooth max, add, and subtract.",
+                "description": "Method used to combine input and output values.",
                 "key": "post_mix_method",
                 "label": "Mix Method",
                 "type": "Enumeration"
             },
             "post_remap": {
-                "description": "Linearly remaps the output values to a specified target range (default is [0, 1]).",
+                "description": "Linearly remaps the output values to a specified target range.",
                 "key": "post_remap",
                 "label": "Remap Range",
                 "type": "Value range"
             },
             "post_saturate": {
-                "description": "Modifies the amplitude of elevations by first clamping them to a given interval and then scaling them so that the restricted interval matches the original input range. This enhances contrast in elevation variations while maintaining overall structure.",
+                "description": "Modifies the amplitude of elevations by clamping and scaling to enhance contrast.",
                 "key": "post_saturate",
                 "label": "Saturation Range",
                 "type": "Value range"
             },
             "post_smoothing_radius": {
-                "description": "Defines the radius for post-processing smoothing, determining the size of the neighborhood used to average local values and reduce high-frequency detail. A radius of 0 disables smoothing.",
+                "description": "Defines the radius for post-processing smoothing.",
                 "key": "post_smoothing_radius",
                 "label": "Smoothing Radius",
                 "type": "Float"
             },
-            "width": {
-                "description": "No description",
-                "key": "width",
-                "label": "Tolerance",
+            "radius_curvature": {
+                "description": "Radius used for curvature computation.",
+                "key": "radius_curvature",
+                "label": "Curvature Radius",
                 "type": "Float"
             },
-            "x0": {
-                "description": "No description",
-                "key": "x0",
-                "label": "Value",
+            "radius_gradient": {
+                "description": "Radius used to compute local gradient magnitudes.",
+                "key": "radius_gradient",
+                "label": "Gradient Radius",
+                "type": "Float"
+            },
+            "rmax": {
+                "description": "Maximum smoothing radius used when evaluating curvature across logarithmic scales.",
+                "key": "rmax",
+                "label": "Max Radius",
+                "type": "Float"
+            },
+            "rmin": {
+                "description": "Minimum smoothing radius.",
+                "key": "rmin",
+                "label": "Min Radius",
+                "type": "Float"
+            },
+            "saturation_limit": {
+                "description": "Limits the maximum saturation effect applied during output shaping.",
+                "key": "saturation_limit",
+                "label": "Saturation Limit",
+                "type": "Float"
+            },
+            "smaller_scales_weight": {
+                "description": "Weight applied when descending to smaller smoothing radii.",
+                "key": "smaller_scales_weight",
+                "label": "Smaller-Scale Influence",
+                "type": "Float"
+            },
+            "steps": {
+                "description": "Number of logarithmic scales evaluated between rmin and rmax.",
+                "key": "steps",
+                "label": "Sampling Steps",
+                "type": "Integer"
+            },
+            "talus_ref": {
+                "description": "Reference talus value for river and flow extraction.",
+                "key": "talus_ref",
+                "label": "Ref. Talus",
                 "type": "Float"
             }
         },
@@ -23425,13 +22762,13 @@
             "input": {
                 "caption": "input",
                 "data_type": "VirtualArray",
-                "description": "No description",
+                "description": "Input heightmap or feature map.",
                 "type": "input"
             },
             "output": {
                 "caption": "output",
                 "data_type": "VirtualArray",
-                "description": "No description",
+                "description": "Generated selection mask.",
                 "type": "output"
             }
         }
@@ -23518,15 +22855,16 @@
             }
         }
     },
-    "SelectValley": {
+    "SelectValue": {
         "category": "Terrain Features/Selector",
-        "description": "Identifies and selects valley-like regions in the heightmap based on curvature analysis. The selection can be inverted, and additional parameters allow fine-tuning of the selection process. The output is a mask representing the relative width of the valley. The value is 1 at the valley center and decreases to 0 at the edges of the valley.",
-        "label": "SelectValley",
+        "description": "Selects terrain regions based on elevation values using various modes: Interval (range selection), Threshold (smooth step), Target (isolated value), or Midrange (contrast-enhanced mid-elevations).",
+        "label": "SelectValue",
         "parameter_groups": [
             {
                 "keys": [
-                    "radius",
-                    "ridge_select",
+                    "value1",
+                    "value2",
+                    "width",
                     "post_inverse",
                     "post_gamma",
                     "post_gain",
@@ -23534,79 +22872,23 @@
                     "post_remap",
                     "post_saturate"
                 ],
-                "name": "main"
-            }
-        ],
-        "parameters": {
-            "post_gain": {
-                "description": "Mid-centered gain transformation applied to the elevation values. This is a non-linear recurve operator centered around the mid elevation (typically 0.5). Increasing the gain pushes values toward the minimum and maximum elevations, creating flatter low/high regions with a steeper transition around the midpoint.",
-                "key": "post_gain",
-                "label": "Gain",
-                "type": "Float"
+                "name": "Interval"
             },
-            "post_gamma": {
-                "description": "Standard gamma correction applied to the elevation values. This is a monotonic power-law remapping that shifts emphasis toward low or high elevations, making the overall shape sharper or bulkier without changing its ordering.",
-                "key": "post_gamma",
-                "label": "Gamma",
-                "type": "Float"
+            {
+                "keys": [
+                    "x0",
+                    "width",
+                    "post_mix_method",
+                    "post_mix",
+                    "post_inverse",
+                    "post_gamma",
+                    "post_gain",
+                    "post_smoothing_radius",
+                    "post_remap",
+                    "post_saturate"
+                ],
+                "name": "Threshold"
             },
-            "post_inverse": {
-                "description": "Inverts the output values after processing, flipping low and high values across the midrange.",
-                "key": "post_inverse",
-                "label": "Invert Output",
-                "type": "Bool"
-            },
-            "post_remap": {
-                "description": "Linearly remaps the output values to a specified target range (default is [0, 1]).",
-                "key": "post_remap",
-                "label": "Remap Range",
-                "type": "Value range"
-            },
-            "post_saturate": {
-                "description": "Modifies the amplitude of elevations by first clamping them to a given interval and then scaling them so that the restricted interval matches the original input range. This enhances contrast in elevation variations while maintaining overall structure.",
-                "key": "post_saturate",
-                "label": "Saturation Range",
-                "type": "Value range"
-            },
-            "post_smoothing_radius": {
-                "description": "Defines the radius for post-processing smoothing, determining the size of the neighborhood used to average local values and reduce high-frequency detail. A radius of 0 disables smoothing.",
-                "key": "post_smoothing_radius",
-                "label": "Smoothing Radius",
-                "type": "Float"
-            },
-            "radius": {
-                "description": "Defines the search radius for valley detection, controlling how localized or broad the selection is.",
-                "key": "radius",
-                "label": "radius",
-                "type": "Float"
-            },
-            "ridge_select": {
-                "description": "If enabled, selects ridges instead of valleys.",
-                "key": "ridge_select",
-                "label": "ridge_select",
-                "type": "Bool"
-            }
-        },
-        "ports": {
-            "input": {
-                "caption": "input",
-                "data_type": "VirtualArray",
-                "description": "Heightmap data used as input for valley detection.",
-                "type": "input"
-            },
-            "output": {
-                "caption": "output",
-                "data_type": "VirtualArray",
-                "description": "A mask representing the relative width of the valley. The value is 1 at the valley center and decreases to 0 at the edges of the valley.",
-                "type": "output"
-            }
-        }
-    },
-    "SelectValue": {
-        "category": "Terrain Features/Selector",
-        "description": "No description available",
-        "label": "SelectValue",
-        "parameter_groups": [
             {
                 "keys": [
                     "value",
@@ -23619,62 +22901,112 @@
                     "post_remap",
                     "post_saturate"
                 ],
-                "name": "main"
+                "name": "Target"
+            },
+            {
+                "keys": [
+                    "gain",
+                    "post_mix_method",
+                    "post_mix",
+                    "post_inverse",
+                    "post_gamma",
+                    "post_gain",
+                    "post_smoothing_radius",
+                    "post_remap",
+                    "post_saturate"
+                ],
+                "name": "Midrange"
             }
         ],
         "parameters": {
+            "gain": {
+                "description": "Mid-centered gain transformation applied to enhance contrast around the midpoint.",
+                "key": "gain",
+                "label": "Gain",
+                "type": "Float"
+            },
             "post_gain": {
-                "description": "Mid-centered gain transformation applied to the elevation values. This is a non-linear recurve operator centered around the mid elevation (typically 0.5). Increasing the gain pushes values toward the minimum and maximum elevations, creating flatter low/high regions with a steeper transition around the midpoint.",
+                "description": "Mid-centered gain transformation applied to the elevation values.",
                 "key": "post_gain",
                 "label": "Gain",
                 "type": "Float"
             },
             "post_gamma": {
-                "description": "Standard gamma correction applied to the elevation values. This is a monotonic power-law remapping that shifts emphasis toward low or high elevations, making the overall shape sharper or bulkier without changing its ordering.",
+                "description": "Standard gamma correction applied to the elevation values.",
                 "key": "post_gamma",
                 "label": "Gamma",
                 "type": "Float"
             },
             "post_inverse": {
-                "description": "Inverts the output values after processing, flipping low and high values across the midrange.",
+                "description": "Inverts the output values after processing.",
                 "key": "post_inverse",
                 "label": "Invert Output",
                 "type": "Bool"
             },
+            "post_mix": {
+                "description": "Mixing factor for blending input and output values.",
+                "key": "post_mix",
+                "label": "Mix Factor",
+                "type": "Float"
+            },
+            "post_mix_method": {
+                "description": "Method used to combine input and output values.",
+                "key": "post_mix_method",
+                "label": "Mix Method",
+                "type": "Enumeration"
+            },
             "post_remap": {
-                "description": "Linearly remaps the output values to a specified target range (default is [0, 1]).",
+                "description": "Linearly remaps the output values to a specified target range.",
                 "key": "post_remap",
                 "label": "Remap Range",
                 "type": "Value range"
             },
             "post_saturate": {
-                "description": "Modifies the amplitude of elevations by first clamping them to a given interval and then scaling them so that the restricted interval matches the original input range. This enhances contrast in elevation variations while maintaining overall structure.",
+                "description": "Modifies the amplitude of elevations by clamping and scaling to enhance contrast.",
                 "key": "post_saturate",
                 "label": "Saturation Range",
                 "type": "Value range"
             },
             "post_smoothing_radius": {
-                "description": "Defines the radius for post-processing smoothing, determining the size of the neighborhood used to average local values and reduce high-frequency detail. A radius of 0 disables smoothing.",
+                "description": "Defines the radius for post-processing smoothing.",
                 "key": "post_smoothing_radius",
                 "label": "Smoothing Radius",
                 "type": "Float"
             },
             "smoothing": {
-                "description": "No description",
+                "description": "Smoothing bandwidth applied around the target value.",
                 "key": "smoothing",
                 "label": "Smoothing",
                 "type": "Float"
             },
             "value": {
-                "description": "No description",
+                "description": "Target elevation value to select.",
                 "key": "value",
                 "label": "Value",
                 "type": "Float"
             },
+            "value1": {
+                "description": "Lower bound of the selection interval.",
+                "key": "value1",
+                "label": "Lower Bound",
+                "type": "Float"
+            },
+            "value2": {
+                "description": "Upper bound of the selection interval.",
+                "key": "value2",
+                "label": "Upper Bound",
+                "type": "Float"
+            },
             "width": {
-                "description": "No description",
+                "description": "Transition width for smooth thresholding or interval boundaries.",
                 "key": "width",
                 "label": "Width",
+                "type": "Float"
+            },
+            "x0": {
+                "description": "Threshold elevation value for the step transition.",
+                "key": "x0",
+                "label": "Value",
                 "type": "Float"
             }
         },
@@ -23682,13 +23014,13 @@
             "input": {
                 "caption": "input",
                 "data_type": "VirtualArray",
-                "description": "No description",
+                "description": "Input heightmap or feature map.",
                 "type": "input"
             },
             "output": {
                 "caption": "output",
                 "data_type": "VirtualArray",
-                "description": "No description",
+                "description": "Generated selection mask.",
                 "type": "output"
             }
         }
