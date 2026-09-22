@@ -53,11 +53,13 @@ void setup_recast_cliff_node(BaseNode &node)
     node.set_current_group(G_ISOTROPIC);
 
     node.set_current_category("Main Parameters");
-    add_float(node, A_TALUS_GLOBAL, "talus_global", 2.f, 0.f, FLT_MAX);
-    add_float(node, A_RADIUS, "radius", 0.f, 0.f, 0.5f);
-    add_float(node, A_AMPLITUDE, "amplitude", 1.f, 0.f, 2.f);
-    add_float(node, A_GAIN, "gain", 4.f, 0.01f, 8.f);
-    add_int(node, A_ITERATIONS, "iterations", 500, 1, 1000);
+    add_float(node, A_TALUS_GLOBAL, "Talus", 2.f, 0.f, FLT_MAX);
+    add_float(node, A_AMPLITUDE, "Amplitude", 1.f, 0.f, 2.f);
+    add_float(node, A_GAIN, "Gain", 4.f, 0.01f, 8.f);
+
+    node.set_current_category("Advanced");
+    add_float(node, A_RADIUS, "Radius", 0.f, 0.f, 0.5f);
+    add_int(node, A_ITERATIONS, "Iterations", 500, 1, 1000);
 
     setup_pre_process_mask_attributes(node);
     setup_post_process_heightmap_attributes(
@@ -71,12 +73,14 @@ void setup_recast_cliff_node(BaseNode &node)
     node.set_current_group(G_DIRECTIONAL);
 
     node.set_current_category("Main Parameters");
-    add_angle(node, A_ANGLE, "angle", 45.f, -180.f, 180.f);
-    add_float(node, A_TALUS_GLOBAL, "talus_global", 1.f, 0.f, 5.f);
-    add_float(node, A_RADIUS, "radius", 0.1f, 0.f, 0.5f);
-    add_float(node, A_AMPLITUDE, "amplitude", 0.1f, 0.f, 1.f);
-    add_float(node, A_GAIN, "gain", 2.f, 0.01f, 10.f);
-    add_int(node, A_ITERATIONS, "iterations", 500, 1, 1000);
+    add_angle(node, A_ANGLE, "Angle", 45.f, -180.f, 180.f);
+    add_float(node, A_TALUS_GLOBAL, "Talus", 1.f, 0.f, 5.f);
+    add_float(node, A_AMPLITUDE, "Amplitude", 0.1f, 0.f, 1.f);
+    add_float(node, A_GAIN, "Gain", 2.f, 0.01f, 10.f);
+
+    node.set_current_category("Advanced");
+    add_float(node, A_RADIUS, "Radius", 0.1f, 0.f, 0.5f);
+    add_int(node, A_ITERATIONS, "Iterations", 500, 1, 1000);
 
     setup_pre_process_mask_attributes(node);
     setup_post_process_heightmap_attributes(

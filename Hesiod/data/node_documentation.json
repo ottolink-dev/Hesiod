@@ -18117,25 +18117,25 @@
             "amplitude": {
                 "description": "Cliff amplitude.",
                 "key": "amplitude",
-                "label": "amplitude",
+                "label": "Amplitude",
                 "type": "Float"
             },
             "angle": {
                 "description": "Angle (in degrees) determining the direction of the cliffs.",
                 "key": "angle",
-                "label": "angle",
+                "label": "Angle",
                 "type": "Angle"
             },
             "gain": {
                 "description": "Gain, influence the cliff elevation profile.",
                 "key": "gain",
-                "label": "gain",
+                "label": "Gain",
                 "type": "Float"
             },
             "iterations": {
                 "description": "Number of Poisson solver iterations.",
                 "key": "iterations",
-                "label": "iterations",
+                "label": "Iterations",
                 "type": "Integer"
             },
             "mask_activate": {
@@ -18219,13 +18219,13 @@
             "radius": {
                 "description": "Filter influence radius.",
                 "key": "radius",
-                "label": "radius",
+                "label": "Radius",
                 "type": "Float"
             },
             "talus_global": {
                 "description": "Reference talus at which the cliff are added.",
                 "key": "talus_global",
-                "label": "talus_global",
+                "label": "Talus",
                 "type": "Float"
             }
         },
