@@ -18262,54 +18262,6 @@
             }
         }
     },
-    "RecastSag": {
-        "category": "WIP",
-        "description": "RecastSag add cliffs in a heightmap by introducing sinks, droops, or bends downward changes in elevation.",
-        "label": "RecastSag",
-        "parameter_groups": [
-            {
-                "keys": [
-                    "vref",
-                    "k"
-                ],
-                "name": "main"
-            }
-        ],
-        "parameters": {
-            "k": {
-                "description": "Smoothing parameter.",
-                "key": "k",
-                "label": "k",
-                "type": "Float"
-            },
-            "vref": {
-                "description": "Reference elevation for the folding.",
-                "key": "vref",
-                "label": "vref",
-                "type": "Float"
-            }
-        },
-        "ports": {
-            "input": {
-                "caption": "input",
-                "data_type": "VirtualArray",
-                "description": "Input heightmap.",
-                "type": "input"
-            },
-            "mask": {
-                "caption": "mask",
-                "data_type": "VirtualArray",
-                "description": "Mask defining the filtering intensity (expected in [0, 1]).",
-                "type": "input"
-            },
-            "output": {
-                "caption": "output",
-                "data_type": "VirtualArray",
-                "description": "Filtered heightmap.",
-                "type": "output"
-            }
-        }
-    },
     "Receive": {
         "category": "Routing",
         "description": "Retrieves a heightmap broadcasted by another node using the specified tag.",
