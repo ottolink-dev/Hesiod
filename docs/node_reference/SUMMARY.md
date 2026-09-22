@@ -312,7 +312,6 @@
     * [Mudslide](nodes/Mudslide.md)
     * [NormalDisplacement](nodes/NormalDisplacement.md)
     * [NormalMapToHeightmap](nodes/NormalMapToHeightmap.md)
-    * [RecastCanyon](nodes/RecastCanyon.md)
     * [RecastCliff](nodes/RecastCliff.md)
     * [RecurveS](nodes/RecurveS.md)
     * [ReverseMidpoint](nodes/ReverseMidpoint.md)

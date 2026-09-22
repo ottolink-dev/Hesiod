@@ -18006,60 +18006,6 @@
             }
         }
     },
-    "RecastCanyon": {
-        "category": "WIP",
-        "description": "TODO",
-        "label": "RecastCanyon",
-        "parameter_groups": [
-            {
-                "keys": [
-                    "vcut",
-                    "gamma"
-                ],
-                "name": "main"
-            }
-        ],
-        "parameters": {
-            "gamma": {
-                "description": "TODO",
-                "key": "gamma",
-                "label": "gamma",
-                "type": "Float"
-            },
-            "vcut": {
-                "description": "TODO",
-                "key": "vcut",
-                "label": "vcut",
-                "type": "Float"
-            }
-        },
-        "ports": {
-            "input": {
-                "caption": "input",
-                "data_type": "VirtualArray",
-                "description": "TODO",
-                "type": "input"
-            },
-            "mask": {
-                "caption": "mask",
-                "data_type": "VirtualArray",
-                "description": "Mask defining the filtering intensity (expected in [0, 1]).",
-                "type": "input"
-            },
-            "noise": {
-                "caption": "noise",
-                "data_type": "VirtualArray",
-                "description": "TODO",
-                "type": "input"
-            },
-            "output": {
-                "caption": "output",
-                "data_type": "VirtualArray",
-                "description": "TODO",
-                "type": "output"
-            }
-        }
-    },
     "RecastCliff": {
         "category": "WIP",
         "description": "RecastCliff add cliffs in a heightmap by introducing sharp changes in elevation to simulate steep vertical terrain features such as cliffs or escarpments.",
