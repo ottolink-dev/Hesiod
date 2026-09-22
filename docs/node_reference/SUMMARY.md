@@ -314,7 +314,6 @@
     * [NormalMapToHeightmap](nodes/NormalMapToHeightmap.md)
     * [RecastCanyon](nodes/RecastCanyon.md)
     * [RecastCliff](nodes/RecastCliff.md)
-    * [RecastCliffDirectional](nodes/RecastCliffDirectional.md)
     * [RecastSag](nodes/RecastSag.md)
     * [RecurveS](nodes/RecurveS.md)
     * [ReverseMidpoint](nodes/ReverseMidpoint.md)

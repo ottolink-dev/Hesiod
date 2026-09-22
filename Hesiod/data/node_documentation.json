@@ -18070,9 +18070,47 @@
                     "talus_global",
                     "radius",
                     "amplitude",
-                    "gain"
+                    "gain",
+                    "iterations",
+                    "mask_activate",
+                    "mask_type",
+                    "mask_inverse",
+                    "mask_radius",
+                    "mask_gain",
+                    "post_mix_method",
+                    "post_mix",
+                    "post_inverse",
+                    "post_gamma",
+                    "post_gain",
+                    "post_smoothing_radius",
+                    "post_remap",
+                    "post_saturate"
                 ],
-                "name": "main"
+                "name": "Isotropic"
+            },
+            {
+                "keys": [
+                    "angle",
+                    "talus_global",
+                    "radius",
+                    "amplitude",
+                    "gain",
+                    "iterations",
+                    "mask_activate",
+                    "mask_type",
+                    "mask_inverse",
+                    "mask_radius",
+                    "mask_gain",
+                    "post_mix_method",
+                    "post_mix",
+                    "post_inverse",
+                    "post_gamma",
+                    "post_gain",
+                    "post_smoothing_radius",
+                    "post_remap",
+                    "post_saturate"
+                ],
+                "name": "Directional"
             }
         ],
         "parameters": {
@@ -18082,10 +18120,100 @@
                 "label": "amplitude",
                 "type": "Float"
             },
+            "angle": {
+                "description": "Angle (in degrees) determining the direction of the cliffs.",
+                "key": "angle",
+                "label": "angle",
+                "type": "Angle"
+            },
             "gain": {
                 "description": "Gain, influence the cliff elevation profile.",
                 "key": "gain",
                 "label": "gain",
+                "type": "Float"
+            },
+            "iterations": {
+                "description": "Number of Poisson solver iterations.",
+                "key": "iterations",
+                "label": "iterations",
+                "type": "Integer"
+            },
+            "mask_activate": {
+                "description": "Enables or disables the internal mask. If the node's 'mask' input is connected, this setting is bypassed and the input mask is used instead.",
+                "key": "mask_activate",
+                "label": "Activate Default Mask",
+                "type": "Bool"
+            },
+            "mask_gain": {
+                "description": "Controls the intensity or influence of the internal mask. Bypassed if the 'mask' input is connected.",
+                "key": "mask_gain",
+                "label": "Mask Gain",
+                "type": "Float"
+            },
+            "mask_inverse": {
+                "description": "Inverts the internal mask, applying the operator where the mask is low. Ignored if a 'mask' input is provided.",
+                "key": "mask_inverse",
+                "label": "Inverse Mask",
+                "type": "Bool"
+            },
+            "mask_radius": {
+                "description": "Defines the smoothing radius for the internal mask. A value of 0 disables smoothing. This is bypassed if the 'mask' input is used.",
+                "key": "mask_radius",
+                "label": "Mask Radius",
+                "type": "Float"
+            },
+            "mask_type": {
+                "description": "Specifies how the internal mask is computed: 'Elevation' uses height, 'Gradient Norm' uses slope, and 'Elevation mid-range' selects the middle portion of the height range. This parameter is ignored when a 'mask' input is connected.",
+                "key": "mask_type",
+                "label": "Mask Type",
+                "type": "Choice"
+            },
+            "post_gain": {
+                "description": "Mid-centered gain transformation applied to the elevation values. This is a non-linear recurve operator centered around the mid elevation (typically 0.5). Increasing the gain pushes values toward the minimum and maximum elevations, creating flatter low/high regions with a steeper transition around the midpoint.",
+                "key": "post_gain",
+                "label": "Gain",
+                "type": "Float"
+            },
+            "post_gamma": {
+                "description": "Standard gamma correction applied to the elevation values. This is a monotonic power-law remapping that shifts emphasis toward low or high elevations, making the overall shape sharper or bulkier without changing its ordering.",
+                "key": "post_gamma",
+                "label": "Gamma",
+                "type": "Float"
+            },
+            "post_inverse": {
+                "description": "Inverts the output values after processing, flipping low and high values across the midrange.",
+                "key": "post_inverse",
+                "label": "Invert Output",
+                "type": "Bool"
+            },
+            "post_mix": {
+                "description": "Mixing factor for blending input and output values. A value of 0 uses only the input, 1 uses only the output, and intermediate values perform a linear interpolation.",
+                "key": "post_mix",
+                "label": "Mix Factor",
+                "type": "Float"
+            },
+            "post_mix_method": {
+                "description": "Method used to combine input and output values. Options include linear interpolation (default), min, max, smooth min, smooth max, add, and subtract.",
+                "key": "post_mix_method",
+                "label": "Mix Method",
+                "type": "Enumeration"
+            },
+            "post_remap": {
+                "description": "Linearly remaps the output values to a specified target range (default is [0, 1]).",
+                "key": "post_remap",
+                "label": "Remap Range",
+                "type": "Value range"
+            },
+            "post_saturate": {
+                "description": "Modifies the amplitude of elevations by first clamping them to a given interval and then scaling them so that the restricted interval matches the original input range. This enhances contrast in elevation variations while maintaining overall structure.",
+                "key": "post_saturate",
+                "label": "Saturation Range",
+                "type": "Value range"
+            },
+            "post_smoothing_radius": {
+                "description": "Defines the radius for post-processing smoothing, determining the size of the neighborhood used to average local values and reduce high-frequency detail. A radius of 0 disables smoothing.",
+                "key": "post_smoothing_radius",
+                "label": "Smoothing Radius",
                 "type": "Float"
             },
             "radius": {
@@ -18102,6 +18230,18 @@
             }
         },
         "ports": {
+            "angle": {
+                "caption": "angle",
+                "data_type": "VirtualArray",
+                "description": "Angle map determining the direction of cliffs.",
+                "type": "input"
+            },
+            "cliff_mask": {
+                "caption": "cliff_mask",
+                "data_type": "VirtualArray",
+                "description": "Cliff mask.",
+                "type": "output"
+            },
             "input": {
                 "caption": "input",
                 "data_type": "VirtualArray",
@@ -18118,75 +18258,6 @@
                 "caption": "output",
                 "data_type": "VirtualArray",
                 "description": "Filtered heightmap.",
-                "type": "output"
-            }
-        }
-    },
-    "RecastCliffDirectional": {
-        "category": "WIP",
-        "description": "TODO",
-        "label": "RecastCliffDirectional",
-        "parameter_groups": [
-            {
-                "keys": [
-                    "angle",
-                    "talus_global",
-                    "radius",
-                    "amplitude",
-                    "gain"
-                ],
-                "name": "main"
-            }
-        ],
-        "parameters": {
-            "amplitude": {
-                "description": "TODO",
-                "key": "amplitude",
-                "label": "amplitude",
-                "type": "Float"
-            },
-            "angle": {
-                "description": "TODO Expressed in degrees.",
-                "key": "angle",
-                "label": "angle",
-                "type": "Float"
-            },
-            "gain": {
-                "description": "TODO",
-                "key": "gain",
-                "label": "gain",
-                "type": "Float"
-            },
-            "radius": {
-                "description": "TODO",
-                "key": "radius",
-                "label": "radius",
-                "type": "Float"
-            },
-            "talus_global": {
-                "description": "TODO",
-                "key": "talus_global",
-                "label": "talus_global",
-                "type": "Float"
-            }
-        },
-        "ports": {
-            "input": {
-                "caption": "input",
-                "data_type": "VirtualArray",
-                "description": "TODO",
-                "type": "input"
-            },
-            "mask": {
-                "caption": "mask",
-                "data_type": "VirtualArray",
-                "description": "Mask defining the filtering intensity (expected in [0, 1]).",
-                "type": "input"
-            },
-            "output": {
-                "caption": "output",
-                "data_type": "VirtualArray",
-                "description": "TODO",
                 "type": "output"
             }
         }

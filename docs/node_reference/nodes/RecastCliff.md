@@ -25,6 +25,7 @@ WIP
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
+|cliff_mask|VirtualArray|Cliff mask.|
 |output|VirtualArray|Filtered heightmap.|
 
 ## Parameters
