@@ -12253,7 +12253,7 @@
         }
     },
     "Jagged": {
-        "category": "Filter/Advanced Filters",
+        "category": "Filter/Recast",
         "description": "Applies a Voronoi-based jagged bubble dome filter that adds localized dome profiles to the elevation within Voronoi cells.",
         "label": "Jagged",
         "parameter_groups": [

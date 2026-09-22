@@ -257,7 +257,7 @@ std::map<std::string, std::string> get_node_inventory()
       {"Island", "Primitive/Geological"},
       {"IslandChain", "Primitive/Geological"},
       {"IslandLandMask", "Primitive/Geological"},
-      {"Jagged", "Filter/Advanced Filters"},
+      {"Jagged", "Filter/Recast"},
       {"KernelCupola", "Primitive/Kernel"},
       {"KernelDiskSmooth", "Primitive/Kernel"},
       {"KernelGabor", "Primitive/Kernel"},
