@@ -318,7 +318,6 @@ std::map<std::string, std::string> get_node_inventory()
       {"RecastCanyon", "WIP"},           // "Filter/Recast"},
       {"RecastCliff", "WIP"},            // "Filter/Recast"},
       {"RecastCliffDirectional", "WIP"}, // "Filter/Recast"},
-      {"RecastCracks", "WIP"},           // "Filter/Recast"},
       {"RecastSag", "WIP"},              // "Filter/Recast"},
       {"Receive", "Routing"},
       {"Recurve", "Filter/Recurve"},
@@ -617,7 +616,6 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
     SETUP_NODE(RecastCanyon, recast_canyon);
     SETUP_NODE(RecastCliff, recast_cliff);
     SETUP_NODE(RecastCliffDirectional, recast_cliff_directional);
-    SETUP_NODE(RecastCracks, recast_cracks);
     SETUP_NODE(RecastSag, recast_sag);
     SETUP_NODE(Recurve, recurve);
     SETUP_NODE(RecurveKura, recurve_kura);

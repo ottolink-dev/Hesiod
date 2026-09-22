@@ -18191,55 +18191,6 @@
             }
         }
     },
-    "RecastCracks": {
-        "category": "WIP",
-        "description": "TODO",
-        "label": "RecastCracks",
-        "parameter_groups": [
-            {
-                "keys": [
-                    "cut_min",
-                    "cut_max",
-                    "k_smoothing"
-                ],
-                "name": "main"
-            }
-        ],
-        "parameters": {
-            "cut_max": {
-                "description": "TODO",
-                "key": "cut_max",
-                "label": "cut_max",
-                "type": "Float"
-            },
-            "cut_min": {
-                "description": "TODO",
-                "key": "cut_min",
-                "label": "cut_min",
-                "type": "Float"
-            },
-            "k_smoothing": {
-                "description": "TODO",
-                "key": "k_smoothing",
-                "label": "k_smoothing",
-                "type": "Float"
-            }
-        },
-        "ports": {
-            "input": {
-                "caption": "input",
-                "data_type": "VirtualArray",
-                "description": "TODO",
-                "type": "input"
-            },
-            "output": {
-                "caption": "output",
-                "data_type": "VirtualArray",
-                "description": "TODO",
-                "type": "output"
-            }
-        }
-    },
     "RecastSag": {
         "category": "WIP",
         "description": "RecastSag add cliffs in a heightmap by introducing sinks, droops, or bends downward changes in elevation.",
