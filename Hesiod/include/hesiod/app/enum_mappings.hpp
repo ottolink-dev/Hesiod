@@ -164,6 +164,11 @@ static struct EnumMappings
       {"intersection", MaskCombineMethod::INTERSECTION},
       {"exclusion", MaskCombineMethod::EXCLUSION}};
 
+  const std::map<std::string, int> min_max_kernel_map = {
+      {"Disk", static_cast<int>(hmap::MinMaxKernel::DISK)},
+      {"Octagon", static_cast<int>(hmap::MinMaxKernel::OCTAGON)},
+      {"Square", static_cast<int>(hmap::MinMaxKernel::SQUARE)}};
+
   const std::map<std::string, int> morphology_operation_map = {
       {"Border", hmap::MorphologyOperation::MO_BORDER},
       {"Closing", hmap::MorphologyOperation::MO_CLOSING},

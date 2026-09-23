@@ -22,9 +22,10 @@ namespace hesiod
 constexpr const char *P_IN  = "input";
 constexpr const char *P_OUT = "mask";
 
-constexpr const char *A_RADIUS = "radius";
-constexpr const char *A_METRIC = "metric";
-constexpr const char *A_SATMAX = "satmax";
+constexpr const char *A_RADIUS         = "radius";
+constexpr const char *A_METRIC         = "metric";
+constexpr const char *A_SATMAX         = "satmax";
+constexpr const char *A_MIN_MAX_KERNEL = "min_max_kernel";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -51,6 +52,13 @@ void setup_local_metrics_node(BaseNode &node)
 
   setup_post_process_heightmap_attributes(node,
                                           {.add_mix = true, .remap_active_state = true});
+
+  node.set_current_category("Advanced");
+  add_enum(node,
+           A_MIN_MAX_KERNEL,
+           "Kernel Type",
+           enum_mappings.min_max_kernel_map,
+           "Octagon");
 }
 
 // -----------------------------------------------------------------------------
@@ -72,8 +80,9 @@ void compute_local_metrics_node(BaseNode &node)
   // --- Params
 
   // clang-format off
-  const auto metric   = node.val_enum<hmap::gpu::LocalMetrics>(A_METRIC);
-  const auto sat_perc = 0.01f * node.val<float>(A_SATMAX);
+  const auto metric      = node.val_enum<hmap::gpu::LocalMetrics>(A_METRIC);
+  const auto sat_perc    = 0.01f * node.val<float>(A_SATMAX);
+  const auto kernel_type = node.val_enum<hmap::MinMaxKernel>(A_MIN_MAX_KERNEL);
   // clang-format on
 
   const int   ir     = node.val_pixel_radius(A_RADIUS);
@@ -92,7 +101,7 @@ void compute_local_metrics_node(BaseNode &node)
         auto [pa_in]  = unpack<1>(in);
         auto [pa_out] = unpack<1>(out);
 
-        *pa_out = hmap::gpu::local_metrics(*pa_in, ir, metric);
+        *pa_out = hmap::gpu::local_metrics(*pa_in, ir, metric, kernel_type);
       },
       node.cfg().cm_gpu);
 
