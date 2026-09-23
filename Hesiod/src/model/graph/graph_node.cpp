@@ -330,6 +330,24 @@ void GraphNode::remove_node(const std::string &id)
   gnode::Graph::remove_node(id);
 }
 
+std::string GraphNode::runtime_info_to_string(const char separator) const
+{
+  std::string result;
+
+  for (const auto &[node_id, p_gnode] : this->nodes)
+  {
+    const BaseNode *p_node = dynamic_cast<const BaseNode *>(p_gnode.get());
+    if (p_node)
+    {
+      if (!result.empty())
+        result += '\n';
+      result += p_node->runtime_info_to_string(separator);
+    }
+  }
+
+  return result;
+}
+
 void GraphNode::reseed(bool backward)
 {
   Logger::log()->trace("GraphNode::reseed: {}", this->get_id());

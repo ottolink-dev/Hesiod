@@ -192,6 +192,8 @@ void run_batch_mode(const std::string                  &filename,
 
   graph_manager.update();
 
+  string_to_file(graph_manager.runtime_info_to_string('|'), "batch.log");
+
   // flatten & export if there is a configuration defined
   if (!graph_manager.get_export_param().export_path.empty())
     graph_manager.export_flatten();

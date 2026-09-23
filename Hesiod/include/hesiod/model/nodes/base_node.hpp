@@ -50,6 +50,7 @@ public:
   // --- Runtime info ---
   NodeRuntimeInfo get_runtime_info() const;
   float           get_memory_usage() const;
+  std::string     runtime_info_to_string(const char separator = ',') const;
   void            update_runtime_info(NodeRuntimeStep step);
 
   // --- Identification ---

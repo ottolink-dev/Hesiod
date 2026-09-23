@@ -56,7 +56,8 @@ public:
   void          on_broadcast_node_updated(const std::string &tag);
 
   // --- Others... ---
-  void reseed(bool backward);
+  void        reseed(bool backward);
+  std::string runtime_info_to_string(const char separator = ',') const;
 
   // --- Compute Callbacks
   std::function<void(const std::string &node_id)> compute_started;
