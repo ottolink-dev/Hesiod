@@ -44,6 +44,9 @@ void run_batch_mode(const std::string                  &filename,
                     const glm::ivec2                   &shape,
                     const glm::ivec2                   &tiling,
                     float                               overlap,
+                    bool                                force_distributed = false,
+                    bool                                force_sequential = false,
+                    bool                                cache_data_on_disk = false,
                     const GraphConfig                  *p_input_model_config = nullptr,
                     std::function<void(GraphManager &)> setup_callbacks = nullptr);
 void run_node_inventory();
