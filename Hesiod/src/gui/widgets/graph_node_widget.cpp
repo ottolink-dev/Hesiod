@@ -654,12 +654,18 @@ void GraphNodeWidget::on_new_graphics_node_request(const std::string &node_id,
 
   BaseNode *p_node = gno->get_node_ref_by_id<BaseNode>(node_id);
   if (!p_node)
-    throw std::runtime_error("Cannot display a missing model node.");
+  {
+    Logger::log()->warn(
+        "GraphNodeWidget::on_new_graphics_node_request: model node '{}' not found",
+        node_id);
+    return;
+  }
   auto *p_proxy = new HesiodNodeProxy(p_node->get_shared(), this);
   auto *widget = node_widget_factory(p_node->get_label(), p_node->get_shared(), this);
 
   this->add_node(p_proxy, scene_pos, node_id);
-  this->get_graphics_node_by_id(node_id)->set_widget(widget);
+  if (auto *gn = this->get_graphics_node_by_id(node_id))
+    gn->set_widget(widget);
 }
 
 std::string GraphNodeWidget::on_new_node_request(const std::string &node_type,

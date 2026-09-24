@@ -48,6 +48,10 @@ void AppContext::load_node_documentation()
   }
 }
 
+ErrorManager &AppContext::get_error_manager() { return this->error_manager; }
+
+const ErrorManager &AppContext::get_error_manager() const { return this->error_manager; }
+
 void AppContext::load_project_model(const std::string &fname)
 {
   Logger::log()->trace("AppContext::load_project_model: {}", fname);
@@ -61,8 +65,23 @@ void AppContext::load_project_model(const std::string &fname)
 
   this->new_project();
 
-  nlohmann::json json = json_from_file(fname);
-  this->project_model->json_from(json);
+  try
+  {
+    nlohmann::json json = json_from_file(fname);
+    this->project_model->json_from(json);
+  }
+  catch (const std::exception &e)
+  {
+    this->error_manager.push_error(
+        ErrorCategory::IO,
+        std::format("Failed to read project file '{}': {}", fname, e.what()));
+  }
+  catch (...)
+  {
+    this->error_manager.push_error(
+        ErrorCategory::IO,
+        std::format("Failed to read project file '{}': unknown error", fname));
+  }
 }
 
 void AppContext::load_settings()
@@ -94,6 +113,7 @@ void AppContext::load_settings()
 void AppContext::new_project()
 {
   Logger::log()->trace("AppContext::new_project");
+  this->error_manager.clear();
   this->project_model = std::make_unique<ProjectModel>();
 }
 

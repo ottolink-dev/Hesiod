@@ -65,7 +65,9 @@ void ProjectModel::json_from(nlohmann::json const &json)
     this->graph_manager->update();
   }
   else
+  {
     Logger::log()->error("ProjectModel::json_from: could not parse graph_manager json");
+  }
 }
 
 nlohmann::json ProjectModel::json_to() const

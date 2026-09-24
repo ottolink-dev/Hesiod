@@ -9,15 +9,20 @@
 
 #include <QCoreApplication>
 #include <QDesktopServices>
+#include <QDialog>
+#include <QDialogButtonBox>
 #include <QFileDialog>
+#include <QLabel>
 #include <QMenuBar>
 #include <QMessageBox>
 #include <QProcess>
 #include <QProgressDialog>
 #include <QPushButton>
 #include <QStatusBar>
+#include <QTextEdit>
 #include <QTimer>
 #include <QUrl>
+#include <QVBoxLayout>
 
 #include <omp.h>
 
@@ -32,6 +37,7 @@
 #include "hesiod/gui/widgets/about_dialog.hpp"
 #include "hesiod/gui/widgets/batch_export_progress_dialog.hpp"
 #include "hesiod/gui/widgets/documentation_popup.hpp"
+#include "hesiod/gui/widgets/error_dialog.hpp"
 #include "hesiod/gui/widgets/example_selector_dialog.hpp"
 #include "hesiod/gui/widgets/fractional_repaint_filter.hpp"
 #include "hesiod/gui/widgets/graph_config_widgets/bake_config_dialog.hpp"
@@ -360,6 +366,34 @@ void HesiodApplication::load_project_model_and_ui(const std::string &fname,
   else
   {
     this->context.load_project_model(actual_fname);
+
+    auto &error_manager = this->context.get_error_manager();
+
+    if (!this->headless && error_manager.has_errors())
+    {
+      const auto &errors = error_manager.get_errors();
+      const QString
+          message = QString("The project '%1' was loaded with %2 warning(s)/error(s). "
+                            "Some nodes or links could not be restored:")
+                        .arg(QString::fromStdString(actual_fname))
+                        .arg(errors.size());
+
+      ErrorDialog dialog("Project Loading Warnings",
+                         message,
+                         errors,
+                         true,
+                         this->main_window);
+
+      error_manager.clear();
+
+      if (dialog.exec() == QDialog::Rejected)
+      {
+        Logger::log()->info("User cancelled loading project after warnings: {}",
+                            actual_fname);
+        this->load_project_model_and_ui("", false);
+        return;
+      }
+    }
   }
 
   // --- UI
