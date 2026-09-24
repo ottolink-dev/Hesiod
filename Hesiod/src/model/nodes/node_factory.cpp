@@ -311,6 +311,7 @@ std::map<std::string, std::string> get_node_inventory()
       {"PostProcess", "Filter"},
       {"Preview", "Debug"},
       {"ProjectTalus", "Filter"},
+      {"QuadSurface", "Primitive/Function"},
       {"QuiltingBlend", "WIP"},   // , "Operator/Resynthesis"},
       {"QuiltingExpand", "WIP"},  // , "Operator/Resynthesis"},
       {"QuiltingShuffle", "WIP"}, // , "Operator/Resynthesis"},
@@ -606,6 +607,7 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
     SETUP_NODE(PolygonFieldFbm, polygon_field_fbm);
     SETUP_NODE(PostProcess, post_process);
     SETUP_NODE(ProjectTalus, project_talus);
+    SETUP_NODE(QuadSurface, quad_surface);
     SETUP_NODE(QuiltingBlend, quilting_blend);
     SETUP_NODE(QuiltingExpand, quilting_expand);
     SETUP_NODE(QuiltingShuffle, quilting_shuffle);

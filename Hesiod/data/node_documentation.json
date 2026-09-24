@@ -17702,6 +17702,122 @@
             }
         }
     },
+    "QuadSurface": {
+        "category": "Primitive/Function",
+        "description": "Generates a quadratic surface interpolated from four corner elevation values (c00, c10, c01, c11) across the domain.",
+        "label": "QuadSurface",
+        "parameter_groups": [
+            {
+                "keys": [
+                    "c00",
+                    "c10",
+                    "c01",
+                    "c11",
+                    "post_inverse",
+                    "post_gamma",
+                    "post_gain",
+                    "post_smoothing_radius",
+                    "post_remap",
+                    "post_saturate"
+                ],
+                "name": "main"
+            }
+        ],
+        "parameters": {
+            "c00": {
+                "description": "Elevation at bottom-left corner (xmin, ymin).",
+                "key": "c00",
+                "label": "c00 (Bottom-Left)",
+                "type": "Float"
+            },
+            "c01": {
+                "description": "Elevation at top-left corner (xmin, ymax).",
+                "key": "c01",
+                "label": "c01 (Top-Left)",
+                "type": "Float"
+            },
+            "c10": {
+                "description": "Elevation at bottom-right corner (xmax, ymin).",
+                "key": "c10",
+                "label": "c10 (Bottom-Right)",
+                "type": "Float"
+            },
+            "c11": {
+                "description": "Elevation at top-right corner (xmax, ymax).",
+                "key": "c11",
+                "label": "c11 (Top-Right)",
+                "type": "Float"
+            },
+            "post_gain": {
+                "description": "Mid-centered gain transformation applied to the elevation values. This is a non-linear recurve operator centered around the mid elevation (typically 0.5). Increasing the gain pushes values toward the minimum and maximum elevations, creating flatter low/high regions with a steeper transition around the midpoint.",
+                "key": "post_gain",
+                "label": "Gain",
+                "type": "Float"
+            },
+            "post_gamma": {
+                "description": "Standard gamma correction applied to the elevation values. This is a monotonic power-law remapping that shifts emphasis toward low or high elevations, making the overall shape sharper or bulkier without changing its ordering.",
+                "key": "post_gamma",
+                "label": "Gamma",
+                "type": "Float"
+            },
+            "post_inverse": {
+                "description": "Inverts the output values after processing, flipping low and high values across the midrange.",
+                "key": "post_inverse",
+                "label": "Invert Output",
+                "type": "Bool"
+            },
+            "post_remap": {
+                "description": "Linearly remaps the output values to a specified target range (default is [0, 1]).",
+                "key": "post_remap",
+                "label": "Remap Range",
+                "type": "Value range"
+            },
+            "post_saturate": {
+                "description": "Modifies the amplitude of elevations by first clamping them to a given interval and then scaling them so that the restricted interval matches the original input range. This enhances contrast in elevation variations while maintaining overall structure.",
+                "key": "post_saturate",
+                "label": "Saturation Range",
+                "type": "Value range"
+            },
+            "post_smoothing_radius": {
+                "description": "Defines the radius for post-processing smoothing, determining the size of the neighborhood used to average local values and reduce high-frequency detail. A radius of 0 disables smoothing.",
+                "key": "post_smoothing_radius",
+                "label": "Smoothing Radius",
+                "type": "Float"
+            }
+        },
+        "ports": {
+            "control": {
+                "caption": "control",
+                "data_type": "VirtualArray",
+                "description": "Control parameter, acts as a multiplier for the elevation values.",
+                "type": "input"
+            },
+            "dx": {
+                "caption": "dx",
+                "data_type": "VirtualArray",
+                "description": "Displacement with respect to the domain size (x-direction).",
+                "type": "input"
+            },
+            "dy": {
+                "caption": "dy",
+                "data_type": "VirtualArray",
+                "description": "Displacement with respect to the domain size (y-direction).",
+                "type": "input"
+            },
+            "envelope": {
+                "caption": "envelope",
+                "data_type": "VirtualArray",
+                "description": "Heightmap used as a post-process amplitude multiplier for the generated surface.",
+                "type": "input"
+            },
+            "output": {
+                "caption": "output",
+                "data_type": "VirtualArray",
+                "description": "Generated quad surface heightmap.",
+                "type": "output"
+            }
+        }
+    },
     "QuiltingBlend": {
         "category": "WIP",
         "description": "TODO",
