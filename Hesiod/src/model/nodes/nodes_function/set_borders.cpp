@@ -84,34 +84,22 @@ void compute_set_borders_node(BaseNode &node)
   if (!p_in || !p_out)
     return;
 
-  // --- Helpers
-
-  const auto to_px_x = [&](float r) { return std::max(1, int(r * p_in->shape.x)); };
-
-  const auto to_px_y = [&](float r) { return std::max(1, int(r * p_in->shape.y)); };
-
   // --- Border radii
 
   // engine order: {west=.x, east=.y, south=.z, north=.w}
-  glm::ivec4 buffer_sizes;
+  glm::vec4 buffer_sizes;
 
   if (node.val<bool>(A_UNIFORM_RADIUS))
   {
     const float r = node.val<float>(A_RADIUS);
-
-    buffer_sizes = {
-        to_px_x(r), // west
-        to_px_x(r), // east
-        to_px_y(r), // south
-        to_px_y(r)  // north
-    };
+    buffer_sizes  = {r, r, r, r};
   }
   else
   {
-    buffer_sizes = {to_px_x(node.val<float>(A_RADIUS_WEST)),
-                    to_px_x(node.val<float>(A_RADIUS_EAST)),
-                    to_px_y(node.val<float>(A_RADIUS_SOUTH)),
-                    to_px_y(node.val<float>(A_RADIUS_NORTH))};
+    buffer_sizes = {node.val<float>(A_RADIUS_WEST),
+                    node.val<float>(A_RADIUS_EAST),
+                    node.val<float>(A_RADIUS_SOUTH),
+                    node.val<float>(A_RADIUS_NORTH)};
   }
 
   // --- Border values
@@ -139,15 +127,15 @@ void compute_set_borders_node(BaseNode &node)
   hmap::for_each_tile(
       {p_out, p_in},
       [buffer_sizes, border_values](std::vector<hmap::Array *> p_arrays,
-                                    const hmap::TileRegion &)
+                                    const hmap::TileRegion    &region)
       {
         auto [pa_out, pa_in] = unpack<2>(p_arrays);
 
         *pa_out = *pa_in;
 
-        hmap::set_borders(*pa_out, border_values, buffer_sizes);
+        hmap::set_borders(*pa_out, border_values, buffer_sizes, region.bbox);
       },
-      node.cfg().cm_single_array);
+      node.cfg().cm_cpu);
 }
 
 } // namespace hesiod
