@@ -37,6 +37,7 @@
 #include "hesiod/gui/widgets/about_dialog.hpp"
 #include "hesiod/gui/widgets/batch_export_progress_dialog.hpp"
 #include "hesiod/gui/widgets/documentation_popup.hpp"
+#include "hesiod/gui/widgets/error_dialog.hpp"
 #include "hesiod/gui/widgets/example_selector_dialog.hpp"
 #include "hesiod/gui/widgets/fractional_repaint_filter.hpp"
 #include "hesiod/gui/widgets/graph_config_widgets/bake_config_dialog.hpp"
@@ -366,54 +367,20 @@ void HesiodApplication::load_project_model_and_ui(const std::string &fname,
   {
     this->context.load_project_model(actual_fname);
 
-    if (!this->headless && this->context.project_model &&
-        this->context.project_model->get_error_manager().has_errors())
+    if (!this->headless && this->context.get_error_manager().has_errors())
     {
-      const auto &errors = this->context.project_model->get_error_manager().get_errors();
+      const auto &errors = this->context.get_error_manager().get_errors();
+      const QString
+          message = QString("The project '%1' was loaded with %2 warning(s)/error(s).\n"
+                            "Some nodes or links could not be restored:")
+                        .arg(QString::fromStdString(actual_fname))
+                        .arg(errors.size());
 
-      QDialog dialog(this->main_window);
-      dialog.setWindowTitle("Project Loading Warnings");
-
-      auto *layout = new QVBoxLayout(&dialog);
-
-      auto *info_label = new QLabel(
-          QString("The project '%1' was loaded with %2 warning(s)/error(s).\n"
-                  "Some nodes or links could not be restored:")
-              .arg(QString::fromStdString(actual_fname))
-              .arg(errors.size()),
-          &dialog);
-      layout->addWidget(info_label);
-
-      auto *error_text = new QTextEdit(&dialog);
-      error_text->setReadOnly(true);
-      QString error_string;
-      for (const auto &err : errors)
-      {
-        if (!error_string.isEmpty())
-          error_string += "\n";
-        error_string += "• " + QString::fromStdString(err.formatted_message());
-      }
-      error_text->setPlainText(error_string);
-      error_text->setMinimumWidth(500);
-      error_text->setMinimumHeight(200);
-      layout->addWidget(error_text);
-
-      auto        *button_box = new QDialogButtonBox(&dialog);
-      QPushButton *continue_button = button_box->addButton("Continue",
-                                                           QDialogButtonBox::AcceptRole);
-      QPushButton *cancel_button = button_box->addButton("Cancel",
-                                                         QDialogButtonBox::RejectRole);
-      continue_button->setDefault(true);
-      layout->addWidget(button_box);
-
-      QObject::connect(button_box,
-                       &QDialogButtonBox::accepted,
-                       &dialog,
-                       &QDialog::accept);
-      QObject::connect(button_box,
-                       &QDialogButtonBox::rejected,
-                       &dialog,
-                       &QDialog::reject);
+      ErrorDialog dialog("Project Loading Warnings",
+                         message,
+                         errors,
+                         true,
+                         this->main_window);
 
       if (dialog.exec() == QDialog::Rejected)
       {
