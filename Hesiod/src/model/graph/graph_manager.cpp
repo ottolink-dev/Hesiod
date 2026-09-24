@@ -306,34 +306,29 @@ void GraphManager::json_from(nlohmann::json const &json, GraphConfig *p_config)
         else
         {
           HSD_CTX.get_error_manager().push_error(
-              ErrorSeverity::Warning,
-              "Deserialization",
-              std::format("Missing key \"graph_nodes\" or \"{}\"", graph_id),
-              {{"graph_id", graph_id}});
+              ErrorCategory::Deserialization,
+              std::format("Graph '{}': Missing key \"graph_nodes\" or \"{}\"",
+                          graph_id,
+                          graph_id));
         }
       }
       catch (const std::exception &e)
       {
         HSD_CTX.get_error_manager().push_error(
-            ErrorSeverity::Error,
-            "Deserialization",
-            std::format("Failed to add graph '{}': {}", graph_id, e.what()),
-            {{"graph_id", graph_id}});
+            ErrorCategory::Deserialization,
+            std::format("Failed to add graph '{}': {}", graph_id, e.what()));
       }
       catch (...)
       {
         HSD_CTX.get_error_manager().push_error(
-            ErrorSeverity::Error,
-            "Deserialization",
-            std::format("Failed to add graph '{}': unknown error", graph_id),
-            {{"graph_id", graph_id}});
+            ErrorCategory::Deserialization,
+            std::format("Failed to add graph '{}': unknown error", graph_id));
       }
     }
   }
   else
   {
-    HSD_CTX.get_error_manager().push_error(ErrorSeverity::Error,
-                                           "Deserialization",
+    HSD_CTX.get_error_manager().push_error(ErrorCategory::Deserialization,
                                            "Missing key \"graph_order\" in json");
   }
 }

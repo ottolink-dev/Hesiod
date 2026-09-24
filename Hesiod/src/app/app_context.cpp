@@ -73,18 +73,14 @@ void AppContext::load_project_model(const std::string &fname)
   catch (const std::exception &e)
   {
     this->error_manager.push_error(
-        ErrorSeverity::Error,
-        "IO",
-        std::format("Failed to read project file '{}': {}", fname, e.what()),
-        {{"file_path", fname}});
+        ErrorCategory::IO,
+        std::format("Failed to read project file '{}': {}", fname, e.what()));
   }
   catch (...)
   {
     this->error_manager.push_error(
-        ErrorSeverity::Error,
-        "IO",
-        std::format("Failed to read project file '{}': unknown error", fname),
-        {{"file_path", fname}});
+        ErrorCategory::IO,
+        std::format("Failed to read project file '{}': unknown error", fname));
   }
 }
 

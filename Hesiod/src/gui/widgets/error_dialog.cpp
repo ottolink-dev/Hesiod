@@ -23,7 +23,7 @@ ErrorDialog::ErrorDialog(const QString            &title,
   {
     if (!error_text.isEmpty())
       error_text += "\n";
-    error_text += "• " + QString::fromStdString(err.formatted_message());
+    error_text += "• " + QString::fromStdString(err.get_message());
   }
 
   this->setWindowTitle(title);

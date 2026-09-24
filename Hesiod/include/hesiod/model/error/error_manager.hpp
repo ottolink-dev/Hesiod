@@ -2,7 +2,6 @@
    License. The full license is in the file LICENSE, distributed with this software. */
 #pragma once
 #include <functional>
-#include <map>
 #include <string>
 #include <vector>
 
@@ -20,23 +19,15 @@ public:
   ErrorManager() = default;
 
   void push_error(const Error &error);
-  void push_error(ErrorSeverity                      severity,
-                  const std::string                 &category,
-                  const std::string                 &message,
-                  std::map<std::string, std::string> context = {});
+  void push_error(ErrorCategory category, const std::string &message);
 
   const std::vector<Error> &get_errors() const;
-  std::vector<Error>        get_errors(ErrorSeverity severity) const;
-  std::vector<Error>        get_errors_by_category(const std::string &category) const;
-  std::vector<Error>        get_errors_for_context(const std::string &key,
-                                                   const std::string &value) const;
+  std::vector<Error>        get_errors_by_category(ErrorCategory category) const;
 
-  bool has_critical() const;
   bool has_errors() const;
-  bool has_warnings() const;
 
   void clear();
-  void clear_category(const std::string &category);
+  void clear_category(ErrorCategory category);
 
   // --- Callbacks
   std::function<void(const Error &)> error_occurred;

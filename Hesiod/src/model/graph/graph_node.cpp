@@ -204,23 +204,21 @@ void GraphNode::json_from(nlohmann::json const &json, GraphConfig *p_input_confi
       catch (const std::exception &e)
       {
         HSD_CTX.get_error_manager().push_error(
-            ErrorSeverity::Warning,
-            "NodeCreation",
-            std::format("Failed to create node '{}' (type '{}'): {}",
+            ErrorCategory::NodeCreation,
+            std::format("Graph '{}': Failed to create node '{}' (type '{}'): {}",
+                        this->get_id(),
                         node_id.empty() ? "?" : node_id,
                         node_type,
-                        e.what()),
-            {{"graph_id", this->get_id()}, {"node_id", node_id}});
+                        e.what()));
       }
       catch (...)
       {
         HSD_CTX.get_error_manager().push_error(
-            ErrorSeverity::Warning,
-            "NodeCreation",
-            std::format("Failed to create node '{}' (type '{}'): unknown error",
+            ErrorCategory::NodeCreation,
+            std::format("Graph '{}': Failed to create node '{}' (type '{}'): unknown error",
+                        this->get_id(),
                         node_id.empty() ? "?" : node_id,
-                        node_type),
-            {{"graph_id", this->get_id()}, {"node_id", node_id}});
+                        node_type));
       }
     }
   }
@@ -254,35 +252,25 @@ void GraphNode::json_from(nlohmann::json const &json, GraphConfig *p_input_confi
       catch (const std::exception &e)
       {
         HSD_CTX.get_error_manager().push_error(
-            ErrorSeverity::Warning,
-            "LinkCreation",
-            std::format("Failed to create link {}/{} => {}/{}: {}",
+            ErrorCategory::LinkCreation,
+            std::format("Graph '{}': Failed to create link {}/{} => {}/{}: {}",
+                        this->get_id(),
                         node_id_from,
                         port_id_from,
                         node_id_to,
                         port_id_to,
-                        e.what()),
-            {{"graph_id", this->get_id()},
-             {"node_id_from", node_id_from},
-             {"port_id_from", port_id_from},
-             {"node_id_to", node_id_to},
-             {"port_id_to", port_id_to}});
+                        e.what()));
       }
       catch (...)
       {
         HSD_CTX.get_error_manager().push_error(
-            ErrorSeverity::Warning,
-            "LinkCreation",
-            std::format("Failed to create link {}/{} => {}/{}: unknown error",
+            ErrorCategory::LinkCreation,
+            std::format("Graph '{}': Failed to create link {}/{} => {}/{}: unknown error",
+                        this->get_id(),
                         node_id_from,
                         port_id_from,
                         node_id_to,
-                        port_id_to),
-            {{"graph_id", this->get_id()},
-             {"node_id_from", node_id_from},
-             {"port_id_from", port_id_from},
-             {"node_id_to", node_id_to},
-             {"port_id_to", port_id_to}});
+                        port_id_to));
       }
     }
   }

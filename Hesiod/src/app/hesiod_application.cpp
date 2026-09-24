@@ -371,7 +371,7 @@ void HesiodApplication::load_project_model_and_ui(const std::string &fname,
     {
       const auto &errors = this->context.get_error_manager().get_errors();
       const QString
-          message = QString("The project '%1' was loaded with %2 warning(s)/error(s).\n"
+          message = QString("The project '%1' was loaded with %2 warning(s)/error(s). "
                             "Some nodes or links could not be restored:")
                         .arg(QString::fromStdString(actual_fname))
                         .arg(errors.size());
