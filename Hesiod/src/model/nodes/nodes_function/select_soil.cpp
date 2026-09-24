@@ -313,8 +313,9 @@ void compute_select_soil_node(BaseNode &node)
                                         node.val<float>(A_TALUS_REF),
                                         node.val<float>(A_CLIPPING_RATIO));
         },
-        node.cfg().cm_single_array);
+        node.cfg().cm_cpu);
 
+    p_out->smooth_overlap_buffers();
     post_process_heightmap(node, *p_out);
   }
 }
