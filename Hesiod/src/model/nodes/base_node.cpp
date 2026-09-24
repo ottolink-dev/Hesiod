@@ -737,6 +737,12 @@ void BaseNode::reseed(bool backward)
   }
 }
 
+std::string BaseNode::runtime_info_to_string(const char separator) const
+{
+  return this->get_id() + separator + this->get_label() + separator +
+         std::to_string(this->get_runtime_info().update_time);
+}
+
 void BaseNode::set_comment(const std::string &new_comment)
 {
   this->comment = new_comment;

@@ -8,6 +8,7 @@
 
 #include "hesiod/model/nodes/attributes.hpp"
 
+#include "hesiod/app/enum_mappings.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
@@ -26,10 +27,11 @@ constexpr const char *G_SLOPE          = "Slope";
 constexpr const char *G_ANGLE          = "Angle";
 constexpr const char *G_INWARD_OUTWARD = "Inward / Outward";
 
-constexpr const char *A_ANGLE  = "angle";
-constexpr const char *A_CENTER = "center";
-constexpr const char *A_RADIUS = "radius";
-constexpr const char *A_SIGMA  = "sigma";
+constexpr const char *A_ANGLE          = "angle";
+constexpr const char *A_CENTER         = "center";
+constexpr const char *A_RADIUS         = "radius";
+constexpr const char *A_SIGMA          = "sigma";
+constexpr const char *A_MIN_MAX_KERNEL = "min_max_kernel";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -55,6 +57,13 @@ void setup_select_slope_node(BaseNode &node)
     setup_post_process_heightmap_attributes(
         node,
         {.add_mix = false, .remap_active_state = true});
+
+    node.set_current_category("Advanced");
+    add_enum(node,
+             A_MIN_MAX_KERNEL,
+             "Kernel Type",
+             enum_mappings.min_max_kernel_map,
+             "Octagon");
   }
 
   // --- Group 2: Angle
@@ -112,18 +121,20 @@ void compute_select_slope_node(BaseNode &node)
 
   if (group == G_SLOPE)
   {
-    int ir = node.val_pixel_radius(A_RADIUS, 0);
+    const auto kernel_type = node.val_enum<hmap::MinMaxKernel>(A_MIN_MAX_KERNEL);
+    int        ir          = node.val_pixel_radius(A_RADIUS, 0);
 
     if (ir > 0)
     {
       hmap::for_each_tile(
           {p_out, p_in},
-          [&node, ir](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
+          [&node, ir, kernel_type](std::vector<hmap::Array *> p_arrays,
+                                   const hmap::TileRegion &)
           {
             hmap::Array *pa_out = p_arrays[0];
             hmap::Array *pa_in  = p_arrays[1];
 
-            *pa_out = hmap::gpu::morphological_gradient(*pa_in, ir);
+            *pa_out = hmap::gpu::morphological_gradient(*pa_in, ir, kernel_type);
           },
           node.cfg().cm_gpu);
     }

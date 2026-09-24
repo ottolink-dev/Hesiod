@@ -21,9 +21,10 @@ namespace hesiod
 constexpr const char *P_IN  = "input";
 constexpr const char *P_OUT = "output";
 
-constexpr const char *A_RADIUS    = "radius";
-constexpr const char *A_OPERATOR  = "operator";
-constexpr const char *A_SAT_RATIO = "sat_ratio";
+constexpr const char *A_RADIUS         = "radius";
+constexpr const char *A_OPERATOR       = "operator";
+constexpr const char *A_SAT_RATIO      = "sat_ratio";
+constexpr const char *A_MIN_MAX_KERNEL = "min_max_kernel";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -46,6 +47,13 @@ void setup_morphological_operators_node(BaseNode &node)
 
   setup_post_process_heightmap_attributes(node,
                                           {.add_mix = false, .remap_active_state = true});
+
+  node.set_current_category("Advanced");
+  add_enum(node,
+           A_MIN_MAX_KERNEL,
+           "Kernel Type",
+           enum_mappings.min_max_kernel_map,
+           "Octagon");
 }
 
 // -----------------------------------------------------------------------------
@@ -65,10 +73,11 @@ void compute_morphological_operators_node(BaseNode &node)
   // --- Params
 
   // clang-format off
-  const auto op = node.val_enum<hmap::MorphologyOperation>(A_OPERATOR);
-  const auto sat_ratio = node.val<float>(A_SAT_RATIO);
+  const auto op          = node.val_enum<hmap::MorphologyOperation>(A_OPERATOR);
+  const auto sat_ratio   = node.val<float>(A_SAT_RATIO);
+  const auto kernel_type = node.val_enum<hmap::MinMaxKernel>(A_MIN_MAX_KERNEL);
   //
-  const int  ir     = node.val_pixel_radius(A_RADIUS);
+  const int   ir     = node.val_pixel_radius(A_RADIUS);
   const float satmax = (1.f - 0.01f * sat_ratio);
   // clang-format on
 
@@ -79,7 +88,7 @@ void compute_morphological_operators_node(BaseNode &node)
       [&](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
       {
         auto [pa_out, pa_in] = unpack<2>(p_arrays);
-        *pa_out              = hmap::gpu::morphological_operators(*pa_in, ir, op);
+        *pa_out = hmap::gpu::morphological_operators(*pa_in, ir, op, kernel_type);
       },
       node.cfg().cm_gpu);
 

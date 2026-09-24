@@ -74,6 +74,24 @@ int parse_args(args::ArgumentParser &parser,
       "Tile overlapping ratio (in [0, 1[), ex. --overlap=0.25",
       {"overlap"});
 
+  args::Flag force_distributed_arg(
+      batch_args,
+      "force-distributed",
+      "Force distributed computation for all compute modes (CPU and GPU)",
+      {"force-distributed"});
+
+  args::Flag force_sequential_arg(
+      batch_args,
+      "force-sequential",
+      "Force sequential computation for all compute modes (CPU and GPU)",
+      {"force-sequential"});
+
+  args::Flag min_memory_arg(batch_args,
+                            "min-memory",
+                            "Minimal memory footprint mode (storage mode: "
+                            "VA_DISK_LRU_MIN, compute mode: VA_SEQUENTIAL)",
+                            {"min-memory", "low-memory"});
+
   try
   {
     parser.ParseCLI(argc, argv);
@@ -83,7 +101,10 @@ int parse_args(args::ArgumentParser &parser,
       run_batch_mode(args::get(batch),
                      shape_arg ? args::get(shape_arg) : glm::ivec2(0, 0),
                      tiling_arg ? args::get(tiling_arg) : glm::ivec2(0, 0),
-                     overlap_arg ? args::get(overlap_arg) : -1.f);
+                     overlap_arg ? args::get(overlap_arg) : -1.f,
+                     force_distributed_arg ? args::get(force_distributed_arg) : false,
+                     force_sequential_arg ? args::get(force_sequential_arg) : false,
+                     min_memory_arg ? args::get(min_memory_arg) : false);
       return 0;
     }
     else if (snapshot_generation)
@@ -135,6 +156,9 @@ void run_batch_mode(const std::string                  &filename,
                     const glm::ivec2                   &shape,
                     const glm::ivec2                   &tiling,
                     float                               overlap,
+                    bool                                force_distributed,
+                    bool                                force_sequential,
+                    bool                                min_memory,
                     const GraphConfig                  *p_input_model_config,
                     std::function<void(GraphManager &)> setup_callbacks)
 {
@@ -143,6 +167,9 @@ void run_batch_mode(const std::string                  &filename,
   Logger::log()->trace("cli shape: {{{}, {}}}", shape.x, shape.y);
   Logger::log()->trace("cli tiling: {{{}, {}}}", tiling.x, tiling.y);
   Logger::log()->trace("cli overlap: {}", overlap);
+  Logger::log()->trace("cli force_distributed: {}", force_distributed);
+  Logger::log()->trace("cli force_sequential: {}", force_sequential);
+  Logger::log()->trace("cli min_memory: {}", min_memory);
 
   // define actual computation configuration based on CLI inputs. If
   // nothing is provided, use the configs from the input file but if
@@ -155,11 +182,39 @@ void run_batch_mode(const std::string                  &filename,
   {
     config.cm_cpu.mode = p_input_model_config->cm_cpu.mode;
     config.cm_gpu.mode = p_input_model_config->cm_gpu.mode;
+    config.storage_mode = p_input_model_config->storage_mode;
 
     // force memory release after each node computation
     config.cm_cpu.trim_storage = true;
     config.cm_gpu.trim_storage = true;
     config.cm_single_array.trim_storage = true;
+  }
+  else
+  {
+    config.storage_mode = hmap::StorageMode::VA_RAM;
+  }
+
+  if (min_memory)
+  {
+    config.storage_mode = hmap::StorageMode::VA_DISK_LRU_MIN;
+    config.cm_cpu.mode = hmap::ForEachMode::VA_SEQUENTIAL;
+    config.cm_gpu.mode = hmap::ForEachMode::VA_SEQUENTIAL;
+    Logger::log()->info("minimal memory mode enabled (storage mode: VA_DISK_LRU_MIN, "
+                        "compute mode: VA_SEQUENTIAL)");
+  }
+  else if (force_distributed)
+  {
+    config.cm_cpu.mode = hmap::ForEachMode::VA_DISTRIBUTED;
+    config.cm_gpu.mode = hmap::ForEachMode::VA_DISTRIBUTED;
+    Logger::log()->info(
+        "forcing distributed computation for all compute modes (CPU and GPU)");
+  }
+  else if (force_sequential)
+  {
+    config.cm_cpu.mode = hmap::ForEachMode::VA_SEQUENTIAL;
+    config.cm_gpu.mode = hmap::ForEachMode::VA_SEQUENTIAL;
+    Logger::log()->info(
+        "forcing sequential computation for all compute modes (CPU and GPU)");
   }
 
   if (shape.x || shape.y || tiling.x || tiling.y || overlap >= 0.f)
@@ -191,6 +246,8 @@ void run_batch_mode(const std::string                  &filename,
     setup_callbacks(graph_manager);
 
   graph_manager.update();
+
+  string_to_file(graph_manager.runtime_info_to_string('|'), "batch.log");
 
   // flatten & export if there is a configuration defined
   if (!graph_manager.get_export_param().export_path.empty())

@@ -45,6 +45,7 @@ constexpr const char *A_SATURATION_LIMIT      = "saturation_limit";
 constexpr const char *A_SMALLER_SCALES_WEIGHT = "smaller_scales_weight";
 constexpr const char *A_STEPS                 = "steps";
 constexpr const char *A_TALUS_REF             = "talus_ref";
+constexpr const char *A_MIN_MAX_KERNEL        = "min_max_kernel";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -129,6 +130,13 @@ void setup_select_soil_node(BaseNode &node)
     setup_post_process_heightmap_attributes(
         node,
         {.add_mix = false, .remap_active_state = true});
+
+    node.set_current_category("Advanced");
+    add_enum(node,
+             A_MIN_MAX_KERNEL,
+             "Kernel Type",
+             enum_mappings.min_max_kernel_map,
+             "Octagon");
   }
 
   // --- Group 4: Rivers
@@ -242,18 +250,20 @@ void compute_select_soil_node(BaseNode &node)
   }
   else if (group == G_WEATHERED)
   {
-    int nx      = p_out->shape.x;
-    int ir_curv = (int)(node.val<float>(A_RADIUS_CURVATURE) * nx);
-    int ir_grad = std::max(1, (int)(node.val<float>(A_RADIUS_GRADIENT) * nx));
+    const auto kernel_type = node.val_enum<hmap::MinMaxKernel>(A_MIN_MAX_KERNEL);
+    int        nx          = p_out->shape.x;
+    int        ir_curv     = (int)(node.val<float>(A_RADIUS_CURVATURE) * nx);
+    int        ir_grad     = std::max(1, (int)(node.val<float>(A_RADIUS_GRADIENT) * nx));
 
     hmap::VirtualArray grad_norm(CONFIG(node));
 
     hmap::for_each_tile(
         {&grad_norm, p_in},
-        [&node, ir_grad](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
+        [&node, ir_grad, kernel_type](std::vector<hmap::Array *> p_arrays,
+                                      const hmap::TileRegion &)
         {
           auto [pa_out, pa_in] = unpack<2>(p_arrays);
-          *pa_out              = hmap::gpu::morphological_gradient(*pa_in, ir_grad);
+          *pa_out = hmap::gpu::morphological_gradient(*pa_in, ir_grad, kernel_type);
         },
         node.cfg().cm_gpu);
 

@@ -6,6 +6,7 @@
 
 #include "hesiod/model/nodes/attributes.hpp"
 
+#include "hesiod/app/enum_mappings.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
@@ -21,9 +22,10 @@ constexpr const char *P_IN   = "input";
 constexpr const char *P_MASK = "mask";
 constexpr const char *P_OUT  = "output";
 
-constexpr const char *A_RADIUS = "radius";
-constexpr const char *A_GAMMA  = "gamma";
-constexpr const char *A_K      = "k";
+constexpr const char *A_RADIUS         = "radius";
+constexpr const char *A_GAMMA          = "gamma";
+constexpr const char *A_K              = "k";
+constexpr const char *A_MIN_MAX_KERNEL = "min_max_kernel";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -50,6 +52,13 @@ void setup_gamma_correction_local_node(BaseNode &node)
   setup_pre_process_mask_attributes(node);
   setup_post_process_heightmap_attributes(node,
                                           {.add_mix = true, .remap_active_state = false});
+
+  node.set_current_category("Advanced");
+  add_enum(node,
+           A_MIN_MAX_KERNEL,
+           "Kernel Type",
+           enum_mappings.min_max_kernel_map,
+           "Octagon");
 }
 
 // -----------------------------------------------------------------------------
@@ -72,8 +81,9 @@ void compute_gamma_correction_local_node(BaseNode &node)
   // --- Params
 
   // clang-format off
-  const auto gamma  = node.val<float>(A_GAMMA);
-  const auto k      = node.val<float>(A_K);
+  const auto gamma       = node.val<float>(A_GAMMA);
+  const auto k           = node.val<float>(A_K);
+  const auto kernel_type = node.val_enum<hmap::MinMaxKernel>(A_MIN_MAX_KERNEL);
   // clang-format on
 
   int ir = node.val_pixel_radius(A_RADIUS);
@@ -100,7 +110,7 @@ void compute_gamma_correction_local_node(BaseNode &node)
         *pa_out = *pa_in;
 
         hmap::remap(*pa_out, 0.f, 1.f, hmin, hmax);
-        hmap::gpu::gamma_correction_local(*pa_out, gamma, ir, pa_mask, k);
+        hmap::gpu::gamma_correction_local(*pa_out, gamma, ir, pa_mask, k, kernel_type);
         hmap::remap(*pa_out, hmin, hmax, 0.f, 1.f);
       },
       node.cfg().cm_gpu);

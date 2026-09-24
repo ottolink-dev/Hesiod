@@ -411,6 +411,28 @@ void GraphManager::reseed(bool backward)
       graph->reseed(backward);
 }
 
+std::string GraphManager::runtime_info_to_string(const char separator) const
+{
+  std::string result;
+
+  for (const auto &graph_id : this->graph_order)
+  {
+    auto it = this->graph_nodes.find(graph_id);
+    if (it == this->graph_nodes.end() || !it->second)
+      continue;
+
+    std::string graph_info = it->second->runtime_info_to_string(separator);
+    if (!graph_info.empty())
+    {
+      if (!result.empty())
+        result += '\n';
+      result += graph_info;
+    }
+  }
+
+  return result;
+}
+
 void GraphManager::save_to_file(const std::string &fname) const
 {
   Logger::log()->trace("GraphManager::save_to_file: fname {}", fname);

@@ -625,6 +625,9 @@ void HesiodApplication::on_export_batch()
                                   bake_shape,
                                   bake_config.tiling,
                                   bake_config.overlap,
+                                  bake_settings.force_distributed,
+                                  false,
+                                  false,
                                   &bake_config,
                                   setup_callbacks);
     }
