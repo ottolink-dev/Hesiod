@@ -75,6 +75,7 @@ target_link_libraries(
   PUBLIC hesiod_options
          hesiod_platform
          hesiod_qt_logging
+         hesiod_git_version
          args
          spdlog::spdlog
          nlohmann_json::nlohmann_json
