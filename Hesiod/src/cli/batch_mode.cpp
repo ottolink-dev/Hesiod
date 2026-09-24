@@ -12,6 +12,7 @@
 #include "hesiod/gui/widgets/gui_utils.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/graph/graph_manager.hpp"
+#include "hesiod/model/graph/graph_node.hpp"
 #include "hesiod/model/nodes/node_factory.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 #include "hesiod/model/utils.hpp"
@@ -92,6 +93,11 @@ int parse_args(args::ArgumentParser &parser,
                             "VA_DISK_LRU_MIN, compute mode: VA_SEQUENTIAL)",
                             {"min-memory", "low-memory"});
 
+  args::Flag ipc_arg(batch_args,
+                     "ipc",
+                     "Output structured progress IPC messages to stdout",
+                     {"ipc"});
+
   try
   {
     parser.ParseCLI(argc, argv);
@@ -104,7 +110,10 @@ int parse_args(args::ArgumentParser &parser,
                      overlap_arg ? args::get(overlap_arg) : -1.f,
                      force_distributed_arg ? args::get(force_distributed_arg) : false,
                      force_sequential_arg ? args::get(force_sequential_arg) : false,
-                     min_memory_arg ? args::get(min_memory_arg) : false);
+                     min_memory_arg ? args::get(min_memory_arg) : false,
+                     nullptr,
+                     nullptr,
+                     ipc_arg ? args::get(ipc_arg) : false);
       return 0;
     }
     else if (snapshot_generation)
@@ -160,7 +169,8 @@ void run_batch_mode(const std::string                  &filename,
                     bool                                force_sequential,
                     bool                                min_memory,
                     const GraphConfig                  *p_input_model_config,
-                    std::function<void(GraphManager &)> setup_callbacks)
+                    std::function<void(GraphManager &)> setup_callbacks,
+                    bool                                ipc)
 {
   Logger::log()->info("executing Hesiod in batch mode");
   Logger::log()->trace("file: {}", filename);
@@ -170,6 +180,7 @@ void run_batch_mode(const std::string                  &filename,
   Logger::log()->trace("cli force_distributed: {}", force_distributed);
   Logger::log()->trace("cli force_sequential: {}", force_sequential);
   Logger::log()->trace("cli min_memory: {}", min_memory);
+  Logger::log()->trace("cli ipc: {}", ipc);
 
   // define actual computation configuration based on CLI inputs. If
   // nothing is provided, use the configs from the input file but if
@@ -241,6 +252,22 @@ void run_batch_mode(const std::string                  &filename,
   // load graph structure without running update yet
   nlohmann::json json = json_from_file(filename);
   graph_manager.json_from(json["graph_manager"], &config);
+
+  if (ipc)
+  {
+    for (const auto &graph_id : graph_manager.get_graph_order())
+    {
+      GraphNode *p_graph = graph_manager.get_graph_ref_by_id(graph_id);
+      if (!p_graph)
+        continue;
+
+      p_graph->compute_started = [](const std::string &node_id)
+      { std::cout << "HSD_IPC:NODE_STARTED:" << node_id << std::endl; };
+
+      p_graph->compute_finished = [](const std::string &node_id)
+      { std::cout << "HSD_IPC:NODE_FINISHED:" << node_id << ":1" << std::endl; };
+    }
+  }
 
   if (setup_callbacks)
     setup_callbacks(graph_manager);

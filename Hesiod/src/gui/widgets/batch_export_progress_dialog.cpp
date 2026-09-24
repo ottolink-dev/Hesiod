@@ -6,6 +6,7 @@
 
 #include <QCoreApplication>
 #include <QHeaderView>
+#include <QPushButton>
 #include <QTableWidgetItem>
 
 #include "hesiod/app/hesiod_application.hpp"
@@ -27,13 +28,72 @@ BatchExportProgressDialog::BatchExportProgressDialog(QWidget *parent) : QDialog(
   this->setup_layout();
 }
 
+bool BatchExportProgressDialog::is_canceled() const { return this->canceled; }
+
+void BatchExportProgressDialog::on_cancel_clicked()
+{
+  if (this->canceled)
+    return;
+
+  this->canceled = true;
+
+  if (auto *cancel_btn = this->button_box->button(QDialogButtonBox::Cancel))
+    cancel_btn->setEnabled(false);
+
+  if (this->label_current_node)
+    this->label_current_node->setText("Canceling bake...");
+
+  emit request_cancel();
+
+  QCoreApplication::processEvents();
+}
+
+void BatchExportProgressDialog::on_export_canceled()
+{
+  this->canceled = true;
+
+  if (this->label_current_node)
+  {
+    this->label_current_node->setText("Export canceled by user.");
+    this->label_current_node->setStyleSheet("color: #CC0000; font-weight: bold;");
+  }
+
+  if (auto *ok_btn = this->button_box->button(QDialogButtonBox::Ok))
+    ok_btn->setEnabled(true);
+
+  if (auto *cancel_btn = this->button_box->button(QDialogButtonBox::Cancel))
+    cancel_btn->setEnabled(false);
+
+  QCoreApplication::processEvents();
+}
+
 void BatchExportProgressDialog::on_export_finished()
 {
   if (this->label_current_node)
     this->label_current_node->setText("Export completed.");
 
-  if (this->button_box)
-    this->button_box->setEnabled(true);
+  if (auto *ok_btn = this->button_box->button(QDialogButtonBox::Ok))
+    ok_btn->setEnabled(true);
+
+  if (auto *cancel_btn = this->button_box->button(QDialogButtonBox::Cancel))
+    cancel_btn->setEnabled(false);
+
+  QCoreApplication::processEvents();
+}
+
+void BatchExportProgressDialog::on_export_failed(const std::string &error_msg)
+{
+  if (this->label_current_node)
+  {
+    this->label_current_node->setText(QString::fromStdString(error_msg));
+    this->label_current_node->setStyleSheet("color: #CC0000; font-weight: bold;");
+  }
+
+  if (auto *ok_btn = this->button_box->button(QDialogButtonBox::Ok))
+    ok_btn->setEnabled(true);
+
+  if (auto *cancel_btn = this->button_box->button(QDialogButtonBox::Cancel))
+    cancel_btn->setEnabled(false);
 
   QCoreApplication::processEvents();
 }
@@ -219,9 +279,16 @@ void BatchExportProgressDialog::setup_layout()
 
   // --- Dialog buttons
 
-  this->button_box = new QDialogButtonBox(QDialogButtonBox::Ok, this);
-  this->button_box->setEnabled(false);
+  this->button_box = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel,
+                                          this);
+  if (auto *ok_btn = this->button_box->button(QDialogButtonBox::Ok))
+    ok_btn->setEnabled(false);
+
   this->connect(this->button_box, &QDialogButtonBox::accepted, this, &QDialog::accept);
+  this->connect(this->button_box,
+                &QDialogButtonBox::rejected,
+                this,
+                &BatchExportProgressDialog::on_cancel_clicked);
   layout->addWidget(this->button_box);
 
   this->setLayout(layout);
