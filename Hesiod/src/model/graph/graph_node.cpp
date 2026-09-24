@@ -215,10 +215,11 @@ void GraphNode::json_from(nlohmann::json const &json, GraphConfig *p_input_confi
       {
         HSD_CTX.get_error_manager().push_error(
             ErrorCategory::NodeCreation,
-            std::format("Graph '{}': Failed to create node '{}' (type '{}'): unknown error",
-                        this->get_id(),
-                        node_id.empty() ? "?" : node_id,
-                        node_type));
+            std::format(
+                "Graph '{}': Failed to create node '{}' (type '{}'): unknown error",
+                this->get_id(),
+                node_id.empty() ? "?" : node_id,
+                node_type));
       }
     }
   }

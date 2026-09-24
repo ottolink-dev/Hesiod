@@ -367,9 +367,11 @@ void HesiodApplication::load_project_model_and_ui(const std::string &fname,
   {
     this->context.load_project_model(actual_fname);
 
-    if (!this->headless && this->context.get_error_manager().has_errors())
+    auto &error_manager = this->context.get_error_manager();
+
+    if (!this->headless && error_manager.has_errors())
     {
-      const auto &errors = this->context.get_error_manager().get_errors();
+      const auto &errors = error_manager.get_errors();
       const QString
           message = QString("The project '%1' was loaded with %2 warning(s)/error(s). "
                             "Some nodes or links could not be restored:")
@@ -381,6 +383,8 @@ void HesiodApplication::load_project_model_and_ui(const std::string &fname,
                          errors,
                          true,
                          this->main_window);
+
+      error_manager.clear();
 
       if (dialog.exec() == QDialog::Rejected)
       {

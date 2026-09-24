@@ -44,20 +44,14 @@ Error &Error::with_category(ErrorCategory new_category)
   return *this;
 }
 
-ErrorCategory Error::get_category() const
-{
-  return this->category;
-}
+ErrorCategory Error::get_category() const { return this->category; }
 
 std::string Error::get_category_string() const
 {
   return error_category_to_string(this->category);
 }
 
-const std::string &Error::get_message() const
-{
-  return this->message;
-}
+const std::string &Error::get_message() const { return this->message; }
 
 std::chrono::system_clock::time_point Error::get_timestamp() const
 {
