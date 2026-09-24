@@ -18,6 +18,8 @@ struct BakeConfig
   bool force_auto_export = true;
   bool rename_export_files = true;
   bool force_maximum_fbm_octaves = false;
+  bool min_memory = false;
+  int  max_tile_resolution = 4096;
 
   void           json_from(nlohmann::json const &json);
   nlohmann::json json_to() const;

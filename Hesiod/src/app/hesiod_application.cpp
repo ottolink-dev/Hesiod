@@ -480,6 +480,15 @@ void HesiodApplication::on_export_batch()
 
   BakeConfig bake_settings = this->context.project_model->get_bake_config();
 
+  // default max_tile_resolution to the current graph resolution
+  auto graph_nodes = this->context.project_model->get_graph_manager_ref()
+                         ->get_graph_nodes();
+  auto it = graph_nodes.begin();
+  if (it != graph_nodes.end() && it->second && it->second->get_config_ref())
+  {
+    bake_settings.max_tile_resolution = it->second->get_config_ref()->shape.x;
+  }
+
   BakeConfigDialog dialog(this->context.app_settings.node_editor.max_bake_resolution,
                           bake_settings);
 
@@ -567,7 +576,13 @@ void HesiodApplication::on_export_batch()
     {
       GraphConfig bake_config = *p_config;
 
-      if (bake_settings.force_distributed)
+      if (bake_settings.min_memory)
+      {
+        bake_config.storage_mode = hmap::StorageMode::VA_DISK_LRU_MIN;
+        bake_config.cm_cpu.mode = hmap::ForEachMode::VA_SEQUENTIAL;
+        bake_config.cm_gpu.mode = hmap::ForEachMode::VA_SEQUENTIAL;
+      }
+      else if (bake_settings.force_distributed)
       {
         bake_config.cm_cpu.mode = hmap::ForEachMode::VA_DISTRIBUTED;
         bake_config.cm_gpu.mode = hmap::ForEachMode::VA_DISTRIBUTED;
@@ -578,9 +593,27 @@ void HesiodApplication::on_export_batch()
       glm::ivec2 bake_shape = {static_cast<int>(scale * p_config->shape.x),
                                static_cast<int>(scale * p_config->shape.y)};
 
-      Logger::log()->trace("HesiodApplication::on_export_batch: bake_shape: ({}, {})",
+      // compute tiling based on max tile shape
+      glm::ivec2 bake_tiling = p_config->tiling;
+      if (bake_settings.max_tile_resolution > 0)
+      {
+        bake_tiling = {std::max(1,
+                                (bake_shape.x + bake_settings.max_tile_resolution - 1) /
+                                    bake_settings.max_tile_resolution),
+                       std::max(1,
+                                (bake_shape.y + bake_settings.max_tile_resolution - 1) /
+                                    bake_settings.max_tile_resolution)};
+      }
+
+      bake_config.set_shape(bake_shape);
+      bake_config.set_tiling(bake_tiling);
+
+      Logger::log()->trace("HesiodApplication::on_export_batch: bake_shape: ({}, {}), "
+                           "bake_tiling: ({}, {})",
                            bake_shape.x,
-                           bake_shape.y);
+                           bake_shape.y,
+                           bake_tiling.x,
+                           bake_tiling.y);
 
       // run batch node with progress callbacks
       auto setup_callbacks = [&progress](GraphManager &gm)
@@ -623,11 +656,12 @@ void HesiodApplication::on_export_batch()
 
       hesiod::cli::run_batch_mode(fname.string(),
                                   bake_shape,
-                                  bake_config.tiling,
+                                  bake_tiling,
                                   bake_config.overlap,
-                                  bake_settings.force_distributed,
-                                  false,
-                                  false,
+                                  bake_settings.force_distributed &&
+                                      !bake_settings.min_memory,
+                                  bake_settings.min_memory,
+                                  bake_settings.min_memory,
                                   &bake_config,
                                   setup_callbacks);
     }

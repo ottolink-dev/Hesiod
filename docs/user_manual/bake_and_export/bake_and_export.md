@@ -6,6 +6,25 @@ accessed with Alt + E or from the File menu.
 
 ![img](ui.jpg)
 
+### Bake Settings
+
+The Bake and Export dialog provides several configuration options:
+
+- **Resolution (x)**: Target bake resolution for the export. The aspect ratio of the active graph is preserved.
+- **Additional variants**: Number of procedural variations to generate with randomized seeds.
+- **Force distributed computation**: Forces distributed tile evaluation across available CPU/GPU threads when low memory mode is disabled.
+- **Force auto export for export nodes**: Ensures all export nodes are triggered during the bake pass.
+- **Add prefix export filenames**: Prefixes export filenames with node labels and IDs.
+- **Force maximum number of octaves for Fbm nodes**: Adjusts octave counts dynamically for noise nodes based on the target bake resolution.
+
+#### Large Graphs & Memory Optimization
+
+- **Low memory mode**: Enforces minimal RAM usage during baking (`VA_DISK_LRU_MIN` storage mode and `VA_SEQUENTIAL` compute mode for CPU and GPU). This streams tile data to disk and computes tiles sequentially, preventing out-of-memory issues when rendering very large graphs or high resolutions at the cost of slower bake times.
+- **Max tile shape**: Specifies the maximum tile dimension (e.g. 512, 1024, 2048) used to dynamically compute the domain tiling grid for the global target resolution. Defaults to the current graph's resolution.
+
+!!! note "Work in Progress"
+    Some nodes still rely on algorithms requiring the full array in memory (single array mode); for these nodes, the low memory tiling and disk cache behavior does not fully apply. Supporting streaming/tiled execution across all nodes is currently a work in progress.
+
 ### Export Directory Structure
 
 When you perform a bake and export operation, the exported files are organized

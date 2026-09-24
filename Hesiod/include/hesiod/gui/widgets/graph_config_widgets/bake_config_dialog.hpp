@@ -6,6 +6,7 @@
 #include <QDialog>
 #include <QDialogButtonBox>
 #include <QFormLayout>
+#include <QGroupBox>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QSlider>
@@ -38,6 +39,8 @@ private:
   QCheckBox        *checkbox_force_auto_export;
   QCheckBox        *checkbox_rename_export_files;
   QCheckBox        *checkbox_force_maximum_fbm_octaves;
+  QCheckBox        *checkbox_min_memory;
+  QComboBox        *combo_max_tile_resolution;
   QDialogButtonBox *buttons;
 };
 
