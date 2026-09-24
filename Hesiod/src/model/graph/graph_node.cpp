@@ -2,6 +2,7 @@
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
 #include "hesiod/model/graph/graph_node.hpp"
+#include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/broadcast_node.hpp"
@@ -120,22 +121,9 @@ std::shared_ptr<GraphNode> GraphNode::get_shared()
   }
 }
 
-void GraphNode::add_load_error(const std::string &error)
-{
-  this->load_errors.push_back(error);
-}
-
-void GraphNode::clear_load_errors() { this->load_errors.clear(); }
-
-const std::vector<std::string> &GraphNode::get_load_errors() const
-{
-  return this->load_errors;
-}
-
 void GraphNode::json_from(nlohmann::json const &json, GraphConfig *p_input_config)
 {
   Logger::log()->trace("GraphNode::json_from, graph {}", this->get_id());
-  this->load_errors.clear();
 
   nlohmann::json converted_json = convert_legacy_graph_json(json);
 
@@ -215,24 +203,24 @@ void GraphNode::json_from(nlohmann::json const &json, GraphConfig *p_input_confi
       }
       catch (const std::exception &e)
       {
-        const std::string err = std::format(
-            "Graph '{}': failed to create node '{}' (type '{}'): {}",
-            this->get_id(),
-            node_id.empty() ? "?" : node_id,
-            node_type,
-            e.what());
-        Logger::log()->error("GraphNode::json_from: {}", err);
-        this->add_load_error(err);
+        HSD_CTX.get_error_manager().push_error(
+            ErrorSeverity::Warning,
+            "NodeCreation",
+            std::format("Failed to create node '{}' (type '{}'): {}",
+                        node_id.empty() ? "?" : node_id,
+                        node_type,
+                        e.what()),
+            {{"graph_id", this->get_id()}, {"node_id", node_id}});
       }
       catch (...)
       {
-        const std::string err = std::format(
-            "Graph '{}': failed to create node '{}' (type '{}'): unknown error",
-            this->get_id(),
-            node_id.empty() ? "?" : node_id,
-            node_type);
-        Logger::log()->error("GraphNode::json_from: {}", err);
-        this->add_load_error(err);
+        HSD_CTX.get_error_manager().push_error(
+            ErrorSeverity::Warning,
+            "NodeCreation",
+            std::format("Failed to create node '{}' (type '{}'): unknown error",
+                        node_id.empty() ? "?" : node_id,
+                        node_type),
+            {{"graph_id", this->get_id()}, {"node_id", node_id}});
       }
     }
   }
@@ -265,28 +253,36 @@ void GraphNode::json_from(nlohmann::json const &json, GraphConfig *p_input_confi
       }
       catch (const std::exception &e)
       {
-        const std::string err = std::format(
-            "Graph '{}': failed to create link {}/{} => {}/{}: {}",
-            this->get_id(),
-            node_id_from,
-            port_id_from,
-            node_id_to,
-            port_id_to,
-            e.what());
-        Logger::log()->error("GraphNode::json_from: {}", err);
-        this->add_load_error(err);
+        HSD_CTX.get_error_manager().push_error(
+            ErrorSeverity::Warning,
+            "LinkCreation",
+            std::format("Failed to create link {}/{} => {}/{}: {}",
+                        node_id_from,
+                        port_id_from,
+                        node_id_to,
+                        port_id_to,
+                        e.what()),
+            {{"graph_id", this->get_id()},
+             {"node_id_from", node_id_from},
+             {"port_id_from", port_id_from},
+             {"node_id_to", node_id_to},
+             {"port_id_to", port_id_to}});
       }
       catch (...)
       {
-        const std::string err = std::format(
-            "Graph '{}': failed to create link {}/{} => {}/{}: unknown error",
-            this->get_id(),
-            node_id_from,
-            port_id_from,
-            node_id_to,
-            port_id_to);
-        Logger::log()->error("GraphNode::json_from: {}", err);
-        this->add_load_error(err);
+        HSD_CTX.get_error_manager().push_error(
+            ErrorSeverity::Warning,
+            "LinkCreation",
+            std::format("Failed to create link {}/{} => {}/{}: unknown error",
+                        node_id_from,
+                        port_id_from,
+                        node_id_to,
+                        port_id_to),
+            {{"graph_id", this->get_id()},
+             {"node_id_from", node_id_from},
+             {"port_id_from", port_id_from},
+             {"node_id_to", node_id_to},
+             {"port_id_to", port_id_to}});
       }
     }
   }

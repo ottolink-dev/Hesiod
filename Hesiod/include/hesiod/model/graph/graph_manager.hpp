@@ -59,11 +59,6 @@ public:
   void load_from_file(const std::string &fname, GraphConfig *p_config = nullptr);
   void save_to_file(const std::string &fname) const;
 
-  // --- Load errors
-  void                            add_load_error(const std::string &error);
-  void                            clear_load_errors();
-  const std::vector<std::string> &get_load_errors() const;
-
   // --- Callbacks ---
   std::function<void(const std::string &tag)> new_broadcast_tag;
   std::function<void(const std::string &tag)> remove_broadcast_tag;
@@ -88,7 +83,6 @@ private:
   std::vector<std::string> graph_order;
   BroadcastMap             broadcast_params;
   FlattenConfig            export_param;
-  std::vector<std::string> load_errors;
 };
 
 } // namespace hesiod

@@ -367,9 +367,9 @@ void HesiodApplication::load_project_model_and_ui(const std::string &fname,
     this->context.load_project_model(actual_fname);
 
     if (!this->headless && this->context.project_model &&
-        !this->context.project_model->get_load_errors().empty())
+        this->context.project_model->get_error_manager().has_errors())
     {
-      const auto &errors = this->context.project_model->get_load_errors();
+      const auto &errors = this->context.project_model->get_error_manager().get_errors();
 
       QDialog dialog(this->main_window);
       dialog.setWindowTitle("Project Loading Warnings");
@@ -391,7 +391,7 @@ void HesiodApplication::load_project_model_and_ui(const std::string &fname,
       {
         if (!error_string.isEmpty())
           error_string += "\n";
-        error_string += "• " + QString::fromStdString(err);
+        error_string += "• " + QString::fromStdString(err.formatted_message());
       }
       error_text->setPlainText(error_string);
       error_text->setMinimumWidth(500);

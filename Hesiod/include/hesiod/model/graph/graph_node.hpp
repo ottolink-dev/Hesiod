@@ -55,11 +55,6 @@ public:
   void          set_p_broadcast_params(BroadcastMap *new_p_broadcast_params);
   void          on_broadcast_node_updated(const std::string &tag);
 
-  // --- Load errors
-  void                            add_load_error(const std::string &error);
-  void                            clear_load_errors();
-  const std::vector<std::string> &get_load_errors() const;
-
   // --- Others... ---
   void        reseed(bool backward);
   std::string runtime_info_to_string(const char separator = ',') const;
@@ -91,7 +86,6 @@ private:
   std::shared_ptr<GraphConfig> config;
   BroadcastMap                *p_broadcast_params = nullptr; // own by GraphManager
   gnode::EventConnection       graph_progress_conn;
-  std::vector<std::string>     load_errors;
 };
 
 } // namespace hesiod

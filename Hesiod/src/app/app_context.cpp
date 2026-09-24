@@ -48,6 +48,10 @@ void AppContext::load_node_documentation()
   }
 }
 
+ErrorManager &AppContext::get_error_manager() { return this->error_manager; }
+
+const ErrorManager &AppContext::get_error_manager() const { return this->error_manager; }
+
 void AppContext::load_project_model(const std::string &fname)
 {
   Logger::log()->trace("AppContext::load_project_model: {}", fname);
@@ -68,18 +72,19 @@ void AppContext::load_project_model(const std::string &fname)
   }
   catch (const std::exception &e)
   {
-    const std::string err = std::format("Failed to read project file '{}': {}",
-                                        fname,
-                                        e.what());
-    Logger::log()->error("{}", err);
-    this->project_model->add_load_error(err);
+    this->error_manager.push_error(
+        ErrorSeverity::Error,
+        "IO",
+        std::format("Failed to read project file '{}': {}", fname, e.what()),
+        {{"file_path", fname}});
   }
   catch (...)
   {
-    const std::string err = std::format("Failed to read project file '{}': unknown error",
-                                        fname);
-    Logger::log()->error("{}", err);
-    this->project_model->add_load_error(err);
+    this->error_manager.push_error(
+        ErrorSeverity::Error,
+        "IO",
+        std::format("Failed to read project file '{}': unknown error", fname),
+        {{"file_path", fname}});
   }
 }
 
@@ -112,6 +117,7 @@ void AppContext::load_settings()
 void AppContext::new_project()
 {
   Logger::log()->trace("AppContext::new_project");
+  this->error_manager.clear();
   this->project_model = std::make_unique<ProjectModel>();
 }
 

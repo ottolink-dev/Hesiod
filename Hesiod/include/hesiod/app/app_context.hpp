@@ -10,6 +10,7 @@
 #include "hesiod/app/app_settings.hpp"
 #include "hesiod/app/enum_mappings.hpp"
 #include "hesiod/app/style_settings.hpp"
+#include "hesiod/model/error/error_manager.hpp"
 #include "hesiod/model/project_model.hpp"
 
 namespace hesiod
@@ -36,6 +37,10 @@ public:
   void new_project();
   void load_project_model(const std::string &fname);
 
+  // --- Error management
+  ErrorManager       &get_error_manager();
+  const ErrorManager &get_error_manager() const;
+
   // --- Data
   void load_node_documentation();
 
@@ -47,6 +52,7 @@ public:
   AppSettings    app_settings;
   StyleSettings  style_settings;
   nlohmann::json node_documentation;
+  ErrorManager   error_manager;
 
   // project
   std::unique_ptr<ProjectModel> project_model;

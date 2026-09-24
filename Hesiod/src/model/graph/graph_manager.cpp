@@ -82,7 +82,6 @@ void GraphManager::clear()
   this->graph_nodes.clear();
   this->graph_order.clear();
   this->broadcast_params.clear();
-  this->load_errors.clear();
 }
 
 void GraphManager::export_flatten()
@@ -261,18 +260,6 @@ bool GraphManager::is_graph_id_available(const std::string &graph_id)
   return !this->graph_nodes.contains(graph_id);
 }
 
-void GraphManager::add_load_error(const std::string &error)
-{
-  this->load_errors.push_back(error);
-}
-
-void GraphManager::clear_load_errors() { this->load_errors.clear(); }
-
-const std::vector<std::string> &GraphManager::get_load_errors() const
-{
-  return this->load_errors;
-}
-
 void GraphManager::json_from(nlohmann::json const &json)
 {
   this->json_from(json, nullptr);
@@ -315,39 +302,39 @@ void GraphManager::json_from(nlohmann::json const &json, GraphConfig *p_config)
         if (json.contains("graph_nodes") && json["graph_nodes"].contains(graph_id))
         {
           graph->json_from(json["graph_nodes"][graph_id], p_config);
-          for (const auto &err : graph->get_load_errors())
-            this->add_load_error(err);
         }
         else
         {
-          const std::string err = std::format("Missing key \"graph_nodes\" or \"{}\"",
-                                              graph_id);
-          Logger::log()->error("{}", err);
-          this->add_load_error(err);
+          HSD_CTX.get_error_manager().push_error(
+              ErrorSeverity::Warning,
+              "Deserialization",
+              std::format("Missing key \"graph_nodes\" or \"{}\"", graph_id),
+              {{"graph_id", graph_id}});
         }
       }
       catch (const std::exception &e)
       {
-        const std::string err = std::format("Failed to add graph '{}': {}",
-                                            graph_id,
-                                            e.what());
-        Logger::log()->error("{}", err);
-        this->add_load_error(err);
+        HSD_CTX.get_error_manager().push_error(
+            ErrorSeverity::Error,
+            "Deserialization",
+            std::format("Failed to add graph '{}': {}", graph_id, e.what()),
+            {{"graph_id", graph_id}});
       }
       catch (...)
       {
-        const std::string err = std::format("Failed to add graph '{}': unknown error",
-                                            graph_id);
-        Logger::log()->error("{}", err);
-        this->add_load_error(err);
+        HSD_CTX.get_error_manager().push_error(
+            ErrorSeverity::Error,
+            "Deserialization",
+            std::format("Failed to add graph '{}': unknown error", graph_id),
+            {{"graph_id", graph_id}});
       }
     }
   }
   else
   {
-    const std::string err = "Missing key \"graph_order\" in json";
-    Logger::log()->error("{}", err);
-    this->add_load_error(err);
+    HSD_CTX.get_error_manager().push_error(ErrorSeverity::Error,
+                                           "Deserialization",
+                                           "Missing key \"graph_order\" in json");
   }
 }
 
