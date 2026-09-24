@@ -129,11 +129,11 @@ def parse_arguments():
         help="Force sequential computation mode for all compute modes (CPU and GPU).",
     )
     parser.add_argument(
-        "--disk-cache",
-        "--cache-data-on-disk",
+        "--min-memory",
+        "--low-memory",
         action="store_true",
-        dest="disk_cache",
-        help="Cache data on disk (storage mode: VA_DISK_LRU) instead of keeping in RAM.",
+        dest="min_memory",
+        help="Minimal memory footprint mode (storage mode: VA_DISK_LRU_MIN, compute mode: VA_SEQUENTIAL).",
     )
     parser.add_argument(
         "-o",
@@ -207,7 +207,7 @@ def execute_benchmark_run(
     gpu_monitor,
     force_distributed=False,
     force_sequential=False,
-    disk_cache=False,
+    min_memory=False,
 ):
     # execute one run with hesiod cli and monitor peak host and GPU memory
     batch_log_path = os.path.join(build_dir, "batch.log")
@@ -228,8 +228,8 @@ def execute_benchmark_run(
         args_list.append("--force-distributed")
     if force_sequential:
         args_list.append("--force-sequential")
-    if disk_cache:
-        args_list.append("--cache-data-on-disk")
+    if min_memory:
+        args_list.append("--min-memory")
 
     try:
         proc = subprocess.Popen(
@@ -354,7 +354,7 @@ def run_benchmarks(args):
                         gpu_monitor=gpu_monitor,
                         force_distributed=args.force_distributed,
                         force_sequential=args.force_sequential,
-                        disk_cache=args.disk_cache,
+                        min_memory=args.min_memory,
                     )
 
                     if peak_host_mb is not None:

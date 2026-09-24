@@ -86,10 +86,11 @@ int parse_args(args::ArgumentParser &parser,
       "Force sequential computation for all compute modes (CPU and GPU)",
       {"force-sequential"});
 
-  args::Flag cache_data_on_disk_arg(batch_args,
-                                    "cache-data-on-disk",
-                                    "Cache data on disk (storage mode: VA_DISK_LRU)",
-                                    {"disk-cache", "cache-data-on-disk"});
+  args::Flag min_memory_arg(batch_args,
+                            "min-memory",
+                            "Minimal memory footprint mode (storage mode: "
+                            "VA_DISK_LRU_MIN, compute mode: VA_SEQUENTIAL)",
+                            {"min-memory", "low-memory"});
 
   try
   {
@@ -103,7 +104,7 @@ int parse_args(args::ArgumentParser &parser,
                      overlap_arg ? args::get(overlap_arg) : -1.f,
                      force_distributed_arg ? args::get(force_distributed_arg) : false,
                      force_sequential_arg ? args::get(force_sequential_arg) : false,
-                     cache_data_on_disk_arg ? args::get(cache_data_on_disk_arg) : false);
+                     min_memory_arg ? args::get(min_memory_arg) : false);
       return 0;
     }
     else if (snapshot_generation)
@@ -157,7 +158,7 @@ void run_batch_mode(const std::string                  &filename,
                     float                               overlap,
                     bool                                force_distributed,
                     bool                                force_sequential,
-                    bool                                cache_data_on_disk,
+                    bool                                min_memory,
                     const GraphConfig                  *p_input_model_config,
                     std::function<void(GraphManager &)> setup_callbacks)
 {
@@ -168,7 +169,7 @@ void run_batch_mode(const std::string                  &filename,
   Logger::log()->trace("cli overlap: {}", overlap);
   Logger::log()->trace("cli force_distributed: {}", force_distributed);
   Logger::log()->trace("cli force_sequential: {}", force_sequential);
-  Logger::log()->trace("cli cache_data_on_disk: {}", cache_data_on_disk);
+  Logger::log()->trace("cli min_memory: {}", min_memory);
 
   // define actual computation configuration based on CLI inputs. If
   // nothing is provided, use the configs from the input file but if
@@ -190,17 +191,18 @@ void run_batch_mode(const std::string                  &filename,
   }
   else
   {
-    config.storage_mode = cache_data_on_disk ? hmap::StorageMode::VA_DISK_LRU
-                                             : hmap::StorageMode::VA_RAM;
+    config.storage_mode = hmap::StorageMode::VA_RAM;
   }
 
-  if (cache_data_on_disk)
+  if (min_memory)
   {
     config.storage_mode = hmap::StorageMode::VA_DISK_LRU_MIN;
-    Logger::log()->info("caching data on disk enabled (storage mode: VA_DISK_LRU_MIN)");
+    config.cm_cpu.mode = hmap::ForEachMode::VA_SEQUENTIAL;
+    config.cm_gpu.mode = hmap::ForEachMode::VA_SEQUENTIAL;
+    Logger::log()->info("minimal memory mode enabled (storage mode: VA_DISK_LRU_MIN, "
+                        "compute mode: VA_SEQUENTIAL)");
   }
-
-  if (force_distributed)
+  else if (force_distributed)
   {
     config.cm_cpu.mode = hmap::ForEachMode::VA_DISTRIBUTED;
     config.cm_gpu.mode = hmap::ForEachMode::VA_DISTRIBUTED;
