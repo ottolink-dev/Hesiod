@@ -47,7 +47,7 @@ void setup_flatbed_carve_node(BaseNode &node)
   add_float(node, A_BOTTOM_EXTENT, "Bed Half-Width", 0.02f, 0.f, 0.2f);
   add_float(node, A_VMIN, "Bed Base Height", 0.f, -1.f, 1.f);
   add_float(node, A_DEPTH, "Bed Depth", 0.02f, 0.f, 0.1f);
-  add_float(node, A_FALLOFF_DISTANCE_RATIO, "Falloff Width Ratio", 4.f, 0.f, 10.f);
+  add_float(node, A_FALLOFF_DISTANCE_RATIO, "Falloff Width Ratio", 4.f, 0.f, FLT_MAX);
   add_float(node, A_OUTER_SLOPE, "Outer Linear Slope", 0.1f, 0.f, FLT_MAX);
   add_bool(node, A_PRESERVE_BEDSHAPE, "Preserve Bed Shape", true);
   add_enum(node,
