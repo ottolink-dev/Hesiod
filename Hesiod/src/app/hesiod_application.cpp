@@ -12,6 +12,7 @@
 #include <QFileDialog>
 #include <QMenuBar>
 #include <QMessageBox>
+#include <QProcess>
 #include <QProgressDialog>
 #include <QPushButton>
 #include <QStatusBar>
@@ -480,15 +481,6 @@ void HesiodApplication::on_export_batch()
 
   BakeConfig bake_settings = this->context.project_model->get_bake_config();
 
-  // default max_tile_resolution to the current graph resolution
-  auto graph_nodes = this->context.project_model->get_graph_manager_ref()
-                         ->get_graph_nodes();
-  auto it = graph_nodes.begin();
-  if (it != graph_nodes.end() && it->second && it->second->get_config_ref())
-  {
-    bake_settings.max_tile_resolution = it->second->get_config_ref()->shape.x;
-  }
-
   BakeConfigDialog dialog(this->context.app_settings.node_editor.max_bake_resolution,
                           bake_settings);
 
@@ -615,25 +607,17 @@ void HesiodApplication::on_export_batch()
                            bake_tiling.x,
                            bake_tiling.y);
 
-      // run batch node with progress callbacks
-      auto setup_callbacks = [&progress](GraphManager &gm)
+      // populate the scheduled list in topological update order for progress display
+      std::vector<NodeExportStatus> scheduled_nodes;
+      auto graph_manager_ref = this->context.project_model->get_graph_manager_ref();
+      if (graph_manager_ref)
       {
-        std::vector<NodeExportStatus> scheduled_nodes;
-
-        for (const auto &graph_id : gm.get_graph_order())
+        for (const auto &graph_id : graph_manager_ref->get_graph_order())
         {
-          GraphNode *p_graph = gm.get_graph_ref_by_id(graph_id);
+          GraphNode *p_graph = graph_manager_ref->get_graph_ref_by_id(graph_id);
           if (!p_graph)
             continue;
 
-          // wire up per-node compute callbacks
-          p_graph->compute_started = [&progress](const std::string &node_id)
-          { progress.on_node_started(node_id); };
-
-          p_graph->compute_finished = [&progress](const std::string &node_id)
-          { progress.on_node_finished(node_id, true); };
-
-          // populate the scheduled list in topological update order if possible
           std::vector<std::string> dirty_ids;
           for (const auto &[nid, p_node] : p_graph->get_nodes())
             dirty_ids.push_back(nid);
@@ -650,20 +634,141 @@ void HesiodApplication::on_export_batch()
             scheduled_nodes.push_back(st);
           }
         }
+      }
+      progress.set_node_list(scheduled_nodes);
 
-        progress.set_node_list(scheduled_nodes);
+      // launch worker process for isolated bake execution
+      QProcess    worker_process;
+      QStringList worker_args;
+      worker_args << "-b" << QString::fromStdString(fname.string());
+      worker_args << QString::fromStdString(
+          std::format("--shape={},{}", bake_shape.x, bake_shape.y));
+      worker_args << QString::fromStdString(
+          std::format("--tiling={},{}", bake_tiling.x, bake_tiling.y));
+      worker_args << QString::fromStdString(
+          std::format("--overlap={}", bake_config.overlap));
+
+      if (bake_settings.min_memory)
+        worker_args << "--min-memory";
+      else if (bake_settings.force_distributed)
+        worker_args << "--force-distributed";
+
+      worker_args << "--ipc";
+
+      std::string current_node_computing;
+      QByteArray  stdout_buffer;
+
+      auto parse_ipc_line = [&progress, &current_node_computing](const QString &line)
+      {
+        if (line.startsWith("HSD_IPC:NODE_STARTED:"))
+        {
+          std::string node_id = line.mid(21).trimmed().toStdString();
+          current_node_computing = node_id;
+          progress.on_node_started(node_id);
+        }
+        else if (line.startsWith("HSD_IPC:NODE_FINISHED:"))
+        {
+          QString     rest = line.mid(22).trimmed();
+          int         sep = rest.lastIndexOf(':');
+          std::string node_id;
+          bool        ok = true;
+          if (sep != -1)
+          {
+            node_id = rest.left(sep).toStdString();
+            ok = (rest.mid(sep + 1) != "0");
+          }
+          else
+          {
+            node_id = rest.toStdString();
+          }
+          if (current_node_computing == node_id)
+            current_node_computing.clear();
+          progress.on_node_finished(node_id, ok);
+        }
       };
 
-      hesiod::cli::run_batch_mode(fname.string(),
-                                  bake_shape,
-                                  bake_tiling,
-                                  bake_config.overlap,
-                                  bake_settings.force_distributed &&
-                                      !bake_settings.min_memory,
-                                  bake_settings.min_memory,
-                                  bake_settings.min_memory,
-                                  &bake_config,
-                                  setup_callbacks);
+      QObject::connect(&worker_process,
+                       &QProcess::readyReadStandardOutput,
+                       [&]()
+                       {
+                         stdout_buffer.append(worker_process.readAllStandardOutput());
+                         int newline_pos = -1;
+                         while ((newline_pos = stdout_buffer.indexOf('\n')) != -1)
+                         {
+                           QByteArray line_bytes = stdout_buffer.left(newline_pos);
+                           stdout_buffer.remove(0, newline_pos + 1);
+                           QString line = QString::fromUtf8(line_bytes).trimmed();
+                           if (!line.isEmpty())
+                             parse_ipc_line(line);
+                         }
+                       });
+
+      QObject::connect(&worker_process,
+                       &QProcess::readyReadStandardError,
+                       [&]()
+                       {
+                         QByteArray err_bytes = worker_process.readAllStandardError();
+                         Logger::log()->warn("Hesiod worker stderr: {}",
+                                             err_bytes.toStdString());
+                       });
+
+      auto cancel_connection = QObject::connect(
+          &progress,
+          &BatchExportProgressDialog::request_cancel,
+          [&]()
+          {
+            if (worker_process.state() != QProcess::NotRunning)
+            {
+              Logger::log()->info("Killing bake worker process on "
+                                  "user request");
+              worker_process.kill();
+            }
+          });
+
+      worker_process.start(QCoreApplication::applicationFilePath(), worker_args);
+
+      while (worker_process.state() != QProcess::NotRunning)
+      {
+        worker_process.waitForFinished(100);
+        QCoreApplication::processEvents();
+      }
+
+      QObject::disconnect(cancel_connection);
+
+      // flush any remaining stdout buffer
+      if (!stdout_buffer.isEmpty())
+      {
+        QString line = QString::fromUtf8(stdout_buffer).trimmed();
+        if (!line.isEmpty())
+          parse_ipc_line(line);
+      }
+
+      // check if user canceled
+      if (progress.is_canceled())
+      {
+        Logger::log()->info("Bake process canceled by user.");
+        if (!current_node_computing.empty())
+          progress.on_node_finished(current_node_computing, false);
+
+        progress.on_export_canceled();
+        progress.exec();
+        this->notify("Baking canceled.");
+        return;
+      }
+
+      // check exit status
+      if (worker_process.exitStatus() == QProcess::CrashExit ||
+          worker_process.exitCode() != 0)
+      {
+        Logger::log()->error("Worker process crashed or exited with error code {}.",
+                             worker_process.exitCode());
+        if (!current_node_computing.empty())
+          progress.on_node_finished(current_node_computing, false);
+
+        progress.on_export_failed("Worker process failed during bake execution.");
+        progress.exec();
+        return;
+      }
     }
   }
 

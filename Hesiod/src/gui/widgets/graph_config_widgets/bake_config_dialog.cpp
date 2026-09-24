@@ -81,7 +81,7 @@ BakeConfigDialog::BakeConfigDialog(int               max_size,
     this->combo_max_tile_resolution->setCurrentIndex(tile_idx);
   else
     this->combo_max_tile_resolution->setCurrentIndex(
-        this->combo_max_tile_resolution->findData(1024));
+        this->combo_max_tile_resolution->findData(32768));
 
   tile_layout->addWidget(this->combo_max_tile_resolution);
   group_layout->addLayout(tile_layout);

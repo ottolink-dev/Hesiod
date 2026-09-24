@@ -37,7 +37,10 @@ class BatchExportProgressDialog : public QDialog
 public:
   explicit BatchExportProgressDialog(QWidget *parent = nullptr);
 
+  bool is_canceled() const;
+  void on_export_canceled();
   void on_export_finished();
+  void on_export_failed(const std::string &error_msg);
   void on_node_finished(const std::string &node_id, bool success = true);
   void on_node_started(const std::string &node_id);
   void set_node_list(const std::vector<NodeExportStatus> &nodes);
@@ -45,6 +48,12 @@ public:
   void set_variant(int                current_variant,
                    int                total_variants,
                    const std::string &variant_label);
+
+signals:
+  void request_cancel();
+
+private slots:
+  void on_cancel_clicked();
 
 private:
   void setup_layout();
@@ -62,6 +71,7 @@ private:
   std::vector<NodeExportStatus> nodes;
   int                           current_variant = 0;
   int                           total_variants = 0;
+  bool                          canceled = false;
 };
 
 } // namespace hesiod
