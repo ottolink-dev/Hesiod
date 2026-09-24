@@ -244,7 +244,7 @@ std::map<std::string, std::string> get_node_inventory()
       {"HydraulicBlur", "WIP"},     // "Erosion/Hydraulic"
       {"HydraulicMusgrave", "WIP"}, // "Erosion/Hydraulic"
       {"HydraulicParticle", "Erosion/Hydraulic"},
-      {"HydraulicProcedural", "Erosion/Hydraulic"},
+      {"HydraulicProcedural", "WIP"}, // "Erosion/Hydraulic"},
       {"HydraulicSaleve", "Erosion/Hydraulic"},
       {"HydraulicSchott", "WIP"}, // "Erosion/Hydraulic"
       {"HydraulicStream", "WIP"}, // "Erosion/Hydraulic"

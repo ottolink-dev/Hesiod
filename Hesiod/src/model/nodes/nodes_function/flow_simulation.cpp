@@ -105,7 +105,6 @@ void compute_flow_simulation_node(BaseNode &node)
   const auto flux_strength      = node.val<float>(A_FLUX_DIFFUSION_STRENGTH);
   const auto solver_stride      = node.val<int>(A_SOLVER_STRIDE);
   const auto post_filter        = node.val<bool>(A_POST_FILTER);
-  const auto radius             = node.val<float>(A_RADIUS);
   const auto area_filter        = node.val<bool>(A_AREA_FILTER);
   const auto radius_limit       = node.val<float>(A_RADIUS_LIMIT);
   // clang-format on
