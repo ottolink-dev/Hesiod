@@ -61,8 +61,26 @@ void AppContext::load_project_model(const std::string &fname)
 
   this->new_project();
 
-  nlohmann::json json = json_from_file(fname);
-  this->project_model->json_from(json);
+  try
+  {
+    nlohmann::json json = json_from_file(fname);
+    this->project_model->json_from(json);
+  }
+  catch (const std::exception &e)
+  {
+    const std::string err = std::format("Failed to read project file '{}': {}",
+                                        fname,
+                                        e.what());
+    Logger::log()->error("{}", err);
+    this->project_model->add_load_error(err);
+  }
+  catch (...)
+  {
+    const std::string err = std::format("Failed to read project file '{}': unknown error",
+                                        fname);
+    Logger::log()->error("{}", err);
+    this->project_model->add_load_error(err);
+  }
 }
 
 void AppContext::load_settings()

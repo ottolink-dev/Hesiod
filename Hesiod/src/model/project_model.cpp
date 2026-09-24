@@ -26,6 +26,19 @@ void ProjectModel::cleanup()
   this->name = std::string();
   this->bake_config = BakeConfig();
   this->is_dirty = false;
+  this->load_errors.clear();
+}
+
+void ProjectModel::add_load_error(const std::string &error)
+{
+  this->load_errors.push_back(error);
+}
+
+void ProjectModel::clear_load_errors() { this->load_errors.clear(); }
+
+const std::vector<std::string> &ProjectModel::get_load_errors() const
+{
+  return this->load_errors;
 }
 
 BakeConfig ProjectModel::get_bake_config() const { return this->bake_config; }
@@ -44,11 +57,14 @@ void ProjectModel::initialize()
 {
   Logger::log()->trace("ProjectModel::initialize");
   this->graph_manager = std::make_unique<GraphManager>();
+  this->load_errors.clear();
 }
 
 void ProjectModel::json_from(nlohmann::json const &json)
 {
   Logger::log()->trace("ProjectModel::json_from");
+
+  this->load_errors.clear();
 
   json_safe_get(json, "comment", this->comment);
 
@@ -61,11 +77,32 @@ void ProjectModel::json_from(nlohmann::json const &json)
   // graphs
   if (json.contains("graph_manager"))
   {
-    this->graph_manager->json_from(json["graph_manager"]);
-    this->graph_manager->update();
+    try
+    {
+      this->graph_manager->json_from(json["graph_manager"]);
+      this->graph_manager->update();
+      for (const auto &err : this->graph_manager->get_load_errors())
+        this->add_load_error(err);
+    }
+    catch (const std::exception &e)
+    {
+      const std::string err = std::format("Failed to load graph manager: {}", e.what());
+      Logger::log()->error("{}", err);
+      this->add_load_error(err);
+    }
+    catch (...)
+    {
+      const std::string err = "Failed to load graph manager: unknown error";
+      Logger::log()->error("{}", err);
+      this->add_load_error(err);
+    }
   }
   else
-    Logger::log()->error("ProjectModel::json_from: could not parse graph_manager json");
+  {
+    const std::string err = "ProjectModel::json_from: could not parse graph_manager json";
+    Logger::log()->error("{}", err);
+    this->add_load_error(err);
+  }
 }
 
 nlohmann::json ProjectModel::json_to() const

@@ -40,6 +40,11 @@ public:
   void                  set_path(const std::string &new_path);
   void                  set_name(const std::string &new_name);
 
+  // --- Load errors
+  void                            add_load_error(const std::string &error);
+  void                            clear_load_errors();
+  const std::vector<std::string> &get_load_errors() const;
+
   // --- Callbacks
   std::function<void()> project_name_changed;
   std::function<void()> is_dirty_changed;
@@ -57,6 +62,7 @@ private:
   BakeConfig                    bake_config;
   std::shared_ptr<GraphManager> graph_manager;
   bool                          is_dirty = false;
+  std::vector<std::string>      load_errors;
 };
 
 } // namespace hesiod

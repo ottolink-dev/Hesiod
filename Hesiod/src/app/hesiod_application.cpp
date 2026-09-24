@@ -9,15 +9,20 @@
 
 #include <QCoreApplication>
 #include <QDesktopServices>
+#include <QDialog>
+#include <QDialogButtonBox>
 #include <QFileDialog>
+#include <QLabel>
 #include <QMenuBar>
 #include <QMessageBox>
 #include <QProcess>
 #include <QProgressDialog>
 #include <QPushButton>
 #include <QStatusBar>
+#include <QTextEdit>
 #include <QTimer>
 #include <QUrl>
+#include <QVBoxLayout>
 
 #include <omp.h>
 
@@ -360,6 +365,64 @@ void HesiodApplication::load_project_model_and_ui(const std::string &fname,
   else
   {
     this->context.load_project_model(actual_fname);
+
+    if (!this->headless && this->context.project_model &&
+        !this->context.project_model->get_load_errors().empty())
+    {
+      const auto &errors = this->context.project_model->get_load_errors();
+
+      QDialog dialog(this->main_window);
+      dialog.setWindowTitle("Project Loading Warnings");
+
+      auto *layout = new QVBoxLayout(&dialog);
+
+      auto *info_label = new QLabel(
+          QString("The project '%1' was loaded with %2 warning(s)/error(s).\n"
+                  "Some nodes or links could not be restored:")
+              .arg(QString::fromStdString(actual_fname))
+              .arg(errors.size()),
+          &dialog);
+      layout->addWidget(info_label);
+
+      auto *error_text = new QTextEdit(&dialog);
+      error_text->setReadOnly(true);
+      QString error_string;
+      for (const auto &err : errors)
+      {
+        if (!error_string.isEmpty())
+          error_string += "\n";
+        error_string += "• " + QString::fromStdString(err);
+      }
+      error_text->setPlainText(error_string);
+      error_text->setMinimumWidth(500);
+      error_text->setMinimumHeight(200);
+      layout->addWidget(error_text);
+
+      auto        *button_box = new QDialogButtonBox(&dialog);
+      QPushButton *continue_button = button_box->addButton("Continue",
+                                                           QDialogButtonBox::AcceptRole);
+      QPushButton *cancel_button = button_box->addButton("Cancel",
+                                                         QDialogButtonBox::RejectRole);
+      continue_button->setDefault(true);
+      layout->addWidget(button_box);
+
+      QObject::connect(button_box,
+                       &QDialogButtonBox::accepted,
+                       &dialog,
+                       &QDialog::accept);
+      QObject::connect(button_box,
+                       &QDialogButtonBox::rejected,
+                       &dialog,
+                       &QDialog::reject);
+
+      if (dialog.exec() == QDialog::Rejected)
+      {
+        Logger::log()->info("User cancelled loading project after warnings: {}",
+                            actual_fname);
+        this->load_project_model_and_ui("", false);
+        return;
+      }
+    }
   }
 
   // --- UI

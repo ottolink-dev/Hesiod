@@ -120,9 +120,22 @@ std::shared_ptr<GraphNode> GraphNode::get_shared()
   }
 }
 
+void GraphNode::add_load_error(const std::string &error)
+{
+  this->load_errors.push_back(error);
+}
+
+void GraphNode::clear_load_errors() { this->load_errors.clear(); }
+
+const std::vector<std::string> &GraphNode::get_load_errors() const
+{
+  return this->load_errors;
+}
+
 void GraphNode::json_from(nlohmann::json const &json, GraphConfig *p_input_config)
 {
   Logger::log()->trace("GraphNode::json_from, graph {}", this->get_id());
+  this->load_errors.clear();
 
   nlohmann::json converted_json = convert_legacy_graph_json(json);
 
@@ -161,8 +174,10 @@ void GraphNode::json_from(nlohmann::json const &json, GraphConfig *p_input_confi
   json_safe_get(converted_json, "origin", vo);
   json_safe_get(converted_json, "size", vs);
 
-  this->set_origin(glm::vec2(vo[0], vo[1]));
-  this->set_size(glm::vec2(vs[0], vs[1]));
+  if (vo.size() >= 2)
+    this->set_origin(glm::vec2(vo[0], vo[1]));
+  if (vs.size() >= 2)
+    this->set_size(glm::vec2(vs[0], vs[1]));
 
   float rotation_angle = 0.f;
   json_safe_get(converted_json, "rotation_angle", rotation_angle);
@@ -180,16 +195,45 @@ void GraphNode::json_from(nlohmann::json const &json, GraphConfig *p_input_confi
 
       Logger::log()->trace("GraphNode::json_from, node type: {}", node_type);
 
-      // instanciate the node
-      std::shared_ptr<gnode::Node> node = node_factory(node_type, this->config);
+      std::string node_id = "";
+      json_safe_get(json_node, "id", node_id);
 
-      std::string id = "";
-      json_safe_get(json_node, "id", id);
+      try
+      {
+        // instanciate the node
+        std::shared_ptr<gnode::Node> node = node_factory(node_type, this->config);
+        if (!node)
+          throw std::runtime_error("Unknown or invalid node type: " + node_type);
 
-      this->add_node(node, id);
+        this->add_node(node, node_id);
 
-      // set its parameters
-      dynamic_cast<BaseNode *>(node.get())->json_from(json_node);
+        // set its parameters
+        if (auto *p_base = dynamic_cast<BaseNode *>(node.get()))
+          p_base->json_from(json_node);
+        else
+          throw std::runtime_error("Node is not a BaseNode: " + node_type);
+      }
+      catch (const std::exception &e)
+      {
+        const std::string err = std::format(
+            "Graph '{}': failed to create node '{}' (type '{}'): {}",
+            this->get_id(),
+            node_id.empty() ? "?" : node_id,
+            node_type,
+            e.what());
+        Logger::log()->error("GraphNode::json_from: {}", err);
+        this->add_load_error(err);
+      }
+      catch (...)
+      {
+        const std::string err = std::format(
+            "Graph '{}': failed to create node '{}' (type '{}'): unknown error",
+            this->get_id(),
+            node_id.empty() ? "?" : node_id,
+            node_type);
+        Logger::log()->error("GraphNode::json_from: {}", err);
+        this->add_load_error(err);
+      }
     }
   }
   else
@@ -215,7 +259,35 @@ void GraphNode::json_from(nlohmann::json const &json, GraphConfig *p_input_confi
                            node_id_to,
                            port_id_to);
 
-      this->new_link(node_id_from, port_id_from, node_id_to, port_id_to);
+      try
+      {
+        this->new_link(node_id_from, port_id_from, node_id_to, port_id_to);
+      }
+      catch (const std::exception &e)
+      {
+        const std::string err = std::format(
+            "Graph '{}': failed to create link {}/{} => {}/{}: {}",
+            this->get_id(),
+            node_id_from,
+            port_id_from,
+            node_id_to,
+            port_id_to,
+            e.what());
+        Logger::log()->error("GraphNode::json_from: {}", err);
+        this->add_load_error(err);
+      }
+      catch (...)
+      {
+        const std::string err = std::format(
+            "Graph '{}': failed to create link {}/{} => {}/{}: unknown error",
+            this->get_id(),
+            node_id_from,
+            port_id_from,
+            node_id_to,
+            port_id_to);
+        Logger::log()->error("GraphNode::json_from: {}", err);
+        this->add_load_error(err);
+      }
     }
   }
   else
