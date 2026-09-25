@@ -6,7 +6,7 @@ Node Categories
 
 |Primary|Secondary|Nodes|
 | :--- | :--- | :--- |
-|Boundaries||Bulkify, Falloff, SetBorders, ZeroedEdges|
+|Boundaries||Falloff, SetBorders|
 |Bridges||BlenderBridge|
 |Converter||HeightmapToKernel, HeightmapToMask, HeightmapToNormalMap, HeightmapToRGBA|
 |Debug||Compare, Debug, Preview|

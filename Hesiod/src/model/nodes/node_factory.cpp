@@ -150,7 +150,6 @@ std::map<std::string, std::string> get_node_inventory()
       {"BlendPoissonBf", "Operator/Blend"},
       {"Brush", "Primitive/Authoring"},
       {"Broadcast", "Routing"},
-      {"Bulkify", "Boundaries"},
       {"Bump", "Primitive/Function"},
       {"Caldera", "WIP"}, // "Primitive/Geological"},
       {"Clamp", "Filter/Range"},
@@ -397,7 +396,6 @@ std::map<std::string, std::string> get_node_inventory()
       {"White", "Primitive/Random"},
       {"WhiteDensityMap", "Primitive/Random"},
       {"WhiteSparse", "Primitive/Random"},
-      {"ZeroedEdges", "Boundaries"},
       {"Zoom", "Operator/Transform"},
   };
 
@@ -456,7 +454,6 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
     SETUP_NODE(Blend3, blend3);
     SETUP_NODE(BlendPoissonBf, blend_poisson_bf);
     SETUP_NODE(Brush, brush);
-    SETUP_NODE(Bulkify, bulkify);
     SETUP_NODE(Bump, bump);
     SETUP_NODE(Caldera, caldera);
     SETUP_NODE(Clamp, clamp);
@@ -577,6 +574,9 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
     SETUP_NODE(Median3x3, median3x3);
     SETUP_NODE(MedianPseudo, median_pseudo);
     SETUP_NODE(MergeWaterDepths, merge_water_depths);
+    SETUP_NODE(MixNormalMap, mix_normal_map);
+    SETUP_NODE(MixTexture, mix_texture);
+    SETUP_NODE(MixTextureMasked, mix_texture_masked);
     SETUP_NODE(Mixer, mixer);
     SETUP_NODE(MorphologicalOperators, morphological_operators);
     SETUP_NODE(MountainCone, mountain_cone);
@@ -689,7 +689,6 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
     SETUP_NODE(White, white);
     SETUP_NODE(WhiteDensityMap, white_density_map);
     SETUP_NODE(WhiteSparse, white_sparse);
-    SETUP_NODE(ZeroedEdges, zeroed_edges);
     SETUP_NODE(Zoom, zoom);
 #endif
   default:

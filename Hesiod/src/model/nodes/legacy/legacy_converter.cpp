@@ -95,6 +95,14 @@ std::string resolve_legacy_group_name(const meta::ContainerGroup &group,
   if (label == "ConeSigmoid")
     return "Sigmoid";
 
+  // Falloff mappings
+  if (label == "Falloff" || label == "FallOff")
+    return "Distance";
+  if (label == "ZeroedEdges")
+    return "Radial Profile";
+  if (label == "Bulkify")
+    return "Bulk";
+
   // Path mappings
   if (label == "PathResample" || label == "PathBezier" || label == "PathBezierRound" ||
       label == "PathBspline" || label == "PathDecasteljau")
@@ -316,6 +324,22 @@ nlohmann::json convert_legacy_node_json(const nlohmann::json &json_node)
   {
     target_label = "Cone";
     group_name = "Sigmoid";
+  }
+  // --- Falloff family ---
+  else if (label == "Falloff" || label == "FallOff")
+  {
+    target_label = "Falloff";
+    group_name = "Distance";
+  }
+  else if (label == "ZeroedEdges")
+  {
+    target_label = "Falloff";
+    group_name = "Radial Profile";
+  }
+  else if (label == "Bulkify")
+  {
+    target_label = "Falloff";
+    group_name = "Bulk";
   }
   // --- Path Resample family ---
   else if (label == "PathResample" || label == "PathBezier" ||

@@ -1,10 +1,8 @@
 * [Node Reference](index.md)
 * [Categories](categories.md)
 * Boundaries
-    * [Bulkify](nodes/Bulkify.md)
     * [Falloff](nodes/Falloff.md)
     * [SetBorders](nodes/SetBorders.md)
-    * [ZeroedEdges](nodes/ZeroedEdges.md)
 * Bridges
     * [BlenderBridge](nodes/BlenderBridge.md)
 * Converter
