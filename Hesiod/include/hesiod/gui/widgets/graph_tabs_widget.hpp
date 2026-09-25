@@ -30,6 +30,8 @@ public:
   void clear();
   void set_show_node_settings_widget(bool new_state);
   void set_show_viewer(bool new_state);
+  // 0: 2D viewer, 1: 3D renderer (qtr::RenderType); also used for new graphs
+  void set_viewer_render_type(int new_type);
   void set_show_node_library_pan(bool new_state);
 
   // --- Serialization ---
@@ -64,6 +66,8 @@ public slots:
   void set_selected_tab(const std::string &graph_id);
   void update_receive_nodes_tag_list();
   void update_tab_widget();
+  void sync_tab_strips(); // every workspace's tab strip shows the current tabs
+  void show_tab_menu(int index, const QPoint &global_pos); // right click on a tab
   void zoom_to_content();
 
 private:
@@ -75,6 +79,7 @@ private:
   std::map<std::string, QPointer<GraphWorkspaceWidget>> graph_workspace_widget_map;
   bool                                                  show_node_settings_widget;
   bool                                                  show_viewer;
+  int                                                   viewer_render_type = 1;
   QHBoxLayout                                          *main_layout;
 };
 

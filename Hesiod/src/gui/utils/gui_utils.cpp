@@ -25,9 +25,12 @@ void apply_animation_settings(bool enabled)
 {
   Logger::log()->trace("apply_animation_settings: {}", enabled);
 
-  for (const Qt::UIEffect effect : {Qt::UI_AnimateMenu,
-                                    Qt::UI_FadeMenu,
-                                    Qt::UI_AnimateCombo,
+  // menus are animated by MenuAnimator (menu_chrome.hpp); Qt's own menu
+  // effects animate a grabbed screenshot of the menu and would run on top of it
+  QApplication::setEffectEnabled(Qt::UI_AnimateMenu, false);
+  QApplication::setEffectEnabled(Qt::UI_FadeMenu, false);
+
+  for (const Qt::UIEffect effect : {Qt::UI_AnimateCombo,
                                     Qt::UI_AnimateTooltip,
                                     Qt::UI_FadeTooltip,
                                     Qt::UI_AnimateToolBox})

@@ -12,6 +12,18 @@
 namespace hesiod
 {
 
+namespace
+{
+
+QColor mix_colors(const QColor &from, const QColor &to, qreal amount)
+{
+  return QColor::fromRgbF(from.redF() + (to.redF() - from.redF()) * amount,
+                          from.greenF() + (to.greenF() - from.greenF()) * amount,
+                          from.blueF() + (to.blueF() - from.blueF()) * amount);
+}
+
+} // namespace
+
 void apply_global_style(QApplication &app)
 {
   Logger::log()->trace("apply_global_style");
@@ -34,7 +46,21 @@ void apply_global_style(QApplication &app)
       {"COLOR_BORDER", ctx.app_settings.colors.border},
       {"COLOR_HOVER", ctx.app_settings.colors.hover},
       {"COLOR_PRESSED", ctx.app_settings.colors.pressed},
-      {"COLOR_SEPARATOR", ctx.app_settings.colors.separator}};
+      {"COLOR_SEPARATOR", ctx.app_settings.colors.separator},
+      // derived tones for the panel cards and popups: the configured border and
+      // accent are too loud at the size of a whole pane or a menu highlight
+      {"COLOR_PANEL_BORDER",
+       mix_colors(ctx.app_settings.colors.bg_primary,
+                  ctx.app_settings.colors.border,
+                  0.38)},
+      {"COLOR_PANEL_HOVER",
+       mix_colors(ctx.app_settings.colors.bg_deep,
+                  ctx.app_settings.colors.bg_primary,
+                  0.6)},
+      {"COLOR_MUTED_ACCENT",
+       mix_colors(ctx.app_settings.colors.bg_primary,
+                  ctx.app_settings.colors.accent,
+                  0.55)}};
 
   for (auto &[p, color] : place_holders)
     hesiod::replace_all(style_sheet, p, color.name().toStdString());

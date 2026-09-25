@@ -93,6 +93,22 @@ target_link_libraries(
          qtexture_downloader
          ZLIB::ZLIB)
 
+# custom window chrome (frameless main window with native snap / resize)
+if(WIN32)
+  target_link_libraries(hesiod_core PUBLIC dwmapi)
+endif()
+
+# live interface scaling (ui_scale::apply_live) needs Qt's private high-DPI
+# API; without it the scale setting falls back to applying on restart
+find_package(Qt6 QUIET COMPONENTS GuiPrivate)
+if(TARGET Qt6::GuiPrivate)
+  target_link_libraries(hesiod_core PUBLIC Qt6::GuiPrivate)
+  target_compile_definitions(hesiod_core PUBLIC HSD_LIVE_UI_SCALE=1)
+  message(STATUS "Hesiod: live interface scaling enabled (Qt6::GuiPrivate)")
+else()
+  message(STATUS "Hesiod: Qt6::GuiPrivate not found, interface scale applies on restart")
+endif()
+
 # ------------------------------
 # Precompiled Headers (PCH)
 # ------------------------------

@@ -10,7 +10,14 @@
 #include <QDir>
 #include <QGuiApplication>
 #include <QStandardPaths>
+#include <QWindow>
 #include <QtGlobal>
+
+#ifdef HSD_LIVE_UI_SCALE
+#include <QtGui/private/qhighdpiscaling_p.h>
+#include <qpa/qplatformwindow.h>
+#include <qpa/qwindowsysteminterface.h>
+#endif
 
 #ifdef Q_OS_WIN
 #define WIN32_LEAN_AND_MEAN
@@ -245,5 +252,61 @@ Resolution apply_startup_scale(const char *argv0)
 Resolution session_resolution() { return g_session; }
 
 double session_scale() { return g_session.effective; }
+
+bool live_apply_supported()
+{
+#ifdef HSD_LIVE_UI_SCALE
+  return true;
+#else
+  return false;
+#endif
+}
+
+bool apply_live(double configured)
+{
+  const double value = sanitize(configured);
+
+  // the environment pinned the scale; the preference is not ours to apply
+  if (g_session.environment_override)
+    return false;
+
+#ifdef HSD_LIVE_UI_SCALE
+  if (std::abs(value - g_session.effective) < 1e-6)
+  {
+    g_session.configured = value;
+    return true;
+  }
+
+  // Same global factor QT_SCALE_FACTOR sets at startup. Qt warns that this is
+  // meant for before any window exists; the notifications below are what make
+  // it safe afterwards.
+  QHighDpiScaling::setGlobalFactor(value);
+
+  g_session.configured = value;
+  g_session.effective = value;
+
+  // Re-announce each window's pixel ratio, then its geometry: the native size
+  // is unchanged, so the logical size Qt derives from it changes with the
+  // factor and every widget relayouts at the new scale. This is the sequence
+  // Qt itself follows when a window moves to a monitor with another scale.
+  for (QWindow *window : QGuiApplication::topLevelWindows())
+  {
+    if (!window->handle())
+      continue;
+
+    QWindowSystemInterface::handleWindowDevicePixelRatioChanged<
+        QWindowSystemInterface::SynchronousDelivery>(window);
+    QWindowSystemInterface::handleGeometryChange<
+        QWindowSystemInterface::SynchronousDelivery>(window,
+                                                     window->handle()->geometry());
+    window->requestUpdate();
+  }
+
+  Logger::log()->info("ui_scale: interface scale {} applied live", value);
+  return true;
+#else
+  return false;
+#endif
+}
 
 } // namespace hesiod::ui_scale

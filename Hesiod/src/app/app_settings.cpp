@@ -302,6 +302,7 @@ void AppSettings::json_from(nlohmann::json const &json)
   json_safe_get(json, "viewer.width", viewer.width);
   json_safe_get(json, "viewer.height", viewer.height);
   json_safe_get(json, "viewer.add_heighmap_skirt", viewer.add_heighmap_skirt);
+  json_safe_get(json, "viewer.toolbar_scale", viewer.toolbar_scale);
 
   // window
   {
@@ -409,6 +410,7 @@ nlohmann::json AppSettings::json_to() const
   json["viewer.width"] = viewer.width;
   json["viewer.height"] = viewer.height;
   json["viewer.add_heighmap_skirt"] = viewer.add_heighmap_skirt;
+  json["viewer.toolbar_scale"] = viewer.toolbar_scale;
 
   json["window.geom_main.x"] = window.geom_main.x;
   json["window.geom_main.y"] = window.geom_main.y;

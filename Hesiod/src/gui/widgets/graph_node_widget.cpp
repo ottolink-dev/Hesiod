@@ -8,8 +8,8 @@
 #include <QApplication>
 #include <QFileDialog>
 #include <QMenu>
-#include <QMessageBox>
 #include <QPointer>
+#include <QPushButton>
 #include <QScreen>
 #include <QTimer>
 #include <QToolButton>
@@ -23,6 +23,7 @@
 #include "hesiod/gui/widgets/graph_config_widgets/graph_config_dialog.hpp"
 #include "hesiod/gui/widgets/graph_node_widget.hpp"
 #include "hesiod/gui/widgets/gui_utils.hpp"
+#include "hesiod/gui/widgets/message_dialog.hpp"
 #include "hesiod/gui/widgets/node_attributes_widget.hpp"
 #include "hesiod/gui/widgets/node_info_dialog.hpp"
 #include "hesiod/gui/widgets/node_widget.hpp"
@@ -500,13 +501,16 @@ void GraphNodeWidget::on_graph_clear_request()
 {
   Logger::log()->trace("GraphNodeWidget::on_graph_clear_request");
 
-  QMessageBox::StandardButton reply = QMessageBox::question(
-      nullptr,
-      "?",
-      "This will clear everything. Are you sure?",
-      QMessageBox::Yes | QMessageBox::No);
+  MessageDialog box(this,
+                    MessageDialog::Kind::Warning,
+                    "Clear the whole graph?",
+                    "Every node and link in this graph will be removed.");
+  box.setWindowTitle("Clear graph");
+  QPushButton *clear_button = box.add_button("Clear graph", MessageDialog::Role::Danger);
+  box.add_button("Cancel", MessageDialog::Role::Primary, true, true);
+  box.exec();
 
-  if (reply == QMessageBox::Yes)
+  if (box.clicked_button() == clear_button)
     this->clear_all();
 }
 
@@ -631,7 +635,7 @@ void GraphNodeWidget::on_graph_settings_request()
   // work on a copy of the model configuration before
   // apllying modifications
   GraphConfig       new_config = *gno->get_config_ref();
-  GraphConfigDialog model_config_editor(new_config);
+  GraphConfigDialog model_config_editor(new_config, this);
 
   int ret = model_config_editor.exec();
 

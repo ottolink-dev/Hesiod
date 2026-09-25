@@ -1,15 +1,14 @@
 /* Copyright (c) 2026 Otto Link. Distributed under the terms of the GNU General Public
    License. The full license is in the file LICENSE, distributed with this software. */
 #pragma once
-#include <QDialog>
-#include <QDialogButtonBox>
-#include <QLabel>
-#include <QPlainTextEdit>
-#include <QString>
-#include <QVBoxLayout>
 #include <vector>
 
+#include <QString>
+
+#include "hesiod/gui/widgets/message_dialog.hpp"
 #include "hesiod/model/error/error.hpp"
+
+class QVBoxLayout;
 
 namespace hesiod
 {
@@ -17,7 +16,15 @@ namespace hesiod
 // =====================================
 // ErrorDialog
 // =====================================
-class ErrorDialog : public QDialog
+
+// A list of problems (e.g. nodes or links that could not be restored while
+// loading a project), in the application's message-dialog chrome. Each problem
+// is a readable row -- what failed, then why, tagged with its category --
+// rather than one long monospace line; "Copy details" puts the raw text on the
+// clipboard for bug reports.
+//
+// exec() returns Accepted for Continue / OK and Rejected for Cancel.
+class ErrorDialog : public MessageDialog
 {
   Q_OBJECT
 
@@ -35,15 +42,14 @@ public:
               QWidget       *parent = nullptr);
 
 private:
-  void setup_ui(const QString &message,
-                const QString &error_text,
-                bool           show_cancel_button);
+  struct Item
+  {
+    QString tag, text;
+  };
 
-  // UI elements
-  QVBoxLayout      *layout = nullptr;
-  QLabel           *info_label = nullptr;
-  QPlainTextEdit   *error_text_edit = nullptr;
-  QDialogButtonBox *button_box = nullptr;
+  void setup_ui(const std::vector<Item> &items, bool show_cancel_button);
+
+  QString raw_text;
 };
 
 } // namespace hesiod
