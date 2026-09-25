@@ -209,6 +209,7 @@ std::map<std::string, std::string> get_node_inventory()
       {"ExportNormalMap", "Export"},
       {"ExportPath", "Export"},
       {"ExportPointsToPly", "Export"},
+      {"ExportScene", "WIP"},
       {"ExportTexture", "Export"},
       {"ExportTiled", "Export"},
       {"Falloff", "Boundaries"},
@@ -510,6 +511,7 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
     SETUP_NODE(ExportNormalMap, export_normal_map);
     SETUP_NODE(ExportPath, export_path);
     SETUP_NODE(ExportPointsToPly, export_points_to_ply);
+    SETUP_NODE(ExportScene, export_scene);
     SETUP_NODE(ExportTexture, export_texture);
     SETUP_NODE(ExportTiled, export_tiled);
     SETUP_NODE(Falloff, falloff);

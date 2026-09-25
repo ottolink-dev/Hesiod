@@ -11070,7 +11070,7 @@
     },
     "HydraulicStreamLog": {
         "category": "Erosion/Hydraulic",
-        "description": "HydraulicStream is a hydraulic erosion operator using a flow-stream formulation and an infinite flow-direction algorithm (D\u221e). Erosion intensity is driven by flow accumulation, terrain gradient, moisture, and optional bedrock limits. Deposition is simulated using convolution kernels whose radius and scale control smoothing and sediment redistribution.",
+        "description": "HydraulicStream is a hydraulic erosion operator using a flow-stream formulation and an infinite flow-direction algorithm (D∞). Erosion intensity is driven by flow accumulation, terrain gradient, moisture, and optional bedrock limits. Deposition is simulated using convolution kernels whose radius and scale control smoothing and sediment redistribution.",
         "label": "HydraulicStreamLog",
         "parameter_groups": [
             {
@@ -11887,7 +11887,7 @@
             "land_mask": {
                 "caption": "land_mask",
                 "data_type": "VirtualArray",
-                "description": "Binary mask defining the island\u2019s footprint; nonzero pixels are considered land. Consider using the node IslandLandMask to generate this mask.",
+                "description": "Binary mask defining the island’s footprint; nonzero pixels are considered land. Consider using the node IslandLandMask to generate this mask.",
                 "type": "input"
             },
             "output": {
@@ -15295,7 +15295,7 @@
                 "type": "Float"
             },
             "noise_inflate": {
-                "description": "Controls how noise affects the step profile. \u2018Inflate\u2019 pushes elevations outward, while \u2018Deflate\u2019 pulls them inward.",
+                "description": "Controls how noise affects the step profile. ‘Inflate’ pushes elevations outward, while ‘Deflate’ pulls them inward.",
                 "key": "noise_inflate",
                 "label": "",
                 "type": "Bool"
@@ -24868,7 +24868,7 @@
             "output": {
                 "caption": "output",
                 "data_type": "VirtualArray",
-                "description": "Resulting heightmap that combines the target\u2019s base shape with the source\u2019s high-frequency details.",
+                "description": "Resulting heightmap that combines the target’s base shape with the source’s high-frequency details.",
                 "type": "output"
             },
             "source": {
