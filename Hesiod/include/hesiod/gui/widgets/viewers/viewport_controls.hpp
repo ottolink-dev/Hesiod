@@ -5,12 +5,13 @@
 #include <map>
 #include <memory>
 
-#include <QElapsedTimer>
 #include <QMargins>
 #include <QObject>
 #include <QPointer>
 
 #include "nlohmann/json.hpp"
+
+#include "hesiod/gui/widgets/menu_chrome.hpp"
 
 namespace qtr
 {
@@ -90,10 +91,7 @@ private:
 
   // A click on a tool whose menu is open closes the menu, and Qt replays the
   // press onto the rail: that press must not open the menu again.
-  void          note_menu_closed(int tool);
-  bool          swallow_press(int tool);
-  int           menu_tool = -1;
-  QElapsedTimer menu_closed;
+  PopupReplayGuard menu_guard;
 
   QPointer<qtr::RenderWidget>            renderer;
   QPointer<GraphNodeWidget>              graph;

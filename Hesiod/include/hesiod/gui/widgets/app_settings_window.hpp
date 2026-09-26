@@ -107,8 +107,11 @@ private:
   void apply_changes();
   void discard_changes();
   void load_defaults();
-  void update_state();
-  bool confirm_close();
+  void reset_everything(); // the whole settings file, after a confirmation
+  // live side effects of committed settings; a note when one could not apply
+  QString apply_effects(unsigned effects);
+  void    update_state();
+  bool    confirm_close();
 
   // --- search
   void apply_filter(const QString &query);

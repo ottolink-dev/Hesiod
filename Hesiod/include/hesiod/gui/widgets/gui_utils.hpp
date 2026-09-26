@@ -5,6 +5,7 @@
 #include <functional>
 
 #include <QApplication>
+#include <QColor>
 #include <QGridLayout>
 #include <QImage>
 #include <QLayout>
@@ -18,6 +19,13 @@ namespace hesiod
 void add_qmenu_spacer(QMenu *menu, int height = 8);
 
 void apply_global_style(QApplication &app);
+
+// Linear blend of two colours, alpha included; `amount` is clamped to [0, 1].
+QColor mix_colors(const QColor &from, const QColor &to, qreal amount);
+
+// Border of the rounded pane cards, and of the popups and dialogs drawn to
+// match them. The stylesheet's COLOR_PANEL_BORDER is this same colour.
+QColor panel_border_color();
 
 /** @brief Switch interface motion on or off across the application.
  *

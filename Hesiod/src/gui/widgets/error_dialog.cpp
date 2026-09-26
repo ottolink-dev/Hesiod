@@ -14,6 +14,7 @@
 
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/widgets/error_dialog.hpp"
+#include "hesiod/gui/widgets/gui_utils.hpp"
 #include "hesiod/logger.hpp"
 
 namespace hesiod
@@ -43,13 +44,6 @@ QString category_tag(ErrorCategory category)
   default:
     return "Issue";
   }
-}
-
-QColor mix(const QColor &from, const QColor &to, qreal amount)
-{
-  return QColor::fromRgbF(from.redF() + (to.redF() - from.redF()) * amount,
-                          from.greenF() + (to.greenF() - from.greenF()) * amount,
-                          from.blueF() + (to.blueF() - from.blueF()) * amount);
 }
 
 } // namespace
@@ -224,11 +218,11 @@ void ErrorDialog::setup_ui(const std::vector<Item> &items, bool show_cancel_butt
   const QColor                          warn("#d9a441");
   const QColor                          deep = colors.bg_deep;
   const std::pair<const char *, QColor> tokens[] = {
-      {"WARN_SOFT", mix(deep, warn, 0.16)},
+      {"WARN_SOFT", mix_colors(deep, warn, 0.16)},
       {"WARN", warn},
       {"DEEP", deep},
-      {"BORDER", mix(colors.bg_primary, colors.border, 0.40)},
-      {"DIM", mix(colors.bg_primary, colors.text_primary, 0.66)},
+      {"BORDER", panel_border_color()},
+      {"DIM", mix_colors(colors.bg_primary, colors.text_primary, 0.66)},
       {"INK", colors.text_primary}};
   for (const auto &[key, value] : tokens)
     css.replace(key, value.name());

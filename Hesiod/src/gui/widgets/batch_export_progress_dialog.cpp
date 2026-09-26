@@ -25,6 +25,7 @@
 
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/widgets/batch_export_progress_dialog.hpp"
+#include "hesiod/gui/widgets/gui_utils.hpp"
 #include "hesiod/logger.hpp"
 
 namespace hesiod
@@ -32,15 +33,6 @@ namespace hesiod
 
 namespace
 {
-
-QColor mix(const QColor &a, const QColor &b, qreal t)
-{
-  t = std::clamp(t, 0.0, 1.0);
-  return QColor::fromRgbF(a.redF() + (b.redF() - a.redF()) * t,
-                          a.greenF() + (b.greenF() - a.greenF()) * t,
-                          a.blueF() + (b.blueF() - a.blueF()) * t,
-                          a.alphaF() + (b.alphaF() - a.alphaF()) * t);
-}
 
 const QColor kDone("#7cc46a");
 const QColor kFailed("#e0605a");
@@ -99,7 +91,7 @@ protected:
     const qreal  r = track.height() / 2.0;
 
     p.setPen(Qt::NoPen);
-    p.setBrush(mix(colors.bg_deep, colors.bg_primary, 0.35));
+    p.setBrush(mix_colors(colors.bg_deep, colors.bg_primary, 0.35));
     p.drawRoundedRect(track, r, r);
 
     if (this->shown <= 0.0)
@@ -188,7 +180,7 @@ protected:
       if (active)
       {
         p.setPen(Qt::NoPen);
-        p.setBrush(mix(colors.bg_primary, colors.accent, 0.16));
+        p.setBrush(mix_colors(colors.bg_primary, colors.accent, 0.16));
         p.drawRoundedRect(QRectF(row).adjusted(2, 1, -2, -1), 7, 7);
       }
 
@@ -197,13 +189,13 @@ protected:
       switch (n.state)
       {
       case NodeComputeState::Pending:
-        p.setPen(QPen(mix(colors.bg_primary, colors.text_primary, 0.30), 1.4));
+        p.setPen(QPen(mix_colors(colors.bg_primary, colors.text_primary, 0.30), 1.4));
         p.setBrush(Qt::NoBrush);
         p.drawEllipse(c, 5.5, 5.5);
         break;
       case NodeComputeState::Computing:
       {
-        p.setPen(QPen(mix(colors.bg_primary, colors.accent, 0.35), 2.0));
+        p.setPen(QPen(mix_colors(colors.bg_primary, colors.accent, 0.35), 2.0));
         p.setBrush(Qt::NoBrush);
         p.drawEllipse(c, 6.0, 6.0);
         QPen arc(colors.accent.lighter(130), 2.0);
@@ -215,7 +207,7 @@ protected:
       case NodeComputeState::Completed:
       {
         p.setPen(Qt::NoPen);
-        p.setBrush(mix(colors.bg_primary, kDone, 0.85));
+        p.setBrush(mix_colors(colors.bg_primary, kDone, 0.85));
         p.drawEllipse(c, 7.0, 7.0);
         QPen tick(QColor(20, 30, 20), 1.7);
         tick.setCapStyle(Qt::RoundCap);
@@ -245,8 +237,9 @@ protected:
 
       // label and id
       const QColor ink = n.state == NodeComputeState::Failed ? kFailed
-                         : pending ? mix(colors.bg_primary, colors.text_primary, 0.55)
-                                   : colors.text_primary;
+                         : pending
+                             ? mix_colors(colors.bg_primary, colors.text_primary, 0.55)
+                             : colors.text_primary;
       p.setFont(label_font);
       p.setPen(ink);
       const QRect text_rect = row.adjusted(40, 0, -60, 0);
@@ -257,7 +250,7 @@ protected:
                                             text_rect.width()));
 
       p.setFont(id_font);
-      p.setPen(mix(colors.bg_primary, colors.text_primary, 0.40));
+      p.setPen(mix_colors(colors.bg_primary, colors.text_primary, 0.40));
       p.drawText(row.adjusted(0, 0, -12, 0),
                  Qt::AlignVCenter | Qt::AlignRight,
                  QString("#%1").arg(QString::fromStdString(n.node_id)));
@@ -322,9 +315,10 @@ void BatchExportProgressDialog::on_cancel_clicked()
 void BatchExportProgressDialog::set_status(const QString &text, int tone)
 {
   const auto  &colors = HSD_CTX.app_settings.colors;
-  const QColor ink = tone > 0   ? kDone
-                     : tone < 0 ? kFailed
-                                : mix(colors.bg_primary, colors.text_primary, 0.70);
+  const QColor ink = tone > 0 ? kDone
+                     : tone < 0
+                         ? kFailed
+                         : mix_colors(colors.bg_primary, colors.text_primary, 0.70);
   this->label_status->setText(text);
   this->label_status->setStyleSheet(
       QString("color: %1; font-size: 12px; background: transparent;%2")
@@ -473,7 +467,7 @@ void BatchExportProgressDialog::set_variant(int                variant_idx,
 void BatchExportProgressDialog::setup_layout()
 {
   const auto   &colors = HSD_CTX.app_settings.colors;
-  const QString dim = mix(colors.bg_primary, colors.text_primary, 0.60).name();
+  const QString dim = mix_colors(colors.bg_primary, colors.text_primary, 0.60).name();
 
   QVBoxLayout *body = this->body();
   body->setSpacing(8);
@@ -534,10 +528,10 @@ void BatchExportProgressDialog::setup_layout()
           " QScrollArea#bakeNodeList QScrollBar::sub-line:vertical { height: 0px; }"
           "QScrollArea#bakeNodeList QScrollBar::add-page:vertical,"
           " QScrollArea#bakeNodeList QScrollBar::sub-page:vertical { background: none; }")
-          .arg(mix(colors.bg_deep, colors.bg_primary, 0.55).name(),
-               mix(colors.bg_primary, colors.border, 0.40).name(),
-               mix(colors.bg_primary, colors.text_primary, 0.22).name(),
-               mix(colors.bg_primary, colors.text_primary, 0.40).name()));
+          .arg(mix_colors(colors.bg_deep, colors.bg_primary, 0.55).name(),
+               panel_border_color().name(),
+               mix_colors(colors.bg_primary, colors.text_primary, 0.22).name(),
+               mix_colors(colors.bg_primary, colors.text_primary, 0.40).name()));
   body->addWidget(this->list_scroll);
 
   // --- buttons: cancel while it runs, done at the end

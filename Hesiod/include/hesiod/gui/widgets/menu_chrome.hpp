@@ -57,4 +57,33 @@ protected:
   bool eventFilter(QObject *watched, QEvent *event) override;
 };
 
+// =====================================
+// PopupReplayGuard
+// =====================================
+
+// Qt replays the mouse press that closes a popup onto the widget under the
+// cursor. When that widget is the one that opened the popup (a menu button, a
+// toolbar tool), the press should just close the popup, not open it again.
+//
+// Arm the guard once the popup has closed, with the area of the widget that
+// opened it; the widget then asks swallow_press() in its mousePressEvent and
+// calls release() in its mouseReleaseEvent. The replayed press is recognised
+// by state, not timing: the button that closed the popup is still down over
+// that area when the guard arms, and the guard disarms on that click's release.
+class PopupReplayGuard
+{
+public:
+  // right after the popup closed (exec() returned)
+  void arm(QWidget *anchor, const QRect &area);
+
+  // true for the replayed press (ignore it); any other press disarms
+  bool swallow_press(const QPoint &anchor_pos);
+
+  void release() { this->armed = false; }
+
+private:
+  QRect area;
+  bool  armed = false;
+};
+
 } // namespace hesiod

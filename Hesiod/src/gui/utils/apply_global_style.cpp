@@ -6,23 +6,12 @@
 #include "gnodegui/style.hpp"
 
 #include "hesiod/app/hesiod_application.hpp"
+#include "hesiod/gui/widgets/gui_utils.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/utils.hpp"
 
 namespace hesiod
 {
-
-namespace
-{
-
-QColor mix_colors(const QColor &from, const QColor &to, qreal amount)
-{
-  return QColor::fromRgbF(from.redF() + (to.redF() - from.redF()) * amount,
-                          from.greenF() + (to.greenF() - from.greenF()) * amount,
-                          from.blueF() + (to.blueF() - from.blueF()) * amount);
-}
-
-} // namespace
 
 void apply_global_style(QApplication &app)
 {
@@ -49,10 +38,7 @@ void apply_global_style(QApplication &app)
       {"COLOR_SEPARATOR", ctx.app_settings.colors.separator},
       // derived tones for the panel cards and popups: the configured border and
       // accent are too loud at the size of a whole pane or a menu highlight
-      {"COLOR_PANEL_BORDER",
-       mix_colors(ctx.app_settings.colors.bg_primary,
-                  ctx.app_settings.colors.border,
-                  0.38)},
+      {"COLOR_PANEL_BORDER", panel_border_color()},
       {"COLOR_PANEL_HOVER",
        mix_colors(ctx.app_settings.colors.bg_deep,
                   ctx.app_settings.colors.bg_primary,

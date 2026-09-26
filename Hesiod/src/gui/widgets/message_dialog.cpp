@@ -13,14 +13,17 @@
 #include <QMouseEvent>
 #include <QPainter>
 #include <QPainterPath>
+#include <QPointer>
 #include <QPushButton>
 #include <QScreen>
 #include <QStyle>
+#include <QTimer>
 #include <QVBoxLayout>
 
 #include "meta_qt/ui/theme.hpp"
 
 #include "hesiod/app/hesiod_application.hpp"
+#include "hesiod/gui/widgets/gui_utils.hpp"
 #include "hesiod/gui/widgets/message_dialog.hpp"
 
 // last: windows.h leaks macros (interface, min, max...) that clash with the
@@ -48,24 +51,15 @@ constexpr int kWidth = 460; // card width
 const QColor kWarning("#d9a441");
 const QColor kDanger("#e06c62");
 
-QColor mix(const QColor &from, const QColor &to, qreal amount)
-{
-  amount = std::clamp(amount, 0.0, 1.0);
-  return QColor::fromRgbF(from.redF() + (to.redF() - from.redF()) * amount,
-                          from.greenF() + (to.greenF() - from.greenF()) * amount,
-                          from.blueF() + (to.blueF() - from.blueF()) * amount);
-}
-
 QColor surface()
 {
   const auto &c = HSD_CTX.app_settings.colors;
-  return mix(c.bg_deep, c.bg_primary, 0.55);
+  return mix_colors(c.bg_deep, c.bg_primary, 0.55);
 }
 
 QColor border()
 {
-  const auto &c = HSD_CTX.app_settings.colors;
-  return mix(c.bg_primary, c.border, 0.45);
+  return panel_border_color(); // the card border, shared
 }
 
 QColor kind_color(MessageDialog::Kind kind)
@@ -116,7 +110,7 @@ QPixmap MessageDialog::badge(Kind kind, int size, qreal dpr)
   const QRectF disc(1.0, 1.0, size - 2.0, size - 2.0);
   QColor       fill = color;
   fill.setAlphaF(0.16);
-  p.setPen(QPen(mix(surface(), color, 0.55), 1.0));
+  p.setPen(QPen(mix_colors(surface(), color, 0.55), 1.0));
   p.setBrush(fill);
   p.drawEllipse(disc);
 
@@ -279,15 +273,15 @@ MessageDialog::MessageDialog(QWidget       *parent,
   const std::pair<const char *, QColor> tokens[] = {
       {"ACCENT_HOVER", colors.accent.lighter(112)},
       {"ACCENT", colors.accent},
-      {"DANGER_SOFT", mix(s, kDanger, 0.12)},
-      {"DANGER_BORDER", mix(s, kDanger, 0.35)},
+      {"DANGER_SOFT", mix_colors(s, kDanger, 0.12)},
+      {"DANGER_BORDER", mix_colors(s, kDanger, 0.35)},
       {"DANGER", kDanger},
-      {"FIELD_HOVER", mix(colors.bg_primary, colors.border, 0.30)},
+      {"FIELD_HOVER", mix_colors(colors.bg_primary, colors.border, 0.30)},
       {"FIELD", colors.bg_primary},
       {"BORDER", border()},
       {"DEEP", colors.bg_deep},
-      {"FAINT", mix(colors.bg_primary, colors.text_primary, 0.45)},
-      {"DIM", mix(colors.bg_primary, colors.text_primary, 0.70)},
+      {"FAINT", mix_colors(colors.bg_primary, colors.text_primary, 0.45)},
+      {"DIM", mix_colors(colors.bg_primary, colors.text_primary, 0.70)},
       {"INK", colors.text_primary}};
   for (const auto &[key, value] : tokens)
     css.replace(key, value.name());
@@ -386,6 +380,22 @@ void MessageDialog::keyPressEvent(QKeyEvent *event)
       this->reject();
     return;
   }
+
+  // Enter presses the button that has focus, as QMessageBox does: tabbing to
+  // "Don't save" and pressing Enter must not save. The buttons are not
+  // autoDefault (that would move the highlighted default around as focus
+  // moves), so QDialog alone would always fire the default one.
+  if (event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter)
+  {
+    auto *focused = qobject_cast<QPushButton *>(QApplication::focusWidget());
+    if (focused && focused->window() == this && focused->isEnabled() &&
+        focused->isVisible())
+    {
+      focused->click();
+      return;
+    }
+  }
+
   QDialog::keyPressEvent(event);
 }
 
@@ -482,7 +492,21 @@ protected:
       return false;
 
     if (auto *box = qobject_cast<QMessageBox *>(widget))
-      polish_message_box(box);
+    {
+      polish_icon(box);
+
+      // QMessageBox adds its automatic OK button and settles the default one
+      // in its own showEvent, which runs after this filter: style the buttons
+      // once that is done (and on every show, as they can change in between)
+      QPointer<QMessageBox> guard(box);
+      QTimer::singleShot(0,
+                         box,
+                         [guard]()
+                         {
+                           if (guard)
+                             polish_buttons(guard);
+                         });
+    }
 
 #ifdef Q_OS_WIN
     const Qt::WindowType type = widget->windowType();
@@ -501,7 +525,7 @@ protected:
       const BOOL     dark = TRUE;
       const COLORREF caption = ref(colors.bg_deep);
       const COLORREF text = ref(colors.text_primary);
-      const COLORREF edge = ref(mix(colors.bg_primary, colors.border, 0.38));
+      const COLORREF edge = ref(panel_border_color());
 
       // dark caption everywhere; exact colours on Windows 11 (ignored before)
       ::DwmSetWindowAttribute(hwnd,
@@ -520,17 +544,20 @@ protected:
   }
 
 private:
-  static void polish_message_box(QMessageBox *box)
+  static void polish_icon(QMessageBox *box)
   {
-    if (box->property("_hsd_polished").toBool())
+    if (box->property("_hsd_icon").toBool())
       return;
-    box->setProperty("_hsd_polished", true);
+    box->setProperty("_hsd_icon", true);
 
     if (box->icon() != QMessageBox::NoIcon)
       box->setIconPixmap(MessageDialog::badge(kind_from_icon(box->icon()),
                                               40,
                                               box->devicePixelRatioF()));
+  }
 
+  static void polish_buttons(QMessageBox *box)
+  {
     for (QAbstractButton *button : box->buttons())
     {
       const QMessageBox::ButtonRole role = box->buttonRole(button);

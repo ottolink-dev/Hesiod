@@ -16,6 +16,7 @@
 
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/widgets/graph_tab_strip.hpp"
+#include "hesiod/gui/widgets/gui_utils.hpp"
 #include "hesiod/gui/widgets/window_chrome.hpp"
 
 namespace hesiod
@@ -23,22 +24,6 @@ namespace hesiod
 
 namespace
 {
-
-QColor mix(const QColor &a, const QColor &b, qreal t)
-{
-  t = std::clamp(t, 0.0, 1.0);
-  return QColor::fromRgbF(a.redF() + (b.redF() - a.redF()) * t,
-                          a.greenF() + (b.greenF() - a.greenF()) * t,
-                          a.blueF() + (b.blueF() - a.blueF()) * t,
-                          a.alphaF() + (b.alphaF() - a.alphaF()) * t);
-}
-
-// the card's own border colour (PanelFrame): the current tab continues it
-QColor card_border()
-{
-  const auto &colors = HSD_CTX.app_settings.colors;
-  return mix(colors.bg_primary, colors.border, 0.38);
-}
 
 // what the node editor is filled with, so the current tab is the same surface
 QColor editor_fill() { return GN_STYLE->viewer.color_bg; }
@@ -280,9 +265,9 @@ void GraphTabStrip::mousePressEvent(QMouseEvent *event)
 
   const int index = this->tab_at(this->to_widget().map(event->position()));
   if (index == -2 && this->on_new)
-    this->on_new();
+    std::function<void()>(this->on_new)(); // a copy: the owner may replace it
   else if (index >= 0 && index != this->current && this->on_selected)
-    this->on_selected(index);
+    std::function<void(int)>(this->on_selected)(index);
 }
 
 void GraphTabStrip::contextMenuEvent(QContextMenuEvent *event)
@@ -290,7 +275,9 @@ void GraphTabStrip::contextMenuEvent(QContextMenuEvent *event)
   const int index = this->tab_at(this->to_widget().map(QPointF(event->pos())));
   if (index >= 0 && this->on_context_menu)
   {
-    this->on_context_menu(index, event->globalPos());
+    // called through a copy: the owner may replace the callback while it runs
+    std::function<void(int, const QPoint &)>(this->on_context_menu)(index,
+                                                                    event->globalPos());
     event->accept();
     return;
   }
@@ -308,7 +295,7 @@ void GraphTabStrip::paintEvent(QPaintEvent *)
   const bool       vertical = this->orient == Qt::Vertical;
   const qreal      end = kThickness; // the strip's edge on the card side
   const QColor     fill = editor_fill();
-  const QColor     border = card_border();
+  const QColor     border = panel_border_color();
   const QFont      font = meta::qt::ui_font(12, true);
   p.setFont(font);
   const QFontMetrics fm(font);
@@ -363,7 +350,7 @@ void GraphTabStrip::paintEvent(QPaintEvent *)
     if (a < 0.999)
     {
       const QRectF pill(r.left() + 2, top, r.width() - 4, kRestBottom - top);
-      QColor       rest = mix(colors.bg_deep, colors.bg_primary, 0.45 + 0.45 * h);
+      QColor       rest = mix_colors(colors.bg_deep, colors.bg_primary, 0.45 + 0.45 * h);
       rest.setAlphaF(1.0 - a);
       p.setPen(Qt::NoPen);
       p.setBrush(rest);
@@ -401,10 +388,11 @@ void GraphTabStrip::paintEvent(QPaintEvent *)
     }
 
     // label
-    const QColor ink = mix(mix(colors.bg_primary, colors.text_primary, 0.55 + 0.35 * h),
-                           colors.text_primary,
-                           a);
-    const qreal  label_bottom = a > 0.5 ? kBase : kRestBottom;
+    const QColor ink = mix_colors(
+        mix_colors(colors.bg_primary, colors.text_primary, 0.55 + 0.35 * h),
+        colors.text_primary,
+        a);
+    const qreal label_bottom = a > 0.5 ? kBase : kRestBottom;
     // centred in the tab (symmetric margins, clear of the accent mark)
     draw_label(QRectF(r.left() + 18, top, r.width() - 36, label_bottom - top),
                tab.name,
@@ -418,14 +406,15 @@ void GraphTabStrip::paintEvent(QPaintEvent *)
     const QRectF plus = this->plus_rect();
     if (this->plus_hover > 0.001)
     {
-      QColor hover = mix(colors.bg_deep, colors.bg_primary, 0.9);
+      QColor hover = mix_colors(colors.bg_deep, colors.bg_primary, 0.9);
       hover.setAlphaF(this->plus_hover);
       p.setPen(Qt::NoPen);
       p.setBrush(hover);
       p.drawRoundedRect(plus, 6, 6);
     }
-    QPen pen(mix(colors.bg_primary, colors.text_primary, 0.55 + 0.4 * this->plus_hover),
-             1.5);
+    QPen pen(
+        mix_colors(colors.bg_primary, colors.text_primary, 0.55 + 0.4 * this->plus_hover),
+        1.5);
     pen.setCapStyle(Qt::RoundCap);
     p.setPen(pen);
     const QPointF c = plus.center();

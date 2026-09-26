@@ -165,7 +165,15 @@ void Viewer3D::json_from(nlohmann::json const &json)
 
   Viewer::json_from(json);
   if (p_renderer)
+  {
     p_renderer->json_from(json["renderer"]);
+
+    // The renderer restored the project's 2D/3D mode. The mode is app-wide (the
+    // toolbar's switch sets it for every viewer), so make the restored one the
+    // current mode: this also brings this viewer's toolbar (tool set, switch)
+    // in line, and keeps the app from putting its previous mode back on load.
+    HSD_APP->set_viewer_render_type(this->get_render_type());
+  }
 
   if (this->controls && json.contains("viewport_controls"))
     this->controls->json_from(json["viewport_controls"]);
@@ -221,6 +229,13 @@ void Viewer3D::sync_pin_label()
   if (!has_node)
     this->button_pin_current_node->set_label("No node previewed");
   this->button_pin_current_node->setEnabled(has_node);
+}
+
+int Viewer3D::get_render_type() const
+{
+  if (!this->p_renderer)
+    return 1;
+  return this->p_renderer->get_render_type() == qtr::RenderType::RENDER_2D ? 0 : 1;
 }
 
 void Viewer3D::set_render_type(int new_type)

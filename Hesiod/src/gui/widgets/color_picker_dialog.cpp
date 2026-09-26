@@ -21,6 +21,7 @@
 
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/widgets/color_picker_dialog.hpp"
+#include "hesiod/gui/widgets/gui_utils.hpp"
 
 namespace hesiod
 {
@@ -31,17 +32,9 @@ namespace
 // colours confirmed with OK this session, most recent first
 QList<QColor> g_recent;
 
-QColor mix(const QColor &from, const QColor &to, qreal amount)
-{
-  return QColor::fromRgbF(from.redF() + (to.redF() - from.redF()) * amount,
-                          from.greenF() + (to.greenF() - from.greenF()) * amount,
-                          from.blueF() + (to.blueF() - from.blueF()) * amount);
-}
-
 QColor edge_color()
 {
-  const auto &c = HSD_CTX.app_settings.colors;
-  return mix(c.bg_primary, c.border, 0.45);
+  return panel_border_color(); // the card border, shared
 }
 
 // checkerboard under translucent colours
@@ -573,7 +566,7 @@ ColorPickerDialog::ColorPickerDialog(const QColor  &initial,
       {"ACCENT", colors.accent},
       {"DEEP", colors.bg_deep},
       {"BORDER", edge_color()},
-      {"FAINT", mix(colors.bg_primary, colors.text_primary, 0.45)},
+      {"FAINT", mix_colors(colors.bg_primary, colors.text_primary, 0.45)},
       {"INK", colors.text_primary}};
   for (const auto &[key, value] : tokens)
     css.replace(key, value.name());

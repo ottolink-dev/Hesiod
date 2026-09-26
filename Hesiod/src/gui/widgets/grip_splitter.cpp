@@ -13,6 +13,10 @@ bool GripSplitterHandle::event(QEvent *event)
   {
   case QEvent::HoverEnter:
   case QEvent::HoverLeave:
+    // hover only changes the look (paintEvent reads underMouse()); it must
+    // not count as a press, or the grip stays in its dragging state
+    this->update();
+    break;
   case QEvent::MouseButtonPress:
     this->pressed = true;
     this->update();

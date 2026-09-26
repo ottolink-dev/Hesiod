@@ -41,6 +41,7 @@
 
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/widgets/graph_node_widget.hpp"
+#include "hesiod/gui/widgets/gui_utils.hpp"
 #include "hesiod/gui/widgets/menu_chrome.hpp"
 #include "hesiod/gui/widgets/properties_panel_design.hpp"
 #include "hesiod/gui/widgets/viewers/viewport_controls.hpp"
@@ -94,25 +95,15 @@ constexpr int kRadius = 12;     // rail corners; cells use kRadius minus their i
 
 constexpr double kPi = std::numbers::pi;
 
-QColor mix(const QColor &from, const QColor &to, qreal amount)
-{
-  amount = std::clamp(amount, 0.0, 1.0);
-  return QColor::fromRgbF(from.redF() + (to.redF() - from.redF()) * amount,
-                          from.greenF() + (to.greenF() - from.greenF()) * amount,
-                          from.blueF() + (to.blueF() - from.blueF()) * amount,
-                          from.alphaF() + (to.alphaF() - from.alphaF()) * amount);
-}
-
 QColor surface_color()
 {
   const auto &c = HSD_CTX.app_settings.colors;
-  return mix(c.bg_deep, c.bg_primary, 0.80);
+  return mix_colors(c.bg_deep, c.bg_primary, 0.80);
 }
 
 QColor border_color()
 {
-  const auto &c = HSD_CTX.app_settings.colors;
-  return mix(c.bg_primary, c.border, 0.45);
+  return panel_border_color(); // the card border, shared
 }
 
 bool animations_on() { return HSD_CTX.app_settings.interface.enable_ui_animations; }
@@ -1025,7 +1016,7 @@ protected:
     sky.setColorAt(0.0, QColor("#8fa3b8"));
     sky.setColorAt(0.45, QColor("#5d6d80"));
     sky.setColorAt(1.0, QColor("#2c333d"));
-    p.setPen(QPen(mix(colors.bg_primary, colors.text_primary, 0.55), 1.5));
+    p.setPen(QPen(mix_colors(colors.bg_primary, colors.text_primary, 0.55), 1.5));
     p.setBrush(sky);
     p.drawEllipse(c, R, R);
 
@@ -1318,31 +1309,55 @@ public:
     return QRect();
   }
 
+  // The placement the user chose (pref_*), saved with the project, is kept
+  // apart from where the rail is shown right now (edge / along / anchor):
+  // that one is derived from it on every layout, so a viewport that is still
+  // tiny at restore time, or briefly too short, never overwrites the choice.
+  // Along an edge the choice is a fraction of the free range (0: one corner,
+  // 1: the other), which survives resizes where a pixel offset would not.
   nlohmann::json json_to() const
   {
-    const QRectF vr = this->viewport_rect();
-    const qreal  span = is_vertical(this->edge) ? vr.height() : vr.width();
-    return {{"edge", int(this->edge)},
-            {"along", span > 0 ? this->along / span : 0.0},
-            {"centered", this->centered}};
+    return {{"edge", int(this->pref_edge)},
+            {"along_t", this->pref_t},
+            {"centered", this->pref_centered},
+            {"placed", this->placed}};
   }
 
   void json_from(const nlohmann::json &json)
   {
-    if (json.contains("edge"))
-      this->edge = Edge(std::clamp(json["edge"].get<int>(), 0, 3));
-    this->centered = json.value("centered", false);
-    if (json.contains("along"))
+    // tolerant, like the rest of the .hsd loader: a missing or mistyped value
+    // leaves the current one
+    const auto number = [&json](const char *key, double &out)
     {
-      const QRectF vr = this->viewport_rect();
-      const qreal  span = is_vertical(this->edge) ? vr.height() : vr.width();
-      this->along = json["along"].get<double>() * span;
-      this->has_along = true;
-    }
+      if (json.contains(key) && json[key].is_number())
+        out = json[key].get<double>();
+    };
+
+    if (!json.is_object())
+      return;
+
+    double edge_value = double(int(this->pref_edge));
+    number("edge", edge_value);
+    this->pref_edge = Edge(std::clamp(int(edge_value), 0, 3));
+
+    if (json.contains("centered") && json["centered"].is_boolean())
+      this->pref_centered = json["centered"].get<bool>();
+
+    double t = this->pref_t;
+    number("along_t", t);
+    if (!json.contains("along_t"))
+      number("along", t); // older files: a fraction of the whole edge
+    this->pref_t = std::clamp(t, 0.0, 1.0);
+
+    // files from before "placed" existed always held a chosen position
+    this->placed = true;
+    if (json.contains("placed") && json["placed"].is_boolean())
+      this->placed = json["placed"].get<bool>();
+
     this->place();
   }
 
-  // dock at (edge, along), clamped into the current viewport
+  // dock where the user chose, derived for the current viewport and tool set
   void place()
   {
     if (this->dragging || this->flying)
@@ -1352,31 +1367,33 @@ public:
     if (vr.width() < 10 || vr.height() < 10)
       return;
 
-    if (!this->has_along)
-    {
-      // default: right edge, below the orientation gizmo
-      this->edge = Edge::Right;
-      this->along = vr.top() + 140;
-      this->has_along = true;
-    }
+    Edge e = this->placed ? this->pref_edge : Edge::Right;
+    bool centered = this->placed && this->pref_centered;
 
     // an edge too short for the rail (small viewport, or the longer 3D tool
-    // set): move to a crossing edge it fits along, centred there
-    if (!this->fits(this->edge))
+    // set): show it on a crossing edge it fits along, centred there, for now
+    if (!this->fits(e))
     {
-      const Edge alt = is_vertical(this->edge) ? Edge::Bottom : Edge::Right;
+      const Edge alt = is_vertical(e) ? Edge::Bottom : Edge::Right;
       if (this->fits(alt))
       {
-        this->edge = alt;
-        this->centered = true;
+        e = alt;
+        centered = true;
       }
     }
 
-    // centred rails stay centred as the viewport or the tool set changes;
-    // others keep their spot, clamped in (no re-snapping on a resize)
-    const auto [lo, hi] = this->along_range(this->edge);
-    this->along = this->centered ? this->middle_along(this->edge)
-                                 : std::clamp(this->along, lo, hi);
+    const auto [lo, hi] = this->along_range(e);
+    qreal pos;
+    if (centered)
+      pos = this->middle_along(e);
+    else if (!this->placed)
+      pos = std::clamp(vr.top() + 140.0, lo, hi); // default: below the gizmo
+    else
+      pos = lo + this->pref_t * (hi - lo);
+
+    this->edge = e;
+    this->centered = centered;
+    this->along = pos;
     this->anchor = this->anchor_at(this->edge, this->along);
     this->expand_t = 1.0;
     this->apply_geometry();
@@ -1428,8 +1445,7 @@ protected:
 
     // the press that just closed this tool's own menu (Qt replays it here):
     // it closes the menu, it does not reopen it
-    if (this->pressed_index >= 0 &&
-        this->owner->swallow_press(this->items[this->pressed_index].tool))
+    if (this->owner->menu_guard.swallow_press(event->position().toPoint()))
     {
       this->pressed = false;
       this->pressed_index = -1;
@@ -1466,6 +1482,8 @@ protected:
   {
     if (event->button() != Qt::LeftButton)
       return;
+
+    this->owner->menu_guard.release(); // that click is over
 
     const bool was_pressed = this->pressed;
     this->pressed = false;
@@ -1523,7 +1541,7 @@ protected:
         const QRectF a = this->cell_rect(i2d).translated(origin).adjusted(1, 1, -1, -1);
         const QRectF b = this->cell_rect(i3d).translated(origin).adjusted(1, 1, -1, -1);
         p.setPen(Qt::NoPen);
-        p.setBrush(mix(surface_color(), colors.bg_deep, 0.55));
+        p.setBrush(mix_colors(surface_color(), colors.bg_deep, 0.55));
         p.drawRoundedRect(a.united(b), cell_radius, cell_radius);
 
         const qreal  t = this->view_t;
@@ -1531,7 +1549,7 @@ protected:
                           a.top() + (b.top() - a.top()) * t,
                           a.width(),
                           a.height());
-        p.setBrush(mix(surface_color(), colors.accent, 0.30));
+        p.setBrush(mix_colors(surface_color(), colors.accent, 0.30));
         p.drawRoundedRect(knob.adjusted(1.5, 1.5, -1.5, -1.5),
                           cell_radius - 1,
                           cell_radius - 1);
@@ -1546,9 +1564,10 @@ protected:
         {
           const qreal on = item.tool == ToolView3D ? this->view_t : 1.0 - this->view_t;
           const bool  hover = int(i) == this->hovered;
-          QColor ink = mix(mix(surface_color(), colors.text_primary, hover ? 0.9 : 0.55),
-                           colors.accent.lighter(150),
-                           on);
+          QColor      ink = mix_colors(
+              mix_colors(surface_color(), colors.text_primary, hover ? 0.9 : 0.55),
+              colors.accent.lighter(150),
+              on);
           p.setPen(ink);
           p.setFont(meta::qt::ui_font(int(std::round(11 * rail_scale())), true));
           p.drawText(cell, Qt::AlignCenter, item.tool == ToolView2D ? "2D" : "3D");
@@ -1578,12 +1597,14 @@ protected:
         if (active || hover)
         {
           p.setPen(Qt::NoPen);
-          p.setBrush(active ? mix(surface_color(), colors.accent, 0.22)
-                            : mix(surface_color(), colors.text_primary, 0.07));
+          p.setBrush(active ? mix_colors(surface_color(), colors.accent, 0.22)
+                            : mix_colors(surface_color(), colors.text_primary, 0.07));
           p.drawRoundedRect(cell.adjusted(1, 1, -1, -1), cell_radius, cell_radius);
         }
 
-        QColor ink = mix(surface_color(), colors.text_primary, hover ? 0.95 : 0.72);
+        QColor ink = mix_colors(surface_color(),
+                                colors.text_primary,
+                                hover ? 0.95 : 0.72);
         if (active)
           ink = colors.accent.lighter(135);
 
@@ -1626,7 +1647,7 @@ protected:
                  c,
                  20 * rail_scale(),
                  this->dragging ? colors.accent.lighter(135)
-                                : mix(surface_color(), colors.text_primary, 0.85));
+                                : mix_colors(surface_color(), colors.text_primary, 0.85));
     }
   }
 
@@ -1829,6 +1850,13 @@ private:
     this->anchor = dock.anchor;
     this->centered = dock.centered;
     this->along = is_vertical(dock.edge) ? dock.anchor.y() : dock.anchor.x();
+
+    // the user's choice, as a fraction of the free range along the edge
+    const auto [lo, hi] = this->along_range(dock.edge);
+    this->pref_edge = dock.edge;
+    this->pref_centered = dock.centered;
+    this->pref_t = hi > lo ? std::clamp((this->along - lo) / (hi - lo), 0.0, 1.0) : 0.0;
+    this->placed = true;
   }
 
   QPointF clamp_center(const QPointF &p) const
@@ -1913,12 +1941,17 @@ private:
   int               active_tool = -1;
   int               hovered = -1;
 
-  // docked placement
+  // docked placement, as shown now (derived in place())
   Edge    edge = Edge::Right;
   qreal   along = 0.0; // position of the rail's start along its edge
-  bool    has_along = false;
   bool    centered = false;
   QPointF anchor; // docked rail's top-left, parent coordinates
+
+  // ... and as the user chose it (saved with the project)
+  bool  placed = false; // false: the default spot, below the gizmo
+  Edge  pref_edge = Edge::Right;
+  qreal pref_t = 0.0; // along the edge's free range: 0 one corner, 1 the other
+  bool  pref_centered = false;
 
   // drag state
   bool    pressed = false;
@@ -1969,13 +2002,13 @@ protected:
     if (this->underMouse())
     {
       p.setPen(Qt::NoPen);
-      p.setBrush(mix(surface_color(), colors.text_primary, 0.08));
+      p.setBrush(mix_colors(surface_color(), colors.text_primary, 0.08));
       p.drawRoundedRect(QRectF(this->rect()).adjusted(1, 1, -1, -1), 6, 6);
     }
 
-    const QColor  ink = mix(surface_color(),
-                           colors.text_primary,
-                           this->underMouse() ? 0.95 : 0.65);
+    const QColor  ink = mix_colors(surface_color(),
+                                  colors.text_primary,
+                                  this->underMouse() ? 0.95 : 0.65);
     const QPointF c = QRectF(this->rect()).center();
     if (this->kind == Kind::Reset)
       paint_reset(p, c, 20, ink);
@@ -2058,7 +2091,7 @@ public:
       QWidget#viewportPreviewRows QComboBox::drop-down { border: none; width: 18px; }
     )")
                       .arg(colors.text_primary.name(),
-                           mix(surface_color(), colors.text_primary, 0.06).name(),
+                           mix_colors(surface_color(), colors.text_primary, 0.06).name(),
                            border_color().name(),
                            colors.accent.name());
     this->setStyleSheet(css);
@@ -2646,7 +2679,8 @@ void ViewportControls::show_resolution_menu(const QRect &item_rect)
                             : item_rect.topLeft() -
                                   QPoint(menu.sizeHint().width() + 8, 0);
   QAction     *chosen = menu.exec(this->renderer->mapToGlobal(anchor));
-  this->note_menu_closed(ToolResolution);
+  // the item's area on the rail: a press there that closed the menu is replayed
+  this->menu_guard.arm(this->rail, item_rect.translated(-this->rail->pos()));
   this->rail->set_active(this->open_tool);
 
   if (chosen && chosen->data().isValid() && this->graph)
@@ -2683,7 +2717,7 @@ void ViewportControls::show_more_menu(const QRect &item_rect)
                             : item_rect.topLeft() -
                                   QPoint(menu.sizeHint().width() + 8, 0);
   QAction     *chosen = menu.exec(this->renderer->mapToGlobal(anchor));
-  this->note_menu_closed(ToolMore);
+  this->menu_guard.arm(this->rail, item_rect.translated(-this->rail->pos()));
   this->rail->set_active(this->open_tool);
 
   if (!chosen || !this->renderer)
@@ -2705,21 +2739,6 @@ void ViewportControls::show_more_menu(const QRect &item_rect)
     this->renderer->set_int_setting("background_mode", void_bg->isChecked() ? 1 : 0);
   else if (chosen->data().toString() == "reset_view")
     this->renderer->reset_view_2d();
-}
-
-void ViewportControls::note_menu_closed(int tool)
-{
-  this->menu_tool = tool;
-  this->menu_closed.start();
-}
-
-bool ViewportControls::swallow_press(int tool)
-{
-  if (tool != this->menu_tool || !this->menu_closed.isValid() ||
-      this->menu_closed.elapsed() > 250)
-    return false;
-  this->menu_closed.invalidate();
-  return true;
 }
 
 void ViewportControls::reset_all()

@@ -451,6 +451,13 @@ void GraphTabsWidget::sync_tab_strips()
 
     GraphTabStrip *strip = gww->get_tab_strip();
     strip->set_tabs(names, current);
+
+    // Wired once per strip, not on every sync: a sync can run from inside one
+    // of these callbacks (the tab menu selects its tab), and reassigning a
+    // std::function while it runs destroys it mid-call.
+    if (strip->on_selected)
+      continue;
+
     strip->on_selected = [this](int index)
     {
       if (this->tab_widget && index >= 0 && index < this->tab_widget->count())

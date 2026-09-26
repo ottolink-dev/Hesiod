@@ -4,7 +4,6 @@
 #include <algorithm>
 
 #include <QApplication>
-#include <QElapsedTimer>
 #include <QEnterEvent>
 #include <QHBoxLayout>
 #include <QKeyEvent>
@@ -21,6 +20,8 @@
 #include "meta_qt/ui/theme.hpp"
 
 #include "hesiod/app/hesiod_application.hpp"
+#include "hesiod/gui/widgets/gui_utils.hpp"
+#include "hesiod/gui/widgets/menu_chrome.hpp"
 #include "hesiod/gui/widgets/window_chrome.hpp"
 
 namespace hesiod
@@ -29,23 +30,8 @@ namespace hesiod
 namespace
 {
 
-QColor mix(const QColor &from, const QColor &to, qreal amount)
-{
-  amount = std::clamp(amount, 0.0, 1.0);
-  return QColor::fromRgbF(from.redF() + (to.redF() - from.redF()) * amount,
-                          from.greenF() + (to.greenF() - from.greenF()) * amount,
-                          from.blueF() + (to.blueF() - from.blueF()) * amount,
-                          from.alphaF() + (to.alphaF() - from.alphaF()) * amount);
-}
-
 // The configured border colour is meant for inputs; around whole panes it is
 // too loud. Pull it most of the way back toward the panel surface.
-QColor panel_border_color()
-{
-  const auto &colors = HSD_CTX.app_settings.colors;
-  return mix(colors.bg_primary, colors.border, 0.38);
-}
-
 QPainterPath panel_path(const QSize &size)
 {
   QPainterPath path;
@@ -76,19 +62,31 @@ protected:
     p.setRenderHint(QPainter::Antialiasing);
     p.translate(-this->pos());
 
-    const QPainterPath rounded = panel_path(this->panel->size());
-    QPainterPath       outside;
-    outside.addRect(QRectF(this->geometry()));
-    outside = outside.subtracted(rounded);
+    // The shapes only change with the card's size or this corner's place, but
+    // a card like the viewport repaints continuously (camera drags): rebuild
+    // them, and the path subtraction, only then.
+    if (this->panel->size() != this->cached_size || this->pos() != this->cached_pos)
+    {
+      this->cached_size = this->panel->size();
+      this->cached_pos = this->pos();
+      this->rounded = panel_path(this->cached_size);
+      QPainterPath square;
+      square.addRect(QRectF(this->geometry()));
+      this->outside = square.subtracted(this->rounded);
+    }
 
-    p.fillPath(outside, HSD_CTX.app_settings.colors.bg_deep);
+    p.fillPath(this->outside, HSD_CTX.app_settings.colors.bg_deep);
     p.setPen(QPen(panel_border_color(), 1));
     p.setBrush(Qt::NoBrush);
-    p.drawPath(rounded);
+    p.drawPath(this->rounded);
   }
 
 private:
-  PanelFrame *panel;
+  PanelFrame  *panel;
+  QSize        cached_size;
+  QPoint       cached_pos;
+  QPainterPath rounded;
+  QPainterPath outside;
 };
 
 } // namespace
@@ -166,7 +164,7 @@ void WindowButton::paintEvent(QPaintEvent *)
     if (this->kind == Kind::Close)
       plate = down ? close_red.darker(115) : close_red;
     else
-      plate = mix(colors.bg_deep, colors.text_primary, down ? 0.10 : 0.07);
+      plate = mix_colors(colors.bg_deep, colors.text_primary, down ? 0.10 : 0.07);
 
     p.setPen(Qt::NoPen);
     p.setBrush(plate);
@@ -175,7 +173,7 @@ void WindowButton::paintEvent(QPaintEvent *)
 
   // glyph colour: close is tinted red at rest (as a cue for the destructive
   // one) and turns light on its red plate
-  QColor ink = mix(colors.text_primary, colors.bg_deep, 0.30);
+  QColor ink = mix_colors(colors.text_primary, colors.bg_deep, 0.30);
   if (this->kind == Kind::Close)
     ink = (this->hovered || down) ? QColor("#f4f4f5") : close_red.lighter(115);
   else if (this->hovered)
@@ -453,26 +451,28 @@ protected:
     event->accept();
 
     // A click on the chip while its menu is open closes the menu, and Qt then
-    // replays that same press here: without this it would open straight
-    // again, so the chip could never close its own menu.
-    if (this->menu_closed.isValid() && this->menu_closed.elapsed() < 250)
-    {
-      this->menu_closed.invalidate();
+    // replays that same press here: it must not open the menu straight again,
+    // or the chip could never close its own menu. menu_open covers a replay
+    // delivered while on_clicked is still running, the guard one delivered
+    // after it returned.
+    if (this->menu_open || this->replay_guard.swallow_press(event->position().toPoint()))
       return;
-    }
 
     this->pressed = true;
+    this->menu_open = true;
     this->animate_open(true);
     this->repaint();
     this->on_clicked(this->mapToGlobal(QPoint(this->width() / 2, this->height() + 4)));
+    this->menu_open = false;
     this->pressed = false;
-    this->menu_closed.start();
+    this->replay_guard.arm(this, this->rect());
     this->animate_open(false);
     this->update();
   }
 
   void mouseReleaseEvent(QMouseEvent *event) override
   {
+    this->replay_guard.release();
     this->pressed = false;
     this->update();
     QWidget::mouseReleaseEvent(event);
@@ -497,13 +497,13 @@ protected:
 
     QColor fill = colors.bg_primary;
     if (this->pressed)
-      fill = mix(colors.bg_primary, colors.text_primary, 0.10);
+      fill = mix_colors(colors.bg_primary, colors.text_primary, 0.10);
     else if (hover)
-      fill = mix(colors.bg_primary, colors.text_primary, 0.05);
+      fill = mix_colors(colors.bg_primary, colors.text_primary, 0.05);
 
-    p.setPen(
-        QPen(hover ? mix(colors.bg_primary, colors.border, 0.75) : panel_border_color(),
-             1));
+    p.setPen(QPen(hover ? mix_colors(colors.bg_primary, colors.border, 0.75)
+                        : panel_border_color(),
+                  1));
     p.setBrush(fill);
     p.drawRoundedRect(box, 7, 7);
 
@@ -534,7 +534,7 @@ protected:
     if (!this->hint.isEmpty())
     {
       p.setFont(this->hint_font());
-      p.setPen(mix(colors.bg_primary, colors.text_primary, 0.50));
+      p.setPen(mix_colors(colors.bg_primary, colors.text_primary, 0.50));
       p.drawText(QRect(x + 10, 0, hint_w, this->height()), Qt::AlignVCenter, this->hint);
       x += hint_w;
     }
@@ -550,10 +550,12 @@ protected:
     // point up while the menu is open
     {
       const qreal divider_x = this->width() - 26.5;
-      p.setPen(QPen(mix(colors.bg_primary, colors.border, hover ? 0.55 : 0.35), 1));
+      p.setPen(
+          QPen(mix_colors(colors.bg_primary, colors.border, hover ? 0.55 : 0.35), 1));
       p.drawLine(QPointF(divider_x, 7), QPointF(divider_x, this->height() - 7));
 
-      QPen pen(mix(colors.bg_primary, colors.text_primary, hover ? 0.9 : 0.6), 1.6);
+      QPen pen(mix_colors(colors.bg_primary, colors.text_primary, hover ? 0.9 : 0.6),
+               1.6);
       pen.setCapStyle(Qt::RoundCap);
       pen.setJoinStyle(Qt::RoundJoin);
       p.setPen(pen);
@@ -595,11 +597,12 @@ private:
   bool       pressed = false;
   QLineEdit *editor = nullptr;
 
-  // chevron turn (0: down, 1: up while the menu is open), and when the menu
-  // last closed (see mousePressEvent)
+  // chevron turn (0: down, 1: up while the menu is open), and the menu's
+  // state for mousePressEvent (see there)
   QVariantAnimation *flip = nullptr;
   qreal              open_t = 0.0;
-  QElapsedTimer      menu_closed;
+  bool               menu_open = false;
+  PopupReplayGuard   replay_guard;
 
   void animate_open(bool open)
   {
@@ -709,18 +712,18 @@ void SegmentedControl::paintEvent(QPaintEvent *)
     if (i == this->index)
     {
       p.setPen(Qt::NoPen);
-      p.setBrush(mix(colors.bg_primary, colors.accent, 0.55));
+      p.setBrush(mix_colors(colors.bg_primary, colors.accent, 0.55));
       p.drawRoundedRect(cell, 5, 5);
     }
     else if (i == this->hovered)
     {
       p.setPen(Qt::NoPen);
-      p.setBrush(mix(colors.bg_primary, colors.text_primary, 0.06));
+      p.setBrush(mix_colors(colors.bg_primary, colors.text_primary, 0.06));
       p.drawRoundedRect(cell, 5, 5);
     }
 
     p.setPen(i == this->index ? colors.text_primary
-                              : mix(colors.bg_primary, colors.text_primary, 0.60));
+                              : mix_colors(colors.bg_primary, colors.text_primary, 0.60));
     p.drawText(cell, Qt::AlignCenter, this->labels[i]);
   }
 }
@@ -774,9 +777,9 @@ TitleBar::TitleBar(QWidget *window) : QWidget(window), p_window(window)
 
   const QString family = meta::qt::ui_font(13).family();
   const QString ink = colors.text_primary.name();
-  const QString ink_dim = mix(colors.text_primary, colors.bg_deep, 0.35).name();
-  const QString hover = mix(colors.bg_deep, colors.text_primary, 0.08).name();
-  const QString pressed = mix(colors.bg_deep, colors.text_primary, 0.13).name();
+  const QString ink_dim = mix_colors(colors.text_primary, colors.bg_deep, 0.35).name();
+  const QString hover = mix_colors(colors.bg_deep, colors.text_primary, 0.08).name();
+  const QString pressed = mix_colors(colors.bg_deep, colors.text_primary, 0.13).name();
 
   QString css = QString(R"(
     QWidget#hsdTitleBar { background: transparent; }

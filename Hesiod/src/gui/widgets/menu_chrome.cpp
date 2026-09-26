@@ -4,6 +4,8 @@
 #include <algorithm>
 
 #include <QApplication>
+#include <QCursor>
+#include <QGuiApplication>
 #include <QMenuBar>
 #include <QPaintEvent>
 #include <QPainter>
@@ -12,6 +14,7 @@
 #include <QVariantAnimation>
 
 #include "hesiod/app/hesiod_application.hpp"
+#include "hesiod/gui/widgets/gui_utils.hpp"
 #include "hesiod/gui/widgets/menu_chrome.hpp"
 
 namespace hesiod
@@ -25,13 +28,6 @@ void round_popup_corners(QWidget *popup, const QColor &border);
 
 namespace
 {
-
-QColor mix(const QColor &from, const QColor &to, qreal amount)
-{
-  return QColor::fromRgbF(from.redF() + (to.redF() - from.redF()) * amount,
-                          from.greenF() + (to.greenF() - from.greenF()) * amount,
-                          from.blueF() + (to.blueF() - from.blueF()) * amount);
-}
 
 // the shortcut an action shows: an explicit "\t..." suffix in its text wins,
 // as it does in Qt's own menu layout
@@ -103,11 +99,11 @@ void HsdMenu::paintEvent(QPaintEvent *event)
     if (!rect.isValid() || !event->rect().intersects(rect))
       continue;
 
-    QColor ink = mix(colors.bg_primary, colors.text_primary, 0.55);
+    QColor ink = mix_colors(colors.bg_primary, colors.text_primary, 0.55);
     if (!action->isEnabled())
       ink = colors.text_disabled;
     else if (action == this->activeAction())
-      ink = mix(colors.bg_primary, colors.text_primary, 0.80);
+      ink = mix_colors(colors.bg_primary, colors.text_primary, 0.80);
 
     p.setPen(ink);
     p.drawText(rect.adjusted(0, 0, -right_inset, 0),
@@ -143,7 +139,7 @@ bool MenuAnimator::eventFilter(QObject *watched, QEvent *event)
 
   {
     const auto &colors = HSD_CTX.app_settings.colors;
-    round_popup_corners(menu, mix(colors.bg_primary, colors.border, 0.38));
+    round_popup_corners(menu, panel_border_color());
   }
 
   if (!HSD_CTX.app_settings.interface.enable_ui_animations)
@@ -198,6 +194,31 @@ bool MenuAnimator::eventFilter(QObject *watched, QEvent *event)
                    });
 
   animation->start();
+  return false;
+}
+
+// =====================================
+// PopupReplayGuard
+// =====================================
+
+void PopupReplayGuard::arm(QWidget *anchor, const QRect &new_area)
+{
+  // armed only when the popup was closed by a press on that very area, and
+  // that press is still being held: its replay is the next press there
+  this->area = new_area;
+  this->armed = anchor && (QGuiApplication::mouseButtons() & Qt::LeftButton) &&
+                new_area.contains(anchor->mapFromGlobal(QCursor::pos()));
+}
+
+bool PopupReplayGuard::swallow_press(const QPoint &anchor_pos)
+{
+  if (!this->armed)
+    return false;
+
+  if (this->area.contains(anchor_pos))
+    return true; // stays armed until the click's release
+
+  this->armed = false;
   return false;
 }
 

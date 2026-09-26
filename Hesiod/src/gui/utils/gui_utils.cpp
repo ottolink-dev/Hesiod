@@ -1,6 +1,8 @@
 /* Copyright (c) 2023 Otto Link. Distributed under the terms of the GNU General
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
+#include <algorithm>
+
 #include <QColorSpace>
 #include <QLabel>
 #include <QLayout>
@@ -20,6 +22,21 @@
 
 namespace hesiod
 {
+
+QColor mix_colors(const QColor &from, const QColor &to, qreal amount)
+{
+  amount = std::clamp(amount, 0.0, 1.0);
+  return QColor::fromRgbF(from.redF() + (to.redF() - from.redF()) * amount,
+                          from.greenF() + (to.greenF() - from.greenF()) * amount,
+                          from.blueF() + (to.blueF() - from.blueF()) * amount,
+                          from.alphaF() + (to.alphaF() - from.alphaF()) * amount);
+}
+
+QColor panel_border_color()
+{
+  const auto &colors = HSD_CTX.app_settings.colors;
+  return mix_colors(colors.bg_primary, colors.border, 0.38);
+}
 
 void apply_animation_settings(bool enabled)
 {

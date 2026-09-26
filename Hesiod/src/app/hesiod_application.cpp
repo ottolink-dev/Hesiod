@@ -568,7 +568,10 @@ void HesiodApplication::load_project_model_and_ui(const std::string &fname,
   // title bar showing nothing (or the previous project) until the first save
   this->on_project_name_changed();
 
-  // the new graph viewers start in the default mode; keep the user's choice
+  // the new graph viewers start in the default mode; keep the current one.
+  // A project that saved its own mode wins: its viewers restore it (deferred,
+  // in Viewer3D::json_from) through set_viewer_render_type, which also updates
+  // viewer_render_type, so this line never puts a stale mode back.
   this->set_viewer_render_type(this->viewer_render_type);
 
   this->notify("Project loaded successfully.");
@@ -608,6 +611,10 @@ void HesiodApplication::on_export_batch()
     return;
 
   bake_settings = dialog.get_bake_settings();
+
+  // keep what was chosen (folder included) with the project straight away: a
+  // bake that is canceled or fails returns early and must not forget it
+  this->context.project_model->set_bake_config(bake_settings);
 
   // where this bake writes (UTF-8 in the settings, wide on disk)
   const fs::path bake_dir = bake_settings.export_dir.empty()
@@ -891,9 +898,6 @@ void HesiodApplication::on_export_batch()
       }
     }
   }
-
-  // save config
-  this->context.project_model->set_bake_config(bake_settings);
 
   progress.set_overall_progress(bake_settings.nvariants + 1, bake_settings.nvariants + 1);
   progress.on_export_finished();

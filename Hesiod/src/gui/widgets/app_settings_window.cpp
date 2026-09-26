@@ -103,14 +103,6 @@ constexpr int kControlW = 150; // right-hand control column
 // dialog so reopening it still says a restart is due
 QStringList g_restart_pending;
 
-QColor mix(const QColor &from, const QColor &to, qreal amount)
-{
-  amount = std::clamp(amount, 0.0, 1.0);
-  return QColor::fromRgbF(from.redF() + (to.redF() - from.redF()) * amount,
-                          from.greenF() + (to.greenF() - from.greenF()) * amount,
-                          from.blueF() + (to.blueF() - from.blueF()) * amount);
-}
-
 AppSettings &defaults()
 {
   static AppSettings instance;
@@ -128,16 +120,16 @@ Tones tones()
   const auto &c = HSD_CTX.app_settings.colors;
   Tones       t;
   t.sidebar = c.bg_deep;
-  t.content = mix(c.bg_deep, c.bg_primary, 0.40);
+  t.content = mix_colors(c.bg_deep, c.bg_primary, 0.40);
   t.card = c.bg_primary;
-  t.border = mix(c.bg_primary, c.border, 0.38);
-  t.field = mix(c.bg_deep, c.bg_primary, 0.55);
-  t.field_hover = mix(c.bg_primary, c.border, 0.25);
+  t.border = panel_border_color();
+  t.field = mix_colors(c.bg_deep, c.bg_primary, 0.55);
+  t.field_hover = mix_colors(c.bg_primary, c.border, 0.25);
   t.ink = c.text_primary;
-  t.ink_dim = mix(c.bg_primary, c.text_primary, 0.62);
-  t.ink_faint = mix(c.bg_primary, c.text_primary, 0.42);
+  t.ink_dim = mix_colors(c.bg_primary, c.text_primary, 0.62);
+  t.ink_faint = mix_colors(c.bg_primary, c.text_primary, 0.42);
   t.accent = c.accent;
-  t.accent_soft = mix(c.bg_primary, c.accent, 0.30);
+  t.accent_soft = mix_colors(c.bg_primary, c.accent, 0.30);
   return t;
 }
 
@@ -302,18 +294,18 @@ protected:
     const qreal  r = track.height() / 2.0;
 
     const QColor off = this->underMouse() ? t.field_hover : t.field;
-    QColor       edge = mix(t.border, t.accent, this->position);
+    QColor       edge = mix_colors(t.border, t.accent, this->position);
     if (this->hasFocus())
       edge = t.accent.lighter(130);
     p.setPen(QPen(edge, 1));
-    p.setBrush(mix(off, t.accent, this->position));
+    p.setBrush(mix_colors(off, t.accent, this->position));
     p.drawRoundedRect(track, r, r);
 
     const qreal  d = track.height() - 6.0;
     const qreal  x = track.left() + 3.0 + (track.width() - 6.0 - d) * this->position;
     const QRectF knob(x, track.top() + 3.0, d, d);
     p.setPen(Qt::NoPen);
-    p.setBrush(mix(t.ink_dim, QColor("#ffffff"), this->position));
+    p.setBrush(mix_colors(t.ink_dim, QColor("#ffffff"), this->position));
     p.drawEllipse(knob);
   }
 
@@ -455,7 +447,7 @@ protected:
     p.drawRoundedRect(frame, 6, 6);
 
     const QRectF chip(5.5, 5.5, 34, this->height() - 11.0);
-    p.setPen(QPen(mix(this->color, QColor("#000000"), 0.35), 1));
+    p.setPen(QPen(mix_colors(this->color, QColor("#000000"), 0.35), 1));
     p.setBrush(this->color);
     p.drawRoundedRect(chip, 4, 4);
 
@@ -485,25 +477,31 @@ private:
 
 // Binding for a value held in AppSettings, edited through a draft copy.
 // `show` pushes a value into the control without it reporting an edit.
+// `normalize` maps a stored value to what the control can hold (e.g. clamped
+// into a spin box's range); it is applied wherever the stored value is read,
+// so an out-of-range value in hesiod.json neither shows as modified on open
+// nor leaves the control and the draft disagreeing after Discard.
 template <typename T>
 std::shared_ptr<AppSettingsWindow::Binding> make_binding(
     std::function<T &(AppSettings &)>         access,
     std::shared_ptr<T>                        draft,
     std::function<void(const T &)>            show,
     std::function<bool(const T &, const T &)> equal = [](const T &a, const T &b)
-    { return a == b; })
+    { return a == b; },
+    std::function<T(const T &)> normalize = [](const T &v) { return v; })
 {
   auto binding = std::make_shared<AppSettingsWindow::Binding>();
-  binding->dirty = [=]() { return !equal(*draft, access(HSD_CTX.app_settings)); };
+  binding->dirty = [=]()
+  { return !equal(*draft, normalize(access(HSD_CTX.app_settings))); };
   binding->commit = [=]() { access(HSD_CTX.app_settings) = *draft; };
   binding->revert = [=]()
   {
-    *draft = access(HSD_CTX.app_settings);
+    *draft = normalize(access(HSD_CTX.app_settings));
     show(*draft);
   };
   binding->load_default = [=]()
   {
-    *draft = access(defaults());
+    *draft = normalize(access(defaults()));
     show(*draft);
   };
   return binding;
@@ -664,6 +662,15 @@ AppSettingsWindow::AppSettingsWindow(QWidget *parent) : QDialog(parent)
   defaults_button->setToolTip("Fill in every default value. Nothing changes until you "
                               "press Apply.");
   footer_layout->addWidget(defaults_button);
+
+  // the whole settings file, including what no row shows (window layout,
+  // colours, startup project...): the way out of a bad hesiod.json
+  auto *reset_button = new QPushButton("Reset everything…", footer);
+  reset_button->setObjectName("ghostButton");
+  reset_button->setCursor(Qt::PointingHandCursor);
+  reset_button->setToolTip("Reset every application setting, including those not "
+                           "listed here, after a confirmation.");
+  footer_layout->addWidget(reset_button);
   footer_layout->addStretch(1);
 
   this->footer_status = new QLabel(footer);
@@ -711,6 +718,10 @@ AppSettingsWindow::AppSettingsWindow(QWidget *parent) : QDialog(parent)
                 &QPushButton::clicked,
                 this,
                 &AppSettingsWindow::discard_changes);
+  this->connect(reset_button,
+                &QPushButton::clicked,
+                this,
+                &AppSettingsWindow::reset_everything);
   this->connect(defaults_button,
                 &QPushButton::clicked,
                 this,
@@ -977,13 +988,16 @@ AppSettingsWindow::Control AppSettingsWindow::make_int(
   Control control;
   control.widget = make_stepper(spin);
   control.focus = spin;
-  control.binding = make_binding<int>(access,
-                                      draft,
-                                      [spin](const int &value)
-                                      {
-                                        const QSignalBlocker block(spin);
-                                        spin->setValue(value);
-                                      });
+  control.binding = make_binding<int>(
+      access,
+      draft,
+      [spin](const int &value)
+      {
+        const QSignalBlocker block(spin);
+        spin->setValue(value);
+      },
+      [](const int &a, const int &b) { return a == b; },
+      [min, max](const int &v) { return std::clamp(v, min, max); });
   control.binding->effects = effects;
 
   this->connect(spin,
@@ -1505,6 +1519,18 @@ void AppSettingsWindow::apply_changes()
   if (applied == 0)
     return;
 
+  const QString note = this->apply_effects(effects);
+
+  this->update_state();
+  QString status = applied == 1 ? QString("Applied 1 change")
+                                : QString("Applied %1 changes").arg(applied);
+  if (!note.isEmpty())
+    status += QString(" · %1").arg(note);
+  this->footer_status->setText(status);
+}
+
+QString AppSettingsWindow::apply_effects(unsigned effects)
+{
   AppContext &ctx = HSD_CTX;
 
   if (effects & Autosave)
@@ -1531,17 +1557,55 @@ void AppSettingsWindow::apply_changes()
   // persist now rather than on quit: a crash after applying should not lose it
   ctx.save_settings();
 
+  // The scale is the one effect that can quietly not happen: say why, or the
+  // footer reports a change that nothing on screen reflects.
   if (effects & Scale)
   {
-    ui_scale::apply_live(ctx.app_settings.interface.ui_scale);
-    // the dialog keeps its logical size, so a larger scale makes it physically
-    // larger: keep it on screen
-    QTimer::singleShot(0, this, [this]() { this->fit_to_screen(); });
+    if (ui_scale::apply_live(ctx.app_settings.interface.ui_scale))
+    {
+      // the dialog keeps its logical size, so a larger scale makes it
+      // physically larger: keep it on screen
+      QTimer::singleShot(0, this, [this]() { this->fit_to_screen(); });
+    }
+    else if (ui_scale::session_resolution().environment_override)
+      return "QT_SCALE_FACTOR is set in the environment, so the scale is saved but "
+             "not used";
+    else
+      return "the interface scale applies after a restart";
   }
 
+  return QString();
+}
+
+void AppSettingsWindow::reset_everything()
+{
+  MessageDialog box(this,
+                    MessageDialog::Kind::Warning,
+                    "Reset every setting?",
+                    "All application settings go back to their defaults, including "
+                    "those not listed here: window layout, colours, the startup "
+                    "project and the node editor defaults. Some take effect after a "
+                    "restart.");
+  box.add_button("Cancel", MessageDialog::Role::Secondary, true, true);
+  QPushButton *reset = box.add_button("Reset everything", MessageDialog::Role::Danger);
+  box.exec();
+  if (box.clicked_button() != reset)
+    return;
+
+  HSD_CTX.reset_settings();
+
+  // every row now shows the reset value, with nothing pending
+  for (const auto &row : this->rows)
+    if (row->binding)
+      row->binding->revert();
+
+  const QString note = this->apply_effects(Autosave | Animations | Theme | Palette |
+                                           ViewportToolbar | Scale);
+
   this->update_state();
-  this->footer_status->setText(applied == 1 ? QString("Applied 1 change")
-                                            : QString("Applied %1 changes").arg(applied));
+  this->footer_status->setText(
+      QString("Everything reset to defaults · %1")
+          .arg(note.isEmpty() ? QString("some settings apply after a restart") : note));
 }
 
 void AppSettingsWindow::discard_changes()
@@ -1858,16 +1922,16 @@ void AppSettingsWindow::apply_stylesheet()
       {"ACCENT_SOFT", t.accent_soft},
       {"ACCENT_TEXT", t.accent.lighter(135)},
       {"ACCENT", t.accent},
-      {"MODIFIED_BG", mix(t.card, t.accent, 0.08)},
-      {"NAV_ACTIVE", mix(t.sidebar, t.card, 0.85)},
-      {"NAV_HOVER", mix(t.sidebar, t.card, 0.45)},
-      {"WARN_SOFT", mix(t.content, warn, 0.14)},
-      {"WARN_BORDER", mix(t.content, warn, 0.35)},
+      {"MODIFIED_BG", mix_colors(t.card, t.accent, 0.08)},
+      {"NAV_ACTIVE", mix_colors(t.sidebar, t.card, 0.85)},
+      {"NAV_HOVER", mix_colors(t.sidebar, t.card, 0.45)},
+      {"WARN_SOFT", mix_colors(t.content, warn, 0.14)},
+      {"WARN_BORDER", mix_colors(t.content, warn, 0.35)},
       {"WARN", warn},
       {"CARD", t.card},
       {"BORDER", t.border},
       {"FIELD", t.field},
-      {"GHOST", mix(t.sidebar, t.ink, 0.28)},
+      {"GHOST", mix_colors(t.sidebar, t.ink, 0.28)},
       {"FAINT", t.ink_faint},
       {"DIM", t.ink_dim},
       {"INK", t.ink}};

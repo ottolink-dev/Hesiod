@@ -38,6 +38,7 @@ public:
   bool get_param_visibility_state(const std::string &param_name) const override;
   // 0: 2D viewer, 1: 3D renderer (qtr::RenderType)
   void set_render_type(int new_type);
+  int  get_render_type() const; // 0: 2D viewer, 1: 3D renderer
   void set_skybox(const std::filesystem::path path);
   void setup_layout() override;
   void setup_connections() override;
