@@ -6864,6 +6864,56 @@
             }
         }
     },
+    "ExportTextureStreamed": {
+        "category": "Export",
+        "description": "ExportTextureStreamed is an operator for exporting a texture in streamed file formats (BigTIFF and OpenEXR) tile-by-tile.",
+        "label": "ExportTextureStreamed",
+        "parameter_groups": [
+            {
+                "keys": [
+                    "fname",
+                    "pattern",
+                    "format",
+                    "auto_export"
+                ],
+                "name": "main"
+            }
+        ],
+        "parameters": {
+            "auto_export": {
+                "description": "Controls whether the output file is automatically written when the node is updated. Default is false. When set to true, the file is saved automatically on updates. If false, use the 'Force Reload' button on the node to manually trigger the export.",
+                "key": "auto_export",
+                "label": "Auto Export on Node Update",
+                "type": "Bool"
+            },
+            "fname": {
+                "description": "Export file name.",
+                "key": "fname",
+                "label": "Filename",
+                "type": "Filename"
+            },
+            "format": {
+                "description": "Streamed export format. Available values: OpenEXR (32-bit float) - *.exr, BigTIFF (32-bit float) - *.tif.",
+                "key": "format",
+                "label": "File Format",
+                "type": "Choice"
+            },
+            "pattern": {
+                "description": "No description",
+                "key": "pattern",
+                "label": "Filename Pattern",
+                "type": "String"
+            }
+        },
+        "ports": {
+            "texture": {
+                "caption": "texture",
+                "data_type": "VirtualTexture",
+                "description": "Input texture.",
+                "type": "input"
+            }
+        }
+    },
     "ExportTiled": {
         "category": "Export",
         "description": "No description available",

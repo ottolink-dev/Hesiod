@@ -24,7 +24,7 @@
         "graph_nodes": {
             "graph": {
                 "id": "graph",
-                "id_count": 3,
+                "id_count": 7,
                 "links": [
                     {
                         "node_id_from": "0",
@@ -37,6 +37,24 @@
                         "node_id_to": "2",
                         "port_id_from": "output",
                         "port_id_to": "input"
+                    },
+                    {
+                        "node_id_from": "0",
+                        "node_id_to": "3",
+                        "port_id_from": "output",
+                        "port_id_to": "level"
+                    },
+                    {
+                        "node_id_from": "3",
+                        "node_id_to": "5",
+                        "port_id_from": "texture",
+                        "port_id_to": "texture"
+                    },
+                    {
+                        "node_id_from": "3",
+                        "node_id_to": "6",
+                        "port_id_from": "texture",
+                        "port_id_to": "texture"
                     }
                 ],
                 "model_config": {
@@ -756,10 +774,10 @@
                         "label": "CoherentNoise",
                         "runtime_info": {
                             "error_count": 0,
-                            "eval_count": 3,
+                            "eval_count": 6,
                             "time_creation": 1790438457085,
-                            "time_last_update": 1790438519172,
-                            "update_time": 31.561504364013672
+                            "time_last_update": 1790441713800,
+                            "update_time": 37.49811935424805
                         },
                         "synchronized_attributes": [
                             "warp_scale",
@@ -811,10 +829,10 @@
                         "label": "ExportHeightmapStreamed",
                         "runtime_info": {
                             "error_count": 0,
-                            "eval_count": 6,
+                            "eval_count": 9,
                             "time_creation": 1790438461773,
-                            "time_last_update": 1790438519333,
-                            "update_time": 160.85020446777344
+                            "time_last_update": 1790441713987,
+                            "update_time": 187.1744384765625
                         }
                     },
                     {
@@ -850,10 +868,198 @@
                         "label": "ExportHeightmapStreamed",
                         "runtime_info": {
                             "error_count": 0,
-                            "eval_count": 10,
+                            "eval_count": 13,
                             "time_creation": 1790438461773,
-                            "time_last_update": 1790438519341,
-                            "update_time": 8.714876174926758
+                            "time_last_update": 1790441713997,
+                            "update_time": 9.655435562133789
+                        }
+                    },
+                    {
+                        "comment": "",
+                        "containers": {
+                            "main": {
+                                "clamp_alpha": {
+                                    "value": true
+                                },
+                                "gradient": {
+                                    "value": {
+                                        "value": [
+                                            {
+                                                "color": [
+                                                    0.0,
+                                                    0.0,
+                                                    0.5,
+                                                    1.0
+                                                ],
+                                                "position": 0.0
+                                            },
+                                            {
+                                                "color": [
+                                                    0.0,
+                                                    0.0,
+                                                    1.0,
+                                                    1.0
+                                                ],
+                                                "position": 0.1428571492433548
+                                            },
+                                            {
+                                                "color": [
+                                                    0.0,
+                                                    0.5,
+                                                    1.0,
+                                                    1.0
+                                                ],
+                                                "position": 0.2857142984867096
+                                            },
+                                            {
+                                                "color": [
+                                                    0.0,
+                                                    1.0,
+                                                    1.0,
+                                                    1.0
+                                                ],
+                                                "position": 0.4285714328289032
+                                            },
+                                            {
+                                                "color": [
+                                                    0.5,
+                                                    1.0,
+                                                    0.5,
+                                                    1.0
+                                                ],
+                                                "position": 0.5714285969734192
+                                            },
+                                            {
+                                                "color": [
+                                                    1.0,
+                                                    1.0,
+                                                    0.0,
+                                                    1.0
+                                                ],
+                                                "position": 0.7142857313156128
+                                            },
+                                            {
+                                                "color": [
+                                                    1.0,
+                                                    0.5,
+                                                    0.0,
+                                                    1.0
+                                                ],
+                                                "position": 0.8571428656578064
+                                            },
+                                            {
+                                                "color": [
+                                                    0.5,
+                                                    0.0,
+                                                    0.0,
+                                                    1.0
+                                                ],
+                                                "position": 1.0
+                                            }
+                                        ]
+                                    }
+                                },
+                                "reverse_alpha": {
+                                    "value": false
+                                },
+                                "reverse_colormap": {
+                                    "value": false
+                                },
+                                "state": {
+                                    "Main Parameters.is_expanded": {
+                                        "type": "bool",
+                                        "value": true
+                                    }
+                                }
+                            }
+                        },
+                        "current": "main",
+                        "id": "3",
+                        "label": "ColorizeGradient",
+                        "runtime_info": {
+                            "error_count": 0,
+                            "eval_count": 5,
+                            "time_creation": 1790441639306,
+                            "time_last_update": 1790441714034,
+                            "update_time": 37.195064544677734
+                        }
+                    },
+                    {
+                        "comment": "",
+                        "containers": {
+                            "main": {
+                                "auto_export": {
+                                    "value": true
+                                },
+                                "fname": {
+                                    "value": "texture.tif"
+                                },
+                                "format": {
+                                    "value": "BigTIFF (32-bit float) - *.tif"
+                                },
+                                "pattern": {
+                                    "value": "{FILENAME}.{EXT}"
+                                },
+                                "state": {
+                                    "Export Parameters.is_expanded": {
+                                        "type": "bool",
+                                        "value": true
+                                    },
+                                    "Filename.is_expanded": {
+                                        "type": "bool",
+                                        "value": true
+                                    }
+                                }
+                            }
+                        },
+                        "current": "main",
+                        "id": "5",
+                        "label": "ExportTextureStreamed",
+                        "runtime_info": {
+                            "error_count": 0,
+                            "eval_count": 6,
+                            "time_creation": 1790441659168,
+                            "time_last_update": 1790441719119,
+                            "update_time": 32.6461181640625
+                        }
+                    },
+                    {
+                        "comment": "",
+                        "containers": {
+                            "main": {
+                                "auto_export": {
+                                    "value": true
+                                },
+                                "fname": {
+                                    "value": "texture.exr"
+                                },
+                                "format": {
+                                    "value": "OpenEXR (32-bit float) - *.exr"
+                                },
+                                "pattern": {
+                                    "value": "{FILENAME}.{EXT}"
+                                },
+                                "state": {
+                                    "Export Parameters.is_expanded": {
+                                        "type": "bool",
+                                        "value": true
+                                    },
+                                    "Filename.is_expanded": {
+                                        "type": "bool",
+                                        "value": true
+                                    }
+                                }
+                            }
+                        },
+                        "current": "main",
+                        "id": "6",
+                        "label": "ExportTextureStreamed",
+                        "runtime_info": {
+                            "error_count": 0,
+                            "eval_count": 5,
+                            "time_creation": 1790441689012,
+                            "time_last_update": 1790441721246,
+                            "update_time": 255.82772827148438
                         }
                     }
                 ],
@@ -886,7 +1092,7 @@
                 "comments": [],
                 "current_link_type": 2,
                 "graph_workspace_widget.viewer3d": {
-                    "current_node_id": "2",
+                    "current_node_id": "6",
                     "height": 462,
                     "is_node_pinned": false,
                     "label": "3D Renderer",
@@ -1066,6 +1272,38 @@
                             "path": "",
                             "points": "",
                             "water_depth": ""
+                        },
+                        "3": {
+                            "color": "texture",
+                            "elevation": "level",
+                            "normal_map": "",
+                            "path": "",
+                            "points": "",
+                            "water_depth": ""
+                        },
+                        "4": {
+                            "color": "",
+                            "elevation": "input",
+                            "normal_map": "",
+                            "path": "",
+                            "points": "",
+                            "water_depth": ""
+                        },
+                        "5": {
+                            "color": "texture",
+                            "elevation": "",
+                            "normal_map": "",
+                            "path": "",
+                            "points": "",
+                            "water_depth": ""
+                        },
+                        "6": {
+                            "color": "texture",
+                            "elevation": "",
+                            "normal_map": "",
+                            "path": "",
+                            "points": "",
+                            "water_depth": ""
                         }
                     },
                     "viewer_type": 0,
@@ -1078,9 +1316,16 @@
                 "links": [
                     {
                         "link_type": 2,
-                        "node_in_id": "2",
+                        "node_in_id": "5",
+                        "node_out_id": "3",
+                        "port_in_id": "texture",
+                        "port_out_id": "texture"
+                    },
+                    {
+                        "link_type": 2,
+                        "node_in_id": "3",
                         "node_out_id": "0",
-                        "port_in_id": "input",
+                        "port_in_id": "level",
                         "port_out_id": "output"
                     },
                     {
@@ -1089,22 +1334,36 @@
                         "node_out_id": "0",
                         "port_in_id": "input",
                         "port_out_id": "output"
+                    },
+                    {
+                        "link_type": 2,
+                        "node_in_id": "2",
+                        "node_out_id": "0",
+                        "port_in_id": "input",
+                        "port_out_id": "output"
+                    },
+                    {
+                        "link_type": 2,
+                        "node_in_id": "6",
+                        "node_out_id": "3",
+                        "port_in_id": "texture",
+                        "port_out_id": "texture"
                     }
                 ],
                 "nodes": [
                     {
-                        "caption": "ExportHeightmapStreamed",
-                        "id": "2",
+                        "caption": "ExportTextureStreamed",
+                        "id": "5",
                         "is_widget_visible": true,
-                        "scene_position.x": -409.2733302200636,
-                        "scene_position.y": -131.10666306993718
+                        "scene_position.x": 100.36894989013672,
+                        "scene_position.y": -488.2197265625
                     },
                     {
-                        "caption": "ExportHeightmapStreamed",
-                        "id": "1",
+                        "caption": "ColorizeGradient",
+                        "id": "3",
                         "is_widget_visible": true,
-                        "scene_position.x": -608.6666634215251,
-                        "scene_position.y": -329.6666630241608
+                        "scene_position.x": -192.9921417236328,
+                        "scene_position.y": -502.1715087890625
                     },
                     {
                         "caption": "CoherentNoise",
@@ -1112,10 +1371,31 @@
                         "is_widget_visible": true,
                         "scene_position.x": -881.0,
                         "scene_position.y": -317.0
+                    },
+                    {
+                        "caption": "ExportHeightmapStreamed",
+                        "id": "1",
+                        "is_widget_visible": true,
+                        "scene_position.x": -608.6666870117188,
+                        "scene_position.y": -329.6666564941406
+                    },
+                    {
+                        "caption": "ExportHeightmapStreamed",
+                        "id": "2",
+                        "is_widget_visible": true,
+                        "scene_position.x": -409.2733154296875,
+                        "scene_position.y": -131.10665893554688
+                    },
+                    {
+                        "caption": "ExportTextureStreamed",
+                        "id": "6",
+                        "is_widget_visible": true,
+                        "scene_position.x": 105.45314825148813,
+                        "scene_position.y": -246.05727350144159
                     }
                 ]
             }
         }
     },
-    "saved_at": "2026-09-26_18-03-58"
+    "saved_at": "2026-09-26_18-55-22"
 }
