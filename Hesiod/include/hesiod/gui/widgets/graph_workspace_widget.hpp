@@ -14,6 +14,7 @@ namespace hesiod
 
 class GraphNode; // forward
 class GraphNodeWidget;
+class GraphTabStrip;
 class NodeSettingsWidget;
 class Viewer3D;
 
@@ -33,6 +34,7 @@ public:
   nlohmann::json json_to() const;
 
   GraphNodeWidget    *get_graph_node_widget() const;
+  GraphTabStrip      *get_tab_strip() const { return this->tab_strip; }
   NodeSettingsWidget *get_node_settings_widget() const;
   Viewer3D           *get_viewer() const;
   void                set_node_library_visible(bool new_state);
@@ -46,6 +48,7 @@ private:
 
   std::weak_ptr<GraphNode> p_graph_node;
   GraphNodeWidget         *graph_node_widget = nullptr;
+  GraphTabStrip           *tab_strip = nullptr; // graph tabs on the editor's top edge
   NodeSettingsWidget      *node_settings_widget = nullptr;
 
   // exactly one of these is built, chosen by
@@ -55,6 +58,7 @@ private:
 
   Viewer3D    *viewer = nullptr;
   QToolButton *node_library_toggle_button = nullptr;
+  QWidget     *library_gap = nullptr; // spacing between library card and graph
 };
 
 } // namespace hesiod

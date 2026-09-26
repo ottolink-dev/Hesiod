@@ -2,6 +2,8 @@
  * License. The full license is in the file LICENSE, distributed with this software. */
 #pragma once
 
+#include <string>
+
 #include "nlohmann/json.hpp"
 
 namespace hesiod
@@ -20,6 +22,10 @@ struct BakeConfig
   bool force_maximum_fbm_octaves = false;
   bool min_memory = false;
   int  max_tile_resolution = 32768;
+
+  // where the bake writes; empty: next to the project file (see
+  // HesiodApplication::default_bake_dir)
+  std::string export_dir;
 
   void           json_from(nlohmann::json const &json);
   nlohmann::json json_to() const;

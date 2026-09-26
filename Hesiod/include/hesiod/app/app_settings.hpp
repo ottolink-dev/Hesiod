@@ -163,6 +163,7 @@ struct AppSettings
     int  width = 512;
     int  height = 512;
     bool add_heighmap_skirt = true;
+    int  toolbar_scale = 100; // viewport toolbar size, percent
   } viewer;
 
   struct Window // main window

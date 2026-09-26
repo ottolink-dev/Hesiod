@@ -10,8 +10,22 @@
 
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/widgets/main_window.hpp"
+#include "hesiod/gui/widgets/window_chrome.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/graph/graph_manager.hpp"
+
+// last: windows.h leaks macros (interface, min, max...) that clash with the
+// project headers above
+#ifdef Q_OS_WIN
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
+#include <windows.h>
+
+#include <dwmapi.h>
+#include <windowsx.h>
+#undef interface
+#endif
 
 namespace hesiod
 {
@@ -20,8 +34,25 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
   Logger::log()->trace("MainWindow::MainWindow");
 
+  this->setObjectName("hsdMainWindow");
+
+  this->title_bar = new TitleBar(this);
+  this->setMenuWidget(this->title_bar);
+
+  this->setup_frameless_window();
+  this->title_bar->set_window_buttons_visible(this->frameless);
+
   this->restore_geometry();
+  this->setup_status_bar();
   this->setup_progress_bar();
+}
+
+void MainWindow::changeEvent(QEvent *event)
+{
+  if (event->type() == QEvent::WindowStateChange && this->title_bar)
+    this->title_bar->set_maximized(this->isMaximized());
+
+  QMainWindow::changeEvent(event);
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
@@ -44,9 +75,222 @@ void MainWindow::closeEvent(QCloseEvent *event)
   QMainWindow::closeEvent(event);
 }
 
+QMenuBar *MainWindow::menu_bar() const { return this->title_bar->menu_bar(); }
+
+bool MainWindow::nativeEvent(const QByteArray &event_type, void *message, qintptr *result)
+{
+#ifdef Q_OS_WIN
+  if (this->frameless && event_type == "windows_generic_MSG")
+  {
+    MSG *msg = static_cast<MSG *>(message);
+
+    switch (msg->message)
+    {
+    case WM_NCCALCSIZE:
+    {
+      // the whole window is client area: no native caption, no visible frame.
+      // The thick frame style stays on the window so that resizing, Aero snap
+      // and the min/max animations keep working.
+      if (msg->wParam == TRUE)
+      {
+        if (::IsZoomed(msg->hwnd))
+        {
+          // a maximized thick-frame window overhangs its monitor by the frame
+          // width on every side; clamp the client to the work area instead
+          auto       *params = reinterpret_cast<NCCALCSIZE_PARAMS *>(msg->lParam);
+          HMONITOR    monitor = ::MonitorFromWindow(msg->hwnd, MONITOR_DEFAULTTONEAREST);
+          MONITORINFO info{};
+          info.cbSize = sizeof(info);
+          if (::GetMonitorInfoW(monitor, &info))
+            params->rgrc[0] = info.rcWork;
+        }
+        *result = 0;
+        return true;
+      }
+      break;
+    }
+
+    case WM_GETMINMAXINFO:
+    {
+      // maximize onto the monitor's work area, not the whole monitor: the
+      // window rectangle must stop at the taskbar, not merely its client area
+      auto       *info = reinterpret_cast<MINMAXINFO *>(msg->lParam);
+      HMONITOR    monitor = ::MonitorFromWindow(msg->hwnd, MONITOR_DEFAULTTONEAREST);
+      MONITORINFO monitor_info{};
+      monitor_info.cbSize = sizeof(monitor_info);
+      if (!::GetMonitorInfoW(monitor, &monitor_info))
+        break;
+
+      const RECT &work = monitor_info.rcWork;
+      const RECT &full = monitor_info.rcMonitor;
+      info->ptMaxPosition.x = work.left - full.left;
+      info->ptMaxPosition.y = work.top - full.top;
+      info->ptMaxSize.x = work.right - work.left;
+      info->ptMaxSize.y = work.bottom - work.top;
+
+      // Qt normally fills in the minimum tracking size; it is skipped here
+      const qreal dpr = this->devicePixelRatioF();
+      const QSize min_size = this->minimumSize().expandedTo(QSize(480, 320));
+      info->ptMinTrackSize.x = qRound(min_size.width() * dpr);
+      info->ptMinTrackSize.y = qRound(min_size.height() * dpr);
+
+      *result = 0;
+      return true;
+    }
+
+    case WM_NCHITTEST:
+    {
+      RECT window_rect;
+      ::GetWindowRect(msg->hwnd, &window_rect);
+
+      const LONG x = GET_X_LPARAM(msg->lParam);
+      const LONG y = GET_Y_LPARAM(msg->lParam);
+
+      // resize band, in physical pixels
+      const UINT dpi = ::GetDpiForWindow(msg->hwnd);
+      const int  band = ::GetSystemMetricsForDpi(SM_CXSIZEFRAME, dpi) +
+                       ::GetSystemMetricsForDpi(SM_CXPADDEDBORDER, dpi);
+
+      if (!::IsZoomed(msg->hwnd))
+      {
+        const bool left = x < window_rect.left + band;
+        const bool right = x >= window_rect.right - band;
+        const bool top = y < window_rect.top + band;
+        const bool bottom = y >= window_rect.bottom - band;
+
+        if (top && left)
+          *result = HTTOPLEFT;
+        else if (top && right)
+          *result = HTTOPRIGHT;
+        else if (bottom && left)
+          *result = HTBOTTOMLEFT;
+        else if (bottom && right)
+          *result = HTBOTTOMRIGHT;
+        else if (left)
+          *result = HTLEFT;
+        else if (right)
+          *result = HTRIGHT;
+        else if (top)
+          *result = HTTOP;
+        else if (bottom)
+          *result = HTBOTTOM;
+        else
+          *result = 0;
+
+        if (*result)
+          return true;
+      }
+
+      // physical -> logical window coordinates
+      const qreal  dpr = this->devicePixelRatioF();
+      const QPoint local(qFloor((x - window_rect.left) / dpr),
+                         qFloor((y - window_rect.top) / dpr));
+
+      if (this->title_bar && this->title_bar->geometry().contains(local))
+      {
+        const QPoint bar_pos = this->title_bar->mapFrom(this, local);
+        if (this->title_bar->is_caption_area(bar_pos))
+        {
+          *result = HTCAPTION;
+          return true;
+        }
+      }
+
+      *result = HTCLIENT;
+      return true;
+    }
+
+    default:
+      break;
+    }
+  }
+#else
+  Q_UNUSED(event_type);
+  Q_UNUSED(message);
+  Q_UNUSED(result);
+#endif
+
+  return QMainWindow::nativeEvent(event_type, message, result);
+}
+
 void MainWindow::notify(const std::string &msg, int timeout)
 {
   this->statusBar()->showMessage(msg.c_str(), timeout);
+}
+
+void MainWindow::set_project_title(const std::string &name,
+                                   const std::string &path,
+                                   bool               dirty)
+{
+  const bool    saved = !path.empty();
+  const QString shown = name.empty() ? QString("Untitled") : QString::fromStdString(name);
+
+  // the native title still matters: it is what the taskbar and Alt+Tab show
+  QString title = saved ? QString("%1 [%2]").arg(shown, QString::fromStdString(path))
+                        : QString("%1 (not saved)").arg(shown);
+  if (dirty)
+    title += "*";
+  this->setWindowTitle(title);
+
+  this->title_bar->set_project_title(shown, QString::fromStdString(path), dirty, saved);
+}
+
+void MainWindow::setup_frameless_window()
+{
+#ifdef Q_OS_WIN
+  // Frameless for Qt (no frame margins in its geometry maths), but the native
+  // window keeps the full overlapped style: WM_NCCALCSIZE above hides the
+  // frame, while the OS keeps providing resize borders, snapping, the system
+  // menu and the drop shadow.
+  this->setWindowFlags(Qt::Window | Qt::FramelessWindowHint | Qt::WindowSystemMenuHint |
+                       Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint);
+
+  HWND hwnd = reinterpret_cast<HWND>(this->winId());
+  if (!hwnd)
+    return;
+
+  LONG_PTR style = ::GetWindowLongPtrW(hwnd, GWL_STYLE);
+  style &= ~static_cast<LONG_PTR>(WS_POPUP);
+  style |= WS_OVERLAPPEDWINDOW;
+  ::SetWindowLongPtrW(hwnd, GWL_STYLE, style);
+
+  // a one pixel sliver of DWM frame is enough to get the native shadow back
+  const MARGINS shadow = {1, 1, 1, 1};
+  ::DwmExtendFrameIntoClientArea(hwnd, &shadow);
+
+  // rounded corners on Windows 11 (ignored on older systems)
+  const DWORD corner_preference = 2; // DWMWCP_ROUND
+  ::DwmSetWindowAttribute(hwnd,
+                          33 /* DWMWA_WINDOW_CORNER_PREFERENCE */,
+                          &corner_preference,
+                          sizeof(corner_preference));
+
+  // dark caption colour for the few places Windows still draws one (snap
+  // previews, the border on Windows 10)
+  const BOOL dark = TRUE;
+  ::DwmSetWindowAttribute(hwnd,
+                          20 /* DWMWA_USE_IMMERSIVE_DARK_MODE */,
+                          &dark,
+                          sizeof(dark));
+
+  ::SetWindowPos(hwnd,
+                 nullptr,
+                 0,
+                 0,
+                 0,
+                 0,
+                 SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER |
+                     SWP_NOOWNERZORDER | SWP_NOACTIVATE);
+
+  this->frameless = true;
+#endif
+}
+
+void MainWindow::setup_status_bar()
+{
+  // resizing is done from the window border; the grip only adds clutter
+  this->statusBar()->setSizeGripEnabled(!this->frameless);
+  this->statusBar()->setObjectName("hsdStatusBar");
 }
 
 void MainWindow::restore_geometry()
@@ -176,20 +420,23 @@ void MainWindow::setup_progress_bar()
       R"(
         QProgressBar {{
             border: 0px;
-            border-radius: 0px;
+            border-radius: 3px;
             background-color: {};
-            height: 8px;
+            min-height: 6px;
+            max-height: 6px;
             padding: 0px;
-            font-size: 10px;
+            margin-right: 6px;
+            font-size: 9px;
+            color: transparent;
         }}
         QProgressBar::chunk {{
             background-color: {};
-            border-radius: 0px;
+            border-radius: 3px;
             margin: 0px;
         }}
     )",
-      ctx.app_settings.colors.bg_deep.name().toStdString(),
-      ctx.app_settings.colors.bg_secondary.name().toStdString());
+      ctx.app_settings.colors.bg_primary.name().toStdString(),
+      ctx.app_settings.colors.accent.name().toStdString());
 
   this->progress_bar->setStyleSheet(sheet.c_str());
 

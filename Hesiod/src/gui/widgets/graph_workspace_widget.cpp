@@ -10,7 +10,7 @@
 
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/widgets/graph_node_widget.hpp"
-#include "hesiod/gui/widgets/graph_toolbar.hpp"
+#include "hesiod/gui/widgets/graph_tab_strip.hpp"
 #include "hesiod/gui/widgets/graph_workspace_widget.hpp"
 #include "hesiod/gui/widgets/grip_splitter.hpp"
 #include "hesiod/gui/widgets/gui_utils.hpp"
@@ -18,6 +18,7 @@
 #include "hesiod/gui/widgets/node_palette_sidebar.hpp"
 #include "hesiod/gui/widgets/node_settings_widget.hpp"
 #include "hesiod/gui/widgets/viewers/viewer_3d.hpp"
+#include "hesiod/gui/widgets/window_chrome.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/graph/graph_node.hpp"
 #include "hesiod/model/nodes/node_factory.hpp"
@@ -128,6 +129,9 @@ void GraphWorkspaceWidget::set_node_library_visible(bool new_state)
     this->node_palette_sidebar->setVisible(new_state);
   }
 
+  if (this->library_gap)
+    this->library_gap->setVisible(new_state);
+
   // arrow points at the panel's collapse direction
   if (this->node_library_toggle_button)
     this->node_library_toggle_button->setArrowType(new_state ? Qt::LeftArrow
@@ -154,6 +158,17 @@ void GraphWorkspaceWidget::setup_layout()
 
   // --- Layout
 
+  // Every pane is its own rounded card (PanelFrame) laid over the darker base
+  // colour; the gaps between cards are the splitter handles and the layout
+  // spacing, both painted in that base colour.
+  this->setObjectName("hsdBase");
+  this->setAttribute(Qt::WA_StyledBackground);
+
+  // headless snapshots render the graph alone, full frame: no cards there
+  const bool cards = !HSD_CTX.headless;
+  const auto wrap = [cards](QWidget *pane) -> QWidget *
+  { return cards ? new PanelFrame(pane) : pane; };
+
   auto *layout = new QGridLayout();
   layout->setContentsMargins(0, 0, 0, 0);
   layout->setSpacing(0);
@@ -168,6 +183,7 @@ void GraphWorkspaceWidget::setup_layout()
     if (!HSD_CTX.headless)
     {
       this->node_library_toggle_button = new QToolButton();
+      this->node_library_toggle_button->setObjectName("hsdLibraryToggle");
       this->node_library_toggle_button->setAutoRaise(true);
       this->node_library_toggle_button->setFixedWidth(16);
       this->node_library_toggle_button->setSizePolicy(QSizePolicy::Fixed,
@@ -176,71 +192,73 @@ void GraphWorkspaceWidget::setup_layout()
       layout->addWidget(this->node_library_toggle_button, 0, 0, 2, 1);
     }
 
+    QWidget *library = nullptr;
     if (HSD_CTX.app_settings.interface.enable_node_palette_sidebar)
     {
       this->node_palette_sidebar = new NodePaletteSidebar(
           get_node_inventory(),
           HSD_CTX.style_settings.category_color_map,
           current_node_palette_style());
-      layout->addWidget(this->node_palette_sidebar, 0, 1, 2, 1);
+      library = this->node_palette_sidebar;
     }
     else
     {
       this->node_library_widget = new NodeLibraryWidget();
-      layout->addWidget(this->node_library_widget, 0, 1, 2, 1);
+      library = this->node_library_widget;
     }
 
+    layout->addWidget(wrap(library), 0, 1, 2, 1);
+
+    // gap between the library card and the graph column, shown together with
+    // the library (see set_node_library_visible)
+    if (cards)
+    {
+      this->library_gap = new QWidget();
+      this->library_gap->setObjectName("hsdBase");
+      this->library_gap->setFixedWidth(GripSplitter::gap);
+      layout->addWidget(this->library_gap, 0, 2, 2, 1);
+    }
+
+    // after parenting: showing a parentless pane would open it as a window
     this->set_node_library_visible(
         HSD_CTX.app_settings.node_editor.show_node_library_pan);
   }
 
-  // graph area: viewer/graph vertical splitter + toolbar, wrapped so it can be
-  // one pane of the horizontal splitter below.
-  QWidget     *graph_container = new QWidget();
-  QVBoxLayout *graph_layout = new QVBoxLayout(graph_container);
-  graph_layout->setContentsMargins(0, 0, 0, 0);
-  graph_layout->setSpacing(0);
+  // graph area: viewer card over graph card, user-resizable
+  GripSplitter *v_splitter = new GripSplitter(Qt::Vertical);
+  v_splitter->setObjectName("hsdBase");
+  v_splitter->setChildrenCollapsible(false);
 
+  this->graph_node_widget = new GraphNodeWidget(gno->get_shared());
+  this->graph_node_widget->setMinimumWidth(50); // let the graph pane shrink so the
+                                                // settings pane can be dragged wider
+
+  // skip the 3D viewer (OpenGL) in headless CLI modes (e.g. --snapshot).
+  if (!HSD_CTX.headless)
   {
-    GripSplitter *splitter = new GripSplitter(Qt::Vertical);
-    splitter->setChildrenCollapsible(false);
-
-    this->graph_node_widget = new GraphNodeWidget(gno->get_shared());
-    this->graph_node_widget->setMinimumWidth(50); // let the graph pane shrink so the
-                                                  // settings pane can be dragged wider
-
-    // skip the 3D viewer (OpenGL) in headless CLI modes (e.g. --snapshot).
-    if (!HSD_CTX.headless)
-    {
-      this->viewer = new Viewer3D(this->graph_node_widget);
-      this->viewer->setMinimumHeight(32);
-      splitter->addWidget(this->viewer);
-    }
-
-    splitter->addWidget(this->graph_node_widget);
-    graph_layout->addWidget(splitter);
+    this->viewer = new Viewer3D(this->graph_node_widget);
+    this->viewer->setMinimumHeight(32);
+    v_splitter->addWidget(wrap(this->viewer));
   }
 
-  {
-    auto *graph_toolbar = new GraphToolbar(this->graph_node_widget);
-    graph_layout->addWidget(graph_toolbar);
-  }
+  // the graph fills its card, with the project's graphs as tabs on its left
+  // edge (GraphTabsWidget keeps every workspace's strip in step)
+  this->tab_strip = new GraphTabStrip(Qt::Vertical);
+  v_splitter->addWidget(new TabbedCard(wrap(this->graph_node_widget), this->tab_strip));
 
   // settings panel (created after graph_node_widget, which it takes).
   this->node_settings_widget = new NodeSettingsWidget(this->graph_node_widget);
-  {
-    std::string color = HSD_CTX.app_settings.colors.border.name().toStdString();
-    set_style(this->node_settings_widget,
-              std::format("border-left: 1px solid {};", color));
-    this->node_settings_widget->setVisible(
-        HSD_CTX.app_settings.node_editor.show_node_settings_pan);
-  }
 
   // horizontal splitter: [ graph area | settings ] — user-resizable.
   GripSplitter *h_splitter = new GripSplitter(Qt::Horizontal);
+  h_splitter->setObjectName("hsdBase");
   h_splitter->setChildrenCollapsible(false);
-  h_splitter->addWidget(graph_container);
-  h_splitter->addWidget(this->node_settings_widget);
+  h_splitter->addWidget(v_splitter);
+  h_splitter->addWidget(wrap(this->node_settings_widget));
+
+  // after parenting (the card follows the pane's visibility from here on)
+  this->node_settings_widget->setVisible(
+      HSD_CTX.app_settings.node_editor.show_node_settings_pan);
   h_splitter->setStretchFactor(0, 1); // graph area absorbs window resizing
   h_splitter->setStretchFactor(1, 0); // settings keeps its width
   // Both numbers are logical pixels, and the graph half is a constant while the

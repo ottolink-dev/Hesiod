@@ -21,10 +21,11 @@
  *  changes in a row therefore give the same result as jumping straight to the
  *  second one.
  *
- *  The cost is that a change lands on restart. Qt cannot re-run high-DPI
- *  scaling on a live application, and the alternatives that do work live (font
- *  substitution plus a stylesheet rewrite) leave the hard-coded widget sizes
- *  behind and look broken at anything past ~1.3.
+ *  Changes made while running go through apply_live(), which swaps the same
+ *  global factor inside Qt and re-announces every window's device pixel ratio,
+ *  so they land immediately. (Font substitution plus a stylesheet rewrite was
+ *  rejected: it leaves the hard-coded widget sizes behind and looks broken past
+ *  ~1.3.)
  */
 
 namespace hesiod::ui_scale
@@ -98,5 +99,22 @@ Resolution session_resolution();
 
 /// The factor this process actually runs at, 1.0 if apply_scale() never ran.
 double session_scale();
+
+/// True when this build can rescale a running application (see apply_live()).
+bool live_apply_supported();
+
+/** @brief Rescale the running application to @p configured, no restart.
+ *
+ * Swaps Qt's global high-DPI factor (the same one QT_SCALE_FACTOR sets at
+ * startup) and then tells every window its device pixel ratio and logical
+ * geometry changed -- the same notifications Qt sends when a window moves to a
+ * monitor with a different scale. Widgets relayout from their unchanged
+ * logical metrics, so the result matches a restart at that factor.
+ *
+ * Does nothing and returns false when QT_SCALE_FACTOR came from the
+ * environment (the user pinned the scale outside Hesiod) or when the build has
+ * no access to Qt's private high-DPI API; the setting then applies on restart.
+ */
+bool apply_live(double configured);
 
 } // namespace hesiod::ui_scale

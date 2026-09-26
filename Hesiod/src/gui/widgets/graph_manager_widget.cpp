@@ -369,7 +369,7 @@ void GraphManagerWidget::on_new_graph_request()
 
   // get config from user
   auto              config = std::make_shared<hesiod::GraphConfig>();
-  GraphConfigDialog config_editor(*config);
+  GraphConfigDialog config_editor(*config, this);
 
   {
     int ret = config_editor.exec();
@@ -487,11 +487,7 @@ void GraphManagerWidget::show_context_menu(const QPoint &pos)
 
   if (selected_action == delete_action)
   {
-    delete this->list_widget->takeItem(this->list_widget->row(item));
-    gm->remove_graph_node(selected_id);
-    this->coord_frame_widget->remove_frame(selected_id);
-
-    Q_EMIT this->graph_removed();
+    this->delete_graph(selected_id);
   }
   else if (selected_action == set_focus_action)
   {
@@ -501,6 +497,27 @@ void GraphManagerWidget::show_context_menu(const QPoint &pos)
   {
     this->on_new_graph_request();
   }
+}
+
+void GraphManagerWidget::delete_graph(const std::string &graph_id)
+{
+  Logger::log()->trace("GraphManagerWidget::delete_graph: {}", graph_id);
+
+  auto gm = this->p_graph_manager.lock();
+  if (!gm)
+    return;
+
+  for (int i = 0; i < this->list_widget->count(); ++i)
+    if (this->list_widget->item(i)->text().toStdString() == graph_id)
+    {
+      delete this->list_widget->takeItem(i);
+      break;
+    }
+
+  gm->remove_graph_node(graph_id);
+  this->coord_frame_widget->remove_frame(graph_id);
+
+  Q_EMIT this->graph_removed();
 }
 
 void GraphManagerWidget::update_combobox(const std::string &graph_id)

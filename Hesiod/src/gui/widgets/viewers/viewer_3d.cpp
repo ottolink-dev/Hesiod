@@ -1,6 +1,9 @@
 /* Copyright (c) 2025 Otto Link. Distributed under the terms of the GNU General
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+
 #include "highmap/geometry/cloud.hpp"
 #include "highmap/geometry/path.hpp"
 #include "highmap/morphology.hpp"
@@ -14,8 +17,10 @@
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/widgets/graph_node_widget.hpp"
 #include "hesiod/gui/widgets/gui_utils.hpp"
+#include "hesiod/gui/widgets/icon_check_box.hpp"
 #include "hesiod/gui/widgets/viewers/render_helpers.hpp"
 #include "hesiod/gui/widgets/viewers/viewer_3d.hpp"
+#include "hesiod/gui/widgets/viewers/viewport_controls.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/graph/graph_node.hpp"
 
@@ -160,7 +165,18 @@ void Viewer3D::json_from(nlohmann::json const &json)
 
   Viewer::json_from(json);
   if (p_renderer)
+  {
     p_renderer->json_from(json["renderer"]);
+
+    // The renderer restored the project's 2D/3D mode. The mode is app-wide (the
+    // toolbar's switch sets it for every viewer), so make the restored one the
+    // current mode: this also brings this viewer's toolbar (tool set, switch)
+    // in line, and keeps the app from putting its previous mode back on load.
+    HSD_APP->set_viewer_render_type(this->get_render_type());
+  }
+
+  if (this->controls && json.contains("viewport_controls"))
+    this->controls->json_from(json["viewport_controls"]);
 
   this->update_param_visibility_icons();
 }
@@ -172,6 +188,9 @@ nlohmann::json Viewer3D::json_to() const
   nlohmann::json json = Viewer::json_to();
   if (p_renderer)
     json["renderer"] = p_renderer->json_to();
+
+  if (this->controls)
+    json["viewport_controls"] = this->controls->json_to();
 
   return json;
 }
@@ -200,15 +219,36 @@ void Viewer3D::on_view_param_visibility_changed(const std::string &param_name,
 
 void Viewer3D::resizeEvent(QResizeEvent *)
 {
-  int padding = 8;
+  // nothing floats over the view besides the toolbar, which places itself
+}
 
-  int   x = this->p_renderer->width() - this->combo_container->width() - padding;
-  int   y = this->p_renderer->height() - this->combo_container->height() - padding;
-  QSize s = this->combo_container->sizeHint();
-  int   w = s.width();
-  int   h = s.height();
+void Viewer3D::sync_pin_label()
+{
+  // no node previewed: say so, and there is nothing to pin
+  const bool has_node = !this->current_node_id.empty();
+  if (!has_node)
+    this->button_pin_current_node->set_label("No node previewed");
+  this->button_pin_current_node->setEnabled(has_node);
+}
 
-  this->combo_container->setGeometry(x, y, w, h);
+int Viewer3D::get_render_type() const
+{
+  if (!this->p_renderer)
+    return 1;
+  return this->p_renderer->get_render_type() == qtr::RenderType::RENDER_2D ? 0 : 1;
+}
+
+void Viewer3D::set_render_type(int new_type)
+{
+  if (!this->p_renderer)
+    return;
+
+  this->p_renderer->set_render_type(new_type == 0 ? qtr::RenderType::RENDER_2D
+                                                  : qtr::RenderType::RENDER_3D);
+  this->p_renderer->update();
+
+  if (this->controls)
+    this->controls->set_render_type(new_type);
 }
 
 void Viewer3D::set_skybox(const std::filesystem::path path)
@@ -268,9 +308,44 @@ void Viewer3D::setup_layout()
   // TODO hardcoded
   this->set_skybox("data/skybox/DaySkyHDRI057B_1K_TONEMAPPED.jpg");
 
-  this->combo_container->setParent(this->p_renderer);
-  this->combo_container->setStyleSheet(
-      "background: rgba(0, 0, 0, 25); border-radius : 6px;");
+  // the viewport's toolbar and settings panels (replaces the ImGui window)
+  this->controls = new ViewportControls(this->p_renderer,
+                                        this->p_graph_node_widget,
+                                        this);
+  this->controls->on_layout_changed = [this]() { this->resizeEvent(nullptr); };
+
+  // Everything about what the view shows lives in the toolbar's Preview
+  // panel: first the previewed node with its pin (keeps the view on that node
+  // while others are selected), then which output feeds each layer.
+  {
+    auto *content = new QWidget();
+    auto *column = new QVBoxLayout(content);
+    column->setContentsMargins(0, 0, 0, 0);
+    column->setSpacing(6);
+
+    auto *pin_row = new QHBoxLayout();
+    pin_row->setContentsMargins(8, 2, 8, 2);
+    this->button_pin_current_node->setParent(content);
+    this->button_pin_current_node->setToolTip(
+        "Pin: keep the view on this node while other nodes are selected");
+    pin_row->addWidget(this->button_pin_current_node);
+    pin_row->addStretch(1);
+    column->addLayout(pin_row);
+
+    column->addWidget(this->combo_container);
+
+    this->controls->set_preview_content(content);
+    this->controls->on_preview_opened = [this]()
+    {
+      this->update_param_visibility_icons();
+      this->sync_pin_label();
+    };
+    this->connect(this,
+                  &Viewer::current_node_id_changed,
+                  this,
+                  [this](const std::string &) { this->sync_pin_label(); });
+    this->sync_pin_label();
+  }
 }
 
 void Viewer3D::update_renderer()

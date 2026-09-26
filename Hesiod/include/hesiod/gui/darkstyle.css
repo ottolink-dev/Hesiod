@@ -29,13 +29,74 @@ QRadioButton {
     color: COLOR_TEXT_PRIMARY;
 }
 
+/* Workspace base: the darker surface the panel cards (PanelFrame) sit on.
+   Every container between the window edge and the cards carries this name. */
+QMainWindow,
+QWidget#hsdBase,
+QSplitter#hsdBase {
+    background-color: COLOR_BG_DEEP;
+}
+
 QStatusBar {
+    background-color: COLOR_BG_DEEP;
+    color: COLOR_TEXT_SECONDARY;
+    border: none;
+    padding: 0px 8px;
+    min-height: 26px;
+}
+
+QStatusBar::item {
+    border: none;
+}
+
+QStatusBar QLabel {
+    background-color: transparent;
+    color: COLOR_TEXT_SECONDARY;
+}
+
+/* node library show/hide strip, left of the workspace */
+QToolButton#hsdLibraryToggle {
+    background-color: transparent;
+    border: none;
+    border-radius: 4px;
+    margin: 0px 2px;
+}
+
+QToolButton#hsdLibraryToggle:hover {
     background-color: COLOR_BG_PRIMARY;
-    color: COLOR_HOVER;
-    /* border-top: 1px solid COLOR_BORDER; */
-    border: 1px solid COLOR_BORDER;
-    padding: 16px 8px 32px 64px;
+}
+
+/* graph tabs: vertical pills in the left margin, the selected one raised
+   to the panel surface */
+QTabWidget#hsdGraphTabs::pane {
+    border: none;
+    background: COLOR_BG_DEEP;
+}
+
+QTabWidget#hsdGraphTabs > QTabBar {
+    background: COLOR_BG_DEEP;
+}
+
+QTabWidget#hsdGraphTabs > QTabBar::tab {
+    color: COLOR_TEXT_SECONDARY;
+    background: transparent;
+    border: 1px solid transparent;
     border-radius: 6px;
+    padding: 12px 4px;
+    margin: 0px 4px 6px 4px;
+    min-height: 64px;
+}
+
+QTabWidget#hsdGraphTabs > QTabBar::tab:hover:!selected {
+    background: COLOR_PANEL_HOVER;
+    color: COLOR_TEXT_PRIMARY;
+}
+
+QTabWidget#hsdGraphTabs > QTabBar::tab:selected {
+    color: COLOR_TEXT_PRIMARY;
+    background: COLOR_BG_PRIMARY;
+    border: 1px solid COLOR_PANEL_BORDER;
+    margin-bottom: 6px;
 }
 
 /* QTabWidget --------------------------------------------------------------- */
@@ -129,6 +190,10 @@ QSplitter::handle:hover {
     background-color: COLOR_HOVER;
 }
 
+/* the gaps between panel cards (GripSplitter paints them itself) */
+QSplitter#hsdBase::handle:horizontal { width: 6px; }
+QSplitter#hsdBase::handle:vertical   { height: 6px; }
+
 /* QTableView checkbox indicators */
 QTableView::indicator {
     width: 14px;
@@ -186,18 +251,43 @@ QMenuBar {
 }
 
 QMenu {
-    border: 0px solid COLOR_BORDER;
+    border: 1px solid COLOR_PANEL_BORDER;
     color: COLOR_TEXT_PRIMARY;
-    margin: 1px;
-    border-radius: 4px;
+    padding: 4px;
     background-color: COLOR_BG_PRIMARY;
-    selection-background-color: COLOR_PRESSED;
+    selection-background-color: COLOR_MUTED_ACCENT;
+}
+
+QMenu::item {
+    background-color: transparent;
+    padding: 5px 24px 5px 16px;
+    border-radius: 4px;
+}
+
+QMenu::item:selected {
+    background-color: COLOR_MUTED_ACCENT;
+    color: COLOR_TEXT_PRIMARY;
+}
+
+QMenu::item:disabled {
+    color: COLOR_TEXT_SECONDARY;
+}
+
+QMenu::icon {
+    padding-left: 8px;
+}
+
+QMenu::indicator {
+    width: 14px;
+    height: 14px;
+    padding-left: 8px;
 }
 
 QMenu::separator {
     height: 1px;
-    background-color: COLOR_SEPARATOR;
-    color: COLOR_SEPARATOR;
+    margin: 4px 8px;
+    background-color: COLOR_PANEL_BORDER;
+    color: COLOR_PANEL_BORDER;
 }
 
 /* QPushButton / QToolButton ----------------------------------------------- */
@@ -228,6 +318,36 @@ QToolButton:hover {
 QPushButton:pressed,
 QToolButton:pressed {
     background-color: COLOR_PRESSED;
+}
+
+/* QMessageBox: buttons tagged by NativeDialogPolish (message_dialog.cpp) --- */
+QMessageBox QLabel {
+    background-color: transparent;
+}
+
+QMessageBox QPushButton {
+    min-width: 72px;
+    padding: 6px 16px;
+    border-radius: 6px;
+    background-color: COLOR_BG_PRIMARY;
+    border: 1px solid COLOR_PANEL_BORDER;
+}
+
+QMessageBox QPushButton:hover {
+    border-color: COLOR_HOVER;
+}
+
+QMessageBox QPushButton[hsdRole="primary"] {
+    background-color: COLOR_ACCENT;
+    border-color: COLOR_ACCENT;
+    color: #ffffff;
+    font-weight: bold;
+}
+
+QMessageBox QPushButton[hsdRole="danger"] {
+    background-color: transparent;
+    border-color: transparent;
+    color: #e06c62;
 }
 
 /* QTreeView / QListView / QTableView / QColumnView ------------------------ */
@@ -301,11 +421,11 @@ QPlainTextEdit {
 
 /* QToolTip ---------------------------------------------------------------- */
 QToolTip {
-    background-color: COLOR_BG_PRIMARY;
+    background-color: COLOR_BG_DEEP;
     color: COLOR_TEXT_PRIMARY;
-    padding: 4px;
-    border-radius: 0px;
-    border: 1px solid COLOR_BG_SECONDARY;
+    padding: 4px 6px;
+    border-radius: 4px;
+    border: 1px solid COLOR_PANEL_BORDER;
 }
 
 /* QProgressBar ------------------------------------------------------------ */

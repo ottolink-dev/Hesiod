@@ -2,13 +2,20 @@
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
 #include <QHBoxLayout>
+#include <QPushButton>
+#include <QTabBar>
 
 #include "gnodegui/style.hpp"
 
 #include "hesiod/app/hesiod_application.hpp"
+#include "hesiod/gui/project_ui.hpp"
+#include "hesiod/gui/widgets/graph_manager_widget.hpp"
 #include "hesiod/gui/widgets/graph_node_widget.hpp"
+#include "hesiod/gui/widgets/graph_tab_strip.hpp"
 #include "hesiod/gui/widgets/graph_tabs_widget.hpp"
 #include "hesiod/gui/widgets/graph_workspace_widget.hpp"
+#include "hesiod/gui/widgets/menu_chrome.hpp"
+#include "hesiod/gui/widgets/message_dialog.hpp"
 #include "hesiod/gui/widgets/node_settings_widget.hpp"
 #include "hesiod/gui/widgets/viewers/viewer_3d.hpp"
 #include "hesiod/logger.hpp"
@@ -35,14 +42,27 @@ GraphTabsWidget::GraphTabsWidget(std::weak_ptr<GraphManager> p_graph_manager,
   GN_STYLE->node.color_category = ctx.style_settings.category_color_map;
   GN_STYLE->node.port_radius = ctx.app_settings.node_editor.port_radius;
 
+  // outer frame of the workspace: the dark base the panel cards sit on
+  this->setObjectName("hsdBase");
+  this->setAttribute(Qt::WA_StyledBackground);
+
   this->main_layout = new QHBoxLayout(this);
-  this->main_layout->setContentsMargins(2, 2, 2, 2);
+  this->main_layout->setContentsMargins(0, 2, 6, 0);
   this->main_layout->setSpacing(0);
   this->setLayout(this->main_layout);
 
   this->tab_widget = new QTabWidget(this);
+  this->tab_widget->setObjectName("hsdGraphTabs");
+  this->tab_widget->setDocumentMode(true);
   this->tab_widget->setTabPosition(QTabWidget::West);
+  // the tabs are drawn on the node editor's own edge (GraphTabStrip, one per
+  // workspace, kept in step by sync_tab_strips); the widget only switches pages
+  this->tab_widget->tabBar()->hide();
   this->main_layout->addWidget(this->tab_widget);
+  this->connect(this->tab_widget,
+                &QTabWidget::currentChanged,
+                this,
+                [this](int) { this->sync_tab_strips(); });
   this->update_tab_widget();
 
   this->setup_connections(); // "permanent" ones
@@ -215,6 +235,15 @@ void GraphTabsWidget::set_show_viewer(bool new_state)
   }
 }
 
+void GraphTabsWidget::set_viewer_render_type(int new_type)
+{
+  this->viewer_render_type = new_type;
+
+  for (auto &[id, gww] : this->graph_workspace_widget_map)
+    if (gww && gww->get_viewer())
+      gww->get_viewer()->set_render_type(new_type);
+}
+
 void GraphTabsWidget::set_selected_tab(const std::string &graph_id)
 {
   for (int i = 0; i < this->tab_widget->count(); ++i)
@@ -337,6 +366,10 @@ void GraphTabsWidget::update_tab_widget()
         p_graph_node->get_shared());
     this->graph_workspace_widget_map[id] = workspace_widget;
 
+    // a graph added later opens in the viewer mode already chosen
+    if (workspace_widget->get_viewer())
+      workspace_widget->get_viewer()->set_render_type(this->viewer_render_type);
+
     // Connect signals
     auto *gnw = workspace_widget->get_graph_node_widget();
     this->connect(gnw,
@@ -374,7 +407,8 @@ void GraphTabsWidget::update_tab_widget()
 
     // Create tab container
     QWidget *tab = new QWidget();
-    auto    *layout = new QHBoxLayout(tab);
+    tab->setObjectName("hsdBase");
+    auto *layout = new QHBoxLayout(tab);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
     layout->addWidget(workspace_widget, 3);
@@ -395,6 +429,106 @@ void GraphTabsWidget::update_tab_widget()
         break;
       }
     }
+  }
+
+  this->sync_tab_strips();
+}
+
+void GraphTabsWidget::sync_tab_strips()
+{
+  if (!this->tab_widget)
+    return;
+
+  QStringList names;
+  for (int i = 0; i < this->tab_widget->count(); ++i)
+    names << this->tab_widget->tabText(i);
+  const int current = this->tab_widget->currentIndex();
+
+  for (auto &[id, gww] : this->graph_workspace_widget_map)
+  {
+    if (!gww || !gww->get_tab_strip())
+      continue;
+
+    GraphTabStrip *strip = gww->get_tab_strip();
+    strip->set_tabs(names, current);
+
+    // Wired once per strip, not on every sync: a sync can run from inside one
+    // of these callbacks (the tab menu selects its tab), and reassigning a
+    // std::function while it runs destroys it mid-call.
+    if (strip->on_selected)
+      continue;
+
+    strip->on_selected = [this](int index)
+    {
+      if (this->tab_widget && index >= 0 && index < this->tab_widget->count())
+        this->tab_widget->setCurrentIndex(index);
+    };
+    strip->on_new = []()
+    {
+      if (ProjectUI *ui = HSD_APP->get_project_ui_ref())
+        if (GraphManagerWidget *manager = ui->get_graph_manager_widget_ref())
+          manager->on_new_graph_request();
+    };
+    strip->on_context_menu = [this](int index, const QPoint &global_pos)
+    { this->show_tab_menu(index, global_pos); };
+  }
+}
+
+void GraphTabsWidget::show_tab_menu(int index, const QPoint &global_pos)
+{
+  if (!this->tab_widget || index < 0 || index >= this->tab_widget->count())
+    return;
+
+  const std::string graph_id = this->tab_widget->tabText(index).toStdString();
+  auto              it = this->graph_workspace_widget_map.find(graph_id);
+  GraphNodeWidget  *gnw = it != this->graph_workspace_widget_map.end() && it->second
+                              ? it->second->get_graph_node_widget()
+                              : nullptr;
+
+  HsdMenu  menu(QString::fromStdString(graph_id), this);
+  QAction *title = menu.addAction(QString::fromStdString(graph_id));
+  title->setEnabled(false);
+  menu.addSeparator();
+
+  QAction *settings = menu.addAction("Graph settings…");
+  QAction *clear = menu.addAction("Clear graph…");
+  menu.addSeparator();
+  QAction *add = menu.addAction(HSD_ICON("menu_new_graph"), "New graph");
+  menu.addSeparator();
+  QAction *remove = menu.addAction("Delete graph…");
+  remove->setEnabled(this->tab_widget->count() > 1); // a project keeps one graph
+  if (!remove->isEnabled())
+    remove->setToolTip("A project needs at least one graph");
+
+  // show the graph being acted on
+  this->tab_widget->setCurrentIndex(index);
+
+  QAction *chosen = menu.exec(global_pos);
+  if (!chosen)
+    return;
+
+  GraphManagerWidget *manager = nullptr;
+  if (ProjectUI *ui = HSD_APP->get_project_ui_ref())
+    manager = ui->get_graph_manager_widget_ref();
+
+  if (chosen == settings && gnw)
+    gnw->on_graph_settings_request();
+  else if (chosen == clear && gnw)
+    gnw->on_graph_clear_request();
+  else if (chosen == add && manager)
+    manager->on_new_graph_request();
+  else if (chosen == remove && manager)
+  {
+    MessageDialog box(this->window(),
+                      MessageDialog::Kind::Warning,
+                      QString("Delete \"%1\"?").arg(QString::fromStdString(graph_id)),
+                      "The graph and all its nodes are removed from the project. This "
+                      "cannot be undone.");
+    box.add_button("Cancel", MessageDialog::Role::Secondary, true, true);
+    QPushButton *confirm = box.add_button("Delete graph", MessageDialog::Role::Danger);
+    box.exec();
+    if (box.clicked_button() == confirm)
+      manager->delete_graph(graph_id);
   }
 }
 

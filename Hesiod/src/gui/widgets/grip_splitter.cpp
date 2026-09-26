@@ -7,34 +7,62 @@
 namespace hesiod
 {
 
-void GripSplitterHandle::paintEvent(QPaintEvent *event)
+bool GripSplitterHandle::event(QEvent *event)
 {
+  switch (event->type())
+  {
+  case QEvent::HoverEnter:
+  case QEvent::HoverLeave:
+    // hover only changes the look (paintEvent reads underMouse()); it must
+    // not count as a press, or the grip stays in its dragging state
+    this->update();
+    break;
+  case QEvent::MouseButtonPress:
+    this->pressed = true;
+    this->update();
+    break;
+  case QEvent::MouseButtonRelease:
+    this->pressed = false;
+    this->update();
+    break;
+  default:
+    break;
+  }
+  return QSplitterHandle::event(event);
+}
+
+void GripSplitterHandle::paintEvent(QPaintEvent *)
+{
+  const auto &colors = HSD_CTX.app_settings.colors;
+
   QPainter painter(this);
-  painter.fillRect(rect(), HSD_CTX.app_settings.colors.bg_primary); // handle background
+  painter.setRenderHint(QPainter::Antialiasing);
+  painter.fillRect(rect(), colors.bg_deep); // the gap between cards
 
-  // draw a small grip in the center
-  const int handle_thickness = (orientation() == Qt::Horizontal) ? width() : height();
-  const int grip_size = handle_thickness;
-  const int grip_length = 20;
+  const bool active = this->underMouse() || this->pressed;
 
-  QColor dot_color(HSD_CTX.app_settings.colors.text_secondary);
-  painter.setBrush(dot_color);
-  painter.setPen(Qt::NoPen);
-
+  // short rounded pill across the middle of the gap
+  const qreal thickness = 2.0;
+  const qreal length = active ? 36.0 : 24.0;
+  QRectF      pill;
   if (orientation() == Qt::Horizontal)
-  {
-    int cx = width() / 2;
-    int cy = height() / 2;
-    for (int i = -grip_length / 2; i <= grip_length / 2; i += 6)
-      painter.drawEllipse(QPoint(cx, cy + i), grip_size / 2, grip_size / 2);
-  }
+    pill = QRectF((width() - thickness) / 2.0,
+                  (height() - length) / 2.0,
+                  thickness,
+                  length);
   else
-  {
-    int cx = width() / 2;
-    int cy = height() / 2;
-    for (int i = -grip_length / 2; i <= grip_length / 2; i += 6)
-      painter.drawEllipse(QPoint(cx + i, cy), grip_size / 2, grip_size / 2);
-  }
+    pill = QRectF((width() - length) / 2.0,
+                  (height() - thickness) / 2.0,
+                  length,
+                  thickness);
+
+  QColor color = active ? colors.accent : colors.border;
+  if (!active)
+    color.setAlphaF(0.55);
+
+  painter.setPen(Qt::NoPen);
+  painter.setBrush(color);
+  painter.drawRoundedRect(pill, thickness / 2.0, thickness / 2.0);
 }
 
 } // namespace hesiod

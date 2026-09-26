@@ -101,6 +101,7 @@ public slots:
   void on_item_double_clicked(QListWidgetItem *item);
   void on_list_reordered(const QModelIndex &, int, int, const QModelIndex &, int);
   void on_new_graph_request();
+  void delete_graph(const std::string &graph_id); // no confirmation: callers ask
   void on_reseed(bool backward = false);
 
   // --- Graph Actions ---

@@ -2,15 +2,19 @@
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
 #include <algorithm>
+#include <cmath>
 #include <format>
 #include <fstream>
 #include <iostream>
 #include <sstream>
 
+#include <QClipboard>
 #include <QCoreApplication>
+#include <QDateTime>
 #include <QDesktopServices>
 #include <QDialog>
 #include <QDialogButtonBox>
+#include <QDir>
 #include <QFileDialog>
 #include <QLabel>
 #include <QMenuBar>
@@ -18,6 +22,8 @@
 #include <QProcess>
 #include <QProgressDialog>
 #include <QPushButton>
+#include <QRegularExpression>
+#include <QStandardPaths>
 #include <QStatusBar>
 #include <QTextEdit>
 #include <QTimer>
@@ -32,10 +38,12 @@
 #include "highmap/openmp.hpp"
 
 #include "hesiod/app/hesiod_application.hpp"
+#include "hesiod/app/ui_scale.hpp"
 #include "hesiod/cli/batch_mode.hpp"
 #include "hesiod/gui/project_ui.hpp"
 #include "hesiod/gui/widgets/about_dialog.hpp"
 #include "hesiod/gui/widgets/batch_export_progress_dialog.hpp"
+#include "hesiod/gui/widgets/color_picker_dialog.hpp"
 #include "hesiod/gui/widgets/documentation_popup.hpp"
 #include "hesiod/gui/widgets/error_dialog.hpp"
 #include "hesiod/gui/widgets/example_selector_dialog.hpp"
@@ -44,10 +52,12 @@
 #include "hesiod/gui/widgets/graph_manager_widget.hpp"
 #include "hesiod/gui/widgets/graph_tabs_widget.hpp"
 #include "hesiod/gui/widgets/gui_utils.hpp"
+#include "hesiod/gui/widgets/menu_chrome.hpp"
+#include "hesiod/gui/widgets/message_dialog.hpp"
 #include "hesiod/gui/widgets/project_settings_dialog.hpp"
-#include "hesiod/gui/widgets/scrollable_dialog.hpp"
 #include "hesiod/gui/widgets/splash_screen.hpp"
 #include "hesiod/gui/widgets/tool_tip_blocker.hpp"
+#include "hesiod/gui/widgets/window_chrome.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/constants/color_gradient.hpp"
 #include "hesiod/model/graph/graph_manager.hpp"
@@ -133,6 +143,9 @@ HesiodApplication::HesiodApplication(int &argc, char **argv, StartupMode mode)
   this->setWindowIcon(QIcon(this->context.app_settings.global.icon_path.c_str()));
   apply_global_style(this->get_qapp());
   apply_animation_settings(this->context.app_settings.interface.enable_ui_animations);
+  MenuAnimator::install(this->get_qapp());
+  install_native_dialog_polish(this->get_qapp());
+  install_color_picker();
 
   // main window
   this->main_window = new MainWindow();
@@ -206,6 +219,7 @@ HesiodApplication::HesiodApplication(int &argc, char **argv, StartupMode mode)
   splash->show_message("Opening UI...");
 
   this->setup_menu_bar();
+  this->setup_title_bar();
   this->installEventFilter(new ToolTipBlocker);
 
   this->notify("Ready");
@@ -283,26 +297,89 @@ void HesiodApplication::cleanup()
     this->context.project_model->cleanup();
 }
 
+fs::path HesiodApplication::default_bake_dir() const
+{
+  // next to the project file: <project>.hsd_export
+  if (this->context.project_model)
+  {
+    const fs::path project_path = this->context.project_model->get_path();
+    if (!project_path.empty())
+    {
+      fs::path folder = project_path.filename();
+      folder += "_export";
+      return project_path.parent_path() / folder;
+    }
+  }
+
+  // a project without a file: a named folder in Documents rather than one
+  // relative to wherever Hesiod happened to be started from
+  const QString docs = QStandardPaths::writableLocation(
+      QStandardPaths::DocumentsLocation);
+  return fs::path(docs.toStdWString()) / "Hesiod exports" /
+         this->project_display_name().toStdWString();
+}
+
+void HesiodApplication::step_ui_scale(int direction)
+{
+  double &scale = this->context.app_settings.interface.ui_scale;
+
+  // 10 % steps, on the 5 % grid the settings use; 0 resets
+  const double next = direction == 0
+                          ? ui_scale::kDefault
+                          : ui_scale::sanitize(
+                                std::round((scale + 0.1 * direction) * 20.0) / 20.0);
+  if (std::abs(next - scale) < 1e-6)
+    return;
+
+  scale = next;
+  this->context.save_settings();
+
+  const int percent = int(std::lround(scale * 100.0));
+  if (ui_scale::live_apply_supported() && ui_scale::apply_live(scale))
+    this->notify(std::format("Interface zoom {} %", percent), 2000);
+  else
+    this->notify(std::format("Interface zoom {} % (applies after a restart)", percent),
+                 4000);
+}
+
+QString HesiodApplication::project_display_name() const
+{
+  if (!this->context.project_model)
+    return "Untitled";
+
+  // as the title bar shows it: a project without a file goes by the name the
+  // user gave it, if any
+  std::string name = this->context.project_model->get_name();
+  if (name.empty() && this->context.project_model->get_path().empty())
+    name = this->pending_project_name;
+  return name.empty() ? QString("Untitled") : QString::fromStdString(name);
+}
+
 bool HesiodApplication::confirm_discard_unsaved_changes(const QString &action_title)
 {
   if (!this->context.project_model || !this->context.project_model->get_is_dirty())
     return true;
 
-  QMessageBox::StandardButton reply = QMessageBox::warning(
-      this->main_window,
-      action_title,
-      "The project has unsaved changes.",
-      QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel,
-      QMessageBox::Save);
+  MessageDialog box(this->main_window,
+                    MessageDialog::Kind::Warning,
+                    "Save changes before continuing?",
+                    QString("\"%1\" has unsaved changes. They will be lost if you "
+                            "don't save them.")
+                        .arg(this->project_display_name()));
+  box.setWindowTitle(action_title);
+  QPushButton *discard_button = box.add_button("Don't save", MessageDialog::Role::Danger);
+  box.add_button("Cancel", MessageDialog::Role::Secondary, false, true);
+  QPushButton *save_button = box.add_button("Save", MessageDialog::Role::Primary, true);
+  box.exec();
 
-  if (reply == QMessageBox::Save)
+  if (box.clicked_button() == save_button)
   {
     this->on_save();
     // still dirty means the user backed out of the save-as dialog
     return !this->context.project_model->get_is_dirty();
   }
 
-  return reply == QMessageBox::Discard;
+  return box.clicked_button() == discard_button;
 }
 
 BlenderStreamer &HesiodApplication::get_blender_streamer()
@@ -336,6 +413,9 @@ void HesiodApplication::load_project_model_and_ui(const std::string &fname,
   AutosaveSuspender suspend_autosave(this->autosave.get());
 
   this->notify(std::format("Loading project... {}", fname));
+
+  // a name typed for the previous, never-saved project does not carry over
+  this->pending_project_name.clear();
 
   const std::string actual_fname = fname.empty() ? this->context.app_settings.global
                                                        .default_startup_project_file
@@ -371,18 +451,23 @@ void HesiodApplication::load_project_model_and_ui(const std::string &fname,
 
     if (!this->headless && error_manager.has_errors())
     {
-      const auto &errors = error_manager.get_errors();
-      const QString
-          message = QString("The project '%1' was loaded with %2 warning(s)/error(s). "
-                            "Some nodes or links could not be restored:")
-                        .arg(QString::fromStdString(actual_fname))
-                        .arg(errors.size());
+      const auto   &errors = error_manager.get_errors();
+      const QString count = errors.size() == 1 ? QString("1 item")
+                                               : QString("%1 items").arg(errors.size());
+      const QString message = QString("%1 could not be restored. Continue to open the "
+                                      "project without them, or cancel to start a blank "
+                                      "project instead.")
+                                  .arg(count);
 
-      ErrorDialog dialog("Project Loading Warnings",
-                         message,
-                         errors,
-                         true,
-                         this->main_window);
+      ErrorDialog dialog(
+          QString("Some of \"%1\" could not be loaded")
+              .arg(QString::fromStdString(fs::path(actual_fname).stem().string())),
+          message,
+          errors,
+          true,
+          this->main_window);
+      dialog.setWindowTitle("Project loading problems");
+      dialog.add_detail("File", QString::fromStdString(actual_fname));
 
       error_manager.clear();
 
@@ -479,6 +564,16 @@ void HesiodApplication::load_project_model_and_ui(const std::string &fname,
   if (keep_name)
     this->context.project_model->set_path(fname);
 
+  // a project without a file never fires project_name_changed, which left the
+  // title bar showing nothing (or the previous project) until the first save
+  this->on_project_name_changed();
+
+  // the new graph viewers start in the default mode; keep the current one.
+  // A project that saved its own mode wins: its viewers restore it (deferred,
+  // in Viewer3D::json_from) through set_viewer_render_type, which also updates
+  // viewer_render_type, so this line never puts a stale mode back.
+  this->set_viewer_render_type(this->viewer_render_type);
+
   this->notify("Project loaded successfully.");
 }
 
@@ -493,17 +588,8 @@ void HesiodApplication::on_application_settings_action()
 {
   Logger::log()->trace("HesiodApplication::on_application_settings_action");
 
-  // The settings pane is long and gets longer with the interface scale, so it
-  // goes in a scrolling dialog capped to the screen; a plain QDialog takes the
-  // pane's full height and pushes OK off the bottom at 200%.
-  AppSettingsWindow *settings_window = new AppSettingsWindow();
-
-  ScrollableDialog dialog(settings_window,
-                          "Application Settings",
-                          QDialogButtonBox::Ok,
-                          this->main_window);
-
-  dialog.setModal(true);
+  // the dialog scrolls each section itself and caps its size to the screen
+  AppSettingsWindow dialog(this->main_window);
   dialog.exec();
 }
 
@@ -515,13 +601,27 @@ void HesiodApplication::on_export_batch()
 
   BakeConfig bake_settings = this->context.project_model->get_bake_config();
 
+  const fs::path   default_dir = this->default_bake_dir();
   BakeConfigDialog dialog(this->context.app_settings.node_editor.max_bake_resolution,
-                          bake_settings);
+                          bake_settings,
+                          QString::fromStdWString(default_dir.wstring()),
+                          this->main_window);
 
   if (dialog.exec() != QDialog::Accepted)
     return;
 
   bake_settings = dialog.get_bake_settings();
+
+  // keep what was chosen (folder included) with the project straight away: a
+  // bake that is canceled or fails returns early and must not forget it
+  this->context.project_model->set_bake_config(bake_settings);
+
+  // where this bake writes (UTF-8 in the settings, wide on disk)
+  const fs::path bake_dir = bake_settings.export_dir.empty()
+                                ? default_dir
+                                : fs::path(
+                                      QString::fromStdString(bake_settings.export_dir)
+                                          .toStdWString());
 
   // the variant loop pumps the event loop while it touches the model
   AutosaveSuspender suspend_autosave(this->autosave.get());
@@ -536,6 +636,7 @@ void HesiodApplication::on_export_batch()
 
   // show batch export progress dialog
   BatchExportProgressDialog progress(this->main_window);
+  progress.set_output_folder(QString::fromStdWString(bake_dir.wstring()));
   progress.show();
   QCoreApplication::processEvents();
 
@@ -550,17 +651,9 @@ void HesiodApplication::on_export_batch()
     progress.set_variant(k + 1, bake_settings.nvariants + 1, variant_name);
     QCoreApplication::processEvents(); // render progress dialog
 
-    const fs::path project_path = this->context.project_model->get_path();
-
-    // build export path based on project name, if available
-    fs::path export_path = project_path.filename();
-    if (export_path.empty())
-      export_path = "export";
-    else
-      export_path += "_export";
-
-    export_path = project_path.empty() ? export_path
-                                       : project_path.parent_path() / export_path;
+    // the folder chosen in the bake dialog (or the default), a subfolder per
+    // extra variant
+    fs::path export_path = bake_dir;
 
     if (k > 0)
       export_path /= "variants_" + std::to_string(k);
@@ -806,9 +899,6 @@ void HesiodApplication::on_export_batch()
     }
   }
 
-  // save config
-  this->context.project_model->set_bake_config(bake_settings);
-
   progress.set_overall_progress(bake_settings.nvariants + 1, bake_settings.nvariants + 1);
   progress.on_export_finished();
   progress.exec();
@@ -874,18 +964,17 @@ bool HesiodApplication::offer_recovery()
 
     if (!entry.readable)
     {
-      QMessageBox box(this->main_window);
-      box.setIcon(QMessageBox::Warning);
-      box.setWindowTitle("Recover unsaved work");
-      box.setText("A recovery file could not be read.");
-      box.setInformativeText(snapshot);
-      QPushButton *delete_button = box.addButton("Delete", QMessageBox::DestructiveRole);
-      QPushButton *keep_button = box.addButton("Keep", QMessageBox::RejectRole);
-      box.setDefaultButton(keep_button);
-      box.setEscapeButton(keep_button);
+      MessageDialog box(this->main_window,
+                        MessageDialog::Kind::Warning,
+                        "Recovery file unreadable",
+                        "A crash-recovery snapshot was found but could not be read. "
+                        "It can be kept for inspection or deleted.");
+      box.add_detail("File", snapshot);
+      QPushButton *delete_button = box.add_button("Delete", MessageDialog::Role::Danger);
+      box.add_button("Keep", MessageDialog::Role::Primary, true, true);
       box.exec();
 
-      if (box.clickedButton() == delete_button)
+      if (box.clicked_button() == delete_button)
       {
         std::error_code ec;
         fs::remove(entry.snapshot, ec);
@@ -908,24 +997,31 @@ bool HesiodApplication::offer_recovery()
     const std::string file = entry.project_path.empty() ? "(never saved)"
                                                         : entry.project_path.string();
 
-    QMessageBox box(this->main_window);
-    box.setIcon(QMessageBox::Question);
-    box.setWindowTitle("Recover unsaved work");
-    box.setText("Unsaved work from a previous session was found.");
-    box.setInformativeText(QString::fromStdString(
-        std::format("Project: {}\nFile: {}\nSnapshot taken: {}\n\nRestore it "
-                    "now?\n\nLater keeps the snapshot for the next launch.",
-                    name,
-                    file,
-                    entry.saved_at)));
-    QPushButton *restore_button = box.addButton("Restore", QMessageBox::AcceptRole);
-    QPushButton *discard_button = box.addButton("Discard", QMessageBox::DestructiveRole);
-    QPushButton *later_button = box.addButton("Later", QMessageBox::RejectRole);
-    box.setDefaultButton(restore_button);
-    box.setEscapeButton(later_button);
+    // saved_at is "yyyy-MM-dd_HH-mm-ss"; show it the way people read dates
+    QString taken = QString::fromStdString(entry.saved_at);
+    {
+      const QDateTime when = QDateTime::fromString(taken, "yyyy-MM-dd_HH-mm-ss");
+      if (when.isValid())
+        taken = when.toString("d MMM yyyy, HH:mm");
+    }
+
+    MessageDialog box(this->main_window,
+                      MessageDialog::Kind::Restore,
+                      "Recover unsaved work?",
+                      "Hesiod closed before this work was saved. Restore it to pick "
+                      "up where you left off.");
+    box.add_detail("Project", QString::fromStdString(name));
+    box.add_detail("File", QString::fromStdString(file));
+    box.add_detail("Snapshot", taken);
+    box.set_footnote("Later keeps the snapshot for the next launch.");
+    QPushButton *discard_button = box.add_button("Discard", MessageDialog::Role::Danger);
+    box.add_button("Later", MessageDialog::Role::Secondary, false, true);
+    QPushButton *restore_button = box.add_button("Restore",
+                                                 MessageDialog::Role::Primary,
+                                                 true);
     box.exec();
 
-    if (box.clickedButton() == discard_button)
+    if (box.clicked_button() == discard_button)
     {
       std::error_code ec;
       fs::remove(entry.snapshot, ec);
@@ -944,7 +1040,7 @@ bool HesiodApplication::offer_recovery()
       continue;
     }
 
-    if (box.clickedButton() != restore_button)
+    if (box.clicked_button() != restore_button)
     {
       // Later: park the snapshot under a deferred name, out of reach of this
       // session's live snapshot, which would otherwise overwrite it on the next
@@ -1072,14 +1168,218 @@ void HesiodApplication::on_project_name_changed()
   if (this->autosave)
     this->autosave->set_project_path(this->context.project_model->get_path());
 
-  std::string title = this->context.project_model->get_name() + " [" +
-                      this->context.project_model->get_path().string() + "]";
+  const std::string path = this->context.project_model->get_path().string();
+  std::string       name = this->context.project_model->get_name();
 
-  if (this->context.project_model->get_is_dirty())
-    title += "*";
+  // a project without a file shows the name the user gave it, if any; once it
+  // has a file, the file name is the name
+  if (path.empty())
+  {
+    if (name.empty())
+      name = this->pending_project_name;
+  }
+  else
+    this->pending_project_name.clear();
 
   if (this->main_window)
-    this->main_window->setWindowTitle(title.c_str());
+    this->main_window->set_project_title(name,
+                                         path,
+                                         this->context.project_model->get_is_dirty());
+}
+
+void HesiodApplication::on_rename_project()
+{
+  Logger::log()->trace("HesiodApplication::on_rename_project");
+
+  if (!this->main_window || !this->context.project_model)
+    return;
+
+  const fs::path path = this->context.project_model->get_path();
+  QString        current = QString::fromStdString(path.empty()
+                                               ? this->pending_project_name
+                                               : this->context.project_model->get_name());
+  if (current.isEmpty())
+    current = "Untitled";
+
+  this->main_window->get_title_bar()->begin_title_rename(
+      current,
+      [this](const QString &text)
+      {
+        const QString name = text.trimmed();
+        if (name.isEmpty())
+          return;
+
+        // characters no file system here accepts in a file name
+        static const QRegularExpression invalid(R"([<>:"/\\|?*\x00-\x1F])");
+        if (name.contains(invalid) || name.endsWith('.') || name.endsWith(' '))
+        {
+          MessageDialog box(this->main_window,
+                            MessageDialog::Kind::Warning,
+                            "That name can't be used",
+                            "Project names become file names, so they can't contain "
+                            "< > : \" / \\ | ? * or end with a dot or a space.");
+          box.add_button("OK", MessageDialog::Role::Primary, true, true);
+          box.exec();
+          return;
+        }
+
+        const fs::path old_path = this->context.project_model->get_path();
+
+        // no file yet: remember the name for the first save
+        if (old_path.empty())
+        {
+          this->pending_project_name = name.toStdString();
+          this->on_project_name_changed();
+          this->notify(std::format("Project named \"{}\". Save it to create {}.hsd.",
+                                   this->pending_project_name,
+                                   this->pending_project_name));
+          return;
+        }
+
+        // saved project: rename the file on disk, next to where it is
+        const fs::path new_path = old_path.parent_path() / (name.toStdString() + ".hsd");
+        if (new_path == old_path)
+          return;
+
+        std::error_code ec;
+        if (fs::exists(new_path, ec))
+        {
+          MessageDialog box(this->main_window,
+                            MessageDialog::Kind::Warning,
+                            "A project with that name already exists",
+                            "Pick another name, or move the other file first.");
+          box.add_detail("File", QString::fromStdString(new_path.string()));
+          box.add_button("OK", MessageDialog::Role::Primary, true, true);
+          box.exec();
+          return;
+        }
+
+        fs::rename(old_path, new_path, ec);
+        if (ec)
+        {
+          MessageDialog box(this->main_window,
+                            MessageDialog::Kind::Error,
+                            "The project could not be renamed",
+                            QString::fromStdString(ec.message()));
+          box.add_detail("File", QString::fromStdString(old_path.string()));
+          box.add_button("OK", MessageDialog::Role::Primary, true, true);
+          box.exec();
+          return;
+        }
+
+        // the old entry in the recent list points at nothing now
+        auto &recent = this->context.app_settings.global.recent_files;
+        std::erase(recent, old_path.string());
+
+        this->context.project_model->set_path(new_path);
+        this->add_recent_file(new_path.string());
+        this->notify(std::format("Renamed to {}", new_path.filename().string()));
+      });
+}
+
+void HesiodApplication::on_reveal_project()
+{
+  const fs::path path = this->context.project_model
+                            ? this->context.project_model->get_path()
+                            : fs::path();
+  if (path.empty())
+  {
+    this->notify("This project has not been saved yet.");
+    return;
+  }
+
+#ifdef Q_OS_WIN
+  // select the file in its folder rather than just opening the folder
+  QProcess::startDetached(
+      "explorer.exe",
+      {"/select,", QDir::toNativeSeparators(QString::fromStdString(path.string()))});
+#else
+  QDesktopServices::openUrl(
+      QUrl::fromLocalFile(QString::fromStdString(path.parent_path().string())));
+#endif
+}
+
+void HesiodApplication::set_viewer_render_type(int new_type)
+{
+  this->viewer_render_type = new_type;
+
+  if (this->project_ui && this->project_ui->get_graph_tabs_widget_ref())
+    this->project_ui->get_graph_tabs_widget_ref()->set_viewer_render_type(new_type);
+}
+
+void HesiodApplication::setup_title_bar()
+{
+  TitleBar *bar = this->main_window->get_title_bar();
+
+  bar->on_title_clicked = [this](const QPoint &pos) { this->show_project_menu(pos); };
+  bar->on_title_rename_requested = [this]() { this->on_rename_project(); };
+
+  // the 2D/3D switch lives on each viewport's toolbar (ViewportControls)
+}
+
+void HesiodApplication::show_project_menu(const QPoint &global_pos)
+{
+  if (!this->main_window || !this->context.project_model)
+    return;
+
+  const fs::path path = this->context.project_model->get_path();
+  const bool     saved = !path.empty();
+
+  HsdMenu menu("Project", this->main_window);
+
+  // where the project lives, as a heading
+  {
+    const QFontMetrics fm(menu.font());
+    QAction           *where = menu.addAction(
+        saved ? fm.elidedText(QString::fromStdString(path.string()), Qt::ElideMiddle, 360)
+              : QString("Not saved yet"));
+    where->setEnabled(false);
+  }
+  menu.addSeparator();
+
+  QAction *rename = menu.addAction("Rename...\tF2");
+  menu.addSeparator();
+
+  QAction *save = menu.addAction(HSD_ICON("menu_save"), "Save\tCtrl+S");
+  QAction *save_as = menu.addAction(HSD_ICON("menu_save_as"), "Save As...\tCtrl+Shift+S");
+  QAction *save_copy = menu.addAction("Save a copy\tCtrl+Alt+S");
+  save_copy->setEnabled(saved);
+  menu.addSeparator();
+
+#ifdef Q_OS_WIN
+  QAction *reveal = menu.addAction("Show in Explorer");
+#else
+  QAction *reveal = menu.addAction("Show in file manager");
+#endif
+  reveal->setEnabled(saved);
+  QAction *copy_path = menu.addAction("Copy file path");
+  copy_path->setEnabled(saved);
+  menu.addSeparator();
+
+  QAction *settings = menu.addAction(HSD_ICON("tune"), "Project Settings...");
+
+  // centred under the chip
+  const QSize size = menu.sizeHint();
+  QAction    *chosen = menu.exec(global_pos - QPoint(size.width() / 2, 0));
+
+  if (chosen == rename)
+    this->on_rename_project();
+  else if (chosen == save)
+    this->on_save();
+  else if (chosen == save_as)
+    this->on_save_as();
+  else if (chosen == save_copy)
+    this->on_save_copy();
+  else if (chosen == reveal)
+    this->on_reveal_project();
+  else if (chosen == copy_path)
+  {
+    QGuiApplication::clipboard()->setText(
+        QDir::toNativeSeparators(QString::fromStdString(path.string())));
+    this->notify("Project path copied to the clipboard.");
+  }
+  else if (chosen == settings)
+    this->on_project_settings();
 }
 
 void HesiodApplication::on_project_settings()
@@ -1122,9 +1422,21 @@ void HesiodApplication::on_save_as()
 
   fs::path path = this->context.project_model->get_path();
 
+  // a project without a file is offered its given name in Documents
+  QString suggested = QString::fromStdString(path.string());
+  if (path.empty())
+  {
+    const QString folder = QStandardPaths::writableLocation(
+        QStandardPaths::DocumentsLocation);
+    const QString name = this->pending_project_name.empty()
+                             ? QString("Untitled")
+                             : QString::fromStdString(this->pending_project_name);
+    suggested = QDir(folder).filePath(name + ".hsd");
+  }
+
   QString new_fname = QFileDialog::getSaveFileName(this->main_window,
                                                    "Save as...",
-                                                   path.string().c_str(),
+                                                   suggested,
                                                    "Hesiod files (*.hsd)");
 
   if (!new_fname.isNull() && !new_fname.isEmpty())
@@ -1291,14 +1603,14 @@ void HesiodApplication::setup_menu_bar()
 
   // --- leftmost Help
 
-  QMenu *help = this->main_window->menuBar()->addMenu("");
+  QMenu *help = add_menu(this->main_window->menu_bar(), "");
   help->setIcon(QIcon("data/hesiod_icon.png"));
 
   auto *quick_help = new QAction("Quick Help", this);
   help->addAction(quick_help);
 
   auto *online_help = new QAction("Online Help", this);
-  online_help->setIcon(HSD_ICON("link"));
+  online_help->setIcon(HSD_ICON("menu_online_help"));
   help->addAction(online_help);
 
   help->addSeparator();
@@ -1308,11 +1620,11 @@ void HesiodApplication::setup_menu_bar()
 
   // --- file
 
-  QMenu *file_menu = this->main_window->menuBar()->addMenu("&File");
+  HsdMenu *file_menu = add_menu(this->main_window->menu_bar(), "&File");
 
   auto *new_action = new QAction("New", this);
   new_action->setShortcut(tr("Ctrl+N"));
-  new_action->setIcon(HSD_ICON("add"));
+  new_action->setIcon(HSD_ICON("menu_new"));
   file_menu->addAction(new_action);
 
   file_menu->addSeparator();
@@ -1321,20 +1633,20 @@ void HesiodApplication::setup_menu_bar()
   load_action->setShortcut(tr("Ctrl+O"));
   file_menu->addAction(load_action);
 
-  this->recent_files_menu = file_menu->addMenu("Open Recent");
+  this->recent_files_menu = file_menu->add_sub_menu("Open Recent");
 
   auto *rmade_action = new QAction("Open Ready-made Example", this);
-  rmade_action->setIcon(HSD_ICON("landscape"));
+  rmade_action->setIcon(HSD_ICON("menu_example"));
   file_menu->addAction(rmade_action);
 
   auto *save = new QAction("Save", this);
   save->setShortcut(tr("Ctrl+S"));
-  save->setIcon(HSD_ICON("save"));
+  save->setIcon(HSD_ICON("menu_save"));
   file_menu->addAction(save);
 
   auto *save_as = new QAction("Save As", this);
   save_as->setShortcut(tr("Ctrl+Shift+S"));
-  save_as->setIcon(HSD_ICON("save_as"));
+  save_as->setIcon(HSD_ICON("menu_save_as"));
   file_menu->addAction(save_as);
 
   auto *save_copy = new QAction("Save a copy", this);
@@ -1345,34 +1657,68 @@ void HesiodApplication::setup_menu_bar()
 
   auto *export_batch = new QAction("Bake and Export (High Resolution)", this);
   export_batch->setShortcut(tr("Alt+E"));
-  export_batch->setIcon(HSD_ICON("bakery_dining"));
+  export_batch->setIcon(HSD_ICON("menu_bake_export"));
   file_menu->addAction(export_batch);
 
   file_menu->addSeparator();
 
   auto *settings_action = new QAction("Application Settings", this);
-  settings_action->setIcon(HSD_ICON("settings"));
+  settings_action->setIcon(HSD_ICON("menu_settings"));
+  settings_action->setShortcut(tr("Ctrl+,"));
   file_menu->addAction(settings_action);
 
   file_menu->addSeparator();
 
   auto *quit = new QAction("Quit", this);
   quit->setShortcut(tr("Ctrl+Q"));
-  quit->setIcon(HSD_ICON("exit_to_app"));
+  quit->setIcon(HSD_ICON("menu_quit"));
   file_menu->addAction(quit);
 
   // --- project
 
-  QMenu *project_menu = this->main_window->menuBar()->addMenu("&Project");
+  QMenu *project_menu = add_menu(this->main_window->menu_bar(), "&Project");
+
+  auto *rename_action = new QAction("Rename...", this);
+  rename_action->setShortcut(tr("F2"));
+  project_menu->addAction(rename_action);
+
+#ifdef Q_OS_WIN
+  auto *reveal_action = new QAction("Show in Explorer", this);
+#else
+  auto *reveal_action = new QAction("Show in file manager", this);
+#endif
+  project_menu->addAction(reveal_action);
+
+  project_menu->addSeparator();
 
   auto *project_settings_action = new QAction("Project Settings", this);
   project_settings_action->setIcon(HSD_ICON("tune"));
   project_menu->addAction(project_settings_action);
 
-  QMenu *graph_menu = this->main_window->menuBar()->addMenu("&Graph");
+  this->connect(rename_action,
+                &QAction::triggered,
+                this,
+                &HesiodApplication::on_rename_project);
+  this->connect(reveal_action,
+                &QAction::triggered,
+                this,
+                &HesiodApplication::on_reveal_project);
+
+  // the reveal entry only makes sense once the project has a file
+  this->connect(project_menu,
+                &QMenu::aboutToShow,
+                this,
+                [this, reveal_action]()
+                {
+                  reveal_action->setEnabled(
+                      this->context.project_model &&
+                      !this->context.project_model->get_path().empty());
+                });
+
+  QMenu *graph_menu = add_menu(this->main_window->menu_bar(), "&Graph");
 
   auto *new_graph = new QAction("New graph", this);
-  new_graph->setIcon(HSD_ICON("account_tree"));
+  new_graph->setIcon(HSD_ICON("menu_new_graph"));
   graph_menu->addAction(new_graph);
 
   graph_menu->addSeparator();
@@ -1387,7 +1733,7 @@ void HesiodApplication::setup_menu_bar()
 
   // --- view
 
-  QMenu *view_menu = this->main_window->menuBar()->addMenu("&View");
+  QMenu *view_menu = add_menu(this->main_window->menu_bar(), "&View");
 
   auto *show_layout_manager = new QAction("Graph Layout Manager", this);
   show_layout_manager->setCheckable(true);
@@ -1397,7 +1743,7 @@ void HesiodApplication::setup_menu_bar()
 
   // texture dld
   auto *show_texture_downloader = new QAction("Texture Downloader", this);
-  show_texture_downloader->setIcon(HSD_ICON("cloud_download"));
+  show_texture_downloader->setIcon(HSD_ICON("menu_texture_downloader"));
   if (this->context.app_settings.interface.enable_texture_downloader)
   {
     view_menu->addSeparator();
@@ -1405,7 +1751,7 @@ void HesiodApplication::setup_menu_bar()
   }
 
   auto *show_heightmapper_widget = new QAction("Tangram Heightmapper", this);
-  show_heightmapper_widget->setIcon(HSD_ICON("public"));
+  show_heightmapper_widget->setIcon(HSD_ICON("menu_heightmapper"));
   if (this->context.app_settings.interface.enable_heightmapper_widget)
   {
     view_menu->addAction(show_heightmapper_widget);
@@ -1435,6 +1781,30 @@ void HesiodApplication::setup_menu_bar()
     bool state = this->context.app_settings.node_editor.show_node_library_pan;
     this->show_node_library_pan_action->setChecked(state);
     view_menu->addAction(this->show_node_library_pan_action);
+  }
+
+  // interface zoom, the same setting as Application Settings > Interface scale
+  view_menu->addSeparator();
+  {
+    auto *zoom_in = view_menu->addAction("Zoom In");
+    zoom_in->setShortcuts({QKeySequence(tr("Ctrl+=")), QKeySequence::ZoomIn});
+    auto *zoom_out = view_menu->addAction("Zoom Out");
+    zoom_out->setShortcuts({QKeySequence::ZoomOut, QKeySequence(tr("Ctrl+_"))});
+    auto *zoom_reset = view_menu->addAction("Reset Zoom");
+    zoom_reset->setShortcut(tr("Ctrl+0"));
+
+    this->connect(zoom_in,
+                  &QAction::triggered,
+                  this,
+                  [this]() { this->step_ui_scale(+1); });
+    this->connect(zoom_out,
+                  &QAction::triggered,
+                  this,
+                  [this]() { this->step_ui_scale(-1); });
+    this->connect(zoom_reset,
+                  &QAction::triggered,
+                  this,
+                  [this]() { this->step_ui_scale(0); });
   }
 
   // --- connections

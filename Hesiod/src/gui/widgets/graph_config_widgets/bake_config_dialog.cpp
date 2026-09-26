@@ -1,148 +1,322 @@
 /* Copyright (c) 2023 Otto Link. Distributed under the terms of the GNU General
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
-#include "hesiod/gui/widgets/graph_config_widgets/bake_config_dialog.hpp"
+#include <algorithm>
+#include <any>
+#include <format>
+#include <string>
+
+#include <QDir>
+#include <QFileDialog>
+#include <QFrame>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QLineEdit>
+#include <QPushButton>
+#include <QVBoxLayout>
+
+#include "meta/core/attribute_container.hpp"
+#include "meta/metadata/keys.hpp"
+#include "meta/presets/choice.hpp"
+#include "meta/presets/numeric.hpp"
+#include "meta_qt/container_widget.hpp"
+#include "meta_qt/ui/theme.hpp"
+
 #include "hesiod/app/hesiod_application.hpp"
-#include "hesiod/gui/widgets/gui_utils.hpp"
+#include "hesiod/gui/widgets/graph_config_widgets/bake_config_dialog.hpp"
+#include "hesiod/gui/widgets/properties_panel_design.hpp"
 
 namespace hesiod
 {
 
+namespace
+{
+
+const meta::qt::Theme &bake_theme()
+{
+  static const meta::qt::Theme theme = []()
+  {
+    meta::qt::Theme t = *properties_panel_design().theme;
+    t.group_accents = {{"Output", QColor("#cfa143")},
+                       {"Options", QColor("#7d9cc0")},
+                       {"Large Graphs", QColor("#3aa899")}};
+    return t;
+  }();
+  return theme;
+}
+
+void tag(meta::AbstractAttribute &a, const std::string &category, const std::string &tip)
+{
+  a.metadata().try_add(std::string(meta::keys::ui::category), std::string(category));
+  if (!tip.empty())
+    a.metadata().try_add(std::string(meta::keys::ui::tooltip), std::string(tip));
+}
+
+std::vector<std::pair<int, std::string>> power_of_two_items(int from, int to)
+{
+  std::vector<std::pair<int, std::string>> items;
+  for (int size = from; size <= to; size *= 2)
+    items.push_back({size, std::to_string(size)});
+  return items;
+}
+
+// value a setting starts from in a fresh project, for the modified state
+std::any default_for(const std::string &key)
+{
+  const BakeConfig d;
+  if (key == "resolution")
+    return d.resolution;
+  if (key == "nvariants")
+    return d.nvariants;
+  if (key == "force_distributed")
+    return d.force_distributed;
+  if (key == "force_auto_export")
+    return d.force_auto_export;
+  if (key == "rename_export_files")
+    return d.rename_export_files;
+  if (key == "force_maximum_fbm_octaves")
+    return d.force_maximum_fbm_octaves;
+  if (key == "min_memory")
+    return d.min_memory;
+  if (key == "max_tile_resolution")
+    return d.max_tile_resolution;
+  return {};
+}
+
+} // namespace
+
 BakeConfigDialog::BakeConfigDialog(int               max_size,
                                    const BakeConfig &initial_value,
+                                   const QString    &default_dir,
                                    QWidget          *parent)
-    : QDialog(parent)
+    : MessageDialog(parent,
+                    Kind::None,
+                    "Bake and Export",
+                    "Evaluate the graph at full resolution and write every export node."),
+      output(std::make_unique<meta::AttributeContainer>()),
+      options(std::make_unique<meta::AttributeContainer>()),
+      memory(std::make_unique<meta::AttributeContainer>())
 {
-  this->setWindowTitle("Bake and export settings");
-  this->setModal(true);
+  this->set_card_width(520);
 
-  this->resolution_combo = new QComboBox(this);
-  this->slider = new QSlider(Qt::Horizontal, this);
-  this->slider_nvariants = new QSpinBox(this);
-  this->checkbox_force_distributed = new QCheckBox("Force distributed computation", this);
-  this->checkbox_force_auto_export = new QCheckBox("Force auto export for export nodes",
-                                                   this);
-  this->checkbox_rename_export_files = new QCheckBox("Add prefix export filenames", this);
-  this->checkbox_force_maximum_fbm_octaves = new QCheckBox(
-      "Force maximum number of octaves for Fbm nodes",
-      this);
-
-  this->buttons = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel,
-                                       this);
-
-  // Fill power-of-two options up to max_size
-  for (int size = 2; size <= max_size; size *= 2)
+  // --- output
   {
-    this->resolution_combo->addItem(QString("%1").arg(size), size);
+    auto &c = *this->output;
+    // the sizes a bake is actually made at, up to 16K, labelled with their
+    // side and the usual shorthand
+    std::vector<std::pair<int, std::string>> items;
+    for (int size = 256; size <= std::min(max_size, 16384); size *= 2)
+      items.push_back({size,
+                       std::format("{0} × {0}{1}",
+                                   size,
+                                   size >= 1024 ? std::format("  ·  {}K", size / 1024)
+                                                : std::string{})});
+
+    // a project baked at a size outside the list keeps it
+    int res = std::clamp(initial_value.resolution, 2, std::max(2, max_size));
+    if (std::none_of(items.begin(),
+                     items.end(),
+                     [res](const auto &e) { return e.first == res; }))
+      items.push_back({res, std::format("{0} × {0}", res)});
+    tag(meta::presets::enum_choice(c, "resolution", "Resolution", items, res),
+        "Output",
+        "Width of the baked heightmaps, in pixels");
+    tag(meta::presets::slider_int(c,
+                                  "nvariants",
+                                  "Additional Variants",
+                                  initial_value.nvariants,
+                                  0,
+                                  50),
+        "Output",
+        "");
   }
-  this->resolution_combo->setCurrentIndex(
-      this->resolution_combo->findData(initial_value.resolution));
 
-  // Setup slider + spinbox
-  this->slider->setRange(0, 50);
-  this->slider_nvariants->setRange(0, 50);
-  this->slider_nvariants->setValue(initial_value.nvariants);
-  this->slider->setValue(initial_value.nvariants);
-
-  QObject::connect(this->slider,
-                   &QSlider::valueChanged,
-                   this->slider_nvariants,
-                   &QSpinBox::setValue);
-  QObject::connect(this->slider_nvariants,
-                   QOverload<int>::of(&QSpinBox::valueChanged),
-                   this->slider,
-                   &QSlider::setValue);
-
-  // Checkbox default state (input parameter)
-  this->checkbox_force_distributed->setChecked(initial_value.force_distributed);
-  this->checkbox_force_auto_export->setChecked(initial_value.force_auto_export);
-  this->checkbox_rename_export_files->setChecked(initial_value.rename_export_files);
-  this->checkbox_force_maximum_fbm_octaves->setChecked(
-      initial_value.force_maximum_fbm_octaves);
-
-  // Large graphs & memory optimization group
-  auto *group_memory = new QGroupBox("Large Graphs and Memory Optimization", this);
-  auto *group_layout = new QVBoxLayout(group_memory);
-
-  this->checkbox_min_memory = new QCheckBox("Low memory mode", this);
-  this->checkbox_min_memory->setChecked(initial_value.min_memory);
-  group_layout->addWidget(this->checkbox_min_memory);
-
-  auto *tile_layout = new QHBoxLayout;
-  tile_layout->addWidget(new QLabel("Max tile shape:", this));
-  this->combo_max_tile_resolution = new QComboBox(this);
-  for (int size = 128; size <= max_size; size *= 2)
+  // --- options
   {
-    this->combo_max_tile_resolution->addItem(QString("%1").arg(size), size);
+    auto &c = *this->options;
+    tag(meta::presets::toggle_button(c,
+                                     "force_distributed",
+                                     "Distributed Computation",
+                                     initial_value.force_distributed),
+        "Options",
+        "Force distributed computation");
+    tag(meta::presets::toggle_button(c,
+                                     "force_auto_export",
+                                     "Auto Export Nodes",
+                                     initial_value.force_auto_export),
+        "Options",
+        "Force auto export for export nodes");
+    tag(meta::presets::toggle_button(c,
+                                     "rename_export_files",
+                                     "Prefix File Names",
+                                     initial_value.rename_export_files),
+        "Options",
+        "Add a prefix to the export file names");
+    tag(meta::presets::toggle_button(c,
+                                     "force_maximum_fbm_octaves",
+                                     "Maximum Fbm Octaves",
+                                     initial_value.force_maximum_fbm_octaves),
+        "Options",
+        "Force the maximum number of octaves for Fbm nodes");
   }
-  int tile_idx = this->combo_max_tile_resolution->findData(
-      initial_value.max_tile_resolution);
-  if (tile_idx != -1)
-    this->combo_max_tile_resolution->setCurrentIndex(tile_idx);
-  else
-    this->combo_max_tile_resolution->setCurrentIndex(
-        this->combo_max_tile_resolution->findData(32768));
 
-  tile_layout->addWidget(this->combo_max_tile_resolution);
-  group_layout->addLayout(tile_layout);
+  // --- large graphs and memory
+  {
+    auto &c = *this->memory;
+    tag(meta::presets::toggle_button(c,
+                                     "min_memory",
+                                     "Low Memory Mode",
+                                     initial_value.min_memory),
+        "Large Graphs",
+        "");
+    const auto items = power_of_two_items(128, max_size);
+    int        tile = initial_value.max_tile_resolution;
+    bool       known = false;
+    for (const auto &[v, _] : items)
+      known |= v == tile;
+    if (!known)
+      tile = items.empty() ? 32768 : std::min(32768, items.back().first);
+    tag(meta::presets::enum_choice(c,
+                                   "max_tile_resolution",
+                                   "Max Tile Shape",
+                                   items,
+                                   tile),
+        "Large Graphs",
+        "Largest tile evaluated at once in low memory mode");
+  }
 
-  std::string note_style = std::format(
-      "color: {};",
-      HSD_CTX.app_settings.colors.text_secondary.name().toStdString());
+  // --- render: each section in the properties design, then its note
+  meta::qt::RowContext ctx;
+  ctx.theme = &bake_theme();
+  ctx.default_value = [](const std::string &key) { return default_for(key); };
 
-  QLabel *label_memory_note = new QLabel(
-      "Reduces RAM usage by streaming tiles to disk and evaluating sequentially. "
-      "Recommended for very large graphs, but baking will be slower.",
-      this);
-  label_memory_note->setStyleSheet(note_style.c_str());
-  label_memory_note->setWordWrap(true);
-  resize_font(label_memory_note, -1);
-  group_layout->addWidget(label_memory_note);
+  meta::qt::ContainerRenderOptions render_options;
+  render_options.design = properties_panel_design().design;
+  render_options.row_context = ctx;
+  render_options.category_policy = meta::qt::CategoryPolicy::CP_MERGED;
+  render_options.root_category_name = std::string{};
 
-  // Layout
-  auto *form_layout = new QFormLayout;
-  form_layout->addRow("Resolution (x):", this->resolution_combo);
+  const QString note_css = QString("color: %1; font-size: 11px; background: transparent;"
+                                   "padding: 0px 16px 2px 16px;")
+                               .arg(HSD_CTX.app_settings.colors.text_secondary.name());
 
-  auto *slider_layout = new QHBoxLayout;
-  slider_layout->addWidget(this->slider);
-  slider_layout->addWidget(this->slider_nvariants);
-  form_layout->addRow("Additional variants:", slider_layout);
+  const auto add_section = [&](meta::AttributeContainer &c, const QString &note)
+  {
+    QWidget *rows = meta::qt::render(c, render_options, this);
+    rows->setAttribute(Qt::WA_TranslucentBackground);
+    this->body()->addWidget(rows);
+    this->rows.push_back(rows);
 
-  QLabel *label_variants_note = new QLabel(
-      "Additional variants of the initial setup are generated by randomizing seed "
-      "values, keeping the same procedural algorithm while producing variations.",
-      this);
-  label_variants_note->setStyleSheet(note_style.c_str());
-  label_variants_note->setWordWrap(true);
-  resize_font(label_variants_note, -1);
-  form_layout->addRow(label_variants_note);
+    if (!note.isEmpty())
+    {
+      auto *label = new QLabel(note, this);
+      label->setWordWrap(true);
+      label->setStyleSheet(note_css);
+      this->body()->addWidget(label);
+    }
+  };
 
-  auto *main_layout = new QVBoxLayout;
-  main_layout->addLayout(form_layout);
-  main_layout->addWidget(this->checkbox_force_distributed);
-  main_layout->addWidget(this->checkbox_force_auto_export);
-  main_layout->addWidget(this->checkbox_rename_export_files);
-  main_layout->addWidget(this->checkbox_force_maximum_fbm_octaves);
-  main_layout->addWidget(group_memory);
-  main_layout->addWidget(this->buttons);
-  this->setLayout(main_layout);
+  this->body()->setSpacing(4);
 
-  QObject::connect(this->buttons, &QDialogButtonBox::accepted, this, &QDialog::accept);
-  QObject::connect(this->buttons, &QDialogButtonBox::rejected, this, &QDialog::reject);
+  // --- where the files go: first, since it is the question a bake answers
+  {
+    const meta::qt::Theme &t = bake_theme();
+    auto                  *card = new QFrame(this);
+    card->setObjectName("bakeSaveTo");
+    card->setStyleSheet(QString(R"(
+      QFrame#bakeSaveTo { background: %1; border-radius: 10px; }
+      QFrame#bakeSaveTo QLabel { color: %2; background: transparent; font-size: 13px; }
+      QFrame#bakeSaveTo QLineEdit {
+        background: %3; color: %2; border: 1px solid %4; border-radius: 6px;
+        padding: 5px 8px; font-size: 12px; }
+      QFrame#bakeSaveTo QLineEdit:focus { border-color: %5; }
+      QFrame#bakeSaveTo QPushButton {
+        background: transparent; color: %2; border: 1px solid %4; border-radius: 6px;
+        padding: 5px 12px; font-size: 12px; }
+      QFrame#bakeSaveTo QPushButton:hover { border-color: %5; }
+    )")
+                            .arg(t.section_surface.name(),
+                                 t.ink_primary.name(),
+                                 t.field.name(),
+                                 t.field_border.name(),
+                                 t.accent.name()));
+
+    auto *row = new QHBoxLayout(card);
+    row->setContentsMargins(20, 12, 14, 12);
+    row->setSpacing(10);
+
+    auto *label = new QLabel("Save to", card);
+    label->setFixedWidth(90);
+    row->addWidget(label);
+
+    this->folder_edit = new QLineEdit(QString::fromStdString(initial_value.export_dir),
+                                      card);
+    this->folder_edit->setPlaceholderText(default_dir);
+    this->folder_edit->setToolTip(
+        QString("Folder the baked files are written to (a subfolder per extra "
+                "variant).\nEmpty: %1")
+            .arg(default_dir));
+    this->folder_edit->setClearButtonEnabled(true);
+    row->addWidget(this->folder_edit, 1);
+
+    auto *browse = new QPushButton("Browse…", card);
+    browse->setCursor(Qt::PointingHandCursor);
+    row->addWidget(browse);
+
+    QObject::connect(browse,
+                     &QPushButton::clicked,
+                     this,
+                     [this, default_dir]()
+                     {
+                       const QString start = this->folder_edit->text().isEmpty()
+                                                 ? default_dir
+                                                 : this->folder_edit->text();
+                       const QString dir = QFileDialog::getExistingDirectory(
+                           this,
+                           "Save baked files to",
+                           start);
+                       if (!dir.isEmpty())
+                         this->folder_edit->setText(QDir::toNativeSeparators(dir));
+                     });
+
+    auto *wrap = new QHBoxLayout();
+    wrap->setContentsMargins(14, 4, 14, 8); // aligned with the section cards
+    wrap->addWidget(card);
+    this->body()->addLayout(wrap);
+  }
+
+  add_section(*this->output,
+              "Variants re-run the graph with randomized seeds: the same procedural "
+              "setup, different results.");
+  add_section(*this->options, QString());
+  add_section(*this->memory,
+              "Streams tiles to disk and evaluates them one after the other. Uses far "
+              "less RAM on very large graphs, but bakes more slowly.");
+
+  this->add_button("Cancel", Role::Secondary, false, true);
+  this->add_button("Bake", Role::Primary, true);
+}
+
+BakeConfigDialog::~BakeConfigDialog()
+{
+  // the rows subscribe to the containers: they go first
+  for (auto &w : this->rows)
+    delete w.data();
 }
 
 BakeConfig BakeConfigDialog::get_bake_settings() const
 {
   BakeConfig config;
-  config.resolution = this->resolution_combo->currentData().toInt();
-  config.nvariants = this->slider_nvariants->value();
-  config.force_distributed = this->checkbox_force_distributed->isChecked();
-  config.force_auto_export = this->checkbox_force_auto_export->isChecked();
-  config.rename_export_files = this->checkbox_rename_export_files->isChecked();
-  config.force_maximum_fbm_octaves = this->checkbox_force_maximum_fbm_octaves
-                                         ->isChecked();
-  config.min_memory = this->checkbox_min_memory->isChecked();
-  config.max_tile_resolution = this->combo_max_tile_resolution->currentData().toInt();
+  config.resolution = this->output->value<int>("resolution");
+  config.nvariants = this->output->value<int>("nvariants");
+  config.force_distributed = this->options->value<bool>("force_distributed");
+  config.force_auto_export = this->options->value<bool>("force_auto_export");
+  config.rename_export_files = this->options->value<bool>("rename_export_files");
+  config.force_maximum_fbm_octaves = this->options->value<bool>(
+      "force_maximum_fbm_octaves");
+  config.min_memory = this->memory->value<bool>("min_memory");
+  config.max_tile_resolution = this->memory->value<int>("max_tile_resolution");
+  config.export_dir = this->folder_edit->text().trimmed().toStdString();
   return config;
 }
 

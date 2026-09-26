@@ -37,6 +37,7 @@
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/widgets/example_selector_dialog.hpp"
 #include "hesiod/gui/widgets/properties_panel_design.hpp"
+#include "hesiod/gui/widgets/window_chrome.hpp"
 #include "hesiod/logger.hpp"
 #include "meta_qt/ui/theme.hpp"
 
@@ -70,9 +71,15 @@ QIcon search_icon()
   pixmap.setDevicePixelRatio(4);
   QPainter painter(&pixmap);
   painter.setRenderHint(QPainter::Antialiasing);
-  painter.setPen(QPen(selector_theme().ink_secondary, 1.5));
-  painter.drawEllipse(QRectF(2.5, 2.5, 7.5, 7.5));
-  painter.drawLine(QPointF(9.2, 9.2), QPointF(13.4, 13.4));
+  // centred in the 16px box, drawn fine and dimmed so it reads as a hint
+  // rather than competing with the placeholder text
+  QColor ink = selector_theme().ink_secondary;
+  ink.setAlphaF(0.8);
+  QPen pen(ink, 1.25);
+  pen.setCapStyle(Qt::RoundCap);
+  painter.setPen(pen);
+  painter.drawEllipse(QRectF(3.0, 3.0, 7.0, 7.0));
+  painter.drawLine(QPointF(9.1, 9.1), QPointF(12.5, 12.5));
   return QIcon(pixmap);
 }
 
@@ -256,7 +263,7 @@ protected:
       const int   side = int(std::min(width() * 0.52, height() * 0.62));
       const QRect target(int(width() * 0.02), int(height() * 0.30), side, side);
 
-      p.setOpacity(0.06);
+      p.setOpacity(0.045);
       p.drawPixmap(target, mark.pixmap(target.size() * 2, this->devicePixelRatioF()));
       p.setOpacity(1.0);
     }
@@ -530,10 +537,13 @@ ExampleSelectorDialog::ExampleSelectorDialog(const QString &examples_path,
   title_layout->addWidget(window_label);
   title_layout->addStretch();
 
-  auto *close_button = new QPushButton(QStringLiteral("\u00d7"), title_bar);
+  // painted glyph, not the U+00D7 character: a font glyph sits on the text
+  // baseline and never lands in the middle of its button
+  auto *close_button = new WindowButton(WindowButton::Kind::Close, title_bar);
   close_button->setObjectName("selectorClose");
-  close_button->setToolTip(QStringLiteral("Close and start a blank project"));
-  title_layout->addWidget(close_button);
+  close_button->setToolTip(QStringLiteral("Close"));
+  close_button->setFixedSize(36, 32);
+  title_layout->addWidget(close_button, 0, Qt::AlignVCenter);
   root_layout->addWidget(title_bar);
 
   this->pages = new QStackedWidget(this);
@@ -587,7 +597,7 @@ ExampleSelectorDialog::ExampleSelectorDialog(const QString &examples_path,
   action_layout->addSpacing(5);
   action_layout->addWidget(this->recent_search);
 
-  auto *recent_label = new QLabel(QStringLiteral("Recent projects"), action_panel);
+  auto *recent_label = new QLabel(QStringLiteral("RECENT PROJECTS"), action_panel);
   recent_label->setObjectName("selectorSectionLabel");
   action_layout->addWidget(recent_label);
 
@@ -614,7 +624,19 @@ ExampleSelectorDialog::ExampleSelectorDialog(const QString &examples_path,
       [this]() { this->show_examples(); },
       action_panel);
   action_layout->addWidget(examples_tile);
-  welcome_layout->addWidget(action_panel);
+  // The column is fixed-size content (buttons, 62 px rows, the examples tile):
+  // at a large interface scale the dialog, capped to the screen, is shorter
+  // than it, and a plain layout then squeezes the rows over one another.
+  // Scrolling keeps every piece whole; at normal scales nothing scrolls.
+  auto *action_scroll = new SmoothScrollArea(this->welcome_page);
+  action_scroll->setObjectName("selectorActionScroll");
+  action_scroll->setWidgetResizable(true);
+  action_scroll->setFrameShape(QFrame::NoFrame);
+  action_scroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+  action_scroll->setFixedWidth(310 + 14);
+  action_scroll->setWidget(action_panel);
+  action_panel->setFixedWidth(310);
+  welcome_layout->addWidget(action_scroll);
   this->pages->addWidget(this->welcome_page);
 
   // Examples page: a focused secondary view, reached from the single welcome
@@ -709,7 +731,7 @@ ExampleSelectorDialog::ExampleSelectorDialog(const QString &examples_path,
   this->apply_theme();
 
   QObject::connect(close_button,
-                   &QPushButton::clicked,
+                   &QAbstractButton::clicked,
                    this,
                    &ExampleSelectorDialog::on_reject);
   QObject::connect(new_project_button,
@@ -760,20 +782,18 @@ void ExampleSelectorDialog::apply_theme()
       border-top-left-radius: CARD_RADIUSpx; border-top-right-radius: CARD_RADIUSpx; }
     QLabel#selectorIdentity { color: ACCENT; }
     QFrame#selectorTitleDivider { border: none; background: transparent; }
-    QLabel#selectorWindowLabel { color: SECONDARY; }
-    QPushButton#selectorClose { background: transparent; border: none;
-      min-width: 32px; min-height: 32px; padding: 0; font-size: 23px; }
-    QPushButton#selectorClose:hover { background: HOVER; }
+    QLabel#selectorWindowLabel { color: SECONDARY; font-size: 13px; }
     QStackedWidget#selectorPages, QWidget#selectorExamplesPage { background: PAGE; border: none; }
     QWidget#selectorActionPanel, QWidget#selectorRecentHost { background: transparent; }
-    QLabel#selectorBrand { font-size: 32px; font-weight: 600; color: INK; }
-    QLabel#selectorBrandSubtitle { color: SECONDARY; font-size: 14px; }
+    QLabel#selectorBrand { font-size: 38px; font-weight: 700; color: INK; letter-spacing: 6px; }
+    QLabel#selectorBrandSubtitle { color: SECONDARY; font-size: 14px; letter-spacing: 0.5px; }
     QLabel#selectorBuild { color: SECONDARY; font-size: 12px; }
-    QLabel#selectorSectionLabel { color: SECONDARY; padding-top: 8px; }
+    QLabel#selectorSectionLabel { color: SECONDARY; font-size: 11px; font-weight: 600;
+      letter-spacing: 1px; padding-top: 12px; padding-bottom: 2px; padding-left: 2px; }
     QLabel#selectorHeading { font-size: 20px; font-weight: 600; }
     QLabel#selectorCount, QLabel#selectorRecentEmpty { color: SECONDARY; font-size: 12px; }
     QLabel#selectorEmpty { color: SECONDARY; padding: 24px; }
-    QLineEdit { background: FIELD; color: INK; border: 1px solid BORDER;
+    QLineEdit { background: BAR; color: INK; border: 1px solid BORDER;
       border-radius: RADIUSpx; min-height: 40px; padding: 0 12px;
       selection-background-color: ACCENT; }
     QLineEdit:hover { border-color: SECONDARY; }
@@ -788,10 +808,19 @@ void ExampleSelectorDialog::apply_theme()
     QPushButton:focus { border-color: ACCENT; }
     QPushButton:pressed { background: FIELD; }
     QPushButton#selectorWelcomePrimary, QPushButton#selectorPrimaryButton {
-      background: SELECTED; border-color: ACCENT; }
+      background: SELECTED; border-color: ACCENT; font-weight: 600; }
     QPushButton#selectorPrimaryButton:disabled { color: DISABLED; border-color: BORDER; background: BAR; }
     QPushButton#selectorBackButton { min-height: 32px; padding: 0 12px; }
-    QScrollArea#selectorScroll, QWidget#selectorCardsHost { background: transparent; border: none; }
+    QScrollArea#selectorScroll, QWidget#selectorCardsHost,
+    QScrollArea#selectorActionScroll, QScrollArea#selectorActionScroll > QWidget,
+    QScrollArea#selectorActionScroll > QWidget > QWidget {
+      background: transparent; border: none; }
+    QScrollArea#selectorActionScroll QScrollBar:vertical { width: 6px; margin: 0; background: transparent; border: none; }
+    QScrollArea#selectorActionScroll QScrollBar::handle:vertical { min-height: 32px; background: BORDER; border-radius: 3px; }
+    QScrollArea#selectorActionScroll QScrollBar::add-line:vertical,
+    QScrollArea#selectorActionScroll QScrollBar::sub-line:vertical { height: 0; border: none; }
+    QScrollArea#selectorActionScroll QScrollBar::add-page:vertical,
+    QScrollArea#selectorActionScroll QScrollBar::sub-page:vertical { background: transparent; }
     QScrollArea#selectorScroll QScrollBar:vertical { width: 8px; margin: 0; background: BAR; border: none; }
     QScrollArea#selectorScroll QScrollBar::handle:vertical { min-height: 32px; background: ACCENT; border-radius: 4px; }
     QScrollArea#selectorScroll QScrollBar::add-line:vertical,

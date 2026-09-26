@@ -17,6 +17,7 @@ namespace hesiod
 {
 
 class GraphNodeWidget; // forward
+class ViewportControls;
 
 // =====================================
 // Viewer3D
@@ -35,6 +36,9 @@ public:
 
   void clear() override;
   bool get_param_visibility_state(const std::string &param_name) const override;
+  // 0: 2D viewer, 1: 3D renderer (qtr::RenderType)
+  void set_render_type(int new_type);
+  int  get_render_type() const; // 0: 2D viewer, 1: 3D renderer
   void set_skybox(const std::filesystem::path path);
   void setup_layout() override;
   void setup_connections() override;
@@ -48,9 +52,11 @@ protected:
 private:
   ViewerNodeParam get_default_view_param() const override;
   void            update_renderer() override;
+  void            sync_pin_label(); // the Preview panel's pin row
 
   ViewerType         viewer_type;
   qtr::RenderWidget *p_renderer = nullptr;
+  ViewportControls  *controls = nullptr; // rail + settings panels over the view
 };
 
 } // namespace hesiod
