@@ -75,7 +75,7 @@ void setup_recast_cliff_node(BaseNode &node)
     node.set_current_category("Main Parameters");
     add_angle(node, A_ANGLE, "Angle", 45.f, -180.f, 180.f);
     add_float(node, A_TALUS_GLOBAL, "Talus", 2.f, 0.f, FLT_MAX);
-    add_float(node, A_AMPLITUDE, "Amplitude", 0.1f, 0.f, 1.f);
+    add_float(node, A_AMPLITUDE, "Amplitude", 0.1f, 0.f, 2.f);
     add_float(node, A_GAIN, "Gain", 2.f, 0.01f, 10.f);
 
     node.set_current_category("Advanced");
