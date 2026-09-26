@@ -89,7 +89,11 @@ std::unordered_map<std::string, std::string> get_standard_replacements(
     ext = ext.substr(1);
 
   std::string filename_val = fname.stem().string();
-  std::string project_name = HSD_CTX.project_model->get_name();
+  std::string project_name{};
+
+  if (HSD_CTX.project_model)
+    project_name = HSD_CTX.project_model->get_name();
+
   std::string width_val = std::to_string(node.cfg().shape.x);
   std::string height_val = std::to_string(node.cfg().shape.y);
   std::string time_val = timestamp();

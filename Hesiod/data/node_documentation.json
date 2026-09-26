@@ -6507,6 +6507,56 @@
             }
         }
     },
+    "ExportHeightmapStreamed": {
+        "category": "Export",
+        "description": "ExportHeightmapStreamed is an operator for exporting a heightmap in streamed file formats (OpenEXR and BigTIFF) tile-by-tile.",
+        "label": "ExportHeightmapStreamed",
+        "parameter_groups": [
+            {
+                "keys": [
+                    "fname",
+                    "pattern",
+                    "format",
+                    "auto_export"
+                ],
+                "name": "main"
+            }
+        ],
+        "parameters": {
+            "auto_export": {
+                "description": "Controls whether the output file is automatically written when the node is updated. Default is false. When set to true, the file is saved automatically on updates. If false, use the 'Force Reload' button on the node to manually trigger the export.",
+                "key": "auto_export",
+                "label": "Auto Export on Node Update",
+                "type": "Bool"
+            },
+            "fname": {
+                "description": "Export file name.",
+                "key": "fname",
+                "label": "Filename",
+                "type": "Filename"
+            },
+            "format": {
+                "description": "Streamed export format. Available values: OpenEXR (32-bit float) - *.exr, BigTIFF (32-bit float) - *.tif.",
+                "key": "format",
+                "label": "File Format",
+                "type": "Choice"
+            },
+            "pattern": {
+                "description": "No description",
+                "key": "pattern",
+                "label": "Filename Pattern",
+                "type": "String"
+            }
+        },
+        "ports": {
+            "input": {
+                "caption": "input",
+                "data_type": "VirtualArray",
+                "description": "Input heightmap.",
+                "type": "input"
+            }
+        }
+    },
     "ExportNormalMap": {
         "category": "Export",
         "description": "ExportNormalMap is an operator for exporting the normal map of an heightmap as a PNG image file.",

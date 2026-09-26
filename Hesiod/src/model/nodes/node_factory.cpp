@@ -206,6 +206,7 @@ std::map<std::string, std::string> get_node_inventory()
       {"ExportCloud", "Export"},
       {"ExportCloudToPly", "Export"},
       {"ExportHeightmap", "Export"},
+      {"ExportHeightmapStreamed", "Export"},
       {"ExportNormalMap", "Export"},
       {"ExportPath", "Export"},
       {"ExportPointsToPly", "Export"},
@@ -508,6 +509,7 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
     SETUP_NODE(ExportAsCubemap, export_as_cubemap);
     SETUP_NODE(ExportCloud, export_cloud);
     SETUP_NODE(ExportCloudToPly, export_cloud_to_ply);
+    SETUP_NODE(ExportHeightmapStreamed, export_heightmap_streamed);
     SETUP_NODE(ExportNormalMap, export_normal_map);
     SETUP_NODE(ExportPath, export_path);
     SETUP_NODE(ExportPointsToPly, export_points_to_ply);
