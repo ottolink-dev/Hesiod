@@ -42,7 +42,7 @@ void setup_morphological_operators_node(BaseNode &node)
   // clang-format off
   add_float(node, A_RADIUS, "radius", 0.01f, 0.f, 0.2f);
   add_enum(node, A_OPERATOR, "Operator", enum_mappings.morphology_operation_map, "Gradient");
-  add_float(node, A_SAT_RATIO, "Saturation Ratio", 2.f, 0.f, 20.f, "{:.0f}%");
+  add_float(node, A_SAT_RATIO, "Saturation Ratio", 0.f, 0.f, 20.f, "{:.0f}%");
   // clang-format on
 
   setup_post_process_heightmap_attributes(node,
