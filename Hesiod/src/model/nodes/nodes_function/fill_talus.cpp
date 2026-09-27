@@ -75,17 +75,21 @@ void compute_fill_talus_node(BaseNode &node)
   // --- Compute
 
   hmap::for_each_tile(
-      {p_out, p_in, p_seed_mask},
-      [&](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
+      {p_in, p_seed_mask},
+      {p_out},
+      [&](std::vector<const hmap::Array *> p_arrays_in,
+          std::vector<hmap::Array *>       p_arrays_out,
+          const hmap::TileRegion &)
       {
-        auto [pa_out, pa_in, pa_seed_mask] = unpack<3>(p_arrays);
-        *pa_out                            = *pa_in;
+        auto [pa_in, pa_seed_mask] = unpack<2>(p_arrays_in);
+        auto [pa_out]              = unpack<1>(p_arrays_out);
+        *pa_out                    = *pa_in;
 
         hmap::fill_talus(*pa_out, talus, seed, ir, noise_ratio, pa_seed_mask);
       },
       node.cfg().cm_cpu);
 
-  p_out->smooth_overlap_buffers();
+  p_out->sync_overlap_buffers();
 }
 
 } // namespace hesiod

@@ -77,10 +77,14 @@ void compute_depression_filling_node(BaseNode &node)
   // --- Compute
 
   hmap::for_each_tile(
-      {p_out, p_in, p_fill_map},
-      [&](std::vector<hmap::Array *> arrays, const hmap::TileRegion &)
+      {p_in},
+      {p_out, p_fill_map},
+      [&](std::vector<const hmap::Array *> p_arrays_in,
+          std::vector<hmap::Array *>       p_arrays_out,
+          const hmap::TileRegion &)
       {
-        auto [pa_out, pa_in, pa_fill_map] = unpack<3>(arrays);
+        auto [pa_in]               = unpack<1>(p_arrays_in);
+        auto [pa_out, pa_fill_map] = unpack<2>(p_arrays_out);
 
         *pa_out = *pa_in;
 

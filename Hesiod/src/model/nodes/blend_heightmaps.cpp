@@ -19,97 +19,94 @@ void blend_heightmaps(BaseNode           &node,
                       float               w1,
                       float               w2)
 {
-  std::function<void(hmap::Array &, hmap::Array &, hmap::Array &)> lambda;
+  std::function<void(hmap::Array &, const hmap::Array &, const hmap::Array &)> lambda;
 
   switch (method)
   {
   case BlendingMethod::ADD:
-    lambda = [w1, w2](hmap::Array &m, hmap::Array &a1, hmap::Array &a2)
+    lambda = [w1, w2](hmap::Array &m, const hmap::Array &a1, const hmap::Array &a2)
     { m = w1 * a1 + w2 * a2; };
     break;
 
   case BlendingMethod::EXCLUSION_BLEND:
-    lambda = [w1, w2](hmap::Array &m, hmap::Array &a1, hmap::Array &a2)
+    lambda = [w1, w2](hmap::Array &m, const hmap::Array &a1, const hmap::Array &a2)
     { m = hmap::blend_exclusion(w1 * a1, w2 * a2); };
     break;
 
   case BlendingMethod::GRADIENTS:
-    lambda = [ir, w1, w2](hmap::Array &m, hmap::Array &a1, hmap::Array &a2)
+    lambda = [ir, w1, w2](hmap::Array &m, const hmap::Array &a1, const hmap::Array &a2)
     { m = hmap::blend_gradients(w1 * a1, w2 * a2, ir); };
     break;
 
   case BlendingMethod::MAXIMUM:
-    lambda = [w1, w2](hmap::Array &m, hmap::Array &a1, hmap::Array &a2)
+    lambda = [w1, w2](hmap::Array &m, const hmap::Array &a1, const hmap::Array &a2)
     { m = hmap::maximum(w1 * a1, w2 * a2); };
     break;
 
   case BlendingMethod::MAXIMUM_SMOOTH:
-    lambda = [k, w1, w2](hmap::Array &m, hmap::Array &a1, hmap::Array &a2)
+    lambda = [k, w1, w2](hmap::Array &m, const hmap::Array &a1, const hmap::Array &a2)
     { m = hmap::maximum_smooth(w1 * a1, w2 * a2, k); };
     break;
 
   case BlendingMethod::MINIMUM:
-    lambda = [w1, w2](hmap::Array &m, hmap::Array &a1, hmap::Array &a2)
+    lambda = [w1, w2](hmap::Array &m, const hmap::Array &a1, const hmap::Array &a2)
     { m = hmap::minimum(w1 * a1, w2 * a2); };
     break;
 
   case BlendingMethod::MINIMUM_SMOOTH:
-    lambda = [k, w1, w2](hmap::Array &m, hmap::Array &a1, hmap::Array &a2)
+    lambda = [k, w1, w2](hmap::Array &m, const hmap::Array &a1, const hmap::Array &a2)
     { m = hmap::minimum_smooth(w1 * a1, w2 * a2, k); };
     break;
 
   case BlendingMethod::MULTIPLY:
-    lambda = [w1, w2](hmap::Array &m, hmap::Array &a1, hmap::Array &a2)
+    lambda = [w1, w2](hmap::Array &m, const hmap::Array &a1, const hmap::Array &a2)
     { m = w1 * a1 * w2 * a2; };
     break;
 
   case BlendingMethod::MULTIPLY_ADD:
-    lambda = [w1, w2](hmap::Array &m, hmap::Array &a1, hmap::Array &a2)
+    lambda = [w1, w2](hmap::Array &m, const hmap::Array &a1, const hmap::Array &a2)
     { m = w1 * a1 + w1 * a1 * w2 * a2; };
     break;
 
   case BlendingMethod::NEGATE:
-    lambda = [w1, w2](hmap::Array &m, hmap::Array &a1, hmap::Array &a2)
+    lambda = [w1, w2](hmap::Array &m, const hmap::Array &a1, const hmap::Array &a2)
     { m = hmap::blend_negate(w1 * a1, w2 * a2); };
     break;
 
   case BlendingMethod::OVERLAY:
-    lambda = [w1, w2](hmap::Array &m, hmap::Array &a1, hmap::Array &a2)
+    lambda = [w1, w2](hmap::Array &m, const hmap::Array &a1, const hmap::Array &a2)
     { m = hmap::blend_overlay(w1 * a1, w2 * a2); };
     break;
 
   case BlendingMethod::SOFT:
-    lambda = [w1, w2](hmap::Array &m, hmap::Array &a1, hmap::Array &a2)
+    lambda = [w1, w2](hmap::Array &m, const hmap::Array &a1, const hmap::Array &a2)
     { m = hmap::blend_soft(w1 * a1, w2 * a2); };
     break;
 
   case BlendingMethod::REPLACE:
-    lambda = [w1, w2](hmap::Array &m, hmap::Array & /* a1 */, hmap::Array &a2)
+    lambda = [w1, w2](hmap::Array &m, const hmap::Array & /* a1 */, const hmap::Array &a2)
     { m = w2 * a2; };
     break;
 
   case BlendingMethod::SUBSTRACT:
-    lambda = [w1, w2](hmap::Array &m, hmap::Array &a1, hmap::Array &a2)
+    lambda = [w1, w2](hmap::Array &m, const hmap::Array &a1, const hmap::Array &a2)
     { m = w1 * a1 - w2 * a2; };
     break;
   }
 
-  auto lambda_tile =
-      [&lambda](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
+  auto lambda_tile = [&lambda](std::vector<const hmap::Array *> p_arrays_in,
+                               std::vector<hmap::Array *>       p_arrays_out,
+                               const hmap::TileRegion &)
   {
-    if (p_arrays.size() >= 3)
-    {
-      hmap::Array &m = *p_arrays[0];
-      hmap::Array &a1 = *p_arrays[1];
-      hmap::Array &a2 = *p_arrays[2];
-      lambda(m, a1, a2);
-    }
+    auto [a1, a2] = unpack<2>(p_arrays_in);
+    auto [m] = unpack<1>(p_arrays_out);
+    lambda(*m, *a1, *a2);
   };
 
-  hmap::for_each_tile({&h_out, &h1, &h2}, lambda_tile, node.cfg().cm_cpu);
+  hmap::for_each_tile({&h1, &h2}, {&h_out}, lambda_tile, node.cfg().cm_cpu);
 
   if (method == BlendingMethod::GRADIENTS)
-    h_out.smooth_overlap_buffers();
+    h_out.sync_overlap_buffers();
 }
 
 } // namespace hesiod

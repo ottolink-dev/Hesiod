@@ -100,12 +100,12 @@ void compute_thermal_flatten_node(BaseNode &node)
   hmap::for_each_tile(
       {p_in, &talus_map, p_mask},
       {p_out},
-      [&](std::vector<const hmap::Array *> in,
-          std::vector<hmap::Array *>       out,
+      [&](std::vector<const hmap::Array *> p_arrays_in,
+          std::vector<hmap::Array *>       p_arrays_out,
           const hmap::TileRegion &)
       {
-        auto [pa_in, pa_talus_map, pa_mask] = unpack<3>(in);
-        auto [pa_out]                       = unpack<1>(out);
+        auto [pa_in, pa_talus_map, pa_mask] = unpack<3>(p_arrays_in);
+        auto [pa_out]                       = unpack<1>(p_arrays_out);
 
         *pa_out = *pa_in;
 
@@ -120,7 +120,7 @@ void compute_thermal_flatten_node(BaseNode &node)
 
   // --- Post-process
 
-  p_out->smooth_overlap_buffers();
+  p_out->sync_overlap_buffers();
 }
 
 } // namespace hesiod

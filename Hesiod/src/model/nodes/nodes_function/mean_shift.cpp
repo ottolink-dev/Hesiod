@@ -64,11 +64,15 @@ void compute_mean_shift_node(BaseNode &node)
     float talus = node.val<float>(A_TALUS_GLOBAL) / (float)p_out->shape.x;
 
     hmap::for_each_tile(
-        {p_out, p_in, p_mask},
-        [&node, ir, talus](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
+        {p_in, p_mask},
+        {p_out},
+        [&node, ir, talus](std::vector<const hmap::Array *> p_arrays_in,
+                           std::vector<hmap::Array *>       p_arrays_out,
+                           const hmap::TileRegion &)
         {
-          auto [pa_out, pa_in, pa_mask] = unpack<3>(p_arrays);
-          *pa_out                       = hmap::gpu::mean_shift(*pa_in,
+          auto [pa_in, pa_mask] = unpack<2>(p_arrays_in);
+          auto [pa_out]         = unpack<1>(p_arrays_out);
+          *pa_out               = hmap::gpu::mean_shift(*pa_in,
                                           ir,
                                           talus,
                                           pa_mask,
@@ -77,7 +81,7 @@ void compute_mean_shift_node(BaseNode &node)
         },
         node.cfg().cm_gpu);
 
-    p_out->smooth_overlap_buffers();
+    p_out->sync_overlap_buffers();
 
     // post-process
     post_process_heightmap(node, *p_out, p_in);

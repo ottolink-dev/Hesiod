@@ -127,12 +127,14 @@ void compute_select_slope_node(BaseNode &node)
     if (ir > 0)
     {
       hmap::for_each_tile(
-          {p_out, p_in},
-          [&node, ir, kernel_type](std::vector<hmap::Array *> p_arrays,
+          {p_in},
+          {p_out},
+          [&node, ir, kernel_type](std::vector<const hmap::Array *> p_arrays_in,
+                                   std::vector<hmap::Array *>       p_arrays_out,
                                    const hmap::TileRegion &)
           {
-            hmap::Array *pa_out = p_arrays[0];
-            hmap::Array *pa_in  = p_arrays[1];
+            auto [pa_in]  = unpack<1>(p_arrays_in);
+            auto [pa_out] = unpack<1>(p_arrays_out);
 
             *pa_out = hmap::gpu::morphological_gradient(*pa_in, ir, kernel_type);
           },
@@ -141,18 +143,21 @@ void compute_select_slope_node(BaseNode &node)
     else
     {
       hmap::for_each_tile(
-          {p_out, p_in},
-          [&node](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
+          {p_in},
+          {p_out},
+          [&node](std::vector<const hmap::Array *> p_arrays_in,
+                  std::vector<hmap::Array *>       p_arrays_out,
+                  const hmap::TileRegion &)
           {
-            hmap::Array *pa_out = p_arrays[0];
-            hmap::Array *pa_in  = p_arrays[1];
+            auto [pa_in]  = unpack<1>(p_arrays_in);
+            auto [pa_out] = unpack<1>(p_arrays_out);
 
             *pa_out = hmap::gradient_norm(*pa_in);
           },
           node.cfg().cm_cpu);
     }
 
-    p_out->smooth_overlap_buffers();
+    p_out->sync_overlap_buffers();
     post_process_heightmap(node, *p_out);
   }
   else if (group == G_ANGLE)
@@ -160,34 +165,42 @@ void compute_select_slope_node(BaseNode &node)
     int ir = node.val_pixel_radius(A_RADIUS, 0);
 
     hmap::for_each_tile(
-        {p_out, p_in},
-        [&node, &ir](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
+        {p_in},
+        {p_out},
+        [&node, &ir](std::vector<const hmap::Array *> p_arrays_in,
+                     std::vector<hmap::Array *>       p_arrays_out,
+                     const hmap::TileRegion &)
         {
-          auto [pa_out, pa_in] = unpack<2>(p_arrays);
-          *pa_out              = select_angle(*pa_in,
+          auto [pa_in]  = unpack<1>(p_arrays_in);
+          auto [pa_out] = unpack<1>(p_arrays_out);
+          *pa_out       = select_angle(*pa_in,
                                  node.val<float>(A_ANGLE),
                                  node.val<float>(A_SIGMA),
                                  ir);
         },
         node.cfg().cm_cpu);
 
-    p_out->smooth_overlap_buffers();
+    p_out->sync_overlap_buffers();
     post_process_heightmap(node, *p_out);
   }
   else if (group == G_INWARD_OUTWARD)
   {
     hmap::for_each_tile(
-        {p_out, p_in},
-        [&node](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &region)
+        {p_in},
+        {p_out},
+        [&node](std::vector<const hmap::Array *> p_arrays_in,
+                std::vector<hmap::Array *>       p_arrays_out,
+                const hmap::TileRegion          &region)
         {
-          auto [pa_out, pa_in] = unpack<2>(p_arrays);
-          *pa_out              = hmap::select_inward_outward_slope(*pa_in,
+          auto [pa_in]  = unpack<1>(p_arrays_in);
+          auto [pa_out] = unpack<1>(p_arrays_out);
+          *pa_out       = hmap::select_inward_outward_slope(*pa_in,
                                                       node.val<glm::vec2>(A_CENTER),
                                                       region.bbox);
         },
         node.cfg().cm_cpu);
 
-    p_out->smooth_overlap_buffers();
+    p_out->sync_overlap_buffers();
     post_process_heightmap(node, *p_out);
   }
 }

@@ -57,13 +57,14 @@ void compute_reverse_above_theshold_node(BaseNode &node)
     hmap::VirtualArray *p_out  = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
     hmap::for_each_tile(
-        {p_out, p_in, p_th, p_mask},
-        [&node](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
+        {p_in, p_th, p_mask},
+        {p_out},
+        [&node](std::vector<const hmap::Array *> p_arrays_in,
+                std::vector<hmap::Array *>       p_arrays_out,
+                const hmap::TileRegion &)
         {
-          hmap::Array *pa_out  = p_arrays[0];
-          hmap::Array *pa_in   = p_arrays[1];
-          hmap::Array *pa_th   = p_arrays[2];
-          hmap::Array *pa_mask = p_arrays[3];
+          auto [pa_in, pa_th, pa_mask] = unpack<3>(p_arrays_in);
+          auto [pa_out]                = unpack<1>(p_arrays_out);
 
           *pa_out = *pa_in;
 

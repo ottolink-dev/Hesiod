@@ -160,18 +160,16 @@ void compute_colorize_bivariate_node(BaseNode &node)
     float denom1 = (range1.y != range1.x) ? (range1.y - range1.x) : 1.f;
     float denom2 = (range2.y != range2.x) ? (range2.y - range2.x) : 1.f;
 
-    std::vector<hmap::VirtualArray *> ptrs = {&in1_processed,
-                                              &in2_processed,
-                                              p_in1,
-                                              p_in2,
-                                              p_noise};
-
     hmap::for_each_tile(
-        ptrs,
-        [range1, range2, denom1, denom2, sharpness](std::vector<hmap::Array *> p_arrays,
-                                                    const hmap::TileRegion    &region)
+        {p_in1, p_in2, p_noise},
+        {&in1_processed, &in2_processed},
+        [range1, range2, denom1, denom2, sharpness](
+            std::vector<const hmap::Array *> p_arrays_in,
+            std::vector<hmap::Array *>       p_arrays_out,
+            const hmap::TileRegion          &region)
         {
-          auto [pa_out1, pa_out2, pa_in1, pa_in2, pa_noise] = unpack<5>(p_arrays);
+          auto [pa_in1, pa_in2, pa_noise] = unpack<3>(p_arrays_in);
+          auto [pa_out1, pa_out2]         = unpack<2>(p_arrays_out);
 
           for (int j = 0; j < region.shape.y; ++j)
           {

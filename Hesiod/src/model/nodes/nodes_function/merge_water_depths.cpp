@@ -46,12 +46,14 @@ void compute_merge_water_depths_node(BaseNode &node)
     hmap::VirtualArray *p_depth = node.get_value_ref<hmap::VirtualArray>(P_WATER_DEPTH);
 
     hmap::for_each_tile(
-        {p_depth, p_in1, p_in2},
-        [&node](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
+        {p_in1, p_in2},
+        {p_depth},
+        [&node](std::vector<const hmap::Array *> p_arrays_in,
+                std::vector<hmap::Array *>       p_arrays_out,
+                const hmap::TileRegion &)
         {
-          hmap::Array *pa_depth = p_arrays[0];
-          hmap::Array *pa_in1   = p_arrays[1];
-          hmap::Array *pa_in2   = p_arrays[2];
+          auto [pa_in1, pa_in2] = unpack<2>(p_arrays_in);
+          auto [pa_depth]       = unpack<1>(p_arrays_out);
 
           *pa_depth = hmap::merge_water_depths(*pa_in1,
                                                *pa_in2,
@@ -59,7 +61,7 @@ void compute_merge_water_depths_node(BaseNode &node)
         },
         node.cfg().cm_cpu);
 
-    p_depth->smooth_overlap_buffers();
+    p_depth->sync_overlap_buffers();
   }
 }
 

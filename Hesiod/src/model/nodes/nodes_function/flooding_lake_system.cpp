@@ -46,12 +46,15 @@ void compute_flooding_lake_system_node(BaseNode &node)
     float surface_threshold = M_PI * ir * ir;
 
     hmap::for_each_tile(
-        {p_out, p_in},
-        [&node, surface_threshold](std::vector<hmap::Array *> p_arrays,
+        {p_in},
+        {p_out},
+        [&node, surface_threshold](std::vector<const hmap::Array *> p_arrays_in,
+                                   std::vector<hmap::Array *>       p_arrays_out,
                                    const hmap::TileRegion &)
         {
-          auto [pa_out, pa_in] = unpack<2>(p_arrays);
-          *pa_out              = hmap::flooding_lake_system(*pa_in, surface_threshold);
+          auto [pa_in]  = unpack<1>(p_arrays_in);
+          auto [pa_out] = unpack<1>(p_arrays_out);
+          *pa_out       = hmap::flooding_lake_system(*pa_in, surface_threshold);
         },
         node.cfg().cm_single_array); // forced, not tileable
   }

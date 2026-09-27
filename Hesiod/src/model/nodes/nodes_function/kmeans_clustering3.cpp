@@ -60,25 +60,42 @@ void compute_kmeans_clustering3_node(BaseNode &node)
   if (p_in1 && p_in2 && p_in3)
   {
     hmap::for_each_tile(
-        {p_out, p_in1, p_in2, p_in3},
-        [&node](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
+        {p_in1, p_in2, p_in3},
+        {p_out},
+        [&node](std::vector<const hmap::Array *> p_arrays_in,
+                std::vector<hmap::Array *>       p_arrays_out,
+                const hmap::TileRegion &)
         {
-          auto [pa_out, pa_in1, pa_in2, pa_in3] = unpack<4>(p_arrays);
+          auto [pa_in1, pa_in2, pa_in3] = unpack<3>(p_arrays_in);
+          auto [pa_out]                 = unpack<1>(p_arrays_out);
+
+          hmap::Array        in1_copy;
+          hmap::Array        in2_copy;
+          hmap::Array        in3_copy;
+          const hmap::Array *p_in1_final = pa_in1;
+          const hmap::Array *p_in2_final = pa_in2;
+          const hmap::Array *p_in3_final = pa_in3;
 
           if (node.val<bool>(A_NORMALIZE_INPUTS))
           {
-            hmap::remap(*pa_in1);
-            hmap::remap(*pa_in2);
-            hmap::remap(*pa_in3);
+            in1_copy = *pa_in1;
+            in2_copy = *pa_in2;
+            in3_copy = *pa_in3;
+            hmap::remap(in1_copy);
+            hmap::remap(in2_copy);
+            hmap::remap(in3_copy);
+            p_in1_final = &in1_copy;
+            p_in2_final = &in2_copy;
+            p_in3_final = &in3_copy;
           }
 
           glm::vec3 weights = {node.val<float>(A_WEIGHTS_X),
                                node.val<float>(A_WEIGHTS_Y),
                                node.val<float>(A_WEIGHTS_Z)};
 
-          *pa_out = hmap::kmeans_clustering3(*pa_in1,
-                                             *pa_in2,
-                                             *pa_in3,
+          *pa_out = hmap::kmeans_clustering3(*p_in1_final,
+                                             *p_in2_final,
+                                             *p_in3_final,
                                              node.val<int>(A_NCLUSTERS),
                                              nullptr, // scoring_arrays,
                                              nullptr, // agg scoring

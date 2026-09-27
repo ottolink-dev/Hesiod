@@ -68,10 +68,14 @@ void compute_area_remove_node(BaseNode &node)
   // --- Compute
 
   hmap::for_each_tile(
-      {p_out, p_in},
-      [&](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
+      {p_in},
+      {p_out},
+      [&](std::vector<const hmap::Array *> p_arrays_in,
+          std::vector<hmap::Array *>       p_arrays_out,
+          const hmap::TileRegion &)
       {
-        auto [pa_out, pa_in] = unpack<2>(p_arrays);
+        auto [pa_in]  = unpack<1>(p_arrays_in);
+        auto [pa_out] = unpack<1>(p_arrays_out);
 
         *pa_out = hmap::area_remove(*pa_in, area_pixels, bg_value, bg_value);
       },

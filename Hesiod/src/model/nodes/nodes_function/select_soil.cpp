@@ -185,12 +185,15 @@ void compute_select_soil_node(BaseNode &node)
     float talus = node.val<float>(A_TALUS_REF) / nx;
 
     hmap::for_each_tile(
-        {p_out, p_in},
-        [&node, nx, ir, talus](std::vector<hmap::Array *> p_arrays,
+        {p_in},
+        {p_out},
+        [&node, nx, ir, talus](std::vector<const hmap::Array *> p_arrays_in,
+                               std::vector<hmap::Array *>       p_arrays_out,
                                const hmap::TileRegion &)
         {
-          auto [pa_out, pa_in] = unpack<2>(p_arrays);
-          float k_smooth       = 0.01f;
+          auto [pa_in]   = unpack<1>(p_arrays_in);
+          auto [pa_out]  = unpack<1>(p_arrays_out);
+          float k_smooth = 0.01f;
 
           *pa_out = hmap::gpu::select_soil_flow(*pa_in,
                                                 ir,
@@ -204,7 +207,7 @@ void compute_select_soil_node(BaseNode &node)
         },
         node.cfg().cm_gpu);
 
-    p_out->smooth_overlap_buffers();
+    p_out->sync_overlap_buffers();
     post_process_heightmap(node, *p_out);
   }
   else if (group == G_ROCKS)
@@ -214,12 +217,15 @@ void compute_select_soil_node(BaseNode &node)
     int ir_max = std::max(1, (int)(node.val<float>(A_RMAX) * nx));
 
     hmap::for_each_tile(
-        {p_out, p_in},
-        [&node, ir_min, ir_max](std::vector<hmap::Array *> p_arrays,
+        {p_in},
+        {p_out},
+        [&node, ir_min, ir_max](std::vector<const hmap::Array *> p_arrays_in,
+                                std::vector<hmap::Array *>       p_arrays_out,
                                 const hmap::TileRegion &)
         {
-          auto [pa_out, pa_in] = unpack<2>(p_arrays);
-          auto mode            = node.val_enum<hmap::ClampMode>(A_CURVATURE_CLAMP_MODE);
+          auto [pa_in]  = unpack<1>(p_arrays_in);
+          auto [pa_out] = unpack<1>(p_arrays_out);
+          auto mode     = node.val_enum<hmap::ClampMode>(A_CURVATURE_CLAMP_MODE);
 
           *pa_out = hmap::gpu::select_soil_rocks(*pa_in,
                                                  ir_max,
@@ -231,15 +237,18 @@ void compute_select_soil_node(BaseNode &node)
         },
         node.cfg().cm_gpu);
 
-    p_out->smooth_overlap_buffers();
+    p_out->sync_overlap_buffers();
     post_process_heightmap(node, *p_out);
 
     // saturate
     hmap::for_each_tile(
+        {},
         {p_out},
-        [&node](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
+        [&node](std::vector<const hmap::Array *> p_arrays_in,
+                std::vector<hmap::Array *>       p_arrays_out,
+                const hmap::TileRegion &)
         {
-          auto [pa_out] = unpack<1>(p_arrays);
+          auto [pa_out] = unpack<1>(p_arrays_out);
 
           hmap::saturate(*pa_out,
                          0.f,
@@ -258,32 +267,41 @@ void compute_select_soil_node(BaseNode &node)
     hmap::VirtualArray grad_norm(CONFIG(node));
 
     hmap::for_each_tile(
-        {&grad_norm, p_in},
-        [&node, ir_grad, kernel_type](std::vector<hmap::Array *> p_arrays,
+        {p_in},
+        {&grad_norm},
+        [&node, ir_grad, kernel_type](std::vector<const hmap::Array *> p_arrays_in,
+                                      std::vector<hmap::Array *>       p_arrays_out,
                                       const hmap::TileRegion &)
         {
-          auto [pa_out, pa_in] = unpack<2>(p_arrays);
-          *pa_out = hmap::gpu::morphological_gradient(*pa_in, ir_grad, kernel_type);
+          auto [pa_in]  = unpack<1>(p_arrays_in);
+          auto [pa_out] = unpack<1>(p_arrays_out);
+          *pa_out       = hmap::gpu::morphological_gradient(*pa_in, ir_grad, kernel_type);
         },
         node.cfg().cm_gpu);
 
     grad_norm.remap(0.f, 1.f, node.cfg().cm_cpu);
 
     hmap::for_each_tile(
+        {},
         {&grad_norm},
-        [&node](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
+        [&node](std::vector<const hmap::Array *> p_arrays_in,
+                std::vector<hmap::Array *>       p_arrays_out,
+                const hmap::TileRegion &)
         {
-          auto [pa_out] = unpack<1>(p_arrays);
+          auto [pa_out] = unpack<1>(p_arrays_out);
           hmap::gain(*pa_out, node.val<float>(A_GRADIENT_GAIN));
         },
         node.cfg().cm_cpu);
 
     hmap::for_each_tile(
-        {p_out, p_in, &grad_norm},
-        [&node, nx, ir_curv](std::vector<hmap::Array *> p_arrays,
+        {p_in, &grad_norm},
+        {p_out},
+        [&node, nx, ir_curv](std::vector<const hmap::Array *> p_arrays_in,
+                             std::vector<hmap::Array *>       p_arrays_out,
                              const hmap::TileRegion &)
         {
-          auto [pa_out, pa_in, pa_grad_norm] = unpack<3>(p_arrays);
+          auto [pa_in, pa_grad_norm] = unpack<2>(p_arrays_in);
+          auto [pa_out]              = unpack<1>(p_arrays_out);
           auto mode = node.val_enum<hmap::ClampMode>(A_CURVATURE_CLAMP_MODE);
 
           *pa_out = hmap::gpu::select_soil_weathered(
@@ -298,16 +316,20 @@ void compute_select_soil_node(BaseNode &node)
         },
         node.cfg().cm_gpu);
 
-    p_out->smooth_overlap_buffers();
+    p_out->sync_overlap_buffers();
     post_process_heightmap(node, *p_out);
   }
   else if (group == G_RIVERS)
   {
     hmap::for_each_tile(
-        {p_out, p_in},
-        [&node](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
+        {p_in},
+        {p_out},
+        [&node](std::vector<const hmap::Array *> p_arrays_in,
+                std::vector<hmap::Array *>       p_arrays_out,
+                const hmap::TileRegion &)
         {
-          auto [pa_out, pa_in] = unpack<2>(p_arrays);
+          auto [pa_in]  = unpack<1>(p_arrays_in);
+          auto [pa_out] = unpack<1>(p_arrays_out);
 
           *pa_out = hmap::select_rivers(*pa_in,
                                         node.val<float>(A_TALUS_REF),
@@ -315,7 +337,7 @@ void compute_select_soil_node(BaseNode &node)
         },
         node.cfg().cm_cpu);
 
-    p_out->smooth_overlap_buffers();
+    p_out->sync_overlap_buffers();
     post_process_heightmap(node, *p_out);
   }
 }

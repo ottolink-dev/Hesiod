@@ -165,10 +165,14 @@ void compute_falloff_node(BaseNode &node)
     const auto distance_axis = node.val_enum<hmap::DistanceFunctionAxis>(A_DISTANCE_AXIS);
 
     hmap::for_each_tile(
-        {p_out, p_in},
-        [&](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &region)
+        {p_in},
+        {p_out},
+        [&](std::vector<const hmap::Array *> p_arrays_in,
+            std::vector<hmap::Array *>       p_arrays_out,
+            const hmap::TileRegion          &region)
         {
-          auto [pa_out, pa_in] = unpack<2>(p_arrays);
+          auto [pa_in]  = unpack<1>(p_arrays_in);
+          auto [pa_out] = unpack<1>(p_arrays_out);
 
           *pa_out = *pa_in;
 
@@ -192,10 +196,14 @@ void compute_falloff_node(BaseNode &node)
     const auto center    = node.val<glm::vec2>(A_CENTER);
 
     hmap::for_each_tile(
-        {p_out, p_in},
-        [&](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &region)
+        {p_in},
+        {p_out},
+        [&](std::vector<const hmap::Array *> p_arrays_in,
+            std::vector<hmap::Array *>       p_arrays_out,
+            const hmap::TileRegion          &region)
         {
-          auto [pa_out, pa_in] = unpack<2>(p_arrays);
+          auto [pa_in]  = unpack<1>(p_arrays_in);
+          auto [pa_out] = unpack<1>(p_arrays_out);
 
           *pa_out = hmap::bulkify(*pa_in,
                                   bulk_type,
@@ -213,11 +221,14 @@ void compute_falloff_node(BaseNode &node)
     const auto  dist_fn  = node.val_enum<hmap::DistanceFunction>(A_DISTANCE_FUNCTION);
 
     hmap::for_each_tile(
-        {p_out, p_in},
-        [&strength, dist_fn](std::vector<hmap::Array *> p_arrays,
-                             const hmap::TileRegion    &region)
+        {p_in},
+        {p_out},
+        [&strength, dist_fn](std::vector<const hmap::Array *> p_arrays_in,
+                             std::vector<hmap::Array *>       p_arrays_out,
+                             const hmap::TileRegion          &region)
         {
-          auto [pa_out, pa_in] = unpack<2>(p_arrays);
+          auto [pa_in]  = unpack<1>(p_arrays_in);
+          auto [pa_out] = unpack<1>(p_arrays_out);
 
           *pa_out = *pa_in;
 

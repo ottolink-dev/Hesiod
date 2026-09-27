@@ -46,12 +46,14 @@ void compute_rotate_displacement_node(BaseNode &node)
     hmap::VirtualArray *p_dy = node.get_value_ref<hmap::VirtualArray>(P_DY);
 
     hmap::for_each_tile(
-        {p_in, p_dx, p_dy},
-        [&node](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
+        {p_in},
+        {p_dx, p_dy},
+        [&node](std::vector<const hmap::Array *> p_arrays_in,
+                std::vector<hmap::Array *>       p_arrays_out,
+                const hmap::TileRegion &)
         {
-          hmap::Array *pa_in = p_arrays[0];
-          hmap::Array *pa_dx = p_arrays[1];
-          hmap::Array *pa_dy = p_arrays[2];
+          auto [pa_in]        = unpack<1>(p_arrays_in);
+          auto [pa_dx, pa_dy] = unpack<2>(p_arrays_out);
 
           hmap::rotate_displacement(*pa_in, node.val<float>(A_ANGLE), *pa_dx, *pa_dy);
         },

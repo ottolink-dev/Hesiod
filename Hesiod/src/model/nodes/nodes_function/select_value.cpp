@@ -140,19 +140,19 @@ void compute_select_value_node(BaseNode &node)
     hmap::for_each_tile(
         {p_in},
         {p_out},
-        [&](std::vector<const hmap::Array *> in,
-            std::vector<hmap::Array *>       out,
+        [&](std::vector<const hmap::Array *> p_arrays_in,
+            std::vector<hmap::Array *>       p_arrays_out,
             const hmap::TileRegion &)
         {
-          auto [pa_in]  = unpack<1>(in);
-          auto [pa_out] = unpack<1>(out);
+          auto [pa_in]  = unpack<1>(p_arrays_in);
+          auto [pa_out] = unpack<1>(p_arrays_out);
 
           *pa_out = hmap::sigmoid(*pa_in, width, 0.f, 1.f, xmin);
           *pa_out *= 1.f - hmap::sigmoid(*pa_in, width, 0.f, 1.f, xmax);
         },
         node.cfg().cm_cpu);
 
-    p_out->smooth_overlap_buffers();
+    p_out->sync_overlap_buffers();
     post_process_heightmap(node, *p_out);
   }
   else if (group == G_THRESHOLD)
@@ -163,18 +163,18 @@ void compute_select_value_node(BaseNode &node)
     hmap::for_each_tile(
         {p_in},
         {p_out},
-        [&](std::vector<const hmap::Array *> in,
-            std::vector<hmap::Array *>       out,
+        [&](std::vector<const hmap::Array *> p_arrays_in,
+            std::vector<hmap::Array *>       p_arrays_out,
             const hmap::TileRegion &)
         {
-          auto [pa_in]  = unpack<1>(in);
-          auto [pa_out] = unpack<1>(out);
+          auto [pa_in]  = unpack<1>(p_arrays_in);
+          auto [pa_out] = unpack<1>(p_arrays_out);
 
           *pa_out = hmap::sigmoid(*pa_in, width, 0.f, 1.f, x0);
         },
         node.cfg().cm_cpu);
 
-    p_out->smooth_overlap_buffers();
+    p_out->sync_overlap_buffers();
     post_process_heightmap(node, *p_out, p_in);
   }
   else if (group == G_TARGET)
@@ -189,19 +189,19 @@ void compute_select_value_node(BaseNode &node)
     hmap::for_each_tile(
         {p_in},
         {p_out},
-        [xmin, xmax, smoothing](std::vector<const hmap::Array *> in,
-                                std::vector<hmap::Array *>       out,
+        [xmin, xmax, smoothing](std::vector<const hmap::Array *> p_arrays_in,
+                                std::vector<hmap::Array *>       p_arrays_out,
                                 const hmap::TileRegion &)
         {
-          auto [pa_in]  = unpack<1>(in);
-          auto [pa_out] = unpack<1>(out);
+          auto [pa_in]  = unpack<1>(p_arrays_in);
+          auto [pa_out] = unpack<1>(p_arrays_out);
 
           *pa_out = hmap::sigmoid(*pa_in, smoothing, 0.f, 1.f, xmin);
           *pa_out *= 1.f - hmap::sigmoid(*pa_in, smoothing, 0.f, 1.f, xmax);
         },
         node.cfg().cm_cpu);
 
-    p_out->smooth_overlap_buffers();
+    p_out->sync_overlap_buffers();
     post_process_heightmap(node, *p_out);
   }
   else if (group == G_MIDRANGE)
@@ -210,15 +210,19 @@ void compute_select_value_node(BaseNode &node)
     float vmax = p_in->max(node.cfg().cm_cpu);
 
     hmap::for_each_tile(
-        {p_out, p_in},
-        [&node, vmin, vmax](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
+        {p_in},
+        {p_out},
+        [&node, vmin, vmax](std::vector<const hmap::Array *> p_arrays_in,
+                            std::vector<hmap::Array *>       p_arrays_out,
+                            const hmap::TileRegion &)
         {
-          auto [pa_out, pa_in] = unpack<2>(p_arrays);
+          auto [pa_in]  = unpack<1>(p_arrays_in);
+          auto [pa_out] = unpack<1>(p_arrays_out);
           *pa_out = hmap::select_midrange(*pa_in, node.val<float>(A_GAIN), vmin, vmax);
         },
         node.cfg().cm_cpu);
 
-    p_out->smooth_overlap_buffers();
+    p_out->sync_overlap_buffers();
     post_process_heightmap(node, *p_out);
   }
 }

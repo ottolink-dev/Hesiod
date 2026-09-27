@@ -80,7 +80,7 @@ void compute_smooth_cpulse_node(BaseNode &node)
       },
       node.cfg().cm_gpu);
 
-  p_out->smooth_overlap_buffers();
+  p_out->sync_overlap_buffers();
 
   // post-process
   post_process_heightmap(node, *p_out, p_in);
