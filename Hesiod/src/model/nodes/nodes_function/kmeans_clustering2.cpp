@@ -55,22 +55,35 @@ void compute_kmeans_clustering2_node(BaseNode &node)
   if (p_in1 && p_in2)
   {
     hmap::for_each_tile(
-        {p_out, p_in1, p_in2},
-        [&node](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
+        {p_in1, p_in2},
+        {p_out},
+        [&node](std::vector<const hmap::Array *> p_arrays_in,
+                std::vector<hmap::Array *>       p_arrays_out,
+                const hmap::TileRegion &)
         {
-          auto [pa_out, pa_in1, pa_in2] = unpack<3>(p_arrays);
+          auto [pa_in1, pa_in2] = unpack<2>(p_arrays_in);
+          auto [pa_out]         = unpack<1>(p_arrays_out);
+
+          hmap::Array        in1_copy;
+          hmap::Array        in2_copy;
+          const hmap::Array *p_in1_final = pa_in1;
+          const hmap::Array *p_in2_final = pa_in2;
 
           if (node.val<bool>(A_NORMALIZE_INPUTS))
           {
-            hmap::remap(*pa_in1);
-            hmap::remap(*pa_in2);
+            in1_copy = *pa_in1;
+            in2_copy = *pa_in2;
+            hmap::remap(in1_copy);
+            hmap::remap(in2_copy);
+            p_in1_final = &in1_copy;
+            p_in2_final = &in2_copy;
           }
 
           glm::vec2 weights = {node.val<float>(A_WEIGHTS_X),
                                node.val<float>(A_WEIGHTS_Y)};
 
-          *pa_out = hmap::kmeans_clustering2(*pa_in1,
-                                             *pa_in2,
+          *pa_out = hmap::kmeans_clustering2(*p_in1_final,
+                                             *p_in2_final,
                                              node.val<int>(A_NCLUSTERS),
                                              nullptr, // scoring_arrays,
                                              nullptr, // agg scoring

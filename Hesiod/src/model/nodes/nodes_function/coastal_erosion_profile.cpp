@@ -127,12 +127,13 @@ void compute_coastal_erosion_profile_node(BaseNode &node)
   hmap::for_each_tile(
       {p_z, p_depth, p_noise, p_mask},
       {p_z_out, p_depth_out, p_shore_mask, p_scarp_mask},
-      [&](std::vector<const hmap::Array *> in,
-          std::vector<hmap::Array *>       out,
+      [&](std::vector<const hmap::Array *> p_arrays_in,
+          std::vector<hmap::Array *>       p_arrays_out,
           const hmap::TileRegion &)
       {
-        auto [pa_z, pa_depth, pa_noise, pa_mask]                    = unpack<4>(in);
-        auto [pa_z_out, pa_depth_out, pa_shore_mask, pa_scarp_mask] = unpack<4>(out);
+        auto [pa_z, pa_depth, pa_noise, pa_mask] = unpack<4>(p_arrays_in);
+        auto [pa_z_out, pa_depth_out, pa_shore_mask, pa_scarp_mask] = unpack<4>(
+            p_arrays_out);
 
         *pa_z_out     = *pa_z;
         *pa_depth_out = *pa_depth;

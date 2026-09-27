@@ -289,12 +289,12 @@ void compute_coherent_noise_node(BaseNode &node)
     hmap::for_each_tile(
         {p_dx, p_dy, p_ctrl},
         {p_out},
-        [&](std::vector<const hmap::Array *> in,
-            std::vector<hmap::Array *>       out,
+        [&](std::vector<const hmap::Array *> p_arrays_in,
+            std::vector<hmap::Array *>       p_arrays_out,
             const hmap::TileRegion          &region)
         {
-          auto [pa_dx, pa_dy, pa_ctrl] = unpack<3>(in);
-          auto [pa_out]                = unpack<1>(out);
+          auto [pa_dx, pa_dy, pa_ctrl] = unpack<3>(p_arrays_in);
+          auto [pa_out]                = unpack<1>(p_arrays_out);
 
           // When periodic, snap kw to integer cells so the lattice wrap
           // aligns with the noise frequency and the result tiles
@@ -335,12 +335,12 @@ void compute_coherent_noise_node(BaseNode &node)
     hmap::for_each_tile(
         {p_dx, p_dy, p_ctrl},
         {p_out},
-        [&](std::vector<const hmap::Array *> in,
-            std::vector<hmap::Array *>       out,
+        [&](std::vector<const hmap::Array *> p_arrays_in,
+            std::vector<hmap::Array *>       p_arrays_out,
             const hmap::TileRegion          &region)
         {
-          auto [pa_dx, pa_dy, pa_ctrl] = unpack<3>(in);
-          auto [pa_out]                = unpack<1>(out);
+          auto [pa_dx, pa_dy, pa_ctrl] = unpack<3>(p_arrays_in);
+          auto [pa_out]                = unpack<1>(p_arrays_out);
 
           *pa_out = hmap::noise_ridged(noise_type,
                                        region.shape,
@@ -366,12 +366,12 @@ void compute_coherent_noise_node(BaseNode &node)
     hmap::for_each_tile(
         {p_dx, p_dy, p_ctrl},
         {p_out},
-        [&](std::vector<const hmap::Array *> in,
-            std::vector<hmap::Array *>       out,
+        [&](std::vector<const hmap::Array *> p_arrays_in,
+            std::vector<hmap::Array *>       p_arrays_out,
             const hmap::TileRegion          &region)
         {
-          auto [pa_dx, pa_dy, pa_ctrl] = unpack<3>(in);
-          auto [pa_out]                = unpack<1>(out);
+          auto [pa_dx, pa_dy, pa_ctrl] = unpack<3>(p_arrays_in);
+          auto [pa_out]                = unpack<1>(p_arrays_out);
 
           *pa_out = hmap::noise_iq(noise_type,
                                    region.shape,
@@ -400,12 +400,12 @@ void compute_coherent_noise_node(BaseNode &node)
     hmap::for_each_tile(
         {p_dx, p_dy, p_ctrl},
         {p_out},
-        [&](std::vector<const hmap::Array *> in,
-            std::vector<hmap::Array *>       out,
+        [&](std::vector<const hmap::Array *> p_arrays_in,
+            std::vector<hmap::Array *>       p_arrays_out,
             const hmap::TileRegion          &region)
         {
-          auto [pa_dx, pa_dy, pa_ctrl] = unpack<3>(in);
-          auto [pa_out]                = unpack<1>(out);
+          auto [pa_dx, pa_dy, pa_ctrl] = unpack<3>(p_arrays_in);
+          auto [pa_out]                = unpack<1>(p_arrays_out);
 
           *pa_out = hmap::noise_jordan(noise_type,
                                        region.shape,
@@ -433,12 +433,12 @@ void compute_coherent_noise_node(BaseNode &node)
     hmap::for_each_tile(
         {p_dx, p_dy, p_ctrl},
         {p_out},
-        [&](std::vector<const hmap::Array *> in,
-            std::vector<hmap::Array *>       out,
+        [&](std::vector<const hmap::Array *> p_arrays_in,
+            std::vector<hmap::Array *>       p_arrays_out,
             const hmap::TileRegion          &region)
         {
-          auto [pa_dx, pa_dy, pa_ctrl] = unpack<3>(in);
-          auto [pa_out]                = unpack<1>(out);
+          auto [pa_dx, pa_dy, pa_ctrl] = unpack<3>(p_arrays_in);
+          auto [pa_out]                = unpack<1>(p_arrays_out);
 
           *pa_out = hmap::noise_parberry(region.shape,
                                          kw,
@@ -462,12 +462,12 @@ void compute_coherent_noise_node(BaseNode &node)
     hmap::for_each_tile(
         {p_dx, p_dy, p_ctrl},
         {p_out},
-        [&](std::vector<const hmap::Array *> in,
-            std::vector<hmap::Array *>       out,
+        [&](std::vector<const hmap::Array *> p_arrays_in,
+            std::vector<hmap::Array *>       p_arrays_out,
             const hmap::TileRegion          &region)
         {
-          auto [pa_dx, pa_dy, pa_ctrl] = unpack<3>(in);
-          auto [pa_out]                = unpack<1>(out);
+          auto [pa_dx, pa_dy, pa_ctrl] = unpack<3>(p_arrays_in);
+          auto [pa_out]                = unpack<1>(p_arrays_out);
 
           *pa_out = hmap::noise_pingpong(noise_type,
                                          region.shape,
@@ -492,12 +492,12 @@ void compute_coherent_noise_node(BaseNode &node)
     hmap::for_each_tile(
         {p_dx, p_dy, p_ctrl},
         {p_out},
-        [&](std::vector<const hmap::Array *> in,
-            std::vector<hmap::Array *>       out,
+        [&](std::vector<const hmap::Array *> p_arrays_in,
+            std::vector<hmap::Array *>       p_arrays_out,
             const hmap::TileRegion          &region)
         {
-          auto [pa_dx, pa_dy, pa_ctrl] = unpack<3>(in);
-          auto [pa_out]                = unpack<1>(out);
+          auto [pa_dx, pa_dy, pa_ctrl] = unpack<3>(p_arrays_in);
+          auto [pa_out]                = unpack<1>(p_arrays_out);
 
           *pa_out = hmap::noise_swiss(noise_type,
                                       region.shape,

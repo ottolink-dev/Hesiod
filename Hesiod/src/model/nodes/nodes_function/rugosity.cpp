@@ -54,11 +54,15 @@ void compute_rugosity_node(BaseNode &node)
     int ir = node.val_pixel_radius(A_RADIUS);
 
     hmap::for_each_tile(
-        {p_out, p_in},
-        [&node, ir](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
+        {p_in},
+        {p_out},
+        [&node, ir](std::vector<const hmap::Array *> p_arrays_in,
+                    std::vector<hmap::Array *>       p_arrays_out,
+                    const hmap::TileRegion &)
         {
-          auto [pa_out, pa_in] = unpack<2>(p_arrays);
-          *pa_out              = hmap::gpu::rugosity(*pa_in, ir);
+          auto [pa_in]  = unpack<1>(p_arrays_in);
+          auto [pa_out] = unpack<1>(p_arrays_out);
+          *pa_out       = hmap::gpu::rugosity(*pa_in, ir);
 
           if (node.val<bool>(A_CLAMP_MAX))
             hmap::clamp_max(*pa_out, node.val<float>(A_VC_MAX));

@@ -60,12 +60,14 @@ void compute_hydraulic_musgrave_node(BaseNode &node)
     hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
     hmap::for_each_tile(
-        {p_out, p_in, p_moisture_map},
-        [&node](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &region)
+        {p_in, p_moisture_map},
+        {p_out},
+        [&node](std::vector<const hmap::Array *> p_arrays_in,
+                std::vector<hmap::Array *>       p_arrays_out,
+                const hmap::TileRegion          &region)
         {
-          hmap::Array *pa_out          = p_arrays[0];
-          hmap::Array *pa_in           = p_arrays[1];
-          hmap::Array *pa_moisutre_map = p_arrays[2];
+          auto [pa_in, pa_moisutre_map] = unpack<2>(p_arrays_in);
+          auto [pa_out]                 = unpack<1>(p_arrays_out);
 
           *pa_out = *pa_in;
 

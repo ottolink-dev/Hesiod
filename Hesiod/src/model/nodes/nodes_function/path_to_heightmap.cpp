@@ -50,10 +50,13 @@ void compute_path_to_heightmap_node(BaseNode &node)
       if (!node.val<bool>(A_FILLED))
       {
         hmap::for_each_tile(
+            {},
             {p_out},
-            [p_path](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &region)
+            [p_path](std::vector<const hmap::Array *> p_arrays_in,
+                     std::vector<hmap::Array *>       p_arrays_out,
+                     const hmap::TileRegion          &region)
             {
-              hmap::Array *pa_out = p_arrays[0];
+              auto [pa_out] = unpack<1>(p_arrays_out);
               p_path->to_array(*pa_out, region.bbox);
             },
             node.cfg().cm_cpu);
@@ -75,11 +78,14 @@ void compute_path_to_heightmap_node(BaseNode &node)
     {
       // fill with zeros
       hmap::for_each_tile(
+          {},
           {p_out},
-          [](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
+          [](std::vector<const hmap::Array *> p_arrays_in,
+             std::vector<hmap::Array *>       p_arrays_out,
+             const hmap::TileRegion &)
           {
-            hmap::Array *pa_out = p_arrays[0];
-            *pa_out             = 0.f;
+            auto [pa_out] = unpack<1>(p_arrays_out);
+            *pa_out       = 0.f;
           },
           node.cfg().cm_cpu);
     }

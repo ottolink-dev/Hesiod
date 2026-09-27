@@ -44,22 +44,28 @@ void compute_gradient_node(BaseNode &node)
     hmap::VirtualArray *p_dy = node.get_value_ref<hmap::VirtualArray>(P_DY);
 
     hmap::for_each_tile(
-        {p_dx, p_in},
-        [](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
+        {p_in},
+        {p_dx},
+        [](std::vector<const hmap::Array *> p_arrays_in,
+           std::vector<hmap::Array *>       p_arrays_out,
+           const hmap::TileRegion &)
         {
-          hmap::Array *pa_dx = p_arrays[0];
-          hmap::Array *pa_in = p_arrays[1];
+          auto [pa_in] = unpack<1>(p_arrays_in);
+          auto [pa_dx] = unpack<1>(p_arrays_out);
 
           hmap::gradient_x(*pa_in, *pa_dx);
         },
         node.cfg().cm_cpu);
 
     hmap::for_each_tile(
-        {p_dy, p_in},
-        [](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
+        {p_in},
+        {p_dy},
+        [](std::vector<const hmap::Array *> p_arrays_in,
+           std::vector<hmap::Array *>       p_arrays_out,
+           const hmap::TileRegion &)
         {
-          hmap::Array *pa_dy = p_arrays[0];
-          hmap::Array *pa_in = p_arrays[1];
+          auto [pa_in] = unpack<1>(p_arrays_in);
+          auto [pa_dy] = unpack<1>(p_arrays_out);
 
           hmap::gradient_y(*pa_in, *pa_dy);
         },

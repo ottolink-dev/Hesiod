@@ -89,31 +89,38 @@ void compute_mix_texture_masked_node(BaseNode &node)
                                         .current_container_name()
                                         .value_or(G_TRANSPARENCY);
 
-  std::vector<hmap::VirtualArray *> vas = {};
-  for (auto *p : p_out->channels_ptr())
-    vas.push_back(p);
+  std::vector<const hmap::VirtualArray *> vas_in = {};
   for (auto *p : p_in1->channels_ptr())
-    vas.push_back(p);
+    vas_in.push_back(p);
   for (auto *p : p_in2->channels_ptr())
-    vas.push_back(p);
-  vas.push_back(p_mask);
+    vas_in.push_back(p);
+  vas_in.push_back(p_mask);
+
+  std::vector<hmap::VirtualArray *> vas_out = p_out->channels_ptr();
 
   if (current_group == G_TRANSPARENCY)
   {
     const auto mix_method = node.val_enum<hmap::MixMethod>(A_MIX_METHOD);
     const auto gain       = node.val<float>(A_GAIN);
 
-    auto lambda =
-        [mix_method, gain](std::vector<hmap::Array *> &p_arrays, const hmap::TileRegion &)
+    auto lambda = [mix_method, gain](std::vector<const hmap::Array *> p_arrays_in,
+                                     std::vector<hmap::Array *>       p_arrays_out,
+                                     const hmap::TileRegion &)
     {
+      // In1: 0..3
+      // In2: 4..7
+      // Mask: 8
       // Out: 0..3
-      // In1: 4..7
-      // In2: 8..11
-      // Mask: 12
-      hmap::Array *pa_mask = p_arrays[12];
+      const hmap::Array *pa_mask = p_arrays_in[8];
 
-      hmap::Texture t1(*p_arrays[4], *p_arrays[5], *p_arrays[6], *p_arrays[7]);
-      hmap::Texture t2(*p_arrays[8], *p_arrays[9], *p_arrays[10], *p_arrays[11]);
+      hmap::Texture t1(*p_arrays_in[0],
+                       *p_arrays_in[1],
+                       *p_arrays_in[2],
+                       *p_arrays_in[3]);
+      hmap::Texture t2(*p_arrays_in[4],
+                       *p_arrays_in[5],
+                       *p_arrays_in[6],
+                       *p_arrays_in[7]);
 
       hmap::Texture blended = pa_mask ? hmap::mix(t1, t2, *pa_mask, mix_method, gain)
                                       : hmap::mix(t1, t2, mix_method);
@@ -121,11 +128,11 @@ void compute_mix_texture_masked_node(BaseNode &node)
       for (int c = 0; c < 4; ++c)
       {
         if (c < blended.num_channels())
-          *p_arrays[c] = blended[c];
+          *p_arrays_out[c] = blended[c];
       }
     };
 
-    hmap::for_each_tile(vas, lambda, node.cfg().cm_cpu);
+    hmap::for_each_tile(vas_in, vas_out, lambda, node.cfg().cm_cpu);
   }
   else // Poisson
   {
@@ -133,17 +140,25 @@ void compute_mix_texture_masked_node(BaseNode &node)
     const auto threshold  = node.val<float>(A_MASK_THRESHOLD);
     const auto gain       = node.val<float>(A_GAIN);
 
-    auto lambda = [iterations, threshold, gain](std::vector<hmap::Array *> &p_arrays,
-                                                const hmap::TileRegion &)
+    auto lambda =
+        [iterations, threshold, gain](std::vector<const hmap::Array *> p_arrays_in,
+                                      std::vector<hmap::Array *>       p_arrays_out,
+                                      const hmap::TileRegion &)
     {
+      // In1: 0..3
+      // In2: 4..7
+      // Mask: 8
       // Out: 0..3
-      // In1: 4..7
-      // In2: 8..11
-      // Mask: 12
-      hmap::Array *pa_mask = p_arrays[12];
+      const hmap::Array *pa_mask = p_arrays_in[8];
 
-      hmap::Texture t1(*p_arrays[4], *p_arrays[5], *p_arrays[6], *p_arrays[7]);
-      hmap::Texture t2(*p_arrays[8], *p_arrays[9], *p_arrays[10], *p_arrays[11]);
+      hmap::Texture t1(*p_arrays_in[0],
+                       *p_arrays_in[1],
+                       *p_arrays_in[2],
+                       *p_arrays_in[3]);
+      hmap::Texture t2(*p_arrays_in[4],
+                       *p_arrays_in[5],
+                       *p_arrays_in[6],
+                       *p_arrays_in[7]);
 
       hmap::Texture blended;
 
@@ -172,11 +187,11 @@ void compute_mix_texture_masked_node(BaseNode &node)
       for (int c = 0; c < 4; ++c)
       {
         if (c < blended.num_channels())
-          *p_arrays[c] = blended[c];
+          *p_arrays_out[c] = blended[c];
       }
     };
 
-    hmap::for_each_tile(vas, lambda, node.cfg().cm_gpu);
+    hmap::for_each_tile(vas_in, vas_out, lambda, node.cfg().cm_gpu);
 
     for (int c = 0; c < p_out->channels(); ++c)
       p_out->channel(c).sync_overlap_buffers();

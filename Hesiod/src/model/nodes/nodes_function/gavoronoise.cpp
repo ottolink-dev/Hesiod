@@ -87,14 +87,14 @@ void compute_gavoronoise_node(BaseNode &node)
   hmap::VirtualArray *p_angle = node.get_value_ref<hmap::VirtualArray>(P_ANGLE);
 
   hmap::for_each_tile(
-      {p_out, p_ctrl, p_dx, p_dy, p_angle},
-      [&node](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &region)
+      {p_ctrl, p_dx, p_dy, p_angle},
+      {p_out},
+      [&node](std::vector<const hmap::Array *> p_arrays_in,
+              std::vector<hmap::Array *>       p_arrays_out,
+              const hmap::TileRegion          &region)
       {
-        hmap::Array *pa_out   = p_arrays[0];
-        hmap::Array *pa_ctrl  = p_arrays[1];
-        hmap::Array *pa_dx    = p_arrays[2];
-        hmap::Array *pa_dy    = p_arrays[3];
-        hmap::Array *pa_angle = p_arrays[4];
+        auto [pa_ctrl, pa_dx, pa_dy, pa_angle] = unpack<4>(p_arrays_in);
+        auto [pa_out]                          = unpack<1>(p_arrays_out);
 
         hmap::Array angle_deg(region.shape, node.val<float>(A_ANGLE));
 

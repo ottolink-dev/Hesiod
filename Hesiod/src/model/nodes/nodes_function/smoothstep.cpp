@@ -48,11 +48,15 @@ void compute_smoothstep_node(BaseNode &node)
     float hmax = p_in->max(node.cfg().cm_cpu);
 
     hmap::for_each_tile(
-        {p_out, p_in},
-        [&node, hmin, hmax](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
+        {p_in},
+        {p_out},
+        [&node, hmin, hmax](std::vector<const hmap::Array *> p_arrays_in,
+                            std::vector<hmap::Array *>       p_arrays_out,
+                            const hmap::TileRegion &)
         {
-          auto [pa_out, pa_in] = unpack<2>(p_arrays);
-          *pa_out              = *pa_in;
+          auto [pa_in]  = unpack<1>(p_arrays_in);
+          auto [pa_out] = unpack<1>(p_arrays_out);
+          *pa_out       = *pa_in;
 
           hmap::remap(*pa_out, 0.f, 1.f, hmin, hmax);
 

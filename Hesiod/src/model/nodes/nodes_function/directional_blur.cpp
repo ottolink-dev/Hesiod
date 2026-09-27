@@ -89,10 +89,14 @@ void compute_directional_blur_node(BaseNode &node)
   // --- Compute
 
   hmap::for_each_tile(
-      {p_out, p_in, p_angle, p_mask},
-      [&](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
+      {p_in, p_angle, p_mask},
+      {p_out},
+      [&](std::vector<const hmap::Array *> p_arrays_in,
+          std::vector<hmap::Array *>       p_arrays_out,
+          const hmap::TileRegion &)
       {
-        auto [pa_out, pa_in, pa_angle, pa_mask] = unpack<4>(p_arrays);
+        auto [pa_in, pa_angle, pa_mask] = unpack<3>(p_arrays_in);
+        auto [pa_out]                   = unpack<1>(p_arrays_out);
 
         // resolve angle field
         hmap::Array angle_deg(pa_in->shape, angle);

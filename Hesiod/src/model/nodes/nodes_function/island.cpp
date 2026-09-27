@@ -145,10 +145,14 @@ void compute_island_node(BaseNode &node)
   const auto ir                     = node.val_pixel_radius(A_FILTER_RADIUS, 0);
 
   hmap::for_each_tile(
-      {p_out, p_land, p_dr, p_depth, p_mask},
-      [&](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
+      {p_land, p_dr},
+      {p_out, p_depth, p_mask},
+      [&](std::vector<const hmap::Array *> p_arrays_in,
+          std::vector<hmap::Array *>       p_arrays_out,
+          const hmap::TileRegion &)
       {
-        auto [pa_out, pa_land, pa_dr, pa_depth, pa_mask] = unpack<5>(p_arrays);
+        auto [pa_land, pa_dr]            = unpack<2>(p_arrays_in);
+        auto [pa_out, pa_depth, pa_mask] = unpack<3>(p_arrays_out);
 
         if (pa_dr)
         {

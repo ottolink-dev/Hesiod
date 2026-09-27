@@ -76,10 +76,14 @@ void compute_mountain_inselberg_node(BaseNode &node)
   hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
   hmap::for_each_tile(
-      {p_out, p_dx, p_dy},
-      [&node](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &region)
+      {p_dx, p_dy},
+      {p_out},
+      [&node](std::vector<const hmap::Array *> p_arrays_in,
+              std::vector<hmap::Array *>       p_arrays_out,
+              const hmap::TileRegion          &region)
       {
-        auto [pa_out, pa_dx, pa_dy] = unpack<3>(p_arrays);
+        auto [pa_dx, pa_dy] = unpack<2>(p_arrays_in);
+        auto [pa_out]       = unpack<1>(p_arrays_out);
 
         *pa_out = hmap::gpu::mountain_inselberg(region.shape,
                                                 node.val<int>(A_SEED),

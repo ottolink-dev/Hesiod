@@ -63,12 +63,14 @@ void compute_water_depth_from_mask_node(BaseNode &node)
   // --- Compute
 
   hmap::for_each_tile(
-      {p_depth, p_z, p_mask},
-      [&node](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
+      {p_z, p_mask},
+      {p_depth},
+      [&node](std::vector<const hmap::Array *> p_arrays_in,
+              std::vector<hmap::Array *>       p_arrays_out,
+              const hmap::TileRegion &)
       {
-        hmap::Array *pa_depth = p_arrays[0];
-        hmap::Array *pa_z     = p_arrays[1];
-        hmap::Array *pa_mask  = p_arrays[2];
+        auto [pa_z, pa_mask] = unpack<2>(p_arrays_in);
+        auto [pa_depth]      = unpack<1>(p_arrays_out);
 
         *pa_depth = hmap::gpu::water_depth_from_mask(*pa_z,
                                                      *pa_mask,

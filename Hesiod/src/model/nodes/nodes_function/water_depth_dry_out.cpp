@@ -48,11 +48,15 @@ void compute_water_depth_dry_out_node(BaseNode &node)
     float depth_max = p_in->max(node.cfg().cm_cpu);
 
     hmap::for_each_tile(
-        {p_out, p_in, p_mask},
-        [&node, depth_max](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
+        {p_in, p_mask},
+        {p_out},
+        [&node, depth_max](std::vector<const hmap::Array *> p_arrays_in,
+                           std::vector<hmap::Array *>       p_arrays_out,
+                           const hmap::TileRegion &)
         {
-          auto [pa_out, pa_in, pa_mask] = unpack<3>(p_arrays);
-          *pa_out                       = *pa_in;
+          auto [pa_in, pa_mask] = unpack<2>(p_arrays_in);
+          auto [pa_out]         = unpack<1>(p_arrays_out);
+          *pa_out               = *pa_in;
 
           hmap::water_depth_dry_out(*pa_out,
                                     node.val<float>(A_DRY_OUT_RATIO),

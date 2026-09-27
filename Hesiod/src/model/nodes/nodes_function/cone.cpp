@@ -161,10 +161,14 @@ void compute_cone_node(BaseNode &node)
   if (current_group == G_SIMPLE)
   {
     hmap::for_each_tile(
-        {p_out, p_dx, p_dy},
-        [&node](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &region)
+        {p_dx, p_dy},
+        {p_out},
+        [&node](std::vector<const hmap::Array *> p_arrays_in,
+                std::vector<hmap::Array *>       p_arrays_out,
+                const hmap::TileRegion          &region)
         {
-          auto [pa_out, pa_dx, pa_dy] = unpack<3>(p_arrays);
+          auto [pa_dx, pa_dy] = unpack<2>(p_arrays_in);
+          auto [pa_out]       = unpack<1>(p_arrays_out);
 
           *pa_out = hmap::cone(region.shape,
                                node.val<float>(A_SLOPE),
@@ -180,10 +184,14 @@ void compute_cone_node(BaseNode &node)
   else if (current_group == G_SIGMOID)
   {
     hmap::for_each_tile(
-        {p_out, p_dx, p_dy},
-        [&node](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &region)
+        {p_dx, p_dy},
+        {p_out},
+        [&node](std::vector<const hmap::Array *> p_arrays_in,
+                std::vector<hmap::Array *>       p_arrays_out,
+                const hmap::TileRegion          &region)
         {
-          auto [pa_out, pa_dx, pa_dy] = unpack<3>(p_arrays);
+          auto [pa_dx, pa_dy] = unpack<2>(p_arrays_in);
+          auto [pa_out]       = unpack<1>(p_arrays_out);
 
           *pa_out = hmap::cone_sigmoid(region.shape,
                                        node.val<float>(A_ALPHA),
@@ -198,10 +206,14 @@ void compute_cone_node(BaseNode &node)
   else if (current_group == G_COMPLEX)
   {
     hmap::for_each_tile(
-        {p_out, p_dx, p_dy, p_ctrl},
-        [&node](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &region)
+        {p_dx, p_dy, p_ctrl},
+        {p_out},
+        [&node](std::vector<const hmap::Array *> p_arrays_in,
+                std::vector<hmap::Array *>       p_arrays_out,
+                const hmap::TileRegion          &region)
         {
-          auto [pa_out, pa_dx, pa_dy, pa_ctrl] = unpack<4>(p_arrays);
+          auto [pa_dx, pa_dy, pa_ctrl] = unpack<3>(p_arrays_in);
+          auto [pa_out]                = unpack<1>(p_arrays_out);
 
           *pa_out = hmap::cone_complex(
               region.shape,
