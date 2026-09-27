@@ -80,7 +80,7 @@ void compute_depression_filling_node(BaseNode &node)
 
   // filling
   glm::ivec2 tiling = p_out->get_max_tiles();
-  int        nit    = std::max(1, std::max(tiling.x, tiling.y) / 2);
+  int        nit    = std::max(tiling.x, tiling.y);
 
   for (int it = 0; it < nit; ++it)
   {
