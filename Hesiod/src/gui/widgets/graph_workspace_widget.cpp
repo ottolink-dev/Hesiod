@@ -239,6 +239,7 @@ void GraphWorkspaceWidget::setup_layout()
     this->viewer = new Viewer3D(this->graph_node_widget);
     this->viewer->setMinimumHeight(32);
     v_splitter->addWidget(wrap(this->viewer));
+    this->graph_node_widget->set_preview_viewer(this->viewer);
   }
 
   // the graph fills its card, with the project's graphs as tabs on its left

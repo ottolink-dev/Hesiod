@@ -70,6 +70,7 @@ private:
   qreal      length() const;
 
   void   layout_tabs();
+  qreal  natural_width(const QString &name) const;
   void   step();
   int    tab_at(const QPointF &strip_pos) const;
   QRectF plus_rect() const;
@@ -79,6 +80,7 @@ private:
   int              current = -1;
   int              hovered = -1; // tab index, or -2 for the "+"
   qreal            plus_hover = 0.0;
+  bool             plus_shown = true; // hidden when the tabs need its room
   QTimer          *ticker = nullptr;
 };
 
