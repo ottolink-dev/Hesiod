@@ -6507,6 +6507,56 @@
             }
         }
     },
+    "ExportHeightmapStreamed": {
+        "category": "Export",
+        "description": "ExportHeightmapStreamed is an operator for exporting a heightmap in streamed file formats (OpenEXR and BigTIFF) tile-by-tile.",
+        "label": "ExportHeightmapStreamed",
+        "parameter_groups": [
+            {
+                "keys": [
+                    "fname",
+                    "pattern",
+                    "format",
+                    "auto_export"
+                ],
+                "name": "main"
+            }
+        ],
+        "parameters": {
+            "auto_export": {
+                "description": "Controls whether the output file is automatically written when the node is updated. Default is false. When set to true, the file is saved automatically on updates. If false, use the 'Force Reload' button on the node to manually trigger the export.",
+                "key": "auto_export",
+                "label": "Auto Export on Node Update",
+                "type": "Bool"
+            },
+            "fname": {
+                "description": "Export file name.",
+                "key": "fname",
+                "label": "Filename",
+                "type": "Filename"
+            },
+            "format": {
+                "description": "Streamed export format. Available values: OpenEXR (32-bit float) - *.exr, BigTIFF (32-bit float) - *.tif.",
+                "key": "format",
+                "label": "File Format",
+                "type": "Choice"
+            },
+            "pattern": {
+                "description": "No description",
+                "key": "pattern",
+                "label": "Filename Pattern",
+                "type": "String"
+            }
+        },
+        "ports": {
+            "input": {
+                "caption": "input",
+                "data_type": "VirtualArray",
+                "description": "Input heightmap.",
+                "type": "input"
+            }
+        }
+    },
     "ExportNormalMap": {
         "category": "Export",
         "description": "ExportNormalMap is an operator for exporting the normal map of an heightmap as a PNG image file.",
@@ -6797,6 +6847,56 @@
                 "key": "fname",
                 "label": "fname",
                 "type": "Filename"
+            },
+            "pattern": {
+                "description": "No description",
+                "key": "pattern",
+                "label": "Filename Pattern",
+                "type": "String"
+            }
+        },
+        "ports": {
+            "texture": {
+                "caption": "texture",
+                "data_type": "VirtualTexture",
+                "description": "Input texture.",
+                "type": "input"
+            }
+        }
+    },
+    "ExportTextureStreamed": {
+        "category": "Export",
+        "description": "ExportTextureStreamed is an operator for exporting a texture in streamed file formats (BigTIFF and OpenEXR) tile-by-tile.",
+        "label": "ExportTextureStreamed",
+        "parameter_groups": [
+            {
+                "keys": [
+                    "fname",
+                    "pattern",
+                    "format",
+                    "auto_export"
+                ],
+                "name": "main"
+            }
+        ],
+        "parameters": {
+            "auto_export": {
+                "description": "Controls whether the output file is automatically written when the node is updated. Default is false. When set to true, the file is saved automatically on updates. If false, use the 'Force Reload' button on the node to manually trigger the export.",
+                "key": "auto_export",
+                "label": "Auto Export on Node Update",
+                "type": "Bool"
+            },
+            "fname": {
+                "description": "Export file name.",
+                "key": "fname",
+                "label": "Filename",
+                "type": "Filename"
+            },
+            "format": {
+                "description": "Streamed export format. Available values: OpenEXR (32-bit float) - *.exr, BigTIFF (32-bit float) - *.tif.",
+                "key": "format",
+                "label": "File Format",
+                "type": "Choice"
             },
             "pattern": {
                 "description": "No description",
@@ -11070,7 +11170,7 @@
     },
     "HydraulicStreamLog": {
         "category": "Erosion/Hydraulic",
-        "description": "HydraulicStream is a hydraulic erosion operator using a flow-stream formulation and an infinite flow-direction algorithm (D\u221e). Erosion intensity is driven by flow accumulation, terrain gradient, moisture, and optional bedrock limits. Deposition is simulated using convolution kernels whose radius and scale control smoothing and sediment redistribution.",
+        "description": "HydraulicStream is a hydraulic erosion operator using a flow-stream formulation and an infinite flow-direction algorithm (D∞). Erosion intensity is driven by flow accumulation, terrain gradient, moisture, and optional bedrock limits. Deposition is simulated using convolution kernels whose radius and scale control smoothing and sediment redistribution.",
         "label": "HydraulicStreamLog",
         "parameter_groups": [
             {
@@ -11887,7 +11987,7 @@
             "land_mask": {
                 "caption": "land_mask",
                 "data_type": "VirtualArray",
-                "description": "Binary mask defining the island\u2019s footprint; nonzero pixels are considered land. Consider using the node IslandLandMask to generate this mask.",
+                "description": "Binary mask defining the island’s footprint; nonzero pixels are considered land. Consider using the node IslandLandMask to generate this mask.",
                 "type": "input"
             },
             "output": {
@@ -15295,7 +15395,7 @@
                 "type": "Float"
             },
             "noise_inflate": {
-                "description": "Controls how noise affects the step profile. \u2018Inflate\u2019 pushes elevations outward, while \u2018Deflate\u2019 pulls them inward.",
+                "description": "Controls how noise affects the step profile. ‘Inflate’ pushes elevations outward, while ‘Deflate’ pulls them inward.",
                 "key": "noise_inflate",
                 "label": "",
                 "type": "Bool"
@@ -24868,7 +24968,7 @@
             "output": {
                 "caption": "output",
                 "data_type": "VirtualArray",
-                "description": "Resulting heightmap that combines the target\u2019s base shape with the source\u2019s high-frequency details.",
+                "description": "Resulting heightmap that combines the target’s base shape with the source’s high-frequency details.",
                 "type": "output"
             },
             "source": {
