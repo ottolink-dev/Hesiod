@@ -184,13 +184,18 @@ void compute_select_soil_node(BaseNode &node)
     int   ir    = std::max(1, (int)(node.val<float>(A_RADIUS_GRADIENT) * nx));
     float talus = node.val<float>(A_TALUS_REF) / nx;
 
+    // p_in is only read here and below: as an output it would be written back
+    // into the upstream node's data on every run
     hmap::for_each_tile(
-        {p_out, p_in},
-        [&node, nx, ir, talus](std::vector<hmap::Array *> p_arrays,
+        {p_in},
+        {p_out},
+        [&node, nx, ir, talus](std::vector<const hmap::Array *> in,
+                               std::vector<hmap::Array *>       out,
                                const hmap::TileRegion &)
         {
-          auto [pa_out, pa_in] = unpack<2>(p_arrays);
-          float k_smooth       = 0.01f;
+          auto [pa_in]   = unpack<1>(in);
+          auto [pa_out]  = unpack<1>(out);
+          float k_smooth = 0.01f;
 
           *pa_out = hmap::gpu::select_soil_flow(*pa_in,
                                                 ir,
@@ -214,12 +219,15 @@ void compute_select_soil_node(BaseNode &node)
     int ir_max = std::max(1, (int)(node.val<float>(A_RMAX) * nx));
 
     hmap::for_each_tile(
-        {p_out, p_in},
-        [&node, ir_min, ir_max](std::vector<hmap::Array *> p_arrays,
+        {p_in},
+        {p_out},
+        [&node, ir_min, ir_max](std::vector<const hmap::Array *> in,
+                                std::vector<hmap::Array *>       out,
                                 const hmap::TileRegion &)
         {
-          auto [pa_out, pa_in] = unpack<2>(p_arrays);
-          auto mode            = node.val_enum<hmap::ClampMode>(A_CURVATURE_CLAMP_MODE);
+          auto [pa_in]  = unpack<1>(in);
+          auto [pa_out] = unpack<1>(out);
+          auto mode     = node.val_enum<hmap::ClampMode>(A_CURVATURE_CLAMP_MODE);
 
           *pa_out = hmap::gpu::select_soil_rocks(*pa_in,
                                                  ir_max,
@@ -258,11 +266,14 @@ void compute_select_soil_node(BaseNode &node)
     hmap::VirtualArray grad_norm(CONFIG(node));
 
     hmap::for_each_tile(
-        {&grad_norm, p_in},
-        [&node, ir_grad, kernel_type](std::vector<hmap::Array *> p_arrays,
+        {p_in},
+        {&grad_norm},
+        [&node, ir_grad, kernel_type](std::vector<const hmap::Array *> in,
+                                      std::vector<hmap::Array *>       out,
                                       const hmap::TileRegion &)
         {
-          auto [pa_out, pa_in] = unpack<2>(p_arrays);
+          auto [pa_in]  = unpack<1>(in);
+          auto [pa_out] = unpack<1>(out);
           *pa_out = hmap::gpu::morphological_gradient(*pa_in, ir_grad, kernel_type);
         },
         node.cfg().cm_gpu);
@@ -279,11 +290,14 @@ void compute_select_soil_node(BaseNode &node)
         node.cfg().cm_cpu);
 
     hmap::for_each_tile(
-        {p_out, p_in, &grad_norm},
-        [&node, nx, ir_curv](std::vector<hmap::Array *> p_arrays,
+        {p_in, &grad_norm},
+        {p_out},
+        [&node, nx, ir_curv](std::vector<const hmap::Array *> in,
+                             std::vector<hmap::Array *>       out,
                              const hmap::TileRegion &)
         {
-          auto [pa_out, pa_in, pa_grad_norm] = unpack<3>(p_arrays);
+          auto [pa_in, pa_grad_norm] = unpack<2>(in);
+          auto [pa_out]              = unpack<1>(out);
           auto mode = node.val_enum<hmap::ClampMode>(A_CURVATURE_CLAMP_MODE);
 
           *pa_out = hmap::gpu::select_soil_weathered(
@@ -304,10 +318,14 @@ void compute_select_soil_node(BaseNode &node)
   else if (group == G_RIVERS)
   {
     hmap::for_each_tile(
-        {p_out, p_in},
-        [&node](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
+        {p_in},
+        {p_out},
+        [&node](std::vector<const hmap::Array *> in,
+                std::vector<hmap::Array *>       out,
+                const hmap::TileRegion &)
         {
-          auto [pa_out, pa_in] = unpack<2>(p_arrays);
+          auto [pa_in]  = unpack<1>(in);
+          auto [pa_out] = unpack<1>(out);
 
           *pa_out = hmap::select_rivers(*pa_in,
                                         node.val<float>(A_TALUS_REF),

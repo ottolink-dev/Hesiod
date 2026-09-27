@@ -48,13 +48,17 @@ void compute_water_mask_node(BaseNode &node)
   {
     hmap::VirtualArray *p_mask = node.get_value_ref<hmap::VirtualArray>(P_MASK);
 
+    // depth and elevation are inputs, never written back upstream
     hmap::for_each_tile(
-        {p_depth, p_z, p_mask},
-        [&node](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
+        {p_depth, p_z},
+        {p_mask},
+        [&node](std::vector<const hmap::Array *> in,
+                std::vector<hmap::Array *>       out,
+                const hmap::TileRegion &)
         {
-          hmap::Array *pa_depth = p_arrays[0];
-          hmap::Array *pa_z     = p_arrays[1];
-          hmap::Array *pa_mask  = p_arrays[2];
+          const hmap::Array *pa_depth = in[0];
+          const hmap::Array *pa_z     = in[1];
+          hmap::Array       *pa_mask  = out[0];
 
           float added_depth = node.val<float>(A_ADDITIONAL_DEPTH);
 
