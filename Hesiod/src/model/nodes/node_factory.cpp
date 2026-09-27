@@ -206,10 +206,13 @@ std::map<std::string, std::string> get_node_inventory()
       {"ExportCloud", "Export"},
       {"ExportCloudToPly", "Export"},
       {"ExportHeightmap", "Export"},
+      {"ExportHeightmapStreamed", "Export"},
       {"ExportNormalMap", "Export"},
       {"ExportPath", "Export"},
       {"ExportPointsToPly", "Export"},
+      {"ExportScene", "WIP"},
       {"ExportTexture", "Export"},
+      {"ExportTextureStreamed", "Export"},
       {"ExportTiled", "Export"},
       {"Falloff", "Boundaries"},
       {"FillTalus", "Filter/Advanced Filters"},
@@ -507,10 +510,13 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
     SETUP_NODE(ExportAsCubemap, export_as_cubemap);
     SETUP_NODE(ExportCloud, export_cloud);
     SETUP_NODE(ExportCloudToPly, export_cloud_to_ply);
+    SETUP_NODE(ExportHeightmapStreamed, export_heightmap_streamed);
     SETUP_NODE(ExportNormalMap, export_normal_map);
     SETUP_NODE(ExportPath, export_path);
     SETUP_NODE(ExportPointsToPly, export_points_to_ply);
+    SETUP_NODE(ExportScene, export_scene);
     SETUP_NODE(ExportTexture, export_texture);
+    SETUP_NODE(ExportTextureStreamed, export_texture_streamed);
     SETUP_NODE(ExportTiled, export_tiled);
     SETUP_NODE(Falloff, falloff);
     SETUP_NODE(FillTalus, fill_talus);

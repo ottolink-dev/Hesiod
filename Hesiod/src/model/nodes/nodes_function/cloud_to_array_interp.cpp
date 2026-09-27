@@ -76,8 +76,7 @@ void compute_cloud_to_array_interp_node(BaseNode &node)
 
           *pa_out = 0.f;
 
-          hmap::InterpolationMethod2D method = hmap::InterpolationMethod2D(
-              node.val_enum<hmap::InterpolationMethod2D>(A_ITP_METHOD));
+          auto method = node.val_enum<hmap::InterpolationMethod2D>(A_ITP_METHOD);
 
           p_cloud
               ->to_array_interp(*pa_out, bbox_points, method, pa_dx, pa_dy, region.bbox);
