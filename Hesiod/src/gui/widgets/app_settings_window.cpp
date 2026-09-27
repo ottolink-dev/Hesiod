@@ -1315,6 +1315,13 @@ void AppSettingsWindow::setup_pages()
                                      {4096, "4096 × 4096"}}),
                   false,
                   "default heightmap size shape new graph project resolution");
+    this->add_row(editing,
+                  "Open projects at 1K",
+                  "Load graphs above 1024 × 1024 at 1024 for lighter editing. The "
+                  "file and the bake resolution are not changed.",
+                  this->make_toggle(HSD_SETTING(bool, node_editor.open_projects_at_1k)),
+                  false,
+                  "force low resolution large project load open fast preview 1024");
 
     QVBoxLayout *panels = this->add_card(page, "Panels");
     this->add_row(panels,

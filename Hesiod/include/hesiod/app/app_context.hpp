@@ -35,7 +35,9 @@ public:
 
   // --- Project management
   void new_project();
-  void load_project_model(const std::string &fname);
+  // returns how many graphs were opened at a lower resolution than saved
+  // (node_editor.open_projects_at_1k)
+  int load_project_model(const std::string &fname);
 
   // --- Error management
   ErrorManager       &get_error_manager();

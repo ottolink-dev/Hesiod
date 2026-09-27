@@ -480,10 +480,6 @@ void GraphTabsWidget::show_tab_menu(int index, const QPoint &global_pos)
     return;
 
   const std::string graph_id = this->tab_widget->tabText(index).toStdString();
-  auto              it = this->graph_workspace_widget_map.find(graph_id);
-  GraphNodeWidget  *gnw = it != this->graph_workspace_widget_map.end() && it->second
-                              ? it->second->get_graph_node_widget()
-                              : nullptr;
 
   HsdMenu  menu(QString::fromStdString(graph_id), this);
   QAction *title = menu.addAction(QString::fromStdString(graph_id));
@@ -496,7 +492,7 @@ void GraphTabsWidget::show_tab_menu(int index, const QPoint &global_pos)
   QAction *add = menu.addAction(HSD_ICON("menu_new_graph"), "New graph");
   menu.addSeparator();
   QAction *remove = menu.addAction("Delete graph…");
-  remove->setEnabled(this->tab_widget->count() > 1); // a project keeps one graph
+  remove->setEnabled(this->can_delete_graph());
   if (!remove->isEnabled())
     remove->setToolTip("A project needs at least one graph");
 
@@ -504,20 +500,39 @@ void GraphTabsWidget::show_tab_menu(int index, const QPoint &global_pos)
   this->tab_widget->setCurrentIndex(index);
 
   QAction *chosen = menu.exec(global_pos);
-  if (!chosen)
-    return;
+
+  if (chosen == settings)
+    this->run_graph_action(graph_id, GraphAction::SETTINGS);
+  else if (chosen == clear)
+    this->run_graph_action(graph_id, GraphAction::CLEAR);
+  else if (chosen == remove)
+    this->run_graph_action(graph_id, GraphAction::REMOVE);
+  else if (chosen == add)
+    if (ProjectUI *ui = HSD_APP->get_project_ui_ref())
+      ui->get_graph_manager_widget_ref()->on_new_graph_request();
+}
+
+bool GraphTabsWidget::can_delete_graph() const
+{
+  return this->tab_widget->count() > 1; // a project keeps one graph
+}
+
+void GraphTabsWidget::run_graph_action(const std::string &graph_id, GraphAction action)
+{
+  auto             it = this->graph_workspace_widget_map.find(graph_id);
+  GraphNodeWidget *gnw = it != this->graph_workspace_widget_map.end() && it->second
+                             ? it->second->get_graph_node_widget()
+                             : nullptr;
 
   GraphManagerWidget *manager = nullptr;
   if (ProjectUI *ui = HSD_APP->get_project_ui_ref())
     manager = ui->get_graph_manager_widget_ref();
 
-  if (chosen == settings && gnw)
+  if (action == GraphAction::SETTINGS && gnw)
     gnw->on_graph_settings_request();
-  else if (chosen == clear && gnw)
+  else if (action == GraphAction::CLEAR && gnw)
     gnw->on_graph_clear_request();
-  else if (chosen == add && manager)
-    manager->on_new_graph_request();
-  else if (chosen == remove && manager)
+  else if (action == GraphAction::REMOVE && manager && this->can_delete_graph())
   {
     MessageDialog box(this->window(),
                       MessageDialog::Kind::Warning,

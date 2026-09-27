@@ -40,6 +40,16 @@ public:
 
   std::string get_selected_graph_id() const;
 
+  // actions on one graph, from its tab menu or the main Graph menu
+  enum class GraphAction
+  {
+    SETTINGS,
+    CLEAR,
+    REMOVE,
+  };
+  bool can_delete_graph() const;
+  void run_graph_action(const std::string &graph_id, GraphAction action);
+
   QSize sizeHint() const override;
 
 signals:

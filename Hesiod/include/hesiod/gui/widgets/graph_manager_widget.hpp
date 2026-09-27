@@ -123,6 +123,7 @@ private slots:
 private:
   // --- Helper(s) ---
   void add_list_item(const std::string &id);
+  void setup_reset_actions();
 
   // --- Members ---
   std::weak_ptr<GraphManager> p_graph_manager;
@@ -130,6 +131,7 @@ private:
   QListWidget                *list_widget;
   QPushButton                *apply_button;
   bool                        is_dirty = false;
+  QList<QAction *>            reset_actions; // location, rotation, scale
 };
 
 } // namespace hesiod

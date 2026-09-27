@@ -19,6 +19,7 @@
 #include <QLabel>
 #include <QMenuBar>
 #include <QMessageBox>
+#include <QPainter>
 #include <QProcess>
 #include <QProgressDialog>
 #include <QPushButton>
@@ -428,6 +429,7 @@ void HesiodApplication::load_project_model_and_ui(const std::string &fname,
   // a missing file must fall back to the blank project too: load_project_model
   // would return without creating a model and the UI would dereference null
   const bool blank_startup = actual_fname.empty() || !fs::exists(actual_fname);
+  int        opened_at_1k = 0; // graphs capped by node_editor.open_projects_at_1k
 
   if (blank_startup)
   {
@@ -445,7 +447,7 @@ void HesiodApplication::load_project_model_and_ui(const std::string &fname,
   }
   else
   {
-    this->context.load_project_model(actual_fname);
+    opened_at_1k = this->context.load_project_model(actual_fname);
 
     auto &error_manager = this->context.get_error_manager();
 
@@ -574,7 +576,14 @@ void HesiodApplication::load_project_model_and_ui(const std::string &fname,
   // viewer_render_type, so this line never puts a stale mode back.
   this->set_viewer_render_type(this->viewer_render_type);
 
-  this->notify("Project loaded successfully.");
+  if (opened_at_1k > 0)
+    this->notify(std::format("Project loaded at 1K resolution ({} graph{} lowered by "
+                             "the application setting). Bake resolution is unchanged.",
+                             opened_at_1k,
+                             opened_at_1k > 1 ? "s" : ""),
+                 8000);
+  else
+    this->notify("Project loaded successfully.");
 }
 
 void HesiodApplication::notify(const std::string &msg, int timeout)
@@ -1721,6 +1730,47 @@ void HesiodApplication::setup_menu_bar()
   new_graph->setIcon(HSD_ICON("menu_new_graph"));
   graph_menu->addAction(new_graph);
 
+  // actions on the graph shown in the editor, named in each entry so the
+  // wrong graph cannot be changed by accident
+  {
+    using Action = GraphTabsWidget::GraphAction;
+
+    graph_menu->addSeparator();
+    auto *settings = graph_menu->addAction(HSD_ICON("settings"), "");
+    auto *clear = graph_menu->addAction("");
+    auto *remove = graph_menu->addAction("");
+
+    auto run = [this](Action action)
+    {
+      if (GraphTabsWidget *tabs = this->project_ui->get_graph_tabs_widget_ref())
+        tabs->run_graph_action(tabs->get_selected_graph_id(), action);
+    };
+    this->connect(settings,
+                  &QAction::triggered,
+                  this,
+                  [run]() { run(Action::SETTINGS); });
+    this->connect(clear, &QAction::triggered, this, [run]() { run(Action::CLEAR); });
+    this->connect(remove, &QAction::triggered, this, [run]() { run(Action::REMOVE); });
+
+    this->connect(graph_menu,
+                  &QMenu::aboutToShow,
+                  this,
+                  [this, settings, clear, remove]()
+                  {
+                    GraphTabsWidget *tabs = this->project_ui->get_graph_tabs_widget_ref();
+                    const QString    id = tabs ? QString::fromStdString(
+                                                  tabs->get_selected_graph_id())
+                                               : QString();
+
+                    settings->setText(QString("Settings of \"%1\"…").arg(id));
+                    clear->setText(QString("Clear \"%1\"…").arg(id));
+                    remove->setText(QString("Delete \"%1\"…").arg(id));
+                    for (QAction *action : {settings, clear, remove})
+                      action->setEnabled(!id.isEmpty());
+                    remove->setEnabled(!id.isEmpty() && tabs->can_delete_graph());
+                  });
+  }
+
   graph_menu->addSeparator();
 
   auto *reseed = new QAction("Advance Random Seeds", this);
@@ -1736,9 +1786,7 @@ void HesiodApplication::setup_menu_bar()
   QMenu *view_menu = add_menu(this->main_window->menu_bar(), "&View");
 
   auto *show_layout_manager = new QAction("Graph Layout Manager", this);
-  show_layout_manager->setCheckable(true);
-  show_layout_manager->setChecked(
-      this->context.app_settings.window.show_graph_manager_widget);
+  show_layout_manager->setIcon(HSD_ICON("menu_graph_manager"));
   view_menu->addAction(show_layout_manager);
 
   // texture dld
@@ -1756,6 +1804,39 @@ void HesiodApplication::setup_menu_bar()
   {
     view_menu->addAction(show_heightmapper_widget);
   }
+
+  // window entries show their icon at full strength only while it is open
+  this->connect(
+      view_menu,
+      &QMenu::aboutToShow,
+      this,
+      [this, show_layout_manager, show_texture_downloader, show_heightmapper_widget]()
+      {
+        auto set_icon = [](QAction *action, const char *name, QWidget *window)
+        {
+          QIcon icon = HSD_ICON(name);
+          if (!window || !window->isVisible())
+          {
+            QPixmap faded(64, 64);
+            faded.fill(Qt::transparent);
+            QPainter painter(&faded);
+            painter.setOpacity(0.35);
+            painter.drawPixmap(0, 0, icon.pixmap(64, 64));
+            painter.end();
+            icon = QIcon(faded);
+          }
+          action->setIcon(icon);
+        };
+        set_icon(show_layout_manager,
+                 "menu_graph_manager",
+                 this->project_ui->get_graph_manager_widget_ref());
+        set_icon(show_texture_downloader,
+                 "menu_texture_downloader",
+                 this->project_ui->get_texture_downloader_ref());
+        set_icon(show_heightmapper_widget,
+                 "menu_heightmapper",
+                 this->project_ui->get_heightmapper_widget_ref());
+      });
 
   view_menu->addSeparator();
 
