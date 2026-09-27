@@ -157,10 +157,10 @@ void compute_coastal_erosion_profile_node(BaseNode &node)
 
   // --- Post-process
 
-  p_z_out->smooth_overlap_buffers();
-  p_depth_out->smooth_overlap_buffers();
-  p_shore_mask->smooth_overlap_buffers();
-  p_scarp_mask->smooth_overlap_buffers();
+  p_z_out->sync_overlap_buffers();
+  p_depth_out->sync_overlap_buffers();
+  p_shore_mask->sync_overlap_buffers();
+  p_scarp_mask->sync_overlap_buffers();
 }
 
 } // namespace hesiod

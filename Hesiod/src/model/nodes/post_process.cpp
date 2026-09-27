@@ -160,7 +160,7 @@ void post_process_heightmap(BaseNode           &node,
         },
         node.cfg().cm_gpu);
 
-    h.smooth_overlap_buffers();
+    h.sync_overlap_buffers();
   }
 
   // remap

@@ -103,8 +103,8 @@ void compute_flatbed_carve_node(BaseNode &node)
           },
           node.cfg().cm_cpu);
 
-      p_out->smooth_overlap_buffers();
-      p_mask->smooth_overlap_buffers();
+      p_out->sync_overlap_buffers();
+      p_mask->sync_overlap_buffers();
     }
 }
 

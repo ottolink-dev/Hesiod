@@ -74,7 +74,7 @@ void compute_hydraulic_stream_upscale_amplification_node(BaseNode &node)
         },
         node.cfg().cm_cpu);
 
-    p_out->smooth_overlap_buffers();
+    p_out->sync_overlap_buffers();
   }
 }
 

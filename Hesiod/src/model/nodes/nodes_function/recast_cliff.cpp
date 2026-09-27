@@ -184,7 +184,7 @@ void compute_recast_cliff_node(BaseNode &node)
       },
       node.cfg().cm_gpu);
 
-  p_out->smooth_overlap_buffers();
+  p_out->sync_overlap_buffers();
 
   // input amplitude preservation
   p_out->remap(p_in->min(node.cfg().cm_cpu),
@@ -192,7 +192,7 @@ void compute_recast_cliff_node(BaseNode &node)
                node.cfg().cm_cpu);
 
   if (p_cliff_mask)
-    p_cliff_mask->smooth_overlap_buffers();
+    p_cliff_mask->sync_overlap_buffers();
 
   // --- Post-process
 

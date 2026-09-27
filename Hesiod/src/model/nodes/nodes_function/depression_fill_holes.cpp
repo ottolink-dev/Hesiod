@@ -109,7 +109,7 @@ void compute_deposition_fill_holes_node(BaseNode &node)
   // --- Post-process
 
   post_process_heightmap(node, *p_out);
-  p_deposition->smooth_overlap_buffers();
+  p_deposition->sync_overlap_buffers();
 }
 
 } // namespace hesiod

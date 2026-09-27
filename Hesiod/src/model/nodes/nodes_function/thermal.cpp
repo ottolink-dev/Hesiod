@@ -192,7 +192,7 @@ void compute_thermal_node(BaseNode &node)
 
   if (p_deposition)
   {
-    p_deposition->smooth_overlap_buffers();
+    p_deposition->sync_overlap_buffers();
     p_deposition->remap(0.f, 1.f, node.cfg().cm_cpu);
   }
 }

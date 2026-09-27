@@ -179,7 +179,7 @@ void compute_mix_texture_masked_node(BaseNode &node)
     hmap::for_each_tile(vas, lambda, node.cfg().cm_gpu);
 
     for (int c = 0; c < p_out->channels(); ++c)
-      p_out->channel(c).smooth_overlap_buffers();
+      p_out->channel(c).sync_overlap_buffers();
   }
 }
 

@@ -70,7 +70,7 @@ void compute_water_mask_node(BaseNode &node)
         node.cfg().cm_gpu);
 
     // post-process
-    p_mask->smooth_overlap_buffers();
+    p_mask->sync_overlap_buffers();
     post_process_heightmap(node, *p_mask);
   }
 }

@@ -152,7 +152,7 @@ void compute_select_slope_node(BaseNode &node)
           node.cfg().cm_cpu);
     }
 
-    p_out->smooth_overlap_buffers();
+    p_out->sync_overlap_buffers();
     post_process_heightmap(node, *p_out);
   }
   else if (group == G_ANGLE)
@@ -171,7 +171,7 @@ void compute_select_slope_node(BaseNode &node)
         },
         node.cfg().cm_cpu);
 
-    p_out->smooth_overlap_buffers();
+    p_out->sync_overlap_buffers();
     post_process_heightmap(node, *p_out);
   }
   else if (group == G_INWARD_OUTWARD)
@@ -187,7 +187,7 @@ void compute_select_slope_node(BaseNode &node)
         },
         node.cfg().cm_cpu);
 
-    p_out->smooth_overlap_buffers();
+    p_out->sync_overlap_buffers();
     post_process_heightmap(node, *p_out);
   }
 }

@@ -107,7 +107,7 @@ void compute_smooth_fill_node(BaseNode &node)
 
   // --- Post-process
 
-  p_deposition->smooth_overlap_buffers();
+  p_deposition->sync_overlap_buffers();
   if (normalized)
   {
     p_deposition->remap(0.f, 1.f, node.cfg().cm_cpu);

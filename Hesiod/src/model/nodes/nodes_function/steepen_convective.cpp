@@ -69,7 +69,7 @@ void compute_steepen_convective_node(BaseNode &node)
         },
         node.cfg().cm_cpu);
 
-    p_out->smooth_overlap_buffers();
+    p_out->sync_overlap_buffers();
   }
 }
 

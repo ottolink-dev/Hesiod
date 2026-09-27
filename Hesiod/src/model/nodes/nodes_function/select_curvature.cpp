@@ -128,7 +128,7 @@ void compute_select_curvature_node(BaseNode &node)
         },
         node.cfg().cm_gpu);
 
-    p_out->smooth_overlap_buffers();
+    p_out->sync_overlap_buffers();
     post_process_heightmap(node, *p_out);
   }
   else if (group == G_VALLEY)
@@ -144,7 +144,7 @@ void compute_select_curvature_node(BaseNode &node)
         },
         node.cfg().cm_gpu);
 
-    p_out->smooth_overlap_buffers();
+    p_out->sync_overlap_buffers();
     post_apply_saturate_percentile(node, *p_out, 0.f, 0.95f);
     post_process_heightmap(node, *p_out);
   }
@@ -161,7 +161,7 @@ void compute_select_curvature_node(BaseNode &node)
         },
         node.cfg().cm_cpu);
 
-    p_out->smooth_overlap_buffers();
+    p_out->sync_overlap_buffers();
     post_process_heightmap(node, *p_out);
   }
 }

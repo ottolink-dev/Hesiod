@@ -109,7 +109,7 @@ void blend_heightmaps(BaseNode           &node,
   hmap::for_each_tile({&h_out, &h1, &h2}, lambda_tile, node.cfg().cm_cpu);
 
   if (method == BlendingMethod::GRADIENTS)
-    h_out.smooth_overlap_buffers();
+    h_out.sync_overlap_buffers();
 }
 
 } // namespace hesiod

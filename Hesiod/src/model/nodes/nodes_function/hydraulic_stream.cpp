@@ -79,9 +79,9 @@ void compute_hydraulic_stream_node(BaseNode &node)
         },
         node.cfg().cm_cpu);
 
-    p_out->smooth_overlap_buffers();
+    p_out->sync_overlap_buffers();
 
-    p_erosion_map->smooth_overlap_buffers();
+    p_erosion_map->sync_overlap_buffers();
     p_erosion_map->remap(0.f, 1.f, node.cfg().cm_cpu);
   }
 }

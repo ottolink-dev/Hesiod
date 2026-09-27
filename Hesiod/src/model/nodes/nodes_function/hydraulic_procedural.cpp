@@ -216,7 +216,7 @@ void compute_hydraulic_procedural_node(BaseNode &node)
       node.cfg().cm_gpu);
 
   // post-process
-  p_out->smooth_overlap_buffers();
+  p_out->sync_overlap_buffers();
   post_process_heightmap(node, *p_out, p_in);
 }
 

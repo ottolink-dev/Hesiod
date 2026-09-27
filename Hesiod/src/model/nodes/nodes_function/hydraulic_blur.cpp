@@ -70,7 +70,7 @@ void compute_hydraulic_blur_node(BaseNode &node)
   p_out->remap(zmin, zmax, node.cfg().cm_cpu);
 
   // post-process
-  p_out->smooth_overlap_buffers();
+  p_out->sync_overlap_buffers();
   post_process_heightmap(node, *p_out, p_in);
 }
 

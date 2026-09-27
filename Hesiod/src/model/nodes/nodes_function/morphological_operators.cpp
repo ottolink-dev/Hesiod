@@ -93,7 +93,7 @@ void compute_morphological_operators_node(BaseNode &node)
       node.cfg().cm_gpu);
 
   // post-process
-  p_out->smooth_overlap_buffers();
+  p_out->sync_overlap_buffers();
   post_apply_saturate_percentile(node, *p_out, 0.f, satmax);
   post_process_heightmap(node, *p_out);
 }

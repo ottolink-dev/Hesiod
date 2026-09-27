@@ -142,12 +142,12 @@ void compute_thermal_scree_node(BaseNode &node)
 
   // --- Post-process
 
-  p_out->smooth_overlap_buffers();
+  p_out->sync_overlap_buffers();
   post_process_heightmap(node, *p_out, p_in);
 
   if (p_deposition)
   {
-    p_deposition->smooth_overlap_buffers();
+    p_deposition->sync_overlap_buffers();
     p_deposition->remap(0.f, 1.f, node.cfg().cm_cpu);
   }
 }

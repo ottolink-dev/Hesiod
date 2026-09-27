@@ -80,7 +80,7 @@ void compute_water_depth_from_mask_node(BaseNode &node)
 
   // --- Post-process
 
-  p_depth->smooth_overlap_buffers();
+  p_depth->sync_overlap_buffers();
 }
 
 } // namespace hesiod

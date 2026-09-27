@@ -97,15 +97,15 @@ void compute_hydraulic_stream_log_node(BaseNode &node)
         },
         node.cfg().cm_gpu);
 
-    p_out->smooth_overlap_buffers();
+    p_out->sync_overlap_buffers();
 
-    p_erosion_map->smooth_overlap_buffers();
+    p_erosion_map->sync_overlap_buffers();
     p_erosion_map->remap(0.f, 1.f, node.cfg().cm_cpu);
 
-    p_deposition_map->smooth_overlap_buffers();
+    p_deposition_map->sync_overlap_buffers();
     p_deposition_map->remap(0.f, 1.f, node.cfg().cm_cpu);
 
-    p_flow_map->smooth_overlap_buffers();
+    p_flow_map->sync_overlap_buffers();
     p_flow_map->remap(0.f, 1.f, node.cfg().cm_cpu);
 
     // post-process

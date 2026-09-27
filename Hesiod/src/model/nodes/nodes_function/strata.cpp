@@ -150,7 +150,7 @@ void compute_strata_node(BaseNode &node)
         },
         node.cfg().cm_gpu);
 
-    p_out->smooth_overlap_buffers();
+    p_out->sync_overlap_buffers();
     p_out->remap(hmin, hmax, node.cfg().cm_cpu);
 
     // post-process

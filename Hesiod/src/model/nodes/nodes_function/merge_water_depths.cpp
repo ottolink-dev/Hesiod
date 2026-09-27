@@ -59,7 +59,7 @@ void compute_merge_water_depths_node(BaseNode &node)
         },
         node.cfg().cm_cpu);
 
-    p_depth->smooth_overlap_buffers();
+    p_depth->sync_overlap_buffers();
   }
 }
 

@@ -88,7 +88,7 @@ std::shared_ptr<hmap::VirtualArray> pre_process_mask(BaseNode            &node,
         },
         cfg.cm_gpu);
 
-    p_mask->smooth_overlap_buffers();
+    p_mask->sync_overlap_buffers();
     p_mask->remap(0.f, 1.f, cfg.cm_cpu);
   }
 

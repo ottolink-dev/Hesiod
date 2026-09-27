@@ -105,7 +105,7 @@ void compute_path_dig_node(BaseNode &node)
         p_out->from_array(z_array, node.cfg().cm_cpu);
       }
 
-      p_out->smooth_overlap_buffers();
+      p_out->sync_overlap_buffers();
     }
 }
 

@@ -120,7 +120,7 @@ void compute_thermal_flatten_node(BaseNode &node)
 
   // --- Post-process
 
-  p_out->smooth_overlap_buffers();
+  p_out->sync_overlap_buffers();
 }
 
 } // namespace hesiod

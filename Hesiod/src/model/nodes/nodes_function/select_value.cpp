@@ -152,7 +152,7 @@ void compute_select_value_node(BaseNode &node)
         },
         node.cfg().cm_cpu);
 
-    p_out->smooth_overlap_buffers();
+    p_out->sync_overlap_buffers();
     post_process_heightmap(node, *p_out);
   }
   else if (group == G_THRESHOLD)
@@ -174,7 +174,7 @@ void compute_select_value_node(BaseNode &node)
         },
         node.cfg().cm_cpu);
 
-    p_out->smooth_overlap_buffers();
+    p_out->sync_overlap_buffers();
     post_process_heightmap(node, *p_out, p_in);
   }
   else if (group == G_TARGET)
@@ -201,7 +201,7 @@ void compute_select_value_node(BaseNode &node)
         },
         node.cfg().cm_cpu);
 
-    p_out->smooth_overlap_buffers();
+    p_out->sync_overlap_buffers();
     post_process_heightmap(node, *p_out);
   }
   else if (group == G_MIDRANGE)
@@ -218,7 +218,7 @@ void compute_select_value_node(BaseNode &node)
         },
         node.cfg().cm_cpu);
 
-    p_out->smooth_overlap_buffers();
+    p_out->sync_overlap_buffers();
     post_process_heightmap(node, *p_out);
   }
 }

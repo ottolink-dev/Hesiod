@@ -65,8 +65,8 @@ void compute_gradient_node(BaseNode &node)
         },
         node.cfg().cm_cpu);
 
-    p_dx->smooth_overlap_buffers();
-    p_dy->smooth_overlap_buffers();
+    p_dx->sync_overlap_buffers();
+    p_dy->sync_overlap_buffers();
 
     // post-process
     post_process_heightmap(node, *p_dx);
