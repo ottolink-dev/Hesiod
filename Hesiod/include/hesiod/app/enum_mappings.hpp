@@ -155,6 +155,7 @@ static struct EnumMappings
       {"Topographic Position Index",
        hmap::gpu::LocalMetrics::LM_TOPOGRAPHIC_POSITION_INDEX},
       {"Relative Elevation", hmap::gpu::LocalMetrics::LM_RELATIVE_ELEVATION},
+      {"Roughness", hmap::gpu::LocalMetrics::LM_ROUGHNESS},
       {"Ruggedness", hmap::gpu::LocalMetrics::LM_RUGGEDNESS},
       {"Rugosity Concave", hmap::gpu::LocalMetrics::LM_RUGOSITY_CONCAVE},
       {"Rugosity Convex", hmap::gpu::LocalMetrics::LM_RUGOSITY_CONVEX}};

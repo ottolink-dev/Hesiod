@@ -598,7 +598,7 @@ nlohmann::json convert_legacy_node_json(const nlohmann::json &json_node)
     if (label == "RelativeElevation")
       metric_val = 10;
     else if (label == "Ruggedness")
-      metric_val = 11;
+      metric_val = 12;
 
     if (converted_node.contains("containers") && converted_node["containers"].is_object())
     {
