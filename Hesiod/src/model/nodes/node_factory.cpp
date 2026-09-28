@@ -299,6 +299,7 @@ std::map<std::string, std::string> get_node_inventory()
       {"PathNoise", "Geometry/Path"},
       {"PathResample", "Geometry/Path"},
       {"PathSDF", "Geometry/Path"},
+      {"PathSetValues", "Geometry/Path"},
       {"PathToCloud", "Geometry/Path"},
       {"PathToHeightmap", "Geometry/Path"},
       {"PathTransform", "Geometry/Path"},
@@ -598,6 +599,7 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
     SETUP_NODE(PathNoise, path_noise);
     SETUP_NODE(PathResample, path_resample);
     SETUP_NODE(PathSDF, path_sdf);
+    SETUP_NODE(PathSetValues, path_set_values);
     SETUP_NODE(PathToCloud, path_to_cloud);
     SETUP_NODE(PathToHeightmap, path_to_heightmap);
     SETUP_NODE(PathTransform, path_transform);

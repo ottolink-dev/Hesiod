@@ -16311,6 +16311,46 @@
             }
         }
     },
+    "PathSetValues": {
+        "category": "Geometry/Path",
+        "description": "No description available",
+        "label": "PathSetValues",
+        "parameter_groups": [
+            {
+                "keys": [],
+                "name": "From Heightmap"
+            },
+            {
+                "keys": [],
+                "name": "From Border Distance"
+            },
+            {
+                "keys": [],
+                "name": "From Min Distance"
+            }
+        ],
+        "parameters": null,
+        "ports": {
+            "heightmap": {
+                "caption": "heightmap",
+                "data_type": "VirtualArray",
+                "description": "No description",
+                "type": "input"
+            },
+            "output": {
+                "caption": "output",
+                "data_type": "Path",
+                "description": "Output path.",
+                "type": "output"
+            },
+            "path": {
+                "caption": "path",
+                "data_type": "Path",
+                "description": "Input path.",
+                "type": "input"
+            }
+        }
+    },
     "PathToCloud": {
         "category": "Geometry/Path",
         "description": "PathToCloud convert a Path to a set of points (Cloud).",
