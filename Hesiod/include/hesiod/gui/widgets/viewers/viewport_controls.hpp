@@ -11,8 +11,6 @@
 
 #include "nlohmann/json.hpp"
 
-#include "hesiod/gui/widgets/menu_chrome.hpp"
-
 namespace qtr
 {
 class RenderWidget;
@@ -22,9 +20,14 @@ namespace hesiod
 {
 
 class GraphNodeWidget;
+
+// the toolbar's pieces, one file each in viewers/viewport/
+namespace viewport
+{
 class ViewportRail;
 class ViewportPanel;
 class SnapGuide;
+} // namespace viewport
 
 // =====================================
 // ViewportControls
@@ -78,7 +81,7 @@ protected:
   bool eventFilter(QObject *watched, QEvent *event) override;
 
 private:
-  friend class ViewportRail;
+  friend class viewport::ViewportRail;
 
   void open_panel(int tool);
   void close_panel(bool animate = true);
@@ -89,17 +92,13 @@ private:
   void reset_all();
   void notify_layout_changed();
 
-  // A click on a tool whose menu is open closes the menu, and Qt replays the
-  // press onto the rail: that press must not open the menu again.
-  PopupReplayGuard menu_guard;
-
-  QPointer<qtr::RenderWidget>            renderer;
-  QPointer<GraphNodeWidget>              graph;
-  ViewportRail                          *rail = nullptr;
-  SnapGuide                             *guide = nullptr;
-  std::map<int, QPointer<ViewportPanel>> panels;
-  int                                    open_tool = -1;
-  int                                    render_type = 1;
+  QPointer<qtr::RenderWidget>                      renderer;
+  QPointer<GraphNodeWidget>                        graph;
+  viewport::ViewportRail                          *rail = nullptr;
+  viewport::SnapGuide                             *guide = nullptr;
+  std::map<int, QPointer<viewport::ViewportPanel>> panels;
+  int                                              open_tool = -1;
+  int                                              render_type = 1;
 };
 
 } // namespace hesiod

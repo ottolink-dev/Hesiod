@@ -13,83 +13,16 @@
 #include <QMouseEvent>
 #include <QPainter>
 #include <QPainterPath>
-#include <QTimer>
-#include <QVBoxLayout>
 #include <QVariantAnimation>
 
 #include "meta_qt/ui/theme.hpp"
 
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/widgets/gui_utils.hpp"
-#include "hesiod/gui/widgets/menu_chrome.hpp"
 #include "hesiod/gui/widgets/window_chrome.hpp"
 
 namespace hesiod
 {
-
-namespace
-{
-
-// The configured border colour is meant for inputs; around whole panes it is
-// too loud. Pull it most of the way back toward the panel surface.
-QPainterPath panel_path(const QSize &size)
-{
-  QPainterPath path;
-  path.addRoundedRect(QRectF(0.5, 0.5, size.width() - 1.0, size.height() - 1.0),
-                      PanelFrame::radius,
-                      PanelFrame::radius);
-  return path;
-}
-
-// One of the four corner caps of a PanelFrame. Covers the square corner of
-// whatever the panel hosts with the background colour and redraws the rounded
-// border stroke on top, so the corner is round regardless of what is below.
-class PanelCorner final : public QWidget
-{
-public:
-  explicit PanelCorner(PanelFrame *panel) : QWidget(panel), panel(panel)
-  {
-    this->setAttribute(Qt::WA_TransparentForMouseEvents);
-    this->setAttribute(Qt::WA_NoSystemBackground);
-    this->setAttribute(Qt::WA_TranslucentBackground);
-    this->setFixedSize(PanelFrame::radius + 1, PanelFrame::radius + 1);
-  }
-
-protected:
-  void paintEvent(QPaintEvent *) override
-  {
-    QPainter p(this);
-    p.setRenderHint(QPainter::Antialiasing);
-    p.translate(-this->pos());
-
-    // The shapes only change with the card's size or this corner's place, but
-    // a card like the viewport repaints continuously (camera drags): rebuild
-    // them, and the path subtraction, only then.
-    if (this->panel->size() != this->cached_size || this->pos() != this->cached_pos)
-    {
-      this->cached_size = this->panel->size();
-      this->cached_pos = this->pos();
-      this->rounded = panel_path(this->cached_size);
-      QPainterPath square;
-      square.addRect(QRectF(this->geometry()));
-      this->outside = square.subtracted(this->rounded);
-    }
-
-    p.fillPath(this->outside, HSD_CTX.app_settings.colors.bg_deep);
-    p.setPen(QPen(panel_border_color(), 1));
-    p.setBrush(Qt::NoBrush);
-    p.drawPath(this->rounded);
-  }
-
-private:
-  PanelFrame  *panel;
-  QSize        cached_size;
-  QPoint       cached_pos;
-  QPainterPath rounded;
-  QPainterPath outside;
-};
-
-} // namespace
 
 // =====================================
 // WindowButton
@@ -228,108 +161,6 @@ void WindowButton::paintEvent(QPaintEvent *)
 }
 
 // =====================================
-// PanelFrame
-// =====================================
-
-PanelFrame::PanelFrame(QWidget *content, QWidget *parent)
-    : QWidget(parent), p_content(content)
-{
-  this->setObjectName("hsdPanelFrame");
-  this->setAttribute(Qt::WA_StyledBackground, false);
-
-  auto *layout = new QVBoxLayout(this);
-  layout->setContentsMargins(1, 1, 1, 1);
-  layout->setSpacing(0);
-
-  // an explicitly hidden pane stays hidden, and so does its card
-  const bool content_hidden = content &&
-                              content->testAttribute(Qt::WA_WState_ExplicitShowHide) &&
-                              content->testAttribute(Qt::WA_WState_Hidden);
-
-  if (content)
-  {
-    // keep the size constraints of the pane on the card, so splitters and
-    // layouts treat the card exactly as they treated the bare pane
-    this->setSizePolicy(content->sizePolicy());
-    layout->addWidget(content);
-    content->installEventFilter(this);
-  }
-
-  for (auto &corner : this->corners)
-    corner = new PanelCorner(this);
-
-  this->installEventFilter(this);
-
-  if (content_hidden)
-    this->hide();
-}
-
-bool PanelFrame::eventFilter(QObject *watched, QEvent *event)
-{
-  if (watched == this->p_content)
-  {
-    if (event->type() == QEvent::HideToParent)
-      this->hide();
-    else if (event->type() == QEvent::ShowToParent)
-      this->show();
-  }
-  else if (watched == this && event->type() == QEvent::ChildAdded)
-  {
-    // anything added later (overlays, popups parented here) must not end up
-    // above the corner caps; defer until the child is fully constructed
-    QTimer::singleShot(0,
-                       this,
-                       [this]()
-                       {
-                         for (auto *corner : this->corners)
-                           if (corner)
-                             corner->raise();
-                       });
-  }
-
-  return QWidget::eventFilter(watched, event);
-}
-
-void PanelFrame::paintEvent(QPaintEvent *)
-{
-  const auto &colors = HSD_CTX.app_settings.colors;
-
-  QPainter p(this);
-  p.setRenderHint(QPainter::Antialiasing);
-  p.fillRect(this->rect(), colors.bg_deep);
-  p.setPen(QPen(panel_border_color(), 1));
-  p.setBrush(colors.bg_primary);
-  p.drawPath(panel_path(this->size()));
-}
-
-void PanelFrame::place_corners()
-{
-  const int s = PanelFrame::radius + 1;
-  const int w = this->width();
-  const int h = this->height();
-
-  if (!this->corners[0])
-    return;
-
-  this->corners[0]->move(0, 0);
-  this->corners[1]->move(w - s, 0);
-  this->corners[2]->move(w - s, h - s);
-  this->corners[3]->move(0, h - s);
-
-  for (auto *corner : this->corners)
-  {
-    corner->raise();
-    corner->update();
-  }
-}
-
-void PanelFrame::resizeEvent(QResizeEvent *event)
-{
-  QWidget::resizeEvent(event);
-  this->place_corners();
-}
-
-// =====================================
 // TitleChip
 // =====================================
 
@@ -450,29 +281,20 @@ protected:
 
     event->accept();
 
-    // A click on the chip while its menu is open closes the menu, and Qt then
-    // replays that same press here: it must not open the menu straight again,
-    // or the chip could never close its own menu. menu_open covers a replay
-    // delivered while on_clicked is still running, the guard one delivered
-    // after it returned.
-    if (this->menu_open || this->replay_guard.swallow_press(event->position().toPoint()))
-      return;
-
+    // A click on the chip while its menu is open only closes the menu: the
+    // menu is built with setNoReplayFor(chip) (see TitleBar::title_chip), so
+    // Qt does not replay that press here and open it straight again.
     this->pressed = true;
-    this->menu_open = true;
     this->animate_open(true);
     this->repaint();
     this->on_clicked(this->mapToGlobal(QPoint(this->width() / 2, this->height() + 4)));
-    this->menu_open = false;
     this->pressed = false;
-    this->replay_guard.arm(this, this->rect());
     this->animate_open(false);
     this->update();
   }
 
   void mouseReleaseEvent(QMouseEvent *event) override
   {
-    this->replay_guard.release();
     this->pressed = false;
     this->update();
     QWidget::mouseReleaseEvent(event);
@@ -601,8 +423,6 @@ private:
   // state for mousePressEvent (see there)
   QVariantAnimation *flip = nullptr;
   qreal              open_t = 0.0;
-  bool               menu_open = false;
-  PopupReplayGuard   replay_guard;
 
   void animate_open(bool open)
   {
@@ -616,117 +436,6 @@ private:
 
   std::function<void(const QString &)> on_commit;
 };
-
-// =====================================
-// SegmentedControl
-// =====================================
-
-SegmentedControl::SegmentedControl(const QStringList &labels, QWidget *parent)
-    : QWidget(parent), labels(labels)
-{
-  this->setMouseTracking(true);
-  this->setCursor(Qt::PointingHandCursor);
-  this->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-}
-
-void SegmentedControl::set_current(int new_index)
-{
-  this->index = std::clamp(new_index, 0, int(this->labels.size()) - 1);
-  this->update();
-}
-
-void SegmentedControl::set_tooltips(const QStringList &new_tips)
-{
-  this->tips = new_tips;
-  this->setToolTip(new_tips.join("\n"));
-}
-
-QSize SegmentedControl::sizeHint() const
-{
-  const QFontMetrics fm(meta::qt::ui_font(11, true));
-  int                w = 4;
-  for (const QString &label : this->labels)
-    w += std::max(34, fm.horizontalAdvance(label) + 20);
-  return QSize(w, 26);
-}
-
-int SegmentedControl::segment_at(const QPoint &pos) const
-{
-  if (this->labels.isEmpty())
-    return -1;
-  const qreal seg = (this->width() - 4.0) / this->labels.size();
-  const int   i = int((pos.x() - 2.0) / seg);
-  return (i >= 0 && i < this->labels.size()) ? i : -1;
-}
-
-void SegmentedControl::leaveEvent(QEvent *event)
-{
-  this->hovered = -1;
-  this->update();
-  QWidget::leaveEvent(event);
-}
-
-void SegmentedControl::mouseMoveEvent(QMouseEvent *event)
-{
-  const int i = this->segment_at(event->position().toPoint());
-  if (i != this->hovered)
-  {
-    this->hovered = i;
-    if (i >= 0 && i < this->tips.size())
-      this->setToolTip(this->tips[i]);
-    this->update();
-  }
-}
-
-void SegmentedControl::mousePressEvent(QMouseEvent *event)
-{
-  const int i = this->segment_at(event->position().toPoint());
-  if (event->button() != Qt::LeftButton || i < 0 || i == this->index)
-    return;
-
-  this->index = i;
-  this->update();
-  if (this->on_changed)
-    this->on_changed(i);
-}
-
-void SegmentedControl::paintEvent(QPaintEvent *)
-{
-  const auto &colors = HSD_CTX.app_settings.colors;
-
-  QPainter p(this);
-  p.setRenderHint(QPainter::Antialiasing);
-
-  const QRectF box = QRectF(this->rect()).adjusted(0.5, 0.5, -0.5, -0.5);
-  p.setPen(QPen(panel_border_color(), 1));
-  p.setBrush(colors.bg_primary);
-  p.drawRoundedRect(box, 7, 7);
-
-  const qreal seg = (this->width() - 4.0) / std::max<qsizetype>(1, this->labels.size());
-  p.setFont(meta::qt::ui_font(11, true));
-
-  for (int i = 0; i < this->labels.size(); ++i)
-  {
-    const QRectF cell(2.0 + i * seg, 2.0, seg, this->height() - 4.0);
-
-    if (i == this->index)
-    {
-      p.setPen(Qt::NoPen);
-      p.setBrush(mix_colors(colors.bg_primary, colors.accent, 0.55));
-      p.drawRoundedRect(cell, 5, 5);
-    }
-    else if (i == this->hovered)
-    {
-      p.setPen(Qt::NoPen);
-      p.setBrush(mix_colors(colors.bg_primary, colors.text_primary, 0.06));
-      p.drawRoundedRect(cell, 5, 5);
-    }
-
-    p.setPen(i == this->index ? colors.text_primary
-                              : mix_colors(colors.bg_primary, colors.text_primary, 0.60));
-    p.drawText(cell, Qt::AlignCenter, this->labels[i]);
-  }
-}
 
 // =====================================
 // TitleBar
@@ -863,19 +572,6 @@ bool TitleBar::is_window_button(const QWidget *widget) const
   return widget == this->p_min || widget == this->p_max || widget == this->p_close;
 }
 
-void TitleBar::mouseDoubleClickEvent(QMouseEvent *event)
-{
-  // only reached where the OS does not own the caption (non-Windows)
-  if (event->button() == Qt::LeftButton && this->is_caption_area(event->pos()))
-  {
-    this->p_window->isMaximized() ? this->p_window->showNormal()
-                                  : this->p_window->showMaximized();
-    event->accept();
-    return;
-  }
-  QWidget::mouseDoubleClickEvent(event);
-}
-
 void TitleBar::paintEvent(QPaintEvent *)
 {
   QPainter p(this);
@@ -911,6 +607,8 @@ void TitleBar::resizeEvent(QResizeEvent *event)
 }
 
 void TitleBar::set_maximized(bool new_state) { this->p_max->set_maximized(new_state); }
+
+QWidget *TitleBar::title_chip() const { return this->p_chip; }
 
 void TitleBar::set_project_title(const QString &name,
                                  const QString &path,
