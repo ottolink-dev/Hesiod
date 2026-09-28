@@ -231,8 +231,8 @@ void setup_post_process_heightmap_attributes(BaseNode                   &node,
   }
 
   add_bool(node, "post_inverse", "Invert Output", false);
-  add_float(node, "post_gamma", "Gamma", 1.f, 0.01f, 10.f);
-  add_float(node, "post_gain", "Gain", 1.f, 0.01f, 10.f);
+  add_float(node, "post_gamma", "Gamma", 1.f, 0.01f, 4.f);
+  add_float(node, "post_gain", "Gain", 1.f, 0.01f, 4.f);
   add_float(node, "post_smoothing_radius", "Smoothing Radius", 0.f, 0.f, 0.05f);
   add_range(node, "post_remap", "Remap Range", {0.f, 1.f}, -1.f, 2.f, options.remap_active_state);
   add_range(node, "post_saturate", "Saturation Range", {0.f, 1.f}, -1.f, 2.f, false);
