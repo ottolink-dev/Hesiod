@@ -193,11 +193,8 @@ std::map<std::string, std::string> get_node_inventory()
       {"Dendry", "WIP"},
       {"DepositionFillHoles", "Erosion/Deposition"},
       {"DepressionFilling", "Erosion/Deposition"},
-      {"Detrend", "WIP/DEPRECATED"},                     // Filter/Recurve
-      {"DiffusionLimitedAggregation", "WIP/DEPRECATED"}, // Primitive/Coherent
       {"DirectionalBlur", "Filter/Smoothing"},
       {"DistanceTransform", "Terrain Features/Morphology"},
-      {"Equalize", "WIP/DEPRECATED"}, // "Filter/Recurve"},
       {"ExpandShrink", "Filter/Recast"},
       {"ExportAsset", "Export"},
       {"ExportAsCubemap", "WIP"}, // "Export"},
@@ -241,14 +238,12 @@ std::map<std::string, std::string> get_node_inventory()
       {"HeightmapToNormalMap", "Converter"},
       {"HeightmapToRGBA", "Converter"},
       {"HemisphereFieldFbm", "Primitive/Coherent"},
-      {"HydraulicBlur", "WIP"},                // "Erosion/Hydraulic"
-      {"HydraulicMcDonald", "WIP"},            // "Erosion/Hydraulic"},
-      {"HydraulicMusgrave", "WIP/DEPRECATED"}, // "Erosion/Hydraulic"
+      {"HydraulicBlur", "WIP"},     // "Erosion/Hydraulic"
+      {"HydraulicMcDonald", "WIP"}, // "Erosion/Hydraulic"},
       {"HydraulicParticle", "Erosion/Hydraulic"},
       {"HydraulicProcedural", "WIP"}, // "Erosion/Hydraulic"},
       {"HydraulicSaleve", "Erosion/Hydraulic"},
-      {"HydraulicSchott", "WIP"},            // "Erosion/Hydraulic"
-      {"HydraulicStream", "WIP/DEPRECATED"}, // "Erosion/Hydraulic"
+      {"HydraulicSchott", "WIP"}, // "Erosion/Hydraulic"
       {"HydraulicStreamLog", "Erosion/Hydraulic"},
       {"HydraulicStreamUpscaleAmplification", "WIP"}, // "Erosion/Hydraulic"
       {"HydraulicVpipes", "WIP"},                     // "Erosion/Hydraulic"
@@ -276,7 +271,6 @@ std::map<std::string, std::string> get_node_inventory()
       {"MakePeriodicStitching", "WIP"}, // , "Operator/Tiling"},
       {"MeanShift", "WIP"},
       {"Median3x3", "Filter/Smoothing"},
-      {"MedianPseudo", "WIP/DEPRECATED"},
       {"MergeWaterDepths", "Hydrology"},
       {"MixNormalMap", "Texture"},
       {"MixTexture", "Texture"},
@@ -290,7 +284,6 @@ std::map<std::string, std::string> get_node_inventory()
       {"MountainTibesti", "Primitive/Geological"},
       {"Mudslide", "WIP"}, // "Erosion"},
       {"Multisteps", "Primitive/Geological"},
-      {"NormalDisplacement", "WIP/DEPRECATED"},
       {"NormalMapToHeightmap", "WIP"},
       {"Paraboloid", "Primitive/Function"},
       {"Path", "Geometry/Path"},
@@ -322,12 +315,10 @@ std::map<std::string, std::string> get_node_inventory()
       {"Receive", "Routing"},
       {"Recurve", "Filter/Recurve"},
       {"RecurveKura", "Filter/Recurve"},
-      {"RecurveS", "WIP/DEPRECATED"},
       {"RelativeDistanceFromSkeleton", "Terrain Features/Morphology"},
       {"Remap", "Filter/Range"},
       {"Rescale", "Filter/Range"},
       {"ReverseAboveThreshold", "Filter/Recurve"},
-      {"ReverseMidpoint", "WIP/DEPRECATED"}, // Primitive/Authoring
       {"RidgeAccentuate", "Filter/Advanced Filters"},
       {"Ridgelines", "Primitive/Authoring"},
       {"Rift", "Primitive/Geological"},
@@ -346,7 +337,6 @@ std::map<std::string, std::string> get_node_inventory()
       {"SelectValue", "Terrain Features/Selector"},
       {"SetAlpha", "Texture"},
       {"SetBorders", "Boundaries"},
-      {"SharpenCone", "WIP/DEPRECATED"},
       {"ShatteredPeak", "Primitive/Geological"},
       {"ShiftElevation", "Filter/Range"},
       {"Skeleton", "Terrain Features/Morphology"},
@@ -360,7 +350,6 @@ std::map<std::string, std::string> get_node_inventory()
       {"SnowSimulation", "WIP"}, // , "Hydrology"},
       {"SpectralEqualizer", "Filter"},
       {"Stamping", "Primitive/Authoring"},
-      {"SteepenConvective", "WIP/DEPRECATED"},
       {"Step", "Primitive/Function"},
       {"Strata", "Erosion/Stratify"},
       {"StrataCells", "Erosion/Stratify"},
@@ -385,12 +374,10 @@ std::map<std::string, std::string> get_node_inventory()
       {"ValleyHead", "Primitive/Geological"},
       {"ValleyWidth", "Terrain Features/Landform"},
       {"Warp", "Operator/Transform"},
-      {"WarpDownslope", "WIP/DEPRECATED"}, // Operator/Transform
       {"WaterDepthDryOut", "Hydrology"},
       {"WaterDepthFromMask", "Hydrology"},
       {"WaterElevationFromDepth", "Hydrology"},
       {"WaterMask", "Hydrology"},
-      {"WatershedRidge", "WIP/DEPRECATED"}, // , "Erosion/Hydraulic"},
       {"WaveDune", "Primitive/Function"},
       {"WaveletNoise", "Primitive/Coherent"},
       {"WaveSine", "Primitive/Function"},
@@ -498,11 +485,8 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
     SETUP_NODE(Dendry, dendry);
     SETUP_NODE(DepositionFillHoles, deposition_fill_holes);
     SETUP_NODE(DepressionFilling, depression_filling);
-    SETUP_NODE(Detrend, detrend);
-    SETUP_NODE(DiffusionLimitedAggregation, diffusion_limited_aggregation);
     SETUP_NODE(DirectionalBlur, directional_blur);
     SETUP_NODE(DistanceTransform, distance_transform);
-    SETUP_NODE(Equalize, equalize);
     SETUP_NODE(ExpandShrink, expand_shrink);
     SETUP_NODE(ExportAsset, export_asset);
     SETUP_NODE(ExportAsCubemap, export_as_cubemap);
@@ -544,12 +528,10 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
     SETUP_NODE(HemisphereFieldFbm, hemisphere_field_fbm);
     SETUP_NODE(HydraulicBlur, hydraulic_blur);
     SETUP_NODE(HydraulicMcDonald, hydraulic_mcdonald);
-    SETUP_NODE(HydraulicMusgrave, hydraulic_musgrave);
     SETUP_NODE(HydraulicParticle, hydraulic_particle);
     SETUP_NODE(HydraulicProcedural, hydraulic_procedural);
     SETUP_NODE(HydraulicSaleve, hydraulic_saleve);
     SETUP_NODE(HydraulicSchott, hydraulic_schott);
-    SETUP_NODE(HydraulicStream, hydraulic_stream);
     SETUP_NODE(HydraulicStreamUpscaleAmplification,
                hydraulic_stream_upscale_amplification);
     SETUP_NODE(HydraulicVpipes, hydraulic_vpipes);
@@ -577,7 +559,6 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
     SETUP_NODE(MakePeriodicStitching, make_periodic_stitching);
     SETUP_NODE(MeanShift, mean_shift);
     SETUP_NODE(Median3x3, median3x3);
-    SETUP_NODE(MedianPseudo, median_pseudo);
     SETUP_NODE(MergeWaterDepths, merge_water_depths);
     SETUP_NODE(MixNormalMap, mix_normal_map);
     SETUP_NODE(MixTexture, mix_texture);
@@ -591,7 +572,6 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
     SETUP_NODE(MountainTibesti, mountain_tibesti);
     SETUP_NODE(Mudslide, mudslide);
     SETUP_NODE(Multisteps, multisteps);
-    SETUP_NODE(NormalDisplacement, normal_displacement);
     SETUP_NODE(NormalMapToHeightmap, normal_map_to_heightmap);
     SETUP_NODE(Paraboloid, paraboloid);
     SETUP_NODE(Path, path);
@@ -621,12 +601,10 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
     SETUP_NODE(RecastCliff, recast_cliff);
     SETUP_NODE(Recurve, recurve);
     SETUP_NODE(RecurveKura, recurve_kura);
-    SETUP_NODE(RecurveS, recurve_s);
     SETUP_NODE(RelativeDistanceFromSkeleton, relative_distance_from_skeleton);
     SETUP_NODE(Remap, remap);
     SETUP_NODE(Rescale, rescale);
     SETUP_NODE(ReverseAboveThreshold, reverse_above_theshold);
-    SETUP_NODE(ReverseMidpoint, reverse_midpoint);
     SETUP_NODE(RidgeAccentuate, ridge_accentuate);
     SETUP_NODE(Ridgelines, ridgelines);
     SETUP_NODE(Rift, rift);
@@ -645,7 +623,6 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
     SETUP_NODE(SelectValue, select_value);
     SETUP_NODE(SetAlpha, set_alpha);
     SETUP_NODE(SetBorders, set_borders);
-    SETUP_NODE(SharpenCone, sharpen_cone);
     SETUP_NODE(ShatteredPeak, shattered_peak);
     SETUP_NODE(ShiftElevation, shift_elevation);
     SETUP_NODE(Skeleton, skeleton);
@@ -658,7 +635,6 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
     SETUP_NODE(SnowSimulation, snow_simulation);
     SETUP_NODE(SpectralEqualizer, spectral_equalizer);
     SETUP_NODE(Stamping, stamping);
-    SETUP_NODE(SteepenConvective, steepen_convective);
     SETUP_NODE(Step, step);
     SETUP_NODE(Strata, strata);
     SETUP_NODE(StrataCells, strata_cells);
@@ -681,12 +657,10 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
     SETUP_NODE(ValleyHead, valley_head);
     SETUP_NODE(ValleyWidth, valley_width);
     SETUP_NODE(Warp, warp);
-    SETUP_NODE(WarpDownslope, warp_downslope);
     SETUP_NODE(WaterDepthDryOut, water_depth_dry_out);
     SETUP_NODE(WaterDepthFromMask, water_depth_from_mask);
     SETUP_NODE(WaterElevationFromDepth, water_elevation_from_depth);
     SETUP_NODE(WaterMask, water_mask);
-    SETUP_NODE(WatershedRidge, watershed_ridge);
     SETUP_NODE(WaveDune, wave_dune);
     SETUP_NODE(WaveletNoise, wavelet_noise);
     SETUP_NODE(WaveSine, wave_sine);
