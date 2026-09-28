@@ -110,7 +110,19 @@ QSize GraphTabStrip::sizeHint() const
 
 QSize GraphTabStrip::minimumSizeHint() const
 {
-  return this->orient == Qt::Vertical ? QSize(kThickness, 80) : QSize(80, kThickness);
+  // room for the current tab's full name, so it never shows as "g…"
+  qreal len = 80.0;
+  if (this->current >= 0 && this->current < int(this->tabs.size()))
+    len = kFirstX + this->natural_width(this->tabs[this->current].name) + 12.0;
+
+  return this->orient == Qt::Vertical ? QSize(kThickness, int(std::ceil(len)))
+                                      : QSize(int(std::ceil(len)), kThickness);
+}
+
+qreal GraphTabStrip::natural_width(const QString &name) const
+{
+  const QFontMetrics fm(meta::qt::ui_font(12, true));
+  return std::clamp(qreal(fm.horizontalAdvance(name)) + 46.0, 90.0, 220.0);
 }
 
 void GraphTabStrip::set_tabs(const QStringList &names, int new_current)
@@ -140,33 +152,48 @@ void GraphTabStrip::set_tabs(const QStringList &names, int new_current)
       this->tabs[i].active = i == this->current ? 1.0 : 0.0;
 
   this->layout_tabs();
+  this->updateGeometry(); // the minimum length follows the current tab
   this->ticker->start();
   this->update();
 }
 
 void GraphTabStrip::layout_tabs()
 {
-  const QFont        font = meta::qt::ui_font(12, true);
-  const QFontMetrics fm(font);
+  constexpr qreal kMinTab = 56.0;
 
-  // natural lengths, shrunk evenly when they do not fit
   std::vector<qreal> sizes;
   qreal              total = 0.0;
   for (const Tab &tab : this->tabs)
   {
-    const qreal w = std::clamp(qreal(fm.horizontalAdvance(tab.name)) + 46.0, 90.0, 220.0);
-    sizes.push_back(w);
-    total += w + kGap;
+    sizes.push_back(this->natural_width(tab.name));
+    total += sizes.back() + kGap;
   }
-  const qreal room = this->length() - kFirstX - 44.0; // "+" and a margin
-  const qreal k = total > room && total > 0 ? std::max(0.35, room / total) : 1.0;
+
+  // everything at its natural length when it fits with the "+" (and a margin)
+  this->plus_shown = total <= this->length() - kFirstX - 44.0;
+
+  if (!this->plus_shown && !sizes.empty())
+  {
+    // Short on room: the "+" goes (New graph is also in the tab and Graph
+    // menus), the current tab keeps as much of its name as it can and the
+    // others share what is left.
+    const qreal room = this->length() - kFirstX - 12.0;
+    const int   n = int(sizes.size());
+    const int   cur = std::clamp(this->current, 0, n - 1);
+    const qreal others = total - sizes[cur] - kGap;
+
+    sizes[cur] = std::clamp(room - (n - 1) * (kMinTab + kGap), kMinTab, sizes[cur]);
+    const qreal k = others > 0 ? std::max(0.0, room - sizes[cur] - kGap) / others : 1.0;
+    for (int i = 0; i < n; ++i)
+      if (i != cur)
+        sizes[i] = std::max(kMinTab, sizes[i] * std::min(1.0, k));
+  }
 
   qreal x = kFirstX;
   for (size_t i = 0; i < this->tabs.size(); ++i)
   {
-    const qreal w = std::max(56.0, sizes[i] * k);
-    this->tabs[i].rect = QRectF(x, kTopActive, w, kThickness - kTopActive);
-    x += w + kGap;
+    this->tabs[i].rect = QRectF(x, kTopActive, sizes[i], kThickness - kTopActive);
+    x += sizes[i] + kGap;
   }
 }
 
@@ -216,7 +243,8 @@ int GraphTabStrip::tab_at(const QPointF &pos) const
     if (pos.x() >= r.left() && pos.x() < r.right() && pos.y() >= kTopActive)
       return i;
   }
-  if (this->on_new && this->plus_rect().adjusted(-3, -3, 3, 3).contains(pos))
+  if (this->on_new && this->plus_shown &&
+      this->plus_rect().adjusted(-3, -3, 3, 3).contains(pos))
     return -2;
   return -1;
 }
@@ -400,7 +428,7 @@ void GraphTabStrip::paintEvent(QPaintEvent *)
   }
 
   // "+": a new graph, centred in the resting band
-  if (this->on_new)
+  if (this->on_new && this->plus_shown)
   {
     p.setTransform(to_widget);
     const QRectF plus = this->plus_rect();
@@ -450,7 +478,12 @@ QSize TabbedCard::sizeHint() const
 
 QSize TabbedCard::minimumSizeHint() const
 {
-  return this->card->minimumSizeHint() + this->strip_extent();
+  // along the strip, at least what its current tab needs
+  QSize       size = this->card->minimumSizeHint() + this->strip_extent();
+  const QSize strip = this->strip->minimumSizeHint();
+  return this->strip->orientation() == Qt::Vertical
+             ? QSize(size.width(), std::max(size.height(), strip.height()))
+             : QSize(std::max(size.width(), strip.width()), size.height());
 }
 
 void TabbedCard::resizeEvent(QResizeEvent *event)

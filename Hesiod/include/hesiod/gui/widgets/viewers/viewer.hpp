@@ -47,6 +47,10 @@ public:
   void         update_param_visibility_icons();
   void         update_widgets();
 
+  // lock (pin) the preview on a node, or release it when it is the locked one
+  bool is_locked_on(const std::string &node_id) const;
+  void toggle_lock_on(const std::string &node_id);
+
   // --- Serialization ---
   virtual void           json_from(nlohmann::json const &json);
   virtual nlohmann::json json_to() const;

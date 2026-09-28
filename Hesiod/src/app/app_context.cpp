@@ -1,6 +1,7 @@
 /* Copyright (c) 2025 Otto Link. Distributed under the terms of the GNU General
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
+#include <algorithm>
 #include <filesystem>
 
 #include <QStandardPaths>
@@ -52,7 +53,7 @@ ErrorManager &AppContext::get_error_manager() { return this->error_manager; }
 
 const ErrorManager &AppContext::get_error_manager() const { return this->error_manager; }
 
-void AppContext::load_project_model(const std::string &fname)
+int AppContext::load_project_model(const std::string &fname)
 {
   Logger::log()->trace("AppContext::load_project_model: {}", fname);
 
@@ -60,14 +61,37 @@ void AppContext::load_project_model(const std::string &fname)
   {
     Logger::log()->error("AppContext::load_project_model: file does not exist: {}",
                          fname);
-    return;
+    return 0;
   }
 
   this->new_project();
 
+  int capped = 0;
+
   try
   {
     nlohmann::json json = json_from_file(fname);
+
+    // lighter editing of large projects: graphs above 1K are loaded at 1K. Only
+    // the loaded copy changes, not the file nor the bake resolution. Never in
+    // the CLI modes, which export at the graph resolution
+    if (this->app_settings.node_editor.open_projects_at_1k && !this->headless &&
+        json.contains("graph_manager") && json["graph_manager"].contains("graph_nodes"))
+      for (auto &[_, graph] : json["graph_manager"]["graph_nodes"].items())
+      {
+        if (!graph.contains("model_config"))
+          continue;
+        auto     &config = graph["model_config"];
+        const int w = config.value("shape.x", 0);
+        const int h = config.value("shape.y", 0);
+        if (std::max(w, h) > 1024) // keeping the aspect ratio
+        {
+          config["shape.x"] = std::max(1, w * 1024 / std::max(w, h));
+          config["shape.y"] = std::max(1, h * 1024 / std::max(w, h));
+          capped++;
+        }
+      }
+
     this->project_model->json_from(json);
   }
   catch (const std::exception &e)
@@ -82,6 +106,8 @@ void AppContext::load_project_model(const std::string &fname)
         ErrorCategory::IO,
         std::format("Failed to read project file '{}': unknown error", fname));
   }
+
+  return capped;
 }
 
 void AppContext::load_settings()

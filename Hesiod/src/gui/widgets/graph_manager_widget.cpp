@@ -57,6 +57,7 @@ GraphManagerWidget::GraphManagerWidget(std::weak_ptr<GraphManager> p_graph_manag
   this->list_widget->setViewMode(QListView::ListMode);
   this->list_widget->setDragDropMode(QAbstractItemView::InternalMove);
   this->list_widget->setContextMenuPolicy(Qt::CustomContextMenu);
+  this->setup_reset_actions();
   this->list_widget->setMinimumSize(MINIMUM_WIDTH, this->list_widget->height());
 
   // populate with graph editor names
@@ -480,7 +481,14 @@ void GraphManagerWidget::show_context_menu(const QPoint &pos)
   QMenu    menu;
   QAction *new_action = menu.addAction("New");
   QAction *set_focus_action = menu.addAction("Show in graph editor");
+  menu.addSeparator();
+  QMenu *reset_menu = menu.addMenu("Reset transform");
+  reset_menu->addActions(this->reset_actions);
+  menu.addSeparator();
   QAction *delete_action = menu.addAction("Delete");
+
+  // the reset actions work on the current item
+  this->list_widget->setCurrentItem(item);
 
   QPoint   global_pos = this->list_widget->mapToGlobal(pos);
   QAction *selected_action = menu.exec(global_pos);
@@ -496,6 +504,43 @@ void GraphManagerWidget::show_context_menu(const QPoint &pos)
   else if (selected_action == new_action)
   {
     this->on_new_graph_request();
+  }
+}
+
+void GraphManagerWidget::setup_reset_actions()
+{
+  // location, rotation and scale of the current graph's frame back to the
+  // defaults (origin, no rotation, unit size), from the context menu or with
+  // Alt+L / Alt+R / Alt+S while this window has focus
+  const std::vector<std::pair<QString, QString>> labels = {{"Location", "Alt+L"},
+                                                           {"Rotation", "Alt+R"},
+                                                           {"Scale", "Alt+S"}};
+  for (int k = 0; k < 3; k++)
+  {
+    auto *action = new QAction(labels[k].first, this);
+    action->setShortcut(QKeySequence(labels[k].second));
+    action->setShortcutContext(Qt::WidgetWithChildrenShortcut);
+    this->addAction(action);
+    this->reset_actions.push_back(action);
+
+    this->connect(action,
+                  &QAction::triggered,
+                  this,
+                  [this, k]()
+                  {
+                    QListWidgetItem *item = this->list_widget->currentItem();
+                    if (!item)
+                      return;
+
+                    FrameItem *frame = this->coord_frame_widget->get_frame_ref(
+                        item->text().toStdString());
+                    if (k == 0)
+                      frame->set_origin(QPointF(0.f, 0.f));
+                    else if (k == 1)
+                      frame->set_angle(0.f);
+                    else
+                      frame->set_size(QPointF(1.f, 1.f));
+                  });
   }
 }
 

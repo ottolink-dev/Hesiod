@@ -2,6 +2,9 @@
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
 #include <QLabel>
+#include <QScrollArea>
+#include <QScrollBar>
+#include <QStyle>
 #include <QVBoxLayout>
 
 #include "meta_qt/designs/industrial/panel_chrome.hpp"
@@ -107,7 +110,26 @@ void NodeSettingsWidget::setup_layout()
       // sideways for reasons unrelated to what was clicked. Costs a few pixels
       // and removes a whole class of confusion.
       scroll->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
-      scroll->setStyleSheet(meta::qt::industrial::scrollbar_stylesheet(*panel.theme));
+
+      // ...but only its space: with nothing to scroll, Qt would still draw a
+      // handle over the whole height, which reads as content that is cut off
+      scroll->setStyleSheet(meta::qt::industrial::scrollbar_stylesheet(*panel.theme) +
+                            "QScrollBar[idle=\"true\"]::handle:vertical,"
+                            "QScrollBar[idle=\"true\"]::handle:vertical:hover { "
+                            "background: transparent; }");
+      QScrollBar *bar = scroll->verticalScrollBar();
+      bar->setProperty("idle", true); // empty until the first node is shown
+      this->connect(bar,
+                    &QScrollBar::rangeChanged,
+                    bar,
+                    [bar](int, int max)
+                    {
+                      if (bar->property("idle").toBool() == (max == 0))
+                        return;
+                      bar->setProperty("idle", max == 0);
+                      bar->style()->unpolish(bar);
+                      bar->style()->polish(bar);
+                    });
     }
 
     scroll->setWidget(container);
