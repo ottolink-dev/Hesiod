@@ -38,6 +38,8 @@ public:
   void         change_config_values(const GraphConfig &new_config);
 
   // --- Node Factory (create nodes from their type) ---
+  // Construction does not compute: callers update after setting parameters and
+  // connections, so compound edits never evaluate a partially constructed graph.
   std::string add_node(const std::string &node_type);
 
   // --- GNode::Graph override ---
@@ -54,7 +56,8 @@ public:
   void          on_broadcast_node_updated(const std::string &tag);
 
   // --- Others... ---
-  void reseed(bool backward);
+  void        reseed(bool backward);
+  std::string runtime_info_to_string(const char separator = ',') const;
 
   // --- Compute Callbacks
   std::function<void(const std::string &node_id)> compute_started;

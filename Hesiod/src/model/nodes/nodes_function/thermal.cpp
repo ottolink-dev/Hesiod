@@ -20,10 +20,6 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-// -----------------------------------------------------------------------------
-// Ports & Attributes
-// -----------------------------------------------------------------------------
-
 constexpr const char *P_IN         = "input";
 constexpr const char *P_MASK       = "mask";
 constexpr const char *P_OUT        = "output";
@@ -118,12 +114,12 @@ void compute_thermal_node(BaseNode &node)
   hmap::for_each_tile(
       {p_in, p_mask, &talus_map},
       {p_out, p_deposition},
-      [&](std::vector<const hmap::Array *> in,
-          std::vector<hmap::Array *>       out,
+      [&](std::vector<const hmap::Array *> p_arrays_in,
+          std::vector<hmap::Array *>       p_arrays_out,
           const hmap::TileRegion &)
       {
-        auto [pa_in, pa_mask, pa_talus_map] = unpack<3>(in);
-        auto [pa_out, pa_deposition]        = unpack<2>(out);
+        auto [pa_in, pa_mask, pa_talus_map] = unpack<3>(p_arrays_in);
+        auto [pa_out, pa_deposition]        = unpack<2>(p_arrays_out);
 
         *pa_out = *pa_in;
 
@@ -196,7 +192,7 @@ void compute_thermal_node(BaseNode &node)
 
   if (p_deposition)
   {
-    p_deposition->smooth_overlap_buffers();
+    p_deposition->sync_overlap_buffers();
     p_deposition->remap(0.f, 1.f, node.cfg().cm_cpu);
   }
 }

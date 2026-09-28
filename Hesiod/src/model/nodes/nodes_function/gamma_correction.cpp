@@ -17,10 +17,6 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-// -----------------------------------------------------------------------------
-// Ports & Attributes
-// -----------------------------------------------------------------------------
-
 constexpr const char *P_IN   = "input";
 constexpr const char *P_MASK = "mask";
 constexpr const char *P_OUT  = "output";
@@ -81,12 +77,12 @@ void compute_gamma_correction_node(BaseNode &node)
   hmap::for_each_tile(
       {p_in, p_mask},
       {p_out},
-      [&](std::vector<const hmap::Array *> in,
-          std::vector<hmap::Array *>       out,
+      [&](std::vector<const hmap::Array *> p_arrays_in,
+          std::vector<hmap::Array *>       p_arrays_out,
           const hmap::TileRegion &)
       {
-        auto [pa_in, pa_mask] = unpack<2>(in);
-        auto [pa_out]         = unpack<1>(out);
+        auto [pa_in, pa_mask] = unpack<2>(p_arrays_in);
+        auto [pa_out]         = unpack<1>(p_arrays_out);
 
         *pa_out = *pa_in;
 

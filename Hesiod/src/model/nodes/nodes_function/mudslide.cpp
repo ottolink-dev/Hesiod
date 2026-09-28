@@ -18,10 +18,6 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-// -----------------------------------------------------------------------------
-// Ports & Attributes
-// -----------------------------------------------------------------------------
-
 constexpr const char *P_IN             = "input";
 constexpr const char *P_LANDSLIDE_MASK = "landslide_mask";
 constexpr const char *P_OUT            = "output";
@@ -174,7 +170,7 @@ void compute_mudslide_node(BaseNode &node)
 
   // --- post-process
 
-  p_out->smooth_overlap_buffers();
+  p_out->sync_overlap_buffers();
   post_process_heightmap(node, *p_out, p_in);
 }
 

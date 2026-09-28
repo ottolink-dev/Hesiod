@@ -74,11 +74,14 @@ void compute_stamping_node(BaseNode &node)
     uint seed = node.val<int>(A_SEED);
 
     hmap::for_each_tile(
+        {},
         {p_out},
-        [&node, &xp, &yp, &zp, p_kernel, ir, &seed](std::vector<hmap::Array *> p_arrays,
-                                                    const hmap::TileRegion    &region)
+        [&node, &xp, &yp, &zp, p_kernel, ir, &seed](
+            std::vector<const hmap::Array *> p_arrays_in,
+            std::vector<hmap::Array *>       p_arrays_out,
+            const hmap::TileRegion          &region)
         {
-          auto [pa_out] = unpack<1>(p_arrays);
+          auto [pa_out] = unpack<1>(p_arrays_out);
 
           *pa_out = hmap::stamping(
               region.shape,
@@ -89,7 +92,7 @@ void compute_stamping_node(BaseNode &node)
               ir,
               node.val<bool>(A_KERNEL_SCALE_RADIUS),
               node.val<bool>(A_KERNEL_SCALE_AMPLITUDE),
-              (hmap::StampingBlendMethod)node.val<int>(A_BLEND_METHOD),
+              node.val_enum<hmap::StampingBlendMethod>(A_BLEND_METHOD),
               seed++,
               node.val<float>(A_K_SMOOTHING),
               node.val<bool>(A_KERNEL_FLIP),
@@ -98,7 +101,7 @@ void compute_stamping_node(BaseNode &node)
         },
         node.cfg().cm_cpu);
 
-    p_out->smooth_overlap_buffers();
+    p_out->sync_overlap_buffers();
 
     // post-process
     post_process_heightmap(node, *p_out);

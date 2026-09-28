@@ -49,10 +49,13 @@ std::shared_ptr<hmap::VirtualArray> pre_process_mask(BaseNode            &node,
 
     // mask <- h * (1 - h)
     hmap::for_each_tile(
+        {},
         {p_mask},
-        [](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
+        [](std::vector<const hmap::Array *> p_arrays_in,
+           std::vector<hmap::Array *>       p_arrays_out,
+           const hmap::TileRegion &)
         {
-          hmap::Array *pa_out = p_arrays[0];
+          auto [pa_out] = unpack<1>(p_arrays_out);
           *pa_out *= (1.f - *pa_out);
         },
         cfg.cm_cpu);
@@ -60,10 +63,14 @@ std::shared_ptr<hmap::VirtualArray> pre_process_mask(BaseNode            &node,
   else if (mask_type == "Gradient norm")
   {
     hmap::for_each_tile(
-        {p_mask, &h},
-        [](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
+        {&h},
+        {p_mask},
+        [](std::vector<const hmap::Array *> p_arrays_in,
+           std::vector<hmap::Array *>       p_arrays_out,
+           const hmap::TileRegion &)
         {
-          auto [pa_out, pa_in] = unpack<2>(p_arrays);
+          auto [pa_in] = unpack<1>(p_arrays_in);
+          auto [pa_out] = unpack<1>(p_arrays_out);
 
           *pa_out = hmap::gradient_norm(*pa_in);
         },
@@ -80,15 +87,18 @@ std::shared_ptr<hmap::VirtualArray> pre_process_mask(BaseNode            &node,
   if (ir > 0)
   {
     hmap::for_each_tile(
+        {},
         {p_mask},
-        [&ir](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
+        [&ir](std::vector<const hmap::Array *> p_arrays_in,
+              std::vector<hmap::Array *>       p_arrays_out,
+              const hmap::TileRegion &)
         {
-          hmap::Array *pa_out = p_arrays[0];
+          auto [pa_out] = unpack<1>(p_arrays_out);
           hmap::gpu::smooth_cpulse(*pa_out, ir);
         },
         cfg.cm_gpu);
 
-    p_mask->smooth_overlap_buffers();
+    p_mask->sync_overlap_buffers();
     p_mask->remap(0.f, 1.f, cfg.cm_cpu);
   }
 
@@ -99,10 +109,13 @@ std::shared_ptr<hmap::VirtualArray> pre_process_mask(BaseNode            &node,
   if (mask_gain != 1.f)
   {
     hmap::for_each_tile(
+        {},
         {p_mask},
-        [mask_gain](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
+        [mask_gain](std::vector<const hmap::Array *> p_arrays_in,
+                    std::vector<hmap::Array *>       p_arrays_out,
+                    const hmap::TileRegion &)
         {
-          hmap::Array *pa = p_arrays[0];
+          auto [pa] = unpack<1>(p_arrays_out);
           hmap::gain(*pa, mask_gain);
         },
         cfg.cm_cpu);
@@ -116,17 +129,17 @@ std::shared_ptr<hmap::VirtualArray> pre_process_mask(BaseNode            &node,
 
 void setup_pre_process_mask_attributes(BaseNode &node)
 {
-  add_bool(node, "mask_activate", "mask_activate", false);
-
   std::vector<std::string> choices = {"Elevation",
                                       "Elevation mid-range",
                                       "Gradient norm"};
 
-  node.set_current_category("Mask Definition");
+  node.set_current_category("Default Mask Definition");
+
+  add_bool(node, "mask_activate", "Activate Default Mask", false);
   add_choice(node, "mask_type", "Mask Type", choices);
-  add_bool(node, "mask_inverse", "mask_inverse", false);
-  add_float(node, "mask_radius", "mask_radius", 0.01f, 0.f, 0.2f);
-  add_float(node, "mask_gain", "mask_gain", 1.f, 0.f, 10.f);
+  add_bool(node, "mask_inverse", "Inverse Mask", false);
+  add_float(node, "mask_radius", "Mask Radius", 0.01f, 0.f, 0.2f);
+  add_float(node, "mask_gain", "Mask Gain", 1.f, 0.f, 10.f);
 }
 
 } // namespace hesiod

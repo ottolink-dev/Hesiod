@@ -20,10 +20,6 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-// -----------------------------------------------------------------------------
-// Ports & Attributes
-// -----------------------------------------------------------------------------
-
 constexpr const char *P_IN    = "input";
 constexpr const char *P_NOISE = "noise";
 constexpr const char *P_MASK  = "mask";
@@ -55,13 +51,16 @@ void setup_strata_terrace_node(BaseNode &node)
   // --- Attributes
 
   // clang-format off
+  node.set_current_category("Strata");
   add_float(node, A_KZ, "Number of Strata", 8.f, 0.f, FLT_MAX);
   add_float(node, A_GAMMA, "Profile Gamma", 0.5f, 0.01f, 2.f);
-  add_seed(node, A_SEED, "Seed");
   add_bool(node, A_LINEAR_GAMMA, "Use Linear Terrace Profile", false);
-  add_float(node, A_GAMMA_NOISE_RATIO, "Gamma Noise Influence", 0.5f, 0.f, 1.f);
   add_float(node, A_SLOPE, "Slope", 0.f, 0.f, 10.f);
   add_float(node, A_ANGLE, "Angle", 0.f, -180.f, 180.f, "{:.1f}°");
+  add_seed(node, A_SEED, "Seed");
+
+  node.set_current_category("Noise");
+  add_float(node, A_GAMMA_NOISE_RATIO, "Gamma Noise Influence", 0.5f, 0.f, 1.f);
   // clang-format on
 
   // --- Attribute(s) order
@@ -110,12 +109,12 @@ void compute_strata_terrace_node(BaseNode &node)
   hmap::for_each_tile(
       {p_in, p_noise, p_mask},
       {p_out},
-      [&](std::vector<const hmap::Array *> in,
-          std::vector<hmap::Array *>       out,
+      [&](std::vector<const hmap::Array *> p_arrays_in,
+          std::vector<hmap::Array *>       p_arrays_out,
           const hmap::TileRegion &)
       {
-        auto [pa_in, pa_noise, pa_mask] = unpack<3>(in);
-        auto [pa_out]                   = unpack<1>(out);
+        auto [pa_in, pa_noise, pa_mask] = unpack<3>(p_arrays_in);
+        auto [pa_out]                   = unpack<1>(p_arrays_out);
 
         *pa_out = *pa_in;
 
@@ -134,7 +133,7 @@ void compute_strata_terrace_node(BaseNode &node)
 
   // --- Post-process
 
-  p_out->smooth_overlap_buffers();
+  p_out->sync_overlap_buffers();
   post_process_heightmap(node, *p_out, p_in);
 }
 

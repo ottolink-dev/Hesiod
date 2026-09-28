@@ -35,11 +35,14 @@ void compute_constant_node(BaseNode &node)
   hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
   hmap::for_each_tile(
+      {},
       {p_out},
-      [&node](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
+      [&node](std::vector<const hmap::Array *> p_arrays_in,
+              std::vector<hmap::Array *>       p_arrays_out,
+              const hmap::TileRegion &)
       {
-        hmap::Array *pa_out = p_arrays[0];
-        *pa_out             = node.val<float>(A_VALUE);
+        auto [pa_out] = unpack<1>(p_arrays_out);
+        *pa_out       = node.val<float>(A_VALUE);
       },
       node.cfg().cm_cpu);
 }

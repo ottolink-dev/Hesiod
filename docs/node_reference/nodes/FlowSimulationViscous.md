@@ -37,6 +37,7 @@ Hydrology
 |Filter Radius|Float|No description|
 |Flow Power|Float|No description|
 |Initial Material Depth|Float|No description|
+|Outflow Boundaries|Bool|No description|
 |Enable Post Filtering|Bool|No description|
 |Rebase Depth to Zero|Bool|No description|
 |Simulation Duration|Float|No description|
@@ -53,4 +54,4 @@ Corresponding Hesiod file: [FlowSimulationViscous.hsd](../../examples/FlowSimula
     Example files are kept up-to-date with the latest version of [Hesiod](https://github.com/otto-link/Hesiod).
     If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).
 
-  
+

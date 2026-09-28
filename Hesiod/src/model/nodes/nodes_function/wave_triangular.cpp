@@ -57,11 +57,14 @@ void compute_wave_triangular_node(BaseNode &node)
   const float phase_rad = node.val<float>(A_PHASE_SHIFT) * float(M_PI / 180.0);
 
   hmap::for_each_tile(
-      {p_out, p_dr},
-      [&](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &region)
+      {p_dr},
+      {p_out},
+      [&](std::vector<const hmap::Array *> p_arrays_in,
+          std::vector<hmap::Array *>       p_arrays_out,
+          const hmap::TileRegion          &region)
       {
-        hmap::Array *pa_out = p_arrays[0];
-        hmap::Array *pa_dr  = p_arrays[1];
+        auto [pa_dr]  = unpack<1>(p_arrays_in);
+        auto [pa_out] = unpack<1>(p_arrays_out);
 
         *pa_out = hmap::wave_triangular(region.shape,
                                         node.val<float>(A_KW),

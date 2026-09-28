@@ -1,13 +1,22 @@
 /* Copyright (c) 2023 Otto Link. Distributed under the terms of the GNU General Public
    License. The full license is in the file LICENSE, distributed with this software. */
 #pragma once
-#include <QCheckBox>
-#include <QDialog>
-#include <QLabel>
-#include <QSlider>
-#include <QWidget>
+#include <memory>
+#include <vector>
 
+#include <QPointer>
+
+#include "meta/core/event.hpp"
+
+#include "hesiod/gui/widgets/message_dialog.hpp"
 #include "hesiod/model/graph/graph_config.hpp"
+
+class QLabel;
+
+namespace meta
+{
+class AttributeContainer;
+}
 
 namespace hesiod
 {
@@ -15,30 +24,30 @@ namespace hesiod
 // =====================================
 // GraphConfigDialog
 // =====================================
-class GraphConfigDialog : public QDialog
-{
-  Q_OBJECT
 
+// A graph's resolution and computation settings, in the application's own
+// dialog chrome with the properties panel's rows (the same section cards,
+// switches and choices as the node settings). Edits `config` only when the
+// dialog is accepted.
+class GraphConfigDialog : public MessageDialog
+{
 public:
-  GraphConfigDialog() = default;
   GraphConfigDialog(GraphConfig &config, QWidget *parent = nullptr);
+  ~GraphConfigDialog() override;
+
+  void accept() override;
 
 private:
+  glm::ivec2 shape() const; // from the aspect / resolution / height choices
+  void       update_summary();
+
   GraphConfig &config;
 
-  QSlider *slider_shape;
-  QLabel  *label_shape;
-
-  QSlider *slider_tiling;
-  QLabel  *label_tiling;
-
-  QSlider *slider_overlap;
-  QLabel  *label_overlap;
-  float    vmin = 0.f;
-  float    vmax = 0.75f;
-  int      steps = 3;
-
-  QCheckBox *checkbox_memory;
+  std::unique_ptr<meta::AttributeContainer> domain;
+  std::unique_ptr<meta::AttributeContainer> compute;
+  std::vector<QPointer<QWidget>>            rows; // subscribe to the containers
+  std::vector<meta::EventConnection>        connections;
+  QLabel                                   *summary = nullptr;
 };
 
 } // namespace hesiod

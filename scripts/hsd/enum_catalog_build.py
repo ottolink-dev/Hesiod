@@ -141,11 +141,11 @@ def extract_function_bodies(text: str) -> dict:
 
 
 def extract_enum_params(body: str, const_map: dict, map_names: set) -> dict:
-    """Extract {param_key: map_name} from EnumAttribute add_attr calls in body."""
+    """Extract {param_key: map_name} from EnumAttribute add_attr or add_enum calls in body."""
     result: dict = {}
     attr_re = re.compile(
-        r'add_attr\s*<\s*EnumAttribute\s*>\s*\('
-        r'\s*'
+        r'(?:add_attr\s*<\s*EnumAttribute\s*>|add_enum)\s*\('
+        r'\s*(?:node\s*,\s*)?'               # optional 'node, ' prefix for add_enum
         r'(?:"((?:[^"\\]|\\.)*)"|(\w+))'   # groups 1,2: literal or identifier
         r'\s*,'                              # comma after KEY
         r'(?:[^;]*?)'                        # label + anything before map

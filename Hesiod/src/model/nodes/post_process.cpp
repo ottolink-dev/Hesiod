@@ -32,11 +32,14 @@ void post_apply_enveloppe(BaseNode           &node,
   float hmin = h.min(node.cfg().cm_cpu);
 
   hmap::for_each_tile(
-      {&h, p_env},
-      [hmin](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
+      {p_env},
+      {&h},
+      [hmin](std::vector<const hmap::Array *> p_arrays_in,
+             std::vector<hmap::Array *>       p_arrays_out,
+             const hmap::TileRegion &)
       {
-        hmap::Array *pa_out = p_arrays[0];
-        hmap::Array *pa_env = p_arrays[1];
+        auto [pa_env] = unpack<1>(p_arrays_in);
+        auto [pa_out] = unpack<1>(p_arrays_out);
 
         *pa_out -= hmin;
         *pa_out *= *pa_env;
@@ -57,10 +60,13 @@ void post_apply_saturate_percentile(BaseNode           &node,
   glm::vec2 range = h.range(node.cfg().cm_cpu);
 
   hmap::for_each_tile(
+      {},
       {&h},
-      [range, range_sat](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
+      [range, range_sat](std::vector<const hmap::Array *> p_arrays_in,
+                         std::vector<hmap::Array *>       p_arrays_out,
+                         const hmap::TileRegion &)
       {
-        auto [pa_h] = unpack<1>(p_arrays);
+        auto [pa_h] = unpack<1>(p_arrays_out);
 
         float k_smoothing = 0.1f * (range_sat.y - range_sat.x);
 
@@ -81,19 +87,23 @@ void post_process_heightmap(BaseNode           &node,
   if (p_in)
   {
     // mix
-    float k = 0.1f; // TODO hardcoded?
-    int   ir = 0;
-    int   method = node.val<int>("post_mix_method");
-    blend_heightmaps(node, h, *p_in, h, static_cast<BlendingMethod>(method), k, ir);
+    float      k = 0.1f; // TODO hardcoded?
+    int        ir = 0;
+    const auto method = node.val_enum<BlendingMethod>("post_mix_method");
+    blend_heightmaps(node, h, *p_in, h, method, k, ir);
 
     // lerp between input and output
     float t = node.val<float>("post_mix");
 
     hmap::for_each_tile(
-        {&h, p_in},
-        [t](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
+        {p_in},
+        {&h},
+        [t](std::vector<const hmap::Array *> p_arrays_in,
+            std::vector<hmap::Array *>       p_arrays_out,
+            const hmap::TileRegion &)
         {
-          auto [pa_out, pa_in] = unpack<2>(p_arrays);
+          auto [pa_in] = unpack<1>(p_arrays_in);
+          auto [pa_out] = unpack<1>(p_arrays_out);
 
           *pa_out = hmap::lerp(*pa_in, *pa_out, t);
         },
@@ -114,10 +124,13 @@ void post_process_heightmap(BaseNode           &node,
     h.remap(0.f, 1.f, hmin, hmax, node.cfg().cm_cpu);
 
     hmap::for_each_tile(
+        {},
         {&h},
-        [post_gamma](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
+        [post_gamma](std::vector<const hmap::Array *> p_arrays_in,
+                     std::vector<hmap::Array *>       p_arrays_out,
+                     const hmap::TileRegion &)
         {
-          auto [pa] = unpack<1>(p_arrays);
+          auto [pa] = unpack<1>(p_arrays_out);
           hmap::gamma_correction(*pa, post_gamma);
         },
         node.cfg().cm_cpu);
@@ -135,10 +148,13 @@ void post_process_heightmap(BaseNode           &node,
     h.remap(0.f, 1.f, hmin, hmax, node.cfg().cm_cpu);
 
     hmap::for_each_tile(
+        {},
         {&h},
-        [post_gain](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
+        [post_gain](std::vector<const hmap::Array *> p_arrays_in,
+                    std::vector<hmap::Array *>       p_arrays_out,
+                    const hmap::TileRegion &)
         {
-          auto [pa] = unpack<1>(p_arrays);
+          auto [pa] = unpack<1>(p_arrays_out);
           hmap::gain(*pa, post_gain);
         },
         node.cfg().cm_cpu);
@@ -152,15 +168,18 @@ void post_process_heightmap(BaseNode           &node,
   if (ir)
   {
     hmap::for_each_tile(
+        {},
         {&h},
-        [&ir](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
+        [&ir](std::vector<const hmap::Array *> p_arrays_in,
+              std::vector<hmap::Array *>       p_arrays_out,
+              const hmap::TileRegion &)
         {
-          auto [pa_out] = unpack<1>(p_arrays);
+          auto [pa_out] = unpack<1>(p_arrays_out);
           return hmap::gpu::smooth_cpulse(*pa_out, ir);
         },
         node.cfg().cm_gpu);
 
-    h.smooth_overlap_buffers();
+    h.sync_overlap_buffers();
   }
 
   // remap
@@ -179,10 +198,13 @@ void post_process_heightmap(BaseNode           &node,
     glm::vec2 range = node.val<glm::vec2>("post_saturate");
 
     hmap::for_each_tile(
+        {},
         {&h},
-        [&](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
+        [&](std::vector<const hmap::Array *> p_arrays_in,
+            std::vector<hmap::Array *>       p_arrays_out,
+            const hmap::TileRegion &)
         {
-          auto [pa_out] = unpack<1>(p_arrays);
+          auto [pa_out] = unpack<1>(p_arrays_out);
 
           float k = 0.1f; // TODO hardcoded?
 

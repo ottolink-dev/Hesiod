@@ -2,9 +2,11 @@
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
 #include "hesiod/model/graph/graph_node.hpp"
+#include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/broadcast_node.hpp"
+#include "hesiod/model/nodes/legacy/legacy_converter.hpp"
 #include "hesiod/model/nodes/node_factory.hpp"
 #include "hesiod/model/nodes/receive_node.hpp"
 #include "hesiod/model/utils.hpp"
@@ -50,7 +52,6 @@ std::string GraphNode::add_node(const std::string &node_type)
   Logger::log()->trace("GraphNode::add_node: node_type = {}", node_type);
 
   std::shared_ptr<gnode::Node> node = node_factory(node_type, this->config);
-  node->compute();
 
   std::string node_id = this->add_node(node);
 
@@ -124,6 +125,8 @@ void GraphNode::json_from(nlohmann::json const &json, GraphConfig *p_input_confi
 {
   Logger::log()->trace("GraphNode::json_from, graph {}", this->get_id());
 
+  nlohmann::json converted_json = convert_legacy_graph_json(json);
+
   // override the current config if one is provided
   if (p_input_config)
   {
@@ -133,9 +136,9 @@ void GraphNode::json_from(nlohmann::json const &json, GraphConfig *p_input_confi
   }
   else
   {
-    if (json.contains("model_config"))
+    if (converted_json.contains("model_config"))
     {
-      this->config->json_from(json["model_config"]);
+      this->config->json_from(converted_json["model_config"]);
     }
     else
     {
@@ -146,8 +149,8 @@ void GraphNode::json_from(nlohmann::json const &json, GraphConfig *p_input_confi
   std::string id = "";
   uint        id_count = 0;
 
-  json_safe_get(json, "id", id);
-  json_safe_get(json, "id_count", id_count);
+  json_safe_get(converted_json, "id", id);
+  json_safe_get(converted_json, "id_count", id_count);
 
   this->set_id(id);
   this->set_id_count(id_count);
@@ -156,21 +159,23 @@ void GraphNode::json_from(nlohmann::json const &json, GraphConfig *p_input_confi
   std::vector<float> vo = {};
   std::vector<float> vs = {};
 
-  json_safe_get(json, "origin", vo);
-  json_safe_get(json, "size", vs);
+  json_safe_get(converted_json, "origin", vo);
+  json_safe_get(converted_json, "size", vs);
 
-  this->set_origin(glm::vec2(vo[0], vo[1]));
-  this->set_size(glm::vec2(vs[0], vs[1]));
+  if (vo.size() >= 2)
+    this->set_origin(glm::vec2(vo[0], vo[1]));
+  if (vs.size() >= 2)
+    this->set_size(glm::vec2(vs[0], vs[1]));
 
   float rotation_angle = 0.f;
-  json_safe_get(json, "rotation_angle", rotation_angle);
+  json_safe_get(converted_json, "rotation_angle", rotation_angle);
 
   this->set_rotation_angle(rotation_angle);
 
   // populate nodes
-  if (json.contains("nodes"))
+  if (converted_json.contains("nodes"))
   {
-    for (auto &json_node : json["nodes"])
+    for (auto &json_node : converted_json["nodes"])
     {
       std::string node_type = "";
 
@@ -178,16 +183,44 @@ void GraphNode::json_from(nlohmann::json const &json, GraphConfig *p_input_confi
 
       Logger::log()->trace("GraphNode::json_from, node type: {}", node_type);
 
-      // instanciate the node
-      std::shared_ptr<gnode::Node> node = node_factory(node_type, this->config);
+      std::string node_id = "";
+      json_safe_get(json_node, "id", node_id);
 
-      std::string id = "";
-      json_safe_get(json_node, "id", id);
+      try
+      {
+        // instanciate the node
+        std::shared_ptr<gnode::Node> node = node_factory(node_type, this->config);
+        if (!node)
+          throw std::runtime_error("Unknown or invalid node type: " + node_type);
 
-      this->add_node(node, id);
+        this->add_node(node, node_id);
 
-      // set its parameters
-      dynamic_cast<BaseNode *>(node.get())->json_from(json_node);
+        // set its parameters
+        if (auto *p_base = dynamic_cast<BaseNode *>(node.get()))
+          p_base->json_from(json_node);
+        else
+          throw std::runtime_error("Node is not a BaseNode: " + node_type);
+      }
+      catch (const std::exception &e)
+      {
+        HSD_CTX.get_error_manager().push_error(
+            ErrorCategory::NodeCreation,
+            std::format("Graph '{}': Failed to create node '{}' (type '{}'): {}",
+                        this->get_id(),
+                        node_id.empty() ? "?" : node_id,
+                        node_type,
+                        e.what()));
+      }
+      catch (...)
+      {
+        HSD_CTX.get_error_manager().push_error(
+            ErrorCategory::NodeCreation,
+            std::format(
+                "Graph '{}': Failed to create node '{}' (type '{}'): unknown error",
+                this->get_id(),
+                node_id.empty() ? "?" : node_id,
+                node_type));
+      }
     }
   }
   else
@@ -196,9 +229,9 @@ void GraphNode::json_from(nlohmann::json const &json, GraphConfig *p_input_confi
   }
 
   // links
-  if (json.contains("links"))
+  if (converted_json.contains("links"))
   {
-    for (auto &json_link : json["links"])
+    for (auto &json_link : converted_json["links"])
     {
       std::string node_id_from = "", port_id_from = "", node_id_to = "", port_id_to = "";
 
@@ -213,7 +246,33 @@ void GraphNode::json_from(nlohmann::json const &json, GraphConfig *p_input_confi
                            node_id_to,
                            port_id_to);
 
-      this->new_link(node_id_from, port_id_from, node_id_to, port_id_to);
+      try
+      {
+        this->new_link(node_id_from, port_id_from, node_id_to, port_id_to);
+      }
+      catch (const std::exception &e)
+      {
+        HSD_CTX.get_error_manager().push_error(
+            ErrorCategory::LinkCreation,
+            std::format("Graph '{}': Failed to create link {}/{} => {}/{}: {}",
+                        this->get_id(),
+                        node_id_from,
+                        port_id_from,
+                        node_id_to,
+                        port_id_to,
+                        e.what()));
+      }
+      catch (...)
+      {
+        HSD_CTX.get_error_manager().push_error(
+            ErrorCategory::LinkCreation,
+            std::format("Graph '{}': Failed to create link {}/{} => {}/{}: unknown error",
+                        this->get_id(),
+                        node_id_from,
+                        port_id_from,
+                        node_id_to,
+                        port_id_to));
+      }
     }
   }
   else
@@ -326,6 +385,24 @@ void GraphNode::remove_node(const std::string &id)
 
   // basic GNode removing...
   gnode::Graph::remove_node(id);
+}
+
+std::string GraphNode::runtime_info_to_string(const char separator) const
+{
+  std::string result;
+
+  for (const auto &[node_id, p_gnode] : this->nodes)
+  {
+    const BaseNode *p_node = dynamic_cast<const BaseNode *>(p_gnode.get());
+    if (p_node)
+    {
+      if (!result.empty())
+        result += '\n';
+      result += p_node->runtime_info_to_string(separator);
+    }
+  }
+
+  return result;
 }
 
 void GraphNode::reseed(bool backward)

@@ -1,0 +1,235 @@
+id: io.github.hesiod
+runtime: org.kde.Platform
+runtime-version: '6.8'
+sdk: org.kde.Sdk
+base: io.qt.qtwebengine.BaseApp
+base-version: '6.8'
+command: /app/hesiod/launch.sh
+
+finish_args:
+  - --socket=wayland
+  - --socket=fallback-x11
+  - --device=dri
+  - --share=ipc
+  - --share=network
+  - --filesystem=home
+  - --filesystem=/tmp
+
+modules:
+ - name: opencl-headers
+   buildsystem: simple
+   build-commands:
+    - cmake -DCMAKE_INSTALL_PREFIX=/app -DOPENCL_HEADERS_BUILD_TESTING=OFF -DOPENCL_HEADERS_BUILD_CXX_TESTS=OFF -B build
+    - cmake --build build/ -j$(nproc)
+    - cmake --install build/
+   sources:
+    - type: archive
+      url: https://github.com/KhronosGroup/OpenCL-Headers/archive/refs/tags/v2026.05.29.zip
+      sha256: 0bdef6f653c577827a75fac3e3f18b0bf000171e39fa65c2eb84ec804c822cab
+      path: OpenCL-Headers.zip
+
+ - name: opencl-icd-loader
+   buildsystem: simple
+   build-commands:
+    - cmake -DCMAKE_INSTALL_PREFIX=/app -B build
+    - cmake --build build/ -j$(nproc)
+    - cmake --install build/
+   sources:
+    - type: archive
+      url: https://github.com/KhronosGroup/OpenCL-ICD-Loader/archive/refs/tags/v2026.05.29.zip
+      sha256: e95dba2093149c3e8c614fc24c0eccd823d1b9cd17d5b2a41498d10594107f8f
+      path: OpenCL-ICD-Loader.zip
+
+ - name: opencl-cpp-headers
+   buildsystem: simple
+   build-commands:
+    - cmake -DCMAKE_INSTALL_PREFIX=/app -DBUILD_EXAMPLES=ON -DOPENCL_CLHPP_BUILD_TESTING=OFF -DBUILD_DOCS=OFF -DBUILD_TESTING=OFF -B build
+    - cmake --build build/ -j$(nproc)
+    - cmake --install build/
+   sources:
+    - type: archive
+      url: https://github.com/KhronosGroup/OpenCL-CLHPP/archive/refs/tags/v2026.05.29.zip
+      sha256: 6fb58429085e3a99fda2b4782ca22e9c8fa9c2b37632b919be98bc06cba612cf
+      path: OpenCL-CLHPP.zip
+
+ - name: opencv
+   buildsystem: simple
+   build-commands:
+    - cmake -B build/
+      -DCMAKE_INSTALL_PREFIX=/app
+      -DCMAKE_BUILD_TYPE=Release
+      -DENABLE_CXX11=ON
+      -DBUILD_TESTS=OFF
+      -DBUILD_PERF_TESTS=OFF
+      -DWITH_XINE=ON
+      -DENABLE_PRECOMPILED_HEADERS=OFF
+      -DCMAKE_SKIP_RPATH=ON
+      -DBUILD_WITH_DEBUG_INFO=OFF
+      -Wno-dev
+    - cmake --build build/ -j$(nproc)
+    - cmake --install build/
+   sources:
+    - type: git
+      url: https://github.com/opencv/opencv.git
+      tag: 5.0.0
+
+ - name: gsl
+   buildsystem: simple
+   build-commands:
+    - ./configure --prefix=/app
+    - make -j$(nproc)
+    - make install
+   sources:
+    - type: archive
+      url: https://ftp.gnu.org/gnu/gsl/gsl-2.8.tar.gz
+      sha256: 6a99eeed15632c6354895b1dd542ed5a855c0f15d9ad1326c6fe2b2c9e423190
+
+ - name: json
+   buildsystem: cmake-ninja
+   config-opts:
+    - -DJSON_BuildTests=OFF
+    - -DJSON_Install=ON
+   sources:
+    - type: git
+      url: https://github.com/nlohmann/json.git
+      tag: v3.12.0
+
+ - name: spdlog
+   buildsystem: cmake-ninja
+   config-opts:
+    - DSPDLOG_BUILD_EXAMPLE=OFF
+   sources:
+    - type: git
+      url: https://github.com/gabime/spdlog.git
+      tag: v1.17.0
+
+ - name: assimp
+   buildsystem: cmake-ninja
+   sources:
+    - type: git
+      url: https://github.com/assimp/assimp.git
+      tag: v6.0.5
+
+ - name: glm
+   buildsystem: cmake-ninja
+   sources:
+    - type: git
+      url: https://github.com/g-truc/glm.git
+      tag: 1.0.3
+
+ - name: eigen
+   buildsystem: simple
+   build-commands:
+    - ls
+    - mkdir build
+    - cd build
+    - cmake -DCMAKE_INSTALL_PREFIX=/app -DEIGEN_BUILD_BLAS=OFF -DEIGEN_BUILD_LAPACK=OFF -B build/
+    - cmake -B build/
+    - cmake --build build/
+    - cmake --install build/
+   sources:
+    - type: archive
+      url: https://gitlab.com/libeigen/eigen/-/archive/5.0.0/eigen-5.0.0.tar.gz
+      sha256: 315c881e19e17542a7d428c5aa37d113c89b9500d350c433797b730cd449c056
+
+ - name: glu
+   buildsystem: meson
+   sources:
+    - type: archive
+      url: https://archive.mesa3d.org/glu/glu-9.0.3.tar.xz
+      sha256: bd43fe12f374b1192eb15fe20e45ff456b9bc26ab57f0eee919f96ca0f8a330f
+
+ - name: glfw
+   buildsystem: cmake-ninja
+   config-opts:
+     - -DBUILD_SHARED_LIBS=ON
+     - -DGLFW_BUILD_EXAMPLES=OFF
+     - -DGLFW_BUILD_TESTS=OFF
+     - -DGLFW_BUILD_DOCS=OFF
+     - -DGLFW_BUILD_X11=ON
+     - -DGLFW_BUILD_WAYLAND=ON
+   sources:
+     - type: git
+       url: https://github.com/glfw/glfw.git
+       tag: 3.5.1
+
+ - name: glew
+   buildsystem: simple
+   build-commands:
+    - cd auto/
+    - make
+    - make install DESTDIR=/app
+   sources:
+    - type: archive
+      url: https://github.com/nigels-com/glew/releases/download/glew-2.3.0/glew-2.3.0.zip
+      sha256: fe8fdbaa77cfa354ff400da323ea5e32b3641ad58a218607de74d2998b872e66
+
+ - name: freeglut
+   buildsystem: cmake-ninja
+   sources:
+    - type: git
+      url: https://github.com/freeglut/freeglut.git
+      tag: v3.8.0
+
+ - name: clinfo
+   buildsystem: simple
+   build-commands:
+     - make
+     - make install PREFIX=/app
+     - chmod u+w /app/bin/clinfo
+   sources:
+     - type: archive
+       url: https://github.com/Oblomov/clinfo/archive/refs/tags/3.0.25.02.14.zip
+       sha256: 98d9bf7c1bf6c29672f4bbf672570c58bf80f69a25633b3bac46b94cc90523e4
+       path: clinfo.zip
+
+ - name: hesiod
+   buildsystem: simple
+   build-commands:
+    - cmake -DCMAKE_INSTALL_PREFIX=/app -DHESIOD_ENABLE_GENERATE_APP_IMAGE=OFF -DHIGHMAP_ENABLE_DOCS=OFF -DHIGHMAP_ENABLE_EXAMPLES=OFF -DHIGHMAP_ENABLE_TESTS=OFF -DGNODE_ENABLE_DOCS=OFF -DGNODE_ENABLE_EXAMPLES=OFF -DGNODE_ENABLE_TESTS=OFF -DGNODEGUI_ENABLE_TESTS=OFF -DATTRIBUTES_ENABLE_TESTS=OFF -DHIGHMAP_ENABLE_BENCHMARKS=OFF -B build/
+    - cmake --build build/ -j$(nproc)
+    - cmake --install build/
+    - ls build/
+    - mkdir /app/hesiod
+    - mv build/bin/hesiod /app/hesiod/
+    - mv build/bin/data /app/hesiod/
+   sources:
+    - type: git
+      url: https://github.com/ottolink-dev/Hesiod.git
+      tag: main
+
+ - name: launch-script
+   buildsystem: simple
+   build-commands:
+     - mv launch.sh /app/hesiod/
+     - chmod +x /app/hesiod/launch.sh
+
+   sources:
+     - type: file
+       path: launch.sh
+       sha256: cc1df03492bd9c996366a01ccf04b77b556610a624e1026524a271bbeb1e1387
+
+ - name: metainfo-desktop
+   buildsystem: simple
+   build-commands:
+     - install -Dm644 io.github.hesiod.desktop -t /app/share/applications
+     - install -Dm644 io.github.hesiod.metainfo.xml -t /app/share/metainfo
+     - install -Dm644 io.github.hesiod.png -t /app/share/icons/hicolor/256x256/apps
+     - install -Dm644 io.github.hesiod-mime.xml -t /app/share/mime/packages
+
+   sources:
+     - type: file
+       path: io.github.hesiod.desktop
+       sha256: 00f3b9ec1ae60f5dd9db711416e6f9bd6d158b90d647d5f7b7a3a018f2061401
+
+     - type: file
+       path: io.github.hesiod.metainfo.xml
+       sha256: 29ef469df41f4035bad00f165799eaf972a0ce98afae75bcf93ee07557a92e7a
+
+     - type: file
+       path: io.github.hesiod.png
+       sha256: 82e4a6b4f1e5526db9bce5849ca1e479312bbc8fc7e84fad5af16c9f50160245
+
+     - type: file
+       path: io.github.hesiod-mime.xml
+       sha256: 6ec448e8e7a4bc6e4f9acf8a5c6a917b0c06ea6f6703f5058b4e716c08fcf153

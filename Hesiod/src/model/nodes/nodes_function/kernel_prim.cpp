@@ -41,12 +41,12 @@ void compute_kernel_prim_node(BaseNode &node)
 
   hmap::Array *p_out = node.get_value_ref<hmap::Array>(P_KERNEL);
 
-  int ir = std::max(1, (int)(node.val<float>(A_RADIUS) * node.cfg().shape.x));
+  int ir = node.val_pixel_radius(A_RADIUS);
 
   // kernel definition
   glm::ivec2 kernel_shape = {2 * ir + 1, 2 * ir + 1};
 
-  *p_out = hmap::get_kernel(kernel_shape, (hmap::KernelType)node.val<int>(A_KERNEL));
+  *p_out = hmap::get_kernel(kernel_shape, node.val_enum<hmap::KernelType>(A_KERNEL));
 
   if (node.val<bool>(A_NORMALIZE))
     *p_out /= p_out->sum();

@@ -6,6 +6,7 @@
 #include "gnodegui/style.hpp"
 
 #include "hesiod/app/hesiod_application.hpp"
+#include "hesiod/gui/widgets/gui_utils.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/utils.hpp"
 
@@ -34,10 +35,26 @@ void apply_global_style(QApplication &app)
       {"COLOR_BORDER", ctx.app_settings.colors.border},
       {"COLOR_HOVER", ctx.app_settings.colors.hover},
       {"COLOR_PRESSED", ctx.app_settings.colors.pressed},
-      {"COLOR_SEPARATOR", ctx.app_settings.colors.separator}};
+      {"COLOR_SEPARATOR", ctx.app_settings.colors.separator},
+      // derived tones for the panel cards and popups: the configured border and
+      // accent are too loud at the size of a whole pane or a menu highlight
+      {"COLOR_PANEL_BORDER", panel_border_color()},
+      {"COLOR_PANEL_HOVER",
+       mix_colors(ctx.app_settings.colors.bg_deep,
+                  ctx.app_settings.colors.bg_primary,
+                  0.6)},
+      {"COLOR_MUTED_ACCENT",
+       mix_colors(ctx.app_settings.colors.bg_primary,
+                  ctx.app_settings.colors.accent,
+                  0.55)}};
 
   for (auto &[p, color] : place_holders)
     hesiod::replace_all(style_sheet, p, color.name().toStdString());
+
+  if (ctx.app_settings.icons.icon_paths.contains("check"))
+    hesiod::replace_all(style_sheet,
+                        "ICON_CHECK_PATH",
+                        ctx.app_settings.icons.icon_paths.at("check"));
 
   // The theme has to reach the palette as well as the stylesheet: custom-painted
   // widgets (the MetaUI sliders, range bars and canvases) query QPalette

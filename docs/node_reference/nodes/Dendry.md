@@ -27,7 +27,7 @@ WIP
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
-|out|VirtualArray|TODO|
+|output|VirtualArray|TODO|
 
 ## Parameters
 
@@ -53,4 +53,4 @@ WIP
 
 
 !!! note "No example yet"
-    No example available for this node.  
+    No example available for this node.

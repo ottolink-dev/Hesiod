@@ -19,16 +19,13 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-// -----------------------------------------------------------------------------
-// Ports & Attributes
-// -----------------------------------------------------------------------------
-
 constexpr const char *P_IN  = "input";
 constexpr const char *P_OUT = "mask";
 
-constexpr const char *A_RADIUS = "radius";
-constexpr const char *A_METRIC = "metric";
-constexpr const char *A_SATMAX = "satmax";
+constexpr const char *A_RADIUS         = "radius";
+constexpr const char *A_METRIC         = "metric";
+constexpr const char *A_SATMAX         = "satmax";
+constexpr const char *A_MIN_MAX_KERNEL = "min_max_kernel";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -55,6 +52,13 @@ void setup_local_metrics_node(BaseNode &node)
 
   setup_post_process_heightmap_attributes(node,
                                           {.add_mix = true, .remap_active_state = true});
+
+  node.set_current_category("Advanced");
+  add_enum(node,
+           A_MIN_MAX_KERNEL,
+           "Kernel Type",
+           enum_mappings.min_max_kernel_map,
+           "Octagon");
 }
 
 // -----------------------------------------------------------------------------
@@ -76,12 +80,12 @@ void compute_local_metrics_node(BaseNode &node)
   // --- Params
 
   // clang-format off
-  const auto radius   = node.val<float>(A_RADIUS);
-  const auto metric   = hmap::gpu::LocalMetrics(node.val<int>(A_METRIC));
-  const auto sat_perc = 0.01f * node.val<float>(A_SATMAX);
+  const auto metric      = node.val_enum<hmap::gpu::LocalMetrics>(A_METRIC);
+  const auto sat_perc    = 0.01f * node.val<float>(A_SATMAX);
+  const auto kernel_type = node.val_enum<hmap::MinMaxKernel>(A_MIN_MAX_KERNEL);
   // clang-format on
 
-  const int   ir     = std::max(1, int(radius * p_out->shape.x));
+  const int   ir     = node.val_pixel_radius(A_RADIUS);
   const float satmin = sat_perc;
   const float satmax = 1.f - sat_perc;
 
@@ -90,14 +94,14 @@ void compute_local_metrics_node(BaseNode &node)
   hmap::for_each_tile(
       {p_in},
       {p_out},
-      [&](std::vector<const hmap::Array *> in,
-          std::vector<hmap::Array *>       out,
+      [&](std::vector<const hmap::Array *> p_arrays_in,
+          std::vector<hmap::Array *>       p_arrays_out,
           const hmap::TileRegion &)
       {
-        auto [pa_in]  = unpack<1>(in);
-        auto [pa_out] = unpack<1>(out);
+        auto [pa_in]  = unpack<1>(p_arrays_in);
+        auto [pa_out] = unpack<1>(p_arrays_out);
 
-        *pa_out = hmap::gpu::local_metrics(*pa_in, ir, metric);
+        *pa_out = hmap::gpu::local_metrics(*pa_in, ir, metric, kernel_type);
       },
       node.cfg().cm_gpu);
 

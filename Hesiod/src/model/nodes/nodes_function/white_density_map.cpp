@@ -16,10 +16,6 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-// -----------------------------------------------------------------------------
-// Ports & Attributes
-// -----------------------------------------------------------------------------
-
 constexpr const char *P_DENSITY = "density";
 constexpr const char *P_ENV     = "envelope";
 constexpr const char *P_OUT     = "output";
@@ -74,10 +70,14 @@ void compute_white_density_map_node(BaseNode &node)
   // --- Compute
 
   hmap::for_each_tile(
-      {p_out, p_density},
-      [seed](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &region) mutable
+      {p_density},
+      {p_out},
+      [seed](std::vector<const hmap::Array *> p_arrays_in,
+             std::vector<hmap::Array *>       p_arrays_out,
+             const hmap::TileRegion          &region) mutable
       {
-        auto [pa_out, pa_density] = unpack<2>(p_arrays);
+        auto [pa_density] = unpack<1>(p_arrays_in);
+        auto [pa_out]     = unpack<1>(p_arrays_out);
 
         const uint tile_seed = seed + region.key.hash();
 

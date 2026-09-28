@@ -89,7 +89,11 @@ std::unordered_map<std::string, std::string> get_standard_replacements(
     ext = ext.substr(1);
 
   std::string filename_val = fname.stem().string();
-  std::string project_name = HSD_CTX.project_model->get_name();
+  std::string project_name{};
+
+  if (HSD_CTX.project_model)
+    project_name = HSD_CTX.project_model->get_name();
+
   std::string width_val = std::to_string(node.cfg().shape.x);
   std::string height_val = std::to_string(node.cfg().shape.y);
   std::string time_val = timestamp();
@@ -173,7 +177,7 @@ nlohmann::json json_from_file(const std::string &fname)
   return json;
 }
 
-void json_to_file(const nlohmann::json &json,
+bool json_to_file(const nlohmann::json &json,
                   const std::string    &fname,
                   bool                  merge_with_existing_content)
 {
@@ -209,16 +213,23 @@ void json_to_file(const nlohmann::json &json,
   }
 
   std::ofstream outfile(fname);
-  if (outfile.is_open())
-  {
-    outfile << final_json.dump(4);
-    outfile.close();
-    Logger::log()->trace("json_to_file: JSON successfully written to {}", fname);
-  }
-  else
+  if (!outfile.is_open())
   {
     Logger::log()->error("json_to_file: Could not open file {} to save JSON", fname);
+    return false;
   }
+
+  outfile << final_json.dump(4);
+  outfile.close();
+
+  if (!outfile.good())
+  {
+    Logger::log()->error("json_to_file: Could not write JSON to {}", fname);
+    return false;
+  }
+
+  Logger::log()->trace("json_to_file: JSON successfully written to {}", fname);
+  return true;
 }
 
 fs::path make_unique_filename(

@@ -18,12 +18,8 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-// -----------------------------------------------------------------------------
-// Ports & Attributes
-// -----------------------------------------------------------------------------
-
 constexpr const char *P_PATH = "path";
-constexpr const char *P_OUT  = "out";
+constexpr const char *P_OUT  = "output";
 
 constexpr const char *A_SEED          = "seed";
 constexpr const char *A_ISLAND_COUNT  = "island_count";
@@ -102,7 +98,7 @@ void compute_island_chain_node(BaseNode &node)
   const auto size_jitter   = node.val<float>(A_SIZE_JITTER);
   const auto scatter       = node.val<float>(A_SCATTER);
   const auto displacement  = node.val<float>(A_DISPLACEMENT);
-  const auto noise_type    = hmap::NoiseType(node.val<int>(A_NOISE_TYPE));
+  const auto noise_type    = node.val_enum<hmap::NoiseType>(A_NOISE_TYPE);
   const auto kw            = node.val<float>(A_KW);
   const auto octaves       = node.val<int>(A_OCTAVES);
   const auto weight        = node.val<float>(A_WEIGHT);
@@ -113,10 +109,13 @@ void compute_island_chain_node(BaseNode &node)
   // --- Compute
 
   hmap::for_each_tile(
+      {},
       {p_out},
-      [&](std::vector<hmap::Array *> out, const hmap::TileRegion &region)
+      [&](std::vector<const hmap::Array *> p_arrays_in,
+          std::vector<hmap::Array *>       p_arrays_out,
+          const hmap::TileRegion          &region)
       {
-        auto [pa_out] = unpack<1>(out);
+        auto [pa_out] = unpack<1>(p_arrays_out);
 
         *pa_out = hmap::island_chain_land_mask(region.shape,
                                                *p_path,

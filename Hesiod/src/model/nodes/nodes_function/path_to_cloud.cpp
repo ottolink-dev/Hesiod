@@ -26,13 +26,11 @@ void compute_path_to_cloud_node(BaseNode &node)
 
   hmap::Path *p_in = node.get_value_ref<hmap::Path>("path");
 
-  if (p_in)
-  {
-    hmap::Cloud *p_out = node.get_value_ref<hmap::Cloud>("cloud");
+  if (!p_in)
+    return;
 
-    // copy the input heightmap
-    *p_out = hmap::Cloud(p_in->points);
-  }
+  hmap::Cloud *p_out = node.get_value_ref<hmap::Cloud>("cloud");
+  *p_out             = hmap::Cloud(*p_in);
 }
 
 } // namespace hesiod

@@ -198,28 +198,70 @@ def generate_ports_table(md_file, node_info, port_type, title):
                           text_align="left")
 
 
-def generate_parameters_table(md_file, node_info):
-    """Generate markdown table for node parameters."""
-    table = ["Name", "Type", "Description"]
-    parameters = node_info.get("parameters", {})
+def write_parameters_table(md_file, parameters, keys):
+    """Write one Name/Type/Description table for the given parameter keys."""
+    entries = [[
+        parameters[k]["label"],
+        parameters[k].get("type", ""), parameters[k]["description"]
+    ] for k in keys if k in parameters]
 
-    if parameters is None:
+    if not entries:
         return
 
-    entries = [[p["label"], p["type"], p["description"]]
-               for p in parameters.values()]
+    table = ["Name", "Type", "Description"]
+    for entry in entries:
+        table.extend(entry)
 
-    if entries:
-        for entry in entries:
-            table.extend(entry)
+    md_file.new_table(columns=3,
+                      rows=len(entries) + 1,
+                      text=table,
+                      text_align="left")
 
+
+def generate_parameters_table(md_file, node_info):
+    """Generate markdown table(s) for node parameters.
+
+    Nodes whose attributes live in several meta container groups (tabs in the
+    settings panel) get one table per group: parameters present in every group
+    are listed once as common, then each group adds a table with its specific
+    parameters.
+    """
+    parameters = node_info.get("parameters", {})
+
+    if not parameters:
+        return
+
+    groups = node_info.get("parameter_groups") or []
+
+    if len(groups) <= 1:
         md_file.new_header(level=2,
                            title="Parameters",
                            add_table_of_contents='n')
-        md_file.new_table(columns=3,
-                          rows=len(entries) + 1,
-                          text=table,
-                          text_align="left")
+        write_parameters_table(md_file, parameters, list(parameters.keys()))
+        return
+
+    md_file.new_header(level=2, title="Parameters", add_table_of_contents='n')
+
+    # parameters shared by every group are documented once, in the key order
+    # of the first group
+    common = set(groups[0]["keys"])
+    for group in groups[1:]:
+        common &= set(group["keys"])
+
+    common_keys = [k for k in groups[0]["keys"] if k in common]
+    if common_keys:
+        md_file.new_paragraph("Parameters common to all groups ({}):".format(
+            ", ".join(g["name"] for g in groups)))
+        write_parameters_table(md_file, parameters, common_keys)
+
+    for group in groups:
+        specific_keys = [k for k in group["keys"] if k not in common]
+        if not specific_keys:
+            continue
+        md_file.new_header(level=3,
+                           title=group["name"],
+                           add_table_of_contents='n')
+        write_parameters_table(md_file, parameters, specific_keys)
 
 
 def main():

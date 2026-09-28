@@ -17,10 +17,6 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-// -----------------------------------------------------------------------------
-// Ports & Attributes
-// -----------------------------------------------------------------------------
-
 constexpr const char *P_OUT  = "output";
 constexpr const char *P_IN   = "input";
 constexpr const char *P_DX   = "dx";
@@ -64,20 +60,31 @@ void setup_hydraulic_saleve_node(BaseNode &node)
 
   // attribute(s)
   // clang-format off
+  node.set_current_category("Stream Power Erosion");
   add_seed(node, A_SEED, "Seed");
+  add_float(node, A_STRENGTH, "Erosion Strength", 0.7f, 0.f, 1.f);
   add_float(node, A_M_EXP, "Drainage Exponent", 0.15f, 0.01f, 0.8f);
   add_float(node, A_DRAINAGE_NOISE_STRENGTH, "Drainage Noise Strength", 0.1f, 0.f, 1.f);
   add_float(node, A_UPLIFT_RATE, "Uplift Rate", 1.f, 0.1f, 1.f);
+
+  node.set_current_category("Slope Constraints");
   add_bool(node, A_UNIFORM_SMAX, "Uniform Slope Limiter", false);
   add_float(node, A_SMAX, "Maximum Slope (Domain Center)", 6.f, 0.f, FLT_MAX);
   add_float(node, A_SMIN, "Minimum Slope (Domain Border)", 0.f, 0.f, FLT_MAX);
-  add_float(node, A_STRENGTH, "Erosion Strength", 0.7f, 0.f, 1.f);
+
+  node.set_current_category("Shape Preservation");
   add_bool(node, A_SCALE_ERODIBILITY_WITH_Z, "Terrain Shape Preservation", true);
   add_float(node, A_ERODIBILITY_DISTRIB_EXP, "Shape Preservation Strength", 2.f, 0.1f, 4.f);
+
+  node.set_current_category("Sediment Deposition");
   add_float(node, A_DEPOSITION_RADIUS, "Deposition Radius", 0.1f, 0.f, 0.5f);
   add_float(node, A_DEPOSITION_STRENGTH, "Sediment Deposition Strength", 0.5f, 0.f, 1.f);
+
+  node.set_current_category("Fine Stream Erosion");
   add_float(node, A_STREAM_EXP, "Influence Exponent", 0.8f, 0.01f, 1.f);
   add_float(node, A_STREAM_STRENGTH, "Fine Erosion Strength", 0.02f, 0.f, 1.f);
+
+  node.set_current_category("Mesh & Solver");
   add_int(node, A_CONTROL_POINTS_COUNT, "Control Points Count", 15000, 500, 100000);
   add_float(node, A_TOLERANCE, "Convergence Tolerance", 1e-3f, 1e-5f, 1e-1f, "{:.2e}", /* log */ true);
   add_int(node, A_MAX_ITERATIONS, "Max. Iterations", 500, 1, 1000);
@@ -229,10 +236,13 @@ void compute_hydraulic_saleve_node(BaseNode &node)
   if (params.deposition_ir > 0 && params.deposition_strength > 0.f)
   {
     hmap::for_each_tile(
+        {},
         {p_out},
-        [&params](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
+        [&params](std::vector<const hmap::Array *> p_arrays_in,
+                  std::vector<hmap::Array *>       p_arrays_out,
+                  const hmap::TileRegion &)
         {
-          auto [pa_out] = unpack<1>(p_arrays);
+          auto [pa_out] = unpack<1>(p_arrays_out);
 
           hmap::gpu::deposition_fill_holes(*pa_out,
                                            params.deposition_ir,
@@ -246,10 +256,14 @@ void compute_hydraulic_saleve_node(BaseNode &node)
   if (params.stream_strength > 0.f)
   {
     hmap::for_each_tile(
-        {p_out, p_mask},
-        [&params](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
+        {p_mask},
+        {p_out},
+        [&params](std::vector<const hmap::Array *> p_arrays_in,
+                  std::vector<hmap::Array *>       p_arrays_out,
+                  const hmap::TileRegion &)
         {
-          auto [pa_out, pa_mask] = unpack<2>(p_arrays);
+          auto [pa_mask] = unpack<1>(p_arrays_in);
+          auto [pa_out]  = unpack<1>(p_arrays_out);
 
           hmap::gpu::hydraulic_stream_log(*pa_out,
                                           params.stream_strength,
@@ -271,7 +285,7 @@ void compute_hydraulic_saleve_node(BaseNode &node)
   }
 
   // post-process
-  p_out->smooth_overlap_buffers();
+  p_out->sync_overlap_buffers();
   post_process_heightmap(node, *p_out, p_in);
 }
 

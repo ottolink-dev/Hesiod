@@ -17,10 +17,6 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-// -----------------------------------------------------------------------------
-// Ports & Attributes
-// -----------------------------------------------------------------------------
-
 constexpr const char *P_IN         = "input";
 constexpr const char *P_MASK       = "mask";
 constexpr const char *P_OUT        = "output";
@@ -85,24 +81,23 @@ void compute_smooth_fill_node(BaseNode &node)
   // --- Params
 
   // clang-format off
-  const auto radius     = node.val<float>(A_RADIUS);
   const auto k          = node.val<float>(A_K);
   const auto normalized = node.val<bool>(A_NORMALIZED);
   // clang-format on
 
-  const int ir = std::max(1, int(radius * p_out->shape.x));
+  const int ir = node.val_pixel_radius(A_RADIUS);
 
   // --- Compute
 
   hmap::for_each_tile(
       {p_in, p_mask},
       {p_out, p_deposition},
-      [&](std::vector<const hmap::Array *> in,
-          std::vector<hmap::Array *>       out,
+      [&](std::vector<const hmap::Array *> p_arrays_in,
+          std::vector<hmap::Array *>       p_arrays_out,
           const hmap::TileRegion &)
       {
-        auto [pa_in, pa_mask]        = unpack<2>(in);
-        auto [pa_out, pa_deposition] = unpack<2>(out);
+        auto [pa_in, pa_mask]        = unpack<2>(p_arrays_in);
+        auto [pa_out, pa_deposition] = unpack<2>(p_arrays_out);
 
         *pa_out = *pa_in;
 
@@ -112,7 +107,7 @@ void compute_smooth_fill_node(BaseNode &node)
 
   // --- Post-process
 
-  p_deposition->smooth_overlap_buffers();
+  p_deposition->sync_overlap_buffers();
   if (normalized)
   {
     p_deposition->remap(0.f, 1.f, node.cfg().cm_cpu);

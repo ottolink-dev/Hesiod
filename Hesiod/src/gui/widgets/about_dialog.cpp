@@ -4,7 +4,9 @@
 #include <fstream>
 
 #include <QDesktopServices>
+#include <QDialogButtonBox>
 #include <QHBoxLayout>
+#include <QLabel>
 #include <QPushButton>
 #include <QVBoxLayout>
 

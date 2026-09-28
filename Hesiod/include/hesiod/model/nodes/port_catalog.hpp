@@ -7,7 +7,7 @@
 #include <string>
 #include <vector>
 
-#include "gnodegui/node_proxy.hpp" // gngui::PortType
+#include "gnode/port.hpp"
 
 namespace hesiod
 {
@@ -19,7 +19,7 @@ struct PortInfo
 {
   std::string     name;
   std::string     data_type;
-  gngui::PortType direction;
+  gnode::PortType direction;
 };
 
 /**
@@ -45,7 +45,7 @@ public:
    */
   bool is_offerable(const std::string &node_type,
                     const std::string &data_type,
-                    gngui::PortType    wanted_direction) const;
+                    gnode::PortType    wanted_direction) const;
 
   /// Ports of a node type, or nullptr when the type is unknown.
   const std::vector<PortInfo> *find(const std::string &node_type) const;
@@ -65,6 +65,6 @@ private:
  */
 std::optional<std::string> select_port(const BaseNode    &node,
                                        const std::string &data_type,
-                                       gngui::PortType    wanted_direction);
+                                       gnode::PortType    wanted_direction);
 
 } // namespace hesiod

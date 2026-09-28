@@ -30,14 +30,19 @@ constexpr const char *A_FNAME       = "fname";
 constexpr const char *A_FLIP_X      = "flip_x";
 constexpr const char *A_FLIP_Y      = "flip_y";
 
+// -----------------------------------------------------------------------------
+// Setup
+// -----------------------------------------------------------------------------
+
 void setup_export_texture_node(BaseNode &node)
 {
   Logger::log()->trace("setup node {}", node.get_label());
 
-  // port(s)
+  // --- Ports
+
   node.add_port<hmap::VirtualTexture>(gnode::PortType::IN, P_TEXTURE);
 
-  // attribute(s)
+  // --- Attribute(s)
 
   // clang-format off
   add_filename(node, A_FNAME, "fname", std::filesystem::path("texture.png"), "PNG (*.png)", true);
@@ -49,37 +54,56 @@ void setup_export_texture_node(BaseNode &node)
   // clang-format on
 }
 
+// -----------------------------------------------------------------------------
+// Compute
+// -----------------------------------------------------------------------------
+
 void compute_export_texture_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
   hmap::VirtualTexture *p_in = node.get_value_ref<hmap::VirtualTexture>(P_TEXTURE);
 
-  if (p_in && node.val<bool>(A_AUTO_EXPORT))
+  if (!p_in)
+    return;
+
+  const bool auto_export = node.val<bool>(A_AUTO_EXPORT);
+  if (!auto_export)
   {
-    std::filesystem::path fname = node.val<std::filesystem::path>(A_FNAME);
-    fname                       = ensure_extension(fname, ".png");
-    const auto pattern          = node.val<std::string>(A_PATTERN);
-
-    std::unordered_map<std::string, std::string> replacements = get_standard_replacements(
-        node,
-        fname);
-
-    std::filesystem::path export_path = make_unique_filename(fname.parent_path(),
-                                                             pattern,
-                                                             replacements);
-
-    const bool flip_x = node.val<bool>(A_FLIP_X);
-    const bool flip_y = node.val<bool>(A_FLIP_Y);
-    const int  depth  = node.val<bool>(A_16_BIT) ? CV_16U : CV_8U;
-
-    hmap::Texture t = p_in->to_texture(p_in->shape, node.cfg().cm_cpu);
-    if (flip_x)
-      hmap::flip_lr(t);
-    if (flip_y)
-      hmap::flip_ud(t);
-    t.to_png(fname.string(), depth);
+    Logger::log()->trace(
+        "compute_export_texture_node: [{}]/[{}]: auto export is disabled",
+        node.get_node_type(),
+        node.get_id());
+    return;
   }
+
+  std::filesystem::path fname = node.val<std::filesystem::path>(A_FNAME);
+  fname                       = ensure_extension(fname, ".png");
+  const auto pattern          = node.val<std::string>(A_PATTERN);
+
+  std::unordered_map<std::string, std::string> replacements = get_standard_replacements(
+      node,
+      fname);
+
+  std::filesystem::path export_path = make_unique_filename(fname.parent_path(),
+                                                           pattern,
+                                                           replacements);
+
+  Logger::log()->trace("compute_export_texture_node: [{}]/[{}]: export path = {}",
+                       node.get_node_type(),
+                       node.get_id(),
+                       export_path.string());
+
+  const bool flip_x = node.val<bool>(A_FLIP_X);
+  const bool flip_y = node.val<bool>(A_FLIP_Y);
+  const int  depth  = node.val<bool>(A_16_BIT) ? CV_16U : CV_8U;
+
+  hmap::Texture t = p_in->to_texture(p_in->shape, node.cfg().cm_cpu);
+  if (flip_x)
+    hmap::flip_lr(t);
+  if (flip_y)
+    hmap::flip_ud(t);
+  t.to_png(export_path.string(), depth);
 }
 
 } // namespace hesiod

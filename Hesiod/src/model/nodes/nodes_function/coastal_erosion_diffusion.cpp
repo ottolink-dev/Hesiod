@@ -16,10 +16,6 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-// -----------------------------------------------------------------------------
-// Ports & Attributes
-// -----------------------------------------------------------------------------
-
 constexpr const char *P_Z_IN     = "elevation_in";
 constexpr const char *P_DEPTH_IN = "water_depth_in";
 constexpr const char *P_MASK_IN  = "mask";
@@ -89,13 +85,13 @@ void compute_coastal_erosion_diffusion_node(BaseNode &node)
   hmap::for_each_tile(
       {p_z, p_depth, p_mask},
       {p_z_out, p_depth_out, p_mask_out},
-      [&](std::vector<const hmap::Array *> in,
-          std::vector<hmap::Array *>       out,
+      [&](std::vector<const hmap::Array *> p_arrays_in,
+          std::vector<hmap::Array *>       p_arrays_out,
           const hmap::TileRegion &)
       {
-        auto [pa_z, pa_depth, pa_mask] = unpack<3>(in);
+        auto [pa_z, pa_depth, pa_mask] = unpack<3>(p_arrays_in);
 
-        auto [pa_z_out, pa_depth_out, pa_mask_out] = unpack<3>(out);
+        auto [pa_z_out, pa_depth_out, pa_mask_out] = unpack<3>(p_arrays_out);
 
         *pa_z_out     = *pa_z;
         *pa_depth_out = *pa_depth;

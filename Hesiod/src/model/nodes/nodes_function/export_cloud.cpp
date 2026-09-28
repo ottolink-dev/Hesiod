@@ -46,22 +46,36 @@ void compute_export_cloud_node(BaseNode &node)
 
   hmap::Cloud *p_in = node.get_value_ref<hmap::Cloud>(P_IN);
 
-  if (p_in && node.val<bool>(A_AUTO_EXPORT))
+  if (!p_in)
+    return;
+
+  const bool auto_export = node.val<bool>(A_AUTO_EXPORT);
+  if (!auto_export)
   {
-    std::filesystem::path fname = node.val<std::filesystem::path>(A_FNAME);
-    fname                       = ensure_extension(fname, ".csv");
-    const auto pattern          = node.val<std::string>(A_PATTERN);
-
-    std::unordered_map<std::string, std::string> replacements = get_standard_replacements(
-        node,
-        fname);
-
-    std::filesystem::path export_path = make_unique_filename(fname.parent_path(),
-                                                             pattern,
-                                                             replacements);
-
-    p_in->to_csv(export_path.string());
+    Logger::log()->trace("compute_export_cloud_node: [{}]/[{}]: auto export is disabled",
+                         node.get_node_type(),
+                         node.get_id());
+    return;
   }
+
+  std::filesystem::path fname = node.val<std::filesystem::path>(A_FNAME);
+  fname                       = ensure_extension(fname, ".csv");
+  const auto pattern          = node.val<std::string>(A_PATTERN);
+
+  std::unordered_map<std::string, std::string> replacements = get_standard_replacements(
+      node,
+      fname);
+
+  std::filesystem::path export_path = make_unique_filename(fname.parent_path(),
+                                                           pattern,
+                                                           replacements);
+
+  Logger::log()->trace("compute_export_cloud_node: [{}]/[{}]: export path = {}",
+                       node.get_node_type(),
+                       node.get_id(),
+                       export_path.string());
+
+  p_in->to_csv(export_path.string());
 }
 
 } // namespace hesiod

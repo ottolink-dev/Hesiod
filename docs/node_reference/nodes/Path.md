@@ -31,7 +31,7 @@ Geometry/Path
 |Name|Type|Description|
 | :--- | :--- | :--- |
 |Closed Path|Bool|No description|
-|Path|Cloud|The sequence of points defining the path. Each point consists of coordinates (x, y) and an elevation (z).|
+|Path|Path|The sequence of points defining the path. Each point consists of coordinates (x, y) and an elevation (z).|
 
 ## Example
 
@@ -44,4 +44,4 @@ Corresponding Hesiod file: [Path.hsd](../../examples/Path.hsd). Use [Ctrl+I] in 
     Example files are kept up-to-date with the latest version of [Hesiod](https://github.com/otto-link/Hesiod).
     If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).
 
-  
+

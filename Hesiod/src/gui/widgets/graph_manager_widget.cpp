@@ -2,8 +2,10 @@
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
 #include <QGridLayout>
+#include <QGuiApplication>
 #include <QMenu>
 #include <QPushButton>
+#include <QScreen>
 #include <QSettings>
 
 #include "hesiod/app/hesiod_application.hpp"
@@ -31,7 +33,7 @@ GraphManagerWidget::GraphManagerWidget(std::weak_ptr<GraphManager> p_graph_manag
   if (!gm)
     return;
 
-  this->setWindowTitle(tr("Hesiod - GraphManager"));
+  this->setWindowTitle(tr("Hesiod - Graph Layout Manager"));
 
   // --- build widget layout
   int row = 0;
@@ -55,6 +57,7 @@ GraphManagerWidget::GraphManagerWidget(std::weak_ptr<GraphManager> p_graph_manag
   this->list_widget->setViewMode(QListView::ListMode);
   this->list_widget->setDragDropMode(QAbstractItemView::InternalMove);
   this->list_widget->setContextMenuPolicy(Qt::CustomContextMenu);
+  this->setup_reset_actions();
   this->list_widget->setMinimumSize(MINIMUM_WIDTH, this->list_widget->height());
 
   // populate with graph editor names
@@ -367,7 +370,7 @@ void GraphManagerWidget::on_new_graph_request()
 
   // get config from user
   auto              config = std::make_shared<hesiod::GraphConfig>();
-  GraphConfigDialog config_editor(*config);
+  GraphConfigDialog config_editor(*config, this);
 
   {
     int ret = config_editor.exec();
@@ -414,11 +417,25 @@ void GraphManagerWidget::reset()
 void GraphManagerWidget::restore_window_state()
 {
   AppContext &ctx = HSD_CTX;
+  const auto &geom = ctx.app_settings.window.geom_graph_manager;
 
-  this->setGeometry(ctx.app_settings.window.geom_graph_manager.x,
-                    ctx.app_settings.window.geom_graph_manager.y,
-                    ctx.app_settings.window.geom_graph_manager.w,
-                    ctx.app_settings.window.geom_graph_manager.h);
+  // default to center of the main screen
+  if (geom.x <= 0 && geom.y <= 0)
+  {
+    QScreen *screen = QGuiApplication::primaryScreen();
+    if (screen)
+    {
+      QRect screen_geom = screen->availableGeometry();
+      int   w = std::min(geom.w > 0 ? geom.w : 1024, screen_geom.width());
+      int   h = std::min(geom.h > 0 ? geom.h : 768, screen_geom.height());
+      int   x = screen_geom.x() + (screen_geom.width() - w) / 2;
+      int   y = screen_geom.y() + (screen_geom.height() - h) / 2;
+      this->setGeometry(x, y, w, h);
+      return;
+    }
+  }
+
+  this->setGeometry(geom.x, geom.y, geom.w, geom.h);
 }
 
 void GraphManagerWidget::save_window_state() const
@@ -464,18 +481,21 @@ void GraphManagerWidget::show_context_menu(const QPoint &pos)
   QMenu    menu;
   QAction *new_action = menu.addAction("New");
   QAction *set_focus_action = menu.addAction("Show in graph editor");
+  menu.addSeparator();
+  QMenu *reset_menu = menu.addMenu("Reset transform");
+  reset_menu->addActions(this->reset_actions);
+  menu.addSeparator();
   QAction *delete_action = menu.addAction("Delete");
+
+  // the reset actions work on the current item
+  this->list_widget->setCurrentItem(item);
 
   QPoint   global_pos = this->list_widget->mapToGlobal(pos);
   QAction *selected_action = menu.exec(global_pos);
 
   if (selected_action == delete_action)
   {
-    delete this->list_widget->takeItem(this->list_widget->row(item));
-    gm->remove_graph_node(selected_id);
-    this->coord_frame_widget->remove_frame(selected_id);
-
-    Q_EMIT this->graph_removed();
+    this->delete_graph(selected_id);
   }
   else if (selected_action == set_focus_action)
   {
@@ -485,6 +505,64 @@ void GraphManagerWidget::show_context_menu(const QPoint &pos)
   {
     this->on_new_graph_request();
   }
+}
+
+void GraphManagerWidget::setup_reset_actions()
+{
+  // location, rotation and scale of the current graph's frame back to the
+  // defaults (origin, no rotation, unit size), from the context menu or with
+  // Alt+L / Alt+R / Alt+S while this window has focus
+  const std::vector<std::pair<QString, QString>> labels = {{"Location", "Alt+L"},
+                                                           {"Rotation", "Alt+R"},
+                                                           {"Scale", "Alt+S"}};
+  for (int k = 0; k < 3; k++)
+  {
+    auto *action = new QAction(labels[k].first, this);
+    action->setShortcut(QKeySequence(labels[k].second));
+    action->setShortcutContext(Qt::WidgetWithChildrenShortcut);
+    this->addAction(action);
+    this->reset_actions.push_back(action);
+
+    this->connect(action,
+                  &QAction::triggered,
+                  this,
+                  [this, k]()
+                  {
+                    QListWidgetItem *item = this->list_widget->currentItem();
+                    if (!item)
+                      return;
+
+                    FrameItem *frame = this->coord_frame_widget->get_frame_ref(
+                        item->text().toStdString());
+                    if (k == 0)
+                      frame->set_origin(QPointF(0.f, 0.f));
+                    else if (k == 1)
+                      frame->set_angle(0.f);
+                    else
+                      frame->set_size(QPointF(1.f, 1.f));
+                  });
+  }
+}
+
+void GraphManagerWidget::delete_graph(const std::string &graph_id)
+{
+  Logger::log()->trace("GraphManagerWidget::delete_graph: {}", graph_id);
+
+  auto gm = this->p_graph_manager.lock();
+  if (!gm)
+    return;
+
+  for (int i = 0; i < this->list_widget->count(); ++i)
+    if (this->list_widget->item(i)->text().toStdString() == graph_id)
+    {
+      delete this->list_widget->takeItem(i);
+      break;
+    }
+
+  gm->remove_graph_node(graph_id);
+  this->coord_frame_widget->remove_frame(graph_id);
+
+  Q_EMIT this->graph_removed();
 }
 
 void GraphManagerWidget::update_combobox(const std::string &graph_id)

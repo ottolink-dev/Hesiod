@@ -97,16 +97,15 @@ void compute_valley_fill_node(BaseNode &node)
     float zmax = p_in->max(node.cfg().cm_cpu);
 
     hmap::for_each_tile(
-        {p_out, p_in, p_noise, p_mask, &talus_map, p_deposition_map},
-        [&node, talus, iterations, zmin, zmax](std::vector<hmap::Array *> p_arrays,
-                                               const hmap::TileRegion &)
+        {p_in, p_noise, p_mask, &talus_map},
+        {p_out, p_deposition_map},
+        [&node, talus, iterations, zmin, zmax](
+            std::vector<const hmap::Array *> p_arrays_in,
+            std::vector<hmap::Array *>       p_arrays_out,
+            const hmap::TileRegion &)
         {
-          auto [pa_out,
-                pa_in,
-                pa_noise,
-                pa_mask,
-                pa_talus_map,
-                pa_deposition_map] = unpack<6>(p_arrays);
+          auto [pa_in, pa_noise, pa_mask, pa_talus_map] = unpack<4>(p_arrays_in);
+          auto [pa_out, pa_deposition_map]              = unpack<2>(p_arrays_out);
 
           *pa_out = *pa_in;
 
@@ -126,7 +125,7 @@ void compute_valley_fill_node(BaseNode &node)
         node.cfg().cm_gpu);
 
     // post-process
-    p_out->smooth_overlap_buffers();
+    p_out->sync_overlap_buffers();
     post_process_heightmap(node, *p_out, p_in);
 
     p_deposition_map->remap(0.f, 1.f, node.cfg().cm_cpu);

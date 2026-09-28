@@ -19,10 +19,6 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-// -----------------------------------------------------------------------------
-// Ports & Attributes
-// -----------------------------------------------------------------------------
-
 constexpr const char *P_OUTPUT  = "phasor_fbm";
 constexpr const char *P_ANGLE   = "angle";
 constexpr const char *P_NOISE_X = "noise_x";
@@ -99,7 +95,7 @@ void compute_phasor_node(BaseNode &node)
   const auto seed             = node.val<int>(A_SEED);
   const auto kp_global        = node.val<float>(A_KP_GLOBAL);
   const auto angle_shift_rads = float(M_PI) / 180.f * node.val<float>(A_ANGLE_SHIFT);
-  const auto profile          = hmap::PhasorProfile(node.val<int>(A_PROFILE));
+  const auto profile          = node.val_enum<hmap::PhasorProfile>(A_PROFILE);
   const auto octaves          = node.val<int>(A_OCTAVES);
   const auto weight           = node.val<float>(A_WEIGHT);
   const auto persistence      = node.val<float>(A_PERSISTENCE);
@@ -108,7 +104,7 @@ void compute_phasor_node(BaseNode &node)
   const auto phase_smoothing  = node.val<float>(A_PHASE_SMOOTHING);
   // clang-format on
 
-  constexpr int n_kernel_samples = 8;
+  constexpr float normalization = 1.f;
 
   // --- Compute
 
@@ -131,7 +127,7 @@ void compute_phasor_node(BaseNode &node)
                                         weight,
                                         persistence,
                                         lacunarity,
-                                        n_kernel_samples,
+                                        normalization,
                                         {1.f, 1.f},
                                         delta,
                                         phase_smoothing,

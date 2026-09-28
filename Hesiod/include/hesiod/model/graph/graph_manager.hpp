@@ -49,7 +49,8 @@ public:
   bool is_graph_id_available(const std::string &graph_id);
   void remove_graph_node(const std::string &graph_id);
   void reseed(bool backward);
-  void update();
+  std::string runtime_info_to_string(const char separator = ',') const;
+  void        update();
 
   // --- Serialization ---
   void           json_from(nlohmann::json const &json, GraphConfig *p_config);

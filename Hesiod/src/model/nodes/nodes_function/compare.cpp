@@ -17,10 +17,6 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-// -----------------------------------------------------------------------------
-// Ports & Attributes
-// -----------------------------------------------------------------------------
-
 constexpr const char *P_A   = "a";
 constexpr const char *P_B   = "b";
 constexpr const char *P_OUT = "output";
@@ -89,12 +85,12 @@ void compute_compare_node(BaseNode &node)
   hmap::for_each_tile(
       {p_a, p_b},
       {p_out},
-      [&](std::vector<const hmap::Array *> in,
-          std::vector<hmap::Array *>       out,
+      [&](std::vector<const hmap::Array *> p_arrays_in,
+          std::vector<hmap::Array *>       p_arrays_out,
           const hmap::TileRegion &)
       {
-        auto [pa_a, pa_b] = unpack<2>(in);
-        auto [pa_out]     = unpack<1>(out);
+        auto [pa_a, pa_b] = unpack<2>(p_arrays_in);
+        auto [pa_out]     = unpack<1>(p_arrays_out);
 
         *pa_out = hmap::compare(*pa_a, *pa_b, sx, sy);
       },

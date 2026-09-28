@@ -101,6 +101,7 @@ public slots:
   void on_item_double_clicked(QListWidgetItem *item);
   void on_list_reordered(const QModelIndex &, int, int, const QModelIndex &, int);
   void on_new_graph_request();
+  void delete_graph(const std::string &graph_id); // no confirmation: callers ask
   void on_reseed(bool backward = false);
 
   // --- Graph Actions ---
@@ -122,6 +123,7 @@ private slots:
 private:
   // --- Helper(s) ---
   void add_list_item(const std::string &id);
+  void setup_reset_actions();
 
   // --- Members ---
   std::weak_ptr<GraphManager> p_graph_manager;
@@ -129,6 +131,7 @@ private:
   QListWidget                *list_widget;
   QPushButton                *apply_button;
   bool                        is_dirty = false;
+  QList<QAction *>            reset_actions; // location, rotation, scale
 };
 
 } // namespace hesiod

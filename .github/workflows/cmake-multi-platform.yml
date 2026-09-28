@@ -41,8 +41,8 @@ jobs:
     - name: Install Qt
       uses: jurplel/install-qt-action@v4
       with:
-        version: "6.4.2"
-        modules: 'qtwebengine qtpositioning qtwebchannel'
+        version: "6.11.2"
+        modules: 'qtwebengine qtpositioning qtwebchannel qtserialport'
 
     - name: Install system dependencies (ubuntu)
       if: startsWith (matrix.os, 'ubuntu')

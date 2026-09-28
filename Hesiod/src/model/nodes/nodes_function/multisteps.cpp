@@ -18,10 +18,6 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-// -----------------------------------------------------------------------------
-// Ports & Attributes
-// -----------------------------------------------------------------------------
-
 constexpr const char *P_DX       = "dx";
 constexpr const char *P_DY       = "dy";
 constexpr const char *P_CONTROL  = "control";
@@ -110,7 +106,7 @@ void compute_multisteps_node(BaseNode &node)
   const auto elevation_exp  = node.val<float>(A_ELEVATION_EXP);
   const auto shape_gain     = node.val<float>(A_SHAPE_GAIN);
   const auto seed           = node.val<int>(A_SEED);
-  const auto kw             = node.val<glm::vec2>(A_KW);
+  const auto kw             = node.val_wavenumber(A_KW);
   const auto noise_amp      = node.val<float>(A_NOISE_AMP);
   const auto noise_rugosity = node.val<float>(A_NOISE_RUGOSITY);
   const auto noise_inflate  = node.val<bool>(A_NOISE_INFLATE);
@@ -125,12 +121,12 @@ void compute_multisteps_node(BaseNode &node)
     hmap::for_each_tile(
         {p_dx, p_dy, p_control},
         {p_out},
-        [&](std::vector<const hmap::Array *> in,
-            std::vector<hmap::Array *>       out,
+        [&](std::vector<const hmap::Array *> p_arrays_in,
+            std::vector<hmap::Array *>       p_arrays_out,
             const hmap::TileRegion          &region)
         {
-          auto [pa_dx, pa_dy, pa_control] = unpack<3>(in);
-          auto [pa_out]                   = unpack<1>(out);
+          auto [pa_dx, pa_dy, pa_control] = unpack<3>(p_arrays_in);
+          auto [pa_out]                   = unpack<1>(p_arrays_out);
 
           *pa_out = hmap::multisteps(region.shape,
                                      angle,
@@ -155,13 +151,13 @@ void compute_multisteps_node(BaseNode &node)
     hmap::for_each_tile(
         {p_control},
         {p_out},
-        [&](std::vector<const hmap::Array *> in,
-            std::vector<hmap::Array *>       out,
+        [&](std::vector<const hmap::Array *> p_arrays_in,
+            std::vector<hmap::Array *>       p_arrays_out,
             const hmap::TileRegion          &region)
         {
-          auto [pa_control] = unpack<1>(in);
+          auto [pa_control] = unpack<1>(p_arrays_in);
 
-          auto [pa_out] = unpack<1>(out);
+          auto [pa_out] = unpack<1>(p_arrays_out);
 
           *pa_out = hmap::gpu::multisteps(region.shape,
                                           angle,

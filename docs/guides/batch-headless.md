@@ -48,17 +48,20 @@ The Hesiod binary accepts a `--batch` flag that loads a `.hsd` graph file and re
 without opening the GUI.
 
 ```
-hesiod --batch=graph.hsd [--shape=W,H] [--tiling=X,Y] [--overlap=R]
+hesiod --batch=graph.hsd [--shape=W,H] [--tiling=X,Y] [--overlap=R] [--force-distributed] [--force-sequential] [--min-memory]
 ```
 
 **Flags:**
 
 | Flag | Description |
 |---|---|
-| `--batch=<file>` | Path to the `.hsd` graph to execute. Required to enter batch mode. |
+| `--batch=<file>` / `-b <file>` | Path to the `.hsd` graph to execute. Required to enter batch mode. |
 | `--shape=W,H` | Override the heightmap shape in pixels, e.g. `--shape=2048,2048`. |
 | `--tiling=X,Y` | Override tiling, e.g. `--tiling=4,4` to split into 16 tiles. |
 | `--overlap=R` | Override the tile overlap ratio (0–1), e.g. `--overlap=0.25`. |
+| `--force-distributed` | Force multi-threaded distributed computation mode (`VA_DISTRIBUTED`) for both CPU and GPU compute modes. |
+| `--force-sequential` | Force single-threaded sequential computation mode (`VA_SEQUENTIAL`) for both CPU and GPU compute modes. |
+| `--min-memory` / `--low-memory` | Minimal memory footprint mode: activates on-disk LRU caching (`VA_DISK_LRU_MIN` keeping minimum active tiles in RAM) and forces sequential compute mode (`VA_SEQUENTIAL`). Tiles are processed one-by-one to minimize RAM usage at the cost of higher disk I/O. |
 
 **Output:** export happens **only if the graph defines an export path** (`export_param` —
 see [Export configuration](#export-configuration) below). When an export path is

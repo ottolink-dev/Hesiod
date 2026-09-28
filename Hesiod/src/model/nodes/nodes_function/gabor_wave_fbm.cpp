@@ -86,12 +86,12 @@ void compute_gabor_wave_fbm_node(BaseNode &node)
   hmap::for_each_tile(
       {p_ctrl, p_dx, p_dy, p_angle},
       {p_out},
-      [&node](std::vector<const hmap::Array *> in,
-              std::vector<hmap::Array *>       out,
+      [&node](std::vector<const hmap::Array *> p_arrays_in,
+              std::vector<hmap::Array *>       p_arrays_out,
               const hmap::TileRegion          &region)
       {
-        auto [pa_ctrl, pa_dx, pa_dy, pa_angle] = unpack<4>(in);
-        auto [pa_out]                          = unpack<1>(out);
+        auto [pa_ctrl, pa_dx, pa_dy, pa_angle] = unpack<4>(p_arrays_in);
+        auto [pa_out]                          = unpack<1>(p_arrays_out);
 
         hmap::Array angle_deg(region.shape, node.val<float>(A_ANGLE));
 
@@ -99,7 +99,7 @@ void compute_gabor_wave_fbm_node(BaseNode &node)
           angle_deg += (*pa_angle) * 180.f / M_PI;
 
         *pa_out = hmap::gpu::gabor_wave_fbm(region.shape,
-                                            node.val<glm::vec2>(A_KW),
+                                            node.val_wavenumber(A_KW),
                                             node.val<int>(A_SEED),
                                             angle_deg,
                                             node.val<float>(A_ANGLE_SPREAD_RATIO),

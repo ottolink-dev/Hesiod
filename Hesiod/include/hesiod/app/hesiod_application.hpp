@@ -13,6 +13,7 @@
 #include "nlohmann/json.hpp"
 
 #include "hesiod/app/app_context.hpp"
+#include "hesiod/app/autosave_manager.hpp"
 #include "hesiod/bridges/blender/blender_streamer.hpp"
 #include "hesiod/gui/widgets/app_settings_window.hpp"
 #include "hesiod/gui/widgets/graph_config_widgets/bake_config_dialog.hpp"
@@ -36,15 +37,27 @@ class HesiodApplication : public QApplication
 {
   Q_OBJECT
 public:
-  HesiodApplication(int &argc, char **argv);
+  enum class StartupMode
+  {
+    Normal,
+    ContextOnly // CPU/Qt integration tests: no engine, services or main window
+  };
+
+  HesiodApplication(int &argc, char **argv, StartupMode mode = StartupMode::Normal);
   ~HesiodApplication();
 
   bool is_headless() const;
   int  get_exit_code() const;
   void load_project_model_and_ui(const std::string &fname = "", bool keep_name = true);
-  void save_project_model_and_ui(const std::string &fname);
+  /// Writes the project file. Returns false, after warning the user, when the
+  /// file could not be written; the project then stays dirty and keeps its
+  /// recovery snapshot.
+  bool save_project_model_and_ui(const std::string &fname);
   void save_backup(const std::string &fname);
-  void show();
+  /// Everything a .hsd file holds: model, UI state (when a ProjectUI exists),
+  /// version and timestamp. Shared by the real save and the autosave snapshot.
+  nlohmann::json project_file_json() const;
+  void           show();
 
   void notify(const std::string &msg = "", int timeout = 5000);
 
@@ -59,6 +72,12 @@ public:
   AppContext       &get_context();
   const AppContext &get_context() const;
   ProjectUI        *get_project_ui_ref();
+  AutosaveManager  *get_autosave_manager_ref(); // null in headless/test modes
+
+  // 2D viewer or 3D renderer (qtr::RenderType) for every graph viewer; the
+  // switch itself is on each viewport's toolbar
+  void set_viewer_render_type(int new_type);
+  int  get_viewer_render_type() const { return this->viewer_render_type; }
 
 private slots:
   // --- User actions
@@ -75,6 +94,8 @@ private slots:
   void on_save_as();
   void on_save_copy();
   void on_toggle_node_library_pan();
+  void on_rename_project();
+  void on_reveal_project();
   void show_about();
   void show_quick_help();
 
@@ -82,21 +103,38 @@ private slots:
   void on_project_name_changed();
 
 private:
-  void add_recent_file(const std::string &fname);
-  void cleanup();
+  void    add_recent_file(const std::string &fname);
+  QString project_display_name() const;           // "Untitled" when it has no name yet
+  void    step_ui_scale(int direction);           // +1 / -1: 10 % zoom steps; 0: reset
+  std::filesystem::path default_bake_dir() const; // where a bake goes by default
+  void                  cleanup();
+  // startup: prompt for each pending recovery snapshot; true when one was restored
+  bool offer_recovery();
+  bool restore_snapshot(const AutosaveManager::Entry &entry);
   void rebuild_recent_files_menu();
   void setup_menu_bar();
+  void setup_title_bar();
+  void show_project_menu(const QPoint &global_pos);
 
   // --- Members (respect order for deletion)
-  AppContext                 context;
-  MainWindow                *main_window = nullptr; // null in headless CLI modes
-  std::unique_ptr<ProjectUI> project_ui;            // because top-level UI
-  AppSettingsWindow         *app_settings_window;   // owned by MainWindow
+  AppContext                       context;
+  MainWindow                      *main_window = nullptr; // null in headless CLI modes
+  std::unique_ptr<ProjectUI>       project_ui;            // because top-level UI
+  std::unique_ptr<AutosaveManager> autosave;              // GUI mode only
+  AppSettingsWindow               *app_settings_window;   // owned by MainWindow
 
   QMenu            *recent_files_menu = nullptr;  // owned by the menu bar
   QPointer<QAction> show_node_library_pan_action; // owned by the menu bar
 
   BlenderStreamer blender_streamer;
+
+  // name given to a project that has no file yet: shown in the title bar and
+  // proposed as the file name by the first Save As
+  std::string pending_project_name;
+
+  // viewer mode (qtr::RenderType), applied to every graph viewer, including
+  // those of projects opened later
+  int viewer_render_type = 1;
 
   bool headless = false;
   int  headless_exit_code = 0;

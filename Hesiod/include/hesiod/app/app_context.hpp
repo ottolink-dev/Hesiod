@@ -10,6 +10,7 @@
 #include "hesiod/app/app_settings.hpp"
 #include "hesiod/app/enum_mappings.hpp"
 #include "hesiod/app/style_settings.hpp"
+#include "hesiod/model/error/error_manager.hpp"
 #include "hesiod/model/project_model.hpp"
 
 namespace hesiod
@@ -34,8 +35,13 @@ public:
 
   // --- Project management
   void new_project();
-  void load_project_model(const std::string &fname);
-  void save_project_model(const std::string &fname) const;
+  // returns how many graphs were opened at a lower resolution than saved
+  // (node_editor.open_projects_at_1k)
+  int load_project_model(const std::string &fname);
+
+  // --- Error management
+  ErrorManager       &get_error_manager();
+  const ErrorManager &get_error_manager() const;
 
   // --- Data
   void load_node_documentation();
@@ -44,10 +50,15 @@ public:
   // window/OpenGL-dependent widgets (3D viewer) are skipped
   bool headless = false;
 
+  // runtime state: labels of applied settings that only take effect after a
+  // restart, for the settings window's banner (kept across its reopenings)
+  std::vector<std::string> settings_pending_restart;
+
   // global settings
   AppSettings    app_settings;
   StyleSettings  style_settings;
   nlohmann::json node_documentation;
+  ErrorManager   error_manager;
 
   // project
   std::unique_ptr<ProjectModel> project_model;
@@ -57,6 +68,9 @@ private:
 };
 
 // helpers
+
+/// True when a hesiod.json or a portable.flag sits beside the executable.
+bool is_portable_mode(const QString &app_name = "hesiod");
 
 std::string get_config_file_path(const QString &app_name, bool portable_mode);
 std::string get_config_file_path_auto(const QString &app_name);

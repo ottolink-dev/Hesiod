@@ -18,10 +18,6 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-// -----------------------------------------------------------------------------
-// Ports & Attributes
-// -----------------------------------------------------------------------------
-
 constexpr const char *P_IN  = "input";
 constexpr const char *P_OUT = "output";
 
@@ -75,24 +71,23 @@ void compute_level_set_curvature_node(BaseNode &node)
   // --- Params
 
   // clang-format off
-  const auto radius      = node.val<float>(A_RADIUS);
   const auto values_kept = node.val<std::string>(A_VALUES_KEPT);
   // clang-format on
 
   bool keep_both = (values_kept == "both");
-  int  ir        = std::max(1, int(radius * p_out->shape.x));
+  int  ir        = node.val_pixel_radius(A_RADIUS);
 
   // --- Compute
 
   hmap::for_each_tile(
       {p_in},
       {p_out},
-      [&](std::vector<const hmap::Array *> in,
-          std::vector<hmap::Array *>       out,
+      [&](std::vector<const hmap::Array *> p_arrays_in,
+          std::vector<hmap::Array *>       p_arrays_out,
           const hmap::TileRegion &)
       {
-        auto [pa_in]  = unpack<1>(in);
-        auto [pa_out] = unpack<1>(out);
+        auto [pa_in]  = unpack<1>(p_arrays_in);
+        auto [pa_out] = unpack<1>(p_arrays_out);
 
         *pa_out = hmap::gpu::level_set_curvature(*pa_in, ir);
 
@@ -109,7 +104,7 @@ void compute_level_set_curvature_node(BaseNode &node)
 
   // --- Post-process
 
-  p_out->smooth_overlap_buffers();
+  p_out->sync_overlap_buffers();
   post_process_heightmap(node, *p_out);
 }
 

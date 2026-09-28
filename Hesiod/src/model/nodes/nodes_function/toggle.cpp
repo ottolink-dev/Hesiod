@@ -37,12 +37,14 @@ void compute_toggle_node(BaseNode &node)
 
     // copy the either A or B input heightmap based on the toggle state
     hmap::for_each_tile(
-        {p_out, p_in_a, p_in_b},
-        [&node](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
+        {p_in_a, p_in_b},
+        {p_out},
+        [&node](std::vector<const hmap::Array *> p_arrays_in,
+                std::vector<hmap::Array *>       p_arrays_out,
+                const hmap::TileRegion &)
         {
-          hmap::Array *pa_out  = p_arrays[0];
-          hmap::Array *pa_in_a = p_arrays[1];
-          hmap::Array *pa_in_b = p_arrays[2];
+          auto [pa_in_a, pa_in_b] = unpack<2>(p_arrays_in);
+          auto [pa_out]           = unpack<1>(p_arrays_out);
 
           if (node.val<bool>("toggle"))
             *pa_out = *pa_in_a;

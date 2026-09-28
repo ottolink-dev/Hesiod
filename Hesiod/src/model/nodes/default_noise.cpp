@@ -21,16 +21,18 @@ void generate_noise(BaseNode            &node,
     return;
 
   hmap::for_each_tile(
+      {},
       {&noise},
-      [&node, seed_increment](std::vector<hmap::Array *> p_arrays,
-                              const hmap::TileRegion    &region)
+      [&node, seed_increment](std::vector<const hmap::Array *> p_arrays_in,
+                              std::vector<hmap::Array *>       p_arrays_out,
+                              const hmap::TileRegion          &region)
       {
-        auto [pa_noise_default] = unpack<1>(p_arrays);
+        auto [pa_noise_default] = unpack<1>(p_arrays_out);
 
         float     kw_x = node.val<float>("dn_kw");
         glm::vec2 kw = {kw_x, kw_x};
 
-        auto ntype = hmap::NoiseType(node.val<int>("dn_noise_type"));
+        auto ntype = node.val_enum<hmap::NoiseType>("dn_noise_type");
         uint seed = node.val<int>("dn_seed") + seed_increment;
 
         *pa_noise_default = hmap::gpu::noise_fbm(ntype,

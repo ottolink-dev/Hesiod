@@ -1,0 +1,5 @@
+build/
+.flatpak-builder/
+repo/
+hesiod.flatpak
+io.github.hesiod.flatpak

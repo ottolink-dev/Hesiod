@@ -5,10 +5,13 @@
 #include <functional>
 
 #include <QApplication>
+#include <QColor>
 #include <QGridLayout>
 #include <QImage>
 #include <QLayout>
 #include <QWidget>
+
+#include "hesiod/gui/node_palette_style.hpp"
 
 namespace hesiod
 {
@@ -16,6 +19,25 @@ namespace hesiod
 void add_qmenu_spacer(QMenu *menu, int height = 8);
 
 void apply_global_style(QApplication &app);
+
+// Linear blend of two colours, alpha included; `amount` is clamped to [0, 1].
+QColor mix_colors(const QColor &from, const QColor &to, qreal amount);
+
+// Border of the rounded pane cards, and of the popups and dialogs drawn to
+// match them. The stylesheet's COLOR_PANEL_BORDER is this same colour.
+QColor panel_border_color();
+
+/** @brief Switch interface motion on or off across the application.
+ *
+ * Covers Qt's own menu/combo/tooltip effects and any node palette sidebar that
+ * is already open. Called at startup and again whenever the setting changes,
+ * because "disable animations" that only applies to windows opened afterwards
+ * reads as the setting not working.
+ */
+void apply_animation_settings(bool enabled);
+
+/// The node palette style currently configured in the application settings.
+NodePaletteStyle current_node_palette_style();
 
 void clear_layout(QLayout *layout);
 

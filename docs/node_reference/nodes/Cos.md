@@ -50,4 +50,4 @@ Corresponding Hesiod file: [Cos.hsd](../../examples/Cos.hsd). Use [Ctrl+I] in th
     Example files are kept up-to-date with the latest version of [Hesiod](https://github.com/otto-link/Hesiod).
     If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).
 
-  
+

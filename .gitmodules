@@ -1,21 +1,21 @@
 [submodule "external/HighMap"]
 	path = external/HighMap
-	url = git@github.com:ottolink-dev/HighMap.git
+	url = https://github.com/ottolink-dev/HighMap.git
 [submodule "external/args"]
 	path = external/args
-	url = git@github.com:Taywee/args.git
+	url = https://github.com/Taywee/args.git
 [submodule "external/GNodeGUI"]
 	path = external/GNodeGUI
-	url = git@github.com:ottolink-dev/GNodeGUI.git
+	url = https://github.com/ottolink-dev/GNodeGUI.git
 [submodule "external/GNode"]
 	path = external/GNode
-	url = git@github.com:ottolink-dev/GNode.git
+	url = https://github.com/ottolink-dev/GNode.git
 [submodule "external/QTerrainRenderer"]
 	path = external/QTerrainRenderer
-	url = git@github.com:ottolink-dev/QTerrainRenderer.git
+	url = https://github.com/ottolink-dev/QTerrainRenderer.git
 [submodule "external/QTextureDownloader"]
 	path = external/QTextureDownloader
-	url = git@github.com:ottolink-dev/QTextureDownloader.git
+	url = https://github.com/ottolink-dev/QTextureDownloader.git
 [submodule "external/Meta"]
 	path = external/Meta
-	url = git@github.com:ottolink-dev/Meta.git
+	url = https://github.com/ottolink-dev/Meta.git

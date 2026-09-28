@@ -6,13 +6,18 @@ add_library(hesiod_git_version INTERFACE)
 find_package(Git QUIET)
 if(GIT_FOUND)
     execute_process(
-        COMMAND ${GIT_EXECUTABLE} describe --tags --dirty --always
+        COMMAND ${GIT_EXECUTABLE} describe --dirty --always --match "NOT_A_TAG"
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-        OUTPUT_VARIABLE HESIOD_GIT_TAG
+        OUTPUT_VARIABLE HESIOD_GIT_COMMIT
         OUTPUT_STRIP_TRAILING_WHITESPACE
+        ERROR_QUIET
     )
+endif()
+
+if(HESIOD_GIT_COMMIT)
+    set(HESIOD_GIT_TAG "v${PROJECT_VERSION}-${HESIOD_GIT_COMMIT}")
 else()
-    set(HESIOD_GIT_TAG "unknown")
+    set(HESIOD_GIT_TAG "v${PROJECT_VERSION}")
 endif()
 
 # --- Generate text file in build tree ----------------------------------------

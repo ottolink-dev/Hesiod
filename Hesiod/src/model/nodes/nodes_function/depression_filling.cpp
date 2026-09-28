@@ -16,10 +16,6 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-// -----------------------------------------------------------------------------
-// Ports & Attributes
-// -----------------------------------------------------------------------------
-
 constexpr const char *P_IN       = "input";
 constexpr const char *P_OUT      = "output";
 constexpr const char *P_FILL_MAP = "fill map";
@@ -80,19 +76,44 @@ void compute_depression_filling_node(BaseNode &node)
 
   // --- Compute
 
+  p_out->copy_from(*p_in, node.cfg().cm_cpu);
+
+  // filling
+  glm::ivec2 tiling = p_out->get_max_tiles();
+  int        nit    = std::max(tiling.x, tiling.y);
+
+  for (int it = 0; it < nit; ++it)
+  {
+    hmap::for_each_tile(
+        {},
+        {p_out, p_fill_map},
+        [&](std::vector<const hmap::Array *>,
+            std::vector<hmap::Array *> p_arrays_out,
+            const hmap::TileRegion    &region)
+        {
+          auto [pa_out, pa_fill_map] = unpack<2>(p_arrays_out);
+
+          hmap::depression_filling_priority_flood(*pa_out, smoothing);
+        },
+        node.cfg().cm_cpu);
+
+    p_out->sync_overlap_buffers(hmap::SyncOperation::Max);
+  }
+
+  // fill-map
   hmap::for_each_tile(
-      {p_out, p_in, p_fill_map},
-      [&](std::vector<hmap::Array *> arrays, const hmap::TileRegion &)
+      {p_in, p_out},
+      {p_fill_map},
+      [&](std::vector<const hmap::Array *> p_arrays_in,
+          std::vector<hmap::Array *>       p_arrays_out,
+          const hmap::TileRegion &)
       {
-        auto [pa_out, pa_in, pa_fill_map] = unpack<3>(arrays);
-
-        *pa_out = *pa_in;
-
-        hmap::depression_filling_priority_flood(*pa_out, smoothing);
+        auto [pa_in, pa_out] = unpack<2>(p_arrays_in);
+        auto [pa_fill_map]   = unpack<1>(p_arrays_out);
 
         *pa_fill_map = *pa_out - *pa_in;
       },
-      node.cfg().cm_single_array); // forced, not tileable
+      node.cfg().cm_cpu);
 
   // --- Post-process
 

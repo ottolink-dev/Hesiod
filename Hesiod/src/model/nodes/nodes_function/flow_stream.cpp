@@ -67,17 +67,20 @@ void compute_flow_stream_node(BaseNode &node)
     hmap::VirtualArray *p_mask = node.get_value_ref<hmap::VirtualArray>(P_RIVER_MASK);
 
     hmap::for_each_tile(
-        {p_out, p_in, p_mask},
-        [&node, p_cloud](std::vector<hmap::Array *> p_arrays,
-                         const hmap::TileRegion    &region)
+        {p_in},
+        {p_out, p_mask},
+        [&node, p_cloud](std::vector<const hmap::Array *> p_arrays_in,
+                         std::vector<hmap::Array *>       p_arrays_out,
+                         const hmap::TileRegion          &region)
         {
-          auto [pa_out, pa_in, pa_mask] = unpack<3>(p_arrays);
-          *pa_out                       = *pa_in;
+          auto [pa_in]           = unpack<1>(p_arrays_in);
+          auto [pa_out, pa_mask] = unpack<2>(p_arrays_out);
+          *pa_out                = *pa_in;
 
           // find a flow stream for each source
           std::vector<hmap::Path> path_list;
 
-          for (auto p : p_cloud->points)
+          for (auto p : *p_cloud)
           {
             int        i = (int)(p.x * (region.shape.x - 1.f));
             int        j = (int)(p.y * (region.shape.y - 1.f));

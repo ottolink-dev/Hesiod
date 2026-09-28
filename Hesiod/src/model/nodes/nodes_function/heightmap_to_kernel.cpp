@@ -17,10 +17,6 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-// -----------------------------------------------------------------------------
-// Ports & Attributes
-// -----------------------------------------------------------------------------
-
 constexpr const char *P_HEIGHTMAP = "heightmap";
 constexpr const char *P_KERNEL    = "kernel";
 
@@ -73,13 +69,12 @@ void compute_heightmap_to_kernel_node(BaseNode &node)
   // --- Params
 
   // clang-format off
-  const auto radius          = node.val<float>(A_RADIUS);
   const auto normalize       = node.val<bool>(A_NORMALIZE);
   const auto envelope        = node.val<bool>(A_ENVELOPE);
-  const auto envelope_kernel = static_cast<hmap::KernelType>(node.val<int>(A_ENVELOPE_KERNEL));
+  const auto envelope_kernel = node.val_enum<hmap::KernelType>(A_ENVELOPE_KERNEL);
   // clang-format on
 
-  const int        ir = std::max(1, static_cast<int>(radius * node.cfg().shape.x));
+  const int        ir           = node.val_pixel_radius(A_RADIUS);
   const glm::ivec2 kernel_shape = {2 * ir + 1, 2 * ir + 1};
 
   // --- Compute

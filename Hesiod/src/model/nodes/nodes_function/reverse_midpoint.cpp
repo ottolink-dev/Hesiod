@@ -67,11 +67,14 @@ void compute_reverse_midpoint_node(BaseNode &node)
     {
       // fill with zeros
       hmap::for_each_tile(
+          {},
           {p_out},
-          [](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
+          [](std::vector<const hmap::Array *> p_arrays_in,
+             std::vector<hmap::Array *>       p_arrays_out,
+             const hmap::TileRegion &)
           {
-            hmap::Array *pa_out = p_arrays[0];
-            *pa_out             = 0.f;
+            auto [pa_out] = unpack<1>(p_arrays_out);
+            *pa_out       = 0.f;
           },
           node.cfg().cm_cpu);
     }

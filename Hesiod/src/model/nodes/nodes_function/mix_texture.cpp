@@ -64,7 +64,7 @@ void compute_mix_texture_node(BaseNode &node)
     mix(*p_out,
         ptr_list,
         node.cfg().cm_cpu,
-        static_cast<hmap::MixMethod>(node.val<int>(A_MIX_METHOD)));
+        node.val_enum<hmap::MixMethod>(A_MIX_METHOD));
 
     if (node.val<bool>(A_RESET_OUTPUT_ALPHA))
       p_out->fill(3, 1.f, node.cfg().cm_cpu);

@@ -59,39 +59,54 @@ void compute_export_as_cubemap_node(BaseNode &node)
 
   hmap::VirtualArray *p_in = node.get_value_ref<hmap::VirtualArray>(P_IN);
 
-  if (p_in && node.val<bool>(A_AUTO_EXPORT))
+  if (!p_in)
+    return;
+
+  const bool auto_export = node.val<bool>(A_AUTO_EXPORT);
+  if (!auto_export)
   {
-    hmap::Array z = p_in->to_array(node.cfg().cm_cpu);
-
-    const bool flip_x = node.val<bool>(A_FLIP_X);
-    const bool flip_y = node.val<bool>(A_FLIP_Y);
-
-    if (flip_x)
-      hmap::flip_lr(z);
-    if (flip_y)
-      hmap::flip_ud(z);
-
-    std::filesystem::path fname = node.val<std::filesystem::path>(A_FNAME);
-    fname                       = ensure_extension(fname, ".png");
-    const auto pattern          = node.val<std::string>(A_PATTERN);
-
-    std::unordered_map<std::string, std::string> replacements = get_standard_replacements(
-        node,
-        fname);
-
-    std::filesystem::path export_path = make_unique_filename(fname.parent_path(),
-                                                             pattern,
-                                                             replacements);
-
-    hmap::export_as_cubemap(export_path.string(),
-                            z,
-                            node.val<int>(A_CUBEMAP_RESOLUTION),
-                            node.val<float>(A_OVERLAP),
-                            node.val<int>(A_IR),
-                            hmap::Cmap::GRAY,
-                            node.val<bool>(A_SPLITTED),
-                            nullptr);
+    Logger::log()->trace(
+        "compute_export_as_cubemap_node: [{}]/[{}]: auto export is disabled",
+        node.get_node_type(),
+        node.get_id());
+    return;
   }
+
+  hmap::Array z = p_in->to_array(node.cfg().cm_cpu);
+
+  const bool flip_x = node.val<bool>(A_FLIP_X);
+  const bool flip_y = node.val<bool>(A_FLIP_Y);
+
+  if (flip_x)
+    hmap::flip_lr(z);
+  if (flip_y)
+    hmap::flip_ud(z);
+
+  std::filesystem::path fname = node.val<std::filesystem::path>(A_FNAME);
+  fname                       = ensure_extension(fname, ".png");
+  const auto pattern          = node.val<std::string>(A_PATTERN);
+
+  std::unordered_map<std::string, std::string> replacements = get_standard_replacements(
+      node,
+      fname);
+
+  std::filesystem::path export_path = make_unique_filename(fname.parent_path(),
+                                                           pattern,
+                                                           replacements);
+
+  Logger::log()->trace("compute_export_as_cubemap_node: [{}]/[{}]: export path = {}",
+                       node.get_node_type(),
+                       node.get_id(),
+                       export_path.string());
+
+  hmap::export_as_cubemap(export_path.string(),
+                          z,
+                          node.val<int>(A_CUBEMAP_RESOLUTION),
+                          node.val<float>(A_OVERLAP),
+                          node.val<int>(A_IR),
+                          hmap::Cmap::GRAY,
+                          node.val<bool>(A_SPLITTED),
+                          nullptr);
 }
 
 } // namespace hesiod

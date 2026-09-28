@@ -29,7 +29,7 @@ private:
 
   const float vmin = 0.f;
   const float vmax = 0.75f;
-  const int   steps = 3;
+  const int   steps = 75;
 };
 
 } // namespace hesiod

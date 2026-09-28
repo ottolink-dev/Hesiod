@@ -48,14 +48,18 @@ void compute_relative_distance_from_skeleton_node(BaseNode &node)
   {
     hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
-    int ir = std::max(1, (int)(node.val<float>(A_SEARCH_RADIUS) * p_out->shape.x));
+    int ir = node.val_pixel_radius(A_SEARCH_RADIUS);
 
     hmap::for_each_tile(
-        {p_out, p_in},
-        [&node, ir](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
+        {p_in},
+        {p_out},
+        [&node, ir](std::vector<const hmap::Array *> p_arrays_in,
+                    std::vector<hmap::Array *>       p_arrays_out,
+                    const hmap::TileRegion &)
         {
-          auto [pa_out, pa_in] = unpack<2>(p_arrays);
-          *pa_out              = *pa_in;
+          auto [pa_in]  = unpack<1>(p_arrays_in);
+          auto [pa_out] = unpack<1>(p_arrays_out);
+          *pa_out       = *pa_in;
 
           float threshold = node.val<float>(A_THRESHOLD);
           if (threshold)
@@ -68,7 +72,7 @@ void compute_relative_distance_from_skeleton_node(BaseNode &node)
         },
         node.cfg().cm_gpu);
 
-    p_out->smooth_overlap_buffers();
+    p_out->sync_overlap_buffers();
 
     // post-process
     post_process_heightmap(node, *p_out);

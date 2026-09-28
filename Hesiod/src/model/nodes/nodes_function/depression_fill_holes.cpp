@@ -16,10 +16,6 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-// -----------------------------------------------------------------------------
-// Ports & Attributes
-// -----------------------------------------------------------------------------
-
 constexpr const char *P_IN         = "input";
 constexpr const char *P_MASK       = "mask";
 constexpr const char *P_OUT        = "output";
@@ -80,12 +76,11 @@ void compute_deposition_fill_holes_node(BaseNode &node)
   // --- Params
 
   // clang-format off
-  const auto radius     = node.val<float>(A_RADIUS);
   const auto strength   = node.val<float>(A_STRENGTH);
   const auto iterations = node.val<int>(A_ITERATIONS);
   // clang-format on
 
-  const int ir = std::max(1, int(radius * p_out->shape.x));
+  const int ir = node.val_pixel_radius(A_RADIUS);
 
   // --- Prepare mask
 
@@ -96,12 +91,12 @@ void compute_deposition_fill_holes_node(BaseNode &node)
   hmap::for_each_tile(
       {p_in, p_mask},
       {p_out, p_deposition},
-      [&](std::vector<const hmap::Array *> in,
-          std::vector<hmap::Array *>       out,
+      [&](std::vector<const hmap::Array *> p_arrays_in,
+          std::vector<hmap::Array *>       p_arrays_out,
           const hmap::TileRegion &)
       {
-        auto [pa_in, pa_mask]        = unpack<2>(in);
-        auto [pa_out, pa_deposition] = unpack<2>(out);
+        auto [pa_in, pa_mask]        = unpack<2>(p_arrays_in);
+        auto [pa_out, pa_deposition] = unpack<2>(p_arrays_out);
 
         *pa_out = *pa_in;
 
@@ -114,7 +109,7 @@ void compute_deposition_fill_holes_node(BaseNode &node)
   // --- Post-process
 
   post_process_heightmap(node, *p_out);
-  p_deposition->smooth_overlap_buffers();
+  p_deposition->sync_overlap_buffers();
 }
 
 } // namespace hesiod

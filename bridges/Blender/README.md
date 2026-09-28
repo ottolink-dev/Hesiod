@@ -4,37 +4,51 @@
 
 The Blender Bridge allows Hesiod to stream terrain data directly into Blender for visualization and further editing. This tutorial explains how to install the Blender add-on and establish a connection between Hesiod and Blender.
 
-The add-on `.zip` is located [here!](https://github.com/Pazelock/Hesiod/blob/main/bridges/Blender/hesiod_heightmap_streamer_1.9.zip)
+The add-on `.zip` is located [here!](./hesiod_streamer.zip)
 
-## Intalling the Add-on in Blender
+## Installing the Add-on in Blender
 
-In new versions you can drag-and-drop the downloaded `.zip` straight into Blender to install it.
+### Method 1: Installing via Zip File (Recommended)
 
-For older versions:
+In modern Blender versions (Blender 4.2+), you can install the add-on directly using the `.zip` archive:
 
-- Launch Blender and open the Preferences window: Edit → Preferences
+- **Drag and Drop**: Simply drag and drop `hesiod_streamer.zip` directly into the Blender viewport.
+- **Or via Preferences**:
+  1. Open Blender and go to **Edit → Preferences**.
+  2. Select the **Get Extensions** / **Add-ons** section.
+  3. Click the drop-down menu in the top-right corner and choose **Install from Disk...**
+  4. Select `hesiod_streamer.zip` and confirm.
+
+### Method 2: Legacy / Manual Installation
+
+For older Blender versions or manual installation from source:
+
+1. Launch Blender and open the Preferences window: **Edit → Preferences**
 
 ![img](images/tuto00.png)
 
-- Open the “Add-ons” tab
+2. Open the **Add-ons** tab.
 
-- Click “Install from Disk...” (top-right)
+3. Click **Install from Disk...** (or **Install...** in older versions).
 
 ![img](images/tuto01.png)
 
-- Navigate to: ```bridges/Blender/streamer_addon/hesiod_streamer.py```
+4. Navigate to and select the add-on folder or script.
 
-- Select: ```hesiod_streamer.py```
-
-- Once installed, ensure that the add-on is enabled
+5. Once installed, ensure that the add-on is enabled (checked).
 
 ![img](images/tuto02.png)
 
-- Return to the main Blender viewport and open the sidebar by pressing N (if it is not already visible).
+---
+
+### Connecting to Hesiod
+
+1. Return to the main Blender 3D Viewport and open the sidebar by pressing **N** (if it is not already visible).
+2. Select the **Hesiod** tab.
 
 ![img](images/tuto03.png)
 
-- Click the Connect button to establish communication with Hesiod. If Blender is started before Hesiod, the initial connection attempt may fail. Once Hesiod is running, simply press Connect again to reconnect.
+3. Click the **Connect** button to establish communication with Hesiod. If Blender is started before Hesiod, the initial connection attempt may fail. Once Hesiod is running, simply press **Connect** again to reconnect.
 
 ![img](images/tuto04.png)
 

@@ -38,6 +38,7 @@ constexpr const char *A_MAX_ERROR         = "max_error";
 constexpr const char *A_ELEVATION_SCALING = "elevation_scaling";
 constexpr const char *A_DETAIL_SCALING    = "detail_scaling";
 constexpr const char *A_BLENDING_METHOD   = "blending_method";
+constexpr const char *A_FIT_BOUNDARIES    = "fit_boundaries";
 constexpr const char *A_FLIP_X            = "flip_x";
 constexpr const char *A_FLIP_Y            = "flip_y";
 
@@ -55,37 +56,36 @@ void setup_export_asset_node(BaseNode &node)
   node.add_port<hmap::VirtualTexture>(gnode::PortType::IN, P_NORMAL_MAP);
   node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_MASK);
 
+  // enums
+  std::map<std::string, int> export_format_map;
+  std::map<std::string, int> mesh_type_map;
+
+  for (auto &[id, infos] : hmap::asset_export_format_as_string)
+    export_format_map[infos[0]] = (int)id;
+
+  for (auto &[id, infos] : hmap::mesh_type_as_string)
+    mesh_type_map[infos] = (int)id;
+
   // attributes
+  // clang-format off
+  node.set_current_category("Filename");
   add_filename(node, A_FNAME, "Export File", std::filesystem::path("export"), "*", true);
   add_string(node, A_PATTERN, "Filename Pattern", "{FILENAME}.{EXT}");
-
-  // attribute(s)
-  // clang-format off
   add_bool(node, A_AUTO_EXPORT, "Auto Export on Node Update", false);
+
+  node.set_current_category("Mesh Parameters");
+  add_enum(node, A_EXPORT_FORMAT, "Export Format:", export_format_map, "GL Transmission Format v. 2 (binary) - *.glb");
+  add_enum(node, A_MESH_TYPE, "Mesh Type:", mesh_type_map, "triangles");
   add_float(node, A_MAX_ERROR, "Max Error", 5e-4f, 0.f, 0.01f);
   add_float(node, A_ELEVATION_SCALING, "Elevation Scale", 0.2f, 0.f, 1.f);
-  add_float(node, A_DETAIL_SCALING, "Normal Map Scale", 1.f, 0.f, 4.f);
-  add_enum(node, A_BLENDING_METHOD, "Blending Method:", hmap::normal_map_blending_method_as_string);
+  add_bool(node, A_FIT_BOUNDARIES, "Fit Boundaries", false);
   add_bool(node, A_FLIP_X, "Flip-X", false);
   add_bool(node, A_FLIP_Y, "Flip-Y", false);
+
+  node.set_current_category("Normal Map");
+  add_float(node, A_DETAIL_SCALING, "Normal Map Scale", 1.f, 0.f, 4.f);
+  add_enum(node, A_BLENDING_METHOD, "Blending Method:", hmap::normal_map_blending_method_as_string);
   // clang-format on
-
-  // enums
-  {
-    std::map<std::string, int> export_format_map;
-    std::map<std::string, int> mesh_type_map;
-
-    for (auto &[id, infos] : hmap::asset_export_format_as_string)
-      export_format_map[infos[0]] = (int)id;
-
-    for (auto &[id, infos] : hmap::mesh_type_as_string)
-      mesh_type_map[infos] = (int)id;
-
-    // clang-format off
-    add_enum(node, A_EXPORT_FORMAT, "Export Format:", export_format_map, "GL Transmission Format v. 2 (binary) - *.glb");
-    add_enum(node, A_MESH_TYPE, "Mesh Type:", mesh_type_map, "triangles");
-    // clang-format on
-  }
 }
 
 // -----------------------------------------------------------------------------
@@ -108,19 +108,25 @@ void compute_export_asset_node(BaseNode &node)
 
   const bool auto_export = node.val<bool>(A_AUTO_EXPORT);
   if (!auto_export)
+  {
+    Logger::log()->trace("compute_export_asset_node: [{}]/[{}]: auto export is disabled",
+                         node.get_node_type(),
+                         node.get_id());
     return;
+  }
 
   // --- Params
 
   // clang-format off
   auto       fpath           = node.val<std::filesystem::path>(A_FNAME);
   const auto pattern         = node.val<std::string>(A_PATTERN);
-  const auto export_format   = node.val<int>(A_EXPORT_FORMAT);
-  const auto mesh_type       = node.val<int>(A_MESH_TYPE);
+  const auto export_format   = node.val_enum<hmap::AssetExportFormat>(A_EXPORT_FORMAT);
+  const auto mesh_type       = node.val_enum<hmap::MeshType>(A_MESH_TYPE);
   const auto max_error       = node.val<float>(A_MAX_ERROR);
   const auto elev_scale      = node.val<float>(A_ELEVATION_SCALING);
   const auto detail_scale    = node.val<float>(A_DETAIL_SCALING);
-  const auto blending_method = node.val<int>(A_BLENDING_METHOD);
+  const auto blending_method = node.val_enum<hmap::NormalMapBlendingMethod>(A_BLENDING_METHOD);
+  const auto fit_boundaries  = node.val<bool>(A_FIT_BOUNDARIES);
   const auto flip_x          = node.val<bool>(A_FLIP_X);
   const auto flip_y          = node.val<bool>(A_FLIP_Y);
   // clang-format on
@@ -134,6 +140,11 @@ void compute_export_asset_node(BaseNode &node)
   std::filesystem::path export_path = make_unique_filename(fpath.parent_path(),
                                                            pattern,
                                                            replacements);
+
+  Logger::log()->trace("compute_export_asset_node: [{}]/[{}]: export path = {}",
+                       node.get_node_type(),
+                       node.get_id(),
+                       export_path.string());
 
   const std::string fname = export_path.string();
 
@@ -194,7 +205,7 @@ void compute_export_asset_node(BaseNode &node)
                          flipped_nmap,
                          node.cfg().cm_cpu,
                          detail_scale,
-                         (hmap::NormalMapBlendingMethod)blending_method);
+                         blending_method);
   }
 
   normal_map.to_png(nmap_fname, node.cfg().cm_cpu, CV_16U);
@@ -213,21 +224,23 @@ void compute_export_asset_node(BaseNode &node)
     hmap::export_asset(fname,
                        array,
                        mask,
-                       (hmap::AssetExportFormat)export_format,
+                       export_format,
                        elev_scale,
                        texture_fname,
-                       nmap_fname);
+                       nmap_fname,
+                       fit_boundaries);
   }
   else
   {
     hmap::export_asset(fname,
                        array,
-                       (hmap::MeshType)mesh_type,
-                       (hmap::AssetExportFormat)export_format,
+                       mesh_type,
+                       export_format,
                        elev_scale,
                        texture_fname,
                        nmap_fname,
-                       max_error);
+                       max_error,
+                       fit_boundaries);
   }
 }
 

@@ -1,7 +1,10 @@
 /* Copyright (c) 2025 Otto Link. Distributed under the terms of the GNU General
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
+#include <algorithm>
+
 #include <QGridLayout>
+#include <QLabel>
 #include <QTimer>
 #include <QToolButton>
 #include <QVBoxLayout>
@@ -140,6 +143,26 @@ void Viewer::on_node_deselected(const std::string &new_id)
 
   // clear everything
   this->clear();
+}
+
+bool Viewer::is_locked_on(const std::string &node_id) const
+{
+  return this->is_node_pinned && this->current_node_id == node_id;
+}
+
+void Viewer::toggle_lock_on(const std::string &node_id)
+{
+  const bool was_locked_on = this->is_locked_on(node_id);
+
+  // release any lock first, then lock onto this node unless it was the locked one
+  if (this->is_node_pinned)
+    this->on_node_pinned_changed();
+
+  if (!was_locked_on)
+  {
+    this->on_node_selected(node_id);
+    this->on_node_pinned_changed();
+  }
 }
 
 void Viewer::on_node_pinned_changed()
@@ -344,31 +367,49 @@ void Viewer::setup_layout()
 
   // create and assign new layout
   QGridLayout *layout = new QGridLayout(this);
-  layout->setContentsMargins(2, 0, 2, 0);
+  layout->setContentsMargins(0, 0, 0, 0); // the renderer fills its panel edge to edge
   layout->setSpacing(0);
   this->setLayout(layout);
 
+  // one row per layer: icon, name, the node output feeding it, visibility
   this->combo_container = new QWidget(this);
   auto *param_layout = new QGridLayout(this->combo_container);
   param_layout->setContentsMargins(8, 8, 8, 8);
-  param_layout->setSpacing(4);
+  param_layout->setHorizontalSpacing(10);
+  param_layout->setVerticalSpacing(6);
+  param_layout->setColumnStretch(2, 1);
   int row = 0;
 
+  // shown on its own (the viewer places it), not in the rows
   this->button_pin_current_node = new IconCheckBox(this);
   this->button_pin_current_node->set_icons(HSD_ICON("push_pin"),
                                            HSD_ICON("push_pin_accent"));
   this->button_pin_current_node->setCheckable(true);
   resize_font(this->button_pin_current_node, -1);
-  param_layout->addWidget(this->button_pin_current_node, row++, 0, 1, 3);
 
-  for (auto &[name, _] : view_param.port_ids)
+  // terrain first, then its surface, then the overlays; anything else after
+  static const std::vector<std::pair<std::string, QString>> known = {
+      {"elevation", "Elevation"},
+      {"color", "Texture"},
+      {"normal_map", "Normal Map"},
+      {"water_depth", "Water"},
+      {"path", "Path"},
+      {"points", "Points"}};
+
+  std::vector<std::pair<std::string, QString>> order;
+  for (const auto &[name, title] : known)
+    if (view_param.port_ids.contains(name))
+      order.push_back({name, title});
+  for (const auto &[name, _] : view_param.port_ids)
+    if (std::none_of(order.begin(),
+                     order.end(),
+                     [&](const auto &e) { return e.first == name; }))
+      order.push_back({name, QString::fromStdString(name)});
+
+  const int icon_size = 16;
+
+  for (const auto &[name, title] : order)
   {
-    QComboBox *combo = new QComboBox();
-    set_style(combo, "background: transparent;");
-    resize_font(combo, -1);
-
-    int icon_size = 16;
-
     if (view_param.icons.contains(name))
     {
       QToolButton *btn = new QToolButton();
@@ -378,6 +419,14 @@ void Viewer::setup_layout()
       param_layout->addWidget(btn, row, 0);
     }
 
+    param_layout->addWidget(new QLabel(title), row, 1);
+
+    QComboBox *combo = new QComboBox();
+    combo->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLengthWithIcon);
+    combo->setMinimumContentsLength(10);
+    param_layout->addWidget(combo, row, 2);
+    this->combo_map[name] = combo;
+
     {
       auto *btn = new IconCheckBox(this);
       this->visibility_icons_map[name] = btn;
@@ -386,7 +435,12 @@ void Viewer::setup_layout()
       btn->setCheckable(true);
       btn->set_icon_size(icon_size);
       btn->setStyleSheet("background: transparent; border: 0px;");
-      param_layout->addWidget(btn, row, 1);
+      btn->setToolTip("Show or hide this layer");
+      param_layout->addWidget(btn, row, 3);
+
+      // the normal map is not a layer of its own: nothing to hide
+      if (name == "normal_map")
+        btn->setVisible(false);
 
       this->connect(btn,
                     &QCheckBox::toggled,
@@ -396,8 +450,6 @@ void Viewer::setup_layout()
                     });
     }
 
-    param_layout->addWidget(combo, row, 2);
-    this->combo_map[name] = combo;
     row++;
   }
 
@@ -452,10 +504,10 @@ void Viewer::update_widgets()
   }
   else if (BaseNode *p_node = this->safe_get_node())
   {
-    std::string new_title = this->label + " - " + p_node->get_caption() + "(" +
+    std::string new_title = this->label + " - " + p_node->get_label() + "(" +
                             p_node->get_id() + ")";
     this->setWindowTitle(new_title.c_str());
-    this->button_pin_current_node->set_label(p_node->get_caption().c_str());
+    this->button_pin_current_node->set_label(p_node->get_label().c_str());
   }
 
   // --- update combo content
@@ -469,7 +521,7 @@ void Viewer::update_widgets()
     {
       combo_options.reserve(p_node->get_nports());
       for (int k = 0; k < p_node->get_nports(); ++k)
-        combo_options.push_back(p_node->get_port_caption(k));
+        combo_options.push_back(p_node->get_port_label(k));
     }
   }
 

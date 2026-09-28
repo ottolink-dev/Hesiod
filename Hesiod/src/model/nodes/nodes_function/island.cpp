@@ -21,7 +21,7 @@ namespace hesiod
 
 constexpr const char *P_LAND  = "land_mask";
 constexpr const char *P_DR    = "dr";
-constexpr const char *P_OUT   = "out";
+constexpr const char *P_OUT   = "output";
 constexpr const char *P_DEPTH = "water_depth";
 constexpr const char *P_MASK  = "inland_mask";
 
@@ -123,7 +123,7 @@ void compute_island_node(BaseNode &node)
 
   const auto seed                   = node.val<int>(A_SEED);
   const auto noise_amp              = node.val<float>(A_NOISE_AMP);
-  const auto noise_kw               = node.val<glm::vec2>(A_NOISE_KW);
+  const auto noise_kw               = node.val_wavenumber(A_NOISE_KW);
   const auto noise_octaves          = node.val<int>(A_NOISE_OCTAVES);
   const auto noise_rugosity         = node.val<float>(A_NOISE_RUGOSITY);
   const auto noise_angle            = node.val<float>(A_NOISE_ANGLE);
@@ -142,14 +142,17 @@ void compute_island_node(BaseNode &node)
   const auto lee_angle              = node.val<float>(A_LEE_ANGLE);
   const auto lee_amp                = node.val<float>(A_LEE_AMP);
   const auto uplift_amp             = node.val<float>(A_UPLIFT_AMP);
-
-  const auto ir = static_cast<int>(node.val<float>(A_FILTER_RADIUS) * p_out->shape.x);
+  const auto ir                     = node.val_pixel_radius(A_FILTER_RADIUS, 0);
 
   hmap::for_each_tile(
-      {p_out, p_land, p_dr, p_depth, p_mask},
-      [&](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
+      {p_land, p_dr},
+      {p_out, p_depth, p_mask},
+      [&](std::vector<const hmap::Array *> p_arrays_in,
+          std::vector<hmap::Array *>       p_arrays_out,
+          const hmap::TileRegion &)
       {
-        auto [pa_out, pa_land, pa_dr, pa_depth, pa_mask] = unpack<5>(p_arrays);
+        auto [pa_land, pa_dr]            = unpack<2>(p_arrays_in);
+        auto [pa_out, pa_depth, pa_mask] = unpack<3>(p_arrays_out);
 
         if (pa_dr)
         {
@@ -206,9 +209,9 @@ void compute_island_node(BaseNode &node)
       },
       node.cfg().cm_gpu);
 
-  p_out->smooth_overlap_buffers();
-  p_depth->smooth_overlap_buffers();
-  p_mask->smooth_overlap_buffers();
+  p_out->sync_overlap_buffers();
+  p_depth->sync_overlap_buffers();
+  p_mask->sync_overlap_buffers();
 
   post_process_heightmap(node, *p_out);
 }

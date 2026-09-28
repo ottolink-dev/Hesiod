@@ -17,7 +17,7 @@ namespace hesiod
 // -----------------------------------------------------------------------------
 // Ports & Attributes
 // -----------------------------------------------------------------------------
-constexpr const char *P_OUT = "out";
+constexpr const char *P_OUT = "output";
 
 constexpr const char *A_CENTER       = "center";
 constexpr const char *A_DISPLACEMENT = "displacement";
@@ -61,16 +61,19 @@ void compute_island_land_mask_node(BaseNode &node)
   hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
   hmap::for_each_tile(
+      {},
       {p_out},
-      [&node](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &region)
+      [&node](std::vector<const hmap::Array *> p_arrays_in,
+              std::vector<hmap::Array *>       p_arrays_out,
+              const hmap::TileRegion          &region)
       {
-        auto [pa_out] = unpack<1>(p_arrays);
+        auto [pa_out] = unpack<1>(p_arrays_out);
 
         *pa_out = hmap::island_land_mask(region.shape,
                                          node.val<float>(A_RADIUS),
                                          node.val<int>(A_SEED),
                                          node.val<float>(A_DISPLACEMENT),
-                                         (hmap::NoiseType)node.val<int>(A_NOISE_TYPE),
+                                         node.val_enum<hmap::NoiseType>(A_NOISE_TYPE),
                                          node.val<float>(A_KW),
                                          node.val<int>(A_OCTAVES),
                                          node.val<float>(A_WEIGHT),

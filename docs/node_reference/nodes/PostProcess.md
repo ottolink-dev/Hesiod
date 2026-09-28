@@ -18,13 +18,13 @@ Filter
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
-|in|VirtualArray|No description|
+|input|VirtualArray|No description|
 
 ## Outputs
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
-|out|VirtualArray|No description|
+|output|VirtualArray|No description|
 
 ## Parameters
 
@@ -48,4 +48,4 @@ Corresponding Hesiod file: [PostProcess.hsd](../../examples/PostProcess.hsd). Us
     Example files are kept up-to-date with the latest version of [Hesiod](https://github.com/otto-link/Hesiod).
     If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).
 
-  
+

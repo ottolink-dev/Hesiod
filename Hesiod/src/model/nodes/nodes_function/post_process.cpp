@@ -16,8 +16,8 @@ namespace hesiod
 // -----------------------------------------------------------------------------
 // Ports & Attributes
 // -----------------------------------------------------------------------------
-constexpr const char *P_IN  = "in";
-constexpr const char *P_OUT = "out";
+constexpr const char *P_IN  = "input";
+constexpr const char *P_OUT = "output";
 
 void setup_post_process_node(BaseNode &node)
 {
@@ -46,7 +46,7 @@ void compute_post_process_node(BaseNode &node)
     hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
     // copy and post-process
-    p_out->copy_from(*p_in, node.cfg().cm_single_array);
+    p_out->copy_from(*p_in, node.cfg().cm_cpu);
     post_process_heightmap(node, *p_out);
   }
 }

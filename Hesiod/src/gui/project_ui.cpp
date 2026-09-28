@@ -166,14 +166,12 @@ void ProjectUI::initialize(ProjectModel *project)
   this->setup_connections();
 }
 
-void ProjectUI::save_ui_state(const std::string &fname) const
+nlohmann::json ProjectUI::ui_state_json_to() const
 {
-  Logger::log()->trace("ProjectUI::save: {}", fname);
-
   nlohmann::json json;
   json["graph_manager_widget"] = this->graph_manager_widget->json_to();
   json["graph_tabs_widget"] = this->graph_tabs_widget->json_to();
-  json_to_file(json, fname, /* merge_with_existing_content */ true);
+  return json;
 }
 
 void ProjectUI::setup_connections()

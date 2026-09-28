@@ -15,7 +15,7 @@ namespace hesiod
 {
 
 class GraphManager; // forward
-class GraphEditorWidget;
+class GraphWorkspaceWidget;
 
 // =====================================
 // GraphTabsWidget
@@ -30,6 +30,8 @@ public:
   void clear();
   void set_show_node_settings_widget(bool new_state);
   void set_show_viewer(bool new_state);
+  // 0: 2D viewer, 1: 3D renderer (qtr::RenderType); also used for new graphs
+  void set_viewer_render_type(int new_type);
   void set_show_node_library_pan(bool new_state);
 
   // --- Serialization ---
@@ -37,6 +39,16 @@ public:
   nlohmann::json json_to() const;
 
   std::string get_selected_graph_id() const;
+
+  // actions on one graph, from its tab menu or the main Graph menu
+  enum class GraphAction
+  {
+    SETTINGS,
+    CLEAR,
+    REMOVE,
+  };
+  bool can_delete_graph() const;
+  void run_graph_action(const std::string &graph_id, GraphAction action);
 
   QSize sizeHint() const override;
 
@@ -64,18 +76,21 @@ public slots:
   void set_selected_tab(const std::string &graph_id);
   void update_receive_nodes_tag_list();
   void update_tab_widget();
+  void sync_tab_strips(); // every workspace's tab strip shows the current tabs
+  void show_tab_menu(int index, const QPoint &global_pos); // right click on a tab
   void zoom_to_content();
 
 private:
   void setup_connections();
 
   // --- Members ---
-  std::weak_ptr<GraphManager>                        p_graph_manager; // own by MainWindow
-  QTabWidget                                        *tab_widget;      // own by this
-  std::map<std::string, QPointer<GraphEditorWidget>> graph_editor_widget_map;
-  bool                                               show_node_settings_widget;
-  bool                                               show_viewer;
-  QHBoxLayout                                       *main_layout;
+  std::weak_ptr<GraphManager> p_graph_manager; // own by MainWindow
+  QTabWidget                 *tab_widget;      // own by this
+  std::map<std::string, QPointer<GraphWorkspaceWidget>> graph_workspace_widget_map;
+  bool                                                  show_node_settings_widget;
+  bool                                                  show_viewer;
+  int                                                   viewer_render_type = 1;
+  QHBoxLayout                                          *main_layout;
 };
 
 } // namespace hesiod

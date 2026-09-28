@@ -1,6 +1,8 @@
 /* Copyright (c) 2023 Otto Link. Distributed under the terms of the GNU General
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
+#include <algorithm>
+
 #include <QColorSpace>
 #include <QLabel>
 #include <QLayout>
@@ -10,12 +12,60 @@
 #include <QWidget>
 #include <QWidgetAction>
 
+#include <QApplication>
+
+#include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/widgets/gui_utils.hpp"
+#include "hesiod/gui/widgets/node_palette_sidebar.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/utils.hpp"
 
 namespace hesiod
 {
+
+QColor mix_colors(const QColor &from, const QColor &to, qreal amount)
+{
+  amount = std::clamp(amount, 0.0, 1.0);
+  return QColor::fromRgbF(from.redF() + (to.redF() - from.redF()) * amount,
+                          from.greenF() + (to.greenF() - from.greenF()) * amount,
+                          from.blueF() + (to.blueF() - from.blueF()) * amount,
+                          from.alphaF() + (to.alphaF() - from.alphaF()) * amount);
+}
+
+QColor panel_border_color()
+{
+  const auto &colors = HSD_CTX.app_settings.colors;
+  return mix_colors(colors.bg_primary, colors.border, 0.38);
+}
+
+void apply_animation_settings(bool enabled)
+{
+  Logger::log()->trace("apply_animation_settings: {}", enabled);
+
+  // menus are animated by MenuAnimator (menu_chrome.hpp); Qt's own menu
+  // effects animate a grabbed screenshot of the menu and would run on top of it
+  QApplication::setEffectEnabled(Qt::UI_AnimateMenu, false);
+  QApplication::setEffectEnabled(Qt::UI_FadeMenu, false);
+
+  for (const Qt::UIEffect effect : {Qt::UI_AnimateCombo,
+                                    Qt::UI_AnimateTooltip,
+                                    Qt::UI_FadeTooltip,
+                                    Qt::UI_AnimateToolBox})
+    QApplication::setEffectEnabled(effect, enabled);
+
+  // reach the sidebars that already exist: a motion setting that only applies
+  // to widgets created later looks like it did nothing
+  NodePaletteStyle style = current_node_palette_style();
+  style.animations = enabled;
+  NodePaletteSidebar::restyle_all(style);
+}
+
+NodePaletteStyle current_node_palette_style()
+{
+  NodePaletteStyle style = HSD_CTX.app_settings.node_palette;
+  style.animations = HSD_CTX.app_settings.interface.enable_ui_animations;
+  return style;
+}
 
 void add_qmenu_spacer(QMenu *menu, int height)
 {

@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+
+Name=Hesiod
+Comment=A desktop application for node-based procedural terrain generation.
+Categories=Development;Construction;
+
+Icon=io.github.hesiod
+Exec=/app/hesiod/launch.sh %U
+Terminal=false
+MimeType=application/x-hesiod

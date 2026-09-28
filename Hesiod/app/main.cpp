@@ -6,7 +6,10 @@ typedef unsigned int uint;
 #include <exception>
 #include <new>
 
+#include <QCoreApplication>
+
 #include "hesiod/app/hesiod_application.hpp"
+#include "hesiod/app/ui_scale.hpp"
 #include "hesiod/cli/batch_mode.hpp"
 #include "hesiod/logger.hpp"
 
@@ -35,6 +38,14 @@ int main(int argc, char *argv[])
           "--ignore-gpu-blocklist "
           "--enable-webgl "
           "--disable-gpu-driver-bug-workarounds");
+
+  // The interface scale has to reach Qt before QApplication is constructed:
+  // high-DPI scaling is resolved once, at that point. Pinning the application
+  // name first makes QStandardPaths give the same config directory the running
+  // application will use, which it otherwise only derives from argv[0] once an
+  // instance exists.
+  QCoreApplication::setApplicationName("hesiod");
+  hesiod::ui_scale::apply_startup_scale(argc > 0 ? argv[0] : nullptr);
 
   // Backstop only: anything that reaches here has already escaped the guards
   // around graph updates. Reporting it and exiting non-zero beats std::terminate

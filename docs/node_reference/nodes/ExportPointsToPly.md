@@ -29,12 +29,12 @@ Export
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
-|Add Project Name as Prefix|Bool|No description|
 |Auto Export on Node Update|Bool|No description|
 |fname|Filename|No description|
 ||String|No description|
 ||String|No description|
 ||String|No description|
+|Filename Pattern|String|No description|
 |xmax|Float|No description|
 |xmin|Float|No description|
 |ymax|Float|No description|
@@ -53,4 +53,4 @@ Corresponding Hesiod file: [ExportPointsToPly.hsd](../../examples/ExportPointsTo
     Example files are kept up-to-date with the latest version of [Hesiod](https://github.com/otto-link/Hesiod).
     If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).
 
-  
+

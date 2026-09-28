@@ -24,9 +24,9 @@ Export
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
-|Add Project Name as Prefix|Bool|No description|
 |Auto Export on Node Update|Bool|Controls whether the output file is automatically written when the node is updated. Default is false. When set to true, the file is saved automatically on updates. If false, use the 'Force Reload' button on the node to manually trigger the export.|
 |fname|Filename|Export file name.|
+|Filename Pattern|String|No description|
 
 ## Example
 
@@ -39,4 +39,4 @@ Corresponding Hesiod file: [ExportCloud.hsd](../../examples/ExportCloud.hsd). Us
     Example files are kept up-to-date with the latest version of [Hesiod](https://github.com/otto-link/Hesiod).
     If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).
 
-  
+

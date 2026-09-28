@@ -46,15 +46,18 @@ void compute_flooding_from_point_node(BaseNode &node)
     hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>(P_WATER_DEPTH);
 
     hmap::for_each_tile(
-        {p_out, p_in},
-        [&node, p_cloud](std::vector<hmap::Array *> p_arrays,
-                         const hmap::TileRegion    &region)
+        {p_in},
+        {p_out},
+        [&node, p_cloud](std::vector<const hmap::Array *> p_arrays_in,
+                         std::vector<hmap::Array *>       p_arrays_out,
+                         const hmap::TileRegion          &region)
         {
-          auto [pa_out, pa_in] = unpack<2>(p_arrays);
+          auto [pa_in]  = unpack<1>(p_arrays_in);
+          auto [pa_out] = unpack<1>(p_arrays_out);
           // convert point positions to cell indices
           std::vector<int> i, j;
 
-          for (const auto &p : p_cloud->points)
+          for (const auto &p : *p_cloud)
           {
             int ip = static_cast<int>((p.x - region.bbox.x) /
                                       (region.bbox.y - region.bbox.x) *

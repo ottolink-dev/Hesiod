@@ -48,12 +48,14 @@ void compute_radial_displacement_to_xy_node(BaseNode &node)
     hmap::VirtualArray *p_dy = node.get_value_ref<hmap::VirtualArray>(P_DY);
 
     hmap::for_each_tile(
-        {p_dr, p_dx, p_dy},
-        [&node](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &region)
+        {p_dr},
+        {p_dx, p_dy},
+        [&node](std::vector<const hmap::Array *> p_arrays_in,
+                std::vector<hmap::Array *>       p_arrays_out,
+                const hmap::TileRegion          &region)
         {
-          hmap::Array *pa_dr = p_arrays[0];
-          hmap::Array *pa_dx = p_arrays[1];
-          hmap::Array *pa_dy = p_arrays[2];
+          auto [pa_dr]        = unpack<1>(p_arrays_in);
+          auto [pa_dx, pa_dy] = unpack<2>(p_arrays_out);
 
           hmap::radial_displacement_to_xy(*pa_dr,
                                           *pa_dx,

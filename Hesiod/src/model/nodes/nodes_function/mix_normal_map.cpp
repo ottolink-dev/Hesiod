@@ -60,7 +60,7 @@ void compute_mix_normal_map_node(BaseNode &node)
                          *p_in2,
                          node.cfg().cm_cpu,
                          node.val<float>(A_DETAIL_SCALING),
-                         (hmap::NormalMapBlendingMethod)node.val<int>(A_BLENDING_METHOD));
+                         node.val_enum<hmap::NormalMapBlendingMethod>(A_BLENDING_METHOD));
   }
 }
 

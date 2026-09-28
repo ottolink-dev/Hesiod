@@ -61,23 +61,24 @@ void compute_ridgelines_node(BaseNode &node)
 
       for (size_t k = 0; k < p_path->size() - 1; k++)
       {
-        xs.push_back(p_path->points[k].x);
-        ys.push_back(p_path->points[k].y);
-        zs.push_back(p_path->points[k].v);
+        xs.push_back((*p_path)[k].x);
+        ys.push_back((*p_path)[k].y);
+        zs.push_back((*p_path)[k].v);
 
-        xs.push_back(p_path->points[k + 1].x);
-        ys.push_back(p_path->points[k + 1].y);
-        zs.push_back(p_path->points[k + 1].v);
+        xs.push_back((*p_path)[k + 1].x);
+        ys.push_back((*p_path)[k + 1].y);
+        zs.push_back((*p_path)[k + 1].v);
       }
 
       hmap::for_each_tile(
-          {p_out, p_dx, p_dy},
-          [&node, p_path, xs, ys, zs](std::vector<hmap::Array *> p_arrays,
-                                      const hmap::TileRegion    &region)
+          {p_dx, p_dy},
+          {p_out},
+          [&node, p_path, xs, ys, zs](std::vector<const hmap::Array *> p_arrays_in,
+                                      std::vector<hmap::Array *>       p_arrays_out,
+                                      const hmap::TileRegion          &region)
           {
-            hmap::Array *pa_out = p_arrays[0];
-            hmap::Array *pa_dx  = p_arrays[1];
-            hmap::Array *pa_dy  = p_arrays[2];
+            auto [pa_dx, pa_dy] = unpack<2>(p_arrays_in);
+            auto [pa_out]       = unpack<1>(p_arrays_out);
 
             glm::vec4 bbox_points = {0.f, 1.f, 0.f, 1.f};
 
@@ -101,11 +102,14 @@ void compute_ridgelines_node(BaseNode &node)
     {
       // fill with zeros
       hmap::for_each_tile(
+          {},
           {p_out},
-          [](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
+          [](std::vector<const hmap::Array *> p_arrays_in,
+             std::vector<hmap::Array *>       p_arrays_out,
+             const hmap::TileRegion &)
           {
-            hmap::Array *pa_out = p_arrays[0];
-            *pa_out             = 0.f;
+            auto [pa_out] = unpack<1>(p_arrays_out);
+            *pa_out       = 0.f;
           },
           node.cfg().cm_cpu);
     }

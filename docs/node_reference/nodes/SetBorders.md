@@ -37,6 +37,7 @@ Boundaries
 |West|Float|West-edge buffer thickness (fraction of width).|
 |Uniform Radius|Bool|No description|
 |Uniform Value|Bool|No description|
+|Value|Float|No description|
 |East|Float|TODO|
 |North|Float|TODO|
 |South|Float|TODO|
@@ -53,4 +54,4 @@ Corresponding Hesiod file: [SetBorders.hsd](../../examples/SetBorders.hsd). Use 
     Example files are kept up-to-date with the latest version of [Hesiod](https://github.com/otto-link/Hesiod).
     If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).
 
-  
+

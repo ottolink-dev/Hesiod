@@ -56,18 +56,21 @@ void compute_distance_transform_node(BaseNode &node)
     hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
     hmap::for_each_tile(
-        {p_out, p_in},
-        [&node](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
+        {p_in},
+        {p_out},
+        [&node](std::vector<const hmap::Array *> p_arrays_in,
+                std::vector<hmap::Array *>       p_arrays_out,
+                const hmap::TileRegion &)
         {
-          auto [pa_out, pa_in] = unpack<2>(p_arrays);
-          *pa_out              = *pa_in;
+          auto [pa_in]  = unpack<1>(p_arrays_in);
+          auto [pa_out] = unpack<1>(p_arrays_out);
+          *pa_out       = *pa_in;
           make_binary(*pa_out, node.val<float>(A_THRESHOLD));
 
           if (node.val<bool>(A_REVERSE_INPUT))
             *pa_out = 1.f - *pa_out;
 
-          auto type = static_cast<hmap::DistanceTransformType>(
-              node.val<int>(A_TRANSFORM_TYPE));
+          auto type = node.val_enum<hmap::DistanceTransformType>(A_TRANSFORM_TYPE);
 
           switch (type)
           {

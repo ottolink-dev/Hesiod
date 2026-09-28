@@ -144,7 +144,7 @@ void NodeLibraryWidget::setup_layout()
 
   this->tree_widget->setHeaderHidden(true);
   this->tree_widget->setIndentation(12);
-  this->tree_widget->setAnimated(true);
+  this->tree_widget->setAnimated(HSD_CTX.app_settings.interface.enable_ui_animations);
   this->tree_widget->setSelectionMode(QAbstractItemView::NoSelection);
   this->tree_widget->header()->setStretchLastSection(true);
   this->tree_widget->header()->setSectionResizeMode(0, QHeaderView::Stretch);

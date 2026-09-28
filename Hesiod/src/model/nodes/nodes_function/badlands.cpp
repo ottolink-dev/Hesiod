@@ -17,14 +17,10 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-// -----------------------------------------------------------------------------
-// Ports & Attributes
-// -----------------------------------------------------------------------------
-
 constexpr const char *P_DX  = "dx";
 constexpr const char *P_DY  = "dy";
 constexpr const char *P_ENV = "envelope";
-constexpr const char *P_OUT = "out";
+constexpr const char *P_OUT = "output";
 
 constexpr const char *A_ELEVATION      = "elevation";
 constexpr const char *A_KW             = "kw";
@@ -92,7 +88,7 @@ void compute_badlands_node(BaseNode &node)
 
   // clang-format off
   const auto elevation      = node.val<float>(A_ELEVATION);
-  const auto kw             = node.val<glm::vec2>(A_KW);
+  const auto kw             = node.val_wavenumber(A_KW);
   const auto seed           = node.val<int>(A_SEED);
   const auto octaves        = node.val<int>(A_OCTAVES);
   const auto rugosity       = node.val<float>(A_RUGOSITY);
@@ -108,12 +104,12 @@ void compute_badlands_node(BaseNode &node)
   hmap::for_each_tile(
       {p_dx, p_dy},
       {p_out},
-      [&](std::vector<const hmap::Array *> in,
-          std::vector<hmap::Array *>       out,
+      [&](std::vector<const hmap::Array *> p_arrays_in,
+          std::vector<hmap::Array *>       p_arrays_out,
           const hmap::TileRegion          &region)
       {
-        auto [pa_dx, pa_dy] = unpack<2>(in);
-        auto [pa_out]       = unpack<1>(out);
+        auto [pa_dx, pa_dy] = unpack<2>(p_arrays_in);
+        auto [pa_out]       = unpack<1>(p_arrays_out);
 
         *pa_out = hmap::gpu::badlands(region.shape,
                                       kw,

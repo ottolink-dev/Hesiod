@@ -14,6 +14,8 @@ namespace hesiod
 {
 
 class GraphNode; // forward
+class GraphEditor;
+class Viewer;
 
 // =====================================
 // GraphNodeWidget
@@ -50,18 +52,21 @@ public:
   void apply_new_config(int new_resolution);
   void apply_new_config(const GraphConfig &new_config);
 
-  // NB - only block updates coming from GraphNodeWidget, other classes may trigger an
-  // update of the model
-  bool is_graph_model_updates_blocked() const;
-  void set_block_graph_model_updates(bool new_state);
-
   void update_graph_model(const std::vector<std::string> &node_ids = {});
   void update_graph_model(const std::string &node_id);
+
+  // --- Node menu (node_context_menu.cpp) ---
+  // right-click on a node: its actions, one of them the settings popup
+  void show_node_context_menu(const std::string &node_id, const QPoint &global_pos);
+  void show_node_settings_popup(const std::string &node_id, const QPoint &global_pos);
+  // the workspace viewer, for the menu's Lock preview entry
+  void set_preview_viewer(Viewer *viewer);
 
 signals:
   // TODO REMOVE GRAPH_ID
 
   // --- User Actions Signals ---
+  void graph_edited();
   void copy_buffer_has_changed(const nlohmann::json &new_json);
   void has_been_cleared(const std::string &graph_id);
   void new_node_created(const std::string &graph_id, const std::string &id);
@@ -79,19 +84,9 @@ public slots:
   void closeEvent(QCloseEvent *event) override;
 
   // --- User Actions ---
-  void on_connection_deleted(const std::string &id_out,
-                             const std::string &port_id_out,
-                             const std::string &id_in,
-                             const std::string &port_id_in,
-                             bool               prevent_graph_update);
   void on_connection_dropped(const std::string &node_id,
                              const std::string &port_id,
                              QPointF            scene_pos);
-  void on_connection_finished(const std::string &id_out,
-                              const std::string &port_id_out,
-                              const std::string &id_in,
-                              const std::string &port_id_in);
-
   void on_graph_clear_request();
   void on_graph_import_request();
   void on_graph_new_request();
@@ -101,7 +96,6 @@ public slots:
   std::string on_new_node_request(const std::string &node_type, QPointF scene_pos);
   std::string on_new_node_request_chain(const std::string &node_type);
   std::string on_new_node_request_replace(const std::string &node_type);
-  void        on_node_deleted_request(const std::string &node_id);
   void        on_node_reload_request(const std::string &node_id);
   void        on_node_right_clicked(const std::string &node_id, QPointF scene_pos);
 
@@ -118,6 +112,11 @@ public slots:
   // --- Others... ---
   void on_new_graphics_node_request(const std::string &node_id, QPointF scene_pos);
 
+protected:
+  void request_connection(const gngui::LinkEndpoints &link) override;
+  void request_deletion(const std::vector<std::string>          &ids,
+                        const std::vector<gngui::LinkEndpoints> &links) override;
+
 private:
   QScrollArea *create_attributes_scroll(QWidget *parent, QWidget *attr_widget);
 
@@ -127,12 +126,13 @@ private:
   // --- Members ---
   std::weak_ptr<GraphNode>       p_graph_node; // own by GraphManager
   std::vector<QPointer<QWidget>> data_viewers;
-  bool                           block_graph_model_updates = false;
+  std::unique_ptr<GraphEditor>   editor;
   nlohmann::json                 json_copy_buffer;
   std::string                    last_node_created_id = "";
   bool                           is_selecting_with_rubber_band = false;
   std::filesystem::path          last_import_path;
   std::vector<std::string>       selected_ids;
+  QPointer<Viewer>               preview_viewer;
 };
 
 } // namespace hesiod

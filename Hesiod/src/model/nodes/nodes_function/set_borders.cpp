@@ -16,10 +16,6 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-// -----------------------------------------------------------------------------
-// Ports & Attributes
-// -----------------------------------------------------------------------------
-
 constexpr const char *P_IN  = "input";
 constexpr const char *P_OUT = "output";
 
@@ -29,6 +25,7 @@ constexpr const char *A_RADIUS_WEST    = "radius_west";
 constexpr const char *A_RADIUS_EAST    = "radius_east";
 constexpr const char *A_RADIUS_NORTH   = "radius_north";
 constexpr const char *A_RADIUS_SOUTH   = "radius_south";
+constexpr const char *A_VALUE          = "value";
 constexpr const char *A_UNIFORM_VALUE  = "uniform_value";
 constexpr const char *A_VALUE_WEST     = "value_west";
 constexpr const char *A_VALUE_EAST     = "value_east";
@@ -51,13 +48,17 @@ void setup_set_borders_node(BaseNode &node)
   // --- Attributes
 
   // clang-format off
-  add_float(node, A_RADIUS, "Radius", 0.4f, 0.f, 0.5f);
+  node.set_current_category("Radius");
   add_bool(node, A_UNIFORM_RADIUS, "Uniform Radius", true);
+  add_float(node, A_RADIUS, "Radius", 0.4f, 0.f, 0.5f);
   add_float(node, A_RADIUS_WEST, "West", 0.4f, 0.f, 0.5f);
   add_float(node, A_RADIUS_EAST, "East", 0.4f, 0.f, 0.5f);
   add_float(node, A_RADIUS_NORTH, "North", 0.4f, 0.f, 0.5f);
   add_float(node, A_RADIUS_SOUTH, "South", 0.4f, 0.f, 0.5f);
+
+  node.set_current_category("Value");
   add_bool(node, A_UNIFORM_VALUE, "Uniform Value", false);
+  add_float(node, A_VALUE, "Value", 0.f, -FLT_MAX, FLT_MAX);
   add_float(node, A_VALUE_WEST, "West", -0.5f, -FLT_MAX, FLT_MAX);
   add_float(node, A_VALUE_EAST, "East", 0.5f, -FLT_MAX, FLT_MAX);
   add_float(node, A_VALUE_NORTH, "North", 0.5f, -FLT_MAX, FLT_MAX);
@@ -83,51 +84,40 @@ void compute_set_borders_node(BaseNode &node)
   if (!p_in || !p_out)
     return;
 
-  // --- Helpers
-
-  const auto to_px_x = [&](float r) { return std::max(1, int(r * p_in->shape.x)); };
-
-  const auto to_px_y = [&](float r) { return std::max(1, int(r * p_in->shape.y)); };
-
   // --- Border radii
 
   // engine order: {west=.x, east=.y, south=.z, north=.w}
-  glm::ivec4 buffer_sizes;
+  glm::vec4 buffer_sizes;
 
   if (node.val<bool>(A_UNIFORM_RADIUS))
   {
     const float r = node.val<float>(A_RADIUS);
-
-    buffer_sizes = {
-        to_px_x(r), // west
-        to_px_x(r), // east
-        to_px_y(r), // south
-        to_px_y(r)  // north
-    };
+    buffer_sizes  = {r, r, r, r};
   }
   else
   {
-    buffer_sizes = {to_px_x(node.val<float>(A_RADIUS_WEST)),
-                    to_px_x(node.val<float>(A_RADIUS_EAST)),
-                    to_px_y(node.val<float>(A_RADIUS_SOUTH)),
-                    to_px_y(node.val<float>(A_RADIUS_NORTH))};
+    buffer_sizes = {node.val<float>(A_RADIUS_WEST),
+                    node.val<float>(A_RADIUS_EAST),
+                    node.val<float>(A_RADIUS_SOUTH),
+                    node.val<float>(A_RADIUS_NORTH)};
   }
 
   // --- Border values
-
-  const float vw = node.val<float>(A_VALUE_WEST);
-  const float ve = node.val<float>(A_VALUE_EAST);
-  const float vn = node.val<float>(A_VALUE_NORTH);
-  const float vs = node.val<float>(A_VALUE_SOUTH);
 
   glm::vec4 border_values;
 
   if (node.val<bool>(A_UNIFORM_VALUE))
   {
-    border_values = {vw, vw, vw, vw};
+    const float v = node.val<float>(A_VALUE);
+    border_values = {v, v, v, v};
   }
   else
   {
+    const float vw = node.val<float>(A_VALUE_WEST);
+    const float ve = node.val<float>(A_VALUE_EAST);
+    const float vn = node.val<float>(A_VALUE_NORTH);
+    const float vs = node.val<float>(A_VALUE_SOUTH);
+
     // engine order: {west, east, south, north}
     border_values = {vw, ve, vs, vn};
   }
@@ -135,17 +125,20 @@ void compute_set_borders_node(BaseNode &node)
   // --- Compute
 
   hmap::for_each_tile(
-      {p_out, p_in},
-      [buffer_sizes, border_values](std::vector<hmap::Array *> p_arrays,
-                                    const hmap::TileRegion &)
+      {p_in},
+      {p_out},
+      [buffer_sizes, border_values](std::vector<const hmap::Array *> p_arrays_in,
+                                    std::vector<hmap::Array *>       p_arrays_out,
+                                    const hmap::TileRegion          &region)
       {
-        auto [pa_out, pa_in] = unpack<2>(p_arrays);
+        auto [pa_in]  = unpack<1>(p_arrays_in);
+        auto [pa_out] = unpack<1>(p_arrays_out);
 
         *pa_out = *pa_in;
 
-        hmap::set_borders(*pa_out, border_values, buffer_sizes);
+        hmap::set_borders(*pa_out, border_values, buffer_sizes, region.bbox);
       },
-      node.cfg().cm_single_array);
+      node.cfg().cm_cpu);
 }
 
 } // namespace hesiod

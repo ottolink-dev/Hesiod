@@ -64,12 +64,12 @@ void compute_flooding_uniform_level_node(BaseNode &node)
   hmap::for_each_tile(
       {p_in},
       {p_out},
-      [&](std::vector<const hmap::Array *> in,
-          std::vector<hmap::Array *>       out,
+      [&](std::vector<const hmap::Array *> p_arrays_in,
+          std::vector<hmap::Array *>       p_arrays_out,
           const hmap::TileRegion &)
       {
-        auto [pa_in]  = unpack<1>(in);
-        auto [pa_out] = unpack<1>(out);
+        auto [pa_in]  = unpack<1>(p_arrays_in);
+        auto [pa_out] = unpack<1>(p_arrays_out);
 
         *pa_out = hmap::flooding_uniform_level(*pa_in, elevation);
       },

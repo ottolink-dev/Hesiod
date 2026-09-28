@@ -1,6 +1,7 @@
 /* Copyright (c) 2025 Otto Link. Distributed under the terms of the GNU General
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
+#include <algorithm>
 #include <filesystem>
 
 #include <QStandardPaths>
@@ -48,7 +49,11 @@ void AppContext::load_node_documentation()
   }
 }
 
-void AppContext::load_project_model(const std::string &fname)
+ErrorManager &AppContext::get_error_manager() { return this->error_manager; }
+
+const ErrorManager &AppContext::get_error_manager() const { return this->error_manager; }
+
+int AppContext::load_project_model(const std::string &fname)
 {
   Logger::log()->trace("AppContext::load_project_model: {}", fname);
 
@@ -56,28 +61,85 @@ void AppContext::load_project_model(const std::string &fname)
   {
     Logger::log()->error("AppContext::load_project_model: file does not exist: {}",
                          fname);
-    return;
+    return 0;
   }
 
   this->new_project();
 
-  nlohmann::json json = json_from_file(fname);
-  this->project_model->json_from(json);
+  int capped = 0;
+
+  try
+  {
+    nlohmann::json json = json_from_file(fname);
+
+    // lighter editing of large projects: graphs above 1K are loaded at 1K. Only
+    // the loaded copy changes, not the file nor the bake resolution. Never in
+    // the CLI modes, which export at the graph resolution
+    if (this->app_settings.node_editor.open_projects_at_1k && !this->headless &&
+        json.contains("graph_manager") && json["graph_manager"].contains("graph_nodes"))
+      for (auto &[_, graph] : json["graph_manager"]["graph_nodes"].items())
+      {
+        if (!graph.contains("model_config"))
+          continue;
+        auto     &config = graph["model_config"];
+        const int w = config.value("shape.x", 0);
+        const int h = config.value("shape.y", 0);
+        if (std::max(w, h) > 1024) // keeping the aspect ratio
+        {
+          config["shape.x"] = std::max(1, w * 1024 / std::max(w, h));
+          config["shape.y"] = std::max(1, h * 1024 / std::max(w, h));
+          capped++;
+        }
+      }
+
+    this->project_model->json_from(json);
+  }
+  catch (const std::exception &e)
+  {
+    this->error_manager.push_error(
+        ErrorCategory::IO,
+        std::format("Failed to read project file '{}': {}", fname, e.what()));
+  }
+  catch (...)
+  {
+    this->error_manager.push_error(
+        ErrorCategory::IO,
+        std::format("Failed to read project file '{}': unknown error", fname));
+  }
+
+  return capped;
 }
 
 void AppContext::load_settings()
 {
   Logger::log()->trace("AppContext::load_settings");
 
-  std::string    fname = get_config_file_path_auto("hesiod");
-  nlohmann::json json = json_from_file(fname);
+  std::string fname = get_config_file_path_auto("hesiod");
 
-  this->settings_json_from(json);
+  // A settings file the user cannot open the application to fix is a dead end:
+  // an unparseable number, a truncated write or a type that does not match what
+  // a key expects used to escape all the way out of main() and kill startup
+  // before any window appeared. Fall back to the compiled defaults and say so.
+  try
+  {
+    nlohmann::json json = json_from_file(fname);
+    this->settings_json_from(json);
+  }
+  catch (const std::exception &e)
+  {
+    Logger::log()->error("AppContext::load_settings: could not read the settings "
+                         "file, starting from defaults instead ({}): {}",
+                         fname,
+                         e.what());
+
+    this->reset_settings();
+  }
 }
 
 void AppContext::new_project()
 {
   Logger::log()->trace("AppContext::new_project");
+  this->error_manager.clear();
   this->project_model = std::make_unique<ProjectModel>();
 }
 
@@ -102,14 +164,6 @@ void AppContext::restore_state()
     Logger::log()->error("Failed to restore state: {}", e.what());
     return;
   }
-}
-
-void AppContext::save_project_model(const std::string &fname) const
-{
-  Logger::log()->trace("AppContext::save_project_model: {}", fname);
-
-  nlohmann::json json = this->project_model->json_to();
-  json_to_file(json, fname, /* merge_with_existing_content */ true);
 }
 
 void AppContext::save_state() const { this->saved_state = this->settings_json_to(); }
@@ -183,16 +237,18 @@ std::string get_config_file_path(const QString &app_name, bool portable_mode)
   return path.toStdString();
 }
 
-std::string get_config_file_path_auto(const QString &app_name)
+bool is_portable_mode(const QString &app_name)
 {
   QDir    app_dir(QCoreApplication::applicationDirPath());
   QString portable_path = app_dir.filePath(app_name + ".json");
   QString portable_flag = app_dir.filePath("portable.flag");
 
-  bool use_portable = QFileInfo::exists(portable_path) ||
-                      QFileInfo::exists(portable_flag);
+  return QFileInfo::exists(portable_path) || QFileInfo::exists(portable_flag);
+}
 
-  return get_config_file_path(app_name, use_portable);
+std::string get_config_file_path_auto(const QString &app_name)
+{
+  return get_config_file_path(app_name, is_portable_mode(app_name));
 }
 
 } // namespace hesiod

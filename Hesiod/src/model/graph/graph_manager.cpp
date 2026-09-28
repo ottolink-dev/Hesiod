@@ -295,21 +295,41 @@ void GraphManager::json_from(nlohmann::json const &json, GraphConfig *p_config)
       // the Receive nodes, if any, need a reference to the
       // broadcast_params of the GraphManager, which is provided to the
       // graph node when added...
-      this->add_graph_node(graph, graph_id);
+      try
+      {
+        this->add_graph_node(graph, graph_id);
 
-      if (json.contains("graph_nodes") && json["graph_nodes"].contains(graph_id))
-      {
-        graph->json_from(json["graph_nodes"][graph_id], p_config);
+        if (json.contains("graph_nodes") && json["graph_nodes"].contains(graph_id))
+        {
+          graph->json_from(json["graph_nodes"][graph_id], p_config);
+        }
+        else
+        {
+          HSD_CTX.get_error_manager().push_error(
+              ErrorCategory::Deserialization,
+              std::format("Graph '{}': Missing key \"graph_nodes\" or \"{}\"",
+                          graph_id,
+                          graph_id));
+        }
       }
-      else
+      catch (const std::exception &e)
       {
-        Logger::log()->error("Missing key \"graph_nodes\" or \"{}\"", graph_id);
+        HSD_CTX.get_error_manager().push_error(
+            ErrorCategory::Deserialization,
+            std::format("Failed to add graph '{}': {}", graph_id, e.what()));
+      }
+      catch (...)
+      {
+        HSD_CTX.get_error_manager().push_error(
+            ErrorCategory::Deserialization,
+            std::format("Failed to add graph '{}': unknown error", graph_id));
       }
     }
   }
   else
   {
-    Logger::log()->error("Missing key \"graph_order\" in json");
+    HSD_CTX.get_error_manager().push_error(ErrorCategory::Deserialization,
+                                           "Missing key \"graph_order\" in json");
   }
 }
 
@@ -409,6 +429,28 @@ void GraphManager::reseed(bool backward)
   for (auto &[_, graph] : this->graph_nodes)
     if (graph)
       graph->reseed(backward);
+}
+
+std::string GraphManager::runtime_info_to_string(const char separator) const
+{
+  std::string result;
+
+  for (const auto &graph_id : this->graph_order)
+  {
+    auto it = this->graph_nodes.find(graph_id);
+    if (it == this->graph_nodes.end() || !it->second)
+      continue;
+
+    std::string graph_info = it->second->runtime_info_to_string(separator);
+    if (!graph_info.empty())
+    {
+      if (!result.empty())
+        result += '\n';
+      result += graph_info;
+    }
+  }
+
+  return result;
 }
 
 void GraphManager::save_to_file(const std::string &fname) const

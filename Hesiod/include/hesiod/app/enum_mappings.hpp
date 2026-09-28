@@ -14,6 +14,7 @@
 #include "highmap/morphology.hpp"
 #include "highmap/primitives.hpp"
 #include "highmap/range.hpp"
+#include "highmap/transform.hpp"
 
 #include "hesiod/model/nodes/base_node.hpp"
 
@@ -154,6 +155,7 @@ static struct EnumMappings
       {"Topographic Position Index",
        hmap::gpu::LocalMetrics::LM_TOPOGRAPHIC_POSITION_INDEX},
       {"Relative Elevation", hmap::gpu::LocalMetrics::LM_RELATIVE_ELEVATION},
+      {"Roughness", hmap::gpu::LocalMetrics::LM_ROUGHNESS},
       {"Ruggedness", hmap::gpu::LocalMetrics::LM_RUGGEDNESS},
       {"Rugosity Concave", hmap::gpu::LocalMetrics::LM_RUGOSITY_CONCAVE},
       {"Rugosity Convex", hmap::gpu::LocalMetrics::LM_RUGOSITY_CONVEX}};
@@ -162,6 +164,11 @@ static struct EnumMappings
       {"union", MaskCombineMethod::UNION},
       {"intersection", MaskCombineMethod::INTERSECTION},
       {"exclusion", MaskCombineMethod::EXCLUSION}};
+
+  const std::map<std::string, int> min_max_kernel_map = {
+      {"Disk", static_cast<int>(hmap::MinMaxKernel::DISK)},
+      {"Octagon", static_cast<int>(hmap::MinMaxKernel::OCTAGON)},
+      {"Square", static_cast<int>(hmap::MinMaxKernel::SQUARE)}};
 
   const std::map<std::string, int> morphology_operation_map = {
       {"Border", hmap::MorphologyOperation::MO_BORDER},
@@ -242,6 +249,16 @@ static struct EnumMappings
       // {"minimum_smooth", hmap::StampingBlendMethod::MINIMUM_SMOOTH},
       {"multiply", hmap::StampingBlendMethod::MULTIPLY},
       {"substract", hmap::StampingBlendMethod::SUBSTRACT}};
+
+  const std::map<std::string, int> symmetry_type_map = {
+      {"Bottom to Top", hmap::SymmetryType::SYMMETRY_BOTTOM_TO_TOP},
+      {"Left to Right", hmap::SymmetryType::SYMMETRY_LEFT_TO_RIGHT},
+      {"Right to Left", hmap::SymmetryType::SYMMETRY_RIGHT_TO_LEFT},
+      {"Rotational 180°", hmap::SymmetryType::SYMMETRY_ROT180},
+      {"Top to Bottom", hmap::SymmetryType::SYMMETRY_TOP_TO_BOTTOM},
+      {"X (Average)", hmap::SymmetryType::SYMMETRY_X},
+      {"XY (Average)", hmap::SymmetryType::SYMMETRY_XY},
+      {"Y (Average)", hmap::SymmetryType::SYMMETRY_Y}};
 
   const std::map<std::string, int> voronoi_return_type_map = {
       {"F1: squared distance to the closest point", hmap::VoronoiReturnType::F1_SQUARED},

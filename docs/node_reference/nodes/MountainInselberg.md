@@ -26,7 +26,7 @@ Primitive/Geological
 
 |Name|Type|Description|
 | :--- | :--- | :--- |
-|out|VirtualArray|No description|
+|output|VirtualArray|No description|
 
 ## Parameters
 
@@ -65,7 +65,7 @@ Corresponding Hesiod file: [MountainInselberg.hsd](../../examples/MountainInselb
     Example files are kept up-to-date with the latest version of [Hesiod](https://github.com/otto-link/Hesiod).
     If you find an error, please [open an issue](https://github.com/otto-link/Hesiod/issues).
 
-  
+
 # Screenshots
 
 ![img](../../images/nodes/MountainInselberg_wiki0.png)

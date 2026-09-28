@@ -48,7 +48,7 @@ void compute_cloud_random_node(BaseNode &node)
 
   *p_out = hmap::random_cloud(node.val<int>(A_NPOINTS),
                               node.val<int>(A_SEED),
-                              (hmap::PointSamplingMethod)node.val<int>(A_METHOD));
+                              node.val_enum<hmap::PointSamplingMethod>(A_METHOD));
 
   if (node.state_val<bool>(A_REMAP, meta::keys::state::active))
   {

@@ -62,47 +62,61 @@ void compute_export_tiled_node(BaseNode &node)
 
   hmap::VirtualArray *p_in = node.get_value_ref<hmap::VirtualArray>(P_IN);
 
-  if (p_in && node.val<bool>(A_AUTO_EXPORT))
+  if (!p_in)
+    return;
+
+  const bool auto_export = node.val<bool>(A_AUTO_EXPORT);
+  if (!auto_export)
   {
-    // prepare parameters
-    std::filesystem::path fname   = node.val<std::filesystem::path>(A_FNAME);
-    const auto            pattern = node.val<std::string>(A_PATTERN);
-
-    std::unordered_map<std::string, std::string> replacements = get_standard_replacements(
-        node,
-        fname);
-
-    std::filesystem::path export_path = make_unique_filename(fname.parent_path(),
-                                                             pattern,
-                                                             replacements);
-
-    int bit_depth;
-    if (node.val<std::string>(A_BIT_DEPTH) == "8 bit")
-      bit_depth = CV_8U;
-    else
-      bit_depth = CV_16U;
-
-    glm::ivec2 tiling = {node.val<int>(A_TILING_X), node.val<int>(A_TILING_Y)};
-
-    hmap::Array array  = p_in->to_array(node.cfg().cm_cpu);
-    const bool  flip_x = node.val<bool>(A_FLIP_X);
-    const bool  flip_y = node.val<bool>(A_FLIP_Y);
-
-    if (flip_x)
-      hmap::flip_lr(array);
-    if (flip_y)
-      hmap::flip_ud(array);
-
-    // export
-    hmap::export_tiled(export_path.string(),
-                       "png",
-                       p_in->to_array(node.cfg().cm_cpu),
-                       tiling,
-                       node.val<int>(A_LEADING_ZEROS),
-                       bit_depth,
-                       node.val<bool>(A_OVERLAPPING_EDGES),
-                       node.val<bool>(A_REVERSE_TILE_Y_INDEXING));
+    Logger::log()->trace("compute_export_tiled_node: [{}]/[{}]: auto export is disabled",
+                         node.get_node_type(),
+                         node.get_id());
+    return;
   }
+
+  // prepare parameters
+  std::filesystem::path fname   = node.val<std::filesystem::path>(A_FNAME);
+  const auto            pattern = node.val<std::string>(A_PATTERN);
+
+  std::unordered_map<std::string, std::string> replacements = get_standard_replacements(
+      node,
+      fname);
+
+  std::filesystem::path export_path = make_unique_filename(fname.parent_path(),
+                                                           pattern,
+                                                           replacements);
+
+  Logger::log()->trace("compute_export_tiled_node: [{}]/[{}]: export path = {}",
+                       node.get_node_type(),
+                       node.get_id(),
+                       export_path.string());
+
+  int bit_depth;
+  if (node.val<std::string>(A_BIT_DEPTH) == "8 bit")
+    bit_depth = CV_8U;
+  else
+    bit_depth = CV_16U;
+
+  glm::ivec2 tiling = {node.val<int>(A_TILING_X), node.val<int>(A_TILING_Y)};
+
+  hmap::Array array  = p_in->to_array(node.cfg().cm_cpu);
+  const bool  flip_x = node.val<bool>(A_FLIP_X);
+  const bool  flip_y = node.val<bool>(A_FLIP_Y);
+
+  if (flip_x)
+    hmap::flip_lr(array);
+  if (flip_y)
+    hmap::flip_ud(array);
+
+  // export
+  hmap::export_tiled(export_path.string(),
+                     "png",
+                     p_in->to_array(node.cfg().cm_cpu),
+                     tiling,
+                     node.val<int>(A_LEADING_ZEROS),
+                     bit_depth,
+                     node.val<bool>(A_OVERLAPPING_EDGES),
+                     node.val<bool>(A_REVERSE_TILE_Y_INDEXING));
 }
 
 } // namespace hesiod
