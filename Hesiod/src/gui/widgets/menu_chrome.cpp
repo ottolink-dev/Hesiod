@@ -4,8 +4,6 @@
 #include <algorithm>
 
 #include <QApplication>
-#include <QCursor>
-#include <QGuiApplication>
 #include <QMenuBar>
 #include <QPaintEvent>
 #include <QPainter>
@@ -194,31 +192,6 @@ bool MenuAnimator::eventFilter(QObject *watched, QEvent *event)
                    });
 
   animation->start();
-  return false;
-}
-
-// =====================================
-// PopupReplayGuard
-// =====================================
-
-void PopupReplayGuard::arm(QWidget *anchor, const QRect &new_area)
-{
-  // armed only when the popup was closed by a press on that very area, and
-  // that press is still being held: its replay is the next press there
-  this->area = new_area;
-  this->armed = anchor && (QGuiApplication::mouseButtons() & Qt::LeftButton) &&
-                new_area.contains(anchor->mapFromGlobal(QCursor::pos()));
-}
-
-bool PopupReplayGuard::swallow_press(const QPoint &anchor_pos)
-{
-  if (!this->armed)
-    return false;
-
-  if (this->area.contains(anchor_pos))
-    return true; // stays armed until the click's release
-
-  this->armed = false;
   return false;
 }
 

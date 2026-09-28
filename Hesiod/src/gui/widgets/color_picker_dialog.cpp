@@ -29,8 +29,29 @@ namespace hesiod
 namespace
 {
 
-// colours confirmed with OK this session, most recent first
-QList<QColor> g_recent;
+// colours confirmed with OK, most recent first. They live in the app settings
+// (interface.recent_colors), so they are saved with them and survive a
+// restart; like the dialog, only ever touched from the GUI thread
+constexpr int kMaxRecent = 10;
+
+QList<QColor> recent_colors()
+{
+  QList<QColor> colors;
+  for (const std::string &hex : HSD_CTX.app_settings.interface.recent_colors)
+    if (QColor color(QString::fromStdString(hex)); color.isValid())
+      colors.push_back(color);
+  return colors;
+}
+
+void remember_color(const QColor &color)
+{
+  auto             &recent = HSD_CTX.app_settings.interface.recent_colors;
+  const std::string hex = color.name(QColor::HexArgb).toStdString();
+  std::erase(recent, hex);
+  recent.insert(recent.begin(), hex);
+  if (recent.size() > kMaxRecent)
+    recent.resize(kMaxRecent);
+}
 
 QColor edge_color()
 {
@@ -493,7 +514,7 @@ ColorPickerDialog::ColorPickerDialog(const QColor  &initial,
                   QColor("#4aaa6a"),
                   QColor("#d9a441"),
                   QColor("#e06c62")});
-  add_swatch_row("Recent", g_recent);
+  add_swatch_row("Recent", recent_colors());
 
   // --- buttons
   this->add_button("Cancel", MessageDialog::Role::Secondary, false, true);
@@ -642,12 +663,7 @@ QColor ColorPickerDialog::get_color(const QColor  &initial,
     return QColor();
 
   const QColor picked = dialog.color();
-
-  g_recent.removeAll(picked);
-  g_recent.prepend(picked);
-  while (g_recent.size() > 10)
-    g_recent.removeLast();
-
+  remember_color(picked);
   return picked;
 }
 

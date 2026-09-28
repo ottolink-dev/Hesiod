@@ -50,6 +50,10 @@ public:
   // window/OpenGL-dependent widgets (3D viewer) are skipped
   bool headless = false;
 
+  // runtime state: labels of applied settings that only take effect after a
+  // restart, for the settings window's banner (kept across its reopenings)
+  std::vector<std::string> settings_pending_restart;
+
   // global settings
   AppSettings    app_settings;
   StyleSettings  style_settings;

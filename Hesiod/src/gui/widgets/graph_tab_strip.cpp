@@ -17,7 +17,7 @@
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/widgets/graph_tab_strip.hpp"
 #include "hesiod/gui/widgets/gui_utils.hpp"
-#include "hesiod/gui/widgets/window_chrome.hpp"
+#include "hesiod/gui/widgets/panel_frame.hpp"
 
 namespace hesiod
 {

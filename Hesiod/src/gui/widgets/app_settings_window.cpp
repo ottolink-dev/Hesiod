@@ -39,6 +39,11 @@
 #include "hesiod/app/ui_scale.hpp"
 #include "hesiod/gui/widgets/app_settings_window.hpp"
 #include "hesiod/gui/widgets/color_picker_dialog.hpp"
+#include "hesiod/gui/widgets/controls/color_swatch.hpp"
+#include "hesiod/gui/widgets/controls/control_tones.hpp"
+#include "hesiod/gui/widgets/controls/step_button.hpp"
+#include "hesiod/gui/widgets/controls/toggle_switch.hpp"
+#include "hesiod/gui/widgets/fuzzy_match.hpp"
 #include "hesiod/gui/widgets/gui_utils.hpp"
 #include "hesiod/gui/widgets/message_dialog.hpp"
 #include "hesiod/gui/widgets/node_palette_sidebar.hpp"
@@ -99,38 +104,10 @@ constexpr int kSidebarW = 220; // section list width
 constexpr int kHeaderH = 52;   // draggable band at the top
 constexpr int kControlW = 150; // right-hand control column
 
-// the applied restart-only settings of this session; the banner outlives the
-// dialog so reopening it still says a restart is due
-QStringList g_restart_pending;
-
 AppSettings &defaults()
 {
   static AppSettings instance;
   return instance;
-}
-
-struct Tones
-{
-  QColor sidebar, content, card, border, field, field_hover, ink, ink_dim, ink_faint,
-      accent, accent_soft;
-};
-
-Tones tones()
-{
-  const auto &c = HSD_CTX.app_settings.colors;
-  Tones       t;
-  t.sidebar = c.bg_deep;
-  t.content = mix_colors(c.bg_deep, c.bg_primary, 0.40);
-  t.card = c.bg_primary;
-  t.border = panel_border_color();
-  t.field = mix_colors(c.bg_deep, c.bg_primary, 0.55);
-  t.field_hover = mix_colors(c.bg_primary, c.border, 0.25);
-  t.ink = c.text_primary;
-  t.ink_dim = mix_colors(c.bg_primary, c.text_primary, 0.62);
-  t.ink_faint = mix_colors(c.bg_primary, c.text_primary, 0.42);
-  t.accent = c.accent;
-  t.accent_soft = mix_colors(c.bg_primary, c.accent, 0.30);
-  return t;
 }
 
 void repolish(QWidget *widget)
@@ -139,341 +116,6 @@ void repolish(QWidget *widget)
   widget->style()->polish(widget);
   widget->update();
 }
-
-// ---------------------------------------------------------------------------
-// fuzzy matching
-// ---------------------------------------------------------------------------
-
-// optimal string alignment distance: edits, with adjacent swaps counting as one
-int edit_distance(const QString &a, const QString &b)
-{
-  const int                     n = int(a.size());
-  const int                     m = int(b.size());
-  std::vector<std::vector<int>> d(n + 1, std::vector<int>(m + 1));
-  for (int i = 0; i <= n; ++i)
-    d[i][0] = i;
-  for (int j = 0; j <= m; ++j)
-    d[0][j] = j;
-
-  for (int i = 1; i <= n; ++i)
-    for (int j = 1; j <= m; ++j)
-    {
-      const int cost = a[i - 1] == b[j - 1] ? 0 : 1;
-      d[i][j] = std::min({d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + cost});
-      if (i > 1 && j > 1 && a[i - 1] == b[j - 2] && a[i - 2] == b[j - 1])
-        d[i][j] = std::min(d[i][j], d[i - 2][j - 2] + 1);
-    }
-  return d[n][m];
-}
-
-bool word_start(const QString &text, qsizetype i)
-{
-  return i == 0 || !text[i - 1].isLetterOrNumber();
-}
-
-// Score of one query token against one (lower-cased) field; 0 = no match.
-// Substrings win, then abbreviations ("ui scl" -> "interface scale" does not,
-// but "intsc" does), then typos ("scael", "animtions").
-int token_score(const QString &token, const QString &text, bool allow_subsequence)
-{
-  if (token.isEmpty() || text.isEmpty())
-    return 0;
-
-  // substring, best at a word start and early in the text
-  const qsizetype at = text.indexOf(token);
-  if (at >= 0)
-    return 100 + (word_start(text, at) ? 40 : 0) - int(std::min<qsizetype>(at, 30));
-
-  // abbreviation: every character in order, rewarding word starts and runs
-  if (allow_subsequence && token.size() >= 2)
-  {
-    int       score = 0, streak = 0;
-    qsizetype ti = 0, first = -1, last = -1;
-    for (qsizetype i = 0; i < text.size() && ti < token.size(); ++i)
-    {
-      if (text[i] == token[ti])
-      {
-        if (first < 0)
-          first = i;
-        last = i;
-        score += 2 + (word_start(text, i) ? 6 : 0) + 3 * streak;
-        ++streak;
-        ++ti;
-      }
-      else
-        streak = 0;
-    }
-
-    // all found, and not scattered over the whole field
-    if (ti == token.size() && (last - first) <= 4 * token.size())
-      return std::clamp(score, 10, 90);
-  }
-
-  // typo tolerance against each word (and each word's prefix, for words the
-  // user has not finished typing)
-  if (token.size() >= 4)
-  {
-    static const QRegularExpression separators("[^\\p{L}\\p{N}]+");
-    int                             best = INT_MAX;
-    for (const QString &word : text.split(separators, Qt::SkipEmptyParts))
-    {
-      best = std::min(best, edit_distance(token, word));
-      if (word.size() > token.size())
-        best = std::min(best, edit_distance(token, word.left(token.size())));
-    }
-
-    const int allowed = token.size() >= 7 ? 2 : 1;
-    if (best <= allowed)
-      return 60 - 20 * best;
-  }
-
-  return 0;
-}
-
-// ---------------------------------------------------------------------------
-// ToggleSwitch: pill switch replacing the bare checkbox
-// ---------------------------------------------------------------------------
-
-class ToggleSwitch final : public QAbstractButton
-{
-public:
-  explicit ToggleSwitch(QWidget *parent = nullptr) : QAbstractButton(parent)
-  {
-    this->setCheckable(true);
-    this->setCursor(Qt::PointingHandCursor);
-    this->setFixedSize(38, 22);
-
-    this->animation = new QVariantAnimation(this);
-    this->animation->setDuration(140);
-    this->animation->setEasingCurve(QEasingCurve::OutCubic);
-    QObject::connect(this->animation,
-                     &QVariantAnimation::valueChanged,
-                     this,
-                     [this](const QVariant &value)
-                     {
-                       this->position = value.toReal();
-                       this->update();
-                     });
-
-    QObject::connect(this,
-                     &QAbstractButton::toggled,
-                     this,
-                     [this](bool checked)
-                     {
-                       const qreal target = checked ? 1.0 : 0.0;
-                       if (!HSD_CTX.app_settings.interface.enable_ui_animations ||
-                           !this->isVisible())
-                       {
-                         this->position = target;
-                         this->update();
-                         return;
-                       }
-                       this->animation->stop();
-                       this->animation->setStartValue(this->position);
-                       this->animation->setEndValue(target);
-                       this->animation->start();
-                     });
-  }
-
-  // jump to the checked state without animating (after a blocked setChecked)
-  void sync()
-  {
-    this->animation->stop();
-    this->position = this->isChecked() ? 1.0 : 0.0;
-    this->update();
-  }
-
-protected:
-  void paintEvent(QPaintEvent *) override
-  {
-    const Tones t = tones();
-    QPainter    p(this);
-    p.setRenderHint(QPainter::Antialiasing);
-
-    const QRectF track = QRectF(this->rect()).adjusted(1, 1, -1, -1);
-    const qreal  r = track.height() / 2.0;
-
-    const QColor off = this->underMouse() ? t.field_hover : t.field;
-    QColor       edge = mix_colors(t.border, t.accent, this->position);
-    if (this->hasFocus())
-      edge = t.accent.lighter(130);
-    p.setPen(QPen(edge, 1));
-    p.setBrush(mix_colors(off, t.accent, this->position));
-    p.drawRoundedRect(track, r, r);
-
-    const qreal  d = track.height() - 6.0;
-    const qreal  x = track.left() + 3.0 + (track.width() - 6.0 - d) * this->position;
-    const QRectF knob(x, track.top() + 3.0, d, d);
-    p.setPen(Qt::NoPen);
-    p.setBrush(mix_colors(t.ink_dim, QColor("#ffffff"), this->position));
-    p.drawEllipse(knob);
-  }
-
-  void enterEvent(QEnterEvent *event) override
-  {
-    this->update();
-    QAbstractButton::enterEvent(event);
-  }
-
-  void leaveEvent(QEvent *event) override
-  {
-    this->update();
-    QAbstractButton::leaveEvent(event);
-  }
-
-private:
-  QVariantAnimation *animation = nullptr;
-  qreal              position = 0.0;
-};
-
-// ---------------------------------------------------------------------------
-// StepButton: the - / + ends of a stepper (painted, so the glyphs are centred)
-// ---------------------------------------------------------------------------
-
-class StepButton final : public QAbstractButton
-{
-public:
-  StepButton(bool plus, QWidget *parent) : QAbstractButton(parent), plus(plus)
-  {
-    this->setFixedSize(26, 28);
-    this->setAutoRepeat(true);
-    this->setAutoRepeatDelay(350);
-    this->setAutoRepeatInterval(60);
-    this->setFocusPolicy(Qt::NoFocus);
-    this->setCursor(Qt::PointingHandCursor);
-    this->setToolTip(plus ? "Increase" : "Decrease");
-  }
-
-protected:
-  void paintEvent(QPaintEvent *) override
-  {
-    const Tones t = tones();
-    QPainter    p(this);
-    p.setRenderHint(QPainter::Antialiasing);
-
-    if (this->underMouse() && this->isEnabled())
-    {
-      p.setPen(Qt::NoPen);
-      p.setBrush(this->isDown() ? t.border : t.field_hover);
-      p.drawRoundedRect(QRectF(this->rect()).adjusted(2, 2, -2, -2), 5, 5);
-    }
-
-    QPen pen(this->isEnabled() ? t.ink_dim : t.ink_faint, 1.4);
-    pen.setCapStyle(Qt::RoundCap);
-    p.setPen(pen);
-    const QPointF c(this->width() / 2.0, this->height() / 2.0);
-    p.drawLine(c + QPointF(-4.0, 0.0), c + QPointF(4.0, 0.0));
-    if (this->plus)
-      p.drawLine(c + QPointF(0.0, -4.0), c + QPointF(0.0, 4.0));
-  }
-
-  void enterEvent(QEnterEvent *event) override
-  {
-    this->update();
-    QAbstractButton::enterEvent(event);
-  }
-
-  void leaveEvent(QEvent *event) override
-  {
-    this->update();
-    QAbstractButton::leaveEvent(event);
-  }
-
-private:
-  bool plus;
-};
-
-// [-] value [+], around a spin box with its own arrows hidden
-QWidget *make_stepper(QAbstractSpinBox *spin)
-{
-  auto *box = new QFrame();
-  box->setObjectName("stepper");
-  box->setFixedWidth(kControlW);
-
-  auto *layout = new QHBoxLayout(box);
-  layout->setContentsMargins(1, 1, 1, 1);
-  layout->setSpacing(0);
-
-  spin->setParent(box);
-  spin->setButtonSymbols(QAbstractSpinBox::NoButtons);
-  spin->setAlignment(Qt::AlignCenter);
-  spin->setFrame(false);
-  spin->setKeyboardTracking(false);
-
-  auto *minus = new StepButton(false, box);
-  auto *plus = new StepButton(true, box);
-  QObject::connect(minus, &QAbstractButton::clicked, spin, &QAbstractSpinBox::stepDown);
-  QObject::connect(plus, &QAbstractButton::clicked, spin, &QAbstractSpinBox::stepUp);
-
-  layout->addWidget(minus);
-  layout->addWidget(spin, 1);
-  layout->addWidget(plus);
-  return box;
-}
-
-// ---------------------------------------------------------------------------
-// ColorSwatch
-// ---------------------------------------------------------------------------
-
-class ColorSwatch final : public QAbstractButton
-{
-public:
-  explicit ColorSwatch(QWidget *parent = nullptr) : QAbstractButton(parent)
-  {
-    this->setCursor(Qt::PointingHandCursor);
-    this->setFixedSize(kControlW, 30);
-  }
-
-  void set_color(const QColor &value)
-  {
-    this->color = value;
-    this->setToolTip(value.name(value.alpha() < 255 ? QColor::HexArgb : QColor::HexRgb));
-    this->update();
-  }
-
-protected:
-  void paintEvent(QPaintEvent *) override
-  {
-    const Tones t = tones();
-    QPainter    p(this);
-    p.setRenderHint(QPainter::Antialiasing);
-
-    const QRectF frame = QRectF(this->rect()).adjusted(0.5, 0.5, -0.5, -0.5);
-    QColor       edge = this->underMouse() ? t.ink_faint : t.border;
-    if (this->hasFocus())
-      edge = t.accent;
-    p.setPen(QPen(edge, 1));
-    p.setBrush(this->underMouse() ? t.field_hover : t.field);
-    p.drawRoundedRect(frame, 6, 6);
-
-    const QRectF chip(5.5, 5.5, 34, this->height() - 11.0);
-    p.setPen(QPen(mix_colors(this->color, QColor("#000000"), 0.35), 1));
-    p.setBrush(this->color);
-    p.drawRoundedRect(chip, 4, 4);
-
-    p.setPen(t.ink_dim);
-    p.setFont(meta::qt::mono_font(12));
-    p.drawText(
-        QRectF(chip.right() + 10, 0, this->width() - chip.right() - 14, this->height()),
-        Qt::AlignVCenter | Qt::AlignLeft,
-        this->color.name().toUpper());
-  }
-
-  void enterEvent(QEnterEvent *event) override
-  {
-    this->update();
-    QAbstractButton::enterEvent(event);
-  }
-
-  void leaveEvent(QEvent *event) override
-  {
-    this->update();
-    QAbstractButton::leaveEvent(event);
-  }
-
-private:
-  QColor color;
-};
 
 // Binding for a value held in AppSettings, edited through a draft copy.
 // `show` pushes a value into the control without it reporting an edit.
@@ -570,7 +212,7 @@ AppSettingsWindow::AppSettingsWindow(QWidget *parent) : QDialog(parent)
     pixmap.setDevicePixelRatio(4);
     QPainter p(&pixmap);
     p.setRenderHint(QPainter::Antialiasing);
-    QPen pen(tones().ink_faint, 1.3);
+    QPen pen(control_tones().ink_faint, 1.3);
     pen.setCapStyle(Qt::RoundCap);
     p.setPen(pen);
     p.drawEllipse(QRectF(3.0, 3.0, 7.0, 7.0));
@@ -986,7 +628,7 @@ AppSettingsWindow::Control AppSettingsWindow::make_int(
   spin->setValue(*draft);
 
   Control control;
-  control.widget = make_stepper(spin);
+  control.widget = make_stepper(spin, kControlW);
   control.focus = spin;
   control.binding = make_binding<int>(
       access,
@@ -1054,7 +696,7 @@ AppSettingsWindow::Control AppSettingsWindow::make_color(
     std::function<QColor &(AppSettings &)> access,
     unsigned                               effects)
 {
-  auto *swatch = new ColorSwatch();
+  auto *swatch = new ColorSwatch(kControlW);
   auto  draft = std::make_shared<QColor>(access(HSD_CTX.app_settings));
   swatch->set_color(*draft);
 
@@ -1103,7 +745,7 @@ AppSettingsWindow::Control AppSettingsWindow::make_scale()
   auto draft = std::make_shared<double>(
       ui_scale::sanitize(HSD_CTX.app_settings.interface.ui_scale));
   spin->setValue(*draft);
-  layout->addWidget(make_stepper(spin), 0, Qt::AlignRight);
+  layout->addWidget(make_stepper(spin, kControlW), 0, Qt::AlignRight);
 
   // presets under the stepper
   auto *presets = new QHBoxLayout();
@@ -1499,10 +1141,16 @@ void AppSettingsWindow::update_state()
                                : count == 1 ? QString("1 unapplied change")
                                             : QString("%1 unapplied changes").arg(count));
 
-  this->restart_banner->setVisible(!g_restart_pending.isEmpty());
-  if (!g_restart_pending.isEmpty())
-    this->restart_label->setText(QString("Restart Hesiod to finish applying: %1.")
-                                     .arg(g_restart_pending.join(", ")));
+  // the applied restart-only settings (AppContext, so reopening the window
+  // still says a restart is due)
+  QStringList pending;
+  for (const std::string &label : HSD_CTX.settings_pending_restart)
+    pending.push_back(QString::fromStdString(label));
+
+  this->restart_banner->setVisible(!pending.isEmpty());
+  if (!pending.isEmpty())
+    this->restart_label->setText(
+        QString("Restart Hesiod to finish applying: %1.").arg(pending.join(", ")));
 }
 
 void AppSettingsWindow::apply_changes()
@@ -1519,8 +1167,11 @@ void AppSettingsWindow::apply_changes()
     effects |= row->binding->effects;
     ++applied;
 
-    if (row->binding->restart && !g_restart_pending.contains(row->binding->label))
-      g_restart_pending.push_back(row->binding->label);
+    auto             &pending = HSD_CTX.settings_pending_restart;
+    const std::string label = row->binding->label.toStdString();
+    if (row->binding->restart &&
+        std::find(pending.begin(), pending.end(), label) == pending.end())
+      pending.push_back(label);
   }
 
   if (applied == 0)
@@ -1705,10 +1356,10 @@ void AppSettingsWindow::apply_filter(const QString &query)
       for (const QString &token : tokens)
       {
         // label counts most; description only on real words, not scattered letters
-        const int s = std::max({token_score(token, row->label, true),
-                                token_score(token, row->keywords, true) * 9 / 10,
-                                token_score(token, row->context, false) * 6 / 10,
-                                token_score(token, row->description, false) / 2});
+        const int s = std::max({fuzzy_token_score(token, row->label, true),
+                                fuzzy_token_score(token, row->keywords, true) * 9 / 10,
+                                fuzzy_token_score(token, row->context, false) * 6 / 10,
+                                fuzzy_token_score(token, row->description, false) / 2});
         if (s == 0)
         {
           score = 0;
@@ -1824,7 +1475,7 @@ void AppSettingsWindow::jump_to_best_match()
 
 void AppSettingsWindow::apply_stylesheet()
 {
-  const Tones t = tones();
+  const ControlTones t = control_tones();
 
   QString css = R"(
     QDialog#hsdSettings QWidget { background: transparent; color: INK; }
@@ -2029,8 +1680,8 @@ void AppSettingsWindow::mouseReleaseEvent(QMouseEvent *event)
 
 void AppSettingsWindow::paintEvent(QPaintEvent *)
 {
-  const Tones t = tones();
-  QPainter    p(this);
+  const ControlTones t = control_tones();
+  QPainter           p(this);
   p.setRenderHint(QPainter::Antialiasing);
 
   const QRectF outer = QRectF(this->rect()).adjusted(0.5, 0.5, -0.5, -0.5);

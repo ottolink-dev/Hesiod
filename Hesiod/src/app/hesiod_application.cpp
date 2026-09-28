@@ -1367,7 +1367,9 @@ void HesiodApplication::show_project_menu(const QPoint &global_pos)
 
   QAction *settings = menu.addAction(HSD_ICON("tune"), "Project Settings...");
 
-  // centred under the chip
+  // centred under the chip; a click on the chip that closes the menu is not
+  // replayed onto it (it would open the menu straight again)
+  menu.setNoReplayFor(this->main_window->get_title_bar()->title_chip());
   const QSize size = menu.sizeHint();
   QAction    *chosen = menu.exec(global_pos - QPoint(size.width() / 2, 0));
 

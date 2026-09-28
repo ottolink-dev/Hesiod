@@ -161,6 +161,7 @@ void AppSettings::json_from(nlohmann::json const &json)
                 "interface.enable_node_palette_sidebar",
                 interface.enable_node_palette_sidebar);
   json_safe_get(json, "interface.enable_ui_animations", interface.enable_ui_animations);
+  json_safe_get(json, "interface.recent_colors", interface.recent_colors);
 
   // The interface scale is the one setting a bad value makes the application
   // unusable with, so it is read by hand rather than through json_safe_get: a
@@ -367,6 +368,7 @@ nlohmann::json AppSettings::json_to() const
   json["interface.ui_scale"] = ui_scale::sanitize(interface.ui_scale);
   json["interface.enable_node_palette_sidebar"] = interface.enable_node_palette_sidebar;
   json["interface.enable_ui_animations"] = interface.enable_ui_animations;
+  json["interface.recent_colors"] = interface.recent_colors;
 
   json["node_palette.surface"] = node_palette.surface.name().toStdString();
   json["node_palette.surface_hover"] = node_palette.surface_hover.name().toStdString();

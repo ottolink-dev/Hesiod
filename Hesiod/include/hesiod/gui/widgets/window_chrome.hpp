@@ -50,78 +50,18 @@ private:
 };
 
 // =====================================
-// PanelFrame
-// =====================================
-
-// Rounded, bordered card that hosts one workspace pane (viewer, graph,
-// settings...) over the darker application background, so each pane reads as
-// its own surface. Children paint square corners, including the OpenGL viewer,
-// so four small caps are stacked above the content to cut the corners round.
-//
-// The frame follows its content's visibility: hiding the content (e.g. the
-// View menu hiding the viewer) hides the whole card instead of leaving an empty
-// frame behind.
-class PanelFrame : public QWidget
-{
-public:
-  explicit PanelFrame(QWidget *content, QWidget *parent = nullptr);
-
-  QWidget *content() const { return this->p_content; }
-
-  static constexpr int radius = 8;
-
-protected:
-  bool eventFilter(QObject *watched, QEvent *event) override;
-  void paintEvent(QPaintEvent *event) override;
-  void resizeEvent(QResizeEvent *event) override;
-
-private:
-  void place_corners();
-
-  QPointer<QWidget> p_content;
-  QWidget          *corners[4] = {nullptr, nullptr, nullptr, nullptr};
-};
-
-// =====================================
 // TitleBar
 // =====================================
 
 class TitleChip;
 
-// Two or more mutually exclusive options drawn as one pill (e.g. 2D | 3D).
-class SegmentedControl : public QWidget
-{
-public:
-  SegmentedControl(const QStringList &labels, QWidget *parent = nullptr);
-
-  int  current() const { return this->index; }
-  void set_current(int new_index); // does not call on_changed
-
-  void set_tooltips(const QStringList &tips);
-
-  std::function<void(int)> on_changed;
-
-  QSize sizeHint() const override;
-
-protected:
-  void leaveEvent(QEvent *event) override;
-  void mouseMoveEvent(QMouseEvent *event) override;
-  void mousePressEvent(QMouseEvent *event) override;
-  void paintEvent(QPaintEvent *event) override;
-
-private:
-  int segment_at(const QPoint &pos) const;
-
-  QStringList labels, tips;
-  int         index = 0;
-  int         hovered = -1;
-};
-
 // Replaces the native caption: menu bar on the left, the project chip centred,
 // optional controls and the caption buttons on the right. Dragging,
 // double-click maximize and snapping are left to the OS (the window reports
 // this bar as its caption area), so the bar itself only has to say which of
-// its pixels are "empty".
+// its pixels are "empty". Where the native caption stays (Linux, macOS) the
+// bar is only the menu row under it and leaves all of that to the window
+// manager.
 //
 // The project chip is interactive: a click asks for the project menu
 // (on_title_clicked, with the point to open it at), a double-click asks for a
@@ -133,6 +73,9 @@ public:
   explicit TitleBar(QWidget *window);
 
   QMenuBar *menu_bar() const { return this->p_menu_bar; }
+
+  // the project chip; menus opened from it pass it to QMenu::setNoReplayFor
+  QWidget *title_chip() const;
 
   // true when local_pos is bare title bar (not a menu entry, the chip or a
   // button), i.e. where a press should start a window move
@@ -158,7 +101,6 @@ public:
   std::function<void()>                         on_title_rename_requested;
 
 protected:
-  void mouseDoubleClickEvent(QMouseEvent *event) override;
   void paintEvent(QPaintEvent *event) override;
   void resizeEvent(QResizeEvent *event) override;
 

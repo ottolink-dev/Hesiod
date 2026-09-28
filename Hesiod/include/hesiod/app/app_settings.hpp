@@ -129,6 +129,9 @@ struct AppSettings
     // Interface motion (rail cross-fades, menu/tooltip effects, tree expand
     // animation). Turning it off settles running animations immediately.
     bool enable_ui_animations = true;
+
+    // colours confirmed in the colour picker, most recent first (#AARRGGBB)
+    std::vector<std::string> recent_colors = {};
   } interface;
 
   /// Look of the node palette sidebar. Only read when it is enabled.
