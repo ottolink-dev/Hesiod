@@ -2780,40 +2780,22 @@
             }
         }
     },
-    "CloudSetValuesFromBorderDistance": {
+    "CloudSetValues": {
         "category": "Geometry/Cloud",
         "description": "No description available",
-        "label": "CloudSetValuesFromBorderDistance",
+        "label": "CloudSetValues",
         "parameter_groups": [
             {
                 "keys": [],
-                "name": "main"
-            }
-        ],
-        "parameters": null,
-        "ports": {
-            "cloud": {
-                "caption": "cloud",
-                "data_type": "Cloud",
-                "description": "Set of points (x, y) and elevations z.",
-                "type": "input"
+                "name": "From Heightmap"
             },
-            "output": {
-                "caption": "output",
-                "data_type": "Cloud",
-                "description": "No description",
-                "type": "output"
-            }
-        }
-    },
-    "CloudSetValuesFromHeightmap": {
-        "category": "Geometry/Cloud",
-        "description": "No description available",
-        "label": "CloudSetValuesFromHeightmap",
-        "parameter_groups": [
             {
                 "keys": [],
-                "name": "main"
+                "name": "From Border Distance"
+            },
+            {
+                "keys": [],
+                "name": "From Min Distance"
             }
         ],
         "parameters": null,
@@ -2834,32 +2816,6 @@
                 "caption": "output",
                 "data_type": "Cloud",
                 "description": "Set of points (x, y) and elevations z.",
-                "type": "output"
-            }
-        }
-    },
-    "CloudSetValuesFromMinDistance": {
-        "category": "Geometry/Cloud",
-        "description": "No description available",
-        "label": "CloudSetValuesFromMinDistance",
-        "parameter_groups": [
-            {
-                "keys": [],
-                "name": "main"
-            }
-        ],
-        "parameters": null,
-        "ports": {
-            "cloud": {
-                "caption": "cloud",
-                "data_type": "Cloud",
-                "description": "No description",
-                "type": "input"
-            },
-            "output": {
-                "caption": "output",
-                "data_type": "Cloud",
-                "description": "No description",
                 "type": "output"
             }
         }

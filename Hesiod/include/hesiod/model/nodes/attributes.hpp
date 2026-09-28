@@ -72,6 +72,11 @@ meta::Attribute<meta::ColorGradient> &add_color_gradient(BaseNode          &node
                                                          const std::string &key,
                                                          const std::string &label);
 
+meta::Attribute<std::string> &add_comment(BaseNode          &node,
+                                          const std::string &key,
+                                                         const std::string &label,
+                                          const std::string &value);
+
 meta::Attribute<std::vector<float>> &add_curve(
     BaseNode                 &node,
     const std::string        &key,
