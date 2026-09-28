@@ -22,7 +22,7 @@ class HESIOD_PT_panel(bpy.types.Panel):
     bl_idname = "HESIOD_PT_panel"
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
-    bl_category = "Hesiod"
+    bl_category = "Hesiod Heightmap Streamer"
 
     def draw(self, context):
         layout = self.layout
@@ -37,15 +37,22 @@ class HESIOD_PT_panel(bpy.types.Panel):
 
         layout.separator()
         layout.prop(scene, "hesiod_port")
-        layout.prop(scene, "hesiod_accumulate")
 
-        layout.operator("hesiod.start_stream",
-                        text="Reconnect" if state.connected else "Connect")
+        row = layout.row(align=True)
+        row.operator("hesiod.start_stream",
+                     text="Reconnect" if state.connected else "Connect")
+        row.operator("hesiod.disconnect_stream")
+
+        layout.separator()
+        layout.prop(scene, "hesiod_accumulate")
+        layout.prop(scene, "hesiod_normalize_scale")
+        layout.prop(scene, "hesiod_autoarrange")
 
         layout.separator()
         layout.label(text="Tools:")
+        layout.prop(scene, "hesiod_arrange_spacing")
         layout.operator("hesiod.arrange_selection", icon='ALIGN_CENTER')
-        layout.operator("hesiod.normalize_domain", icon='FULLSCREEN_ENTER')
 
         layout.separator()
-        layout.label(text=f"Active terrains: {len(state.terrain_state)}")
+        layout.prop(scene, "hesiod_target_height")
+        layout.operator("hesiod.set_scale", icon='FULLSCREEN_ENTER')

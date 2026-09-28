@@ -1,29 +1,91 @@
-import re
 import time
 import numpy as np
 import bpy
+from mathutils import Vector
 
-from .constants import Z_SCALE
+from .constants import AUTOARRANGE_DEBOUNCE, Z_SCALE
 from .materials import ensure_material, update_texture
 from . import state
-from .utils import get_accumulate, plane_name
+from .utils import (
+    TILE_NAME_PATTERN,
+    get_accumulate,
+    get_autoarrange,
+    get_normalize_scale,
+    lowest_free_number,
+    plane_name,
+)
+
+
+# --- Mesh scaling and auto-arrange
+
+
+def normalize_domain_scale(obj):
+    # unhide temporarily to evaluate dimensions cleanly
+    was_hidden = obj.hide_viewport
+    obj.hide_viewport = False
+
+    bbox = [Vector(corner) for corner in obj.bound_box]
+    orig_dim_x = max(pt.x for pt in bbox) - min(pt.x for pt in bbox)
+    orig_dim_y = max(pt.y for pt in bbox) - min(pt.y for pt in bbox)
+
+    if orig_dim_x > 0:
+        obj.scale.x *= (1.0 / orig_dim_x)
+    if orig_dim_y > 0:
+        obj.scale.y *= (1.0 / orig_dim_y)
+
+    bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
+    obj.hide_viewport = was_hidden
+
+
+def _run_autoarrange():
+    state.autoarrange_pending = False
+
+    tiles = [o for o in bpy.data.objects if "TerrainTile" in o.name]
+    if not tiles:
+        return None
+
+    for o in bpy.context.selected_objects:
+        o.select_set(False)
+    for o in tiles:
+        o.select_set(True)
+    bpy.context.view_layer.objects.active = tiles[0]
+
+    bpy.ops.hesiod.arrange_selection()
+    return None
+
+
+def schedule_autoarrange():
+    if state.autoarrange_pending:
+        return
+    state.autoarrange_pending = True
+    bpy.app.timers.register(_run_autoarrange,
+                            first_interval=AUTOARRANGE_DEBOUNCE)
 
 
 # --- Grid and mesh management
 
 
 def create_grid(tid: int, width: int, height: int):
-    name = plane_name(tid)
+    prefix = plane_name(tid)
+    accumulate = get_accumulate()
 
-    obj = bpy.data.objects.get(name)
-    if obj is not None:
-        if get_accumulate():
-            # rename existing mesh and hide it (regular hide, toggleable with Alt+H)
-            timestamp = int(time.time() * 1000)
-            obj.name = f"{name}_history_{timestamp}"
-            obj.hide_set(True)
-        else:
-            bpy.data.objects.remove(obj, do_unlink=True)
+    prev_state = state.terrain_state.get(tid)
+    prev_name = prev_state.get("live_name") if prev_state else None
+    prev_obj = bpy.data.objects.get(prev_name) if prev_name else None
+
+    freed_numbers = set()
+    if prev_obj is not None and not accumulate:
+        prev_match = TILE_NAME_PATTERN.match(prev_obj.name.split(".")[0])
+        if prev_match:
+            freed_numbers.add(int(prev_match.group(2)))
+        state.terrain_state.setdefault(tid, {})["last_replaced_at"] = time.time()
+        bpy.data.objects.remove(prev_obj, do_unlink=True)
+    elif prev_obj is not None and accumulate:
+        if not get_autoarrange():
+            prev_obj.hide_set(True)
+
+    order = lowest_free_number(tid, exclude=freed_numbers)
+    name = f"{prefix}_{order}"
 
     aspect = width / height
 
@@ -42,6 +104,7 @@ def create_grid(tid: int, width: int, height: int):
     obj.name = name
     obj["hesiod_width"] = width
     obj["hesiod_height"] = height
+    obj["hesiod_tid"] = tid
 
     obj.scale.x = aspect
     obj.scale.y = 1.0
@@ -50,18 +113,26 @@ def create_grid(tid: int, width: int, height: int):
     bpy.context.view_layer.objects.active = obj
     bpy.ops.object.transform_apply(location=False, rotation=False, scale=True)
 
+    if get_normalize_scale():
+        normalize_domain_scale(obj)
+
     mesh = obj.data
     vertex_buffer = np.empty(len(mesh.vertices) * 3, dtype=np.float32)
     mesh.vertices.foreach_get("co", vertex_buffer)
 
-    state.terrain_state[tid] = {
+    st = state.terrain_state.setdefault(tid, {})
+    st.update({
         "vertex_buffer": vertex_buffer,
         "mesh_width": width,
         "mesh_height": height,
-    }
+        "live_name": obj.name,
+    })
 
     print(f"[Hesiod] Created grid for terrain {tid}: "
           f"{width}x{height} ({len(mesh.vertices)} vertices)")
+
+    if get_autoarrange():
+        schedule_autoarrange()
 
     return obj
 
@@ -69,17 +140,18 @@ def create_grid(tid: int, width: int, height: int):
 def update_mesh(tid: int, heightmap, rgba=None):
     height, width = heightmap.shape
 
-    terrain_info = state.terrain_state.get(tid)
-    obj = bpy.data.objects.get(plane_name(tid))
+    st = state.terrain_state.get(tid)
+    live_name = st.get("live_name") if st else None
+    obj = bpy.data.objects.get(live_name) if live_name else None
 
-    needs_new_grid = (obj is None or terrain_info is None
-                      or terrain_info["mesh_width"] != width
-                      or terrain_info["mesh_height"] != height
+    needs_new_grid = (obj is None or st is None
+                      or st["mesh_width"] != width
+                      or st["mesh_height"] != height
                       or get_accumulate())
 
     if needs_new_grid:
         obj = create_grid(tid, width, height)
-        terrain_info = state.terrain_state[tid]
+        st = state.terrain_state[tid]
 
     mesh = obj.data
     heights = heightmap.flatten().astype(np.float32) * Z_SCALE
@@ -90,8 +162,8 @@ def update_mesh(tid: int, heightmap, rgba=None):
               f"{len(heights)} vs {expected_vertices}")
         return None
 
-    terrain_info["vertex_buffer"][2::3] = heights
-    mesh.vertices.foreach_set("co", terrain_info["vertex_buffer"])
+    st["vertex_buffer"][2::3] = heights
+    mesh.vertices.foreach_set("co", st["vertex_buffer"])
     mesh.update()
 
     if rgba is not None:
@@ -105,15 +177,20 @@ def update_mesh(tid: int, heightmap, rgba=None):
 
 
 def restore_terrain_state():
-    """Rebuild terrain_state from objects already in the scene (e.g. after restart)."""
-    pattern = re.compile(r"^HeightPlane_(\d+)$")
-
+    # rebuild terrain_state from objects already in the scene
+    by_tid: dict[int, list] = {}
     for obj in bpy.data.objects:
-        m = pattern.match(obj.name)
+        m = TILE_NAME_PATTERN.match(obj.name.split(".")[0])
         if m is None:
             continue
+        by_tid.setdefault(int(m.group(1)), []).append(obj)
 
-        tid = int(m.group(1))
+    for tid, objs in by_tid.items():
+        visible = [o for o in objs if not o.hide_get()]
+        obj = visible[0] if visible else None
+        if obj is None:
+            continue
+
         width = obj.get("hesiod_width")
         height = obj.get("hesiod_height")
 
@@ -130,8 +207,10 @@ def restore_terrain_state():
             "vertex_buffer": vertex_buffer,
             "mesh_width": int(width),
             "mesh_height": int(height),
+            "live_name": obj.name,
         }
 
         print(f"[Hesiod] Restored terrain {tid}: {width}x{height}")
 
     return None
+

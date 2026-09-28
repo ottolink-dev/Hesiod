@@ -1,7 +1,7 @@
 bl_info = {
     "name": "Hesiod Heightmap Streamer",
     "author": "Hesiod",
-    "version": (0, 6),
+    "version": (1, 9),
     "blender": (4, 2, 0),
     "category": "Object",
 }
@@ -11,7 +11,8 @@ import bpy
 from .mesh import restore_terrain_state
 from .operators import (
     HESIOD_OT_arrange_selection,
-    HESIOD_OT_normalize_domain,
+    HESIOD_OT_disconnect_stream,
+    HESIOD_OT_set_scale,
     HESIOD_OT_start_stream,
 )
 from .ui import HESIOD_PT_panel, refresh_ui
@@ -21,8 +22,9 @@ from .ui import HESIOD_PT_panel, refresh_ui
 
 classes = (
     HESIOD_OT_start_stream,
+    HESIOD_OT_disconnect_stream,
     HESIOD_OT_arrange_selection,
-    HESIOD_OT_normalize_domain,
+    HESIOD_OT_set_scale,
     HESIOD_PT_panel,
 )
 
@@ -42,6 +44,31 @@ def register():
         description="Keep old generated meshes hidden instead of deleting them when terrain updates",
         default=False,
     )
+    bpy.types.Scene.hesiod_normalize_scale = bpy.props.BoolProperty(
+        name="Normalize Scale",
+        description="Automatically scale every new tile to 1x1m on X/Y as soon as it's created",
+        default=True,
+    )
+    bpy.types.Scene.hesiod_arrange_spacing = bpy.props.FloatProperty(
+        name="Arrange Spacing",
+        description="Gap left between tiles when arranging (both between a terrain's history steps and between terrain rows)",
+        default=0.0,
+        min=0.0,
+    )
+    bpy.types.Scene.hesiod_target_height = bpy.props.FloatProperty(
+        name="Target Height",
+        description="Desired Z-axis height used by Set Scale",
+        default=1.0,
+        min=0.0,
+    )
+    bpy.types.Scene.hesiod_autoarrange = bpy.props.BoolProperty(
+        name="Auto-arrange",
+        description=(
+            "Automatically arrange every newly generated tile. While enabled, "
+            "newly generated meshes are also kept visible instead of being hidden"
+        ),
+        default=False,
+    )
 
     if not bpy.app.timers.is_registered(refresh_ui):
         bpy.app.timers.register(refresh_ui,
@@ -58,6 +85,10 @@ def unregister():
 
     del bpy.types.Scene.hesiod_port
     del bpy.types.Scene.hesiod_accumulate
+    del bpy.types.Scene.hesiod_normalize_scale
+    del bpy.types.Scene.hesiod_arrange_spacing
+    del bpy.types.Scene.hesiod_target_height
+    del bpy.types.Scene.hesiod_autoarrange
 
     for cls in reversed(classes):
         bpy.utils.unregister_class(cls)

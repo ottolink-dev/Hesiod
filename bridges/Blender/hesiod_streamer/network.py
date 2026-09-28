@@ -25,6 +25,7 @@ def recv_all(sock, size):
 
 def stream_loop(port):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    state.sock = sock
 
     try:
         sock.connect((HOST, port))
@@ -80,7 +81,12 @@ def stream_loop(port):
 
     finally:
         state.connected = False
-        sock.close()
+        try:
+            sock.close()
+        except OSError:
+            pass
+        if state.sock is sock:
+            state.sock = None
         print("[Hesiod] Disconnected")
 
 
@@ -92,3 +98,19 @@ def start_stream(port):
     state.thread = threading.Thread(target=stream_loop, args=(port, ), daemon=True)
     state.thread.start()
     print(f"[Hesiod] Stream started on port {port}")
+
+
+def disconnect_stream():
+    if state.sock is not None:
+        try:
+            state.sock.shutdown(socket.SHUT_RDWR)
+        except OSError:
+            pass
+        try:
+            state.sock.close()
+        except OSError:
+            pass
+        state.sock = None
+        print("[Hesiod] Disconnect requested")
+    else:
+        print("[Hesiod] Not connected")
