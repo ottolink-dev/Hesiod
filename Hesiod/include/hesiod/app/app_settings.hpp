@@ -141,6 +141,7 @@ struct AppSettings
   {
     std::string gpu_device_name = ""; // let CLWrapper decides
     int         default_resolution = 1024;
+    bool        open_projects_at_1k = false; // cap graphs above 1024 on load
     int         default_tiling = 4;
     float       default_overlap = 0.5f;
     int         preview_w = 128;

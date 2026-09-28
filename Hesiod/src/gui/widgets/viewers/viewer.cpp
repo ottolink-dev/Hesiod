@@ -145,6 +145,26 @@ void Viewer::on_node_deselected(const std::string &new_id)
   this->clear();
 }
 
+bool Viewer::is_locked_on(const std::string &node_id) const
+{
+  return this->is_node_pinned && this->current_node_id == node_id;
+}
+
+void Viewer::toggle_lock_on(const std::string &node_id)
+{
+  const bool was_locked_on = this->is_locked_on(node_id);
+
+  // release any lock first, then lock onto this node unless it was the locked one
+  if (this->is_node_pinned)
+    this->on_node_pinned_changed();
+
+  if (!was_locked_on)
+  {
+    this->on_node_selected(node_id);
+    this->on_node_pinned_changed();
+  }
+}
+
 void Viewer::on_node_pinned_changed()
 {
   Logger::log()->trace("Viewer::on_node_pinned_changed");

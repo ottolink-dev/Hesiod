@@ -15,6 +15,7 @@ namespace hesiod
 
 class GraphNode; // forward
 class GraphEditor;
+class Viewer;
 
 // =====================================
 // GraphNodeWidget
@@ -53,6 +54,13 @@ public:
 
   void update_graph_model(const std::vector<std::string> &node_ids = {});
   void update_graph_model(const std::string &node_id);
+
+  // --- Node menu (node_context_menu.cpp) ---
+  // right-click on a node: its actions, one of them the settings popup
+  void show_node_context_menu(const std::string &node_id, const QPoint &global_pos);
+  void show_node_settings_popup(const std::string &node_id, const QPoint &global_pos);
+  // the workspace viewer, for the menu's Lock preview entry
+  void set_preview_viewer(Viewer *viewer);
 
 signals:
   // TODO REMOVE GRAPH_ID
@@ -124,6 +132,7 @@ private:
   bool                           is_selecting_with_rubber_band = false;
   std::filesystem::path          last_import_path;
   std::vector<std::string>       selected_ids;
+  QPointer<Viewer>               preview_viewer;
 };
 
 } // namespace hesiod

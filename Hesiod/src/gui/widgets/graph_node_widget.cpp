@@ -783,6 +783,12 @@ void GraphNodeWidget::on_node_right_clicked(const std::string &node_id, QPointF 
       return;
   }
 
+  this->show_node_context_menu(node_id, QCursor::pos());
+}
+
+void GraphNodeWidget::show_node_settings_popup(const std::string &node_id,
+                                               const QPoint      &global_pos)
+{
   // settings widget
   auto gno = this->p_graph_node.lock();
   if (!gno)
@@ -808,7 +814,7 @@ void GraphNodeWidget::on_node_right_clicked(const std::string &node_id, QPointF 
 
   menu->setWindowFlags(menu->windowFlags() | Qt::Popup);
   menu->setAttribute(Qt::WA_NoMousePropagation, false);
-  menu->popup(QCursor::pos());
+  menu->popup(global_pos);
 }
 
 void GraphNodeWidget::on_nodes_copy_request(const std::vector<std::string> &id_list,

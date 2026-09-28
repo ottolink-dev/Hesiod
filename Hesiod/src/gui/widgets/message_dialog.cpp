@@ -119,19 +119,17 @@ QPixmap MessageDialog::badge(Kind kind, int size, qreal dpr)
 
   if (kind == Kind::Restore)
   {
-    // open circular arrow
-    QPen pen(color, 2.2 * s, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
-    p.setPen(pen);
-    p.setBrush(Qt::NoBrush);
-    const QRectF ring(c.x() - 8 * s, c.y() - 8 * s, 16 * s, 16 * s);
-    p.drawArc(ring, 110 * 16, 290 * 16);
+    // the Material "history" icon, recoloured to the badge colour
+    const int side = qRound(24 * s);
+    QPixmap   glyph = HSD_ICON("history").pixmap(QSize(side, side), dpr);
+    QPainter  tint(&glyph);
+    tint.setCompositionMode(QPainter::CompositionMode_SourceIn);
+    tint.fillRect(glyph.rect(), color);
+    tint.end();
 
-    QPainterPath  head;
-    const QPointF tip(c.x() - 7.6 * s, c.y() - 3.2 * s);
-    head.moveTo(tip + QPointF(-3.6 * s, -3.8 * s));
-    head.lineTo(tip);
-    head.lineTo(tip + QPointF(4.2 * s, -1.6 * s));
-    p.drawPath(head);
+    p.drawPixmap(QRectF(c.x() - side / 2.0, c.y() - side / 2.0, side, side),
+                 glyph,
+                 QRectF(glyph.rect()));
     return pixmap;
   }
 
