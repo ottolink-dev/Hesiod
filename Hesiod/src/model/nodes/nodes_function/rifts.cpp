@@ -99,11 +99,14 @@ void compute_rifts_node(BaseNode &node)
     float hmax = p_in->max(node.cfg().cm_cpu);
 
     hmap::for_each_tile(
-        {p_out, p_in, p_dx, p_dy, p_mask},
-        [&node, hmin, hmax](std::vector<hmap::Array *> p_arrays,
-                            const hmap::TileRegion    &region)
+        {p_in, p_dx, p_dy, p_mask},
+        {p_out},
+        [&node, hmin, hmax](std::vector<const hmap::Array *> p_arrays_in,
+                            std::vector<hmap::Array *>       p_arrays_out,
+                            const hmap::TileRegion          &region)
         {
-          auto [pa_out, pa_in, pa_dx, pa_dy, pa_mask] = unpack<5>(p_arrays);
+          auto [pa_in, pa_dx, pa_dy, pa_mask] = unpack<4>(p_arrays_in);
+          auto [pa_out]                       = unpack<1>(p_arrays_out);
 
           *pa_out = *pa_in;
 
@@ -134,7 +137,7 @@ void compute_rifts_node(BaseNode &node)
         },
         node.cfg().cm_gpu);
 
-    p_out->smooth_overlap_buffers();
+    p_out->sync_overlap_buffers();
 
     // remap to original range
     p_out->remap(hmin, hmax, node.cfg().cm_cpu);

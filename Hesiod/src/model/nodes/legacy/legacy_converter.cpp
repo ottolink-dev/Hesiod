@@ -166,6 +166,14 @@ std::string resolve_legacy_group_name(const meta::ContainerGroup &group,
   if (label == "RecastCliffDirectional")
     return "Directional";
 
+  // CloudSetValues mappings
+  if (label == "CloudSetValuesFromHeightmap")
+    return "From Heightmap";
+  if (label == "CloudSetValuesFromBorderDistance")
+    return "From Border Distance";
+  if (label == "CloudSetValuesFromMinDistance")
+    return "From Min Distance";
+
   if (group.current_container_name().has_value() &&
       group.contains(*group.current_container_name()))
   {
@@ -470,6 +478,22 @@ nlohmann::json convert_legacy_node_json(const nlohmann::json &json_node)
   {
     target_label = "RecastCliff";
     group_name = "Directional";
+  }
+  // --- CloudSetValues family ---
+  else if (label == "CloudSetValuesFromHeightmap")
+  {
+    target_label = "CloudSetValues";
+    group_name = "From Heightmap";
+  }
+  else if (label == "CloudSetValuesFromBorderDistance")
+  {
+    target_label = "CloudSetValues";
+    group_name = "From Border Distance";
+  }
+  else if (label == "CloudSetValuesFromMinDistance")
+  {
+    target_label = "CloudSetValues";
+    group_name = "From Min Distance";
   }
   // --- SetBorders ---
   else if (label == "SetBorders")

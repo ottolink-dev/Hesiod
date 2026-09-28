@@ -42,7 +42,7 @@ void setup_morphological_operators_node(BaseNode &node)
   // clang-format off
   add_float(node, A_RADIUS, "radius", 0.01f, 0.f, 0.2f);
   add_enum(node, A_OPERATOR, "Operator", enum_mappings.morphology_operation_map, "Gradient");
-  add_float(node, A_SAT_RATIO, "Saturation Ratio", 2.f, 0.f, 20.f, "{:.0f}%");
+  add_float(node, A_SAT_RATIO, "Saturation Ratio", 0.f, 0.f, 20.f, "{:.0f}%");
   // clang-format on
 
   setup_post_process_heightmap_attributes(node,
@@ -84,16 +84,20 @@ void compute_morphological_operators_node(BaseNode &node)
   // --- Compute
 
   hmap::for_each_tile(
-      {p_out, p_in},
-      [&](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
+      {p_in},
+      {p_out},
+      [&](std::vector<const hmap::Array *> p_arrays_in,
+          std::vector<hmap::Array *>       p_arrays_out,
+          const hmap::TileRegion &)
       {
-        auto [pa_out, pa_in] = unpack<2>(p_arrays);
-        *pa_out = hmap::gpu::morphological_operators(*pa_in, ir, op, kernel_type);
+        auto [pa_in]  = unpack<1>(p_arrays_in);
+        auto [pa_out] = unpack<1>(p_arrays_out);
+        *pa_out       = hmap::gpu::morphological_operators(*pa_in, ir, op, kernel_type);
       },
       node.cfg().cm_gpu);
 
   // post-process
-  p_out->smooth_overlap_buffers();
+  p_out->sync_overlap_buffers();
   post_apply_saturate_percentile(node, *p_out, 0.f, satmax);
   post_process_heightmap(node, *p_out);
 }

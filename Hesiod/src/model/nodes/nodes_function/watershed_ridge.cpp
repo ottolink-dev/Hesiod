@@ -159,7 +159,7 @@ void compute_watershed_ridge_node(BaseNode &node)
   p_out->remap(hmin, hmax, node.cfg().cm_cpu);
 
   // post-process
-  p_out->smooth_overlap_buffers();
+  p_out->sync_overlap_buffers();
   post_process_heightmap(node, *p_out, p_in);
 }
 

@@ -60,7 +60,9 @@ void compute_combine_mask_node(BaseNode &node)
 
   hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
-  std::function<void(std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)>
+  std::function<void(std::vector<const hmap::Array *> p_arrays_in,
+                     std::vector<hmap::Array *>       p_arrays_out,
+                     const hmap::TileRegion &)>
       lambda;
 
   const auto method = node.val_enum<MaskCombineMethod>(A_METHOD);
@@ -68,38 +70,41 @@ void compute_combine_mask_node(BaseNode &node)
   switch (method)
   {
   case MaskCombineMethod::UNION:
-    lambda = [](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
+    lambda = [](std::vector<const hmap::Array *> p_arrays_in,
+                std::vector<hmap::Array *>       p_arrays_out,
+                const hmap::TileRegion &)
     {
-      hmap::Array &m  = *p_arrays[0];
-      hmap::Array &a1 = *p_arrays[1];
-      hmap::Array &a2 = *p_arrays[2];
-      m               = hmap::maximum(a1, a2);
+      auto [pa_in1, pa_in2] = unpack<2>(p_arrays_in);
+      auto [pa_out]         = unpack<1>(p_arrays_out);
+      *pa_out               = hmap::maximum(*pa_in1, *pa_in2);
     };
     break;
 
   case MaskCombineMethod::INTERSECTION:
-    lambda = [](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
+    lambda = [](std::vector<const hmap::Array *> p_arrays_in,
+                std::vector<hmap::Array *>       p_arrays_out,
+                const hmap::TileRegion &)
     {
-      hmap::Array &m  = *p_arrays[0];
-      hmap::Array &a1 = *p_arrays[1];
-      hmap::Array &a2 = *p_arrays[2];
-      m               = hmap::minimum(a1, a2);
+      auto [pa_in1, pa_in2] = unpack<2>(p_arrays_in);
+      auto [pa_out]         = unpack<1>(p_arrays_out);
+      *pa_out               = hmap::minimum(*pa_in1, *pa_in2);
     };
     break;
 
   case MaskCombineMethod::EXCLUSION:
-    lambda = [](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
+    lambda = [](std::vector<const hmap::Array *> p_arrays_in,
+                std::vector<hmap::Array *>       p_arrays_out,
+                const hmap::TileRegion &)
     {
-      hmap::Array &m  = *p_arrays[0];
-      hmap::Array &a1 = *p_arrays[1];
-      hmap::Array &a2 = *p_arrays[2];
-      m               = a1 - a2;
-      hmap::clamp_min(m, 0.f);
+      auto [pa_in1, pa_in2] = unpack<2>(p_arrays_in);
+      auto [pa_out]         = unpack<1>(p_arrays_out);
+      *pa_out               = *pa_in1 - *pa_in2;
+      hmap::clamp_min(*pa_out, 0.f);
     };
     break;
   }
 
-  hmap::for_each_tile({p_out, p_in1, p_in2}, lambda, node.cfg().cm_cpu);
+  hmap::for_each_tile({p_in1, p_in2}, {p_out}, lambda, node.cfg().cm_cpu);
 
   // post-process
   post_process_heightmap(node, *p_out);

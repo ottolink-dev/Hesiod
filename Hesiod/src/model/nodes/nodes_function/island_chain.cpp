@@ -109,10 +109,13 @@ void compute_island_chain_node(BaseNode &node)
   // --- Compute
 
   hmap::for_each_tile(
+      {},
       {p_out},
-      [&](std::vector<hmap::Array *> out, const hmap::TileRegion &region)
+      [&](std::vector<const hmap::Array *> p_arrays_in,
+          std::vector<hmap::Array *>       p_arrays_out,
+          const hmap::TileRegion          &region)
       {
-        auto [pa_out] = unpack<1>(out);
+        auto [pa_out] = unpack<1>(p_arrays_out);
 
         *pa_out = hmap::island_chain_land_mask(region.shape,
                                                *p_path,

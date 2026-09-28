@@ -179,10 +179,14 @@ void compute_flow_simulation_viscous_node(BaseNode &node)
     const int ir = std::max(1, int(filter_radius * nx));
 
     hmap::for_each_tile(
-        {p_z, p_depth_out},
-        [&](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
+        {p_z},
+        {p_depth_out},
+        [&](std::vector<const hmap::Array *> p_arrays_in,
+            std::vector<hmap::Array *>       p_arrays_out,
+            const hmap::TileRegion &)
         {
-          auto [pa_z, pa_depth_out] = unpack<2>(p_arrays);
+          auto [pa_z]         = unpack<1>(p_arrays_in);
+          auto [pa_depth_out] = unpack<1>(p_arrays_out);
           hmap::gpu::water_depth_filter(*pa_depth_out, *pa_z, ir);
         },
         node.cfg().cm_gpu);

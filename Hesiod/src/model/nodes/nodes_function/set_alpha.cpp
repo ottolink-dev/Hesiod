@@ -63,11 +63,15 @@ void compute_set_alpha_node(BaseNode &node)
       alpha_copy.copy_from(*p_alpha, node.cfg().cm_cpu);
 
       hmap::for_each_tile(
-          {&alpha_copy, p_noise},
-          [&node](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
+          {p_noise},
+          {&alpha_copy},
+          [&node](std::vector<const hmap::Array *> p_arrays_in,
+                  std::vector<hmap::Array *>       p_arrays_out,
+                  const hmap::TileRegion &)
           {
-            hmap::Array &alpha    = *p_arrays[0];
-            hmap::Array *pa_noise = p_arrays[1];
+            auto [pa_noise]      = unpack<1>(p_arrays_in);
+            auto [pa_alpha_copy] = unpack<1>(p_arrays_out);
+            hmap::Array &alpha   = *pa_alpha_copy;
 
             if (pa_noise)
               alpha += *pa_noise;

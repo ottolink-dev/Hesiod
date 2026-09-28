@@ -58,10 +58,14 @@ void compute_water_elevation_from_depth_node(BaseNode &node)
   // --- Compute
 
   hmap::for_each_tile(
-      {p_wz, p_depth, p_z},
-      [&](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
+      {p_z},
+      {p_wz, p_depth},
+      [&](std::vector<const hmap::Array *> p_arrays_in,
+          std::vector<hmap::Array *>       p_arrays_out,
+          const hmap::TileRegion &)
       {
-        auto [pa_wz, pa_depth, pa_z] = unpack<3>(p_arrays);
+        auto [pa_z]            = unpack<1>(p_arrays_in);
+        auto [pa_wz, pa_depth] = unpack<2>(p_arrays_out);
 
         *pa_wz = *pa_z + *pa_depth;
       },

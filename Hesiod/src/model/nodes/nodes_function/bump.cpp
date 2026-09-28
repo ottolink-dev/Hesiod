@@ -120,10 +120,14 @@ void compute_bump_node(BaseNode &node)
     const auto center = node.val<glm::vec2>(A_CENTER);
 
     hmap::for_each_tile(
-        {p_out, p_dx, p_dy, p_ctrl},
-        [&](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &region)
+        {p_dx, p_dy, p_ctrl},
+        {p_out},
+        [&](std::vector<const hmap::Array *> p_arrays_in,
+            std::vector<hmap::Array *>       p_arrays_out,
+            const hmap::TileRegion          &region)
         {
-          auto [pa_out, pa_dx, pa_dy, pa_ctrl] = unpack<4>(p_arrays);
+          auto [pa_dx, pa_dy, pa_ctrl] = unpack<3>(p_arrays_in);
+          auto [pa_out]                = unpack<1>(p_arrays_out);
 
           *pa_out = hmap::bump(region.shape,
                                gain,
@@ -142,10 +146,14 @@ void compute_bump_node(BaseNode &node)
     const auto center       = node.val<glm::vec2>(A_CENTER);
 
     hmap::for_each_tile(
-        {p_out, p_dx, p_dy, p_ctrl},
-        [&](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &region)
+        {p_dx, p_dy, p_ctrl},
+        {p_out},
+        [&](std::vector<const hmap::Array *> p_arrays_in,
+            std::vector<hmap::Array *>       p_arrays_out,
+            const hmap::TileRegion          &region)
         {
-          auto [pa_out, pa_dx, pa_dy, pa_ctrl] = unpack<4>(p_arrays);
+          auto [pa_dx, pa_dy, pa_ctrl] = unpack<3>(p_arrays_in);
+          auto [pa_out]                = unpack<1>(p_arrays_out);
 
           *pa_out = hmap::bump_lorentzian(region.shape,
                                           width_factor,

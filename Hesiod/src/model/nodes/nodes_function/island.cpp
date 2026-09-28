@@ -144,17 +144,15 @@ void compute_island_node(BaseNode &node)
   const auto uplift_amp             = node.val<float>(A_UPLIFT_AMP);
   const auto ir                     = node.val_pixel_radius(A_FILTER_RADIUS, 0);
 
-  // land and dr are inputs: listed as outputs they would be written back into
-  // the upstream nodes' data after every run, which drifts on each recompute
   hmap::for_each_tile(
       {p_land, p_dr},
       {p_out, p_depth, p_mask},
-      [&](std::vector<const hmap::Array *> in,
-          std::vector<hmap::Array *>       out,
+      [&](std::vector<const hmap::Array *> p_arrays_in,
+          std::vector<hmap::Array *>       p_arrays_out,
           const hmap::TileRegion &)
       {
-        auto [pa_land, pa_dr]            = unpack<2>(in);
-        auto [pa_out, pa_depth, pa_mask] = unpack<3>(out);
+        auto [pa_land, pa_dr]            = unpack<2>(p_arrays_in);
+        auto [pa_out, pa_depth, pa_mask] = unpack<3>(p_arrays_out);
 
         if (pa_dr)
         {
@@ -211,9 +209,9 @@ void compute_island_node(BaseNode &node)
       },
       node.cfg().cm_gpu);
 
-  p_out->smooth_overlap_buffers();
-  p_depth->smooth_overlap_buffers();
-  p_mask->smooth_overlap_buffers();
+  p_out->sync_overlap_buffers();
+  p_depth->sync_overlap_buffers();
+  p_mask->sync_overlap_buffers();
 
   post_process_heightmap(node, *p_out);
 }

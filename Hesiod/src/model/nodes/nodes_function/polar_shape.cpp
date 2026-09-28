@@ -112,12 +112,12 @@ void compute_polar_shape_node(BaseNode &node)
   hmap::for_each_tile(
       {p_noise_r, p_noise_theta},
       {p_out},
-      [&](std::vector<const hmap::Array *> in,
-          std::vector<hmap::Array *>       out,
+      [&](std::vector<const hmap::Array *> p_arrays_in,
+          std::vector<hmap::Array *>       p_arrays_out,
           const hmap::TileRegion          &region)
       {
-        auto [pa_noise_r, pa_noise_theta] = unpack<2>(in);
-        auto [pa_out]                     = unpack<1>(out);
+        auto [pa_noise_r, pa_noise_theta] = unpack<2>(p_arrays_in);
+        auto [pa_out]                     = unpack<1>(p_arrays_out);
 
         *pa_out = hmap::polar_shape(region.shape,
                                     rmin,

@@ -71,19 +71,20 @@ void compute_blend_poisson_bf_node(BaseNode &node)
   // --- Compute
 
   hmap::for_each_tile(
-      {p_out, p_in1, p_in2, p_mask},
-      [iterations](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
+      {p_in1, p_in2, p_mask},
+      {p_out},
+      [iterations](std::vector<const hmap::Array *> p_arrays_in,
+                   std::vector<hmap::Array *>       p_arrays_out,
+                   const hmap::TileRegion &)
       {
-        hmap::Array *pa_out  = p_arrays[0];
-        hmap::Array *pa_in1  = p_arrays[1];
-        hmap::Array *pa_in2  = p_arrays[2];
-        hmap::Array *pa_mask = p_arrays[3];
+        auto [pa_in1, pa_in2, pa_mask] = unpack<3>(p_arrays_in);
+        auto [pa_out]                  = unpack<1>(p_arrays_out);
 
         *pa_out = hmap::gpu::blend_poisson_bf(*pa_in1, *pa_in2, iterations, pa_mask);
       },
       node.cfg().cm_gpu);
 
-  p_out->smooth_overlap_buffers();
+  p_out->sync_overlap_buffers();
 
   // --- Post-process
 

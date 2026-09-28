@@ -80,13 +80,14 @@ void compute_dendry_node(BaseNode &node)
     hmap::Array ctrl_array = p_ctrl->to_array(glm::ivec2(128, 128), node.cfg().cm_cpu);
 
     hmap::for_each_tile(
-        {p_out, p_dx, p_dy},
-        [&node, &ctrl_array](std::vector<hmap::Array *> p_arrays,
-                             const hmap::TileRegion    &region)
+        {p_dx, p_dy},
+        {p_out},
+        [&node, &ctrl_array](std::vector<const hmap::Array *> p_arrays_in,
+                             std::vector<hmap::Array *>       p_arrays_out,
+                             const hmap::TileRegion          &region)
         {
-          hmap::Array *pa_out = p_arrays[0];
-          hmap::Array *pa_dx  = p_arrays[1];
-          hmap::Array *pa_dy  = p_arrays[2];
+          auto [pa_dx, pa_dy] = unpack<2>(p_arrays_in);
+          auto [pa_out]       = unpack<1>(p_arrays_out);
 
           *pa_out = hmap::dendry(region.shape,
                                  node.val_wavenumber(A_KW),
@@ -107,7 +108,7 @@ void compute_dendry_node(BaseNode &node)
         },
         node.cfg().cm_cpu);
 
-    p_out->smooth_overlap_buffers();
+    p_out->sync_overlap_buffers();
 
     // post-process
     post_apply_enveloppe(node, *p_out, p_env);

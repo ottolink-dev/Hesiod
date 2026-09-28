@@ -48,17 +48,15 @@ void compute_water_mask_node(BaseNode &node)
   {
     hmap::VirtualArray *p_mask = node.get_value_ref<hmap::VirtualArray>(P_MASK);
 
-    // depth and elevation are inputs, never written back upstream
     hmap::for_each_tile(
         {p_depth, p_z},
         {p_mask},
-        [&node](std::vector<const hmap::Array *> in,
-                std::vector<hmap::Array *>       out,
+        [&node](std::vector<const hmap::Array *> p_arrays_in,
+                std::vector<hmap::Array *>       p_arrays_out,
                 const hmap::TileRegion &)
         {
-          const hmap::Array *pa_depth = in[0];
-          const hmap::Array *pa_z     = in[1];
-          hmap::Array       *pa_mask  = out[0];
+          auto [pa_depth, pa_z] = unpack<2>(p_arrays_in);
+          auto [pa_mask]        = unpack<1>(p_arrays_out);
 
           float added_depth = node.val<float>(A_ADDITIONAL_DEPTH);
 
@@ -74,7 +72,7 @@ void compute_water_mask_node(BaseNode &node)
         node.cfg().cm_gpu);
 
     // post-process
-    p_mask->smooth_overlap_buffers();
+    p_mask->sync_overlap_buffers();
     post_process_heightmap(node, *p_mask);
   }
 }
