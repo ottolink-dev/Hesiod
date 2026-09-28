@@ -63,6 +63,17 @@ protected:
       return false;
     }
 
+    // The settle repaint's own request: already a full repaint, and it must
+    // not count as an update. Counted, it would start a new "isolated" update
+    // whose echo (on platforms that post one for the update() below) arms the
+    // settle timer again: a full repaint every settle_ms, forever.
+    if (widget->property("_hsd_settling").toBool())
+    {
+      widget->setProperty("_hsd_settling", false);
+      widget->setProperty("_hsd_last_update_request", QVariant());
+      return false;
+    }
+
     const qint64 now = this->clock.elapsed();
     const qint64 last = widget->property("_hsd_last_update_request").toLongLong();
     widget->setProperty("_hsd_last_update_request", now);
@@ -85,7 +96,11 @@ protected:
       QObject::connect(settle,
                        &QTimer::timeout,
                        widget,
-                       [widget]() { widget->update(); });
+                       [widget]()
+                       {
+                         widget->setProperty("_hsd_settling", true);
+                         widget->update();
+                       });
     }
     settle->start();
 
