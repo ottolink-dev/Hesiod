@@ -18,11 +18,13 @@ void generate_map(BaseNode                &node,
 {
   // generate
   hmap::for_each_tile(
+      {},
       {&map},
-      [&node, options](std::vector<hmap::Array *> p_arrays,
-                       const hmap::TileRegion    &region)
+      [&node, options](std::vector<const hmap::Array *> p_arrays_in,
+                       std::vector<hmap::Array *>       p_arrays_out,
+                       const hmap::TileRegion          &region)
       {
-        auto [pa_map] = unpack<1>(p_arrays);
+        auto [pa_map] = unpack<1>(p_arrays_out);
 
         switch (options.map_type)
         {

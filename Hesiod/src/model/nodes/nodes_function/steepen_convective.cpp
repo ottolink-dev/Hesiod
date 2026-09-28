@@ -54,11 +54,15 @@ void compute_steepen_convective_node(BaseNode &node)
     int ir = node.val_pixel_radius(A_RADIUS);
 
     hmap::for_each_tile(
-        {p_out, p_in, p_mask},
-        [&node, &ir](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
+        {p_in, p_mask},
+        {p_out},
+        [&node, &ir](std::vector<const hmap::Array *> p_arrays_in,
+                     std::vector<hmap::Array *>       p_arrays_out,
+                     const hmap::TileRegion &)
         {
-          auto [pa_out, pa_in, pa_mask] = unpack<3>(p_arrays);
-          *pa_out                       = *pa_in;
+          auto [pa_in, pa_mask] = unpack<2>(p_arrays_in);
+          auto [pa_out]         = unpack<1>(p_arrays_out);
+          *pa_out               = *pa_in;
 
           hmap::steepen_convective(*pa_out,
                                    node.val<float>(A_ANGLE),
@@ -69,7 +73,7 @@ void compute_steepen_convective_node(BaseNode &node)
         },
         node.cfg().cm_cpu);
 
-    p_out->smooth_overlap_buffers();
+    p_out->sync_overlap_buffers();
   }
 }
 

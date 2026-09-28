@@ -63,12 +63,15 @@ void compute_saturate_node(BaseNode &node)
   const float     k     = c.value<float>(A_K_SMOOTHING);
 
   hmap::for_each_tile(
-      {p_out, p_in},
-      [&node, &hmin, &hmax, &range, &k](std::vector<hmap::Array *> p_arrays,
+      {p_in},
+      {p_out},
+      [&node, &hmin, &hmax, &range, &k](std::vector<const hmap::Array *> p_arrays_in,
+                                        std::vector<hmap::Array *>       p_arrays_out,
                                         const hmap::TileRegion &)
       {
-        auto [pa_out, pa_in] = unpack<2>(p_arrays);
-        *pa_out              = *pa_in;
+        auto [pa_in]  = unpack<1>(p_arrays_in);
+        auto [pa_out] = unpack<1>(p_arrays_out);
+        *pa_out       = *pa_in;
 
         hmap::saturate(*pa_out, range.x, range.y, hmin, hmax, k);
       },

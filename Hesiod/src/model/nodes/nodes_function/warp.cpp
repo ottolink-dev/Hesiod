@@ -67,10 +67,14 @@ void compute_warp_node(BaseNode &node)
   float sy = node.val<float>(A_SCALING_Y);
 
   hmap::for_each_tile(
-      {p_out, p_in, p_dx, p_dy},
-      [sx, sy](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
+      {p_in, p_dx, p_dy},
+      {p_out},
+      [sx, sy](std::vector<const hmap::Array *> p_arrays_in,
+               std::vector<hmap::Array *>       p_arrays_out,
+               const hmap::TileRegion &)
       {
-        auto [pa_out, pa_in, pa_dx, pa_dy] = unpack<4>(p_arrays);
+        auto [pa_in, pa_dx, pa_dy] = unpack<3>(p_arrays_in);
+        auto [pa_out]              = unpack<1>(p_arrays_out);
 
         hmap::Array dx = pa_dx ? sx * (*pa_dx) : hmap::Array(pa_out->shape);
         hmap::Array dy = pa_dy ? sy * (*pa_dy) : hmap::Array(pa_out->shape);

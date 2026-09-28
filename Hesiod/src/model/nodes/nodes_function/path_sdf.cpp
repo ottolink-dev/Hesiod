@@ -51,13 +51,14 @@ void compute_path_sdf_node(BaseNode &node)
     if (p_path->size() > 1)
     {
       hmap::for_each_tile(
-          {p_out, p_dx, p_dy},
-          [&node, p_path](std::vector<hmap::Array *> p_arrays,
-                          const hmap::TileRegion    &region)
+          {p_dx, p_dy},
+          {p_out},
+          [&node, p_path](std::vector<const hmap::Array *> p_arrays_in,
+                          std::vector<hmap::Array *>       p_arrays_out,
+                          const hmap::TileRegion          &region)
           {
-            hmap::Array *pa_out = p_arrays[0];
-            hmap::Array *pa_dx  = p_arrays[1];
-            hmap::Array *pa_dy  = p_arrays[2];
+            auto [pa_dx, pa_dy] = unpack<2>(p_arrays_in);
+            auto [pa_out]       = unpack<1>(p_arrays_out);
 
             *pa_out = hmap::path_sdf_to_array(*p_path,
                                               region.shape,
@@ -74,11 +75,14 @@ void compute_path_sdf_node(BaseNode &node)
     {
       // fill with zeros
       hmap::for_each_tile(
+          {},
           {p_out},
-          [](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
+          [](std::vector<const hmap::Array *> p_arrays_in,
+             std::vector<hmap::Array *>       p_arrays_out,
+             const hmap::TileRegion &)
           {
-            hmap::Array *pa_out = p_arrays[0];
-            *pa_out             = 0.f;
+            auto [pa_out] = unpack<1>(p_arrays_out);
+            *pa_out       = 0.f;
           },
           node.cfg().cm_cpu);
     }

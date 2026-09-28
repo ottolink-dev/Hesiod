@@ -63,17 +63,20 @@ void compute_mixer_node(BaseNode &node)
     hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
     hmap::for_each_tile(
-        {p_out, p_in1, p_in2, p_in3, p_in4, p_t},
-        [&node](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
+        {p_in1, p_in2, p_in3, p_in4, p_t},
+        {p_out},
+        [&node](std::vector<const hmap::Array *> p_arrays_in,
+                std::vector<hmap::Array *>       p_arrays_out,
+                const hmap::TileRegion &)
         {
-          hmap::Array *pa_out = p_arrays.front();
-          hmap::Array *pa_t   = p_arrays.back();
+          auto [pa_out]           = unpack<1>(p_arrays_out);
+          const hmap::Array *pa_t = p_arrays_in.back();
 
           std::vector<const hmap::Array *> arrays = {};
 
-          for (size_t k = 1; k < p_arrays.size() - 1; k++)
-            if (p_arrays[k])
-              arrays.push_back(p_arrays[k]);
+          for (size_t k = 0; k < p_arrays_in.size() - 1; k++)
+            if (p_arrays_in[k])
+              arrays.push_back(p_arrays_in[k]);
 
           *pa_out = hmap::mixer(*pa_t, arrays, node.val<float>(A_GAIN_FACTOR));
         },

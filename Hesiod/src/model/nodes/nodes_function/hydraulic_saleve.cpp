@@ -236,10 +236,13 @@ void compute_hydraulic_saleve_node(BaseNode &node)
   if (params.deposition_ir > 0 && params.deposition_strength > 0.f)
   {
     hmap::for_each_tile(
+        {},
         {p_out},
-        [&params](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
+        [&params](std::vector<const hmap::Array *> p_arrays_in,
+                  std::vector<hmap::Array *>       p_arrays_out,
+                  const hmap::TileRegion &)
         {
-          auto [pa_out] = unpack<1>(p_arrays);
+          auto [pa_out] = unpack<1>(p_arrays_out);
 
           hmap::gpu::deposition_fill_holes(*pa_out,
                                            params.deposition_ir,
@@ -253,10 +256,14 @@ void compute_hydraulic_saleve_node(BaseNode &node)
   if (params.stream_strength > 0.f)
   {
     hmap::for_each_tile(
-        {p_out, p_mask},
-        [&params](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
+        {p_mask},
+        {p_out},
+        [&params](std::vector<const hmap::Array *> p_arrays_in,
+                  std::vector<hmap::Array *>       p_arrays_out,
+                  const hmap::TileRegion &)
         {
-          auto [pa_out, pa_mask] = unpack<2>(p_arrays);
+          auto [pa_mask] = unpack<1>(p_arrays_in);
+          auto [pa_out]  = unpack<1>(p_arrays_out);
 
           hmap::gpu::hydraulic_stream_log(*pa_out,
                                           params.stream_strength,
@@ -278,7 +285,7 @@ void compute_hydraulic_saleve_node(BaseNode &node)
   }
 
   // post-process
-  p_out->smooth_overlap_buffers();
+  p_out->sync_overlap_buffers();
   post_process_heightmap(node, *p_out, p_in);
 }
 

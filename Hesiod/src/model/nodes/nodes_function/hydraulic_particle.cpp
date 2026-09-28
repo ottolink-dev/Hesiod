@@ -323,12 +323,12 @@ void compute_hydraulic_particle_node(BaseNode &node)
 
   // --- post-treatments
 
-  p_out->smooth_overlap_buffers();
+  p_out->sync_overlap_buffers();
 
-  p_erosion->smooth_overlap_buffers();
+  p_erosion->sync_overlap_buffers();
   p_erosion->remap(0.f, 1.f, node.cfg().cm_cpu);
 
-  p_deposition->smooth_overlap_buffers();
+  p_deposition->sync_overlap_buffers();
   p_deposition->remap(0.f, 1.f, node.cfg().cm_cpu);
 
   post_process_heightmap(node, *p_out, p_in);

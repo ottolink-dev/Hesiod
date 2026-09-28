@@ -109,14 +109,14 @@ void compute_colorize_gradient_node(BaseNode &node)
     p_alpha_copy = &alpha_copy;
 
     hmap::for_each_tile(
+        {},
         {p_alpha_copy},
-        [clamp_alpha, reverse_alpha](std::vector<hmap::Array *> p_arrays,
+        [clamp_alpha, reverse_alpha](std::vector<const hmap::Array *> p_arrays_in,
+                                     std::vector<hmap::Array *>       p_arrays_out,
                                      const hmap::TileRegion &)
         {
-          if (p_arrays.empty())
-            return;
-
-          hmap::Array &alpha = *p_arrays[0];
+          auto [pa_alpha_copy] = unpack<1>(p_arrays_out);
+          hmap::Array &alpha   = *pa_alpha_copy;
 
           if (clamp_alpha)
             hmap::clamp(alpha, 0.f, 1.f);

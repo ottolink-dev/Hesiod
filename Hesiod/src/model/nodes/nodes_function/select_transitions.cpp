@@ -47,15 +47,16 @@ void compute_select_transitions_node(BaseNode &node)
     hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
     hmap::for_each_tile(
-        {p_out, p_in1, p_in2, p_blend},
-        [](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
+        {p_in1, p_in2, p_blend},
+        {p_out},
+        [](std::vector<const hmap::Array *> p_arrays_in,
+           std::vector<hmap::Array *>       p_arrays_out,
+           const hmap::TileRegion &)
         {
-          hmap::Array &m  = *p_arrays[0];
-          hmap::Array &a1 = *p_arrays[1];
-          hmap::Array &a2 = *p_arrays[2];
-          hmap::Array &a3 = *p_arrays[3];
+          auto [pa_in1, pa_in2, pa_blend] = unpack<3>(p_arrays_in);
+          auto [pa_out]                   = unpack<1>(p_arrays_out);
 
-          m = hmap::select_transitions(a1, a2, a3);
+          *pa_out = hmap::select_transitions(*pa_in1, *pa_in2, *pa_blend);
         },
         node.cfg().cm_cpu);
 

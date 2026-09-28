@@ -91,9 +91,12 @@ void compute_find_cut_path_node(BaseNode &node)
 
   hmap::for_each_tile(
       {p_in},
-      [&](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
+      {},
+      [&](std::vector<const hmap::Array *> p_arrays_in,
+          std::vector<hmap::Array *>       p_arrays_out,
+          const hmap::TileRegion &)
       {
-        auto [pa_in] = unpack<1>(p_arrays);
+        auto [pa_in] = unpack<1>(p_arrays_in);
 
         *p_path = hmap::find_cut_path_midpoint(*pa_in,
                                                start,

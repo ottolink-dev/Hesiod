@@ -156,7 +156,7 @@ void compute_jagged_node(BaseNode &node)
       },
       node.cfg().cm_gpu);
 
-  p_out->smooth_overlap_buffers();
+  p_out->sync_overlap_buffers();
 
   p_out->remap(p_in->min(node.cfg().cm_cpu),
                p_in->max(node.cfg().cm_cpu),

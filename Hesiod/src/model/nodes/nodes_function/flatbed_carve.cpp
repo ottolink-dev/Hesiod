@@ -76,14 +76,14 @@ void compute_flatbed_carve_node(BaseNode &node)
       float falloff = width * node.val<float>(A_FALLOFF_DISTANCE_RATIO);
 
       hmap::for_each_tile(
-          {p_out, p_in, p_dr, p_mask},
-          [&node, width, falloff, p_path](std::vector<hmap::Array *> p_arrays,
-                                          const hmap::TileRegion    &region)
+          {p_in, p_dr},
+          {p_out, p_mask},
+          [&node, width, falloff, p_path](std::vector<const hmap::Array *> p_arrays_in,
+                                          std::vector<hmap::Array *>       p_arrays_out,
+                                          const hmap::TileRegion          &region)
           {
-            hmap::Array *pa_out  = p_arrays[0];
-            hmap::Array *pa_in   = p_arrays[1];
-            hmap::Array *pa_dr   = p_arrays[2];
-            hmap::Array *pa_mask = p_arrays[3];
+            auto [pa_in, pa_dr]    = unpack<2>(p_arrays_in);
+            auto [pa_out, pa_mask] = unpack<2>(p_arrays_out);
 
             *pa_out = *pa_in;
 
@@ -103,8 +103,8 @@ void compute_flatbed_carve_node(BaseNode &node)
           },
           node.cfg().cm_cpu);
 
-      p_out->smooth_overlap_buffers();
-      p_mask->smooth_overlap_buffers();
+      p_out->sync_overlap_buffers();
+      p_mask->sync_overlap_buffers();
     }
 }
 

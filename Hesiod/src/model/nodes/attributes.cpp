@@ -147,6 +147,17 @@ meta::Attribute<meta::ColorGradient> &add_color_gradient(BaseNode          &node
   return a;
 }
 
+meta::Attribute<std::string> &add_comment(BaseNode          &node,
+                                          const std::string &key,
+                                          const std::string &label,
+                                          const std::string &value)
+{
+  auto &a = meta::presets::comment(node.get_meta_group().current(), key, label, value);
+  set_doc_type(a, "String");
+  apply_category_if_set(node, a);
+  return a;
+}
+
 meta::Attribute<std::vector<float>> &add_curve(BaseNode                 &node,
                                                const std::string        &key,
                                                const std::string        &label,

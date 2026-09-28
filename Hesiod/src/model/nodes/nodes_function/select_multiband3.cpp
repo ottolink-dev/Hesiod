@@ -59,10 +59,14 @@ void compute_select_multiband3_node(BaseNode &node)
     float vmax = p_in->max(node.cfg().cm_cpu);
 
     hmap::for_each_tile(
-        {p_in, p_low, p_mid, p_high},
-        [&node, vmin, vmax](std::vector<hmap::Array *> p_arrays, const hmap::TileRegion &)
+        {p_in},
+        {p_low, p_mid, p_high},
+        [&node, vmin, vmax](std::vector<const hmap::Array *> p_arrays_in,
+                            std::vector<hmap::Array *>       p_arrays_out,
+                            const hmap::TileRegion &)
         {
-          auto [pa_in, pa_low, pa_mid, pa_high] = unpack<4>(p_arrays);
+          auto [pa_in]                   = unpack<1>(p_arrays_in);
+          auto [pa_low, pa_mid, pa_high] = unpack<3>(p_arrays_out);
 
           hmap::select_multiband3(*pa_in,
                                   *pa_low,

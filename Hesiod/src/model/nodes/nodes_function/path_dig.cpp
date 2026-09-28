@@ -67,13 +67,15 @@ void compute_path_dig_node(BaseNode &node)
       if (!node.val<bool>(A_FORCE_DOWNHILL))
       {
         hmap::for_each_tile(
-            {p_out, p_in},
+            {p_in},
+            {p_out},
             [&node, p_path, ir_width, ir_decay, ir_flattening_radius](
-                std::vector<hmap::Array *> p_arrays,
-                const hmap::TileRegion    &region)
+                std::vector<const hmap::Array *> p_arrays_in,
+                std::vector<hmap::Array *>       p_arrays_out,
+                const hmap::TileRegion          &region)
             {
-              hmap::Array *pa_out = p_arrays[0];
-              hmap::Array *pa_in  = p_arrays[1];
+              auto [pa_in]  = unpack<1>(p_arrays_in);
+              auto [pa_out] = unpack<1>(p_arrays_out);
 
               *pa_out = *pa_in;
 
@@ -105,7 +107,7 @@ void compute_path_dig_node(BaseNode &node)
         p_out->from_array(z_array, node.cfg().cm_cpu);
       }
 
-      p_out->smooth_overlap_buffers();
+      p_out->sync_overlap_buffers();
     }
 }
 

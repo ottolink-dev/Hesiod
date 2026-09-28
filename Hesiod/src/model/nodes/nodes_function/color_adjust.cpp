@@ -114,15 +114,16 @@ void compute_color_adjust_node(BaseNode &node)
 
   p_out->copy_from(*p_in, node.cfg().cm_cpu);
 
-  for_each_tile(
-      *p_out,
-      [&](std::vector<hmap::Array *> &p, const hmap::TileRegion &region)
+  hmap::for_each_tile(
+      {},
+      p_out->channels_ptr(),
+      [&](std::vector<const hmap::Array *> p_arrays_in,
+          std::vector<hmap::Array *>       p_arrays_out,
+          const hmap::TileRegion          &region)
       {
-        hmap::Array &r = *p[0];
-        hmap::Array &g = *p[1];
-        hmap::Array &b = *p[2];
+        auto [r, g, b] = unpack<3>(p_arrays_out);
 
-        color_adjust(r, g, b, param, {region.key.tx, region.key.ty});
+        color_adjust(*r, *g, *b, param, {region.key.tx, region.key.ty});
       },
       node.cfg().cm_cpu);
 }

@@ -125,12 +125,12 @@ void compute_crater_node(BaseNode &node)
   hmap::for_each_tile(
       {p_noise, p_envelope},
       {p_out, p_crater_mask},
-      [&](std::vector<const hmap::Array *> in,
-          std::vector<hmap::Array *>       out,
+      [&](std::vector<const hmap::Array *> p_arrays_in,
+          std::vector<hmap::Array *>       p_arrays_out,
           const hmap::TileRegion          &region)
       {
-        auto [pa_noise, pa_envelope]  = unpack<2>(in);
-        auto [pa_out, pa_crater_mask] = unpack<2>(out);
+        auto [pa_noise, pa_envelope]  = unpack<2>(p_arrays_in);
+        auto [pa_out, pa_crater_mask] = unpack<2>(p_arrays_out);
 
         *pa_out = hmap::crater(region.shape,
                                radius,
