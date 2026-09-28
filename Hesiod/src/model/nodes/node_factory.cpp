@@ -193,11 +193,11 @@ std::map<std::string, std::string> get_node_inventory()
       {"Dendry", "WIP"},
       {"DepositionFillHoles", "Erosion/Deposition"},
       {"DepressionFilling", "Erosion/Deposition"},
-      {"Detrend", "WIP"},                     // Filter/Recurve
-      {"DiffusionLimitedAggregation", "WIP"}, // Primitive/Coherent
+      {"Detrend", "WIP/DEPRECATED"},                     // Filter/Recurve
+      {"DiffusionLimitedAggregation", "WIP/DEPRECATED"}, // Primitive/Coherent
       {"DirectionalBlur", "Filter/Smoothing"},
       {"DistanceTransform", "Terrain Features/Morphology"},
-      {"Equalize", "Filter/Recurve"},
+      {"Equalize", "WIP/DEPRECATED"}, // "Filter/Recurve"},
       {"ExpandShrink", "Filter/Recast"},
       {"ExportAsset", "Export"},
       {"ExportAsCubemap", "WIP"}, // "Export"},
@@ -241,14 +241,14 @@ std::map<std::string, std::string> get_node_inventory()
       {"HeightmapToNormalMap", "Converter"},
       {"HeightmapToRGBA", "Converter"},
       {"HemisphereFieldFbm", "Primitive/Coherent"},
-      {"HydraulicBlur", "WIP"},     // "Erosion/Hydraulic"
-      {"HydraulicMcDonald", "WIP"}, // "Erosion/Hydraulic"},
-      {"HydraulicMusgrave", "WIP"}, // "Erosion/Hydraulic"
+      {"HydraulicBlur", "WIP"},                // "Erosion/Hydraulic"
+      {"HydraulicMcDonald", "WIP"},            // "Erosion/Hydraulic"},
+      {"HydraulicMusgrave", "WIP/DEPRECATED"}, // "Erosion/Hydraulic"
       {"HydraulicParticle", "Erosion/Hydraulic"},
       {"HydraulicProcedural", "WIP"}, // "Erosion/Hydraulic"},
       {"HydraulicSaleve", "Erosion/Hydraulic"},
-      {"HydraulicSchott", "WIP"}, // "Erosion/Hydraulic"
-      {"HydraulicStream", "WIP"}, // "Erosion/Hydraulic"
+      {"HydraulicSchott", "WIP"},            // "Erosion/Hydraulic"
+      {"HydraulicStream", "WIP/DEPRECATED"}, // "Erosion/Hydraulic"
       {"HydraulicStreamLog", "Erosion/Hydraulic"},
       {"HydraulicStreamUpscaleAmplification", "WIP"}, // "Erosion/Hydraulic"
       {"HydraulicVpipes", "WIP"},                     // "Erosion/Hydraulic"
@@ -276,7 +276,7 @@ std::map<std::string, std::string> get_node_inventory()
       {"MakePeriodicStitching", "WIP"}, // , "Operator/Tiling"},
       {"MeanShift", "WIP"},
       {"Median3x3", "Filter/Smoothing"},
-      {"MedianPseudo", "WIP"},
+      {"MedianPseudo", "WIP/DEPRECATED"},
       {"MergeWaterDepths", "Hydrology"},
       {"MixNormalMap", "Texture"},
       {"MixTexture", "Texture"},
@@ -290,7 +290,7 @@ std::map<std::string, std::string> get_node_inventory()
       {"MountainTibesti", "Primitive/Geological"},
       {"Mudslide", "WIP"}, // "Erosion"},
       {"Multisteps", "Primitive/Geological"},
-      {"NormalDisplacement", "WIP"},
+      {"NormalDisplacement", "WIP/DEPRECATED"},
       {"NormalMapToHeightmap", "WIP"},
       {"Paraboloid", "Primitive/Function"},
       {"Path", "Geometry/Path"},
@@ -322,12 +322,12 @@ std::map<std::string, std::string> get_node_inventory()
       {"Receive", "Routing"},
       {"Recurve", "Filter/Recurve"},
       {"RecurveKura", "Filter/Recurve"},
-      {"RecurveS", "WIP"},
+      {"RecurveS", "WIP/DEPRECATED"},
       {"RelativeDistanceFromSkeleton", "Terrain Features/Morphology"},
       {"Remap", "Filter/Range"},
       {"Rescale", "Filter/Range"},
       {"ReverseAboveThreshold", "Filter/Recurve"},
-      {"ReverseMidpoint", "WIP"}, // Primitive/Authoring
+      {"ReverseMidpoint", "WIP/DEPRECATED"}, // Primitive/Authoring
       {"RidgeAccentuate", "Filter/Advanced Filters"},
       {"Ridgelines", "Primitive/Authoring"},
       {"Rift", "Primitive/Geological"},
@@ -346,7 +346,7 @@ std::map<std::string, std::string> get_node_inventory()
       {"SelectValue", "Terrain Features/Selector"},
       {"SetAlpha", "Texture"},
       {"SetBorders", "Boundaries"},
-      {"SharpenCone", "WIP"},
+      {"SharpenCone", "WIP/DEPRECATED"},
       {"ShatteredPeak", "Primitive/Geological"},
       {"ShiftElevation", "Filter/Range"},
       {"Skeleton", "Terrain Features/Morphology"},
@@ -360,7 +360,7 @@ std::map<std::string, std::string> get_node_inventory()
       {"SnowSimulation", "WIP"}, // , "Hydrology"},
       {"SpectralEqualizer", "Filter"},
       {"Stamping", "Primitive/Authoring"},
-      {"SteepenConvective", "WIP"},
+      {"SteepenConvective", "WIP/DEPRECATED"},
       {"Step", "Primitive/Function"},
       {"Strata", "Erosion/Stratify"},
       {"StrataCells", "Erosion/Stratify"},
@@ -385,12 +385,12 @@ std::map<std::string, std::string> get_node_inventory()
       {"ValleyHead", "Primitive/Geological"},
       {"ValleyWidth", "Terrain Features/Landform"},
       {"Warp", "Operator/Transform"},
-      {"WarpDownslope", "WIP"}, // Operator/Transform
+      {"WarpDownslope", "WIP/DEPRECATED"}, // Operator/Transform
       {"WaterDepthDryOut", "Hydrology"},
       {"WaterDepthFromMask", "Hydrology"},
       {"WaterElevationFromDepth", "Hydrology"},
       {"WaterMask", "Hydrology"},
-      {"WatershedRidge", "WIP"}, // , "Erosion/Hydraulic"},
+      {"WatershedRidge", "WIP/DEPRECATED"}, // , "Erosion/Hydraulic"},
       {"WaveDune", "Primitive/Function"},
       {"WaveletNoise", "Primitive/Coherent"},
       {"WaveSine", "Primitive/Function"},
