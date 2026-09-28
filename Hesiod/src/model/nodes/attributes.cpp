@@ -149,7 +149,7 @@ meta::Attribute<meta::ColorGradient> &add_color_gradient(BaseNode          &node
 
 meta::Attribute<std::string> &add_comment(BaseNode          &node,
                                           const std::string &key,
-					  const std::string &label,
+                                          const std::string &label,
                                           const std::string &value)
 {
   auto &a = meta::presets::comment(node.get_meta_group().current(), key, label, value);

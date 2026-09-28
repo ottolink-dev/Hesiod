@@ -67,7 +67,10 @@ void compute_cloud_set_values_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  hmap::Cloud *p_cloud = node.get_value_ref<hmap::Cloud>(P_CLOUD);
+  hmap::Cloud        *p_cloud = node.get_value_ref<hmap::Cloud>(P_CLOUD);
+  hmap::Cloud        *p_out   = node.get_value_ref<hmap::Cloud>(P_OUT);
+  hmap::VirtualArray *p_hmap  = node.get_value_ref<hmap::VirtualArray>(P_HEIGHTMAP);
+
   if (!p_cloud)
     return;
 
@@ -79,14 +82,21 @@ void compute_cloud_set_values_node(BaseNode &node)
 
   if (current_group == G_FROM_HEIGHTMAP)
   {
-    hmap::VirtualArray *p_hmap = node.get_value_ref<hmap::VirtualArray>(P_HEIGHTMAP);
     if (p_hmap)
     {
-      // TODO distribute
-      hmap::Array array = p_hmap->to_array(node.cfg().cm_cpu);
-
       *p_out = *p_cloud;
-      p_out->set_values_from_array(array);
+
+      hmap::for_each_tile(
+          {p_hmap},
+          {},
+          [&](std::vector<const hmap::Array *> p_arrays_in,
+              std::vector<hmap::Array *>,
+              const hmap::TileRegion &region)
+          {
+            auto [pa_hmap] = unpack<1>(p_arrays_in);
+            p_out->set_values_from_array(*pa_hmap, region.bbox);
+          },
+          node.cfg().cm_cpu);
     }
   }
   else if (current_group == G_FROM_BORDER_DISTANCE)
