@@ -79,7 +79,7 @@ void compute_area_remove_node(BaseNode &node)
 
         *pa_out = hmap::area_remove(*pa_in, area_pixels, bg_value, bg_value);
       },
-      node.cfg().cm_single_array);
+      node.cfg().cm_cpu);
 }
 
 } // namespace hesiod
