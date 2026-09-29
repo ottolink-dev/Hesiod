@@ -51,7 +51,10 @@ BaseNode::BaseNode(const std::string &label, std::weak_ptr<GraphConfig> config)
 {
   Logger::log()->trace("BaseNode::BaseNode, label: {}", label);
 
-  this->category = get_node_inventory().at(label);
+  // a macro is not in the inventory: it is never created from the node list
+  const auto inventory = get_node_inventory();
+  const auto it = inventory.find(label);
+  this->category = it != inventory.end() ? it->second : "Macro";
   this->update_runtime_info(NodeRuntimeStep::NRS_INIT);
 
   // initialize documentation

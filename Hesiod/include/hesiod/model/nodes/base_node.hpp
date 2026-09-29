@@ -45,7 +45,7 @@ public:
   // --- Configuration ---
   const GraphConfig                 &cfg() const;
   std::shared_ptr<const GraphConfig> get_config_ref() const;
-  void                               propagate_config_change();
+  virtual void                       propagate_config_change();
 
   // --- Runtime info ---
   NodeRuntimeInfo get_runtime_info() const;

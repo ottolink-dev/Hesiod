@@ -424,6 +424,15 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
     sptr->finalize_attributes();
     return sptr;
   }
+  else if (node_type == "Macro")
+  {
+    // ports come with the definition, see MacroNode::set_definition
+    auto sptr = std::make_shared<hesiod::MacroNode>(node_type, config);
+    sptr->set_compute_fct([](BaseNode &node)
+                          { static_cast<MacroNode &>(node).compute_macro(); });
+    sptr->finalize_attributes();
+    return sptr;
+  }
   else if (is_macro_io_node_type(node_type))
   {
     auto sptr = std::make_shared<hesiod::BaseNode>(node_type, config);
