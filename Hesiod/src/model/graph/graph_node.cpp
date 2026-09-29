@@ -58,6 +58,11 @@ std::string GraphNode::add_node(const std::string &node_type)
   return node_id;
 }
 
+std::shared_ptr<gnode::Node> GraphNode::create_node(const std::string &node_type) const
+{
+  return node_factory(node_type, this->config);
+}
+
 std::string GraphNode::add_node(const std::shared_ptr<gnode::Node> &node,
                                 const std::string                  &id)
 {

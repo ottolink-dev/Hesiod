@@ -35,11 +35,18 @@ struct MacroPort
   bool        is_input = true;
 };
 
+/// A link between two nodes of a graph, by port labels.
+struct PortLink
+{
+  std::string node_out, port_out, node_in, port_in;
+};
+
 bool is_macro_io_node_type(const std::string &node_type);
 bool is_macro_body(const GraphNode &graph);
 
 // typeid name of the data a MacroInput* / MacroOutput* node type carries
 std::string macro_io_data_type(const std::string &node_type);
+std::string new_macro_id();
 
 // node types to offer in a graph: MacroInput* / MacroOutput* only in a macro body
 std::map<std::string, std::string> node_inventory_for(const GraphNode &graph);
@@ -83,6 +90,11 @@ public:
   /// the outputs instead of computing the body again.
   void mark_body_computed() { this->body_computed = true; }
 
+  /// Right after packing: the body's nodes take the results of the nodes of
+  /// `graph` they were made from (same id, same type) instead of computing
+  /// again, which for erosion and the like is most of the time packing takes.
+  void take_results_from(GraphNode &graph);
+
   /// While the body is open in an editor, its layout comes from there.
   std::function<nlohmann::json()> layout_provider;
 
@@ -101,7 +113,24 @@ private:
   std::vector<MacroPort>     ports_info;
   bool                       body_computed = false;
   bool                       body_stale = true;   // next compute runs the whole body
+  bool                       body_filled = false; // results taken, see take_results_from
   bool                       computing = false;
 };
+
+/// Every link of a graph, by port labels.
+std::vector<PortLink> links_of(const GraphNode &graph);
+
+/**
+ * @brief Pack nodes of `graph` into a macro definition.
+ *
+ * The nodes keep their ids in the body. Each output feeding the selection
+ * from outside becomes one macro input, each output leaving it one macro
+ * output. `outer_links` gets the links to make once the instance exists, with
+ * an empty node id standing for the instance.
+ */
+nlohmann::json make_macro_definition(GraphNode                      &graph,
+                                     const std::vector<std::string> &node_ids,
+                                     const std::string              &name,
+                                     std::vector<PortLink>          &outer_links);
 
 } // namespace hesiod

@@ -42,6 +42,9 @@ public:
   // connections, so compound edits never evaluate a partially constructed graph.
   std::string add_node(const std::string &node_type);
 
+  // a node of this graph's config, not added yet (e.g. to add it under a given id)
+  std::shared_ptr<gnode::Node> create_node(const std::string &node_type) const;
+
   // --- GNode::Graph override ---
   std::string  add_node(const std::shared_ptr<gnode::Node> &p_node,
                         const std::string                  &id = "") override;
