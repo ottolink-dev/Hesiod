@@ -346,6 +346,26 @@ nlohmann::json MacroNode::get_definition() const
   return json;
 }
 
+void MacroNode::update_meta(const nlohmann::json &patch)
+{
+  for (const auto &[key, value] : patch.items())
+    if (key != "graph")
+      this->definition[key] = value;
+}
+
+bool MacroNode::sync_ports()
+{
+  if (!this->body)
+    return true;
+
+  std::vector<MacroPort> new_ports = body_ports(*this->body);
+  if (!same_interface(new_ports, this->ports_info))
+    return false;
+
+  this->ports_info = new_ports; // an interface node may have been replaced
+  return true;
+}
+
 std::string MacroNode::get_macro_id() const
 {
   return this->definition.value("macro_id", "");
@@ -357,6 +377,11 @@ std::string MacroNode::get_macro_name() const
 }
 
 int MacroNode::get_revision() const { return this->definition.value("revision", 0); }
+
+bool MacroNode::has_interface_of(const nlohmann::json &other) const
+{
+  return same_interface(macro_ports_of(other), this->ports_info);
+}
 
 void MacroNode::json_from(nlohmann::json const &json)
 {
@@ -492,6 +517,104 @@ std::vector<PortLink> links_of(const GraphNode &graph)
                      link.to,
                      graph.get_node(link.to)->get_port_label(link.port_to)});
   return links;
+}
+
+std::vector<MacroPort> macro_ports_of(const nlohmann::json &definition)
+{
+  std::vector<MacroPort> ports;
+  for (const auto &json : definition.value("ports", nlohmann::json::array()))
+    ports.push_back({json.value("name", ""),
+                     json.value("node_id", ""),
+                     json.value("data_type", ""),
+                     json.value("is_input", true)});
+  return ports;
+}
+
+MacroNode *rebuild_macro_node(GraphNode                 &graph,
+                              const std::string         &node_id,
+                              const nlohmann::json      &definition,
+                              std::shared_ptr<GraphNode> body)
+{
+  auto *old_node = graph.get_node_ref_by_id<MacroNode>(node_id);
+  if (!old_node)
+    throw std::invalid_argument("No macro node " + node_id);
+
+  // build the replacement completely before touching the graph
+  auto  p_new = graph.create_node("Macro");
+  auto *new_node = static_cast<MacroNode *>(p_new.get());
+  new_node->set_p_graph(&graph);
+  new_node->set_comment(old_node->get_comment());
+  if (body)
+    new_node->set_body(body, definition);
+  else
+    new_node->set_definition(definition);
+
+  std::vector<PortLink> links = links_of(graph);
+  std::erase_if(links,
+                [&](const PortLink &l)
+                { return l.node_out != node_id && l.node_in != node_id; });
+
+  graph.remove_node(node_id);
+  graph.add_node(p_new, node_id);
+
+  for (const auto &link : links)
+  {
+    auto     *from = graph.get_node(link.node_out);
+    auto     *to = graph.get_node(link.node_in);
+    const int out = from->get_port_index(link.port_out);
+    const int in = to->get_port_index(link.port_in);
+
+    if (out >= 0 && in >= 0 &&
+        from->get_port_type(link.port_out) == gnode::PortType::OUT &&
+        to->get_port_type(link.port_in) == gnode::PortType::IN &&
+        from->get_data_type(out) == to->get_data_type(in))
+      graph.new_link(link.node_out, out, link.node_in, in);
+  }
+
+  return new_node;
+}
+
+MacroSyncResult sync_macro_instances(GraphNode            &graph,
+                                     const nlohmann::json &definition,
+                                     const MacroNode      *source)
+{
+  MacroSyncResult   result;
+  const std::string macro_id = definition.value("macro_id", "");
+
+  std::vector<std::string> ids; // rebuilding changes the node map
+  for (const auto &[id, p_node] : graph.get_nodes())
+    ids.push_back(id);
+
+  for (const auto &id : ids)
+  {
+    auto *macro = dynamic_cast<MacroNode *>(graph.get_node(id));
+    if (!macro || macro == source)
+      continue;
+
+    if (macro->get_macro_id() == macro_id)
+    {
+      if (macro->has_interface_of(definition))
+        macro->set_definition(definition);
+      else
+        rebuild_macro_node(graph, id, definition);
+      result.updated.push_back({&graph, id});
+      result.changed.push_back(id);
+    }
+    else if (GraphNode *body = macro->get_body())
+    {
+      MacroSyncResult inner = sync_macro_instances(*body, definition, source);
+      result.updated.insert(result.updated.end(),
+                            inner.updated.begin(),
+                            inner.updated.end());
+      if (!inner.changed.empty())
+      {
+        body->update(inner.changed);
+        macro->mark_body_computed();
+        result.changed.push_back(id);
+      }
+    }
+  }
+  return result;
 }
 
 nlohmann::json make_macro_definition(GraphNode                      &graph,

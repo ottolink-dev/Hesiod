@@ -78,6 +78,9 @@ public:
   /// The definition, with the body as it is now.
   nlohmann::json get_definition() const;
 
+  /// Change name, id or revision; the body stays.
+  void update_meta(const nlohmann::json &patch);
+
   std::string                   get_macro_id() const;
   std::string                   get_macro_name() const;
   int                           get_revision() const;
@@ -85,6 +88,13 @@ public:
   std::shared_ptr<GraphNode>    get_body_shared() const { return this->body; }
   const std::vector<MacroPort> &get_macro_ports() const { return this->ports_info; }
   bool                          is_computing() const { return this->computing; }
+
+  /// Same ports (names, types, order) as `definition` would give.
+  bool has_interface_of(const nlohmann::json &definition) const;
+
+  /// Take the ports of the body as it is now. False when they differ from the
+  /// node's ports: the node has to be rebuilt.
+  bool sync_ports();
 
   /// The editor computed the body itself: the next compute only publishes
   /// the outputs instead of computing the body again.
@@ -119,6 +129,34 @@ private:
 
 /// Every link of a graph, by port labels.
 std::vector<PortLink> links_of(const GraphNode &graph);
+
+/// Ports a definition gives, in order: inputs then outputs.
+std::vector<MacroPort> macro_ports_of(const nlohmann::json &definition);
+
+/**
+ * @brief Replace a macro instance by one built from `definition` (or around
+ * `body` when given), under the same id, keeping every link whose port still
+ * exists with the same type.
+ */
+MacroNode *rebuild_macro_node(GraphNode                 &graph,
+                              const std::string         &node_id,
+                              const nlohmann::json      &definition,
+                              std::shared_ptr<GraphNode> body = nullptr);
+
+struct MacroSyncResult
+{
+  std::vector<std::string> changed; // nodes of the graph to compute
+  std::vector<std::pair<GraphNode *, std::string>> updated; // instances, at any depth
+};
+
+/**
+ * @brief Give `definition` to every other instance of its macro in `graph`,
+ * including those inside the bodies of other macros (recomputed here).
+ * `source` is the instance the definition comes from and is left alone.
+ */
+MacroSyncResult sync_macro_instances(GraphNode            &graph,
+                                     const nlohmann::json &definition,
+                                     const MacroNode      *source);
 
 /**
  * @brief Pack nodes of `graph` into a macro definition.
