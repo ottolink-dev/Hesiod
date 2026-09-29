@@ -3,7 +3,7 @@
  * this software. */
 #include "highmap/curvature.hpp"
 #include "highmap/opencl/gpu_opencl.hpp"
-#include "highmap/range.hpp"
+#include "highmap/hydrology.hpp"
 
 #include "hesiod/model/nodes/attributes.hpp"
 

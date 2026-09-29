@@ -241,17 +241,4 @@ void setup_histogram_for_range_attribute(BaseNode          &node,
                                          const std::string &attribute_key,
                                          const std::string &port_id);
 
-// unpack vectors
-template <std::size_t N, typename T, std::size_t... Is>
-auto unpack_impl(const std::vector<T *> &v, std::index_sequence<Is...>)
-{
-  assert(v.size() >= N);
-  return std::make_tuple(v[Is]...);
-}
-
-template <std::size_t N, typename T> auto unpack(const std::vector<T *> &v)
-{
-  return unpack_impl<N>(v, std::make_index_sequence<N>{});
-}
-
 } // namespace hesiod
