@@ -146,12 +146,12 @@ void compute_hydraulic_mcdonald_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  auto *p_in        = node.get_value_ref<hmap::VirtualArray>(P_INPUT);
-  auto *p_moisture  = node.get_value_ref<hmap::VirtualArray>(P_MOISTURE);
-  auto *p_mask      = node.get_value_ref<hmap::VirtualArray>(P_MASK);
-  auto *p_out       = node.get_value_ref<hmap::VirtualArray>(P_OUTPUT);
-  auto *p_sediment  = node.get_value_ref<hmap::VirtualArray>(P_SEDIMENT);
-  auto *p_discharge = node.get_value_ref<hmap::VirtualArray>(P_DISCHARGE);
+  const auto *p_in        = node.get_value_ref<hmap::VirtualArray>(P_INPUT);
+  const auto *p_moisture  = node.get_value_ref<hmap::VirtualArray>(P_MOISTURE);
+  const auto *p_mask      = node.get_value_ref<hmap::VirtualArray>(P_MASK);
+  auto       *p_out       = node.get_value_ref<hmap::VirtualArray>(P_OUTPUT);
+  auto       *p_sediment  = node.get_value_ref<hmap::VirtualArray>(P_SEDIMENT);
+  auto       *p_discharge = node.get_value_ref<hmap::VirtualArray>(P_DISCHARGE);
 
   if (!p_in)
     return;
@@ -176,7 +176,9 @@ void compute_hydraulic_mcdonald_node(BaseNode &node)
 
   // --- Prepare mask
 
-  std::shared_ptr<hmap::VirtualArray> sp_mask = pre_process_mask(node, p_mask, *p_in);
+  hmap::VirtualArray mask_default = pre_process_mask(node, p_mask, *p_in);
+  if (!mask_default.empty())
+    p_mask = &mask_default;
 
   // --- Compute
 

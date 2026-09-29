@@ -9,15 +9,15 @@
 namespace hesiod
 {
 
-void blend_heightmaps(BaseNode           &node,
-                      hmap::VirtualArray &h_out,
-                      hmap::VirtualArray &h1,
-                      hmap::VirtualArray &h2,
-                      BlendingMethod      method,
-                      float               k,
-                      int                 ir,
-                      float               w1,
-                      float               w2)
+void blend_heightmaps(BaseNode                 &node,
+                      hmap::VirtualArray       &h_out,
+                      const hmap::VirtualArray &h1,
+                      const hmap::VirtualArray &h2,
+                      BlendingMethod            method,
+                      float                     k,
+                      int                       ir,
+                      float                     w1,
+                      float                     w2)
 {
   std::function<void(hmap::Array &, const hmap::Array &, const hmap::Array &)> lambda;
 

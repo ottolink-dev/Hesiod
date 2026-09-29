@@ -52,35 +52,21 @@ void compute_smooth_cpulse_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  auto *p_in  = node.get_value_ref<hmap::VirtualArray>(P_INPUT);
-  auto *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUTPUT);
+  const auto *p_in   = node.get_value_ref<hmap::VirtualArray>(P_INPUT);
+  const auto *p_mask = node.get_value_ref<hmap::VirtualArray>(P_MASK);
+  auto       *p_out  = node.get_value_ref<hmap::VirtualArray>(P_OUTPUT);
 
   if (!p_in || !p_out)
     return;
 
-  auto *p_mask = node.get_value_ref<hmap::VirtualArray>(P_MASK);
-
   // prepare mask
-  std::shared_ptr<hmap::VirtualArray> sp_mask = pre_process_mask(node, p_mask, *p_in);
+  hmap::VirtualArray mask_default = pre_process_mask(node, p_mask, *p_in);
+  if (!mask_default.empty())
+    p_mask = &mask_default;
 
   int ir = node.val_pixel_radius(A_RADIUS);
 
-  hmap::for_each_tile(
-      {p_in, p_mask},
-      {p_out},
-      [&ir](std::vector<const hmap::Array *> p_arrays_in,
-            std::vector<hmap::Array *>       p_arrays_out,
-            const hmap::TileRegion &)
-      {
-        const auto [pa_in, pa_mask] = unpack<2>(p_arrays_in);
-        auto [pa_out]               = unpack<1>(p_arrays_out);
-        *pa_out                     = *pa_in;
-
-        hmap::gpu::smooth_cpulse(*pa_out, ir, pa_mask);
-      },
-      node.cfg().cm_gpu);
-
-  p_out->sync_overlap_buffers();
+  *p_out = hmap::va::smooth_cpulse(*p_in, ir, p_mask, node.cfg().cm_gpu);
 
   // post-process
   post_process_heightmap(node, *p_out, p_in);

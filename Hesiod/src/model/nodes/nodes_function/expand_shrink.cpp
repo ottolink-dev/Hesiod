@@ -53,85 +53,80 @@ void compute_expand_shrink_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  hmap::VirtualArray *p_in = node.get_value_ref<hmap::VirtualArray>(P_IN);
+  const auto *p_in   = node.get_value_ref<hmap::VirtualArray>(P_IN);
+  const auto *p_mask = node.get_value_ref<hmap::VirtualArray>(P_MASK);
+  auto       *p_out  = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
-  if (p_in)
+  if (!p_in)
+    return;
+
+  // prepare mask
+  hmap::VirtualArray mask_default = pre_process_mask(node, p_mask, *p_in);
+  if (!mask_default.empty())
+    p_mask = &mask_default;
+
+  // kernel definition - use input kernel by default, if not switch
+  // to built-in kernels
+  hmap::Array  kernel_array;
+  hmap::Array *p_kernel = node.get_value_ref<hmap::Array>(P_KERNEL);
+
+  if (p_kernel)
   {
-    hmap::VirtualArray *p_mask = node.get_value_ref<hmap::VirtualArray>(P_MASK);
-    hmap::VirtualArray *p_out  = node.get_value_ref<hmap::VirtualArray>(P_OUT);
-
-    // prepare mask
-    std::shared_ptr<hmap::VirtualArray> sp_mask = pre_process_mask(node, p_mask, *p_in);
-
-    // kernel definition - use input kernel by default, if not switch
-    // to built-in kernels
-    hmap::Array  kernel_array;
-    hmap::Array *p_kernel = node.get_value_ref<hmap::Array>(P_KERNEL);
-
-    if (p_kernel)
-    {
-      kernel_array = *p_kernel;
-    }
-    else
-    {
-      int        ir           = node.val_pixel_radius(A_RADIUS);
-      glm::ivec2 kernel_shape = {2 * ir + 1, 2 * ir + 1};
-
-      kernel_array = hmap::get_kernel(kernel_shape,
-                                      node.val_enum<hmap::KernelType>(A_KERNEL));
-    }
-
-    // core operator
-    std::function<void(hmap::Array &, hmap::Array *)> lambda;
-
-    if (node.val<bool>(A_SHRINK))
-    {
-      hmap::for_each_tile(
-          {p_in, p_mask},
-          {p_out},
-          [&node, &kernel_array](std::vector<const hmap::Array *> p_arrays_in,
-                                 std::vector<hmap::Array *>       p_arrays_out,
-                                 const hmap::TileRegion &)
-          {
-            auto [pa_in, pa_mask] = unpack<2>(p_arrays_in);
-            auto [pa_out]         = unpack<1>(p_arrays_out);
-
-            *pa_out = *pa_in;
-
-            hmap::gpu::shrink(*pa_out,
-                              kernel_array,
-                              pa_mask,
-                              node.val<int>(A_ITERATIONS));
-          },
-          node.cfg().cm_gpu);
-    }
-    else
-    {
-      hmap::for_each_tile(
-          {p_in, p_mask},
-          {p_out},
-          [&node, &kernel_array](std::vector<const hmap::Array *> p_arrays_in,
-                                 std::vector<hmap::Array *>       p_arrays_out,
-                                 const hmap::TileRegion &)
-          {
-            auto [pa_in, pa_mask] = unpack<2>(p_arrays_in);
-            auto [pa_out]         = unpack<1>(p_arrays_out);
-
-            *pa_out = *pa_in;
-
-            hmap::gpu::expand(*pa_out,
-                              kernel_array,
-                              pa_mask,
-                              node.val<int>(A_ITERATIONS));
-          },
-          node.cfg().cm_gpu);
-    }
-
-    p_out->sync_overlap_buffers();
-
-    // post-process
-    post_process_heightmap(node, *p_out, p_in);
+    kernel_array = *p_kernel;
   }
+  else
+  {
+    int        ir           = node.val_pixel_radius(A_RADIUS);
+    glm::ivec2 kernel_shape = {2 * ir + 1, 2 * ir + 1};
+
+    kernel_array = hmap::get_kernel(kernel_shape,
+                                    node.val_enum<hmap::KernelType>(A_KERNEL));
+  }
+
+  // core operator
+  std::function<void(hmap::Array &, hmap::Array *)> lambda;
+
+  if (node.val<bool>(A_SHRINK))
+  {
+    hmap::for_each_tile(
+        {p_in, p_mask},
+        {p_out},
+        [&node, &kernel_array](std::vector<const hmap::Array *> p_arrays_in,
+                               std::vector<hmap::Array *>       p_arrays_out,
+                               const hmap::TileRegion &)
+        {
+          auto [pa_in, pa_mask] = unpack<2>(p_arrays_in);
+          auto [pa_out]         = unpack<1>(p_arrays_out);
+
+          *pa_out = *pa_in;
+
+          hmap::gpu::shrink(*pa_out, kernel_array, pa_mask, node.val<int>(A_ITERATIONS));
+        },
+        node.cfg().cm_gpu);
+  }
+  else
+  {
+    hmap::for_each_tile(
+        {p_in, p_mask},
+        {p_out},
+        [&node, &kernel_array](std::vector<const hmap::Array *> p_arrays_in,
+                               std::vector<hmap::Array *>       p_arrays_out,
+                               const hmap::TileRegion &)
+        {
+          auto [pa_in, pa_mask] = unpack<2>(p_arrays_in);
+          auto [pa_out]         = unpack<1>(p_arrays_out);
+
+          *pa_out = *pa_in;
+
+          hmap::gpu::expand(*pa_out, kernel_array, pa_mask, node.val<int>(A_ITERATIONS));
+        },
+        node.cfg().cm_gpu);
+  }
+
+  p_out->sync_overlap_buffers();
+
+  // post-process
+  post_process_heightmap(node, *p_out, p_in);
 }
 
 } // namespace hesiod

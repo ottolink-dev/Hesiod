@@ -13,37 +13,37 @@ struct PostProcessHeightmapOptions
   bool remap_active_state = true;
 };
 
-void blend_heightmaps(BaseNode           &node,
-                      hmap::VirtualArray &h_out,
-                      hmap::VirtualArray &h1,
-                      hmap::VirtualArray &h2,
-                      BlendingMethod      method,
-                      float               k = 0.f,
-                      int                 ir = 0,
-                      float               w1 = 1.f,
-                      float               w2 = 1.f);
+void blend_heightmaps(BaseNode                 &node,
+                      hmap::VirtualArray       &h_out,
+                      const hmap::VirtualArray &h1,
+                      const hmap::VirtualArray &h2,
+                      BlendingMethod            method,
+                      float                     k = 0.f,
+                      int                       ir = 0,
+                      float                     w1 = 1.f,
+                      float                     w2 = 1.f);
 
-void post_apply_enveloppe(BaseNode           &node,
-                          hmap::VirtualArray &h,
-                          hmap::VirtualArray *p_env);
+void post_apply_enveloppe(BaseNode                 &node,
+                          hmap::VirtualArray       &h,
+                          const hmap::VirtualArray *p_env);
 
 void post_apply_saturate_percentile(BaseNode           &node,
                                     hmap::VirtualArray &h,
                                     float               satmin,
                                     float               satmax);
 
-void post_process_heightmap(BaseNode           &node,
-                            hmap::VirtualArray &h,
-                            hmap::VirtualArray *p_in = nullptr);
+void post_process_heightmap(BaseNode                 &node,
+                            hmap::VirtualArray       &h,
+                            const hmap::VirtualArray *p_in = nullptr);
 
 void setup_post_process_heightmap_attributes(BaseNode                   &node,
                                              PostProcessHeightmapOptions options);
 
 // --- mask preprocessing
 
-std::shared_ptr<hmap::VirtualArray> pre_process_mask(BaseNode            &node,
-                                                     hmap::VirtualArray *&p_mask,
-                                                     hmap::VirtualArray  &h);
+hmap::VirtualArray pre_process_mask(BaseNode                 &node,
+                                    const hmap::VirtualArray *p_mask,
+                                    const hmap::VirtualArray &h);
 
 void setup_pre_process_mask_attributes(BaseNode &node);
 
@@ -58,10 +58,10 @@ struct DefaultNoiseOptions
   std::string noise_type = "OpenSimplex2";
 };
 
-void generate_noise(BaseNode            &node,
-                    hmap::VirtualArray *&p_noise,
-                    hmap::VirtualArray  &noise,
-                    uint                 seed_increment = 0);
+void generate_noise(BaseNode                  &node,
+                    const hmap::VirtualArray *&p_noise,
+                    hmap::VirtualArray        &noise,
+                    uint                       seed_increment = 0);
 void setup_default_noise(BaseNode &node, const DefaultNoiseOptions &options);
 
 // --- default map

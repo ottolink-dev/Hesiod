@@ -16,6 +16,7 @@ namespace hesiod
 // -----------------------------------------------------------------------------
 // Ports & Attributes
 // -----------------------------------------------------------------------------
+
 constexpr const char *P_IN  = "input";
 constexpr const char *P_OUT = "output";
 

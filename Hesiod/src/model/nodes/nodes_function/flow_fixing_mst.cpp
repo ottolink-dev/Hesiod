@@ -85,9 +85,9 @@ void compute_flow_fixing_mst_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  auto *p_in      = node.get_value_ref<hmap::VirtualArray>(P_IN);
-  auto *p_noise_r = node.get_value_ref<hmap::VirtualArray>(P_NOISE_R);
-  auto *p_out     = node.get_value_ref<hmap::VirtualArray>(P_OUT);
+  const auto *p_in      = node.get_value_ref<hmap::VirtualArray>(P_IN);
+  const auto *p_noise_r = node.get_value_ref<hmap::VirtualArray>(P_NOISE_R);
+  auto       *p_out     = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
   if (!p_in)
     return;

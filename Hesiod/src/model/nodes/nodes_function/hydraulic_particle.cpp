@@ -139,13 +139,13 @@ void compute_hydraulic_particle_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  auto *p_in         = node.get_value_ref<hmap::VirtualArray>(P_INPUT);
-  auto *p_bedrock    = node.get_value_ref<hmap::VirtualArray>(P_BEDROCK);
-  auto *p_moisture   = node.get_value_ref<hmap::VirtualArray>(P_MOISTURE);
-  auto *p_mask       = node.get_value_ref<hmap::VirtualArray>(P_MASK);
-  auto *p_out        = node.get_value_ref<hmap::VirtualArray>(P_OUTPUT);
-  auto *p_erosion    = node.get_value_ref<hmap::VirtualArray>(P_EROSION);
-  auto *p_deposition = node.get_value_ref<hmap::VirtualArray>(P_DEPOSITION);
+  const auto *p_in         = node.get_value_ref<hmap::VirtualArray>(P_INPUT);
+  const auto *p_bedrock    = node.get_value_ref<hmap::VirtualArray>(P_BEDROCK);
+  const auto *p_moisture   = node.get_value_ref<hmap::VirtualArray>(P_MOISTURE);
+  const auto *p_mask       = node.get_value_ref<hmap::VirtualArray>(P_MASK);
+  auto       *p_out        = node.get_value_ref<hmap::VirtualArray>(P_OUTPUT);
+  auto       *p_erosion    = node.get_value_ref<hmap::VirtualArray>(P_EROSION);
+  auto       *p_deposition = node.get_value_ref<hmap::VirtualArray>(P_DEPOSITION);
 
   if (!p_in)
     return;
@@ -178,7 +178,9 @@ void compute_hydraulic_particle_node(BaseNode &node)
 
   // --- Prepare mask
 
-  std::shared_ptr<hmap::VirtualArray> sp_mask = pre_process_mask(node, p_mask, *p_in);
+  hmap::VirtualArray mask_default = pre_process_mask(node, p_mask, *p_in);
+  if (!mask_default.empty())
+    p_mask = &mask_default;
 
   // --- Compute
 

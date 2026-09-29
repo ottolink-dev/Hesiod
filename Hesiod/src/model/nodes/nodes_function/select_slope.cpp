@@ -108,8 +108,8 @@ void compute_select_slope_node(BaseNode &node)
 
   // --- Inputs / Outputs
 
-  auto *p_in  = node.get_value_ref<hmap::VirtualArray>(P_IN);
-  auto *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
+  const auto *p_in  = node.get_value_ref<hmap::VirtualArray>(P_IN);
+  auto       *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
   if (!p_in || !p_out)
     return;
@@ -164,19 +164,20 @@ void compute_select_slope_node(BaseNode &node)
   {
     int ir = node.val_pixel_radius(A_RADIUS, 0);
 
+    // filtered field
+    *p_out = hmap::va::smooth_cpulse(*p_in, ir, nullptr, node.cfg().cm_gpu);
+
     hmap::for_each_tile(
-        {p_in},
+        {},
         {p_out},
-        [&node, &ir](std::vector<const hmap::Array *> p_arrays_in,
-                     std::vector<hmap::Array *>       p_arrays_out,
-                     const hmap::TileRegion &)
+        [&](std::vector<const hmap::Array *>,
+            std::vector<hmap::Array *> p_arrays_out,
+            const hmap::TileRegion &)
         {
-          auto [pa_in]  = unpack<1>(p_arrays_in);
           auto [pa_out] = unpack<1>(p_arrays_out);
-          *pa_out       = select_angle(*pa_in,
+          *pa_out       = select_angle(*pa_out,
                                  node.val<float>(A_ANGLE),
-                                 node.val<float>(A_SIGMA),
-                                 ir);
+                                 node.val<float>(A_SIGMA));
         },
         node.cfg().cm_cpu);
 

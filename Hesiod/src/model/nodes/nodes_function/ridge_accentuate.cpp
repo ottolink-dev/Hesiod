@@ -56,16 +56,17 @@ void compute_ridge_accentuate_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  auto *p_in  = node.get_value_ref<hmap::VirtualArray>(P_INPUT);
-  auto *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUTPUT);
+  const auto *p_in   = node.get_value_ref<hmap::VirtualArray>(P_INPUT);
+  const auto *p_mask = node.get_value_ref<hmap::VirtualArray>(P_MASK);
+  auto       *p_out  = node.get_value_ref<hmap::VirtualArray>(P_OUTPUT);
 
-  if (!p_in || !p_out)
+  if (!p_in)
     return;
 
-  auto *p_mask = node.get_value_ref<hmap::VirtualArray>(P_MASK);
-
   // prepare mask
-  std::shared_ptr<hmap::VirtualArray> sp_mask = pre_process_mask(node, p_mask, *p_in);
+  hmap::VirtualArray mask_default = pre_process_mask(node, p_mask, *p_in);
+  if (!mask_default.empty())
+    p_mask = &mask_default;
 
   const auto strength = node.val<float>(A_STRENGTH);
   const auto reverse  = node.val<bool>(A_REVERSE);

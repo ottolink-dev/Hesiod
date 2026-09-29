@@ -78,73 +78,73 @@ void compute_rifts_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  hmap::VirtualArray *p_in = node.get_value_ref<hmap::VirtualArray>(P_IN);
+  const auto *p_in   = node.get_value_ref<hmap::VirtualArray>(P_IN);
+  const auto *p_dx   = node.get_value_ref<hmap::VirtualArray>(P_DX);
+  const auto *p_dy   = node.get_value_ref<hmap::VirtualArray>(P_DY);
+  const auto *p_mask = node.get_value_ref<hmap::VirtualArray>(P_MASK);
+  auto       *p_out  = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
-  if (p_in)
-  {
-    hmap::VirtualArray *p_dx   = node.get_value_ref<hmap::VirtualArray>(P_DX);
-    hmap::VirtualArray *p_dy   = node.get_value_ref<hmap::VirtualArray>(P_DY);
-    hmap::VirtualArray *p_mask = node.get_value_ref<hmap::VirtualArray>(P_MASK);
-    hmap::VirtualArray *p_out  = node.get_value_ref<hmap::VirtualArray>(P_OUT);
+  if (!p_in)
+    return;
 
-    // prepare mask
-    std::shared_ptr<hmap::VirtualArray> sp_mask = pre_process_mask(node, p_mask, *p_in);
+  // prepare mask
+  hmap::VirtualArray mask_default = pre_process_mask(node, p_mask, *p_in);
+  if (!mask_default.empty())
+    p_mask = &mask_default;
 
-    // prepare default noise
-    hmap::VirtualArray noise_default(CONFIG(node));
-    generate_noise(node, p_dx, noise_default);
+  // prepare default noise
+  hmap::VirtualArray noise_default(CONFIG(node));
+  generate_noise(node, p_dx, noise_default);
 
-    // remap to [0, 1] as required by this filter
-    float hmin = p_in->min(node.cfg().cm_cpu);
-    float hmax = p_in->max(node.cfg().cm_cpu);
+  // remap to [0, 1] as required by this filter
+  float hmin = p_in->min(node.cfg().cm_cpu);
+  float hmax = p_in->max(node.cfg().cm_cpu);
 
-    hmap::for_each_tile(
-        {p_in, p_dx, p_dy, p_mask},
-        {p_out},
-        [&node, hmin, hmax](std::vector<const hmap::Array *> p_arrays_in,
-                            std::vector<hmap::Array *>       p_arrays_out,
-                            const hmap::TileRegion          &region)
-        {
-          auto [pa_in, pa_dx, pa_dy, pa_mask] = unpack<4>(p_arrays_in);
-          auto [pa_out]                       = unpack<1>(p_arrays_out);
+  hmap::for_each_tile(
+      {p_in, p_dx, p_dy, p_mask},
+      {p_out},
+      [&node, hmin, hmax](std::vector<const hmap::Array *> p_arrays_in,
+                          std::vector<hmap::Array *>       p_arrays_out,
+                          const hmap::TileRegion          &region)
+      {
+        auto [pa_in, pa_dx, pa_dy, pa_mask] = unpack<4>(p_arrays_in);
+        auto [pa_out]                       = unpack<1>(p_arrays_out);
 
-          *pa_out = *pa_in;
+        *pa_out = *pa_in;
 
-          hmap::remap(*pa_out, 0.f, 1.f, hmin, hmax);
+        hmap::remap(*pa_out, 0.f, 1.f, hmin, hmax);
 
-          hmap::gpu::rifts(*pa_out,
-                           node.val_wavenumber(A_KW),
-                           node.val<float>(A_ANGLE),
-                           node.val<float>(A_AMPLITUDE),
-                           node.val<int>(A_SEED),
-                           node.val<float>(A_ELEVATION_NOISE_SHIFT),
-                           node.val<float>(A_K_SMOOTH_BOTTOM),
-                           node.val<float>(A_K_SMOOTH_TOP),
-                           node.val<float>(A_RADIAL_SPREAD_AMP),
-                           node.val<float>(A_ELEVATION_NOISE_AMP),
-                           node.val<float>(A_CLAMP_VMIN),
-                           node.val<float>(A_REMAP_VMIN),
-                           node.val<bool>(A_APPLY_MASK),
-                           !node.val<bool>(A_REVERSE_MASK) &&
-                               node.val<bool>(A_APPLY_MASK),
-                           node.val<float>(A_MASK_GAMMA),
-                           pa_dx,
-                           pa_dy,
-                           pa_mask,
-                           node.val<glm::vec2>(A_CENTER),
-                           region.bbox);
-          hmap::remap(*pa_out, hmin, hmax, 0.f, 1.f);
-        },
-        node.cfg().cm_gpu);
+        hmap::gpu::rifts(*pa_out,
+                         node.val_wavenumber(A_KW),
+                         node.val<float>(A_ANGLE),
+                         node.val<float>(A_AMPLITUDE),
+                         node.val<int>(A_SEED),
+                         node.val<float>(A_ELEVATION_NOISE_SHIFT),
+                         node.val<float>(A_K_SMOOTH_BOTTOM),
+                         node.val<float>(A_K_SMOOTH_TOP),
+                         node.val<float>(A_RADIAL_SPREAD_AMP),
+                         node.val<float>(A_ELEVATION_NOISE_AMP),
+                         node.val<float>(A_CLAMP_VMIN),
+                         node.val<float>(A_REMAP_VMIN),
+                         node.val<bool>(A_APPLY_MASK),
+                         !node.val<bool>(A_REVERSE_MASK) && node.val<bool>(A_APPLY_MASK),
+                         node.val<float>(A_MASK_GAMMA),
+                         pa_dx,
+                         pa_dy,
+                         pa_mask,
+                         node.val<glm::vec2>(A_CENTER),
+                         region.bbox);
+        hmap::remap(*pa_out, hmin, hmax, 0.f, 1.f);
+      },
+      node.cfg().cm_gpu);
 
-    p_out->sync_overlap_buffers();
+  p_out->sync_overlap_buffers();
 
-    // remap to original range
-    p_out->remap(hmin, hmax, node.cfg().cm_cpu);
+  // remap to original range
+  p_out->remap(hmin, hmax, node.cfg().cm_cpu);
 
-    // post-process
-    post_process_heightmap(node, *p_out, p_in);
-  }
+  // post-process
+  post_process_heightmap(node, *p_out, p_in);
 }
 
 } // namespace hesiod

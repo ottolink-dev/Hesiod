@@ -82,10 +82,10 @@ void compute_circus_node(BaseNode &node)
 
   // --- Inputs / Outputs
 
-  auto *p_dr   = node.get_value_ref<hmap::VirtualArray>(P_DR);
-  auto *p_env  = node.get_value_ref<hmap::VirtualArray>(P_ENV);
-  auto *p_out  = node.get_value_ref<hmap::VirtualArray>(P_OUT);
-  auto *p_mask = node.get_value_ref<hmap::VirtualArray>(P_MASK);
+  const auto *p_dr   = node.get_value_ref<hmap::VirtualArray>(P_DR);
+  const auto *p_env  = node.get_value_ref<hmap::VirtualArray>(P_ENV);
+  auto       *p_out  = node.get_value_ref<hmap::VirtualArray>(P_OUT);
+  auto       *p_mask = node.get_value_ref<hmap::VirtualArray>(P_MASK);
 
   if (!p_out)
     return;

@@ -99,66 +99,67 @@ void compute_strata_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  hmap::VirtualArray *p_in = node.get_value_ref<hmap::VirtualArray>(P_IN);
+  const auto *p_in   = node.get_value_ref<hmap::VirtualArray>(P_IN);
+  const auto *p_mask = node.get_value_ref<hmap::VirtualArray>(P_MASK);
+  auto       *p_out  = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
-  if (p_in)
-  {
-    hmap::VirtualArray *p_mask = node.get_value_ref<hmap::VirtualArray>(P_MASK);
-    hmap::VirtualArray *p_out  = node.get_value_ref<hmap::VirtualArray>(P_OUT);
+  if (!p_in)
+    return;
 
-    // prepare mask
-    std::shared_ptr<hmap::VirtualArray> sp_mask = pre_process_mask(node, p_mask, *p_in);
+  // prepare mask
+  hmap::VirtualArray mask_default = pre_process_mask(node, p_mask, *p_in);
+  if (!mask_default.empty())
+    p_mask = &mask_default;
 
-    float hmin = p_in->min(node.cfg().cm_cpu);
-    float hmax = p_in->max(node.cfg().cm_cpu);
+  float hmin = p_in->min(node.cfg().cm_cpu);
+  float hmax = p_in->max(node.cfg().cm_cpu);
 
-    hmap::for_each_tile(
-        {p_in, p_mask},
-        {p_out},
-        [&node, hmin, hmax](std::vector<const hmap::Array *> p_arrays_in,
-                            std::vector<hmap::Array *>       p_arrays_out,
-                            const hmap::TileRegion          &region)
-        {
-          auto [pa_in, pa_mask] = unpack<2>(p_arrays_in);
-          auto [pa_out]         = unpack<1>(p_arrays_out);
+  hmap::for_each_tile(
+      {p_in, p_mask},
+      {p_out},
+      [&node, hmin, hmax](std::vector<const hmap::Array *> p_arrays_in,
+                          std::vector<hmap::Array *>       p_arrays_out,
+                          const hmap::TileRegion          &region)
+      {
+        auto [pa_in, pa_mask] = unpack<2>(p_arrays_in);
+        auto [pa_out]         = unpack<1>(p_arrays_out);
 
-          *pa_out = *pa_in;
+        *pa_out = *pa_in;
 
-          // remap to [0, 1] as required by this filter
-          hmap::remap(*pa_out, 0.f, 1.f, hmin, hmax);
+        // remap to [0, 1] as required by this filter
+        hmap::remap(*pa_out, 0.f, 1.f, hmin, hmax);
 
-          hmap::gpu::strata(*pa_out,
-                            node.val<float>(A_ANGLE),
-                            node.val<float>(A_SLOPE),
-                            node.val<float>(A_GAMMA),
-                            node.val<int>(A_SEED),
-                            node.val<bool>(A_LINEAR_GAMMA),
-                            node.val<float>(A_KZ),
-                            node.val<int>(A_OCTAVES),
-                            node.val<float>(A_LACUNARITY),
-                            node.val<float>(A_GAMMA_NOISE_RATIO),
-                            node.val<float>(A_NOISE_AMP),
-                            node.val_wavenumber(A_NOISE_KW),
-                            node.val<bool>(A_ENABLE_RIDGE_NOISE),
-                            node.val_wavenumber(A_RIDGE_NOISE_KW),
-                            node.val<float>(A_RIDGE_ANGLE_SHIFT),
-                            node.val<float>(A_RIDGE_NOISE_AMP),
-                            node.val<float>(A_RIDGE_CLAMP_VMIN),
-                            node.val<float>(A_RIDGE_REMAP_VMIN),
-                            node.val<bool>(A_APPLY_ELEVATION_MASK),
-                            node.val<bool>(A_APPLY_RIDGE_MASK),
-                            node.val<float>(A_MASK_GAMMA),
-                            pa_mask,
-                            region.bbox);
-        },
-        node.cfg().cm_gpu);
+        hmap::gpu::strata(*pa_out,
+                          node.val<float>(A_ANGLE),
+                          node.val<float>(A_SLOPE),
+                          node.val<float>(A_GAMMA),
+                          node.val<int>(A_SEED),
+                          node.val<bool>(A_LINEAR_GAMMA),
+                          node.val<float>(A_KZ),
+                          node.val<int>(A_OCTAVES),
+                          node.val<float>(A_LACUNARITY),
+                          node.val<float>(A_GAMMA_NOISE_RATIO),
+                          node.val<float>(A_NOISE_AMP),
+                          node.val_wavenumber(A_NOISE_KW),
+                          node.val<bool>(A_ENABLE_RIDGE_NOISE),
+                          node.val_wavenumber(A_RIDGE_NOISE_KW),
+                          node.val<float>(A_RIDGE_ANGLE_SHIFT),
+                          node.val<float>(A_RIDGE_NOISE_AMP),
+                          node.val<float>(A_RIDGE_CLAMP_VMIN),
+                          node.val<float>(A_RIDGE_REMAP_VMIN),
+                          node.val<bool>(A_APPLY_ELEVATION_MASK),
+                          node.val<bool>(A_APPLY_RIDGE_MASK),
+                          node.val<float>(A_MASK_GAMMA),
+                          pa_mask,
+                          region.bbox);
+      },
+      node.cfg().cm_gpu);
 
-    p_out->sync_overlap_buffers();
-    p_out->remap(hmin, hmax, node.cfg().cm_cpu);
+  p_out->sync_overlap_buffers();
+  p_out->remap(hmin, hmax, node.cfg().cm_cpu);
 
-    // post-process
-    post_process_heightmap(node, *p_out, p_in);
-  }
+  // post-process
+  post_process_heightmap(node, *p_out, p_in);
 }
 
 } // namespace hesiod

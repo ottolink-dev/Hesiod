@@ -71,9 +71,9 @@ void compute_gamma_correction_local_node(BaseNode &node)
 
   // --- Inputs / Outputs
 
-  auto *p_in   = node.get_value_ref<hmap::VirtualArray>(P_IN);
-  auto *p_mask = node.get_value_ref<hmap::VirtualArray>(P_MASK);
-  auto *p_out  = node.get_value_ref<hmap::VirtualArray>(P_OUT);
+  const auto *p_in   = node.get_value_ref<hmap::VirtualArray>(P_IN);
+  const auto *p_mask = node.get_value_ref<hmap::VirtualArray>(P_MASK);
+  auto       *p_out  = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
   if (!p_in)
     return;
@@ -90,7 +90,9 @@ void compute_gamma_correction_local_node(BaseNode &node)
 
   // --- Prepare mask
 
-  std::shared_ptr<hmap::VirtualArray> sp_mask = pre_process_mask(node, p_mask, *p_in);
+  hmap::VirtualArray mask_default = pre_process_mask(node, p_mask, *p_in);
+  if (!mask_default.empty())
+    p_mask = &mask_default;
 
   // --- Compute
 

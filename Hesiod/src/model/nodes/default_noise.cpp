@@ -12,10 +12,10 @@
 namespace hesiod
 {
 
-void generate_noise(BaseNode            &node,
-                    hmap::VirtualArray *&p_noise,
-                    hmap::VirtualArray  &noise,
-                    uint                 seed_increment)
+void generate_noise(BaseNode                  &node,
+                    const hmap::VirtualArray *&p_noise,
+                    hmap::VirtualArray        &noise,
+                    uint                       seed_increment)
 {
   if (p_noise || !node.val<bool>("dn_add_default_noise"))
     return;

@@ -62,74 +62,71 @@ void compute_valley_fill_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  hmap::VirtualArray *p_in = node.get_value_ref<hmap::VirtualArray>(P_IN);
+  const auto *p_in             = node.get_value_ref<hmap::VirtualArray>(P_IN);
+  const auto *p_noise          = node.get_value_ref<hmap::VirtualArray>(P_NOISE);
+  const auto *p_mask           = node.get_value_ref<hmap::VirtualArray>(P_MASK);
+  auto       *p_out            = node.get_value_ref<hmap::VirtualArray>(P_OUT);
+  auto       *p_deposition_map = node.get_value_ref<hmap::VirtualArray>(P_DEPOSITION);
 
-  if (p_in)
+  if (!p_in)
+    return;
+
+  // --- prepapre talus field
+
+  float talus      = node.val<float>(A_TALUS_GLOBAL) / (float)p_out->shape.x;
+  int   iterations = int(node.val<float>(A_DURATION) * p_out->shape.x);
+
+  hmap::VirtualArray talus_map = hmap::VirtualArray(CONFIG(node));
+  talus_map.fill(talus, node.cfg().cm_cpu);
+
+  if (node.val<bool>(A_SCALE_TALUS_WITH_ELEVATION))
   {
-    hmap::VirtualArray *p_out   = node.get_value_ref<hmap::VirtualArray>(P_OUT);
-    hmap::VirtualArray *p_noise = node.get_value_ref<hmap::VirtualArray>(P_NOISE);
-    hmap::VirtualArray *p_mask  = node.get_value_ref<hmap::VirtualArray>(P_MASK);
-    hmap::VirtualArray *p_deposition_map = node.get_value_ref<hmap::VirtualArray>(
-        P_DEPOSITION);
-
-    // --- prepapre talus field
-
-    float talus      = node.val<float>(A_TALUS_GLOBAL) / (float)p_out->shape.x;
-    int   iterations = int(node.val<float>(A_DURATION) * p_out->shape.x);
-
-    hmap::VirtualArray talus_map = hmap::VirtualArray(CONFIG(node));
-    talus_map.fill(talus, node.cfg().cm_cpu);
-
-    if (node.val<bool>(A_SCALE_TALUS_WITH_ELEVATION))
-    {
-      talus_map.copy_from(*p_in, node.cfg().cm_cpu);
-      talus_map.remap(talus / 10.f, talus, node.cfg().cm_cpu);
-    }
-
-    // --- generate default noise
-
-    hmap::VirtualArray noise_default(CONFIG(node));
-    generate_noise(node, p_noise, noise_default);
-
-    // --- execute
-
-    float zmin = p_in->min(node.cfg().cm_cpu);
-    float zmax = p_in->max(node.cfg().cm_cpu);
-
-    hmap::for_each_tile(
-        {p_in, p_noise, p_mask, &talus_map},
-        {p_out, p_deposition_map},
-        [&node, talus, iterations, zmin, zmax](
-            std::vector<const hmap::Array *> p_arrays_in,
-            std::vector<hmap::Array *>       p_arrays_out,
-            const hmap::TileRegion &)
-        {
-          auto [pa_in, pa_noise, pa_mask, pa_talus_map] = unpack<4>(p_arrays_in);
-          auto [pa_out, pa_deposition_map]              = unpack<2>(p_arrays_out);
-
-          *pa_out = *pa_in;
-
-          hmap::gpu::valley_fill(*pa_out,
-                                 pa_mask,
-                                 *pa_talus_map,
-                                 iterations,
-                                 node.val<float>(A_GAMMA),
-                                 node.val<float>(A_RATIO),
-                                 zmin,
-                                 zmax,
-                                 node.val<float>(A_ELEVATION_MAX_RATIO),
-                                 node.val<bool>(A_PRESERVE_ELEVATION_RANGE),
-                                 pa_noise,
-                                 pa_deposition_map);
-        },
-        node.cfg().cm_gpu);
-
-    // post-process
-    p_out->sync_overlap_buffers();
-    post_process_heightmap(node, *p_out, p_in);
-
-    p_deposition_map->remap(0.f, 1.f, node.cfg().cm_cpu);
+    talus_map.copy_from(*p_in, node.cfg().cm_cpu);
+    talus_map.remap(talus / 10.f, talus, node.cfg().cm_cpu);
   }
+
+  // --- generate default noise
+
+  hmap::VirtualArray noise_default(CONFIG(node));
+  generate_noise(node, p_noise, noise_default);
+
+  // --- execute
+
+  float zmin = p_in->min(node.cfg().cm_cpu);
+  float zmax = p_in->max(node.cfg().cm_cpu);
+
+  hmap::for_each_tile(
+      {p_in, p_noise, p_mask, &talus_map},
+      {p_out, p_deposition_map},
+      [&node, talus, iterations, zmin, zmax](std::vector<const hmap::Array *> p_arrays_in,
+                                             std::vector<hmap::Array *> p_arrays_out,
+                                             const hmap::TileRegion &)
+      {
+        auto [pa_in, pa_noise, pa_mask, pa_talus_map] = unpack<4>(p_arrays_in);
+        auto [pa_out, pa_deposition_map]              = unpack<2>(p_arrays_out);
+
+        *pa_out = *pa_in;
+
+        hmap::gpu::valley_fill(*pa_out,
+                               pa_mask,
+                               *pa_talus_map,
+                               iterations,
+                               node.val<float>(A_GAMMA),
+                               node.val<float>(A_RATIO),
+                               zmin,
+                               zmax,
+                               node.val<float>(A_ELEVATION_MAX_RATIO),
+                               node.val<bool>(A_PRESERVE_ELEVATION_RANGE),
+                               pa_noise,
+                               pa_deposition_map);
+      },
+      node.cfg().cm_gpu);
+
+  // post-process
+  p_out->sync_overlap_buffers();
+  post_process_heightmap(node, *p_out, p_in);
+
+  p_deposition_map->remap(0.f, 1.f, node.cfg().cm_cpu);
 }
 
 } // namespace hesiod

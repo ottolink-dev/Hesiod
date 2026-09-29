@@ -107,11 +107,11 @@ void compute_hydraulic_saleve_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  auto *p_in   = node.get_value_ref<hmap::VirtualArray>(P_IN);
-  auto *p_dx   = node.get_value_ref<hmap::VirtualArray>(P_DX);
-  auto *p_dy   = node.get_value_ref<hmap::VirtualArray>(P_DY);
-  auto *p_mask = node.get_value_ref<hmap::VirtualArray>(P_MASK);
-  auto *p_out  = node.get_value_ref<hmap::VirtualArray>(P_OUT);
+  const auto *p_in   = node.get_value_ref<hmap::VirtualArray>(P_IN);
+  const auto *p_dx   = node.get_value_ref<hmap::VirtualArray>(P_DX);
+  const auto *p_dy   = node.get_value_ref<hmap::VirtualArray>(P_DY);
+  const auto *p_mask = node.get_value_ref<hmap::VirtualArray>(P_MASK);
+  auto       *p_out  = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
   if (!p_in)
     return;
@@ -139,7 +139,7 @@ void compute_hydraulic_saleve_node(BaseNode &node)
   const auto enable_post_smoothing    = node.val<bool>(A_ENABLE_POST_SMOOTHING);
   const auto itp_method               = (node.val<std::string>(A_ITP_METHOD) == "Natural Neighbors") ? hmap::InterpolationMethod2D::ITP2D_NNI : hmap::InterpolationMethod2D::ITP2D_DELAUNAY_GRADIENT;
   // clang-format on
-  
+
   // --- Prepare default noise
 
   hmap::VirtualArray noise_default_x(CONFIG(node));
@@ -177,10 +177,9 @@ void compute_hydraulic_saleve_node(BaseNode &node)
     hmap::for_each_tile(
         {},
         {p_out},
-        [deposition_ir,
-         deposition_strength](std::vector<const hmap::Array *> p_arrays_in,
-                              std::vector<hmap::Array *>       p_arrays_out,
-                              const hmap::TileRegion &)
+        [deposition_ir, deposition_strength](std::vector<const hmap::Array *> p_arrays_in,
+                                             std::vector<hmap::Array *> p_arrays_out,
+                                             const hmap::TileRegion &)
         {
           auto [pa_out] = unpack<1>(p_arrays_out);
 
@@ -198,12 +197,10 @@ void compute_hydraulic_saleve_node(BaseNode &node)
     hmap::for_each_tile(
         {p_mask},
         {p_out},
-        [stream_strength,
-         deposition_ir,
-         deposition_strength,
-         stream_exp](std::vector<const hmap::Array *> p_arrays_in,
-                     std::vector<hmap::Array *>       p_arrays_out,
-                     const hmap::TileRegion &)
+        [stream_strength, deposition_ir, deposition_strength, stream_exp](
+            std::vector<const hmap::Array *> p_arrays_in,
+            std::vector<hmap::Array *>       p_arrays_out,
+            const hmap::TileRegion &)
         {
           auto [pa_mask] = unpack<1>(p_arrays_in);
           auto [pa_out]  = unpack<1>(p_arrays_out);

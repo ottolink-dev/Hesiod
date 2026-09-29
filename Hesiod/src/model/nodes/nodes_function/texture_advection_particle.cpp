@@ -64,17 +64,17 @@ void compute_texture_advection_particle_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  auto *p_z              = node.get_value_ref<hmap::VirtualArray>(P_ELEVATION);
-  auto *p_tex            = node.get_value_ref<hmap::VirtualTexture>(P_IN);
-  auto *p_advection_mask = node.get_value_ref<hmap::VirtualArray>(P_ADVECTION_MASK);
-  auto *p_mask           = node.get_value_ref<hmap::VirtualArray>(P_MASK);
-  auto *p_out            = node.get_value_ref<hmap::VirtualTexture>(P_TEXTURE);
+  const auto *p_z              = node.get_value_ref<hmap::VirtualArray>(P_ELEVATION);
+  const auto *p_tex            = node.get_value_ref<hmap::VirtualTexture>(P_IN);
+  const auto *p_advection_mask = node.get_value_ref<hmap::VirtualArray>(P_ADVECTION_MASK);
+  const auto *p_mask           = node.get_value_ref<hmap::VirtualArray>(P_MASK);
+  auto       *p_out            = node.get_value_ref<hmap::VirtualTexture>(P_TEXTURE);
 
   if (!p_z || !p_tex)
     return;
 
   // prepare mask
-  std::shared_ptr<hmap::VirtualArray> sp_mask = pre_process_mask(node, p_mask, *p_z);
+  hmap::VirtualArray mask_default = pre_process_mask(node, p_mask, *p_z);
 
   // number of particles based on the input particle density
   int nparticles = (int)(node.val<float>(A_PARTICLE_DENSITY) * p_out->shape.x *

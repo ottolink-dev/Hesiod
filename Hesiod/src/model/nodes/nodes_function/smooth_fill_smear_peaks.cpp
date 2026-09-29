@@ -42,38 +42,39 @@ void compute_smooth_fill_smear_peaks_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  hmap::VirtualArray *p_in = node.get_value_ref<hmap::VirtualArray>(P_IN);
+  const auto *p_in   = node.get_value_ref<hmap::VirtualArray>(P_IN);
+  const auto *p_mask = node.get_value_ref<hmap::VirtualArray>(P_MASK);
+  auto       *p_out  = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
-  if (p_in)
-  {
-    hmap::VirtualArray *p_mask = node.get_value_ref<hmap::VirtualArray>(P_MASK);
-    hmap::VirtualArray *p_out  = node.get_value_ref<hmap::VirtualArray>(P_OUT);
+  if (!p_in)
+    return;
 
-    // prepare mask
-    std::shared_ptr<hmap::VirtualArray> sp_mask = pre_process_mask(node, p_mask, *p_in);
+  // prepare mask
+  hmap::VirtualArray mask_default = pre_process_mask(node, p_mask, *p_in);
+  if (!mask_default.empty())
+    p_mask = &mask_default;
 
-    int ir = node.val_pixel_radius(A_RADIUS);
+  int ir = node.val_pixel_radius(A_RADIUS);
 
-    hmap::for_each_tile(
-        {p_in, p_mask},
-        {p_out},
-        [&ir](std::vector<const hmap::Array *> p_arrays_in,
-              std::vector<hmap::Array *>       p_arrays_out,
-              const hmap::TileRegion &)
-        {
-          auto [pa_in, pa_mask] = unpack<2>(p_arrays_in);
-          auto [pa_out]         = unpack<1>(p_arrays_out);
-          *pa_out               = *pa_in;
+  hmap::for_each_tile(
+      {p_in, p_mask},
+      {p_out},
+      [&ir](std::vector<const hmap::Array *> p_arrays_in,
+            std::vector<hmap::Array *>       p_arrays_out,
+            const hmap::TileRegion &)
+      {
+        auto [pa_in, pa_mask] = unpack<2>(p_arrays_in);
+        auto [pa_out]         = unpack<1>(p_arrays_out);
+        *pa_out               = *pa_in;
 
-          hmap::gpu::smooth_fill_smear_peaks(*pa_out, ir, pa_mask);
-        },
-        node.cfg().cm_gpu);
+        hmap::gpu::smooth_fill_smear_peaks(*pa_out, ir, pa_mask);
+      },
+      node.cfg().cm_gpu);
 
-    p_out->sync_overlap_buffers();
+  p_out->sync_overlap_buffers();
 
-    // post-process
-    post_process_heightmap(node, *p_out, p_in);
-  }
+  // post-process
+  post_process_heightmap(node, *p_out, p_in);
 }
 
 } // namespace hesiod

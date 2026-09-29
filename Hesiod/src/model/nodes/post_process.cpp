@@ -18,9 +18,9 @@
 namespace hesiod
 {
 
-void post_apply_enveloppe(BaseNode           &node,
-                          hmap::VirtualArray &h,
-                          hmap::VirtualArray *p_env)
+void post_apply_enveloppe(BaseNode                 &node,
+                          hmap::VirtualArray       &h,
+                          const hmap::VirtualArray *p_env)
 {
   Logger::log()->trace("post_apply_enveloppe: [{}]/[{}]",
                        node.get_node_type(),
@@ -75,9 +75,9 @@ void post_apply_saturate_percentile(BaseNode           &node,
       node.cfg().cm_cpu);
 }
 
-void post_process_heightmap(BaseNode           &node,
-                            hmap::VirtualArray &h,
-                            hmap::VirtualArray *p_in)
+void post_process_heightmap(BaseNode                 &node,
+                            hmap::VirtualArray       &h,
+                            const hmap::VirtualArray *p_in)
 {
   Logger::log()->trace("post_process_heightmap: [{}]/[{}]",
                        node.get_node_type(),

@@ -89,10 +89,10 @@ void compute_crater_node(BaseNode &node)
 
   // --- Inputs / Outputs
 
-  auto *p_noise       = node.get_value_ref<hmap::VirtualArray>(P_NOISE);
-  auto *p_envelope    = node.get_value_ref<hmap::VirtualArray>(P_ENVELOPE);
-  auto *p_out         = node.get_value_ref<hmap::VirtualArray>(P_OUT);
-  auto *p_crater_mask = node.get_value_ref<hmap::VirtualArray>(P_CRATER_MASK);
+  const auto *p_noise       = node.get_value_ref<hmap::VirtualArray>(P_NOISE);
+  const auto *p_envelope    = node.get_value_ref<hmap::VirtualArray>(P_ENVELOPE);
+  auto       *p_out         = node.get_value_ref<hmap::VirtualArray>(P_OUT);
+  auto       *p_crater_mask = node.get_value_ref<hmap::VirtualArray>(P_CRATER_MASK);
 
   // --- Params
 

@@ -84,10 +84,10 @@ void compute_coastal_erosion_profile_node(BaseNode &node)
 
   // --- Inputs / Outputs
 
-  auto *p_z     = node.get_value_ref<hmap::VirtualArray>(P_Z_IN);
-  auto *p_depth = node.get_value_ref<hmap::VirtualArray>(P_DEPTH_IN);
-  auto *p_noise = node.get_value_ref<hmap::VirtualArray>(P_NOISE);
-  auto *p_mask  = node.get_value_ref<hmap::VirtualArray>(P_MASK);
+  const auto *p_z     = node.get_value_ref<hmap::VirtualArray>(P_Z_IN);
+  const auto *p_depth = node.get_value_ref<hmap::VirtualArray>(P_DEPTH_IN);
+  const auto *p_noise = node.get_value_ref<hmap::VirtualArray>(P_NOISE);
+  const auto *p_mask  = node.get_value_ref<hmap::VirtualArray>(P_MASK);
 
   auto *p_z_out      = node.get_value_ref<hmap::VirtualArray>(P_Z_OUT);
   auto *p_depth_out  = node.get_value_ref<hmap::VirtualArray>(P_DEPTH_OUT);
@@ -115,7 +115,7 @@ void compute_coastal_erosion_profile_node(BaseNode &node)
 
   // --- Prepare mask
 
-  std::shared_ptr<hmap::VirtualArray> sp_mask = pre_process_mask(node, p_mask, *p_z);
+  hmap::VirtualArray mask_default = pre_process_mask(node, p_mask, *p_z);
 
   // --- Resolve default noise
 

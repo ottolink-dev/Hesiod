@@ -66,9 +66,9 @@ void compute_spectral_equalizer_node(BaseNode &node)
 
   // --- Inputs / Outputs
 
-  auto *p_in   = node.get_value_ref<hmap::VirtualArray>(P_INPUT);
-  auto *p_mask = node.get_value_ref<hmap::VirtualArray>(P_MASK);
-  auto *p_out  = node.get_value_ref<hmap::VirtualArray>(P_OUTPUT);
+  const auto *p_in   = node.get_value_ref<hmap::VirtualArray>(P_INPUT);
+  const auto *p_mask = node.get_value_ref<hmap::VirtualArray>(P_MASK);
+  auto       *p_out  = node.get_value_ref<hmap::VirtualArray>(P_OUTPUT);
 
   if (!p_in)
     return;
@@ -86,7 +86,9 @@ void compute_spectral_equalizer_node(BaseNode &node)
 
   // --- Prepare mask
 
-  std::shared_ptr<hmap::VirtualArray> sp_mask = pre_process_mask(node, p_mask, *p_in);
+  hmap::VirtualArray mask_default = pre_process_mask(node, p_mask, *p_in);
+  if (!mask_default.empty())
+    p_mask = &mask_default;
 
   // --- Compute
 

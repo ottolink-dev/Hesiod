@@ -98,14 +98,14 @@ void compute_hydraulic_procedural_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  auto p_in            = node.get_value_ref<hmap::VirtualArray>(P_INPUT);
-  auto p_noise_x       = node.get_value_ref<hmap::VirtualArray>(P_NOISE_X);
-  auto p_noise_y       = node.get_value_ref<hmap::VirtualArray>(P_NOISE_Y);
-  auto p_mask          = node.get_value_ref<hmap::VirtualArray>(P_MASK);
-  auto p_angle_shift   = node.get_value_ref<hmap::VirtualArray>(P_ANGLE_SHIFT);
-  auto p_kp_multiplier = node.get_value_ref<hmap::VirtualArray>(P_KP_MULTIPLIER);
-  auto p_out           = node.get_value_ref<hmap::VirtualArray>(P_OUTPUT);
-  auto p_ridge_mask    = node.get_value_ref<hmap::VirtualArray>(P_RIDGE_MASK);
+  const auto *p_in            = node.get_value_ref<hmap::VirtualArray>(P_INPUT);
+  const auto *p_noise_x       = node.get_value_ref<hmap::VirtualArray>(P_NOISE_X);
+  const auto *p_noise_y       = node.get_value_ref<hmap::VirtualArray>(P_NOISE_Y);
+  const auto *p_mask          = node.get_value_ref<hmap::VirtualArray>(P_MASK);
+  const auto *p_angle_shift   = node.get_value_ref<hmap::VirtualArray>(P_ANGLE_SHIFT);
+  const auto *p_kp_multiplier = node.get_value_ref<hmap::VirtualArray>(P_KP_MULTIPLIER);
+  auto       *p_out           = node.get_value_ref<hmap::VirtualArray>(P_OUTPUT);
+  auto       *p_ridge_mask    = node.get_value_ref<hmap::VirtualArray>(P_RIDGE_MASK);
 
   if (!p_in)
     return;
@@ -165,7 +165,9 @@ void compute_hydraulic_procedural_node(BaseNode &node)
 
   // --- Prepare mask
 
-  std::shared_ptr<hmap::VirtualArray> sp_mask = pre_process_mask(node, p_mask, *p_in);
+  hmap::VirtualArray mask_default = pre_process_mask(node, p_mask, *p_in);
+  if (!mask_default.empty())
+    p_mask = &mask_default;
 
   // --- Compute
 
