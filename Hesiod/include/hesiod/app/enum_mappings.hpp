@@ -154,6 +154,8 @@ static struct EnumMappings
       {"Z-Score", hmap::gpu::LocalMetrics::LM_LOCAL_Z_SCORE},
       {"Topographic Position Index",
        hmap::gpu::LocalMetrics::LM_TOPOGRAPHIC_POSITION_INDEX},
+      {"Topographic Wetness Index",
+       hmap::gpu::LocalMetrics::LM_TOPOGRAPHIC_WETNESS_INDEX},
       {"Relative Elevation", hmap::gpu::LocalMetrics::LM_RELATIVE_ELEVATION},
       {"Roughness", hmap::gpu::LocalMetrics::LM_ROUGHNESS},
       {"Ruggedness", hmap::gpu::LocalMetrics::LM_RUGGEDNESS},
