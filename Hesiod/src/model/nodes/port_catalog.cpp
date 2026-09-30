@@ -8,6 +8,8 @@
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
+#include "hesiod/model/nodes/macro_node.hpp"
+#include "hesiod/model/nodes/node_factory.hpp"
 
 namespace hesiod
 {
@@ -43,6 +45,17 @@ PortCatalog PortCatalog::from_documentation()
 
     catalog.ports[node_type] = std::move(infos);
   }
+
+  // macro interface nodes are not documented: one port each, typed by name
+  for (const auto &[node_type, category] : get_node_inventory())
+    if (is_macro_io_node_type(node_type))
+    {
+      const bool is_input = node_type.starts_with("MacroInput");
+      catalog.ports[node_type] = {
+          {is_input ? "output" : "input",
+           map_type_name(macro_io_data_type(node_type)),
+           is_input ? gnode::PortType::OUT : gnode::PortType::IN}};
+    }
 
   return catalog;
 }

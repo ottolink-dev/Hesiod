@@ -13,6 +13,7 @@
 
 // specific nodes
 #include "hesiod/model/nodes/broadcast_node.hpp"
+#include "hesiod/model/nodes/macro_node.hpp"
 #include "hesiod/model/nodes/receive_node.hpp"
 
 // setup node, create ports, attributes, define compute function,
@@ -269,6 +270,16 @@ std::map<std::string, std::string> get_node_inventory()
       {"MakeBinary", "Terrain Features/Morphology"},
       {"MakePeriodic", "Operator/Tiling"},
       {"MakePeriodicStitching", "WIP"}, // , "Operator/Tiling"},
+      {"MacroInputCloud", "Macro"},
+      {"MacroInputHeightmap", "Macro"},
+      {"MacroInputKernel", "Macro"},
+      {"MacroInputPath", "Macro"},
+      {"MacroInputTexture", "Macro"},
+      {"MacroOutputCloud", "Macro"},
+      {"MacroOutputHeightmap", "Macro"},
+      {"MacroOutputKernel", "Macro"},
+      {"MacroOutputPath", "Macro"},
+      {"MacroOutputTexture", "Macro"},
       {"MeanShift", "WIP"},
       {"Median3x3", "Filter/Smoothing"},
       {"MergeWaterDepths", "Hydrology"},
@@ -410,6 +421,15 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
     auto sptr = std::make_shared<hesiod::ReceiveNode>(node_type, config);
     setup_receive_node(*sptr);
     sptr->set_compute_fct(&compute_receive_node);
+    sptr->finalize_attributes();
+    return sptr;
+  }
+  else if (is_macro_io_node_type(node_type))
+  {
+    auto sptr = std::make_shared<hesiod::BaseNode>(node_type, config);
+    setup_macro_io_node(*sptr);
+    sptr->set_compute_fct([](BaseNode &) {}); // MacroNode moves the data
+    sptr->update_attributes_tool_tip();
     sptr->finalize_attributes();
     return sptr;
   }
