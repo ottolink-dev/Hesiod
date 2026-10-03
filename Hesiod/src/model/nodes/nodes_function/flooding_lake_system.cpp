@@ -19,7 +19,8 @@ namespace hesiod
 constexpr const char *P_ELEVATION   = "elevation";
 constexpr const char *P_WATER_DEPTH = "water_depth";
 
-constexpr const char *A_MININAL_RADIUS = "mininal_radius";
+constexpr const char *A_MININAL_RADIUS              = "mininal_radius";
+constexpr const char *A_USE_DISTRIBUTED_COMPUTATION = "use_distributed_computation";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -37,6 +38,11 @@ void setup_flooding_lake_system_node(BaseNode &node)
   // --- Attributes
 
   add_float(node, A_MININAL_RADIUS, "mininal_radius", 0., 0.f, 0.5f);
+
+  // --- Advanced parameters
+
+  node.set_current_category("Advanced");
+  add_bool(node, A_USE_DISTRIBUTED_COMPUTATION, "Use Distributed Algorithm", false);
 }
 
 // -----------------------------------------------------------------------------
@@ -53,10 +59,30 @@ void compute_flooding_lake_system_node(BaseNode &node)
   if (!p_in)
     return;
 
-  int   ir                = node.val_pixel_radius(A_MININAL_RADIUS, 0);
-  float surface_threshold = M_PI * ir * ir;
+  const auto use_distributed_computation = node.val<bool>(A_USE_DISTRIBUTED_COMPUTATION);
+  int        ir                          = node.val_pixel_radius(A_MININAL_RADIUS, 0);
+  float      surface_threshold           = M_PI * ir * ir;
 
-  *p_out = hmap::va::flooding_lake_system(*p_in, surface_threshold, node.cfg().cm_cpu);
+  if (use_distributed_computation)
+  {
+    *p_out = hmap::va::flooding_lake_system(*p_in, surface_threshold, node.cfg().cm_cpu);
+  }
+  else
+  {
+    hmap::for_each_tile(
+        {p_in},
+        {p_out},
+        [surface_threshold](std::vector<const hmap::Array *> p_arrays_in,
+                            std::vector<hmap::Array *>       p_arrays_out,
+                            const hmap::TileRegion &)
+        {
+          auto [pa_in]  = unpack<1>(p_arrays_in);
+          auto [pa_out] = unpack<1>(p_arrays_out);
+
+          *pa_out = hmap::flooding_lake_system(*pa_in, surface_threshold);
+        },
+        node.cfg().cm_single_array);
+  }
 }
 
 } // namespace hesiod

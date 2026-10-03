@@ -49,6 +49,16 @@ void override_export_nodes_settings(const std::string           &fname,
           }
         }
 
+        // force distributed computation
+        if (container.contains("use_distributed_computation"))
+        {
+          if (container["use_distributed_computation"].is_object() &&
+              container["use_distributed_computation"].contains("value"))
+            container["use_distributed_computation"]["value"] = true;
+          else if (container["use_distributed_computation"].is_boolean())
+            container["use_distributed_computation"] = true;
+        }
+
         // seed increment for variants
         if (random_seeds_increment > 0)
         {

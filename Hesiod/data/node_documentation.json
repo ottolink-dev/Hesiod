@@ -5252,6 +5252,12 @@
                     "post_saturate"
                 ],
                 "name": "main"
+            },
+            {
+                "keys": [
+                    "use_distributed_computation"
+                ],
+                "name": "Advanced"
             }
         ],
         "parameters": {
@@ -5313,6 +5319,12 @@
                 "description": "No description",
                 "key": "smoothing",
                 "label": "Smoothing",
+                "type": "Bool"
+            },
+            "use_distributed_computation": {
+                "description": "Enable distributed computation across tiles. Note that this option is forced to true when baking to support large domain scaling.",
+                "key": "use_distributed_computation",
+                "label": "Use Distributed Algorithm",
                 "type": "Bool"
             }
         },
@@ -7264,6 +7276,12 @@
                     "mininal_radius"
                 ],
                 "name": "main"
+            },
+            {
+                "keys": [
+                    "use_distributed_computation"
+                ],
+                "name": "Advanced"
             }
         ],
         "parameters": {
@@ -7272,6 +7290,12 @@
                 "key": "mininal_radius",
                 "label": "mininal_radius",
                 "type": "Float"
+            },
+            "use_distributed_computation": {
+                "description": "Enable distributed computation across tiles. Note that this option is forced to true when baking to support large domain scaling.",
+                "key": "use_distributed_computation",
+                "label": "Use Distributed Algorithm",
+                "type": "Bool"
             }
         },
         "ports": {
