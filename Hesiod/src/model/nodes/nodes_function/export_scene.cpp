@@ -227,6 +227,7 @@ void compute_export_scene_node(BaseNode &node)
 
   hmap::export_usd(fname,
                    array,
+		   {},
                    clouds,
                    paths,
                    mesh_type,
