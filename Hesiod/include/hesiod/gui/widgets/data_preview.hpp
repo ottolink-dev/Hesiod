@@ -5,6 +5,7 @@
 
 #include <QContextMenuEvent>
 #include <QLabel>
+#include <QMouseEvent>
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
@@ -46,6 +47,7 @@ public slots:
 
 protected:
   void contextMenuEvent(QContextMenuEvent *event) override;
+  void mousePressEvent(QMouseEvent *event) override;
 
 private:
   std::weak_ptr<BaseNode> model;

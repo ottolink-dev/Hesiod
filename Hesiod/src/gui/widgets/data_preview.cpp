@@ -15,6 +15,7 @@
 
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/widgets/data_preview.hpp"
+#include "hesiod/gui/widgets/menu_chrome.hpp"
 #include "hesiod/logger.hpp"
 
 namespace hesiod
@@ -43,7 +44,8 @@ DataPreview::DataPreview(std::weak_ptr<BaseNode> model, QWidget *parent)
   // Select first output, or fallback to first port
   this->preview_port_index = 0;
   for (int k = 0; k < p_model->get_nports(); ++k)
-    if (p_model->get_port_type(k) == gnode::PortType::OUT)
+    if (p_model->get_port_label(k) != "" &&
+        p_model->get_port_type(k) == gnode::PortType::OUT)
     {
       this->preview_port_index = k;
       break;
@@ -75,7 +77,7 @@ void DataPreview::contextMenuEvent(QContextMenuEvent *event)
     return;
   }
 
-  QMenu context_menu(this);
+  HsdMenu context_menu("Preview", this);
   context_menu.addSection("Preview type");
 
   for (auto &[label, type] : preview_type_map)
@@ -117,6 +119,17 @@ void DataPreview::contextMenuEvent(QContextMenuEvent *event)
         return;
       }
   }
+}
+
+void DataPreview::mousePressEvent(QMouseEvent *event)
+{
+  if (event->button() == Qt::RightButton)
+  {
+    event->accept();
+    return;
+  }
+
+  QLabel::mousePressEvent(event);
 }
 
 const QPixmap &DataPreview::get_preview_pixmap() const { return this->preview_pixmap; }
