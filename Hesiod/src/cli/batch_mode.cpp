@@ -251,44 +251,9 @@ void run_batch_mode(const std::string                  &filename,
 
   // load graph structure without running update yet
   nlohmann::json json = json_from_file(filename);
-
-  // force distributed computation in batch mode
-  auto force_distributed_attributes = [](nlohmann::json &container)
-  {
-    if (container.contains("use_distributed_computation"))
-    {
-      if (container["use_distributed_computation"].is_object() &&
-          container["use_distributed_computation"].contains("value"))
-        container["use_distributed_computation"]["value"] = true;
-      else if (container["use_distributed_computation"].is_boolean())
-        container["use_distributed_computation"] = true;
-    }
-  };
-
-  if (json.contains("graph_manager") && json["graph_manager"].contains("graph_nodes"))
-  {
-    for (auto &[key, value] : json["graph_manager"]["graph_nodes"].items())
-    {
-      if (value.contains("nodes"))
-      {
-        for (auto &j : value["nodes"])
-        {
-          if (j.contains("containers") && j["containers"].is_object())
-          {
-            for (auto &[cname, cval] : j["containers"].items())
-            {
-              if (cval.is_object())
-                force_distributed_attributes(cval);
-            }
-          }
-          force_distributed_attributes(j);
-        }
-      }
-    }
-  }
-
   graph_manager.json_from(json["graph_manager"], &config);
 
+  // force distributed computation in batch mode
   for (const auto &graph_id : graph_manager.get_graph_order())
   {
     GraphNode *p_graph = graph_manager.get_graph_ref_by_id(graph_id);
