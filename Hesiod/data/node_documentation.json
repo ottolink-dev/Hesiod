@@ -2786,19 +2786,32 @@
         "label": "CloudSetValues",
         "parameter_groups": [
             {
-                "keys": [],
+                "keys": [
+                    "comment"
+                ],
                 "name": "From Heightmap"
             },
             {
-                "keys": [],
+                "keys": [
+                    "comment"
+                ],
                 "name": "From Border Distance"
             },
             {
-                "keys": [],
+                "keys": [
+                    "comment"
+                ],
                 "name": "From Min Distance"
             }
         ],
-        "parameters": null,
+        "parameters": {
+            "comment": {
+                "description": "No description",
+                "key": "comment",
+                "label": "",
+                "type": "String"
+            }
+        },
         "ports": {
             "cloud": {
                 "caption": "cloud",
@@ -5249,15 +5262,10 @@
                     "post_gain",
                     "post_smoothing_radius",
                     "post_remap",
-                    "post_saturate"
-                ],
-                "name": "main"
-            },
-            {
-                "keys": [
+                    "post_saturate",
                     "use_distributed_computation"
                 ],
-                "name": "Advanced"
+                "name": "main"
             }
         ],
         "parameters": {
@@ -6505,6 +6513,121 @@
             }
         }
     },
+    "ExportScene": {
+        "category": "WIP",
+        "description": "No description available",
+        "label": "ExportScene",
+        "parameter_groups": [
+            {
+                "keys": [
+                    "fname",
+                    "pattern",
+                    "auto_export",
+                    "mesh_type",
+                    "max_error",
+                    "elevation_scaling",
+                    "fit_boundaries",
+                    "flip_x",
+                    "flip_y"
+                ],
+                "name": "main"
+            }
+        ],
+        "parameters": {
+            "auto_export": {
+                "description": "No description",
+                "key": "auto_export",
+                "label": "Auto Export on Node Update",
+                "type": "Bool"
+            },
+            "elevation_scaling": {
+                "description": "No description",
+                "key": "elevation_scaling",
+                "label": "Elevation Scale",
+                "type": "Float"
+            },
+            "fit_boundaries": {
+                "description": "No description",
+                "key": "fit_boundaries",
+                "label": "Fit Boundaries",
+                "type": "Bool"
+            },
+            "flip_x": {
+                "description": "No description",
+                "key": "flip_x",
+                "label": "Flip-X",
+                "type": "Bool"
+            },
+            "flip_y": {
+                "description": "No description",
+                "key": "flip_y",
+                "label": "Flip-Y",
+                "type": "Bool"
+            },
+            "fname": {
+                "description": "No description",
+                "key": "fname",
+                "label": "Export File",
+                "type": "Filename"
+            },
+            "max_error": {
+                "description": "No description",
+                "key": "max_error",
+                "label": "Max Error",
+                "type": "Float"
+            },
+            "mesh_type": {
+                "description": "No description",
+                "key": "mesh_type",
+                "label": "Mesh Type:",
+                "type": "Enumeration"
+            },
+            "pattern": {
+                "description": "No description",
+                "key": "pattern",
+                "label": "Filename Pattern",
+                "type": "String"
+            }
+        },
+        "ports": {
+            "cloud 1": {
+                "caption": "cloud 1",
+                "data_type": "Cloud",
+                "description": "No description",
+                "type": "input"
+            },
+            "cloud 2": {
+                "caption": "cloud 2",
+                "data_type": "Cloud",
+                "description": "No description",
+                "type": "input"
+            },
+            "heightmap": {
+                "caption": "heightmap",
+                "data_type": "VirtualArray",
+                "description": "No description",
+                "type": "input"
+            },
+            "path 1": {
+                "caption": "path 1",
+                "data_type": "Path",
+                "description": "No description",
+                "type": "input"
+            },
+            "path 2": {
+                "caption": "path 2",
+                "data_type": "Path",
+                "description": "No description",
+                "type": "input"
+            },
+            "texture": {
+                "caption": "texture",
+                "data_type": "VirtualTexture",
+                "description": "No description",
+                "type": "input"
+            }
+        }
+    },
     "ExportTexture": {
         "category": "Export",
         "description": "ExportTexture is a texture to a PNG image file.",
@@ -7273,15 +7396,10 @@
         "parameter_groups": [
             {
                 "keys": [
-                    "mininal_radius"
-                ],
-                "name": "main"
-            },
-            {
-                "keys": [
+                    "mininal_radius",
                     "use_distributed_computation"
                 ],
-                "name": "Advanced"
+                "name": "main"
             }
         ],
         "parameters": {
@@ -8412,7 +8530,8 @@
                     "post_gain",
                     "post_smoothing_radius",
                     "post_remap",
-                    "post_saturate"
+                    "post_saturate",
+                    "min_max_kernel"
                 ],
                 "name": "main"
             }
@@ -8459,6 +8578,12 @@
                 "key": "mask_type",
                 "label": "Mask Type",
                 "type": "Choice"
+            },
+            "min_max_kernel": {
+                "description": "No description",
+                "key": "min_max_kernel",
+                "label": "Kernel Type",
+                "type": "Enumeration"
             },
             "post_gain": {
                 "description": "Mid-centered gain transformation applied to the elevation values. This is a non-linear recurve operator centered around the mid elevation (typically 0.5). Increasing the gain pushes values toward the minimum and maximum elevations, creating flatter low/high regions with a steeper transition around the midpoint.",
@@ -9748,6 +9873,743 @@
             }
         }
     },
+    "HydraulicMcDonald": {
+        "category": "WIP",
+        "description": "No description available",
+        "label": "HydraulicMcDonald",
+        "parameter_groups": [
+            {
+                "keys": [
+                    "seed",
+                    "steps",
+                    "strength",
+                    "deposition",
+                    "crit_slope",
+                    "meandering",
+                    "scale",
+                    "relief_scale",
+                    "use_physical_override",
+                    "world_extent_km",
+                    "z_scale_km",
+                    "samples",
+                    "maxage",
+                    "lrate",
+                    "time_step",
+                    "rainfall",
+                    "evap_rate",
+                    "gravity",
+                    "viscosity",
+                    "bed_shear",
+                    "settle_rate",
+                    "thermal_rate",
+                    "deposition_rate",
+                    "suspension_rate",
+                    "exit_slope",
+                    "mask_activate",
+                    "mask_type",
+                    "mask_inverse",
+                    "mask_radius",
+                    "mask_gain",
+                    "post_mix_method",
+                    "post_mix",
+                    "post_inverse",
+                    "post_gamma",
+                    "post_gain",
+                    "post_smoothing_radius",
+                    "post_remap",
+                    "post_saturate"
+                ],
+                "name": "Single-Scale"
+            },
+            {
+                "keys": [
+                    "seed",
+                    "levels",
+                    "steps",
+                    "strength",
+                    "deposition",
+                    "crit_slope",
+                    "meandering",
+                    "scale",
+                    "relief_scale",
+                    "use_physical_override",
+                    "world_extent_km",
+                    "z_scale_km",
+                    "samples",
+                    "maxage",
+                    "lrate",
+                    "time_step",
+                    "rainfall",
+                    "evap_rate",
+                    "gravity",
+                    "viscosity",
+                    "bed_shear",
+                    "settle_rate",
+                    "thermal_rate",
+                    "deposition_rate",
+                    "suspension_rate",
+                    "exit_slope",
+                    "mask_activate",
+                    "mask_type",
+                    "mask_inverse",
+                    "mask_radius",
+                    "mask_gain",
+                    "post_mix_method",
+                    "post_mix",
+                    "post_inverse",
+                    "post_gamma",
+                    "post_gain",
+                    "post_smoothing_radius",
+                    "post_remap",
+                    "post_saturate"
+                ],
+                "name": "Multiscale"
+            }
+        ],
+        "parameters": {
+            "bed_shear": {
+                "description": "No description",
+                "key": "bed_shear",
+                "label": "Bed Shear",
+                "type": "Float"
+            },
+            "crit_slope": {
+                "description": "No description",
+                "key": "crit_slope",
+                "label": "Critical Slope",
+                "type": "Float"
+            },
+            "deposition": {
+                "description": "No description",
+                "key": "deposition",
+                "label": "Deposition",
+                "type": "Float"
+            },
+            "deposition_rate": {
+                "description": "No description",
+                "key": "deposition_rate",
+                "label": "Deposition Rate",
+                "type": "Float"
+            },
+            "evap_rate": {
+                "description": "No description",
+                "key": "evap_rate",
+                "label": "Evaporation Rate",
+                "type": "Float"
+            },
+            "exit_slope": {
+                "description": "No description",
+                "key": "exit_slope",
+                "label": "Exit Slope",
+                "type": "Float"
+            },
+            "gravity": {
+                "description": "No description",
+                "key": "gravity",
+                "label": "Gravity",
+                "type": "Float"
+            },
+            "levels": {
+                "description": "No description",
+                "key": "levels",
+                "label": "Levels",
+                "type": "Integer"
+            },
+            "lrate": {
+                "description": "No description",
+                "key": "lrate",
+                "label": "Filter Rate",
+                "type": "Float"
+            },
+            "mask_activate": {
+                "description": "Enables or disables the internal mask. If the node's 'mask' input is connected, this setting is bypassed and the input mask is used instead.",
+                "key": "mask_activate",
+                "label": "Activate Default Mask",
+                "type": "Bool"
+            },
+            "mask_gain": {
+                "description": "Controls the intensity or influence of the internal mask. Bypassed if the 'mask' input is connected.",
+                "key": "mask_gain",
+                "label": "Mask Gain",
+                "type": "Float"
+            },
+            "mask_inverse": {
+                "description": "Inverts the internal mask, applying the operator where the mask is low. Ignored if a 'mask' input is provided.",
+                "key": "mask_inverse",
+                "label": "Inverse Mask",
+                "type": "Bool"
+            },
+            "mask_radius": {
+                "description": "Defines the smoothing radius for the internal mask. A value of 0 disables smoothing. This is bypassed if the 'mask' input is used.",
+                "key": "mask_radius",
+                "label": "Mask Radius",
+                "type": "Float"
+            },
+            "mask_type": {
+                "description": "Specifies how the internal mask is computed: 'Elevation' uses height, 'Gradient Norm' uses slope, and 'Elevation mid-range' selects the middle portion of the height range. This parameter is ignored when a 'mask' input is connected.",
+                "key": "mask_type",
+                "label": "Mask Type",
+                "type": "Choice"
+            },
+            "maxage": {
+                "description": "No description",
+                "key": "maxage",
+                "label": "Max Age",
+                "type": "Integer"
+            },
+            "meandering": {
+                "description": "No description",
+                "key": "meandering",
+                "label": "Meandering",
+                "type": "Float"
+            },
+            "post_gain": {
+                "description": "Mid-centered gain transformation applied to the elevation values. This is a non-linear recurve operator centered around the mid elevation (typically 0.5). Increasing the gain pushes values toward the minimum and maximum elevations, creating flatter low/high regions with a steeper transition around the midpoint.",
+                "key": "post_gain",
+                "label": "Gain",
+                "type": "Float"
+            },
+            "post_gamma": {
+                "description": "Standard gamma correction applied to the elevation values. This is a monotonic power-law remapping that shifts emphasis toward low or high elevations, making the overall shape sharper or bulkier without changing its ordering.",
+                "key": "post_gamma",
+                "label": "Gamma",
+                "type": "Float"
+            },
+            "post_inverse": {
+                "description": "Inverts the output values after processing, flipping low and high values across the midrange.",
+                "key": "post_inverse",
+                "label": "Invert Output",
+                "type": "Bool"
+            },
+            "post_mix": {
+                "description": "Mixing factor for blending input and output values. A value of 0 uses only the input, 1 uses only the output, and intermediate values perform a linear interpolation.",
+                "key": "post_mix",
+                "label": "Mix Factor",
+                "type": "Float"
+            },
+            "post_mix_method": {
+                "description": "Method used to combine input and output values. Options include linear interpolation (default), min, max, smooth min, smooth max, add, and subtract.",
+                "key": "post_mix_method",
+                "label": "Mix Method",
+                "type": "Enumeration"
+            },
+            "post_remap": {
+                "description": "Linearly remaps the output values to a specified target range (default is [0, 1]).",
+                "key": "post_remap",
+                "label": "Remap Range",
+                "type": "Value range"
+            },
+            "post_saturate": {
+                "description": "Modifies the amplitude of elevations by first clamping them to a given interval and then scaling them so that the restricted interval matches the original input range. This enhances contrast in elevation variations while maintaining overall structure.",
+                "key": "post_saturate",
+                "label": "Saturation Range",
+                "type": "Value range"
+            },
+            "post_smoothing_radius": {
+                "description": "Defines the radius for post-processing smoothing, determining the size of the neighborhood used to average local values and reduce high-frequency detail. A radius of 0 disables smoothing.",
+                "key": "post_smoothing_radius",
+                "label": "Smoothing Radius",
+                "type": "Float"
+            },
+            "rainfall": {
+                "description": "No description",
+                "key": "rainfall",
+                "label": "Rainfall",
+                "type": "Float"
+            },
+            "relief_scale": {
+                "description": "No description",
+                "key": "relief_scale",
+                "label": "Relief Scale",
+                "type": "Float"
+            },
+            "samples": {
+                "description": "No description",
+                "key": "samples",
+                "label": "Samples",
+                "type": "Integer"
+            },
+            "scale": {
+                "description": "No description",
+                "key": "scale",
+                "label": "Scale",
+                "type": "Float"
+            },
+            "seed": {
+                "description": "Random seed number. The random seed is an offset to the randomized process. A different seed will produce a new result.",
+                "key": "seed",
+                "label": "Seed",
+                "type": "Random seed number"
+            },
+            "settle_rate": {
+                "description": "No description",
+                "key": "settle_rate",
+                "label": "Settle Rate",
+                "type": "Float"
+            },
+            "steps": {
+                "description": "No description",
+                "key": "steps",
+                "label": "Steps",
+                "type": "Integer"
+            },
+            "strength": {
+                "description": "No description",
+                "key": "strength",
+                "label": "Strength",
+                "type": "Float"
+            },
+            "suspension_rate": {
+                "description": "No description",
+                "key": "suspension_rate",
+                "label": "Suspension Rate",
+                "type": "Float"
+            },
+            "thermal_rate": {
+                "description": "No description",
+                "key": "thermal_rate",
+                "label": "Thermal Rate",
+                "type": "Float"
+            },
+            "time_step": {
+                "description": "No description",
+                "key": "time_step",
+                "label": "Time Step",
+                "type": "Float"
+            },
+            "use_physical_override": {
+                "description": "No description",
+                "key": "use_physical_override",
+                "label": "Custom Physical Parameters",
+                "type": "Bool"
+            },
+            "viscosity": {
+                "description": "No description",
+                "key": "viscosity",
+                "label": "Viscosity",
+                "type": "Float"
+            },
+            "world_extent_km": {
+                "description": "No description",
+                "key": "world_extent_km",
+                "label": "World Extent (km)",
+                "type": "Float"
+            },
+            "z_scale_km": {
+                "description": "No description",
+                "key": "z_scale_km",
+                "label": "Elevation Range (km)",
+                "type": "Float"
+            }
+        },
+        "ports": {
+            "discharge": {
+                "caption": "discharge",
+                "data_type": "VirtualArray",
+                "description": "No description",
+                "type": "output"
+            },
+            "input": {
+                "caption": "input",
+                "data_type": "VirtualArray",
+                "description": "No description",
+                "type": "input"
+            },
+            "mask": {
+                "caption": "mask",
+                "data_type": "VirtualArray",
+                "description": "No description",
+                "type": "input"
+            },
+            "moisture": {
+                "caption": "moisture",
+                "data_type": "VirtualArray",
+                "description": "No description",
+                "type": "input"
+            },
+            "output": {
+                "caption": "output",
+                "data_type": "VirtualArray",
+                "description": "No description",
+                "type": "output"
+            },
+            "sediment": {
+                "caption": "sediment",
+                "data_type": "VirtualArray",
+                "description": "No description",
+                "type": "output"
+            }
+        }
+    },
+    "HydraulicMise": {
+        "category": "Erosion/Hydraulic",
+        "description": "HydraulicMise simulates multiscale implicit stream-power hydraulic erosion (MISE) with hillslope diffusion, sediment transport, deposition, and multi-resolution scheduling.",
+        "label": "HydraulicMise",
+        "parameter_groups": [
+            {
+                "keys": [
+                    "seed",
+                    "strength",
+                    "area_exp",
+                    "downcutting",
+                    "thermal",
+                    "debris",
+                    "talus",
+                    "cliff",
+                    "deposition_rate",
+                    "deposition_slope",
+                    "deposition_exp",
+                    "deposition_area",
+                    "lake_fill",
+                    "sediment_erodibility",
+                    "sediment_talus",
+                    "sediment_relax_iters",
+                    "receiver_exp",
+                    "slope_correction_max",
+                    "base_res",
+                    "share_ratio",
+                    "iters0",
+                    "iters_decay",
+                    "iters_min",
+                    "skip_finest",
+                    "warp",
+                    "antialias",
+                    "extrapolate_border",
+                    "exact_flood",
+                    "mask_activate",
+                    "mask_type",
+                    "mask_inverse",
+                    "mask_radius",
+                    "mask_gain",
+                    "post_mix_method",
+                    "post_mix",
+                    "post_inverse",
+                    "post_gamma",
+                    "post_gain",
+                    "post_smoothing_radius",
+                    "post_remap",
+                    "post_saturate"
+                ],
+                "name": "main"
+            }
+        ],
+        "parameters": {
+            "antialias": {
+                "description": "No description",
+                "key": "antialias",
+                "label": "Antialias Factor",
+                "type": "Float"
+            },
+            "area_exp": {
+                "description": "No description",
+                "key": "area_exp",
+                "label": "Drainage Area Exponent",
+                "type": "Float"
+            },
+            "base_res": {
+                "description": "No description",
+                "key": "base_res",
+                "label": "Base Resolution",
+                "type": "Integer"
+            },
+            "cliff": {
+                "description": "No description",
+                "key": "cliff",
+                "label": "Cliff Slope Limit",
+                "type": "Float"
+            },
+            "debris": {
+                "description": "No description",
+                "key": "debris",
+                "label": "Debris Rate",
+                "type": "Float"
+            },
+            "deposition_area": {
+                "description": "No description",
+                "key": "deposition_area",
+                "label": "Deposition Area",
+                "type": "Float"
+            },
+            "deposition_exp": {
+                "description": "No description",
+                "key": "deposition_exp",
+                "label": "Deposition Exponent",
+                "type": "Float"
+            },
+            "deposition_rate": {
+                "description": "No description",
+                "key": "deposition_rate",
+                "label": "Deposition Rate",
+                "type": "Float"
+            },
+            "deposition_slope": {
+                "description": "No description",
+                "key": "deposition_slope",
+                "label": "Deposition Slope",
+                "type": "Float"
+            },
+            "downcutting": {
+                "description": "No description",
+                "key": "downcutting",
+                "label": "Downcutting Limit",
+                "type": "Float"
+            },
+            "exact_flood": {
+                "description": "No description",
+                "key": "exact_flood",
+                "label": "Exact Flood Queue",
+                "type": "Bool"
+            },
+            "extrapolate_border": {
+                "description": "No description",
+                "key": "extrapolate_border",
+                "label": "Extrapolate Border",
+                "type": "Bool"
+            },
+            "iters0": {
+                "description": "No description",
+                "key": "iters0",
+                "label": "Base Level Iterations",
+                "type": "Integer"
+            },
+            "iters_decay": {
+                "description": "No description",
+                "key": "iters_decay",
+                "label": "Iteration Decay",
+                "type": "Float"
+            },
+            "iters_min": {
+                "description": "No description",
+                "key": "iters_min",
+                "label": "Min Iterations",
+                "type": "Integer"
+            },
+            "lake_fill": {
+                "description": "No description",
+                "key": "lake_fill",
+                "label": "Lake Fill Ratio",
+                "type": "Float"
+            },
+            "mask_activate": {
+                "description": "Enables or disables the internal mask. If the node's 'mask' input is connected, this setting is bypassed and the input mask is used instead.",
+                "key": "mask_activate",
+                "label": "Activate Default Mask",
+                "type": "Bool"
+            },
+            "mask_gain": {
+                "description": "Controls the intensity or influence of the internal mask. Bypassed if the 'mask' input is connected.",
+                "key": "mask_gain",
+                "label": "Mask Gain",
+                "type": "Float"
+            },
+            "mask_inverse": {
+                "description": "Inverts the internal mask, applying the operator where the mask is low. Ignored if a 'mask' input is provided.",
+                "key": "mask_inverse",
+                "label": "Inverse Mask",
+                "type": "Bool"
+            },
+            "mask_radius": {
+                "description": "Defines the smoothing radius for the internal mask. A value of 0 disables smoothing. This is bypassed if the 'mask' input is used.",
+                "key": "mask_radius",
+                "label": "Mask Radius",
+                "type": "Float"
+            },
+            "mask_type": {
+                "description": "Specifies how the internal mask is computed: 'Elevation' uses height, 'Gradient Norm' uses slope, and 'Elevation mid-range' selects the middle portion of the height range. This parameter is ignored when a 'mask' input is connected.",
+                "key": "mask_type",
+                "label": "Mask Type",
+                "type": "Choice"
+            },
+            "post_gain": {
+                "description": "Mid-centered gain transformation applied to the elevation values. This is a non-linear recurve operator centered around the mid elevation (typically 0.5). Increasing the gain pushes values toward the minimum and maximum elevations, creating flatter low/high regions with a steeper transition around the midpoint.",
+                "key": "post_gain",
+                "label": "Gain",
+                "type": "Float"
+            },
+            "post_gamma": {
+                "description": "Standard gamma correction applied to the elevation values. This is a monotonic power-law remapping that shifts emphasis toward low or high elevations, making the overall shape sharper or bulkier without changing its ordering.",
+                "key": "post_gamma",
+                "label": "Gamma",
+                "type": "Float"
+            },
+            "post_inverse": {
+                "description": "Inverts the output values after processing, flipping low and high values across the midrange.",
+                "key": "post_inverse",
+                "label": "Invert Output",
+                "type": "Bool"
+            },
+            "post_mix": {
+                "description": "Mixing factor for blending input and output values. A value of 0 uses only the input, 1 uses only the output, and intermediate values perform a linear interpolation.",
+                "key": "post_mix",
+                "label": "Mix Factor",
+                "type": "Float"
+            },
+            "post_mix_method": {
+                "description": "Method used to combine input and output values. Options include linear interpolation (default), min, max, smooth min, smooth max, add, and subtract.",
+                "key": "post_mix_method",
+                "label": "Mix Method",
+                "type": "Enumeration"
+            },
+            "post_remap": {
+                "description": "Linearly remaps the output values to a specified target range (default is [0, 1]).",
+                "key": "post_remap",
+                "label": "Remap Range",
+                "type": "Value range"
+            },
+            "post_saturate": {
+                "description": "Modifies the amplitude of elevations by first clamping them to a given interval and then scaling them so that the restricted interval matches the original input range. This enhances contrast in elevation variations while maintaining overall structure.",
+                "key": "post_saturate",
+                "label": "Saturation Range",
+                "type": "Value range"
+            },
+            "post_smoothing_radius": {
+                "description": "Defines the radius for post-processing smoothing, determining the size of the neighborhood used to average local values and reduce high-frequency detail. A radius of 0 disables smoothing.",
+                "key": "post_smoothing_radius",
+                "label": "Smoothing Radius",
+                "type": "Float"
+            },
+            "receiver_exp": {
+                "description": "No description",
+                "key": "receiver_exp",
+                "label": "Receiver Exponent",
+                "type": "Float"
+            },
+            "sediment_erodibility": {
+                "description": "No description",
+                "key": "sediment_erodibility",
+                "label": "Sediment Erodibility",
+                "type": "Float"
+            },
+            "sediment_relax_iters": {
+                "description": "No description",
+                "key": "sediment_relax_iters",
+                "label": "Sediment Relax Iterations",
+                "type": "Integer"
+            },
+            "sediment_talus": {
+                "description": "No description",
+                "key": "sediment_talus",
+                "label": "Sediment Talus Slope",
+                "type": "Float"
+            },
+            "seed": {
+                "description": "Random seed number. The random seed is an offset to the randomized process. A different seed will produce a new result.",
+                "key": "seed",
+                "label": "Seed",
+                "type": "Random seed number"
+            },
+            "share_ratio": {
+                "description": "No description",
+                "key": "share_ratio",
+                "label": "Strength Share Ratio",
+                "type": "Float"
+            },
+            "skip_finest": {
+                "description": "No description",
+                "key": "skip_finest",
+                "label": "Skip Finest Levels",
+                "type": "Integer"
+            },
+            "slope_correction_max": {
+                "description": "No description",
+                "key": "slope_correction_max",
+                "label": "Max Slope Correction",
+                "type": "Float"
+            },
+            "strength": {
+                "description": "No description",
+                "key": "strength",
+                "label": "Erosion Strength",
+                "type": "Float"
+            },
+            "talus": {
+                "description": "No description",
+                "key": "talus",
+                "label": "Talus Slope",
+                "type": "Float"
+            },
+            "thermal": {
+                "description": "No description",
+                "key": "thermal",
+                "label": "Thermal Rate",
+                "type": "Float"
+            },
+            "warp": {
+                "description": "No description",
+                "key": "warp",
+                "label": "Domain Warp",
+                "type": "Float"
+            }
+        },
+        "ports": {
+            "bedrock": {
+                "caption": "bedrock",
+                "data_type": "VirtualArray",
+                "description": "No description",
+                "type": "input"
+            },
+            "deposition": {
+                "caption": "deposition",
+                "data_type": "VirtualArray",
+                "description": "No description",
+                "type": "output"
+            },
+            "erodibility": {
+                "caption": "erodibility",
+                "data_type": "VirtualArray",
+                "description": "No description",
+                "type": "input"
+            },
+            "erosion": {
+                "caption": "erosion",
+                "data_type": "VirtualArray",
+                "description": "No description",
+                "type": "output"
+            },
+            "flow": {
+                "caption": "flow",
+                "data_type": "VirtualArray",
+                "description": "No description",
+                "type": "output"
+            },
+            "input": {
+                "caption": "input",
+                "data_type": "VirtualArray",
+                "description": "No description",
+                "type": "input"
+            },
+            "mask": {
+                "caption": "mask",
+                "data_type": "VirtualArray",
+                "description": "No description",
+                "type": "input"
+            },
+            "moisture": {
+                "caption": "moisture",
+                "data_type": "VirtualArray",
+                "description": "No description",
+                "type": "input"
+            },
+            "outlet": {
+                "caption": "outlet",
+                "data_type": "VirtualArray",
+                "description": "No description",
+                "type": "input"
+            },
+            "output": {
+                "caption": "output",
+                "data_type": "VirtualArray",
+                "description": "No description",
+                "type": "output"
+            },
+            "sediment": {
+                "caption": "sediment",
+                "data_type": "VirtualArray",
+                "description": "No description",
+                "type": "output"
+            }
+        }
+    },
     "HydraulicParticle": {
         "category": "Erosion/Hydraulic",
         "description": "HydraulicParticle is a particle-based hydraulic erosion operator that simulates the erosion and sediment transport processes that occur due to the flow of water over a terrain represented by the input heightmap. This type of operator models erosion by tracking the movement of virtual particles (or sediment particles) as they are transported by water flow and interact with the terrain. Erosion is gradient-driven: flat or masked-to-zero input has no slope and produces little or no change. Erode full-domain relief first, then multiply by the land mask.",
@@ -10066,7 +10928,7 @@
         }
     },
     "HydraulicProcedural": {
-        "category": "Erosion/Hydraulic",
+        "category": "WIP",
         "description": "TODO",
         "label": "HydraulicProcedural",
         "parameter_groups": [
@@ -12793,7 +13655,8 @@
                     "post_gain",
                     "post_smoothing_radius",
                     "post_remap",
-                    "post_saturate"
+                    "post_saturate",
+                    "min_max_kernel"
                 ],
                 "name": "main"
             }
@@ -12803,6 +13666,12 @@
                 "description": "Selects the type of local metric to compute. Each metric analyzes the neighborhood of a point (within the given radius) to extract features such as roughness (rugosity), convexity, or other shape descriptors.",
                 "key": "metric",
                 "label": "Local Metric",
+                "type": "Enumeration"
+            },
+            "min_max_kernel": {
+                "description": "No description",
+                "key": "min_max_kernel",
+                "label": "Kernel Type",
                 "type": "Enumeration"
             },
             "post_gain": {
@@ -13673,12 +14542,19 @@
                     "post_gain",
                     "post_smoothing_radius",
                     "post_remap",
-                    "post_saturate"
+                    "post_saturate",
+                    "min_max_kernel"
                 ],
                 "name": "main"
             }
         ],
         "parameters": {
+            "min_max_kernel": {
+                "description": "No description",
+                "key": "min_max_kernel",
+                "label": "Kernel Type",
+                "type": "Enumeration"
+            },
             "operator": {
                 "description": "No description",
                 "key": "operator",
@@ -14239,7 +15115,7 @@
                 "caption": "angle",
                 "data_type": "VirtualArray",
                 "description": "Optional output providing the computed angle values for terrain features.",
-                "type": "output"
+                "type": "input"
             },
             "control": {
                 "caption": "control",
@@ -15739,19 +16615,32 @@
         "label": "PathSetValues",
         "parameter_groups": [
             {
-                "keys": [],
+                "keys": [
+                    "comment"
+                ],
                 "name": "From Heightmap"
             },
             {
-                "keys": [],
+                "keys": [
+                    "comment"
+                ],
                 "name": "From Border Distance"
             },
             {
-                "keys": [],
+                "keys": [
+                    "comment"
+                ],
                 "name": "From Min Distance"
             }
         ],
-        "parameters": null,
+        "parameters": {
+            "comment": {
+                "description": "No description",
+                "key": "comment",
+                "label": "",
+                "type": "String"
+            }
+        },
         "ports": {
             "heightmap": {
                 "caption": "heightmap",
@@ -16112,7 +17001,8 @@
                     "post_gain",
                     "post_smoothing_radius",
                     "post_remap",
-                    "post_saturate"
+                    "post_saturate",
+                    "min_max_kernel"
                 ],
                 "name": "main"
             }
@@ -16123,6 +17013,12 @@
                 "key": "factor",
                 "label": "factor",
                 "type": "Float"
+            },
+            "min_max_kernel": {
+                "description": "No description",
+                "key": "min_max_kernel",
+                "label": "Kernel Type",
+                "type": "Enumeration"
             },
             "post_gain": {
                 "description": "Mid-centered gain transformation applied to the elevation values. This is a non-linear recurve operator centered around the mid elevation (typically 0.5). Increasing the gain pushes values toward the minimum and maximum elevations, creating flatter low/high regions with a steeper transition around the midpoint.",
@@ -17279,12 +18175,6 @@
             }
         },
         "ports": {
-            "control": {
-                "caption": "control",
-                "data_type": "VirtualArray",
-                "description": "Control parameter, acts as a multiplier for the elevation values.",
-                "type": "input"
-            },
             "dx": {
                 "caption": "dx",
                 "data_type": "VirtualArray",
@@ -17300,7 +18190,7 @@
             "envelope": {
                 "caption": "envelope",
                 "data_type": "VirtualArray",
-                "description": "Heightmap used as a post-process amplitude multiplier for the generated surface.",
+                "description": "Heightmap used as a post-process amplitude multiplier for the generated noise.",
                 "type": "input"
             },
             "output": {
@@ -17616,16 +18506,16 @@
         }
     },
     "RecastCliff": {
-        "category": "WIP",
+        "category": "Filter/Recast",
         "description": "RecastCliff add cliffs in a heightmap by introducing sharp changes in elevation to simulate steep vertical terrain features such as cliffs or escarpments.",
         "label": "RecastCliff",
         "parameter_groups": [
             {
                 "keys": [
                     "talus_global",
-                    "radius",
                     "amplitude",
                     "gain",
+                    "radius",
                     "iterations",
                     "mask_activate",
                     "mask_type",
@@ -17647,9 +18537,9 @@
                 "keys": [
                     "angle",
                     "talus_global",
-                    "radius",
                     "amplitude",
                     "gain",
+                    "radius",
                     "iterations",
                     "mask_activate",
                     "mask_type",
@@ -17679,7 +18569,7 @@
                 "description": "Angle (in degrees) determining the direction of the cliffs.",
                 "key": "angle",
                 "label": "Angle",
-                "type": "Angle"
+                "type": "Float"
             },
             "gain": {
                 "description": "Gain, influence the cliff elevation profile.",
@@ -19607,7 +20497,8 @@
                     "post_gain",
                     "post_smoothing_radius",
                     "post_remap",
-                    "post_saturate"
+                    "post_saturate",
+                    "min_max_kernel"
                 ],
                 "name": "Slope"
             },
@@ -19652,6 +20543,12 @@
                 "key": "center",
                 "label": "Center",
                 "type": "Vec2Float"
+            },
+            "min_max_kernel": {
+                "description": "No description",
+                "key": "min_max_kernel",
+                "label": "Kernel Type",
+                "type": "Enumeration"
             },
             "post_gain": {
                 "description": "Mid-centered gain transformation applied to the elevation values. This is a non-linear recurve operator centered around the mid elevation (typically 0.5). Increasing the gain pushes values toward the minimum and maximum elevations, creating flatter low/high regions with a steeper transition around the midpoint.",
@@ -19786,7 +20683,8 @@
                     "post_gain",
                     "post_smoothing_radius",
                     "post_remap",
-                    "post_saturate"
+                    "post_saturate",
+                    "min_max_kernel"
                 ],
                 "name": "Weathered"
             },
@@ -19858,6 +20756,12 @@
                 "key": "k_saturation",
                 "label": "Saturation Smoothing",
                 "type": "Float"
+            },
+            "min_max_kernel": {
+                "description": "No description",
+                "key": "min_max_kernel",
+                "label": "Kernel Type",
+                "type": "Enumeration"
             },
             "post_gain": {
                 "description": "Mid-centered gain transformation applied to the elevation values. This is a non-linear recurve operator centered around the mid elevation (typically 0.5). Increasing the gain pushes values toward the minimum and maximum elevations, creating flatter low/high regions with a steeper transition around the midpoint.",
