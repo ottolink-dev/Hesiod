@@ -5,6 +5,7 @@
 
 #include <QGridLayout>
 #include <QLabel>
+#include <QSignalBlocker>
 #include <QTimer>
 #include <QToolButton>
 #include <QVBoxLayout>
@@ -494,7 +495,11 @@ void Viewer::update_widgets()
   // --- update pinned node button
 
   if (this->is_node_pinned != this->button_pin_current_node->isChecked())
+  {
+    // block signals to prevent recursive on_node_pinned_changed calls
+    const QSignalBlocker blocker(this->button_pin_current_node);
     this->button_pin_current_node->setChecked(this->is_node_pinned);
+  }
 
   // --- update title
 
