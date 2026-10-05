@@ -177,7 +177,7 @@ void compute_hydraulic_saleve_node(BaseNode &node)
     hmap::for_each_tile(
         {},
         {p_out},
-        [deposition_ir, deposition_strength](std::vector<const hmap::Array *> p_arrays_in,
+        [deposition_ir, deposition_strength](std::vector<const hmap::Array *>,
                                              std::vector<hmap::Array *> p_arrays_out,
                                              const hmap::TileRegion &)
         {

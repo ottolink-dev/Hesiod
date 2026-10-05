@@ -442,12 +442,12 @@ void Viewer::setup_layout()
       if (name == "normal_map")
         btn->setVisible(false);
 
-      this->connect(btn,
-                    &QCheckBox::toggled,
-                    this,
-                    [safe_this = QPointer(this), name](bool is_checked) {
-                      Q_EMIT safe_this->view_param_visibility_changed(name, is_checked);
-                    });
+      this->connect(
+          btn,
+          &QCheckBox::toggled,
+          this,
+          [safe_this = QPointer(this), name](bool is_checked)
+          { Q_EMIT safe_this->view_param_visibility_changed(name, is_checked); });
     }
 
     row++;

@@ -62,8 +62,8 @@ void post_apply_saturate_percentile(BaseNode           &node,
   hmap::for_each_tile(
       {},
       {&h},
-      [range, range_sat](std::vector<const hmap::Array *> p_arrays_in,
-                         std::vector<hmap::Array *>       p_arrays_out,
+      [range, range_sat](std::vector<const hmap::Array *>,
+                         std::vector<hmap::Array *> p_arrays_out,
                          const hmap::TileRegion &)
       {
         auto [pa_h] = unpack<1>(p_arrays_out);
@@ -126,8 +126,8 @@ void post_process_heightmap(BaseNode                 &node,
     hmap::for_each_tile(
         {},
         {&h},
-        [post_gamma](std::vector<const hmap::Array *> p_arrays_in,
-                     std::vector<hmap::Array *>       p_arrays_out,
+        [post_gamma](std::vector<const hmap::Array *>,
+                     std::vector<hmap::Array *> p_arrays_out,
                      const hmap::TileRegion &)
         {
           auto [pa] = unpack<1>(p_arrays_out);
@@ -150,8 +150,8 @@ void post_process_heightmap(BaseNode                 &node,
     hmap::for_each_tile(
         {},
         {&h},
-        [post_gain](std::vector<const hmap::Array *> p_arrays_in,
-                    std::vector<hmap::Array *>       p_arrays_out,
+        [post_gain](std::vector<const hmap::Array *>,
+                    std::vector<hmap::Array *> p_arrays_out,
                     const hmap::TileRegion &)
         {
           auto [pa] = unpack<1>(p_arrays_out);
@@ -170,8 +170,8 @@ void post_process_heightmap(BaseNode                 &node,
     hmap::for_each_tile(
         {},
         {&h},
-        [&ir](std::vector<const hmap::Array *> p_arrays_in,
-              std::vector<hmap::Array *>       p_arrays_out,
+        [&ir](std::vector<const hmap::Array *>,
+              std::vector<hmap::Array *> p_arrays_out,
               const hmap::TileRegion &)
         {
           auto [pa_out] = unpack<1>(p_arrays_out);
@@ -200,8 +200,8 @@ void post_process_heightmap(BaseNode                 &node,
     hmap::for_each_tile(
         {},
         {&h},
-        [&](std::vector<const hmap::Array *> p_arrays_in,
-            std::vector<hmap::Array *>       p_arrays_out,
+        [&](std::vector<const hmap::Array *>,
+            std::vector<hmap::Array *> p_arrays_out,
             const hmap::TileRegion &)
         {
           auto [pa_out] = unpack<1>(p_arrays_out);
