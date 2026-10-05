@@ -15,6 +15,7 @@ namespace hesiod
 // -----------------------------------------------------------------------------
 // Ports & Attributes
 // -----------------------------------------------------------------------------
+
 constexpr const char *P_BEDROCK     = "bedrock";
 constexpr const char *P_IN          = "input";
 constexpr const char *P_MASK        = "mask";
@@ -90,73 +91,68 @@ void compute_hydraulic_vpipes_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  hmap::VirtualArray *p_in = node.get_value_ref<hmap::VirtualArray>(P_IN);
+  const auto *p_in           = node.get_value_ref<hmap::VirtualArray>(P_IN);
+  const auto *p_bedrock      = node.get_value_ref<hmap::VirtualArray>(P_BEDROCK);
+  const auto *p_moisture_map = node.get_value_ref<hmap::VirtualArray>(P_MOISTURE);
+  const auto *p_mask         = node.get_value_ref<hmap::VirtualArray>(P_MASK);
+  auto       *p_out          = node.get_value_ref<hmap::VirtualArray>(P_OUT);
+  auto       *p_water_depth  = node.get_value_ref<hmap::VirtualArray>(P_WATER_DEPTH);
+  auto       *p_sediment     = node.get_value_ref<hmap::VirtualArray>(P_SEDIMENT);
 
-  if (p_in)
-  {
-    hmap::VirtualArray *p_bedrock = node.get_value_ref<hmap::VirtualArray>(P_BEDROCK);
-    hmap::VirtualArray *p_moisture_map = node.get_value_ref<hmap::VirtualArray>(
-        P_MOISTURE);
-    hmap::VirtualArray *p_mask = node.get_value_ref<hmap::VirtualArray>(P_MASK);
+  if (!p_in)
+    return;
 
-    hmap::VirtualArray *p_out         = node.get_value_ref<hmap::VirtualArray>(P_OUT);
-    hmap::VirtualArray *p_water_depth = node.get_value_ref<hmap::VirtualArray>(
-        P_WATER_DEPTH);
-    hmap::VirtualArray *p_sediment = node.get_value_ref<hmap::VirtualArray>(P_SEDIMENT);
+  // int iterations = int(node.val<float>(A_DURATION) *
+  // p_out->shape.x);
+  int iterations = node.val<int>(A_ITERATIONS);
 
-    // int iterations = int(node.val<float>(A_DURATION) *
-    // p_out->shape.x);
-    int iterations = node.val<int>(A_ITERATIONS);
+  hmap::for_each_tile(
+      {p_in, p_bedrock, p_moisture_map, p_mask},
+      {p_out, p_water_depth, p_sediment},
+      [&node, iterations](std::vector<const hmap::Array *> p_arrays_in,
+                          std::vector<hmap::Array *>       p_arrays_out,
+                          const hmap::TileRegion &)
+      {
+        const auto [pa_in, pa_bedrock, pa_moisture_map, pa_mask] = unpack<4>(p_arrays_in);
+        auto [pa_out, pa_water_depth, pa_sediment] = unpack<3>(p_arrays_out);
 
-    hmap::for_each_tile(
-        {p_in, p_bedrock, p_moisture_map, p_mask},
-        {p_out, p_water_depth, p_sediment},
-        [&node, iterations](std::vector<const hmap::Array *> p_arrays_in,
-                            std::vector<hmap::Array *>       p_arrays_out,
-                            const hmap::TileRegion &)
-        {
-          const auto [pa_in, pa_bedrock, pa_moisture_map, pa_mask] = unpack<4>(
-              p_arrays_in);
-          auto [pa_out, pa_water_depth, pa_sediment] = unpack<3>(p_arrays_out);
+        *pa_out = *pa_in;
 
-          *pa_out = *pa_in;
+        hmap::gpu::hydraulic_vpipes(*pa_out,
+                                    node.val<float>(A_WATER_HEIGHT),
+                                    node.val<bool>(A_MAINTAIN_WATER_VOLUME),
+                                    node.val<float>(A_EVAP_RATE),
+                                    iterations,
+                                    /* dt */ 0.5f,
+                                    node.val<float>(A_K_CAPACITY),
+                                    node.val<float>(A_K_ERODE),
+                                    node.val<float>(A_K_DEPOSE),
+                                    node.val<float>(A_K_DISCHARGE_EXP),
+                                    node.val<float>(A_DOWNCUTTING_MAX_DEPTH_RATIO),
+                                    node.val<bool>(A_FLUX_DIFFUSION),
+                                    node.val<float>(A_FLUX_DIFFUSION_STRENGTH)
+                                    //  *p_rain_map = nullptr,
+                                    // Array *p_water_depth = nullptr,
+                                    // Array *p_sediment = nullptr,
+                                    // Array *p_vel_u = nullptr,
+                                    // Array *p_vel_v = nullptr
+        );
+      },
+      node.cfg().cm_gpu);
 
-          hmap::gpu::hydraulic_vpipes(*pa_out,
-                                      node.val<float>(A_WATER_HEIGHT),
-                                      node.val<bool>(A_MAINTAIN_WATER_VOLUME),
-                                      node.val<float>(A_EVAP_RATE),
-                                      iterations,
-                                      /* dt */ 0.5f,
-                                      node.val<float>(A_K_CAPACITY),
-                                      node.val<float>(A_K_ERODE),
-                                      node.val<float>(A_K_DEPOSE),
-                                      node.val<float>(A_K_DISCHARGE_EXP),
-                                      node.val<float>(A_DOWNCUTTING_MAX_DEPTH_RATIO),
-                                      node.val<bool>(A_FLUX_DIFFUSION),
-                                      node.val<float>(A_FLUX_DIFFUSION_STRENGTH)
-                                      //  *p_rain_map = nullptr,
-                                      // Array *p_water_depth = nullptr,
-                                      // Array *p_sediment = nullptr,
-                                      // Array *p_vel_u = nullptr,
-                                      // Array *p_vel_v = nullptr
-          );
-        },
-        node.cfg().cm_gpu);
+  p_out->sync_overlap_buffers();
 
-    p_out->sync_overlap_buffers();
+  // if (p_erosion_map)
+  // {
+  //   p_erosion_map->sync_overlap_buffers();
+  //   p_erosion_map->remap(0.f, 1.f, node.cfg().cm_cpu);
+  // }
 
-    // if (p_erosion_map)
-    // {
-    //   p_erosion_map->sync_overlap_buffers();
-    //   p_erosion_map->remap(0.f, 1.f, node.cfg().cm_cpu);
-    // }
-
-    // if (p_deposition_map)
-    // {
-    //   p_deposition_map->sync_overlap_buffers();
-    //   p_deposition_map->remap(0.f, 1.f, node.cfg().cm_cpu);
-    // }
-  }
+  // if (p_deposition_map)
+  // {
+  //   p_deposition_map->sync_overlap_buffers();
+  //   p_deposition_map->remap(0.f, 1.f, node.cfg().cm_cpu);
+  // }
 }
 
 } // namespace hesiod
