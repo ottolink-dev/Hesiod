@@ -252,7 +252,7 @@ void compute_hydraulic_mise_node(BaseNode &node)
                              pa_erosion,
                              pa_deposition);
       },
-      node.cfg().cm_cpu);
+      node.cfg().cm_single_array);
 
   // --- Post-treatments
 
