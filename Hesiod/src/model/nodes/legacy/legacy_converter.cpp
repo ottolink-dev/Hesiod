@@ -654,6 +654,35 @@ nlohmann::json convert_legacy_node_json(const nlohmann::json &json_node)
     rename_out_to_output(converted_node, "StrataTerrace");
     return converted_node;
   }
+  // --- HydraulicStreamLog: set levels to 1 if not present for older hsd files ---
+  else if (label == "HydraulicStreamLog" || label == "HydraulicStream")
+  {
+    nlohmann::json converted_node = json_node;
+    converted_node["label"] = "HydraulicStreamLog";
+
+    auto fix_stream_log = [](nlohmann::json &cjson)
+    {
+      if (!cjson.contains("levels"))
+      {
+        cjson["levels"] = {{"value", 1}};
+      }
+    };
+
+    if (converted_node.contains("containers") && converted_node["containers"].is_object())
+    {
+      for (auto &[cname, cjson] : converted_node["containers"].items())
+      {
+        if (cjson.is_object())
+          fix_stream_log(cjson);
+      }
+    }
+    else
+    {
+      fix_stream_log(converted_node);
+    }
+    rename_out_to_output(converted_node, "HydraulicStreamLog");
+    return converted_node;
+  }
 
   if (target_label.empty() || group_name.empty())
   {

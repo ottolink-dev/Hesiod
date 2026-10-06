@@ -11549,11 +11549,15 @@
     },
     "HydraulicStreamLog": {
         "category": "Erosion/Hydraulic",
-        "description": "HydraulicStream is a hydraulic erosion operator using a flow-stream formulation and an infinite flow-direction algorithm (D∞). Erosion intensity is driven by flow accumulation, terrain gradient, moisture, and optional bedrock limits. Deposition is simulated using convolution kernels whose radius and scale control smoothing and sediment redistribution.",
+        "description": "HydraulicStreamLog is a multiscale hydraulic erosion operator using a flow-stream formulation and an infinite flow-direction algorithm (D∞). Erosion intensity is driven by flow accumulation, terrain gradient, moisture, and optional bedrock limits. Multi-resolution scheduling carves broad macro-valleys with optional domain warping at coarse levels before fine-detail channel incision.",
         "label": "HydraulicStreamLog",
         "parameter_groups": [
             {
                 "keys": [
+                    "seed",
+                    "levels",
+                    "mix",
+                    "warp",
                     "c_erosion",
                     "talus_ref",
                     "saturation_ratio",
@@ -11562,6 +11566,11 @@
                     "gradient_prefilter_radius",
                     "deposition_radius",
                     "deposition_scale_ratio",
+                    "mask_activate",
+                    "mask_type",
+                    "mask_inverse",
+                    "mask_radius",
+                    "mask_gain",
                     "post_mix_method",
                     "post_mix",
                     "post_inverse",
@@ -11609,6 +11618,48 @@
                 "description": "Scaling factor applied to gradient-based erosion intensity, adjusting how strongly slope contributes to erosion.",
                 "key": "gradient_scaling_ratio",
                 "label": "Influence Scale",
+                "type": "Float"
+            },
+            "levels": {
+                "description": "Number of multiscale resolution levels for the erosion cascade. Higher levels carve coarser, broader drainage patterns first before fine incision.",
+                "key": "levels",
+                "label": "Levels",
+                "type": "Integer"
+            },
+            "mask_activate": {
+                "description": "Enables or disables the internal mask. If the node's 'mask' input is connected, this setting is bypassed and the input mask is used instead.",
+                "key": "mask_activate",
+                "label": "Activate Default Mask",
+                "type": "Bool"
+            },
+            "mask_gain": {
+                "description": "Controls the intensity or influence of the internal mask. Bypassed if the 'mask' input is connected.",
+                "key": "mask_gain",
+                "label": "Mask Gain",
+                "type": "Float"
+            },
+            "mask_inverse": {
+                "description": "Inverts the internal mask, applying the operator where the mask is low. Ignored if a 'mask' input is provided.",
+                "key": "mask_inverse",
+                "label": "Inverse Mask",
+                "type": "Bool"
+            },
+            "mask_radius": {
+                "description": "Defines the smoothing radius for the internal mask. A value of 0 disables smoothing. This is bypassed if the 'mask' input is used.",
+                "key": "mask_radius",
+                "label": "Mask Radius",
+                "type": "Float"
+            },
+            "mask_type": {
+                "description": "Specifies how the internal mask is computed: 'Elevation' uses height, 'Gradient Norm' uses slope, and 'Elevation mid-range' selects the middle portion of the height range. This parameter is ignored when a 'mask' input is connected.",
+                "key": "mask_type",
+                "label": "Mask Type",
+                "type": "Choice"
+            },
+            "mix": {
+                "description": "Blending factor controlling the amount of coarse-scale valley incision delta carved into the full-resolution terrain.",
+                "key": "mix",
+                "label": "Mix Factor",
                 "type": "Float"
             },
             "post_gain": {
@@ -11665,14 +11716,32 @@
                 "label": "Water Saturation Threshold",
                 "type": "Float"
             },
+            "seed": {
+                "description": "Random seed number. The random seed is an offset to the randomized process. A different seed will produce a new result.",
+                "key": "seed",
+                "label": "Seed",
+                "type": "Random seed number"
+            },
             "talus_ref": {
                 "description": "Reference talus angle. Lower values produce thinner flow streams by increasing directional concentration.",
                 "key": "talus_ref",
                 "label": "Slope Threshold",
                 "type": "Float"
+            },
+            "warp": {
+                "description": "Domain warp amplitude applied during bicubic upsampling between resolution levels to create organic, meandering stream pathways.",
+                "key": "warp",
+                "label": "Domain Warp",
+                "type": "Float"
             }
         },
         "ports": {
+            "bedrock": {
+                "caption": "bedrock",
+                "data_type": "VirtualArray",
+                "description": "Optional bedrock elevation map defining a lower limit below which erosion cannot carve.",
+                "type": "input"
+            },
             "deposition": {
                 "caption": "deposition",
                 "data_type": "VirtualArray",
@@ -11682,7 +11751,7 @@
             "erosion": {
                 "caption": "erosion",
                 "data_type": "VirtualArray",
-                "description": "Erosion intensity map, normalized in [0, 1].",
+                "description": "Sediment erosion map, normalized in [0, 1].",
                 "type": "output"
             },
             "flow_map": {
@@ -11701,6 +11770,12 @@
                 "caption": "mask",
                 "data_type": "VirtualArray",
                 "description": "Mask controlling the local intensity of erosion (expected in [0, 1]).",
+                "type": "input"
+            },
+            "moisture": {
+                "caption": "moisture",
+                "data_type": "VirtualArray",
+                "description": "Optional moisture map (expected in [0, 1]) that locally modulates erosion intensity.",
                 "type": "input"
             },
             "output": {
