@@ -23,17 +23,17 @@ constexpr const char *P_MASK      = "mask";
 constexpr const char *P_OUT       = "output";
 constexpr const char *P_FLOW_MAP  = "flow_map";
 
-constexpr const char *A_DURATION                  = "duration";
-constexpr const char *A_TALUS                     = "talus_global";
-constexpr const char *A_SCALE_TALUS               = "scale_talus_with_elevation";
-constexpr const char *A_C_EROSION                 = "c_erosion";
-constexpr const char *A_C_THERMAL                 = "c_thermal";
-constexpr const char *A_C_DEPOSITION              = "c_deposition";
-constexpr const char *A_FLOW_ACC_EXPONENT         = "flow_acc_exponent";
-constexpr const char *A_FLOW_ACC_EXPONENT_DEPO    = "flow_acc_exponent_depo";
-constexpr const char *A_FLOW_ROUTING_EXPONENT     = "flow_routing_exponent";
-constexpr const char *A_THERMAL_WEIGHT            = "thermal_weight";
-constexpr const char *A_DEPOSITION_WEIGHT         = "deposition_weight";
+constexpr const char *A_DURATION               = "duration";
+constexpr const char *A_TALUS                  = "talus_global";
+constexpr const char *A_SCALE_TALUS            = "scale_talus_with_elevation";
+constexpr const char *A_C_EROSION              = "c_erosion";
+constexpr const char *A_C_THERMAL              = "c_thermal";
+constexpr const char *A_C_DEPOSITION           = "c_deposition";
+constexpr const char *A_FLOW_ACC_EXPONENT      = "flow_acc_exponent";
+constexpr const char *A_FLOW_ACC_EXPONENT_DEPO = "flow_acc_exponent_depo";
+constexpr const char *A_FLOW_ROUTING_EXPONENT  = "flow_routing_exponent";
+constexpr const char *A_THERMAL_WEIGHT         = "thermal_weight";
+constexpr const char *A_DEPOSITION_WEIGHT      = "deposition_weight";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -182,4 +182,3 @@ void compute_hydraulic_schott_node(BaseNode &node)
 }
 
 } // namespace hesiod
-
