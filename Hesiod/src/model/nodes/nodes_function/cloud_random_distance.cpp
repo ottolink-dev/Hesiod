@@ -61,8 +61,8 @@ void compute_cloud_random_distance_node(BaseNode &node)
         {p_density},
         {},
         [&node, &clouds, &mtx](std::vector<const hmap::Array *> p_arrays_in,
-                               std::vector<hmap::Array *>       p_arrays_out,
-                               const hmap::TileRegion          &region)
+                               std::vector<hmap::Array *>,
+                               const hmap::TileRegion &region)
         {
           auto [pa_density] = unpack<1>(p_arrays_in);
 

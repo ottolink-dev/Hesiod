@@ -80,7 +80,7 @@ static void setup_common_particle_attributes(BaseNode &node)
   add_float(node, A_BD_SLOPE, "Bedrock Slope Limit", 2.f, 0.f, FLT_MAX);
 
   node.set_current_category("Ridge Forcing");
-  add_bool(node, A_ENABLE_RIDGE_FORCING, "Enable Ridge Forcing", true);
+  add_bool(node, A_ENABLE_RIDGE_FORCING, "Enable Ridge Forcing", false);
   add_float(node, A_RIDGE_SPATIAL_FREQUENCY, "Ridge Spatial Frequency", 32.f, 0.f, FLT_MAX);
   add_float(node, A_RIDGE_ELEVATION_AMPLITUDE, "Ridge Height", 0.1f, 0.f, 1.f);
   // clang-format on
@@ -103,17 +103,6 @@ void setup_hydraulic_particle_node(BaseNode &node)
   node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_EROSION, CONFIG(node));
   node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_DEPOSITION, CONFIG(node));
 
-  // Group: Single-Scale
-  {
-    node.set_current_group(G_SINGLE_SCALE);
-
-    node.set_current_category("Simulation");
-    add_seed(node, A_SEED, "Seed");
-    add_float(node, A_PARTICLE_DENSITY, "Particle Density", 0.15f, 0.f, 4.f);
-
-    setup_common_particle_attributes(node);
-  }
-
   // Group: Multiscale
   {
     node.set_current_group(G_MULTISCALE);
@@ -122,13 +111,21 @@ void setup_hydraulic_particle_node(BaseNode &node)
     add_seed(node, A_SEED, "Seed");
     add_int(node, A_LEVELS, "Levels", 4, 1, 6);
     add_float(node, A_MIX, "Mix", 0.5f, 0.f, 1.f);
-    add_float(node, A_PARTICLE_DENSITY, "Particle Density", 0.15f, 0.f, 4.f);
+    add_float(node, A_PARTICLE_DENSITY, "Particle Density", 0.2f, 0.f, 4.f);
 
     setup_common_particle_attributes(node);
   }
 
-  // Reset active group to first
-  node.set_current_group(G_SINGLE_SCALE);
+  // Group: Single-Scale
+  {
+    node.set_current_group(G_SINGLE_SCALE);
+
+    node.set_current_category("Simulation");
+    add_seed(node, A_SEED, "Seed");
+    add_float(node, A_PARTICLE_DENSITY, "Particle Density", 0.2f, 0.f, 4.f);
+
+    setup_common_particle_attributes(node);
+  }
 }
 
 // -----------------------------------------------------------------------------

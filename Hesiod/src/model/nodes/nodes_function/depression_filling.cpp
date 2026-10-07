@@ -20,8 +20,9 @@ constexpr const char *P_IN       = "input";
 constexpr const char *P_OUT      = "output";
 constexpr const char *P_FILL_MAP = "fill map";
 
-constexpr const char *A_REMAP_FILL_MAP = "remap fill map";
-constexpr const char *A_SMOOTHING      = "smoothing";
+constexpr const char *A_REMAP_FILL_MAP              = "remap fill map";
+constexpr const char *A_SMOOTHING                   = "smoothing";
+constexpr const char *A_USE_DISTRIBUTED_COMPUTATION = "use_distributed_computation";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -48,6 +49,11 @@ void setup_depression_filling_node(BaseNode &node)
 
   setup_post_process_heightmap_attributes(node,
                                           {.add_mix = true, .remap_active_state = false});
+
+  // --- Advanced parameters
+
+  node.set_current_category("Advanced");
+  add_bool(node, A_USE_DISTRIBUTED_COMPUTATION, "Use Distributed Algorithm", false);
 }
 
 // -----------------------------------------------------------------------------
@@ -70,50 +76,40 @@ void compute_depression_filling_node(BaseNode &node)
   // --- Params
 
   // clang-format off
-  const auto smoothing      = node.val<bool>(A_SMOOTHING);
-  const auto remap_fill_map = node.val<bool>(A_REMAP_FILL_MAP);
+  const auto smoothing                  = node.val<bool>(A_SMOOTHING);
+  const auto remap_fill_map             = node.val<bool>(A_REMAP_FILL_MAP);
+  const auto use_distributed_computation = node.val<bool>(A_USE_DISTRIBUTED_COMPUTATION);
   // clang-format on
 
   // --- Compute
 
-  p_out->copy_from(*p_in, node.cfg().cm_cpu);
-
-  // filling
-  glm::ivec2 tiling = p_out->get_max_tiles();
-  int        nit    = std::max(tiling.x, tiling.y);
-
-  for (int it = 0; it < nit; ++it)
+  if (use_distributed_computation)
+  {
+    *p_out = hmap::va::depression_filling_priority_flood(*p_in,
+                                                         smoothing,
+                                                         p_fill_map,
+                                                         node.cfg().cm_cpu);
+  }
+  else
   {
     hmap::for_each_tile(
-        {},
+        {p_in},
         {p_out, p_fill_map},
-        [&](std::vector<const hmap::Array *>,
-            std::vector<hmap::Array *> p_arrays_out,
-            const hmap::TileRegion    &region)
+        [&](std::vector<const hmap::Array *> p_arrays_in,
+            std::vector<hmap::Array *>       p_arrays_out,
+            const hmap::TileRegion &)
         {
+          auto [pa_in]               = unpack<1>(p_arrays_in);
           auto [pa_out, pa_fill_map] = unpack<2>(p_arrays_out);
 
+          *pa_out = *pa_in;
+
           hmap::depression_filling_priority_flood(*pa_out, smoothing);
+
+          *pa_fill_map = *pa_out - *pa_in;
         },
-        node.cfg().cm_cpu);
-
-    p_out->sync_overlap_buffers(hmap::SyncOperation::Max);
+        node.cfg().cm_single_array);
   }
-
-  // fill-map
-  hmap::for_each_tile(
-      {p_in, p_out},
-      {p_fill_map},
-      [&](std::vector<const hmap::Array *> p_arrays_in,
-          std::vector<hmap::Array *>       p_arrays_out,
-          const hmap::TileRegion &)
-      {
-        auto [pa_in, pa_out] = unpack<2>(p_arrays_in);
-        auto [pa_fill_map]   = unpack<1>(p_arrays_out);
-
-        *pa_fill_map = *pa_out - *pa_in;
-      },
-      node.cfg().cm_cpu);
 
   // --- Post-process
 

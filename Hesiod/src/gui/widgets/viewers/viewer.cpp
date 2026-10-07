@@ -5,6 +5,7 @@
 
 #include <QGridLayout>
 #include <QLabel>
+#include <QSignalBlocker>
 #include <QTimer>
 #include <QToolButton>
 #include <QVBoxLayout>
@@ -442,12 +443,12 @@ void Viewer::setup_layout()
       if (name == "normal_map")
         btn->setVisible(false);
 
-      this->connect(btn,
-                    &QCheckBox::toggled,
-                    this,
-                    [safe_this = QPointer(this), name](bool is_checked) {
-                      Q_EMIT safe_this->view_param_visibility_changed(name, is_checked);
-                    });
+      this->connect(
+          btn,
+          &QCheckBox::toggled,
+          this,
+          [safe_this = QPointer(this), name](bool is_checked)
+          { Q_EMIT safe_this->view_param_visibility_changed(name, is_checked); });
     }
 
     row++;
@@ -494,7 +495,11 @@ void Viewer::update_widgets()
   // --- update pinned node button
 
   if (this->is_node_pinned != this->button_pin_current_node->isChecked())
+  {
+    // block signals to prevent recursive on_node_pinned_changed calls
+    const QSignalBlocker blocker(this->button_pin_current_node);
     this->button_pin_current_node->setChecked(this->is_node_pinned);
+  }
 
   // --- update title
 

@@ -58,8 +58,8 @@ void compute_cloud_random_density_node(BaseNode &node)
       {},
       [&node, &clouds, npoints_per_tile, &mtx](
           std::vector<const hmap::Array *> p_arrays_in,
-          std::vector<hmap::Array *>       p_arrays_out,
-          const hmap::TileRegion          &region)
+          std::vector<hmap::Array *>,
+          const hmap::TileRegion &region)
       {
         auto [pa_density] = unpack<1>(p_arrays_in);
 

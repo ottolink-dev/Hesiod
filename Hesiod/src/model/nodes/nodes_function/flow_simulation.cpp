@@ -184,8 +184,8 @@ void compute_flow_simulation_node(BaseNode &node)
     hmap::for_each_tile(
         {},
         {p_water_out},
-        [&](std::vector<const hmap::Array *> p_arrays_in,
-            std::vector<hmap::Array *>       p_arrays_out,
+        [&](std::vector<const hmap::Array *>,
+            std::vector<hmap::Array *> p_arrays_out,
             const hmap::TileRegion &)
         {
           auto [pa_water] = unpack<1>(p_arrays_out);

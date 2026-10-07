@@ -76,10 +76,9 @@ void compute_stamping_node(BaseNode &node)
     hmap::for_each_tile(
         {},
         {p_out},
-        [&node, &xp, &yp, &zp, p_kernel, ir, &seed](
-            std::vector<const hmap::Array *> p_arrays_in,
-            std::vector<hmap::Array *>       p_arrays_out,
-            const hmap::TileRegion          &region)
+        [&](std::vector<const hmap::Array *>,
+            std::vector<hmap::Array *> p_arrays_out,
+            const hmap::TileRegion    &region)
         {
           auto [pa_out] = unpack<1>(p_arrays_out);
 

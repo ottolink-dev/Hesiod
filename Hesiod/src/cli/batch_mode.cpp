@@ -253,6 +253,30 @@ void run_batch_mode(const std::string                  &filename,
   nlohmann::json json = json_from_file(filename);
   graph_manager.json_from(json["graph_manager"], &config);
 
+  // force distributed computation in batch mode
+  for (const auto &graph_id : graph_manager.get_graph_order())
+  {
+    GraphNode *p_graph = graph_manager.get_graph_ref_by_id(graph_id);
+    if (!p_graph)
+      continue;
+
+    for (const auto &[node_id, p_node] : p_graph->get_nodes())
+    {
+      auto p_base = std::dynamic_pointer_cast<BaseNode>(p_node);
+      if (!p_base)
+        continue;
+
+      for (const auto &[cname, p_container] : p_base->get_meta_group().containers())
+      {
+        if (p_container)
+        {
+          if (auto *p_val = p_container->try_value<bool>("use_distributed_computation"))
+            *p_val = true;
+        }
+      }
+    }
+  }
+
   if (ipc)
   {
     for (const auto &graph_id : graph_manager.get_graph_order())

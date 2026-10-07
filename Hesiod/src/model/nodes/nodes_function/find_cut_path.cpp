@@ -93,7 +93,7 @@ void compute_find_cut_path_node(BaseNode &node)
       {p_in},
       {},
       [&](std::vector<const hmap::Array *> p_arrays_in,
-          std::vector<hmap::Array *>       p_arrays_out,
+          std::vector<hmap::Array *>,
           const hmap::TileRegion &)
       {
         auto [pa_in] = unpack<1>(p_arrays_in);

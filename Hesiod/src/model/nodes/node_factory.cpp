@@ -241,6 +241,7 @@ std::map<std::string, std::string> get_node_inventory()
       {"HemisphereFieldFbm", "Primitive/Coherent"},
       {"HydraulicBlur", "WIP"},     // "Erosion/Hydraulic"
       {"HydraulicMcDonald", "WIP"}, // "Erosion/Hydraulic"},
+      {"HydraulicMise", "Erosion/Hydraulic"},
       {"HydraulicParticle", "Erosion/Hydraulic"},
       {"HydraulicProcedural", "WIP"}, // "Erosion/Hydraulic"},
       {"HydraulicSaleve", "Erosion/Hydraulic"},
@@ -557,6 +558,7 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
     SETUP_NODE(HemisphereFieldFbm, hemisphere_field_fbm);
     SETUP_NODE(HydraulicBlur, hydraulic_blur);
     SETUP_NODE(HydraulicMcDonald, hydraulic_mcdonald);
+    SETUP_NODE(HydraulicMise, hydraulic_mise);
     SETUP_NODE(HydraulicParticle, hydraulic_particle);
     SETUP_NODE(HydraulicProcedural, hydraulic_procedural);
     SETUP_NODE(HydraulicSaleve, hydraulic_saleve);

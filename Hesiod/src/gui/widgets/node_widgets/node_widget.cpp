@@ -39,7 +39,8 @@ void NodeWidget::setup_connections()
         { QMetaObject::invokeMethod(this, "on_compute_started", Qt::QueuedConnection); });
 
     this->post_update_conn = m->post_update_event.subscribe(
-        [this](gnode::Node &) {
+        [this](gnode::Node &)
+        {
           QMetaObject::invokeMethod(this, "on_compute_finished", Qt::QueuedConnection);
         });
   }
