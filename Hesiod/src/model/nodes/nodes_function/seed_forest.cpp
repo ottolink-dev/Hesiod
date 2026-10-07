@@ -64,10 +64,10 @@ void setup_seed_forest_node(BaseNode &node)
 
   // clang-format off
   node.set_current_category("Seeding");
-  add_int(node, A_TREE_COUNT, "Tree Count", 10000, 1, INT_MAX);
+  add_int(node, A_TREE_COUNT, "Tree Count", 50000, 1, INT_MAX);
   add_int(node, A_SPECIES_COUNT, "Species Count", 4, 1, 16);
-  add_float(node, A_RADIUS_MIN, "Min Radius", 0.0005f, 0.0001f, 0.05f, "{:.4f}");
-  add_float(node, A_RADIUS_MAX, "Max Radius", 0.003f, 0.0001f, 0.05f, "{:.4f}");
+  add_float(node, A_RADIUS_MIN, "Min Radius", 0.0005f, 0.0001f, 0.01f, "{:.4f}");
+  add_float(node, A_RADIUS_MAX, "Max Radius", 0.001f, 0.0001f, 0.01f, "{:.4f}");
   add_float(node, A_CLUSTER_SPREAD, "Cluster Spread", 0.05f, 0.001f, 0.5f);
   add_int(node, A_POINTS_PER_CLUSTER, "Points per Cluster", 8, 1, 64);
   add_seed(node, A_SEED, "Seed");
@@ -219,9 +219,6 @@ void compute_seed_forest_node(BaseNode &node)
                                               hmap::InteractionMatrix{},
                                               density_array,
                                               0.8f);
-
-  Logger::log()->debug("{}", p_out_forest->to_string());
-  p_out_forest->to_png("forest.png", {1024, 1024}, density_array);
 
   p_out_forest->set_elevation_from_terrain(elev_array);
 }

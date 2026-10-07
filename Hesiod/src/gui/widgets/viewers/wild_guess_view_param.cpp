@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <typeinfo>
 
+#include "highmap/flora/forest.hpp"
 #include "highmap/geometry/cloud.hpp"
 #include "highmap/geometry/path.hpp"
 #include "highmap/virtual_array/virtual_texture.hpp"
@@ -132,6 +133,13 @@ void wild_guess_view_param(ViewerNodeParam &view_param,
     if (key == "path")
     {
       value = helper_get_preferred_port_inout(node, typeid(hmap::Path), {});
+    }
+
+    if (key == "trees")
+    {
+      value = helper_get_preferred_port_label(node, typeid(hmap::Forest), {"forest"});
+      if (value.empty())
+        value = helper_get_preferred_port_inout(node, typeid(hmap::Forest), {});
     }
   }
 }
