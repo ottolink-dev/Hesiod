@@ -10,6 +10,7 @@
 
 #include <QCoreApplication>
 
+#include "highmap/flora/forest.hpp"
 #include "highmap/geometry/cloud.hpp"
 #include "highmap/geometry/path.hpp"
 #include "highmap/virtual_array/virtual_array.hpp"
@@ -35,6 +36,7 @@ std::string map_type_name(const std::string &typeid_name)
   static const std::unordered_map<std::string, std::string> type_name_map = {
       {typeid(hmap::Array).name(), "Array"},
       {typeid(hmap::Cloud).name(), "Cloud"},
+      {typeid(hmap::Forest).name(), "Forest"},
       {typeid(hmap::VirtualArray).name(), "VirtualArray"},
       {typeid(hmap::VirtualTexture).name(), "VirtualTexture"},
       {typeid(hmap::Path).name(), "Path"},

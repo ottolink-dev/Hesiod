@@ -330,6 +330,7 @@ std::map<std::string, std::string> get_node_inventory()
       {"Saturate", "Filter/Recurve"},
       {"ScanMask", "Terrain Features/Mask Operations"},
       {"SedimentDeposition", "WIP"}, // "Erosion/Deposition"
+      {"SeedForest", "Flora"},
       {"SelectCurvature", "Terrain Features/Selector"},
       {"SelectMultiband3", "Terrain Features/Selector"},
       {"SelectSlope", "Terrain Features/Selector"},
@@ -617,6 +618,7 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
     SETUP_NODE(Saturate, saturate);
     SETUP_NODE(ScanMask, scan_mask);
     SETUP_NODE(SedimentDeposition, sediment_deposition);
+    SETUP_NODE(SeedForest, seed_forest);
     SETUP_NODE(SelectCurvature, select_curvature);
     SETUP_NODE(SelectMultiband3, select_multiband3);
     SETUP_NODE(SelectSlope, select_slope);
