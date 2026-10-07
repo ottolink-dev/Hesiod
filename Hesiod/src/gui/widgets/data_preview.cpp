@@ -9,6 +9,7 @@
 #include <QPainter>
 
 #include "highmap/colorize.hpp"
+#include "highmap/flora/forest.hpp"
 #include "highmap/geometry/cloud.hpp"
 #include "highmap/geometry/path.hpp"
 #include "highmap/texture.hpp"
@@ -266,6 +267,18 @@ void DataPreview::update_preview()
       }
       else
         Logger::log()->error("DataPreview::update_preview: Path nullptr or empty");
+    }
+    // ---- Forest ----
+    else if (data_type == typeid(hmap::Forest).name())
+    {
+      const hmap::Forest *p_forest = static_cast<const hmap::Forest *>(blind_ptr);
+      if (p_forest && p_forest->size() > 0)
+      {
+        img = p_forest->to_img_8bit(shape);
+        img_format = QImage::Format_RGB888;
+      }
+      else
+        Logger::log()->error("DataPreview::update_preview: Forest nullptr or empty");
     }
   }
 

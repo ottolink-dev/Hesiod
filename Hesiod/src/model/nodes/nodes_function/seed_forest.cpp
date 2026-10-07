@@ -1,6 +1,7 @@
 /* Copyright (c) 2026 Otto Link. Distributed under the terms of the GNU General
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
+#include "highmap/flora/forest_growth.hpp"
 #include "highmap/flora/forest_seeding.hpp"
 #include "highmap/flora/species.hpp"
 
@@ -24,6 +25,8 @@ constexpr const char *P_DENSITY           = "density";
 
 constexpr const char *A_TREE_COUNT            = "tree_count";
 constexpr const char *A_SPECIES_COUNT         = "species_count";
+constexpr const char *A_RADIUS_MIN            = "radius_min";
+constexpr const char *A_RADIUS_MAX            = "radius_max";
 constexpr const char *A_CLUSTER_SPREAD        = "cluster_spread";
 constexpr const char *A_POINTS_PER_CLUSTER    = "points_per_cluster";
 constexpr const char *A_SEED                  = "seed";
@@ -61,8 +64,10 @@ void setup_seed_forest_node(BaseNode &node)
 
   // clang-format off
   node.set_current_category("Seeding");
-  add_int(node, A_TREE_COUNT, "Tree Count", 1000, 1, 1000000);
+  add_int(node, A_TREE_COUNT, "Tree Count", 10000, 1, INT_MAX);
   add_int(node, A_SPECIES_COUNT, "Species Count", 4, 1, 16);
+  add_float(node, A_RADIUS_MIN, "Min Radius", 0.0005f, 0.0001f, 0.05f, "{:.4f}");
+  add_float(node, A_RADIUS_MAX, "Max Radius", 0.003f, 0.0001f, 0.05f, "{:.4f}");
   add_float(node, A_CLUSTER_SPREAD, "Cluster Spread", 0.05f, 0.001f, 0.5f);
   add_int(node, A_POINTS_PER_CLUSTER, "Points per Cluster", 8, 1, 64);
   add_seed(node, A_SEED, "Seed");
@@ -116,6 +121,8 @@ void compute_seed_forest_node(BaseNode &node)
   // clang-format off
   const auto tree_count            = static_cast<size_t>(std::max(1, node.val<int>(A_TREE_COUNT)));
   const auto species_count         = static_cast<size_t>(std::max(1, node.val<int>(A_SPECIES_COUNT)));
+  const auto radius_min            = node.val<float>(A_RADIUS_MIN);
+  const auto radius_max            = node.val<float>(A_RADIUS_MAX);
   const auto cluster_spread        = node.val<float>(A_CLUSTER_SPREAD);
   const auto points_per_cluster    = static_cast<size_t>(std::max(1, node.val<int>(A_POINTS_PER_CLUSTER)));
   const auto seed                  = static_cast<uint32_t>(node.val<int>(A_SEED));
@@ -175,23 +182,48 @@ void compute_seed_forest_node(BaseNode &node)
 
   // --- Seed Forest
 
-  if (p_out_forest)
+  hmap::ForestSeedingOptions options;
+  options.bbox                = {0.0f, 1.0f, 0.0f, 1.0f};
+  options.seed                = seed;
+  options.exclusion_threshold = exclusion_threshold;
+
+  // --- Species Radii Interpolation [radius_min, radius_max]
+
+  std::vector<hmap::Species> species_list;
+  species_list.reserve(species_count);
+
+  for (size_t s = 0; s < species_count; ++s)
   {
-    hmap::ForestSeedingOptions options;
-    options.bbox                = {0.0f, 1.0f, 0.0f, 1.0f};
-    options.seed                = seed;
-    options.exclusion_threshold = exclusion_threshold;
-
-    *p_out_forest = hmap::seed_forest_clusters(species_count,
-                                               tree_count,
-                                               density_array,
-                                               exclusion_array,
-                                               cluster_spread,
-                                               points_per_cluster,
-                                               options);
-
-    p_out_forest->set_elevation_from_terrain(elev_array);
+    float t = (species_count > 1)
+                  ? static_cast<float>(s) / static_cast<float>(species_count - 1)
+                  : 0.0f;
+    float r = radius_min + t * (radius_max - radius_min);
+    species_list.emplace_back(static_cast<uint32_t>(s), r);
   }
+  options.species = species_list;
+
+  // --- Spawn forest
+
+  *p_out_forest = hmap::seed_forest_clusters(species_count,
+                                             tree_count,
+                                             density_array,
+                                             exclusion_array,
+                                             cluster_spread,
+                                             points_per_cluster,
+                                             options);
+
+  *p_out_forest = hmap::grow_forest_iterative(*p_out_forest,
+                                              options.species,
+                                              /* iterations */ 15,
+                                              0.1f,
+                                              hmap::InteractionMatrix{},
+                                              density_array,
+                                              0.8f);
+
+  Logger::log()->debug("{}", p_out_forest->to_string());
+  p_out_forest->to_png("forest.png", {1024, 1024}, density_array);
+
+  p_out_forest->set_elevation_from_terrain(elev_array);
 }
 
 } // namespace hesiod
