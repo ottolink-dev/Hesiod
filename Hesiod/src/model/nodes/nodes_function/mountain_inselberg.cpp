@@ -24,6 +24,7 @@ constexpr const char *P_OUT      = "output";
 constexpr const char *A_ADD_DEPOSITION = "add_deposition";
 constexpr const char *A_ANGLE          = "angle";
 constexpr const char *A_BASE_NOISE_AMP = "base_noise_amp";
+constexpr const char *A_BIAS           = "bias";
 constexpr const char *A_BULK_AMP       = "bulk_amp";
 constexpr const char *A_CENTER         = "center";
 constexpr const char *A_ELEVATION      = "elevation";
@@ -53,6 +54,7 @@ void setup_mountain_inselberg_node(BaseNode &node)
   add_int(node, A_OCTAVES, "Octaves", 8, 0, 32);
   add_float(node, A_RUGOSITY, "rugosity", 0.2f, 0.f, 1.f);
   add_float(node, A_ANGLE, "angle", 45.f, -180.f, 180.f);
+  add_float(node, A_BIAS, "Cell Size Variation", 0.f, 0.f, 1.f);
   add_float(node, A_K_SMOOTHING, "k_smoothing", 0.1f, 0.f, 1.f);
   add_float(node, A_GAMMA, "gamma", 1.f, 0.01f, 4.f);
   add_bool(node, A_ROUND_SHAPE, "round_shape", false);
@@ -96,6 +98,7 @@ void compute_mountain_inselberg_node(BaseNode &node)
                                                 node.val<bool>(A_ADD_DEPOSITION),
                                                 node.val<float>(A_BULK_AMP),
                                                 node.val<float>(A_BASE_NOISE_AMP),
+                                                node.val<float>(A_BIAS),
                                                 node.val<float>(A_K_SMOOTHING),
                                                 node.val<glm::vec2>(A_CENTER),
                                                 pa_dx,

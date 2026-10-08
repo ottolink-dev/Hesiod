@@ -24,6 +24,7 @@ constexpr const char *P_OUT      = "output";
 constexpr const char *A_ADD_DEPOSITION = "add_deposition";
 constexpr const char *A_ANGLE          = "angle";
 constexpr const char *A_BASE_NOISE_AMP = "base_noise_amp";
+constexpr const char *A_BIAS           = "bias";
 constexpr const char *A_BULK_AMP       = "bulk_amp";
 constexpr const char *A_CENTER         = "center";
 constexpr const char *A_ELEVATION      = "elevation";
@@ -58,6 +59,7 @@ void setup_shattered_peak_node(BaseNode &node)
   add_bool(node, A_ADD_DEPOSITION, "add_deposition", true);
   add_float(node, A_BULK_AMP, "bulk_amp", 0.25f, 0.f, 2.f);
   add_float(node, A_BASE_NOISE_AMP, "base_noise_amp", 0.15f, 0.f, 1.f);
+  add_float(node, A_BIAS, "Cell Size Variation", 0.f, 0.f, 1.f);
   add_float(node, A_K_SMOOTHING, "k_smoothing", 0.1f, 0.f, 1.f);
   add_xy(node, A_CENTER, "center");
 
@@ -97,6 +99,7 @@ void compute_shattered_peak_node(BaseNode &node)
                                             node.val<bool>(A_ADD_DEPOSITION),
                                             node.val<float>(A_BULK_AMP),
                                             node.val<float>(A_BASE_NOISE_AMP),
+                                            node.val<float>(A_BIAS),
                                             node.val<float>(A_K_SMOOTHING),
                                             node.val<glm::vec2>(A_CENTER),
                                             pa_dx,

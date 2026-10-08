@@ -21,6 +21,7 @@ constexpr const char *P_ENVELOPE = "envelope";
 constexpr const char *P_OUT      = "output";
 
 constexpr const char *A_BASE_NOISE_AMP = "base_noise_amp";
+constexpr const char *A_BIAS           = "bias";
 constexpr const char *A_DIRECTION      = "direction";
 constexpr const char *A_KW             = "kw";
 constexpr const char *A_KW_MULTIPLIER  = "kw_multiplier";
@@ -45,6 +46,7 @@ void setup_plates_node(BaseNode &node)
   add_int(node, A_DIRECTION, "Propagation Direction (D8)", 0, 0, 7);
   add_seed(node, A_SEED, "Seed");
   add_float(node, A_MIX_RATIO, "Mix", 0.9f, 0.f, 1.f);
+  add_float(node, A_BIAS, "Cell Size Variation", 0.f, 0.f, 1.f);
   add_float(node, A_BASE_NOISE_AMP, "Amplitude", 0.05f, 0.f, 1.f);
   add_int(node, A_OCTAVES, "Octaves", 8, 0, 32);
   add_float(node, A_RUGOSITY, "Smoothness", 0.5f, 0.f, 1.f);
@@ -79,6 +81,7 @@ void compute_plates_node(BaseNode &node)
                                     talus,
                                     node.val<int>(A_DIRECTION),
                                     node.val<float>(A_MIX_RATIO),
+                                    node.val<float>(A_BIAS),
                                     node.val<float>(A_BASE_NOISE_AMP),
                                     node.val<float>(A_KW_MULTIPLIER),
                                     node.val<int>(A_OCTAVES),

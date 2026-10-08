@@ -23,6 +23,7 @@ constexpr const char *P_OUT = "output";
 
 constexpr const char *A_KW                      = "kw";
 constexpr const char *A_SEED                    = "seed";
+constexpr const char *A_BIAS                    = "bias";
 constexpr const char *A_WARP_KW                 = "warp_kw";
 constexpr const char *A_LARGE_SCALE_WARP_AMP    = "large_scale_warp_amp";
 constexpr const char *A_LARGE_SCALE_GAIN        = "large_scale_gain";
@@ -60,6 +61,7 @@ void setup_basalt_field_node(BaseNode &node)
   glm::vec2 kw = {5.f, 5.f};
   add_wavenumber(node, A_KW, "Spatial Frequency", kw, 0.f, FLT_MAX, true);
   add_seed(node, A_SEED, "Seed");
+  add_float(node, A_BIAS, "Cell Size Variation", 0.f, 0.f, 1.f);
 
   node.set_current_category("Large-Scale Parameters");
   add_float(node, A_WARP_KW, "warp_kw", 4.f, 0.f, FLT_MAX);
@@ -119,6 +121,7 @@ void compute_basalt_field_node(BaseNode &node)
 
   const auto kw                      = node.val_wavenumber(A_KW);
   const auto seed                    = static_cast<uint>(node.val<int>(A_SEED));
+  const auto bias                    = node.val<float>(A_BIAS);
   const auto warp_kw                 = node.val<float>(A_WARP_KW);
   const auto large_scale_warp_amp    = node.val<float>(A_LARGE_SCALE_WARP_AMP);
   const auto large_scale_gain        = node.val<float>(A_LARGE_SCALE_GAIN);
@@ -167,6 +170,7 @@ void compute_basalt_field_node(BaseNode &node)
                                           flatten_activate,
                                           flatten_kw_ratio,
                                           flatten_amp,
+                                          bias,
                                           pa_dx,
                                           pa_dy,
                                           region.bbox);
