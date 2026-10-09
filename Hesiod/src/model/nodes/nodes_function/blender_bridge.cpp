@@ -67,30 +67,34 @@ void compute_blender_bridge_node(BaseNode &node)
 
   BlenderStreamer &streamer = HSD_APP->get_blender_streamer();
 
-  // only restart if the port is changed
-  streamer.start(port);
-
   hmap::Array z = p_in->to_array(node.cfg().cm_cpu);
   hmap::remap(z);
 
-  if (!p_tex)
-  {
-    streamer.send_heightmap(z.vector.data(),
-                            node.cfg().shape.x,
-                            node.cfg().shape.y,
-                            std::stoi(node.get_id()));
-    return;
-  }
-  else
-  {
-    std::vector<float> raw_tex = p_tex->to_raw(node.cfg().cm_cpu);
+  std::vector<float> raw_tex;
+  if (p_tex)
+    raw_tex = p_tex->to_raw(node.cfg().cm_cpu);
 
-    streamer.send_heightmap_and_texture(z.vector.data(),
-                                        raw_tex.data(),
-                                        node.cfg().shape.x,
-                                        node.cfg().shape.y,
-                                        std::stoi(node.get_id()));
-  }
+  // the streamer and its socket belong to the GUI thread
+  QMetaObject::invokeMethod(&streamer,
+                            [&streamer,
+                             port,
+                             z       = std::move(z.vector),
+                             raw_tex = std::move(raw_tex),
+                             shape   = node.cfg().shape,
+                             id      = std::stoi(node.get_id())]()
+                            {
+                              // only restart if the port is changed
+                              streamer.start(port);
+
+                              if (raw_tex.empty())
+                                streamer.send_heightmap(z.data(), shape.x, shape.y, id);
+                              else
+                                streamer.send_heightmap_and_texture(z.data(),
+                                                                    raw_tex.data(),
+                                                                    shape.x,
+                                                                    shape.y,
+                                                                    id);
+                            });
 }
 
 } // namespace hesiod

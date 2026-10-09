@@ -1084,11 +1084,16 @@ void GraphNodeWidget::setup_connections()
                 this,
                 &GraphNodeWidget::on_viewport_request);
 
-  // GraphNodeWidget -> QApplication
+  // GraphNodeWidget -> QApplication (nothing to wait for when the graph is
+  // updated in the background)
   this->connect(this,
                 &GraphNodeWidget::update_started,
                 this,
-                []() { QApplication::setOverrideCursor(Qt::WaitCursor); });
+                []()
+                {
+                  if (!HSD_CTX.app_settings.node_editor.async_update)
+                    QApplication::setOverrideCursor(Qt::WaitCursor);
+                });
 
   this->connect(this,
                 &GraphNodeWidget::update_finished,

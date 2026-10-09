@@ -14,15 +14,22 @@
 #include "hesiod/model/graph/graph_config.hpp"
 #include "hesiod/model/graph/graph_manager.hpp"
 #include "hesiod/model/graph/graph_node.hpp"
+#include "hesiod/model/graph/graph_worker.hpp"
 #include "hesiod/model/utils.hpp"
 
 namespace hesiod
 {
 
-GraphManager::GraphManager(const std::string &id) : id(id)
+GraphManager::GraphManager(const std::string &id)
+    : id(id), worker(std::make_unique<GraphWorker>())
 {
   Logger::log()->trace("GraphManager::GraphManager: id: {}", id);
+
+  this->worker->failed = [this](std::exception_ptr error)
+  { this->on_update_failed(error); };
 }
+
+GraphManager::~GraphManager() = default;
 
 std::string GraphManager::add_graph_node(const std::shared_ptr<GraphNode> &p_graph_node,
                                          const std::string                &graph_id)
@@ -46,6 +53,7 @@ std::string GraphManager::add_graph_node(const std::shared_ptr<GraphNode> &p_gra
   // setup new graph node
   {
     p_graph_node->set_id(new_graph_id);
+    p_graph_node->set_p_worker(this->worker.get());
 
     // store a reference to the global storage of broadcasting data
     p_graph_node->set_p_broadcast_params(&broadcast_params);
@@ -75,6 +83,8 @@ void GraphManager::clear()
 {
   Logger::log()->trace("GraphManager::clear");
 
+  this->worker->cancel();
+
   for (auto &[_, graph] : this->graph_nodes)
     graph->clear();
 
@@ -87,6 +97,9 @@ void GraphManager::clear()
 void GraphManager::export_flatten()
 {
   Logger::log()->trace("GraphManager::export_flatten");
+
+  // what is exported has to be computed first
+  this->worker->finish();
 
   // create config
   auto export_cfg = GraphConfig();
@@ -226,6 +239,8 @@ GraphNode *GraphManager::get_graph_ref_by_id(const std::string &graph_id)
 }
 
 std::string GraphManager::get_id() const { return this->id; }
+
+GraphWorker &GraphManager::get_worker() { return *this->worker; }
 
 std::shared_ptr<GraphManager> GraphManager::get_shared()
 {
@@ -371,6 +386,11 @@ void GraphManager::on_broadcast_node_updated(const std::string &graph_id,
 {
   Logger::log()->trace("GraphManager::on_broadcast_node_updated: broadcasting {}", tag);
 
+  // a Broadcast updated in the background reports from the update thread
+  if (GraphWorker::in_update_thread())
+    return this->worker->post([this, graph_id, tag]()
+                              { this->on_broadcast_node_updated(graph_id, tag); });
+
   for (auto &[gid, graph] : this->graph_nodes)
   {
     // prevent any broadcast from a top layer to a sublayer, this
@@ -414,6 +434,8 @@ void GraphManager::remove_graph_node(const std::string &graph_id)
 
   if (this->is_graph_id_available(graph_id))
     return;
+
+  this->worker->cancel(this->get_graph_ref_by_id(graph_id));
 
   this->graph_order.erase(
       std::remove(this->graph_order.begin(), this->graph_order.end(), graph_id),
@@ -483,12 +505,24 @@ void GraphManager::update()
   // condition that makes continuing pointless (memory exhaustion above all).
   // Abandon the update and report it - never let it escape into the event loop,
   // where it would terminate the application.
-  std::string failure;
-
   try
   {
     for (auto &graph_id : this->graph_order)
       this->graph_nodes.at(graph_id)->update();
+  }
+  catch (...)
+  {
+    this->on_update_failed(std::current_exception());
+  }
+}
+
+void GraphManager::on_update_failed(std::exception_ptr error)
+{
+  std::string failure;
+
+  try
+  {
+    std::rethrow_exception(error);
   }
   catch (const std::bad_alloc &)
   {
@@ -503,9 +537,6 @@ void GraphManager::update()
   {
     failure = "The graph update was abandoned after an unknown error.";
   }
-
-  if (failure.empty())
-    return;
 
   Logger::log()->critical("GraphManager::update: {}", failure);
 
