@@ -1102,6 +1102,16 @@ void GraphNodeWidget::setup_connections()
 
   // GraphNodeWidget -> GFX node
   this->connect(this,
+                &GraphNodeWidget::compute_started,
+                this,
+                &GraphNodeWidget::on_compute_started);
+
+  this->connect(this,
+                &GraphNodeWidget::compute_finished,
+                this,
+                &GraphNodeWidget::on_compute_finished);
+
+  this->connect(this,
                 &GraphNodeWidget::compute_finished,
                 this,
                 [this](const std::string &node_id)
