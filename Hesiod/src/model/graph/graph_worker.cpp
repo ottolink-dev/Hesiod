@@ -1,9 +1,9 @@
 /* Copyright (c) 2026 Otto Link. Distributed under the terms of the GNU General
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
-#include <algorithm>
-#include <utility>
+#include <chrono>
 
+#include "hesiod/logger.hpp"
 #include "hesiod/model/graph/graph_node.hpp"
 #include "hesiod/model/graph/graph_worker.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
@@ -34,13 +34,28 @@ void GraphWorker::answer(int pass, const std::string &node_id)
   std::lock_guard<std::mutex> lock(this->mutex);
 
   if (pass != this->pass || !this->graph || this->cancelled)
+  {
+    Logger::log()->trace("GraphWorker::answer: node '{}' (pass {}) ignored "
+                         "(pass_match={}, has_graph={}, cancelled={})",
+                         node_id,
+                         pass,
+                         pass == this->pass,
+                         this->graph != nullptr,
+                         this->cancelled);
     return;
+  }
 
   if (auto *p_node = this->graph->get_node_ref_by_id<BaseNode>(node_id))
     p_node->begin_background_compute();
 
   this->started.insert(node_id);
   this->go = true;
+
+  Logger::log()->trace(
+      "GraphWorker::answer: node '{}' (pass {}) snapshot taken, waking worker",
+      node_id,
+      pass);
+
   this->cv.notify_one();
 }
 
@@ -49,16 +64,39 @@ bool GraphWorker::ask(int pass, const std::string &node_id)
   std::unique_lock<std::mutex> lock(this->mutex);
 
   this->go = false;
+
+  Logger::log()->trace("GraphWorker::ask: node '{}' (pass {}) requesting GUI snapshot",
+                       node_id,
+                       pass);
+
+  const auto t0 = std::chrono::steady_clock::now();
+
   if (!this->cancelled)
     this->post([this, pass, node_id]() { this->answer(pass, node_id); });
 
   // a node that got ready is computed, a cancellation then stops at the next one
   this->cv.wait(lock, [this]() { return this->go || this->cancelled; });
+
+  const auto wait_ms = std::chrono::duration_cast<std::chrono::milliseconds>(
+                           std::chrono::steady_clock::now() - t0)
+                           .count();
+
+  Logger::log()->trace(
+      "GraphWorker::ask: node '{}' (pass {}) wait finished ({} ms, go={}, cancelled={})",
+      node_id,
+      pass,
+      wait_ms,
+      this->go,
+      this->cancelled);
+
   return !this->go;
 }
 
 void GraphWorker::cancel(const GraphNode *p_graph)
 {
+  Logger::log()->trace("GraphWorker::cancel: graph {}",
+                       p_graph ? p_graph->get_id() : "all");
+
   this->stop();
   std::erase_if(this->jobs,
                 [p_graph](const Job &job)
@@ -77,9 +115,17 @@ void GraphWorker::end_pass()
   graph->cancel_update_callback = nullptr;
 
   std::set<std::string> left;
+
   for (const auto &node_id : this->planned)
     if (!this->started.contains(node_id))
       left.insert(node_id);
+
+  Logger::log()->trace(
+      "GraphWorker::end_pass: pass {} finished ({} computed, {} left, has_error={})",
+      this->pass - 1,
+      this->started.size(),
+      left.size(),
+      this->error != nullptr);
 
   auto job = this->find_job(*graph);
 
@@ -87,6 +133,7 @@ void GraphWorker::end_pass()
   {
     // as for a blocking update, what is left is not worth computing
     this->jobs.clear();
+
     if (this->failed)
       this->failed(std::exchange(this->error, nullptr));
   }
@@ -128,6 +175,9 @@ void GraphWorker::end_pass()
   }
   else if (graph->update_finished)
   {
+    Logger::log()->trace(
+        "GraphWorker::end_pass: update completely finished for graph '{}'",
+        graph->get_id());
     graph->update_finished();
   }
 
@@ -137,6 +187,8 @@ void GraphWorker::end_pass()
 
 void GraphWorker::finish()
 {
+  Logger::log()->trace("GraphWorker::finish: flushing {} queued jobs", this->jobs.size());
+
   this->stop();
 
   // what is left, on this thread
@@ -207,6 +259,11 @@ bool GraphWorker::request(GraphNode &graph, const std::vector<std::string> *p_no
     job->node_ids.insert(p_node_ids->begin(), p_node_ids->end());
   }
 
+  Logger::log()->trace("GraphWorker::request: graph '{}' (all={}, {} nodes)",
+                       graph.get_id(),
+                       !p_node_ids,
+                       p_node_ids ? p_node_ids->size() : 0);
+
   // what the update in progress computes from now on is outdated
   if (this->graph.get() == &graph)
   {
@@ -262,6 +319,12 @@ void GraphWorker::start_next()
     this->go = false;
     const int pass = ++this->pass;
 
+    Logger::log()->trace(
+        "GraphWorker::start_next: starting pass {} for graph '{}' with {} planned nodes",
+        pass,
+        graph->get_id(),
+        this->planned.size());
+
     graph->cancel_update_callback = [this, pass](const std::string &node_id)
     { return this->ask(pass, node_id); };
 
@@ -300,6 +363,8 @@ void GraphWorker::stop()
 {
   if (!this->thread.joinable())
     return;
+
+  Logger::log()->trace("GraphWorker::stop: stopping update thread");
 
   {
     std::lock_guard<std::mutex> lock(this->mutex);
