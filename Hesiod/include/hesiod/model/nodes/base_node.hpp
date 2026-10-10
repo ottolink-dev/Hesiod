@@ -3,6 +3,7 @@
 #pragma once
 #include <any>
 #include <array>
+#include <atomic>
 #include <chrono>
 #include <functional>
 #include <map>
@@ -64,6 +65,32 @@ public:
   // --- Compute ---
   void compute() override;
   void set_compute_fct(std::function<void(BaseNode &node)> new_compute_fct);
+
+  // Called on the GUI thread right before the node is computed on the update
+  // thread of a GraphWorker: it computes from a snapshot of its settings, which
+  // stay editable meanwhile, and its data is not handed out to other threads
+  // until it is done (nullptr from get_value_ref, as for an empty port).
+  void begin_background_compute();
+
+  // gnode::Node accessors, see begin_background_compute()
+  template <typename T> T *get_value_ref(int port_index) const
+  {
+    return this->is_port_busy(port_index) ? nullptr
+                                          : gnode::Node::get_value_ref<T>(port_index);
+  }
+
+  template <typename T> T *get_value_ref(const std::string &port_label) const
+  {
+    return this->is_port_busy(this->get_port_index(port_label))
+               ? nullptr
+               : gnode::Node::get_value_ref<T>(port_label);
+  }
+
+  void *get_value_ref_void(int port_index) const
+  {
+    return this->is_port_busy(port_index) ? nullptr
+                                          : gnode::Node::get_value_ref_void(port_index);
+  }
 
   // --- Serialization ---
   virtual void           json_from(nlohmann::json const &json);
@@ -177,8 +204,12 @@ public:
   std::function<void(const std::string &id)> compute_started;
 
 private:
+  bool is_port_busy(int port_index) const;
+
   // --- Members ---
-  std::unique_ptr<meta::ContainerGroup> meta_group; // attribute storage
+  std::unique_ptr<meta::ContainerGroup> meta_group;        // attribute storage
+  std::unique_ptr<meta::ContainerGroup> frozen_meta_group; // see begin_background_compute
+  std::atomic<bool>                     computing = false; // in the background
   std::string                           current_category = "Main Parameters";
 
   // container state captured at finalize time; toolbar "Reset Settings" restores it

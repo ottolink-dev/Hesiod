@@ -4,6 +4,7 @@
 #include "hesiod/model/graph/graph_node.hpp"
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/logger.hpp"
+#include "hesiod/model/graph/graph_worker.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/broadcast_node.hpp"
 #include "hesiod/model/nodes/legacy/legacy_converter.hpp"
@@ -63,6 +64,8 @@ std::string GraphNode::add_node(const std::shared_ptr<gnode::Node> &node,
 {
   Logger::log()->trace("GraphNode::add_node: id = {}", id);
 
+  this->stop_update();
+
   // basic GNode adding...
   std::string node_id = gnode::Graph::add_node(node, id);
 
@@ -96,6 +99,8 @@ std::string GraphNode::add_node(const std::shared_ptr<gnode::Node> &node,
 void GraphNode::change_config_values(const GraphConfig &new_config)
 {
   Logger::log()->trace("GraphNode::change_config_values");
+
+  this->stop_update();
 
   *this->config = new_config;
 
@@ -362,6 +367,8 @@ void GraphNode::remove_node(const std::string &id)
 {
   Logger::log()->trace("GraphNode::remove_node: id = {}", id);
 
+  this->stop_update();
+
   // "special" nodes treatment
   BaseNode *p_basenode = this->get_node_ref_by_id<BaseNode>(id);
 
@@ -480,12 +487,21 @@ void GraphNode::setup_new_receive_node(BaseNode *p_node)
   p_receive_node->set_p_coord_frame(dynamic_cast<hmap::CoordFrame *>(this));
 }
 
+void GraphNode::stop_update()
+{
+  if (this->p_worker)
+    this->p_worker->stop();
+}
+
 void GraphNode::update()
 {
   Logger::log()->trace("GraphNode::update");
 
   if (this->update_started)
     this->update_started();
+
+  if (this->p_worker && this->p_worker->request(*this))
+    return;
 
   gnode::Graph::update();
 
@@ -507,6 +523,9 @@ void GraphNode::update(const std::vector<std::string> &node_ids)
 
   if (this->update_started)
     this->update_started();
+
+  if (this->p_worker && this->p_worker->request(*this, &node_ids))
+    return;
 
   gnode::Graph::update(node_ids);
 

@@ -4,6 +4,7 @@
 #include "hesiod/model/project_model.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/graph/graph_manager.hpp"
+#include "hesiod/model/graph/graph_worker.hpp"
 #include "hesiod/model/utils.hpp"
 
 namespace hesiod
@@ -112,6 +113,9 @@ void ProjectModel::set_is_dirty(bool new_state)
 
 void ProjectModel::set_path(const std::filesystem::path &new_path)
 {
+  // export nodes computed in the background read the project name
+  this->graph_manager->get_worker().stop();
+
   this->path = new_path;
   this->name = this->path.stem().string();
 
@@ -126,6 +130,8 @@ void ProjectModel::set_path(const std::string &new_path)
 
 void ProjectModel::set_name(const std::string &new_name)
 {
+  this->graph_manager->get_worker().stop(); // as for set_path
+
   this->name = new_name;
   this->path = this->path.parent_path() / (this->name + ".hsd");
 

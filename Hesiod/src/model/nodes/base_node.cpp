@@ -10,6 +10,8 @@
 
 #include <QCoreApplication>
 
+#include "gnode/graph.hpp"
+
 #include "highmap/flora/forest.hpp"
 #include "highmap/geometry/cloud.hpp"
 #include "highmap/geometry/path.hpp"
@@ -20,6 +22,7 @@
 
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/logger.hpp"
+#include "hesiod/model/graph/graph_worker.hpp"
 #include "hesiod/model/nodes/attributes.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/legacy/legacy_converter.hpp"
@@ -130,6 +133,9 @@ void BaseNode::compute()
                             this->get_node_type());
   }
 
+  // its data can be read again, see begin_background_compute()
+  this->computing = false;
+
   this->update_runtime_info(NodeRuntimeStep::NRS_UPDATE_END);
 
   if (this->compute_finished)
@@ -143,8 +149,60 @@ void BaseNode::compute()
     throw std::bad_alloc();
 }
 
+void BaseNode::begin_background_compute()
+{
+  this->frozen_meta_group.reset();
+  this->computing = true;
+
+  try
+  {
+    const meta::ContainerGroup &live = this->get_meta_group();
+    auto                        frozen = std::make_unique<meta::ContainerGroup>();
+    frozen->json_from(live.json_to());
+
+    // an attribute that does not come through would be missed by the node function
+    for (const auto &[name, p_container] : live.containers())
+      if (!frozen->find(name) || frozen->find(name)->size() != p_container->size())
+        throw std::runtime_error("incomplete snapshot of the settings");
+
+    this->frozen_meta_group = std::move(frozen);
+  }
+  catch (const std::exception &e)
+  {
+    Logger::log()->warn("BaseNode::begin_background_compute: node '{}' ({}) "
+                        "computes from its live settings: {}",
+                        this->get_id(),
+                        this->get_node_type(),
+                        e.what());
+  }
+}
+
+bool BaseNode::is_port_busy(int port_index) const
+{
+  // the update thread only computes the node that rewrites its data
+  if (GraphWorker::in_update_thread() || port_index < 0 ||
+      port_index >= this->get_nports())
+    return false;
+
+  if (this->get_port_type(port_index) == gnode::PortType::OUT)
+    return this->computing;
+
+  // an input hands out the data of the output it is linked to
+  if (const gnode::Graph *p_owner = this->get_p_graph())
+    for (const auto &link : p_owner->get_links())
+      if (link.to == this->get_id() && link.port_to == port_index)
+        if (auto *p_from = dynamic_cast<BaseNode *>(p_owner->get_node(link.from)))
+          return p_from->computing;
+
+  return false;
+}
+
 meta::ContainerGroup &BaseNode::get_meta_group()
 {
+  // the update thread computes from the snapshot, see begin_background_compute()
+  if (this->frozen_meta_group && GraphWorker::in_update_thread())
+    return *this->frozen_meta_group;
+
   if (!this->meta_group)
   {
     this->meta_group = std::make_unique<meta::ContainerGroup>();
@@ -154,7 +212,13 @@ meta::ContainerGroup &BaseNode::get_meta_group()
   return *this->meta_group;
 }
 
-const meta::ContainerGroup &BaseNode::get_meta_group() const { return *this->meta_group; }
+const meta::ContainerGroup &BaseNode::get_meta_group() const
+{
+  if (this->frozen_meta_group && GraphWorker::in_update_thread())
+    return *this->frozen_meta_group;
+
+  return *this->meta_group;
+}
 
 void BaseNode::set_current_group(const std::string &group_name)
 {

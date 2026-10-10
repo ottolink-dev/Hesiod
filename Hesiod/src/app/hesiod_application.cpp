@@ -63,6 +63,7 @@
 #include "hesiod/model/constants/color_gradient.hpp"
 #include "hesiod/model/graph/graph_manager.hpp"
 #include "hesiod/model/graph/graph_node.hpp"
+#include "hesiod/model/graph/graph_worker.hpp"
 #include "hesiod/model/utils.hpp"
 
 namespace fs = std::filesystem;
@@ -290,6 +291,10 @@ void HesiodApplication::cleanup()
   // the project on its way out is either saved or explicitly discarded
   if (this->autosave)
     this->autosave->discard();
+
+  // nothing left to compute for it, and not while its interface goes away
+  if (this->context.project_model)
+    this->context.project_model->get_graph_manager_ref()->get_worker().cancel();
 
   if (this->project_ui)
     this->project_ui->cleanup();
