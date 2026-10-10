@@ -94,14 +94,42 @@ void GraphWorker::end_pass()
   {
     // what was left goes first, with what has been requested meanwhile
     Job resumed = job != this->jobs.end() ? std::move(*job) : Job{.graph = graph};
+
     if (job != this->jobs.end())
       this->jobs.erase(job);
 
-    resumed.node_ids.insert(left.begin(), left.end());
+    if (!resumed.all)
+      resumed.node_ids.insert(left.begin(), left.end());
+
+    // coalesce any other pending jobs for the same graph
+    for (auto it = this->jobs.begin(); it != this->jobs.end();)
+    {
+      if (it->graph.lock() == graph)
+      {
+        if (it->all)
+        {
+          resumed.all = true;
+          resumed.node_ids.clear();
+        }
+        else if (!resumed.all)
+        {
+          resumed.node_ids.insert(it->node_ids.begin(), it->node_ids.end());
+        }
+
+        it = this->jobs.erase(it);
+      }
+      else
+      {
+        ++it;
+      }
+    }
+
     this->jobs.push_front(std::move(resumed));
   }
   else if (graph->update_finished)
+  {
     graph->update_finished();
+  }
 
   std::lock_guard<std::mutex> lock(this->mutex);
   this->cancelled = false;
@@ -165,13 +193,19 @@ bool GraphWorker::request(GraphNode &graph, const std::vector<std::string> *p_no
   }
 
   auto job = this->find_job(graph);
+
   if (job == this->jobs.end())
     job = this->jobs.insert(job, Job{.graph = graph.weak_from_this()});
 
-  if (p_node_ids)
-    job->node_ids.insert(p_node_ids->begin(), p_node_ids->end());
-  else
+  if (!p_node_ids)
+  {
     job->all = true;
+    job->node_ids.clear();
+  }
+  else if (!job->all)
+  {
+    job->node_ids.insert(p_node_ids->begin(), p_node_ids->end());
+  }
 
   // what the update in progress computes from now on is outdated
   if (this->graph.get() == &graph)
@@ -182,8 +216,23 @@ bool GraphWorker::request(GraphNode &graph, const std::vector<std::string> *p_no
   }
 
   // not before the caller is done with the graphs
-  this->post([this]() { this->start_next(); });
+  this->schedule_start_next();
   return true;
+}
+
+void GraphWorker::schedule_start_next()
+{
+  if (this->start_next_pending)
+    return;
+
+  this->start_next_pending = true;
+
+  this->post(
+      [this]()
+      {
+        this->start_next_pending = false;
+        this->start_next();
+      });
 }
 
 void GraphWorker::start_next()
@@ -260,7 +309,7 @@ void GraphWorker::stop()
   this->end_pass();
 
   // what is left resumes once the caller is done with the graphs
-  this->post([this]() { this->start_next(); });
+  this->schedule_start_next();
 }
 
 } // namespace hesiod

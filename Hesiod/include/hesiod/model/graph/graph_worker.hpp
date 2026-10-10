@@ -66,8 +66,8 @@ public:
 private:
   struct Job
   {
-    std::weak_ptr<GraphNode> graph;
-    std::set<std::string>    node_ids;
+    std::weak_ptr<GraphNode> graph = {};
+    std::set<std::string>    node_ids = {};
     bool                     all = false;
   };
 
@@ -75,6 +75,7 @@ private:
   void                      answer(int pass, const std::string &node_id);
   void                      end_pass(); // joins the update thread and takes stock
   std::deque<Job>::iterator find_job(const GraphNode &graph);
+  void                      schedule_start_next();
   void                      start_next(); // unless an update is in progress
 
   // GUI thread
@@ -85,6 +86,7 @@ private:
   std::exception_ptr         error;   // what the update thread ended with
   std::thread                thread;
   int                        pass = 0; // identifies the update in progress
+  bool                       start_next_pending = false;
 
   // shared with the update thread
   std::mutex              mutex;
