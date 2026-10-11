@@ -1,0 +1,100 @@
+name: Documentation and website
+
+on:
+  push:
+    branches: [main, dev]
+    paths: ['docs/**', 'bridges/**', 'mkdocs.yml', 'CMakeLists.txt', '.github/workflows/documentation.yml']
+  pull_request:
+    branches: [main, dev]
+    paths: ['docs/**', 'bridges/**', 'mkdocs.yml', '.github/workflows/documentation.yml']
+  release:
+    types: [published, edited]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: documentation-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: docs/requirements.txt
+      - run: python -m pip install -r docs/requirements.txt
+      - run: python -m mkdocs build --clean
+      - uses: actions/upload-artifact@v4
+        with:
+          name: documentation
+          path: site/
+          if-no-files-found: error
+
+  website:
+    needs: build
+    if: >-
+      github.repository == 'ottolink-dev/Hesiod' &&
+      (github.event_name == 'release' ||
+       (github.ref == 'refs/heads/main' && github.event_name != 'pull_request'))
+    runs-on: ubuntu-24.04
+    environment: website
+    concurrency:
+      group: website-documentation
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: hesiod
+          persist-credentials: false
+      - name: Check website authentication
+        env:
+          APP_ID: ${{ vars.WEBSITE_APP_ID }}
+          APP_KEY: ${{ secrets.WEBSITE_APP_PRIVATE_KEY }}
+        run: |
+          test -n "$APP_ID" || { echo '::error::Set WEBSITE_APP_ID in the website environment'; exit 1; }
+          test -n "$APP_KEY" || { echo '::error::Set WEBSITE_APP_PRIVATE_KEY in the website environment'; exit 1; }
+      - uses: actions/create-github-app-token@v2
+        id: website-token
+        with:
+          app-id: ${{ vars.WEBSITE_APP_ID }}
+          private-key: ${{ secrets.WEBSITE_APP_PRIVATE_KEY }}
+          owner: ottolink-dev
+          repositories: website
+          permission-contents: write
+      - uses: actions/checkout@v4
+        with:
+          repository: ottolink-dev/website
+          ref: main
+          token: ${{ steps.website-token.outputs.token }}
+          path: website
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Build with the website theme
+        run: |
+          python -m pip install -r hesiod/docs/requirements.txt
+          python website/docs-build/build_docs.py --repo "$GITHUB_WORKSPACE/hesiod" --ref HEAD --no-fetch
+          test -s website/public/docs/index.html
+      - name: Commit documentation and trigger website deployment
+        working-directory: website
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add public/docs
+          if git diff --cached --quiet; then
+            echo 'Website documentation is already current.'
+            exit 0
+          fi
+          source_sha=$(git -C ../hesiod rev-parse HEAD)
+          git commit -m "docs: rebuild from Hesiod ${source_sha}"
+          # Reject concurrent changes rather than force-pushing or hiding conflicts.
+          git push origin HEAD:main

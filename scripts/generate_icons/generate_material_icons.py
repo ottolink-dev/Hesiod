@@ -12,7 +12,7 @@ OUT_DIR = "Hesiod/data/icons/"
 
 ICONS = [
     "account_tree", "add", "bakery_dining", "bookmark", "check",
-    "cloud_download", "exit_to_app", "file_open", "hdr_strong", "help", "home",
+    "cloud_download", "exit_to_app", "file_open", "forest", "hdr_strong", "help", "home",
     "info", "landscape", "link", "palette", "public", "push_pin", "refresh",
     "restore", "save", "save_as", "scatter_plot", "settings",
     "settings_backup_restore", "tune", "u_turn_left", "visibility",

@@ -23,6 +23,7 @@ constexpr const char *P_OUT      = "output";
 
 constexpr const char *A_ANGLE          = "angle";
 constexpr const char *A_BASE_NOISE_AMP = "base_noise_amp";
+constexpr const char *A_BIAS           = "bias";
 constexpr const char *A_CENTER         = "center";
 constexpr const char *A_CONE_ALPHA     = "cone_alpha";
 constexpr const char *A_ELEVATION      = "elevation";
@@ -54,6 +55,7 @@ void setup_mountain_cone_node(BaseNode &node)
   add_float(node, A_PEAK_KW, "peak_kw", 4.f, 0.01f, FLT_MAX);
   add_float(node, A_RUGOSITY, "rugosity", 0.f, 0.f, 1.f);
   add_float(node, A_ANGLE, "angle", 45.f, -180.f, 180.f);
+  add_float(node, A_BIAS, "Cell Size Variation", 0.f, 0.f, 1.f);
   add_float(node, A_K_SMOOTHING, "k_smoothing", 0.f, 0.f, 1.f);
   add_float(node, A_GAMMA, "gamma", 0.5f, 0.01f, 4.f);
   add_float(node, A_CONE_ALPHA, "cone_alpha", 1.2f, 0.01f, 4.f);
@@ -92,6 +94,7 @@ void compute_mountain_cone_node(BaseNode &node)
                                            node.val<float>(A_PEAK_KW),
                                            node.val<float>(A_RUGOSITY),
                                            node.val<float>(A_ANGLE),
+                                           node.val<float>(A_BIAS),
                                            node.val<float>(A_K_SMOOTHING),
                                            node.val<float>(A_GAMMA),
                                            node.val<float>(A_CONE_ALPHA),

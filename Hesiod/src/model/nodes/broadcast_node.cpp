@@ -16,8 +16,12 @@ BroadcastNode::BroadcastNode(const std::string &label, std::weak_ptr<GraphConfig
 
 void BroadcastNode::generate_broadcast_tag()
 {
-  this->broadcast_tag = this->get_graph_id() + "/" + this->get_label() + "/" +
-                        this->get_id();
+  const std::string tag = this->get_graph_id() + "/" + this->get_label() + "/" +
+                          this->get_id();
+
+  // only written when it changes: also asked for from the update thread
+  if (this->broadcast_tag != tag)
+    this->broadcast_tag = tag;
 
   // set the attribute value accordingly so that the tag is visible in the GUI for the
   // user

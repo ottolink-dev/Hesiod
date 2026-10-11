@@ -28,7 +28,8 @@ NodeWidget::NodeWidget(std::weak_ptr<BaseNode>   model,
 
 void NodeWidget::on_compute_finished() { this->data_preview->update_preview(); }
 
-void NodeWidget::on_compute_started() { this->data_preview->clear_preview(); }
+// the previous preview stays, dimmed, until the node is computed
+void NodeWidget::on_compute_started() { this->data_preview->dim_preview(); }
 
 void NodeWidget::setup_connections()
 {

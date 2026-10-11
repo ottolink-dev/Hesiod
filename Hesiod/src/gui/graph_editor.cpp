@@ -185,6 +185,7 @@ bool GraphEditor::connect(const Link &link)
       previous.push_back(old);
 
   Batch batch(*this);
+  graph->stop_update(); // links are not modified while the graph is updated
   // Validate before disturbing the old input, and keep its graphics until the
   // model accepts the replacement. Restore both sides if synchronization fails.
   try
@@ -217,8 +218,9 @@ bool GraphEditor::connect(const Link &link)
 
 bool GraphEditor::disconnect(const Link &link)
 {
-  auto       graph = this->graph();
-  Batch      batch(*this);
+  auto  graph = this->graph();
+  Batch batch(*this);
+  graph->stop_update(); // links are not modified while the graph is updated
   const bool removed = graph->remove_link(link.node_out,
                                           link.port_out,
                                           link.node_in,
