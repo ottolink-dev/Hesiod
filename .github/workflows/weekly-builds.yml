@@ -1,0 +1,176 @@
+name: Weekly builds
+
+on:
+  push:
+    branches: [ci/docs-weekly-builds]
+  schedule:
+    - cron: '23 4 * * 1'
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: Publish successful builds to the website dev channel
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: weekly-builds-${{ github.event_name == 'push' && github.sha || 'publication' }}
+  cancel-in-progress: false
+
+jobs:
+  source:
+    runs-on: ubuntu-24.04
+    outputs:
+      sha: ${{ steps.source.outputs.sha }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ github.event_name == 'push' && github.repository || 'ottolink-dev/Hesiod' }}
+          ref: ${{ github.event_name == 'push' && github.sha || 'dev' }}
+          persist-credentials: false
+      - id: source
+        run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+  build:
+    needs: source
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-24.04
+            platform: linux
+            qt-arch: linux_gcc_64
+          - os: windows-2022
+            platform: windows
+            qt-arch: win64_msvc2022_64
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 180
+    env:
+      VCPKG_DEFAULT_BINARY_CACHE: ${{ github.workspace }}/vcpkg-cache
+    steps:
+      # Pushes validate the candidate; scheduled/manual builds use upstream dev.
+      - uses: actions/checkout@v4
+        with:
+          path: automation
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ github.event_name == 'push' && github.repository || 'ottolink-dev/Hesiod' }}
+          ref: ${{ needs.source.outputs.sha }}
+          path: source
+          submodules: recursive
+          persist-credentials: false
+      - uses: jurplel/install-qt-action@v4
+        with:
+          # aqt 3.3.0 cannot resolve Qt 6.11's Windows download layout.
+          # Pin the upstream fix until it appears in a released aqt version.
+          aqtsource: git+https://github.com/miurahr/aqtinstall.git@8c3695d4a4e1ceabf6a74dc6c79681656dc6b74b
+          version: '6.11.2'
+          arch: ${{ matrix.qt-arch }}
+          modules: qtwebengine qtpositioning qtwebchannel qtserialport
+          cache: true
+      - name: Linux dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ninja-build libglfw3-dev libglew-dev libopengl-dev freeglut3-dev libglm-dev libfuse2t64 opencl-headers opencl-clhpp-headers ocl-icd-opencl-dev pocl-opencl-icd libassimp-dev libopencv-dev libxkbcommon-dev libspdlog-dev libfftw3-dev libgsl-dev nlohmann-json3-dev zlib1g-dev libopenexr-dev libtiff-dev libzstd-dev libxcb-cursor0 libegl1 zip
+      - name: MSVC environment
+        if: runner.os == 'Windows'
+        uses: ilammy/msvc-dev-cmd@v1
+      - name: Pinned vcpkg
+        if: runner.os == 'Windows'
+        uses: actions/checkout@v4
+        with:
+          repository: microsoft/vcpkg
+          ref: ef7dbf94b9198bc58f45951adcf1f041fcbc5ea0
+          path: vcpkg
+          persist-credentials: false
+      - name: Restore Windows dependency cache
+        if: runner.os == 'Windows'
+        uses: actions/cache/restore@v4
+        id: vcpkg-cache
+        with:
+          path: vcpkg-cache
+          key: vcpkg-windows-2022-${{ hashFiles('automation/scripts/ci/vcpkg.json') }}
+      - name: Windows dependencies
+        id: windows-deps
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force $env:VCPKG_DEFAULT_BINARY_CACHE | Out-Null
+          & ./vcpkg/bootstrap-vcpkg.bat -disableMetrics
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          & ./vcpkg/vcpkg.exe install --triplet x64-windows --x-manifest-root="$env:GITHUB_WORKSPACE/automation/scripts/ci" --x-install-root="$env:GITHUB_WORKSPACE/vcpkg_installed"
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+      - name: Save Windows dependency cache
+        if: runner.os == 'Windows' && steps.vcpkg-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: vcpkg-cache
+          key: ${{ steps.vcpkg-cache.outputs.cache-primary-key }}
+      - name: Configure Linux
+        if: runner.os == 'Linux'
+        working-directory: source
+        run: >-
+          cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
+          -DHESIOD_ENABLE_GENERATE_APP_IMAGE=OFF -DHESIOD_ENABLE_UI_TESTS=OFF
+          -DHIGHMAP_ENABLE_BENCHMARKS=OFF
+      - name: Configure Windows
+        if: runner.os == 'Windows'
+        shell: pwsh
+        working-directory: source
+        run: |
+          cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=cl -DCMAKE_CXX_COMPILER=cl -DHESIOD_ENABLE_GENERATE_APP_IMAGE=OFF -DHESIOD_ENABLE_UI_TESTS=OFF -DHIGHMAP_ENABLE_BENCHMARKS=OFF "-DCMAKE_TOOLCHAIN_FILE=$env:GITHUB_WORKSPACE/vcpkg/scripts/buildsystems/vcpkg.cmake" "-DVCPKG_INSTALLED_DIR=$env:GITHUB_WORKSPACE/vcpkg_installed" -DVCPKG_TARGET_TRIPLET=x64-windows -DVCPKG_MANIFEST_MODE=OFF
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+      - name: Build
+        working-directory: source
+        run: cmake --build build --config Release --target hesiod --parallel 2
+      - name: Package Linux
+        if: runner.os == 'Linux'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_SHA: ${{ needs.source.outputs.sha }}
+        run: bash automation/scripts/ci/package-linux.sh source dist
+      - name: Package Windows
+        if: runner.os == 'Windows'
+        shell: pwsh
+        env:
+          SOURCE_SHA: ${{ needs.source.outputs.sha }}
+        run: ./automation/scripts/ci/package-windows.ps1 -Source source -Output dist -Dependencies vcpkg_installed/x64-windows/bin
+      - uses: actions/upload-artifact@v4
+        with:
+          name: weekly-${{ matrix.platform }}
+          path: dist/*.zip
+          if-no-files-found: error
+          retention-days: 14
+
+  publish:
+    needs: [source, build]
+    if: >-
+      github.repository == 'ottolink-dev/Hesiod' &&
+      (github.event_name == 'schedule' || inputs.publish)
+    runs-on: ubuntu-24.04
+    environment: website
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: weekly-*
+          merge-multiple: true
+          path: dist
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -r scripts/ci/requirements.txt
+      - name: Publish both platforms to the website
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.WEBSITE_R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.WEBSITE_R2_SECRET_ACCESS_KEY }}
+          R2_ENDPOINT: ${{ vars.WEBSITE_R2_ENDPOINT }}
+          R2_BUCKET: ${{ vars.WEBSITE_R2_BUCKET }}
+          SOURCE_SHA: ${{ needs.source.outputs.sha }}
+        run: python scripts/ci/publish_weekly.py --directory dist --sha "$SOURCE_SHA"

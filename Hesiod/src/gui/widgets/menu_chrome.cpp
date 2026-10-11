@@ -135,10 +135,7 @@ bool MenuAnimator::eventFilter(QObject *watched, QEvent *event)
   if (!menu || !menu->isWindow())
     return false;
 
-  {
-    const auto &colors = HSD_CTX.app_settings.colors;
-    round_popup_corners(menu, panel_border_color());
-  }
+  round_popup_corners(menu, panel_border_color());
 
   if (!HSD_CTX.app_settings.interface.enable_ui_animations)
     return false;

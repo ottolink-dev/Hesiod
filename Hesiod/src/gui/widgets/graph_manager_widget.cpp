@@ -7,6 +7,7 @@
 #include <QPushButton>
 #include <QScreen>
 #include <QSettings>
+#include <QSignalBlocker>
 
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/widgets/coord_frame_widget.hpp"
@@ -18,6 +19,7 @@
 #include "hesiod/model/graph/flatten_config.hpp"
 #include "hesiod/model/graph/graph_manager.hpp"
 #include "hesiod/model/graph/graph_node.hpp"
+#include "hesiod/model/graph/graph_worker.hpp"
 #include "hesiod/model/utils.hpp"
 
 #define MINIMUM_WIDTH 384
@@ -169,7 +171,12 @@ void GraphManagerWidget::add_list_item(const std::string &id)
   this->connect(this,
                 &GraphManagerWidget::update_finished,
                 widget,
-                [widget]() { widget->on_combobox_changed(); });
+                [this, widget]()
+                {
+                  // its image is refreshed, the project has not changed for all that
+                  const QSignalBlocker blocker(this);
+                  widget->on_combobox_changed();
+                });
 }
 
 void GraphManagerWidget::clear()
@@ -232,6 +239,8 @@ void GraphManagerWidget::on_apply_changes()
   auto gm = this->p_graph_manager.lock();
   if (!gm)
     return;
+
+  gm->get_worker().stop(); // Receive nodes read the frames
 
   // retrieve coordinate frame parameters from the frames canvas
   for (auto &[id, graph] : gm->get_graph_nodes())

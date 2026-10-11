@@ -1,0 +1,36 @@
+name: CI automation checks
+
+on:
+  pull_request:
+    branches: [main, dev]
+    paths: ['.github/workflows/**', 'scripts/ci/**', 'tests/ci/**']
+  push:
+    branches: [main, dev]
+    paths: ['.github/workflows/**', 'scripts/ci/**', 'tests/ci/**']
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m unittest discover -s tests/ci -v
+      - run: bash -n scripts/ci/package-linux.sh
+      - name: Validate workflows
+        uses: docker://rhysd/actionlint:1.7.12
+        with:
+          args: -color
+      - name: Parse Windows packaging script
+        shell: pwsh
+        run: |
+          $errors = $null
+          $tokens = $null
+          [System.Management.Automation.Language.Parser]::ParseFile("$env:GITHUB_WORKSPACE/scripts/ci/package-windows.ps1", [ref]$tokens, [ref]$errors) > $null
+          if ($errors.Count) { $errors; exit 1 }

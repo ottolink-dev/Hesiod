@@ -395,7 +395,12 @@ void GraphTabsWidget::update_tab_widget()
     this->connect(gnw,
                   &GraphNodeWidget::update_started,
                   this,
-                  [this]() { emit update_started(); });
+                  [this]()
+                  {
+                    // asked for by an edit: this is where the project changes
+                    emit update_started();
+                    emit has_changed();
+                  });
     this->connect(gnw,
                   &GraphNodeWidget::update_finished,
                   this,

@@ -9,6 +9,7 @@
 #include <QPainter>
 
 #include "highmap/colorize.hpp"
+#include "highmap/flora/forest.hpp"
 #include "highmap/geometry/cloud.hpp"
 #include "highmap/geometry/path.hpp"
 #include "highmap/texture.hpp"
@@ -66,6 +67,22 @@ void DataPreview::clear_preview()
   this->preview_pixmap = QPixmap::fromImage(image);
   this->setPixmap(this->preview_pixmap);
   this->update();
+}
+
+void DataPreview::dim_preview()
+{
+  if (this->preview_pixmap.isNull())
+    return;
+
+  QPixmap dimmed(this->preview_pixmap.size());
+  dimmed.fill(Qt::transparent);
+
+  QPainter painter(&dimmed);
+  painter.setOpacity(0.35f);
+  painter.drawPixmap(0, 0, this->preview_pixmap);
+  painter.end();
+
+  this->setPixmap(dimmed);
 }
 
 void DataPreview::contextMenuEvent(QContextMenuEvent *event)
@@ -266,6 +283,18 @@ void DataPreview::update_preview()
       }
       else
         Logger::log()->error("DataPreview::update_preview: Path nullptr or empty");
+    }
+    // ---- Forest ----
+    else if (data_type == typeid(hmap::Forest).name())
+    {
+      const hmap::Forest *p_forest = static_cast<const hmap::Forest *>(blind_ptr);
+      if (p_forest && p_forest->size() > 0)
+      {
+        img = p_forest->to_img_8bit(shape);
+        img_format = QImage::Format_RGB888;
+      }
+      else
+        Logger::log()->error("DataPreview::update_preview: Forest nullptr or empty");
     }
   }
 
