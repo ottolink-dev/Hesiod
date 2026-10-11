@@ -43,6 +43,7 @@ public:
 
 public slots:
   void clear_preview();
+  void dim_preview(); // outdated, until the next update_preview()
   void update_preview();
 
 protected:

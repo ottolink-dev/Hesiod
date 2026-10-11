@@ -946,6 +946,13 @@ void AppSettingsWindow::setup_pages()
                   false,
                   "realtime compute refresh");
     this->add_row(editing,
+                  "Compute in background",
+                  "Keep the interface usable while the graph is computed: navigate, "
+                  "move nodes and edit any setting meanwhile.",
+                  this->make_toggle(HSD_SETTING(bool, node_editor.async_update)),
+                  false,
+                  "background thread worker async responsive build");
+    this->add_row(editing,
                   "Starting resolution",
                   "Heightmap resolution of new projects and new graphs. Change a "
                   "graph's own resolution from the viewport toolbar.",

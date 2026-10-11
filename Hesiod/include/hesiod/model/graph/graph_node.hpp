@@ -15,6 +15,7 @@ namespace hesiod
 {
 
 class BaseNode; // forward
+class GraphWorker;
 
 // =====================================
 // GraphNode
@@ -42,6 +43,9 @@ public:
   // connections, so compound edits never evaluate a partially constructed graph.
   std::string add_node(const std::string &node_type);
 
+  // a node of this graph's config, not added yet (e.g. to add it under a given id)
+  std::shared_ptr<gnode::Node> create_node(const std::string &node_type) const;
+
   // --- GNode::Graph override ---
   std::string  add_node(const std::shared_ptr<gnode::Node> &p_node,
                         const std::string                  &id = "") override;
@@ -49,6 +53,12 @@ public:
   void         update() override;
   void         update(const std::vector<std::string> &node_ids) override;
   void         update(const std::string &node_id) override;
+
+  // --- Background Update (GraphWorker of the GraphManager, if any) ---
+  // An update then returns at once, after update_started: the nodes are computed
+  // afterwards, and update_finished comes once the graph is up to date.
+  void set_p_worker(GraphWorker *new_p_worker) { this->p_worker = new_p_worker; }
+  void stop_update(); // before modifying the graph, see GraphWorker::stop()
 
   // --- Inter-graph Broadcasting ---
   BroadcastMap *get_p_broadcast_params() { return this->p_broadcast_params; }
@@ -86,6 +96,7 @@ private:
   std::shared_ptr<GraphConfig> config;
   BroadcastMap                *p_broadcast_params = nullptr; // own by GraphManager
   gnode::EventConnection       graph_progress_conn;
+  GraphWorker                 *p_worker = nullptr; // own by GraphManager
 };
 
 } // namespace hesiod

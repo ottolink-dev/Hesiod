@@ -1,2 +1,3 @@
-mkdocs-material
-mkdocs-literate-nav
+mkdocs==1.6.1
+mkdocs-material==9.7.0
+mkdocs-literate-nav==0.6.2

@@ -73,6 +73,20 @@ void GraphConfig::json_from(nlohmann::json const &json)
   this->tiling.y = json["tiling.y"];
   this->overlap = json["overlap"];
 
+  if (json.contains("cpu_mode"))
+    this->cm_cpu.mode = static_cast<hmap::ForEachMode>(json["cpu_mode"].get<int>());
+
+  if (json.contains("gpu_mode"))
+    this->cm_gpu.mode = static_cast<hmap::ForEachMode>(json["gpu_mode"].get<int>());
+
+  if (json.contains("cache_on_disk"))
+  {
+    const bool cache = json["cache_on_disk"].get<bool>();
+    this->cm_cpu.trim_storage = cache;
+    this->cm_gpu.trim_storage = cache;
+    this->cm_single_array.trim_storage = cache;
+  }
+
   this->update_parameters();
 }
 
@@ -84,6 +98,9 @@ nlohmann::json GraphConfig::json_to() const
   json["tiling.x"] = this->tiling.x;
   json["tiling.y"] = this->tiling.y;
   json["overlap"] = this->overlap;
+  json["cpu_mode"] = static_cast<int>(this->cm_cpu.mode);
+  json["gpu_mode"] = static_cast<int>(this->cm_gpu.mode);
+  json["cache_on_disk"] = this->cm_cpu.trim_storage;
   return json;
 }
 

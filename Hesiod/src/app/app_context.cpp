@@ -4,11 +4,15 @@
 #include <algorithm>
 #include <filesystem>
 
+#include <QCoreApplication>
 #include <QStandardPaths>
+
+#include "highmap/openmp.hpp"
 
 #include "hesiod/app/app_context.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/graph/graph_manager.hpp"
+#include "hesiod/model/graph/graph_worker.hpp"
 #include "hesiod/model/utils.hpp"
 
 namespace hesiod
@@ -141,6 +145,14 @@ void AppContext::new_project()
   Logger::log()->trace("AppContext::new_project");
   this->error_manager.clear();
   this->project_model = std::make_unique<ProjectModel>();
+
+  // the graphs of an interactive session are updated in the background
+  GraphWorker::enabled = [this]()
+  { return !this->headless && this->app_settings.node_editor.async_update; };
+  GraphWorker::post_to_gui = [](std::function<void()> fct)
+  { QMetaObject::invokeMethod(qApp, std::move(fct), Qt::QueuedConnection); };
+  GraphWorker::thread_setup = [this]()
+  { hmap::init_openmp(this->app_settings.global.omp_num_threads); };
 }
 
 void AppContext::reset_settings()

@@ -28,6 +28,7 @@ constexpr const char *A_SEED           = "seed";
 constexpr const char *A_OCTAVES        = "octaves";
 constexpr const char *A_RUGOSITY       = "rugosity";
 constexpr const char *A_ANGLE          = "angle";
+constexpr const char *A_BIAS           = "bias";
 constexpr const char *A_K_SMOOTHING    = "k_smoothing";
 constexpr const char *A_BASE_NOISE_AMP = "base_noise_amp";
 
@@ -55,6 +56,7 @@ void setup_badlands_node(BaseNode &node)
   add_int(node, A_OCTAVES, "Octaves", 8, 0, 32);
   add_float(node, A_RUGOSITY, "Smoothness", 0.2f, 0.f, 1.f);
   add_float(node, A_ANGLE, "Noise Angle", 30.f, -180.f, 180.f);
+  add_float(node, A_BIAS, "Cell Size Variation", 0.f, 0.f, 1.f);
   add_float(node, A_K_SMOOTHING, "Transition Smoothness", 0.1f, 0.f, 1.f);
   add_float(node, A_BASE_NOISE_AMP, "Noise Amplitude", 0.2f, 0.f, 1.f);
   // clang-format on
@@ -93,6 +95,7 @@ void compute_badlands_node(BaseNode &node)
   const auto octaves        = node.val<int>(A_OCTAVES);
   const auto rugosity       = node.val<float>(A_RUGOSITY);
   const auto angle          = node.val<float>(A_ANGLE);
+  const auto bias           = node.val<float>(A_BIAS);
   const auto k_smoothing    = node.val<float>(A_K_SMOOTHING);
   const auto base_noise_amp = node.val<float>(A_BASE_NOISE_AMP);
   // clang-format on
@@ -117,6 +120,7 @@ void compute_badlands_node(BaseNode &node)
                                       octaves,
                                       rugosity,
                                       angle,
+                                      bias,
                                       k_smoothing,
                                       noise_amp_scaled,
                                       pa_dx,

@@ -49,6 +49,13 @@ template <typename F> bool visit_data_type(const std::string &data_type, F &&f)
       });
 }
 
+std::string suffix_of(const std::string &data_type)
+{
+  std::string suffix;
+  visit_data_type(data_type, [&](auto kind) { suffix = kind.suffix; });
+  return suffix;
+}
+
 template <typename T>
 void add_data_port(BaseNode &node, gnode::PortType direction, const std::string &label)
 {
@@ -161,6 +168,15 @@ bool same_interface(const std::vector<MacroPort> &a, const std::vector<MacroPort
                     });
 }
 
+// a body link, in the GraphNode::json_to format
+nlohmann::json link_json(const PortLink &l)
+{
+  return {{"node_id_from", l.node_out},
+          {"port_id_from", l.port_out},
+          {"node_id_to", l.node_in},
+          {"port_id_to", l.port_in}};
+}
+
 nlohmann::json ports_to_json(const std::vector<MacroPort> &ports)
 {
   nlohmann::json json = nlohmann::json::array();
@@ -191,6 +207,14 @@ std::map<std::string, std::string> node_inventory_for(const GraphNode &graph)
     std::erase_if(inventory,
                   [](const auto &entry) { return is_macro_io_node_type(entry.first); });
   return inventory;
+}
+
+std::string new_macro_id()
+{
+  std::random_device                      device;
+  std::mt19937_64                         engine(device());
+  std::uniform_int_distribution<uint64_t> dist;
+  return std::format("{:016x}", dist(engine));
 }
 
 std::string macro_io_data_type(const std::string &node_type)
@@ -305,6 +329,7 @@ void MacroNode::set_body(std::shared_ptr<GraphNode> new_body,
   this->definition = new_definition;
   this->definition.erase("graph");
   this->body_stale = true;
+  this->body_filled = false;
 }
 
 nlohmann::json MacroNode::get_definition() const
@@ -363,6 +388,7 @@ void MacroNode::propagate_config_change()
     if (auto *node = dynamic_cast<BaseNode *>(p_node.get()))
       node->propagate_config_change();
   this->body_stale = true;
+  this->body_filled = false;
 }
 
 void MacroNode::compute_macro()
@@ -386,14 +412,43 @@ void MacroNode::compute_macro()
       if (port.is_input)
         input_ids.push_back(port.node_id);
 
-    // new inputs only change what depends on them
-    if (std::exchange(this->body_stale, false) || input_ids.empty())
+    // new inputs only change what depends on them; a body filled with the
+    // results of the packed nodes needs nothing at all
+    if (std::exchange(this->body_filled, false))
+      this->body_stale = false;
+    else if (std::exchange(this->body_stale, false) || input_ids.empty())
       this->body->update();
     else
       this->body->update(input_ids);
   }
 
   this->move_data(false);
+}
+
+void MacroNode::take_results_from(GraphNode &graph)
+{
+  for (const auto &[id, p_node] : this->body->get_nodes())
+  {
+    auto *from = dynamic_cast<BaseNode *>(graph.get_node(id));
+    auto *to = dynamic_cast<BaseNode *>(p_node.get());
+    if (!from || !to || from->get_label() != to->get_label())
+      continue;
+
+    for (int k = 0; k < to->get_nports(); ++k)
+      if (to->get_port_type(k) == gnode::PortType::OUT)
+        visit_data_type(to->get_data_type(k),
+                        [&](auto kind)
+                        {
+                          using T = typename decltype(kind)::type;
+                          T *src = from->get_value_ref<T>(k);
+                          T *dst = to->get_value_ref<T>(k);
+                          if (src && dst)
+                            copy_port_data(*dst, *src, this->cfg().cm_cpu);
+                        });
+  }
+
+  this->body_stale = false;
+  this->body_filled = true;
 }
 
 void MacroNode::move_data(bool inputs)
@@ -422,6 +477,128 @@ void MacroNode::move_data(bool inputs)
             clear_port_data(*dst, fallback ? fallback->value() : 0.f, this->cfg().cm_cpu);
         });
   }
+}
+
+// =====================================
+// Functions
+// =====================================
+
+std::vector<PortLink> links_of(const GraphNode &graph)
+{
+  std::vector<PortLink> links;
+  for (const auto &link : graph.get_links())
+    links.push_back({link.from,
+                     graph.get_node(link.from)->get_port_label(link.port_from),
+                     link.to,
+                     graph.get_node(link.to)->get_port_label(link.port_to)});
+  return links;
+}
+
+nlohmann::json make_macro_definition(GraphNode                      &graph,
+                                     const std::vector<std::string> &node_ids,
+                                     const std::string              &name,
+                                     std::vector<PortLink>          &outer_links)
+{
+  const std::set<std::string> selection(node_ids.begin(), node_ids.end());
+  if (selection.empty())
+    throw std::invalid_argument("Select the nodes to pack into a macro.");
+
+  nlohmann::json body;
+  body["nodes"] = nlohmann::json::array();
+  body["links"] = nlohmann::json::array();
+
+  for (const auto &id : selection)
+  {
+    auto *node = graph.get_node_ref_by_id<BaseNode>(id);
+    if (!node)
+      throw std::invalid_argument("Unknown node " + id);
+    // a tag per instance would collide, and the macro would not know its graph
+    if (node->get_node_type() == "Broadcast")
+      throw std::invalid_argument("Broadcast nodes can't go into a macro.");
+    body["nodes"].push_back(node->json_to());
+  }
+
+  // one macro port per output crossing the selection boundary
+  struct Crossing
+  {
+    std::string           node, port, data_type;
+    std::vector<PortLink> links;
+  };
+  std::vector<Crossing> inputs, outputs;
+
+  auto crossing = [](std::vector<Crossing> &list,
+                     const std::string     &node,
+                     const std::string     &port) -> Crossing &
+  {
+    for (auto &c : list)
+      if (c.node == node && c.port == port)
+        return c;
+    return list.emplace_back(Crossing{node, port, "", {}});
+  };
+
+  for (const PortLink &link : links_of(graph))
+  {
+    const bool from_in = selection.contains(link.node_out);
+    const bool to_in = selection.contains(link.node_in);
+
+    if (from_in && to_in)
+      body["links"].push_back(link_json(link));
+    else if (from_in || to_in)
+    {
+      auto        &c = crossing(to_in ? inputs : outputs, link.node_out, link.port_out);
+      gnode::Node *from = graph.get_node(link.node_out);
+      c.data_type = from->get_data_type(from->get_port_index(link.port_out));
+      c.links.push_back(link);
+    }
+  }
+
+  // interface nodes take ids after every id of the graph, so none collide
+  uint                  next_id = graph.get_id_count();
+  std::set<std::string> used;
+
+  auto add_io = [&](const Crossing &c, bool is_input, int order)
+  {
+    const std::string suffix = suffix_of(c.data_type);
+    if (suffix.empty())
+      throw std::invalid_argument("A link of this type can't cross into a macro.");
+
+    auto  p_io = graph.create_node((is_input ? "MacroInput" : "MacroOutput") + suffix);
+    auto *io = static_cast<BaseNode *>(p_io.get());
+    io->set_id(std::to_string(next_id++));
+
+    // named after the port it replaces: "mask", "input", "output"...
+    const std::string port_name = unique_name(is_input ? c.links.front().port_in : c.port,
+                                              used);
+    io->set_value<std::string>("name", port_name);
+    io->set_value<int>("order", order);
+    body["nodes"].push_back(io->json_to());
+
+    // inside, the interface node takes the outside end of the links
+    for (const auto &l : c.links)
+      if (is_input)
+        body["links"].push_back(
+            link_json({io->get_id(), "output", l.node_in, l.port_in}));
+      else
+        outer_links.push_back({"", port_name, l.node_in, l.port_in});
+
+    if (is_input)
+      outer_links.push_back({c.node, c.port, "", port_name});
+    else
+      body["links"].push_back(link_json({c.node, c.port, io->get_id(), "input"}));
+  };
+
+  for (size_t k = 0; k < inputs.size(); ++k)
+    add_io(inputs[k], true, static_cast<int>(k));
+  for (size_t k = 0; k < outputs.size(); ++k)
+    add_io(outputs[k], false, static_cast<int>(k));
+
+  body["id_count"] = next_id;
+
+  return {{"format", 1},
+          {"macro_id", new_macro_id()},
+          {"name", name},
+          {"revision", 0},
+          {"graph", body}};
 }
 
 } // namespace hesiod
