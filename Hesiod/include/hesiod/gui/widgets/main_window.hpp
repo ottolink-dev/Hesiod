@@ -2,6 +2,7 @@
    License. The full license is in the file LICENSE, distributed with this software. */
 #pragma once
 #include <QCloseEvent>
+#include <QLabel>
 #include <QMainWindow>
 #include <QMenuBar>
 #include <QProgressBar>
@@ -37,6 +38,9 @@ protected:
   // persist when the window is closed by the window manager
   void closeEvent(QCloseEvent *event) override;
 
+  // an Esc that no widget used stops the update in progress
+  void keyPressEvent(QKeyEvent *event) override;
+
   bool nativeEvent(const QByteArray &event_type, void *message, qintptr *result) override;
 
 private:
@@ -46,6 +50,7 @@ private:
 
   TitleBar     *title_bar = nullptr;
   QProgressBar *progress_bar;
+  QLabel       *update_held_label = nullptr; // see GraphManager::update_held
   bool          frameless = false;
 };
 

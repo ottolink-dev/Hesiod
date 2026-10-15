@@ -5509,6 +5509,255 @@
             }
         }
     },
+    "DistanceShaper": {
+        "category": "Terrain Features/Morphology",
+        "description": "Shapes terrain by projecting directional slopes outward from height thresholds, producing pyramid or star/asterisk faceted landforms.",
+        "label": "DistanceShaper",
+        "parameter_groups": [
+            {
+                "keys": [
+                    "mode",
+                    "slope",
+                    "directions",
+                    "angle",
+                    "skew",
+                    "threshold",
+                    "invert_input",
+                    "angular_jitter",
+                    "falloff_jitter",
+                    "seed",
+                    "dn_add_default_noise",
+                    "dn_noise_type",
+                    "dn_seed",
+                    "dn_noise_amp",
+                    "dn_kw",
+                    "dn_smoothness",
+                    "mask_activate",
+                    "mask_type",
+                    "mask_inverse",
+                    "mask_radius",
+                    "mask_gain",
+                    "post_mix_method",
+                    "post_mix",
+                    "post_inverse",
+                    "post_gamma",
+                    "post_gain",
+                    "post_smoothing_radius",
+                    "post_remap",
+                    "post_saturate"
+                ],
+                "name": "main"
+            }
+        ],
+        "parameters": {
+            "angle": {
+                "description": "Global rotation angle of the projection directions.",
+                "key": "angle",
+                "label": "Angle",
+                "type": "Float"
+            },
+            "angular_jitter": {
+                "description": "Random angular deviation applied to projection rays.",
+                "key": "angular_jitter",
+                "label": "Angular Jitter",
+                "type": "Float"
+            },
+            "directions": {
+                "description": "Number of discrete radial directions to project.",
+                "key": "directions",
+                "label": "Directions",
+                "type": "Integer"
+            },
+            "dn_add_default_noise": {
+                "description": "Enables or disables the built-in drainage noise. If an external noise input is provided, it overrides this default noise.",
+                "key": "dn_add_default_noise",
+                "label": "Activate",
+                "type": "Bool"
+            },
+            "dn_kw": {
+                "description": "Base spatial frequencies in the X and Y directions.",
+                "key": "dn_kw",
+                "label": "Spatial Frequency",
+                "type": "Float"
+            },
+            "dn_noise_amp": {
+                "description": "Noise amplitude.",
+                "key": "dn_noise_amp",
+                "label": "Amplitude",
+                "type": "Float"
+            },
+            "dn_noise_type": {
+                "description": "Noise type.",
+                "key": "dn_noise_type",
+                "label": "Type",
+                "type": "Enumeration"
+            },
+            "dn_seed": {
+                "description": "Random seed number. The random seed is an offset to the randomized process. A different seed will produce a new result.",
+                "key": "dn_seed",
+                "label": "Seed",
+                "type": "Random seed number"
+            },
+            "dn_smoothness": {
+                "description": "Controls the resulting smoothness of the fractal layering process.",
+                "key": "dn_smoothness",
+                "label": "Smoothness",
+                "type": "Float"
+            },
+            "falloff_jitter": {
+                "description": "Random slope/falloff deviation applied per ray.",
+                "key": "falloff_jitter",
+                "label": "Falloff Jitter",
+                "type": "Float"
+            },
+            "invert_input": {
+                "description": "Inverts input heights prior to shaping.",
+                "key": "invert_input",
+                "label": "Invert Input",
+                "type": "Bool"
+            },
+            "mask_activate": {
+                "description": "Enables or disables the internal mask. If the node's 'mask' input is connected, this setting is bypassed and the input mask is used instead.",
+                "key": "mask_activate",
+                "label": "Activate Default Mask",
+                "type": "Bool"
+            },
+            "mask_gain": {
+                "description": "Controls the intensity or influence of the internal mask. Bypassed if the 'mask' input is connected.",
+                "key": "mask_gain",
+                "label": "Mask Gain",
+                "type": "Float"
+            },
+            "mask_inverse": {
+                "description": "Inverts the internal mask, applying the operator where the mask is low. Ignored if a 'mask' input is provided.",
+                "key": "mask_inverse",
+                "label": "Inverse Mask",
+                "type": "Bool"
+            },
+            "mask_radius": {
+                "description": "Defines the smoothing radius for the internal mask. A value of 0 disables smoothing. This is bypassed if the 'mask' input is used.",
+                "key": "mask_radius",
+                "label": "Mask Radius",
+                "type": "Float"
+            },
+            "mask_type": {
+                "description": "Specifies how the internal mask is computed: 'Elevation' uses height, 'Gradient Norm' uses slope, and 'Elevation mid-range' selects the middle portion of the height range. This parameter is ignored when a 'mask' input is connected.",
+                "key": "mask_type",
+                "label": "Mask Type",
+                "type": "Choice"
+            },
+            "mode": {
+                "description": "Directional pattern mode: Pyramid (planar facets) or Asterisk (star-shaped with cut-ins).",
+                "key": "mode",
+                "label": "Mode",
+                "type": "Enumeration"
+            },
+            "post_gain": {
+                "description": "Mid-centered gain transformation applied to the elevation values. This is a non-linear recurve operator centered around the mid elevation (typically 0.5). Increasing the gain pushes values toward the minimum and maximum elevations, creating flatter low/high regions with a steeper transition around the midpoint.",
+                "key": "post_gain",
+                "label": "Gain",
+                "type": "Float"
+            },
+            "post_gamma": {
+                "description": "Standard gamma correction applied to the elevation values. This is a monotonic power-law remapping that shifts emphasis toward low or high elevations, making the overall shape sharper or bulkier without changing its ordering.",
+                "key": "post_gamma",
+                "label": "Gamma",
+                "type": "Float"
+            },
+            "post_inverse": {
+                "description": "Inverts the output values after processing, flipping low and high values across the midrange.",
+                "key": "post_inverse",
+                "label": "Invert Output",
+                "type": "Bool"
+            },
+            "post_mix": {
+                "description": "Mixing factor for blending input and output values. A value of 0 uses only the input, 1 uses only the output, and intermediate values perform a linear interpolation.",
+                "key": "post_mix",
+                "label": "Mix Factor",
+                "type": "Float"
+            },
+            "post_mix_method": {
+                "description": "Method used to combine input and output values. Options include linear interpolation (default), min, max, smooth min, smooth max, add, and subtract.",
+                "key": "post_mix_method",
+                "label": "Mix Method",
+                "type": "Enumeration"
+            },
+            "post_remap": {
+                "description": "Linearly remaps the output values to a specified target range (default is [0, 1]).",
+                "key": "post_remap",
+                "label": "Remap Range",
+                "type": "Value range"
+            },
+            "post_saturate": {
+                "description": "Modifies the amplitude of elevations by first clamping them to a given interval and then scaling them so that the restricted interval matches the original input range. This enhances contrast in elevation variations while maintaining overall structure.",
+                "key": "post_saturate",
+                "label": "Saturation Range",
+                "type": "Value range"
+            },
+            "post_smoothing_radius": {
+                "description": "Defines the radius for post-processing smoothing, determining the size of the neighborhood used to average local values and reduce high-frequency detail. A radius of 0 disables smoothing.",
+                "key": "post_smoothing_radius",
+                "label": "Smoothing Radius",
+                "type": "Float"
+            },
+            "seed": {
+                "description": "Random seed number. The random seed is an offset to the randomized process. A different seed will produce a new result.",
+                "key": "seed",
+                "label": "Seed",
+                "type": "Random seed number"
+            },
+            "skew": {
+                "description": "Asymmetry skew factor between opposing projection directions.",
+                "key": "skew",
+                "label": "Skew",
+                "type": "Float"
+            },
+            "slope": {
+                "description": "Slope steepness controlling the outward falloff rate.",
+                "key": "slope",
+                "label": "Slope",
+                "type": "Float"
+            },
+            "threshold": {
+                "description": "Elevation threshold above which shaping rays originate.",
+                "key": "threshold",
+                "label": "Threshold",
+                "type": "Float"
+            }
+        },
+        "ports": {
+            "dx": {
+                "caption": "dx",
+                "data_type": "VirtualArray",
+                "description": "Displacement with respect to the domain size (x-direction).",
+                "type": "input"
+            },
+            "dy": {
+                "caption": "dy",
+                "data_type": "VirtualArray",
+                "description": "Displacement with respect to the domain size (y-direction).",
+                "type": "input"
+            },
+            "input": {
+                "caption": "input",
+                "data_type": "VirtualArray",
+                "description": "Input heightmap to be shaped.",
+                "type": "input"
+            },
+            "mask": {
+                "caption": "mask",
+                "data_type": "VirtualArray",
+                "description": "Optional blending mask.",
+                "type": "input"
+            },
+            "output": {
+                "caption": "output",
+                "data_type": "VirtualArray",
+                "description": "Resulting distance-shaped heightmap.",
+                "type": "output"
+            }
+        }
+    },
     "DistanceTransform": {
         "category": "Terrain Features/Morphology",
         "description": "Generates a distance map where each pixel's value represents the shortest distance to the nearest non-zero value in the input heightmap.",
@@ -7094,12 +7343,12 @@
                 "keys": [
                     "start",
                     "end",
-                    "offset_ratio",
-                    "steps",
-                    "seed",
                     "favor_boundary_center",
                     "favor_lower_elevation",
                     "favor_sinks",
+                    "seed",
+                    "control_points_count",
+                    "favor_center",
                     "smooth_path",
                     "smooth_sampling"
                 ],
@@ -7107,6 +7356,12 @@
             }
         ],
         "parameters": {
+            "control_points_count": {
+                "description": "Number of control points sampled for the triangulation mesh.",
+                "key": "control_points_count",
+                "label": "Control Points Count",
+                "type": "Integer"
+            },
             "end": {
                 "description": "Boundary where the path ends.",
                 "key": "end",
@@ -7117,6 +7372,12 @@
                 "description": "Biases selection toward the center of the boundary when randomly picking the start and end points.",
                 "key": "favor_boundary_center",
                 "label": "Favor Boundary Center",
+                "type": "Bool"
+            },
+            "favor_center": {
+                "description": "Biases path finding to favor passing through the center of the domain.",
+                "key": "favor_center",
+                "label": "Favor Domain Center",
                 "type": "Bool"
             },
             "favor_lower_elevation": {
@@ -7131,12 +7392,6 @@
                 "label": "Favor Sinks (Local Minima)",
                 "type": "Bool"
             },
-            "offset_ratio": {
-                "description": "No description",
-                "key": "offset_ratio",
-                "label": "Midpoint Radius",
-                "type": "Float"
-            },
             "seed": {
                 "description": "Random seed number. The random seed is an offset to the randomized process. A different seed will produce a new result.",
                 "key": "seed",
@@ -7144,13 +7399,13 @@
                 "type": "Random seed number"
             },
             "smooth_path": {
-                "description": "No description",
+                "description": "Enables post-processing path decimation and B-spline smoothing.",
                 "key": "smooth_path",
                 "label": "Enable Path Smoothing",
                 "type": "Bool"
             },
             "smooth_sampling": {
-                "description": "No description",
+                "description": "Number of sample points used for path decimation smoothing.",
                 "key": "smooth_sampling",
                 "label": "Samples",
                 "type": "Integer"
@@ -7160,12 +7415,6 @@
                 "key": "start",
                 "label": "Start Boundary",
                 "type": "Enumeration"
-            },
-            "steps": {
-                "description": "No description",
-                "key": "steps",
-                "label": "Search Steps",
-                "type": "Integer"
             }
         },
         "ports": {
@@ -7930,72 +8179,96 @@
     },
     "FlowStream": {
         "category": "WIP",
-        "description": "TODO",
+        "description": "Simulates river flow streams from source locations down the heightmap using an intermediate triangular mesh, then carves river channels and riverbanks into the terrain.",
         "label": "FlowStream",
         "parameter_groups": [
             {
                 "keys": [
+                    "seed",
+                    "control_points_count",
                     "elevation_ratio",
                     "distance_exponent",
                     "upward_penalization",
+                    "favor_domain_center"
+                ],
+                "name": "Pathfinding"
+            },
+            {
+                "keys": [
+                    "riverbed_slope",
+                    "depth"
+                ],
+                "name": "Riverbed Slope"
+            },
+            {
+                "keys": [
                     "riverbank_slope",
                     "river_radius",
-                    "depth",
                     "merging_radius",
-                    "riverbed_slope",
-                    "noise_ratio",
-                    "seed"
+                    "noise_ratio"
                 ],
-                "name": "main"
+                "name": "Riverbank Carving"
             }
         ],
         "parameters": {
+            "control_points_count": {
+                "description": "Number of control points sampled for the triangulation mesh.",
+                "key": "control_points_count",
+                "label": "Control Points Count",
+                "type": "Integer"
+            },
             "depth": {
-                "description": "TODO",
+                "description": "Maximum depth of the carved riverbed.",
                 "key": "depth",
-                "label": "depth",
+                "label": "Depth",
                 "type": "Float"
             },
             "distance_exponent": {
-                "description": "TODO",
+                "description": "Exponent applied to distance/elevation terms when evaluating path costs.",
                 "key": "distance_exponent",
-                "label": "distance_exponent",
+                "label": "Distance Exponent",
                 "type": "Float"
             },
             "elevation_ratio": {
-                "description": "TODO",
+                "description": "Weight given to elevation difference versus distance in the cost function.",
                 "key": "elevation_ratio",
-                "label": "elevation_ratio",
+                "label": "Elevation vs Slope Weight",
                 "type": "Float"
             },
+            "favor_domain_center": {
+                "description": "Biases flow paths toward passing through the center of the domain.",
+                "key": "favor_domain_center",
+                "label": "Favor Domain Center",
+                "type": "Bool"
+            },
             "merging_radius": {
-                "description": "TODO",
+                "description": "Radius over which river tributaries smoothly merge together.",
                 "key": "merging_radius",
-                "label": "merging_radius",
+                "label": "Merging Radius",
                 "type": "Float"
             },
             "noise_ratio": {
-                "description": "TODO",
+                "description": "Proportion of random noise perturbation applied along the riverbank carving.",
                 "key": "noise_ratio",
-                "label": "noise_ratio",
+                "label": "Noise Ratio",
                 "type": "Float"
             },
             "river_radius": {
-                "description": "TODO",
+                "description": "Width or radius of the carved river channel.",
                 "key": "river_radius",
-                "label": "river_radius",
+                "label": "River Radius",
                 "type": "Float"
             },
             "riverbank_slope": {
-                "description": "TODO",
+                "description": "Slope angle of the riverbank carving.",
                 "key": "riverbank_slope",
-                "label": "riverbank_slope",
+                "label": "Riverbank Slope",
                 "type": "Float"
             },
             "riverbed_slope": {
-                "description": "TODO",
+                "description": "Downstream longitudinal slope along the riverbed.",
                 "key": "riverbed_slope",
-                "label": "riverbed_slope",
+                "label": "Riverbed Slope",
                 "type": "Float"
             },
             "seed": {
@@ -8005,9 +8278,9 @@
                 "type": "Random seed number"
             },
             "upward_penalization": {
-                "description": "TODO",
+                "description": "Penalty factor applied to uphill elevation changes during pathfinding.",
                 "key": "upward_penalization",
-                "label": "upward_penalization",
+                "label": "Upward Penalization",
                 "type": "Float"
             }
         },
@@ -8015,25 +8288,25 @@
             "input": {
                 "caption": "input",
                 "data_type": "VirtualArray",
-                "description": "TODO",
+                "description": "Input heightmap terrain.",
                 "type": "input"
             },
             "output": {
                 "caption": "output",
                 "data_type": "VirtualArray",
-                "description": "TODO",
+                "description": "Output heightmap with carved river channels.",
                 "type": "output"
             },
             "river_mask": {
                 "caption": "river_mask",
                 "data_type": "VirtualArray",
-                "description": "TODO",
+                "description": "Output mask of the carved river channels.",
                 "type": "output"
             },
             "sources": {
                 "caption": "sources",
                 "data_type": "Cloud",
-                "description": "TODO",
+                "description": "Cloud of source coordinates from which flow streams originate.",
                 "type": "input"
             }
         }
@@ -25412,6 +25685,7 @@
                 "keys": [
                     "angle",
                     "center",
+                    "min_depth",
                     "max_depth",
                     "min_width",
                     "max_width",
@@ -25506,6 +25780,12 @@
                 "description": "Maximum asymptotic channel half-width downstream in normalized domain units.",
                 "key": "max_width",
                 "label": "Max Width",
+                "type": "Float"
+            },
+            "min_depth": {
+                "description": "Initial incision depth at the valley head origin.",
+                "key": "min_depth",
+                "label": "Min Depth",
                 "type": "Float"
             },
             "min_width": {

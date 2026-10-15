@@ -120,7 +120,7 @@ void setup_hydraulic_mise_node(BaseNode &node)
   add_float(node, A_SLOPE_CORRECTION_MAX, "Max Slope Correction", 2.f, 1.f, 10.f);
 
   node.set_current_category("Multiscale Schedule");
-  add_int(node, A_BASE_RES, "Base Resolution", 128, 16, 1024);
+  add_int(node, A_BASE_RES, "Base Resolution", 64, 16, 256);
   add_float(node, A_SHARE_RATIO, "Strength Share Ratio", 0.6f, 0.1f, 1.f);
   add_int(node, A_ITERS0, "Base Level Iterations", 1, 1, 50);
   add_float(node, A_ITERS_DECAY, "Iteration Decay", 0.75f, 0.1f, 1.f);

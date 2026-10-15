@@ -16,14 +16,20 @@ namespace hesiod
 // -----------------------------------------------------------------------------
 // Ports & Attributes
 // -----------------------------------------------------------------------------
+
 constexpr const char *P_HEIGHTMAP = "heightmap";
-constexpr const char *P_MASK_NOGO = "mask nogo";
 constexpr const char *P_PATH      = "path";
 constexpr const char *P_WAYPOINTS = "waypoints";
 
-constexpr const char *A_DISTANCE_EXPONENT = "distance_exponent";
-constexpr const char *A_DOWNSAMPLING      = "downsampling";
-constexpr const char *A_ELEVATION_RATIO   = "elevation_ratio";
+constexpr const char *A_CONTROL_POINTS_COUNT = "control_points_count";
+constexpr const char *A_FAVOR_DOMAIN_CENTER  = "favor_domain_center";
+constexpr const char *A_SEED                 = "seed";
+constexpr const char *A_SMOOTH_PATH          = "smooth_path";
+constexpr const char *A_SMOOTH_SAMPLING      = "smooth_sampling";
+
+// -----------------------------------------------------------------------------
+// Setup
+// -----------------------------------------------------------------------------
 
 void setup_path_find_node(BaseNode &node)
 {
@@ -32,14 +38,24 @@ void setup_path_find_node(BaseNode &node)
   // port(s)
   node.add_port<hmap::Path>(gnode::PortType::IN, P_WAYPOINTS);
   node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_HEIGHTMAP);
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_MASK_NOGO);
   node.add_port<hmap::Path>(gnode::PortType::OUT, P_PATH);
 
   // attribute(s)
-  add_float(node, A_ELEVATION_RATIO, "elevation_ratio", 0.1f, 0.f, 0.9f);
-  add_float(node, A_DISTANCE_EXPONENT, "distance_exponent", 1.f, 0.5f, 2.f);
-  add_int(node, A_DOWNSAMPLING, "downsampling", 4, 1, 10);
+  // clang-format off
+  node.set_current_category("Shortest Path");
+  add_seed(node, A_SEED, "Seed");
+  add_int(node, A_CONTROL_POINTS_COUNT, "Control Points Count", 4096, 100, 30000);
+  add_bool(node, A_FAVOR_DOMAIN_CENTER, "Favor Domain Center", false);
+
+  node.set_current_category("Smoothing");
+  add_bool(node, A_SMOOTH_PATH, "Enable Path Smoothing", false);
+  add_int(node, A_SMOOTH_SAMPLING, "Samples", 32, 2, INT_MAX);
+  // clang-format on
 }
+
+// -----------------------------------------------------------------------------
+// Compute
+// -----------------------------------------------------------------------------
 
 void compute_path_find_node(BaseNode &node)
 {
@@ -47,57 +63,87 @@ void compute_path_find_node(BaseNode &node)
 
   hmap::Path         *p_waypoints = node.get_value_ref<hmap::Path>(P_WAYPOINTS);
   hmap::VirtualArray *p_hmap      = node.get_value_ref<hmap::VirtualArray>(P_HEIGHTMAP);
+  hmap::Path         *p_out       = node.get_value_ref<hmap::Path>(P_PATH);
 
-  if (p_waypoints && p_hmap)
+  if (!p_waypoints || !p_hmap || !p_out)
   {
-    hmap::VirtualArray *p_mask = node.get_value_ref<hmap::VirtualArray>(P_MASK_NOGO);
-    hmap::Path         *p_out  = node.get_value_ref<hmap::Path>(P_PATH);
+    return;
+  }
 
-    // copy the input heightmap
+  if (p_waypoints->size() < 2)
+  {
     *p_out = *p_waypoints;
+    return;
+  }
 
-    if (p_out->size() > 1)
+  // --- Params
+
+  const auto seed                 = static_cast<std::uint32_t>(node.val<int>(A_SEED));
+  const auto control_points_count = static_cast<size_t>(
+      node.val<int>(A_CONTROL_POINTS_COUNT));
+  const auto   favor_domain_center = node.val<bool>(A_FAVOR_DOMAIN_CENTER);
+  const auto   smooth_path         = node.val<bool>(A_SMOOTH_PATH);
+  const auto   smooth_sampling     = node.val<int>(A_SMOOTH_SAMPLING);
+  const size_t n_waypoints         = p_waypoints->size();
+  const size_t n_segments = p_waypoints->is_closed() ? n_waypoints : n_waypoints - 1;
+
+  std::vector<hmap::Point> accumulated_points;
+
+  for (size_t i = 0; i < n_segments; ++i)
+  {
+    size_t next_i = (i + 1) % n_waypoints;
+
+    glm::vec2 start = {(*p_waypoints)[i].x, (*p_waypoints)[i].y};
+    glm::vec2 end   = {(*p_waypoints)[next_i].x, (*p_waypoints)[next_i].y};
+
+    std::uint32_t segment_seed = seed + static_cast<std::uint32_t>(i);
+
+    hmap::Path segment_path = hmap::va::find_path_dijkstra(node.cfg().cm_cpu,
+                                                           *p_hmap,
+                                                           start,
+                                                           end,
+                                                           segment_seed,
+                                                           control_points_count,
+                                                           favor_domain_center);
+
+    if (segment_path.empty())
     {
-      // working shape
-      float      ds        = (float)node.val<int>(A_DOWNSAMPLING);
-      glm::ivec2 shape_wrk = glm::ivec2((int)(p_hmap->shape.x / ds),
-                                        (int)(p_hmap->shape.y / ds));
-
-      shape_wrk.x = std::max(2, shape_wrk.x);
-      shape_wrk.y = std::max(2, shape_wrk.y);
-
-      Logger::log()->trace("working shape: ({}, {})", shape_wrk.x, shape_wrk.y);
-
-      // work on a single array (as a temporary solution?)
-      hmap::Array z  = p_hmap->to_array(node.cfg().cm_cpu);
-      hmap::Array zw = z.resample_to_shape_nearest(shape_wrk);
-
-      // handle masking
-      hmap::Array *p_mask_array = nullptr;
-      hmap::Array  mask_array;
-
-      if (p_mask)
+      if (accumulated_points.empty())
       {
-        mask_array   = p_mask->to_array(node.cfg().cm_cpu);
-        mask_array   = mask_array.resample_to_shape_nearest(shape_wrk);
-        p_mask_array = &mask_array;
+        accumulated_points.push_back((*p_waypoints)[i]);
       }
 
-      // perform Dijkstra's path finding
-      glm::vec4 bbox(0.f, 1.f, 0.f, 1.f);
-      int       edge_divisions = 0;
-
-      *p_out = hmap::dijkstra(*p_out,
-                              zw,
-                              bbox,
-                              edge_divisions,
-                              node.val<float>(A_ELEVATION_RATIO),
-                              node.val<float>(A_DISTANCE_EXPONENT),
-                              p_mask_array);
-
-      // set values based on the "fine" grid array
-      p_out->set_values_from_array(z, bbox);
+      accumulated_points.push_back((*p_waypoints)[next_i]);
+      continue;
     }
+
+    size_t start_idx = accumulated_points.empty() ? 0 : 1;
+
+    for (size_t p = start_idx; p < segment_path.size(); ++p)
+    {
+      accumulated_points.push_back(segment_path[p]);
+    }
+  }
+
+  *p_out = hmap::Path(accumulated_points);
+  p_out->set_closed(p_waypoints->is_closed());
+
+  if (smooth_path && p_out->size() > 1)
+  {
+    *p_out = hmap::decimate_vw(*p_out, smooth_sampling);
+    *p_out = hmap::bspline(*p_out);
+
+    hmap::for_each_tile(
+        {p_hmap},
+        {},
+        [&](std::vector<const hmap::Array *> p_arrays_in,
+            std::vector<hmap::Array *>,
+            const hmap::TileRegion &region)
+        {
+          auto [pa_in] = unpack<1>(p_arrays_in);
+          p_out->set_values_from_array(*pa_in, region.bbox);
+        },
+        node.cfg().cm_cpu);
   }
 }
 

@@ -93,7 +93,7 @@ void setup_seed_forest_node(BaseNode &node)
   add_float(node, A_ANGLE_WIDTH, "Angle Tolerance", 90.0f, 0.0f, 180.0f);
 
   node.set_current_category("Modulation & Exclusion");
-  add_float(node, A_EXCLUSION_THRESHOLD, "Exclusion Threshold", 0.5f, 0.0f, 1.0f);
+  add_float(node, A_EXCLUSION_THRESHOLD, "Exclusion Threshold", 0.f, 0.0f, 1.0f);
   // clang-format on
 }
 

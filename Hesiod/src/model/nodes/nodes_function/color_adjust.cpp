@@ -106,6 +106,7 @@ void compute_color_adjust_node(BaseNode &node)
                              .temperature    = temperature,
                              .gamma          = gamma,
                              .dither_amp     = dither,
+                             .shade          = 0.f,
                              .filmic_tonemap = filmic,
                              .aces_tonemap   = aces,
                              .agx_tonemap    = agx};

@@ -4,6 +4,8 @@
 #include <algorithm>
 
 #include <QGuiApplication>
+#include <QKeyEvent>
+#include <QLabel>
 #include <QMessageBox>
 #include <QScreen>
 #include <QStatusBar>
@@ -13,6 +15,7 @@
 #include "hesiod/gui/widgets/window_chrome.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/graph/graph_manager.hpp"
+#include "hesiod/model/graph/graph_worker.hpp"
 
 // last: windows.h leaks macros (interface, min, max...) that clash with the
 // project headers above
@@ -213,6 +216,22 @@ bool MainWindow::nativeEvent(const QByteArray &event_type, void *message, qintpt
   return QMainWindow::nativeEvent(event_type, message, result);
 }
 
+void MainWindow::keyPressEvent(QKeyEvent *event)
+{
+  GraphManager *p_manager = HSD_CTX.project_model
+                                ? HSD_CTX.project_model->get_graph_manager_ref()
+                                : nullptr;
+
+  // what is left goes with the next edit, see update_held
+  if (event->key() == Qt::Key_Escape && p_manager && p_manager->get_worker().hold())
+  {
+    this->notify("Update stopped, it goes on with the next edit");
+    return;
+  }
+
+  QMainWindow::keyPressEvent(event);
+}
+
 void MainWindow::notify(const std::string &msg, int timeout)
 {
   this->statusBar()->showMessage(msg.c_str(), timeout);
@@ -402,6 +421,23 @@ void MainWindow::setup_connections_with_project()
         },
         Qt::QueuedConnection);
   };
+
+  ctx.project_model->get_graph_manager_ref()->update_held = [this](bool held)
+  {
+    // queued as the progress of the update, so that it comes after it
+    QMetaObject::invokeMethod(
+        this,
+        [this, held]()
+        {
+          this->update_held_label->setVisible(held);
+          if (held)
+          {
+            this->progress_bar->setValue(0);
+            this->progress_bar->setTextVisible(false);
+          }
+        },
+        Qt::QueuedConnection);
+  };
 }
 
 void MainWindow::setup_progress_bar()
@@ -439,6 +475,15 @@ void MainWindow::setup_progress_bar()
       ctx.app_settings.colors.accent.name().toStdString());
 
   this->progress_bar->setStyleSheet(sheet.c_str());
+
+  // shown while an update stopped with Esc leaves the graph partly computed
+  this->update_held_label = new QLabel("Graph needs update", this);
+  this->update_held_label->setStyleSheet("QLabel { color: #ff5555; font-weight: bold; }");
+  this->update_held_label->setToolTip("The last update was stopped: nodes after the one "
+                                      "being computed are not up to date. The next edit "
+                                      "brings the whole graph up to date again.");
+  this->update_held_label->hide();
+  this->statusBar()->addPermanentWidget(this->update_held_label, 0);
 
   this->statusBar()->addPermanentWidget(this->progress_bar, 0);
 }
