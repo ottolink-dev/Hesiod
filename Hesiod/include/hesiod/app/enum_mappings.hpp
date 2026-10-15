@@ -8,6 +8,7 @@
 #include "highmap/colormaps.hpp"
 #include "highmap/curvature.hpp"
 #include "highmap/erosion.hpp"
+#include "highmap/filters.hpp"
 #include "highmap/kernels.hpp"
 #include "highmap/local_metrics.hpp"
 #include "highmap/math.hpp"
@@ -92,6 +93,16 @@ static struct EnumMappings
       {"X and Y", hmap::DistanceFunctionAxis::DFA_XY},
       {"X only", hmap::DistanceFunctionAxis::DFA_X},
       {"Y only", hmap::DistanceFunctionAxis::DFA_Y},
+  };
+
+  const std::map<std::string, int> distance_method_map = {
+      {"Real-time (RT)", static_cast<int>(hmap::DistanceMethod::RT)},
+      {"Classic", static_cast<int>(hmap::DistanceMethod::CLASSIC)},
+  };
+
+  const std::map<std::string, int> distance_mode_map = {
+      {"Asterisk", static_cast<int>(hmap::DistanceMode::ASTERISK)},
+      {"Pyramid", static_cast<int>(hmap::DistanceMode::PYRAMID)},
   };
 
   const std::map<std::string, int> distance_transform_type_map = {

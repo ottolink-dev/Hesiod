@@ -195,6 +195,7 @@ std::map<std::string, std::string> get_node_inventory()
       {"DepositionFillHoles", "Erosion/Deposition"},
       {"DepressionFilling", "Erosion/Deposition"},
       {"DirectionalBlur", "Filter/Smoothing"},
+      {"DistanceShaper", "Terrain Features/Morphology"},
       {"DistanceTransform", "Terrain Features/Morphology"},
       {"ExpandShrink", "Filter/Recast"},
       {"ExportAsset", "Export"},
@@ -368,6 +369,7 @@ std::map<std::string, std::string> get_node_inventory()
       {"StrataCells", "Erosion/Stratify"},
       {"StrataPlates", "Erosion/Stratify"},
       {"StrataTerrace", "Erosion/Stratify"},
+      {"TerrainTexture", "Texture"},
       {"TextureAdvectionParticle", "Texture"},
       {"TextureQuiltingExpand", "WIP"},  // , "Texture"},
       {"TextureQuiltingShuffle", "WIP"}, // , "Texture"},
@@ -517,6 +519,7 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
     SETUP_NODE(DepositionFillHoles, deposition_fill_holes);
     SETUP_NODE(DepressionFilling, depression_filling);
     SETUP_NODE(DirectionalBlur, directional_blur);
+    SETUP_NODE(DistanceShaper, distance_shaper);
     SETUP_NODE(DistanceTransform, distance_transform);
     SETUP_NODE(ExpandShrink, expand_shrink);
     SETUP_NODE(ExportAsset, export_asset);
@@ -673,6 +676,7 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
     SETUP_NODE(StrataCells, strata_cells);
     SETUP_NODE(StrataPlates, strata_plates);
     SETUP_NODE(StrataTerrace, strata_terrace);
+    SETUP_NODE(TerrainTexture, terrain_texture);
     SETUP_NODE(TextureAdvectionParticle, texture_advection_particle);
     SETUP_NODE(TextureQuiltingExpand, texture_quilting_expand);
     SETUP_NODE(TextureQuiltingShuffle, texture_quilting_shuffle);

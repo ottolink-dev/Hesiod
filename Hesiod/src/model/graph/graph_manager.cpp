@@ -27,6 +27,11 @@ GraphManager::GraphManager(const std::string &id)
 
   this->worker->failed = [this](std::exception_ptr error)
   { this->on_update_failed(error); };
+  this->worker->held_changed = [this](bool held)
+  {
+    if (this->update_held)
+      this->update_held(held);
+  };
 }
 
 GraphManager::~GraphManager() = default;

@@ -71,6 +71,10 @@ public:
   // tell the user instead of the failure being visible only in the log
   std::function<void(const std::string &message)> update_failed;
 
+  // true while an update stopped with Esc leaves the graphs partly up to date,
+  // false once they are taken care of again (see GraphWorker::hold)
+  std::function<void(bool held)> update_held;
+
 private:
   // --- Intergraph interactions ---
   void on_broadcast_node_updated(const std::string &graph_id, const std::string &tag);

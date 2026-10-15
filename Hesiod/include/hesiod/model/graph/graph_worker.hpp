@@ -48,6 +48,10 @@ public:
   // Drops what is queued for this graph, or for all of them, and stops.
   void cancel(const GraphNode *p_graph = nullptr);
 
+  // Cancels the update in progress without waiting, and holds what is left
+  // until the next request takes it along. False if there was nothing to hold.
+  bool hold();
+
   // Stops, then computes what is queued before returning.
   void finish();
 
@@ -62,6 +66,7 @@ public:
   static inline std::function<void()> thread_setup; // on the update thread
 
   std::function<void(std::exception_ptr)> failed; // an update was abandoned
+  std::function<void(bool)> held_changed; // see hold(): true while the graph waits
 
 private:
   struct Job
@@ -91,6 +96,7 @@ private:
   std::thread                thread;
   int                        pass = 0; // identifies the update in progress
   bool                       start_next_pending = false;
+  bool                       held = false; // see hold()
 
   // shared with the update thread
   std::mutex              mutex;
