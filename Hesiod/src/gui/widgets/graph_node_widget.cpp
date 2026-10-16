@@ -412,6 +412,21 @@ void GraphNodeWidget::request_deletion(const std::vector<std::string>          &
   perform_graph_edit([&]() { this->editor->erase(ids, links); });
 }
 
+void GraphNodeWidget::request_rewire(const std::vector<gngui::LinkEndpoints> &removed,
+                                     const std::vector<gngui::LinkEndpoints> &added)
+{
+  // one edit (and one update) for the links moved together
+  perform_graph_edit(
+      [&]()
+      {
+        GraphEditor::Batch batch(*this->editor);
+        this->editor->erase({}, removed);
+        for (const auto &link : added)
+          this->editor->connect(link);
+        batch.commit();
+      });
+}
+
 void GraphNodeWidget::on_connection_dropped(const std::string &node_id,
                                             const std::string &port_id,
                                             QPointF /*scene_pos*/)
