@@ -22,23 +22,29 @@ I'm actively looking for **feedback, contributors, and help with everything** �
 ---
 
 ## Q: What’s the license, and can I use the results commercially?
-A: The source code is released under the **GNU General Public License v3.0 (GPL-3.0)**. This means you're free to:
-- **Use**, **study**, **modify**, and **share** the software,
-- But if you distribute a modified version, you must also release it under the same GPL-3.0 license.
+A: Hesiod is released under the **GNU General Public License v3.0 (GPL-3.0)**.
+You may use, study, modify and redistribute it, including selling copies, provided
+you comply with the licence's distribution and source-code requirements. See the
+[project licence](https://github.com/ottolink-dev/Hesiod/blob/main/LICENSE) and the
+[GNU FAQ on selling GPL software](https://www.gnu.org/licenses/gpl-faq.en.html#DoesTheGPLAllowMoney).
 
-As for what you create **with** the app (e.g., terrain, heightmaps, meshes), you’re free to use those **without any restriction**, including in **personal or commercial projects** — no crediting required (though it's always appreciated!).
-
-**You’re not allowed to sell the app itself**, or distribute/sell generated **assets or presets** as standalone commercial products.
+Terrains and other assets you generate from your own inputs can be used in
+personal or commercial projects, including selling those assets. The GPL does
+not automatically apply to a program's output. Imported assets or presets can
+have their own licence terms; see the
+[GNU explanation of program output](https://www.gnu.org/licenses/gpl-faq.en.html#WhatCaseIsOutputGPL).
 
 ---
 
 ## Q: Are there any tutorials for Hesiod?
-A: Not really — at least not yet. However, you can find a few **basic video guides** here:  
-📺 [YouTube Playlist](https://m.youtube.com/playlist?list=PLvla2FXp5tDxbPypf_Mp66gWzX_Lga3DK)
+A: Yes. Start with [Your first terrain](../getting_started/index.md), then use
+the [Guides](../guides/index.md) and [User Manual](../user_manual/index.md) for
+specific workflows. The [Hesiod YouTube channel](https://www.youtube.com/@Hesiod-s9n)
+has video walkthroughs of the interface and terrain viewer.
 
-Also, check the **[Releases page on GitHub](https://github.com/otto-link/Hesiod/releases/)**. Most releases include example `.hsd` files at the bottom — these are often **commented and self-explanatory**, and can help you understand how things work.
-
-More detailed tutorials and documentation are planned — and if you’d like to help with that, please reach out!
+The downloaded application's `data/examples` folder contains example `.hsd`
+projects. Older examples and videos can show previous node names or interface
+layouts; use the current node reference when following them.
 
 ---
 

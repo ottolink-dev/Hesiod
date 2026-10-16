@@ -6,28 +6,41 @@ Hesiod is an open-source application designed for generating procedural terrains
 
 !!! warning
 
-    As an actively developed open-source project, Hesiod is continuously evolving, with new features being added and existing ones improved. This ongoing development may lead to instabilities, as updates and changes are integrated. Please use the issue and discussion [threads](https://github.com/otto-link/Hesiod/issues) to help us make this software better.
+    As an actively developed open-source project, Hesiod is continuously evolving, with new features being added and existing ones improved. This ongoing development may lead to instabilities, as updates and changes are integrated. Please use the issue and discussion [threads](https://github.com/ottolink-dev/Hesiod/issues) to help us make this software better.
 
 ## Download and installation
 
-Standalone executables for Windows and Linux are available on [sourceforge.net/projects/hesiod](https://sourceforge.net/projects/hesiod).
+Download Hesiod from [hesiodengine.com](https://hesiodengine.com/#download).
+Choose **Stable** for a released version or **Dev build** for recent development
+changes. Windows and Linux packages are available; macOS packaging is experimental
+and is not yet available through the website.
 
-- For Windows user: unzip the archive and execute `hesiod.exe`.
-- For Linux user: make the AppImage executable with the command line `chmod a+x hesiod.AppImage` or enable something like `Allow executing file as program` in your file explorer.
+- **Windows:** extract the entire ZIP, then run `hesiod.exe` from the extracted
+  folder. Keep the bundled `data` folder, DLLs and plugins alongside it.
+- **Linux:** extract the entire ZIP, keep `data` beside `hesiod.AppImage`, then
+  run the following commands from the extracted folder:
 
-Batch mode execution allows headless computation of the graph nodes and modification of the main parameters:
-
+```bash
+chmod +x hesiod.AppImage
+./hesiod.AppImage
 ```
-bin/./hesiod --batch graph_made_with_the_gui.hsd --shape=1024,1024 --tiling=1,1 --overlap=0
-```
+
+See [Installation](getting_started/installation.md) for platform requirements,
+Linux troubleshooting and the status of Apple Silicon packages.
+
+For command-line rendering, see [Automation and batch mode](guides/batch-headless.md).
+That guide covers packaged executables, source builds, headless display settings
+and configuring file output.
 
 ## For users
 
-A stub of a user manual is under construction [here](user_manual/index.md).
+Start with [Your first terrain](getting_started/index.md), then explore
+[Core Concepts](core_concepts/index.md), the [Guides](guides/index.md) and the
+[User Manual](user_manual/index.md).
 
 ## For developers
 
-As an open-source tool, hosted on [github.com/otto-link/Hesiod](https://github.com/otto-link/Hesiod), Hesiod greatly encourages contributions. Developers and enthusiasts are welcome to improve existing features, add new capabilities, or fix bugs, enhancing the tool's functionality and broadening its application scope.
+As an open-source tool, hosted on [github.com/ottolink-dev/Hesiod](https://github.com/ottolink-dev/Hesiod), Hesiod greatly encourages contributions. Developers and enthusiasts are welcome to improve existing features, add new capabilities, or fix bugs, enhancing the tool's functionality and broadening its application scope.
 
 ## Workflow
 
