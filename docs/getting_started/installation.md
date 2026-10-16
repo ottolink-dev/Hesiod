@@ -8,8 +8,9 @@ Select a channel, then download the package for your operating system:
   contain regressions; keep a backup of projects before opening them in a newer build.
 
 The download page shows the version or build date for each available package.
-Windows and Linux packages are available in both channels. Development builds
-include a `SOURCE.txt` file identifying the source revision.
+Windows and Linux packages are available in both channels. An experimental
+Apple Silicon package is available in **Dev build**. Development packages include
+`SOURCE.txt` identifying the source revision (inside the app resources on macOS).
 
 ## Windows
 
@@ -61,22 +62,27 @@ for running or installing it and configuring host OpenCL support.
 
 ## macOS / Apple Silicon
 
-Apple Silicon builds and standalone `.app` packaging are experimental and are
-being validated in [PR #835](https://github.com/ottolink-dev/Hesiod/pull/835).
-There is no macOS download on the website yet. Intel Mac support is not part
-of that build.
+Select **Dev build → macOS** on the [download page](https://hesiodengine.com/#download).
+The experimental package requires **Apple Silicon (M-series)** and **macOS 15 or
+later**. It does not support Intel Macs. The ZIP contains a standalone app with
+its runtime libraries; Homebrew is not required.
 
-A successful [macOS CI run](https://github.com/ottolink-dev/Hesiod/actions/workflows/macos-build.yml)
-uploads a `hesiod-macos-arm64` artifact containing the app ZIP, a checksum,
-source information and a verification report. These are temporary test
-artifacts, retained for 14 days; downloading Actions artifacts requires a
-GitHub sign-in.
+1. Extract the ZIP and move `Hesiod.app` to Applications.
+2. Open the app. It is ad-hoc signed and is **not Apple-notarized**.
+3. If macOS blocks this trusted download, open **System Settings → Privacy &
+   Security** and use **Open Anyway**, then confirm the launch.
 
-For a successfully packaged build, extract the app ZIP and move `Hesiod.app`
-to Applications. Use the minimum macOS version recorded in that build's
-`verification.json`; it depends on the bundled libraries. Test packages are
-ad-hoc signed and are not Apple-notarized. If macOS blocks a trusted build,
-use **System Settings → Privacy & Security** to approve it.
+The CI build passed its ARM64, bundled-library and code-signature audits. Real-Mac
+workload profiling remains separate; this is an experimental development build.
+The source revision and dependency information are in
+`Hesiod.app/Contents/Resources/SOURCE.txt`. Runtime files are stored under
+`~/Library/Application Support/hesiod/runtime/`.
+
+The [macOS CI run](https://github.com/ottolink-dev/Hesiod/actions/runs/38924866656)
+also provides an Actions artifact with the app ZIP, SHA-256 checksum and
+`verification.json`, which records the package's minimum macOS version.
+Actions artifacts require a GitHub sign-in and expire after 14 days; the website
+provides the published package without that requirement.
 
 ## First launch and batch mode
 
