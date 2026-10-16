@@ -12,11 +12,13 @@ Hesiod is an open-source application designed for generating procedural terrains
 
 Download Hesiod from [hesiodengine.com](https://hesiodengine.com/#download).
 Choose **Stable** for a released version or **Dev build** for recent development
-changes. Windows and Linux packages are available; macOS packaging is experimental
-and is not yet available through the website.
+changes. Windows and Linux packages are available in both channels. The **Dev build**
+channel also offers an experimental macOS package for Apple Silicon (macOS 15 or later).
 
 - **Windows:** extract the entire ZIP, then run `hesiod.exe` from the extracted
   folder. Keep the bundled `data` folder, DLLs and plugins alongside it.
+- **macOS (Dev build):** extract the ZIP, move `Hesiod.app` to Applications, then
+  follow the [first-launch instructions](getting_started/installation.md#macos-apple-silicon).
 - **Linux:** extract the entire ZIP, keep `data` beside `hesiod.AppImage`, then
   run the following commands from the extracted folder:
 

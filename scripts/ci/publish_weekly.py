@@ -41,6 +41,11 @@ def validate_archives(directory, sha):
 def publish(client, bucket, directory, sha):
     # Validate BOTH artifacts before touching remote storage.
     archives = validate_archives(directory, sha)
+    publish_artifacts(client, bucket, archives, sha)
+
+
+def publish_artifacts(client, bucket, archives, sha):
+    """Publish pre-validated archives, preserving every other platform/channel."""
     try:
         response = client.get_object(Bucket=bucket, Key="manifest.json")
     except Exception as error:
@@ -86,14 +91,14 @@ def publish(client, bucket, directory, sha):
     # prefix: a concurrent upload may already exist under that prefix.
     live_keys = {r["key"] for channel in manifest["channels"].values()
                  for r in channel.values()}
-    for platform in ARCHIVES:
+    for platform in archives:
         old = previous["channels"].get("dev", {}).get(platform, {}).get("key")
         if old and old.startswith(f"releases/dev/{platform}/") and old not in live_keys:
             try:
                 client.delete_object(Bucket=bucket, Key=old)
             except Exception as error:
                 warnings.warn(f"Published successfully; old object cleanup failed: {error}")
-    print(f"Published Linux and Windows weekly builds from {sha}")
+    print(f"Published {', '.join(archives)} development builds from {sha}")
 
 
 def main():

@@ -1,0 +1,46 @@
+name: Publish macOS development build
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: Successful macOS Apple Silicon workflow run to publish
+        required: true
+        type: string
+      head_sha:
+        description: Full head commit SHA of that run
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: weekly-builds-publication
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    if: github.repository == 'ottolink-dev/Hesiod' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    environment: website
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -r scripts/ci/requirements.txt
+      - name: Validate and publish the selected macOS package
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_ID: ${{ inputs.run_id }}
+          HEAD_SHA: ${{ inputs.head_sha }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.WEBSITE_R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.WEBSITE_R2_SECRET_ACCESS_KEY }}
+          R2_ENDPOINT: ${{ vars.WEBSITE_R2_ENDPOINT }}
+          R2_BUCKET: ${{ vars.WEBSITE_R2_BUCKET }}
+        run: python scripts/ci/publish_macos.py --run-id "$RUN_ID" --head-sha "$HEAD_SHA"
