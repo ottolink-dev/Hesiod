@@ -346,7 +346,7 @@ void GraphNodeWidget::json_from(nlohmann::json const &json)
                            viewer_type_as_string.at(viewer_type));
 
       // TODO add viewer-type specific handling
-      this->on_viewport_request();
+      this->create_viewport(false);
 
       if (auto *p_viewer = dynamic_cast<Viewer3D *>(this->data_viewers.back().get()))
       {
@@ -949,7 +949,11 @@ void GraphNodeWidget::on_nodes_paste_request()
 void GraphNodeWidget::on_viewport_request()
 {
   Logger::log()->trace("GraphNodeWidget::on_viewport_request");
+  this->create_viewport(true);
+}
 
+void GraphNodeWidget::create_viewport(bool inherit_preview)
+{
   // no independent 3D viewer window in headless CLI modes (e.g. --snapshot):
   // it would receive paint events and crash without a real GUI window context
   if (HSD_CTX.headless)
@@ -970,7 +974,11 @@ void GraphNodeWidget::on_viewport_request()
     }
   }
 
-  this->data_viewers.push_back(new Viewer3D(this)); // no parent, independant window
+  auto *viewer = new Viewer3D(this); // no parent, independent window
+  if (inherit_preview)
+    if (const auto *preview = dynamic_cast<Viewer3D *>(this->preview_viewer.data()))
+      viewer->copy_render_settings_from(*preview);
+  this->data_viewers.push_back(viewer);
   this->data_viewers.back()->show();
   Viewer *p_viewer = dynamic_cast<Viewer *>(this->data_viewers.back().get());
 

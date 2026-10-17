@@ -124,6 +124,7 @@ protected:
 private:
   QScrollArea *create_attributes_scroll(QWidget *parent, QWidget *attr_widget);
 
+  void create_viewport(bool inherit_preview);
   void backup_selected_ids();
   void reselect_backup_ids();
 

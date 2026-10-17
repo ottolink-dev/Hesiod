@@ -116,6 +116,25 @@ Viewer3D::Viewer3D(QPointer<GraphNodeWidget> p_graph_node_widget_, QWidget *pare
   this->update_param_visibility_icons();
 }
 
+void Viewer3D::copy_render_settings_from(const Viewer3D &source)
+{
+  if (!this->p_renderer || !source.p_renderer)
+    return;
+
+  // Renderer serialization includes widget geometry. Keep this view's layout,
+  // and copy only rendering state; Viewer::json_from would also copy the node,
+  // pin and port choices from the embedded preview.
+  auto settings = source.p_renderer->json_to();
+  const QRect geometry = this->p_renderer->geometry();
+  settings["x"] = geometry.x();
+  settings["y"] = geometry.y();
+  settings["width"] = geometry.width();
+  settings["height"] = geometry.height();
+  this->p_renderer->json_from(settings);
+  this->set_render_type(source.get_render_type());
+  this->update_param_visibility_icons();
+}
+
 void Viewer3D::clear()
 {
   Viewer::clear();
