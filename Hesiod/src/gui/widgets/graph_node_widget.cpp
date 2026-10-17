@@ -783,7 +783,13 @@ void GraphNodeWidget::on_node_right_clicked(const std::string &node_id, QPointF 
       return;
   }
 
-  this->show_node_context_menu(node_id, QCursor::pos());
+  // This runs inside the node's mouse press, and the menu can delete that
+  // node: the press handler would go on with a deleted item once the menu
+  // returns. Open the menu when the press is over.
+  QTimer::singleShot(0,
+                     this,
+                     [this, node_id, pos = QCursor::pos()]()
+                     { this->show_node_context_menu(node_id, pos); });
 }
 
 void GraphNodeWidget::show_node_settings_popup(const std::string &node_id,
