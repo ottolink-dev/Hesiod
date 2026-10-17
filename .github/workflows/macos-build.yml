@@ -1,0 +1,70 @@
+name: macOS Apple Silicon build
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, dev]
+    paths-ignore:
+      - 'docs/**'
+      - '*.md'
+      - mkdocs.yml
+  pull_request:
+    branches: [main, dev]
+    paths-ignore:
+      - 'docs/**'
+      - '*.md'
+      - mkdocs.yml
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: macos-15
+    timeout-minutes: 90
+    env:
+      HOMEBREW_NO_INSTALL_CLEANUP: '1'
+      HESIOD_BUILD_JOBS: '2'
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          persist-credentials: false
+      - name: Install native dependencies
+        run: >-
+          brew install cmake ninja qt spdlog nlohmann-json glm assimp opencv
+          fftw gsl libomp openexr libtiff zstd glfw opencl-headers
+          opencl-clhpp-headers
+      - name: Build ARM64 application
+        run: bash scripts/build-macos.sh
+      - name: Test the dependency audit
+        run: python3 -m unittest discover -s tests/ci -p test_macos_bundle.py -v
+      - name: Verify executable architecture
+        run: lipo build/macos/bin/Hesiod.app/Contents/MacOS/Hesiod -verify_arch arm64
+      - name: Package standalone app (ad-hoc signed, not notarized)
+        run: python3 scripts/macos/package_app.py --output output/macos-package
+      - name: Audit all bundled libraries and signatures
+        run: >-
+          python3 scripts/macos/verify_bundle.py output/macos-package/Hesiod.app
+          --report output/macos-package/verification.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: hesiod-macos-arm64
+          path: |
+            output/macos-package/*.zip
+            output/macos-package/*.sha256
+            output/macos-package/SOURCE.txt
+            output/macos-package/verification.json
+          if-no-files-found: error
+          retention-days: 14
+          compression-level: 0
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: macos-deployment-log
+          path: output/macos-package/deployment.log
+          if-no-files-found: ignore
+      # Hosted VMs cannot validate the real GPU or interactive terrain viewer.

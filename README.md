@@ -70,6 +70,76 @@ vcpkg install glfw3 opengl gsl glew freeglut glm libpng glm opencl assimp spdlog
 
 You should then be able to build the sources using Visual Studio.
 
+### macOS / Apple Silicon (experimental)
+
+The native macOS path uses the existing OpenGL viewer and Apple's OpenCL
+framework. A Metal backend is not required for this development build.
+
+Install Apple's Command Line Tools (`xcode-select --install`) and native ARM
+[Homebrew](https://brew.sh), then install the dependencies:
+
+```bash
+brew install cmake ninja qt spdlog nlohmann-json glm assimp opencv fftw gsl \
+  libomp openexr libtiff zstd glfw opencl-headers opencl-clhpp-headers
+git submodule update --init --recursive
+bash scripts/build-macos.sh
+```
+
+The script configures an ARM64 Release build in `build/macos` and builds with
+two jobs. Set `HESIOD_BUILD_JOBS` to change the parallelism. Additional script
+arguments are passed to CMake. The first configure also downloads HighMap's
+FetchContent dependencies and needs network access.
+
+Launch the development app:
+
+```bash
+open build/macos/bin/Hesiod.app
+```
+
+The build script applies the tracked patches in `scripts/macos/patches` to the
+pinned HighMap and Meta submodules. They add a missing OpenCL hash helper,
+handle Apple's OpenMP compiler flags, limit OpenCV to the used components,
+and include a required standard header.
+This leaves those submodules with local source modifications; keep the patches
+until the fixes are available in newer pinned dependency commits.
+
+The development bundle uses Homebrew libraries. To create a standalone app and
+ZIP (Python 3.11 or newer is required):
+
+```bash
+python3 scripts/macos/package_app.py --output output/macos-package
+python3 scripts/macos/verify_bundle.py output/macos-package/Hesiod.app
+```
+
+Use a fresh output directory for each packaging run. The package contains Qt,
+the WebEngine helper/resources, required plugins, other runtime libraries,
+the application data, licenses, source revision information and dependency
+patches. The script creates `hesiod-macos-arm64.zip`, its SHA-256 checksum,
+and `verification.json`. The minimum macOS version is derived from all bundled
+binaries and recorded in both `Info.plist` and the verification report. Builds
+made on newer macOS/Homebrew installations may require a newer OS than CI builds.
+
+The app can be moved into Applications and launched from Finder. Runtime files
+and caches go under `~/Library/Application Support/hesiod/runtime/`; preferences
+and autosaves use their existing per-user locations. Bundled assets are read
+through a symlink from this workspace, keeping the app bundle unchanged.
+Command-line project paths are resolved from the caller's original directory.
+
+These packages have an **ad-hoc signature**, required by Apple Silicon, but
+no Developer ID signature or Apple notarization. No Apple Developer account is
+needed to build them. Downloaded copies may be blocked by Gatekeeper; users
+must explicitly approve a trusted build through macOS Privacy & Security.
+The SHA-256 file detects download corruption; it does not establish publisher
+identity.
+
+`.github/workflows/macos-build.yml` runs the same build on an Apple Silicon
+runner for pushes and pull requests to `main`/`dev`, and can be run manually.
+It builds and audits the standalone package and uploads the ZIP, checksum,
+source information and verification report as a 14-day Actions artifact.
+The audit checks every bundled Mach-O, including plugins and the WebEngine
+helper, for ARM64 support, dependency closure and valid signatures. Hosted CI
+does not test GPU rendering. It does not publish packages to the website.
+
 ### Linux
 
 There are also required external dependencies for ubuntu you can execute:

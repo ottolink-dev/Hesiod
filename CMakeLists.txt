@@ -1,10 +1,6 @@
 cmake_minimum_required(VERSION 3.12)
 project(hesiod-root VERSION 0.6.0)
 
-if(APPLE)
-  message(FATAL_ERROR "macOS is NOT supported by this project.")
-endif()
-
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
 
 # Version info
@@ -18,7 +14,13 @@ add_compile_definitions(
 # ------------------------------
 # Options
 # ------------------------------
-option(HESIOD_ENABLE_GENERATE_APP_IMAGE "Enable AppImage generation" ON)
+if(UNIX AND NOT APPLE)
+  set(HESIOD_APPIMAGE_DEFAULT ON)
+else()
+  set(HESIOD_APPIMAGE_DEFAULT OFF)
+endif()
+option(HESIOD_ENABLE_GENERATE_APP_IMAGE "Enable AppImage generation"
+       ${HESIOD_APPIMAGE_DEFAULT})
 
 option(HESIOD_ENABLE_UI_TESTS
        "Build the interface scale / node palette regression tests" ON)
