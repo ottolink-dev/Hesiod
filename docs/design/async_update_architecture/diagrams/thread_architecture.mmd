@@ -1,0 +1,28 @@
+graph TB
+    subgraph GUI_Tier ["GUI Thread (Qt Event Loop)"]
+        UI["User Interactions / Parameter Edits"]
+        GW["GraphWorker"]
+        Snap["Snapshot Creation<br/><code>begin_background_compute()</code>"]
+        PostRecv["Completion Handler<br/><code>end_pass()</code>"]
+    end
+
+    subgraph Worker_Tier ["GraphWorker Background Thread"]
+        CoordThread["Pass Coordinator Thread<br/>(1 per active pass)"]
+        GNodeCoord["<code>Graph::execute_parallel()</code><br/>DAG In-Degree Orchestrator"]
+    end
+
+    subgraph Pool_Tier ["GNode ThreadPool (Worker Pool)"]
+        T1["Pool Worker 1"]
+        T2["Pool Worker 2"]
+        Tn["Pool Worker N"]
+    end
+
+    UI -->|triggers| GW
+    GW -->|1. Snapshots planned nodes| Snap
+    GW -->|2. Spawns std::thread| CoordThread
+    CoordThread -->|3. Calls| GNodeCoord
+    GNodeCoord -->|4. Enqueues in-degree 0 tasks| T1
+    GNodeCoord -->|4. Enqueues in-degree 0 tasks| T2
+    GNodeCoord -->|4. Enqueues in-degree 0 tasks| Tn
+    CoordThread -.->|Blocks on sync_cv| GNodeCoord
+    CoordThread -->|5. Posts end_pass to event loop| PostRecv
