@@ -23,87 +23,27 @@ GraphWorker::~GraphWorker()
     std::lock_guard<std::mutex> lock(this->mutex);
     this->cancelled = true;
   }
-  this->cv.notify_one();
 
   if (this->thread.joinable())
     this->thread.join();
 }
 
-void GraphWorker::answer(int pass, const std::string &node_id)
+bool GraphWorker::check_cancel(int pass, const std::string &node_id)
 {
+  if (!is_update_thread)
+  {
+    is_update_thread = true;
+    if (this->thread_setup)
+      this->thread_setup();
+  }
+
   std::lock_guard<std::mutex> lock(this->mutex);
 
-  if (pass != this->pass || !this->graph || this->cancelled)
-  {
-    Logger::log()->trace("GraphWorker::answer: node '{}' (pass {}) ignored "
-                         "(pass_match={}, has_graph={}, cancelled={})",
-                         node_id,
-                         pass,
-                         pass == this->pass,
-                         this->graph != nullptr,
-                         this->cancelled);
-    return;
-  }
-
-  if (auto *p_node = this->graph->get_node_ref_by_id<BaseNode>(node_id))
-    p_node->begin_background_compute();
+  if (pass != this->pass || this->cancelled)
+    return true;
 
   this->started.insert(node_id);
-  this->go = true;
-
-  Logger::log()->trace(
-      "GraphWorker::answer: node '{}' (pass {}) snapshot taken, waking worker",
-      node_id,
-      pass);
-
-  this->cv.notify_one();
-  this->prepare_next(node_id);
-}
-
-bool GraphWorker::ask(int pass, const std::string &node_id)
-{
-  std::unique_lock<std::mutex> lock(this->mutex);
-
-  // got ready while the previous node was computed: no need to wait
-  if (!this->cancelled && this->ready == node_id)
-  {
-    this->ready.clear();
-    this->started.insert(node_id);
-    this->post([this, pass, node_id]() { this->prepare_after(pass, node_id); });
-
-    Logger::log()->trace("GraphWorker::ask: node '{}' (pass {}) ready ahead, no wait",
-                         node_id,
-                         pass);
-    return false;
-  }
-
-  this->go = false;
-
-  Logger::log()->trace("GraphWorker::ask: node '{}' (pass {}) requesting GUI snapshot",
-                       node_id,
-                       pass);
-
-  const auto t0 = std::chrono::steady_clock::now();
-
-  if (!this->cancelled)
-    this->post([this, pass, node_id]() { this->answer(pass, node_id); });
-
-  // a node that got ready is computed, a cancellation then stops at the next one
-  this->cv.wait(lock, [this]() { return this->go || this->cancelled; });
-
-  const auto wait_ms = std::chrono::duration_cast<std::chrono::milliseconds>(
-                           std::chrono::steady_clock::now() - t0)
-                           .count();
-
-  Logger::log()->trace(
-      "GraphWorker::ask: node '{}' (pass {}) wait finished ({} ms, go={}, cancelled={})",
-      node_id,
-      pass,
-      wait_ms,
-      this->go,
-      this->cancelled);
-
-  return !this->go;
+  return false;
 }
 
 void GraphWorker::cancel(const GraphNode *p_graph)
@@ -131,16 +71,17 @@ void GraphWorker::end_pass()
   auto graph = std::exchange(this->graph, nullptr);
   graph->cancel_update_callback = nullptr;
 
-  // got ready for nothing: its data can be read again
-  if (auto *p_node = graph->get_node_ref_by_id<BaseNode>(std::exchange(this->ready, {})))
-    if (!this->started.contains(p_node->get_id()))
-      p_node->cancel_background_compute();
-
   std::set<std::string> left;
 
   for (const auto &node_id : this->planned)
+  {
     if (!this->started.contains(node_id))
+    {
       left.insert(node_id);
+      if (auto *p_node = graph->get_node_ref_by_id<BaseNode>(node_id))
+        p_node->cancel_background_compute();
+    }
+  }
 
   Logger::log()->trace(
       "GraphWorker::end_pass: pass {} finished ({} computed, {} left, has_error={})",
@@ -261,7 +202,6 @@ bool GraphWorker::hold()
   {
     std::lock_guard<std::mutex> lock(this->mutex);
     this->cancelled = true;
-    this->cv.notify_one();
   }
   else if (this->held_changed)
     this->held_changed(true); // nothing running, what is queued waits
@@ -270,30 +210,6 @@ bool GraphWorker::hold()
 }
 
 bool GraphWorker::in_update_thread() { return is_update_thread; }
-
-void GraphWorker::prepare_after(int pass, const std::string &node_id)
-{
-  std::lock_guard<std::mutex> lock(this->mutex);
-
-  if (pass == this->pass && this->graph && !this->cancelled)
-    this->prepare_next(node_id);
-}
-
-void GraphWorker::prepare_next(const std::string &node_id)
-{
-  // the node after it gets ready while it is computed (not twice: an answer
-  // that came first has done it already)
-  auto next = std::ranges::find(this->planned, node_id);
-  if (next == this->planned.end() || ++next == this->planned.end() ||
-      this->started.contains(*next) || this->ready == *next)
-    return;
-
-  if (auto *p_node = this->graph->get_node_ref_by_id<BaseNode>(*next))
-  {
-    p_node->begin_background_compute();
-    this->ready = *next;
-  }
-}
 
 std::deque<GraphWorker::Job>::iterator GraphWorker::find_job(const GraphNode &graph)
 {
@@ -346,7 +262,6 @@ bool GraphWorker::request(GraphNode &graph, const std::vector<std::string> *p_no
   {
     std::lock_guard<std::mutex> lock(this->mutex);
     this->cancelled = true;
-    this->cv.notify_one();
   }
 
   if (std::exchange(this->held, false) && this->held_changed)
@@ -414,15 +329,12 @@ void GraphWorker::start_next()
     this->planned = std::move(planned);
     this->started.clear();
     this->error = nullptr;
-    this->go = false;
     const int pass = ++this->pass;
 
-    // the first node gets ready right away, before the update thread starts
-    if (auto *p_node = graph->get_node_ref_by_id<BaseNode>(this->planned.front()))
-    {
-      p_node->begin_background_compute();
-      this->ready = this->planned.front();
-    }
+    // Snapshot all nodes upfront on the GUI thread
+    for (const auto &node_id : this->planned)
+      if (auto *p_node = graph->get_node_ref_by_id<BaseNode>(node_id))
+        p_node->begin_background_compute();
 
     Logger::log()->trace(
         "GraphWorker::start_next: starting pass {} for graph '{}' with {} planned nodes",
@@ -431,21 +343,14 @@ void GraphWorker::start_next()
         this->planned.size());
 
     graph->cancel_update_callback = [this, pass](const std::string &node_id)
-    { return this->ask(pass, node_id); };
+    { return this->check_cancel(pass, node_id); };
 
     this->thread = std::thread(
-        [this, graph, ids, all = job.all, pass]()
+        [this, graph, dirty_ids = this->planned, pass]()
         {
-          is_update_thread = true;
-          if (this->thread_setup)
-            this->thread_setup();
-
           try
           {
-            if (all)
-              graph->gnode::Graph::update();
-            else
-              graph->gnode::Graph::update(ids);
+            graph->execute_parallel(dirty_ids);
           }
           catch (...)
           {
@@ -475,7 +380,7 @@ void GraphWorker::stop()
     std::lock_guard<std::mutex> lock(this->mutex);
     this->cancelled = true;
   }
-  this->cv.notify_one();
+
   this->end_pass();
 
   // what is left resumes once the caller is done with the graphs

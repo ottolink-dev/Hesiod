@@ -31,21 +31,32 @@ GraphNode::GraphNode(const std::string &id, const std::shared_ptr<GraphConfig> &
     if (sorted_ids.empty())
       return;
 
-    // compute progress
-    int idx = find_index(sorted_ids, current_id);
     int nids = static_cast<int>(sorted_ids.size());
 
-    // in percentage
-    float r = static_cast<float>(idx);
-    if (!before_update)
-      r += 0.5f;
-    float progress = 100.f * r / (static_cast<float>(nids) - 0.5f);
+    if (before_update)
+    {
+      int   current_completed = this->completed_count.load();
+      float progress = 100.f * static_cast<float>(current_completed) /
+                       static_cast<float>(nids);
 
-    if (this->update_progress)
-      this->update_progress(current_id, progress);
+      if (this->update_progress)
+        this->update_progress(current_id, progress);
 
-    if (this->update_steps)
-      this->update_steps(sorted_ids, before_update ? idx : idx + 1);
+      if (this->update_steps)
+        this->update_steps(sorted_ids, current_completed);
+    }
+    else
+    {
+      int   current_completed = ++this->completed_count;
+      float progress = 100.f * static_cast<float>(current_completed) /
+                       static_cast<float>(nids);
+
+      if (this->update_progress)
+        this->update_progress(current_id, progress);
+
+      if (this->update_steps)
+        this->update_steps(sorted_ids, current_completed);
+    }
   };
 
   this->graph_progress_conn = this->graph_progress_event.subscribe(lambda);
@@ -496,6 +507,18 @@ void GraphNode::stop_update()
     this->p_worker->stop();
 }
 
+void GraphNode::execute_parallel(const std::vector<std::string> &dirty_node_ids,
+                                 size_t                          num_threads)
+{
+  this->completed_count = 0;
+
+  for (const auto &nid : dirty_node_ids)
+    if (auto *p_node = this->get_node(nid))
+      p_node->is_dirty = true;
+
+  gnode::Graph::execute_parallel(dirty_node_ids, num_threads);
+}
+
 void GraphNode::update()
 {
   Logger::log()->trace("GraphNode::update");
@@ -506,6 +529,7 @@ void GraphNode::update()
   if (this->p_worker && this->p_worker->request(*this))
     return;
 
+  this->completed_count = 0;
   gnode::Graph::update();
 
   if (this->update_finished)
@@ -530,6 +554,7 @@ void GraphNode::update(const std::vector<std::string> &node_ids)
   if (this->p_worker && this->p_worker->request(*this, &node_ids))
     return;
 
+  this->completed_count = 0;
   gnode::Graph::update(node_ids);
 
   if (this->update_finished)

@@ -76,16 +76,11 @@ private:
     bool                     all = false;
   };
 
-  bool                      ask(int pass, const std::string &node_id); // cancel?
-  void                      answer(int pass, const std::string &node_id);
+  bool                      check_cancel(int pass, const std::string &node_id);
   void                      end_pass(); // joins the update thread and takes stock
   std::deque<Job>::iterator find_job(const GraphNode &graph);
   void                      schedule_start_next();
   void                      start_next(); // unless an update is in progress
-
-  // the node after this one gets ready while it is computed
-  void prepare_after(int pass, const std::string &node_id);
-  void prepare_next(const std::string &node_id); // with the mutex held
 
   // GUI thread
   std::deque<Job>            jobs;    // one per graph, in request order
@@ -99,11 +94,8 @@ private:
   bool                       held = false; // see hold()
 
   // shared with the update thread
-  std::mutex              mutex;
-  std::condition_variable cv;
-  bool                    cancelled = false;
-  bool                    go = false;
-  std::string             ready; // got ready ahead of time, see prepare_next()
+  std::mutex mutex;
+  bool       cancelled = false;
 
   std::shared_ptr<int> alive = std::make_shared<int>(); // for what is posted
 };
