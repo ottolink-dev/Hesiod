@@ -48,6 +48,9 @@ public:
   std::shared_ptr<const GraphConfig> get_config_ref() const;
   virtual void                       propagate_config_change();
 
+  // the shape of the graph when its data was last computed, 0 if never
+  glm::ivec2 get_computed_shape() const { return this->computed_shape; }
+
   // --- Runtime info ---
   NodeRuntimeInfo get_runtime_info() const;
   float           get_memory_usage() const;
@@ -211,6 +214,7 @@ private:
   std::unique_ptr<meta::ContainerGroup> meta_group;        // attribute storage
   std::unique_ptr<meta::ContainerGroup> frozen_meta_group; // see begin_background_compute
   std::atomic<bool>                     computing = false; // in the background
+  glm::ivec2                            computed_shape = {0, 0};
   std::string                           current_category = "Main Parameters";
 
   // container state captured at finalize time; toolbar "Reset Settings" restores it

@@ -2,6 +2,7 @@
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
 #include <algorithm>
+#include <utility>
 
 #include <QGridLayout>
 #include <QLabel>
@@ -142,8 +143,9 @@ void Viewer::on_node_deselected(const std::string &new_id)
   if (this->is_node_pinned)
     return;
 
-  // clear everything
-  this->clear();
+  // cleared, unless a node gets selected meanwhile
+  if (!std::exchange(this->selection_to_follow, std::string()))
+    QTimer::singleShot(0, this, [this]() { this->follow_selection(); });
 }
 
 bool Viewer::is_locked_on(const std::string &node_id) const
@@ -227,7 +229,21 @@ void Viewer::on_node_selected(const std::string &new_id)
   if (this->p_graph_node_widget->get_is_selecting_with_rubber_band())
     return;
 
-  this->set_current_node_id(new_id);
+  if (!std::exchange(this->selection_to_follow, new_id))
+    QTimer::singleShot(0, this, [this]() { this->follow_selection(); });
+}
+
+void Viewer::follow_selection()
+{
+  // the deselection and selection of one click make a single update
+  const auto target = std::exchange(this->selection_to_follow, std::nullopt);
+  if (!target || this->is_node_pinned || *target == this->current_node_id)
+    return;
+
+  if (target->empty())
+    this->clear();
+  else
+    this->set_current_node_id(*target);
 }
 
 void Viewer::on_visibility_change(bool new_state)
@@ -277,10 +293,10 @@ void Viewer::set_current_node_id(const std::string &new_id)
     {
       this->view_param = this->view_param_map.at(new_id);
     }
-    else if (this->current_node_id != "")
+    else if (BaseNode *p_node = this->safe_get_node())
     {
-      // wild guess a default view setup...
-      wild_guess_view_param(this->view_param, viewer_type, *this->safe_get_node());
+      // wild guess a default view setup... (none for a node gone meanwhile)
+      wild_guess_view_param(this->view_param, viewer_type, *p_node);
     }
 
     if (BaseNode *p_node = this->safe_get_node())

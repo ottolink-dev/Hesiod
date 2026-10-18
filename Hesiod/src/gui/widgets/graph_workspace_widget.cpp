@@ -9,6 +9,8 @@
 #include <QToolButton>
 
 #include "hesiod/app/hesiod_application.hpp"
+#include "hesiod/gui/widgets/build_border.hpp"
+#include "hesiod/gui/widgets/build_progress.hpp"
 #include "hesiod/gui/widgets/graph_node_widget.hpp"
 #include "hesiod/gui/widgets/graph_tab_strip.hpp"
 #include "hesiod/gui/widgets/graph_workspace_widget.hpp"
@@ -245,7 +247,53 @@ void GraphWorkspaceWidget::setup_layout()
   // the graph fills its card, with the project's graphs as tabs on its left
   // edge (GraphTabsWidget keeps every workspace's strip in step)
   this->tab_strip = new GraphTabStrip(Qt::Vertical);
-  v_splitter->addWidget(new TabbedCard(wrap(this->graph_node_widget), this->tab_strip));
+  QWidget *graph_card = wrap(this->graph_node_widget);
+  auto    *tabbed_card = new TabbedCard(graph_card, this->tab_strip);
+  v_splitter->addWidget(tabbed_card);
+
+  // how far the update got, at the bottom of the editor, and a line around the
+  // graph and its tab while it runs (if wanted, see BuildBorder)
+  GraphNodeWidget *gnw = this->graph_node_widget;
+  auto            *build_border = new BuildBorder(
+      tabbed_card,
+      [tabbed_card]() { return tabbed_card->outline(BuildBorder::width / 2.); });
+  auto *build_progress = new BuildProgress(graph_card,
+                                           [gnw]()
+                                           {
+                                             // takes along what was held
+                                             if (GraphNode *gno = gnw->get_p_graph_node())
+                                               gno->update(std::vector<std::string>{});
+                                           });
+
+  this->connect(gnw,
+                &GraphNodeWidget::update_started,
+                build_progress,
+                [build_border, build_progress]()
+                {
+                  build_border->set_active(true);
+                  build_progress->on_update_started();
+                });
+  this->connect(gnw,
+                &GraphNodeWidget::update_steps,
+                build_progress,
+                &BuildProgress::on_update_steps);
+  this->connect(gnw,
+                &GraphNodeWidget::update_held,
+                build_progress,
+                [build_border, build_progress](bool held)
+                {
+                  if (held)
+                    build_border->set_active(false);
+                  build_progress->on_update_held(held);
+                });
+  this->connect(gnw,
+                &GraphNodeWidget::update_finished,
+                build_progress,
+                [build_border, build_progress]()
+                {
+                  build_border->set_active(false);
+                  build_progress->on_update_finished();
+                });
 
   // settings panel (created after graph_node_widget, which it takes).
   this->node_settings_widget = new NodeSettingsWidget(this->graph_node_widget);

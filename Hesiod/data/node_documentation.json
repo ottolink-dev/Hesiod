@@ -2936,6 +2936,48 @@
             }
         }
     },
+    "CloudToForest": {
+        "category": "Flora",
+        "description": "CloudToForest convert a Cloud to a Forest, preserving point coordinates and attributes.",
+        "label": "CloudToForest",
+        "parameter_groups": [
+            {
+                "keys": [
+                    "species_id",
+                    "default_radius"
+                ],
+                "name": "main"
+            }
+        ],
+        "parameters": {
+            "default_radius": {
+                "description": "Default tree radius assigned if point value is 0.",
+                "key": "default_radius",
+                "label": "Default Radius",
+                "type": "Float"
+            },
+            "species_id": {
+                "description": "Species identifier assigned to the generated trees.",
+                "key": "species_id",
+                "label": "Species ID",
+                "type": "Integer"
+            }
+        },
+        "ports": {
+            "cloud": {
+                "caption": "cloud",
+                "data_type": "Cloud",
+                "description": "Input cloud.",
+                "type": "input"
+            },
+            "forest": {
+                "caption": "forest",
+                "data_type": "Forest",
+                "description": "Output forest.",
+                "type": "output"
+            }
+        }
+    },
     "CloudToPath": {
         "category": "Geometry/Cloud",
         "description": "CloudToPath convert a Cloud to a Path.",
@@ -2974,6 +3016,48 @@
                 "caption": "path",
                 "data_type": "Path",
                 "description": "Output path.",
+                "type": "output"
+            }
+        }
+    },
+    "CloudToRocks": {
+        "category": "Rock",
+        "description": "CloudToRocks convert a Cloud to a RockField, preserving point coordinates and attributes.",
+        "label": "CloudToRocks",
+        "parameter_groups": [
+            {
+                "keys": [
+                    "class_id",
+                    "default_radius"
+                ],
+                "name": "main"
+            }
+        ],
+        "parameters": {
+            "class_id": {
+                "description": "Class identifier assigned to the generated rocks.",
+                "key": "class_id",
+                "label": "Class ID",
+                "type": "Integer"
+            },
+            "default_radius": {
+                "description": "Default rock radius assigned if point value is 0.",
+                "key": "default_radius",
+                "label": "Default Radius",
+                "type": "Float"
+            }
+        },
+        "ports": {
+            "cloud": {
+                "caption": "cloud",
+                "data_type": "Cloud",
+                "description": "Input cloud.",
+                "type": "input"
+            },
+            "rock_field": {
+                "caption": "rock_field",
+                "data_type": "RockField",
+                "description": "Output rock field.",
                 "type": "output"
             }
         }
@@ -8195,19 +8279,28 @@
             },
             {
                 "keys": [
-                    "riverbed_slope",
-                    "depth"
+                    "favor_stream_merging",
+                    "valley_radius",
+                    "valley_factor",
+                    "truncate_merging_paths"
                 ],
-                "name": "Riverbed Slope"
+                "name": "Stream Merging"
             },
             {
                 "keys": [
-                    "riverbank_slope",
-                    "river_radius",
-                    "merging_radius",
-                    "noise_ratio"
+                    "depth"
                 ],
-                "name": "Riverbank Carving"
+                "name": "Riverbed"
+            },
+            {
+                "keys": [
+                    "width",
+                    "width_exponent",
+                    "enable_width_depth_scaling",
+                    "radial_profile",
+                    "radial_profile_parameter"
+                ],
+                "name": "Carving"
             }
         ],
         "parameters": {
@@ -8235,40 +8328,34 @@
                 "label": "Elevation vs Slope Weight",
                 "type": "Float"
             },
+            "enable_width_depth_scaling": {
+                "description": "Modulates trench width based on local elevation difference.",
+                "key": "enable_width_depth_scaling",
+                "label": "Width Depth Scaling",
+                "type": "Bool"
+            },
             "favor_domain_center": {
                 "description": "Biases flow paths toward passing through the center of the domain.",
                 "key": "favor_domain_center",
                 "label": "Favor Domain Center",
                 "type": "Bool"
             },
-            "merging_radius": {
-                "description": "Radius over which river tributaries smoothly merge together.",
-                "key": "merging_radius",
-                "label": "Merging Radius",
-                "type": "Float"
+            "favor_stream_merging": {
+                "description": "Biases stream pathfinding toward merging with existing streams.",
+                "key": "favor_stream_merging",
+                "label": "Favor Stream Merging",
+                "type": "Bool"
             },
-            "noise_ratio": {
-                "description": "Proportion of random noise perturbation applied along the riverbank carving.",
-                "key": "noise_ratio",
-                "label": "Noise Ratio",
-                "type": "Float"
+            "radial_profile": {
+                "description": "Profile shape used across the trench cross-section.",
+                "key": "radial_profile",
+                "label": "Radial Profile",
+                "type": "Enum"
             },
-            "river_radius": {
-                "description": "Width or radius of the carved river channel.",
-                "key": "river_radius",
-                "label": "River Radius",
-                "type": "Float"
-            },
-            "riverbank_slope": {
-                "description": "Slope angle of the riverbank carving.",
-                "key": "riverbank_slope",
-                "label": "Riverbank Slope",
-                "type": "Float"
-            },
-            "riverbed_slope": {
-                "description": "Downstream longitudinal slope along the riverbed.",
-                "key": "riverbed_slope",
-                "label": "Riverbed Slope",
+            "radial_profile_parameter": {
+                "description": "Sharpness or shape exponent for the radial profile.",
+                "key": "radial_profile_parameter",
+                "label": "Profile Sharpness",
                 "type": "Float"
             },
             "seed": {
@@ -8277,10 +8364,40 @@
                 "label": "Seed",
                 "type": "Random seed number"
             },
+            "truncate_merging_paths": {
+                "description": "Truncates streams at the point where they intersect previously traced streams.",
+                "key": "truncate_merging_paths",
+                "label": "Truncate Merging Streams",
+                "type": "Bool"
+            },
             "upward_penalization": {
                 "description": "Penalty factor applied to uphill elevation changes during pathfinding.",
                 "key": "upward_penalization",
                 "label": "Upward Penalization",
+                "type": "Float"
+            },
+            "valley_factor": {
+                "description": "Attenuation factor per distance unit in valley attraction towards existing streams.",
+                "key": "valley_factor",
+                "label": "Valley Factor",
+                "type": "Float"
+            },
+            "valley_radius": {
+                "description": "Radius around existing streams to apply pathfinding attraction.",
+                "key": "valley_radius",
+                "label": "Valley Radius",
+                "type": "Float"
+            },
+            "width": {
+                "description": "Width of the carved river trench.",
+                "key": "width",
+                "label": "Width",
+                "type": "Float"
+            },
+            "width_exponent": {
+                "description": "Scaling exponent for width with distance to outlet.",
+                "key": "width_exponent",
+                "label": "Width Exponent",
                 "type": "Float"
             }
         },
@@ -8291,16 +8408,16 @@
                 "description": "Input heightmap terrain.",
                 "type": "input"
             },
+            "noise_r": {
+                "caption": "noise_r",
+                "data_type": "VirtualArray",
+                "description": "Optional noise array to perturb trench width.",
+                "type": "input"
+            },
             "output": {
                 "caption": "output",
                 "data_type": "VirtualArray",
                 "description": "Output heightmap with carved river channels.",
-                "type": "output"
-            },
-            "river_mask": {
-                "caption": "river_mask",
-                "data_type": "VirtualArray",
-                "description": "Output mask of the carved river channels.",
                 "type": "output"
             },
             "sources": {
@@ -8308,6 +8425,12 @@
                 "data_type": "Cloud",
                 "description": "Cloud of source coordinates from which flow streams originate.",
                 "type": "input"
+            },
+            "water_depth": {
+                "caption": "water_depth",
+                "data_type": "VirtualArray",
+                "description": "Water depth computed as the difference between input and output terrain.",
+                "type": "output"
             }
         }
     },
@@ -8349,6 +8472,74 @@
                 "caption": "output",
                 "data_type": "VirtualArray",
                 "description": "Folded heightmap.",
+                "type": "output"
+            }
+        }
+    },
+    "ForestProcess": {
+        "category": "Flora",
+        "description": "ForestProcess processes an existing Forest container (snaps elevation to terrain, scales radii, prunes collisions, and prunes by density mask).",
+        "label": "ForestProcess",
+        "parameter_groups": [
+            {
+                "keys": [
+                    "scale_radius",
+                    "prune_collisions",
+                    "prune_density",
+                    "seed"
+                ],
+                "name": "main"
+            }
+        ],
+        "parameters": {
+            "prune_collisions": {
+                "description": "When enabled, eliminates overlapping trees by discarding smaller colliding trees.",
+                "key": "prune_collisions",
+                "label": "Prune Collisions",
+                "type": "Bool"
+            },
+            "prune_density": {
+                "description": "Target fraction of items to retain using density-based pruning.",
+                "key": "prune_density",
+                "label": "Prune Density",
+                "type": "Float"
+            },
+            "scale_radius": {
+                "description": "Scaling factor applied to tree radii.",
+                "key": "scale_radius",
+                "label": "Scale Radius",
+                "type": "Float"
+            },
+            "seed": {
+                "description": "Random seed for reproducible pruning.",
+                "key": "seed",
+                "label": "Seed",
+                "type": "Random seed number"
+            }
+        },
+        "ports": {
+            "density_mask": {
+                "caption": "density_mask",
+                "data_type": "VirtualArray",
+                "description": "Optional density mask for spatial retention pruning.",
+                "type": "input"
+            },
+            "elevation": {
+                "caption": "elevation",
+                "data_type": "VirtualArray",
+                "description": "Optional elevation heightmap to set tree heights.",
+                "type": "input"
+            },
+            "input": {
+                "caption": "input",
+                "data_type": "Forest",
+                "description": "Input forest.",
+                "type": "input"
+            },
+            "output": {
+                "caption": "output",
+                "data_type": "Forest",
+                "description": "Processed forest.",
                 "type": "output"
             }
         }
@@ -12055,82 +12246,6 @@
                 "caption": "output",
                 "data_type": "VirtualArray",
                 "description": "Final terrain after erosion, deposition, and post-processing.",
-                "type": "output"
-            }
-        }
-    },
-    "HydraulicStreamUpscaleAmplification": {
-        "category": "WIP",
-        "description": "TODO",
-        "label": "HydraulicStreamUpscaleAmplification",
-        "parameter_groups": [
-            {
-                "keys": [
-                    "c_erosion",
-                    "talus_ref",
-                    "radius",
-                    "clipping_ratio",
-                    "upscaling_levels",
-                    "persistence"
-                ],
-                "name": "main"
-            }
-        ],
-        "parameters": {
-            "c_erosion": {
-                "description": "TODO",
-                "key": "c_erosion",
-                "label": "c_erosion",
-                "type": "Float"
-            },
-            "clipping_ratio": {
-                "description": "TODO",
-                "key": "clipping_ratio",
-                "label": "clipping_ratio",
-                "type": "Float"
-            },
-            "persistence": {
-                "description": "The amplitude scaling factor for subsequent noise octaves. Lower values reduce the contribution of higher octaves.",
-                "key": "persistence",
-                "label": "Persistence",
-                "type": "Float"
-            },
-            "radius": {
-                "description": "TODO",
-                "key": "radius",
-                "label": "radius",
-                "type": "Float"
-            },
-            "talus_ref": {
-                "description": "Reference talus, with small values of talus_ref leading to thinner flow streams.",
-                "key": "talus_ref",
-                "label": "talus_ref",
-                "type": "Float"
-            },
-            "upscaling_levels": {
-                "description": "TODO",
-                "key": "upscaling_levels",
-                "label": "upscaling_levels",
-                "type": "Integer"
-            }
-        },
-        "ports": {
-            "input": {
-                "caption": "input",
-                "data_type": "VirtualArray",
-                "description": "TODO",
-                "type": "input"
-            },
-            "mask": {
-                "caption": "mask",
-                "data_type": "VirtualArray",
-                "description": "Mask defining the filtering intensity (expected in [0, 1]).",
-                "type": "input"
-            },
-            "output": {
-                "caption": "output",
-                "data_type": "VirtualArray",
-                "description": "TODO",
                 "type": "output"
             }
         }
@@ -20193,6 +20308,385 @@
                 "caption": "output",
                 "data_type": "VirtualArray",
                 "description": "No description",
+                "type": "output"
+            }
+        }
+    },
+    "RockSimulation": {
+        "category": "Rock",
+        "description": "No description available",
+        "label": "RockSimulation",
+        "parameter_groups": [
+            {
+                "keys": [
+                    "rock_count",
+                    "time_step",
+                    "max_steps",
+                    "gravity",
+                    "soil_friction",
+                    "rolling_resistance",
+                    "inter_rock_restitution",
+                    "min_velocity",
+                    "spawn_fraction",
+                    "respawn_out_of_bounds",
+                    "seed",
+                    "radius_min",
+                    "radius_max",
+                    "power_law_alpha",
+                    "resolve_collisions",
+                    "prune_collisions",
+                    "scatter_shape",
+                    "height_radius_ratio",
+                    "post_inverse",
+                    "post_gamma",
+                    "post_gain",
+                    "post_smoothing_radius",
+                    "post_remap",
+                    "post_saturate"
+                ],
+                "name": "main"
+            }
+        ],
+        "parameters": {
+            "gravity": {
+                "description": "No description",
+                "key": "gravity",
+                "label": "Gravity",
+                "type": "Float"
+            },
+            "height_radius_ratio": {
+                "description": "No description",
+                "key": "height_radius_ratio",
+                "label": "Height/Radius Ratio",
+                "type": "Float"
+            },
+            "inter_rock_restitution": {
+                "description": "No description",
+                "key": "inter_rock_restitution",
+                "label": "Restitution",
+                "type": "Float"
+            },
+            "max_steps": {
+                "description": "No description",
+                "key": "max_steps",
+                "label": "Max Steps",
+                "type": "Integer"
+            },
+            "min_velocity": {
+                "description": "No description",
+                "key": "min_velocity",
+                "label": "Min Velocity",
+                "type": "Float"
+            },
+            "post_gain": {
+                "description": "No description",
+                "key": "post_gain",
+                "label": "Gain",
+                "type": "Float"
+            },
+            "post_gamma": {
+                "description": "No description",
+                "key": "post_gamma",
+                "label": "Gamma",
+                "type": "Float"
+            },
+            "post_inverse": {
+                "description": "No description",
+                "key": "post_inverse",
+                "label": "Invert Output",
+                "type": "Bool"
+            },
+            "post_remap": {
+                "description": "No description",
+                "key": "post_remap",
+                "label": "Remap Range",
+                "type": "Value range"
+            },
+            "post_saturate": {
+                "description": "No description",
+                "key": "post_saturate",
+                "label": "Saturation Range",
+                "type": "Value range"
+            },
+            "post_smoothing_radius": {
+                "description": "No description",
+                "key": "post_smoothing_radius",
+                "label": "Smoothing Radius",
+                "type": "Float"
+            },
+            "power_law_alpha": {
+                "description": "No description",
+                "key": "power_law_alpha",
+                "label": "Power Law Alpha",
+                "type": "Float"
+            },
+            "prune_collisions": {
+                "description": "No description",
+                "key": "prune_collisions",
+                "label": "Prune Collisions",
+                "type": "Bool"
+            },
+            "radius_max": {
+                "description": "No description",
+                "key": "radius_max",
+                "label": "Max Radius",
+                "type": "Float"
+            },
+            "radius_min": {
+                "description": "No description",
+                "key": "radius_min",
+                "label": "Min Radius",
+                "type": "Float"
+            },
+            "resolve_collisions": {
+                "description": "No description",
+                "key": "resolve_collisions",
+                "label": "Resolve Collisions",
+                "type": "Bool"
+            },
+            "respawn_out_of_bounds": {
+                "description": "No description",
+                "key": "respawn_out_of_bounds",
+                "label": "Respawn Out of Bounds",
+                "type": "Bool"
+            },
+            "rock_count": {
+                "description": "No description",
+                "key": "rock_count",
+                "label": "Rock Count",
+                "type": "Integer"
+            },
+            "rolling_resistance": {
+                "description": "No description",
+                "key": "rolling_resistance",
+                "label": "Rolling Resistance",
+                "type": "Float"
+            },
+            "scatter_shape": {
+                "description": "No description",
+                "key": "scatter_shape",
+                "label": "Shape",
+                "type": "Enumeration"
+            },
+            "seed": {
+                "description": "No description",
+                "key": "seed",
+                "label": "Seed",
+                "type": "Random seed number"
+            },
+            "soil_friction": {
+                "description": "No description",
+                "key": "soil_friction",
+                "label": "Soil Friction",
+                "type": "Float"
+            },
+            "spawn_fraction": {
+                "description": "No description",
+                "key": "spawn_fraction",
+                "label": "Spawn Fraction",
+                "type": "Float"
+            },
+            "time_step": {
+                "description": "No description",
+                "key": "time_step",
+                "label": "Time Step",
+                "type": "Float"
+            }
+        },
+        "ports": {
+            "density": {
+                "caption": "density",
+                "data_type": "VirtualArray",
+                "description": "No description",
+                "type": "input"
+            },
+            "elevation": {
+                "caption": "elevation",
+                "data_type": "VirtualArray",
+                "description": "No description",
+                "type": "input"
+            },
+            "exclusion": {
+                "caption": "exclusion",
+                "data_type": "VirtualArray",
+                "description": "No description",
+                "type": "input"
+            },
+            "heightmap": {
+                "caption": "heightmap",
+                "data_type": "VirtualArray",
+                "description": "No description",
+                "type": "output"
+            },
+            "rock_field": {
+                "caption": "rock_field",
+                "data_type": "RockField",
+                "description": "No description",
+                "type": "output"
+            }
+        }
+    },
+    "RocksProcess": {
+        "category": "Rock",
+        "description": "RocksProcess processes an existing RockField container (snaps elevation to terrain, scales radii, prunes collisions, and prunes by density mask).",
+        "label": "RocksProcess",
+        "parameter_groups": [
+            {
+                "keys": [
+                    "scale_radius",
+                    "prune_collisions",
+                    "prune_density",
+                    "seed"
+                ],
+                "name": "main"
+            }
+        ],
+        "parameters": {
+            "prune_collisions": {
+                "description": "When enabled, eliminates overlapping rocks by discarding smaller colliding rocks.",
+                "key": "prune_collisions",
+                "label": "Prune Collisions",
+                "type": "Bool"
+            },
+            "prune_density": {
+                "description": "Target fraction of items to retain using density-based pruning.",
+                "key": "prune_density",
+                "label": "Prune Density",
+                "type": "Float"
+            },
+            "scale_radius": {
+                "description": "Scaling factor applied to rock radii.",
+                "key": "scale_radius",
+                "label": "Scale Radius",
+                "type": "Float"
+            },
+            "seed": {
+                "description": "Random seed for reproducible pruning.",
+                "key": "seed",
+                "label": "Seed",
+                "type": "Random seed number"
+            }
+        },
+        "ports": {
+            "density_mask": {
+                "caption": "density_mask",
+                "data_type": "VirtualArray",
+                "description": "Optional density mask for spatial retention pruning.",
+                "type": "input"
+            },
+            "elevation": {
+                "caption": "elevation",
+                "data_type": "VirtualArray",
+                "description": "Optional elevation heightmap to set rock heights.",
+                "type": "input"
+            },
+            "input": {
+                "caption": "input",
+                "data_type": "RockField",
+                "description": "Input rock field.",
+                "type": "input"
+            },
+            "output": {
+                "caption": "output",
+                "data_type": "RockField",
+                "description": "Processed rock field.",
+                "type": "output"
+            }
+        }
+    },
+    "RocksToHeightmap": {
+        "category": "Rock",
+        "description": "RocksToHeightmap converts a RockField into a heightmap by accumulating the elevation contribution of each rock.",
+        "label": "RocksToHeightmap",
+        "parameter_groups": [
+            {
+                "keys": [
+                    "scatter_shape",
+                    "height_radius_ratio",
+                    "seed",
+                    "post_inverse",
+                    "post_gamma",
+                    "post_gain",
+                    "post_smoothing_radius",
+                    "post_remap",
+                    "post_saturate"
+                ],
+                "name": "main"
+            }
+        ],
+        "parameters": {
+            "height_radius_ratio": {
+                "description": "Ratio of rock maximum height relative to its radius.",
+                "key": "height_radius_ratio",
+                "label": "Height/Radius Ratio",
+                "type": "Float"
+            },
+            "post_gain": {
+                "description": "Post-processing gain.",
+                "key": "post_gain",
+                "label": "Gain",
+                "type": "Float"
+            },
+            "post_gamma": {
+                "description": "Post-processing gamma correction.",
+                "key": "post_gamma",
+                "label": "Gamma",
+                "type": "Float"
+            },
+            "post_inverse": {
+                "description": "Inverts output height values.",
+                "key": "post_inverse",
+                "label": "Invert Output",
+                "type": "Bool"
+            },
+            "post_remap": {
+                "description": "Remaps the output elevation range.",
+                "key": "post_remap",
+                "label": "Remap Range",
+                "type": "Value range"
+            },
+            "post_saturate": {
+                "description": "Saturates output values to range.",
+                "key": "post_saturate",
+                "label": "Saturation Range",
+                "type": "Value range"
+            },
+            "post_smoothing_radius": {
+                "description": "Smoothing radius applied to heightmap.",
+                "key": "post_smoothing_radius",
+                "label": "Smoothing Radius",
+                "type": "Float"
+            },
+            "scatter_shape": {
+                "description": "Object geometry shape.",
+                "key": "scatter_shape",
+                "label": "Shape",
+                "type": "Enumeration"
+            },
+            "seed": {
+                "description": "Random seed for procedural rock shapes.",
+                "key": "seed",
+                "label": "Seed",
+                "type": "Random seed number"
+            }
+        },
+        "ports": {
+            "heightmap": {
+                "caption": "heightmap",
+                "data_type": "VirtualArray",
+                "description": "Output heightmap accumulating rock elevations.",
+                "type": "output"
+            },
+            "rock_field": {
+                "caption": "rock_field",
+                "data_type": "RockField",
+                "description": "Input rock field.",
+                "type": "input"
+            },
+            "rock_map": {
+                "caption": "rock_map",
+                "data_type": "VirtualArray",
+                "description": "Output rock map.",
                 "type": "output"
             }
         }

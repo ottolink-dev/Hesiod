@@ -953,6 +953,20 @@ void AppSettingsWindow::setup_pages()
                   false,
                   "background thread worker async responsive build");
     this->add_row(editing,
+                  "Show node build time",
+                  "Show on each node how long it took to compute, running while it "
+                  "computes, to spot the slow ones.",
+                  this->make_toggle(HSD_SETTING(bool, node_editor.show_compute_time)),
+                  false,
+                  "timer duration compute time slow performance profile");
+    this->add_row(editing,
+                  "Line around the editor while it builds",
+                  "Run a dashed line around the graph editor while its graph is "
+                  "updated, on top of the progress at the bottom of it.",
+                  this->make_toggle(HSD_SETTING(bool, node_editor.show_build_border)),
+                  false,
+                  "border outline dashed animation update build progress");
+    this->add_row(editing,
                   "Starting resolution",
                   "Heightmap resolution of new projects and new graphs. Change a "
                   "graph's own resolution from the viewport toolbar.",
@@ -994,6 +1008,16 @@ void AppSettingsWindow::setup_pages()
                   this->make_toggle(HSD_SETTING(bool, viewer.add_heighmap_skirt)),
                   false,
                   "3d mesh border sides base viewer");
+    this->add_row(
+        viewport,
+        "3D mesh resolution",
+        "Most vertices per side of the terrain mesh in the 3D view. Lower is "
+        "faster to show a node, the heightmap itself is not changed.",
+        this->make_choice(
+            HSD_SETTING(int, viewer.mesh_resolution),
+            {{512, "512"}, {1024, "1024"}, {2048, "2048"}, {0, "Full resolution"}}),
+        false,
+        "3d mesh density vertices detail viewer speed lag select");
     this->add_row(viewport,
                   "Toolbar size",
                   "Size of the viewport's floating toolbar, as a percentage.",

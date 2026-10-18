@@ -1,82 +1,61 @@
 /* Copyright (c) 2025 Otto Link. Distributed under the terms of the GNU General
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
-#include <QDialogButtonBox>
+#include <QVBoxLayout>
 
 #include "hesiod/gui/widgets/string_input_dialog.hpp"
-#include "hesiod/logger.hpp"
 
 namespace hesiod
 {
 
-StringInputDialog::StringInputDialog(const std::string              &window_title,
+StringInputDialog::StringInputDialog(const QString                  &title,
+                                     const QString                  &text,
+                                     const QString                  &value,
+                                     const QString                  &accept_label,
                                      const std::vector<std::string> &invalid_strings,
                                      QWidget                        *parent)
-    : QDialog(parent)
+    : MessageDialog(parent, Kind::None, title, text)
 {
-  setWindowTitle(window_title.c_str());
+  this->setWindowTitle("Hesiod - " + title);
+  this->set_card_width(400);
 
-  QVBoxLayout *layout = new QVBoxLayout(this);
-
-  this->input_line = new QLineEdit("graph", this);
-  this->input_line->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+  this->input_line = new QLineEdit(value, this);
+  this->input_line->selectAll(); // typing replaces the suggestion
+  this->body()->addWidget(this->input_line);
 
   this->error_label = new QLabel(this);
-  this->error_label->setStyleSheet("color: red;"); // errors in red
-  this->error_label->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+  this->error_label->setObjectName("messageError");
   this->error_label->hide();
+  this->body()->addWidget(this->error_label);
 
-  QDialogButtonBox *button_box = new QDialogButtonBox(QDialogButtonBox::Ok |
-                                                          QDialogButtonBox::Cancel,
-                                                      this);
-
-  layout->addWidget(this->input_line);
-  layout->addWidget(this->error_label);
-  layout->addWidget(button_box);
-
-  // automatically hide error label when the user types
+  // what was wrong goes away as the user types
   this->connect(this->input_line,
                 &QLineEdit::textChanged,
-                [this](const QString &)
-                {
-                  if (this->error_label && this->error_label->isVisible())
-                    this->error_label->hide();
-                });
-
-  this->connect(button_box,
-                &QDialogButtonBox::accepted,
-                this,
-                &StringInputDialog::validate_input);
-  this->connect(button_box, &QDialogButtonBox::rejected, this, &QDialog::reject);
+                this->error_label,
+                &QLabel::hide);
 
   for (const auto &s : invalid_strings)
-    invalid_strings_qset.insert(QString::fromStdString(s));
+    this->invalid_strings_qset.insert(QString::fromStdString(s));
 
-  // set a reasonable fixed width for compact appearance
-  this->setMinimumWidth(300);
-  this->setMaximumWidth(600);
+  this->add_button("Cancel", Role::Secondary, false, true);
+  this->add_button(accept_label, Role::Primary, true);
 }
 
-void StringInputDialog::validate_input()
+void StringInputDialog::accept()
 {
-  if (!this->input_line || !this->error_label)
+  const QString text = this->get_text();
+
+  if (text.isEmpty() || this->invalid_strings_qset.contains(text))
   {
-    Logger::log()->error(
-        "StringInputDialog::validate_input: internal widgets are nullptr");
+    this->error_label->setText(text.isEmpty() ? "The name can't be empty."
+                                              : "This name is already taken.");
+    this->error_label->show();
+    this->input_line->setFocus();
+    this->input_line->selectAll();
     return;
   }
 
-  QString text = this->input_line->text().trimmed();
-
-  if (invalid_strings_qset.contains(text))
-  {
-    this->error_label->setText("This choice is not allowed. Choose a different one.");
-    this->error_label->show();
-  }
-  else
-  {
-    this->accept(); // input is valid
-  }
+  MessageDialog::accept();
 }
 
 } // namespace hesiod

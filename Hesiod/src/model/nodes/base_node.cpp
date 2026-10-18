@@ -15,6 +15,7 @@
 #include "highmap/flora/forest.hpp"
 #include "highmap/geometry/cloud.hpp"
 #include "highmap/geometry/path.hpp"
+#include "highmap/rocks/rock_field.hpp"
 #include "highmap/virtual_array/virtual_array.hpp"
 
 #include "meta/ext/array/array.hpp"
@@ -40,6 +41,7 @@ std::string map_type_name(const std::string &typeid_name)
       {typeid(hmap::Array).name(), "Array"},
       {typeid(hmap::Cloud).name(), "Cloud"},
       {typeid(hmap::Forest).name(), "Forest"},
+      {typeid(hmap::RockField).name(), "RockField"},
       {typeid(hmap::VirtualArray).name(), "VirtualArray"},
       {typeid(hmap::VirtualTexture).name(), "VirtualTexture"},
       {typeid(hmap::Path).name(), "Path"},
@@ -108,6 +110,7 @@ void BaseNode::compute()
   try
   {
     this->compute_fct(*this);
+    this->computed_shape = this->cfg().shape;
   }
   catch (const std::bad_alloc &)
   {
@@ -513,6 +516,12 @@ float BaseNode::get_memory_usage() const
       if (p_d)
         count += sizeof(float) * 3 * p_d->size();
     }
+    else if (this->get_data_type(k) == typeid(hmap::RockField).name())
+    {
+      auto *p_d = this->get_value_ref<hmap::RockField>(k);
+      if (p_d)
+        count += sizeof(hmap::ScatterItem) * p_d->size();
+    }
   }
 
   if (count > 0.)
@@ -762,7 +771,7 @@ void BaseNode::propagate_config_change()
                                        cfg.tile_shape,
                                        cfg.halo,
                                        cfg.storage_mode);
-          p_v->copy_from(va, cfg.cm_cpu);
+          p_v->copy_from(va, cfg.cm_cpu, false); // no data to copy, tiles come on demand
         }
       }
     }

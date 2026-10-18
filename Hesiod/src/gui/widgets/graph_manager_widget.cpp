@@ -1,6 +1,8 @@
 /* Copyright (c) 2023 Otto Link. Distributed under the terms of the GNU General
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
+#include <algorithm>
+
 #include <QGridLayout>
 #include <QGuiApplication>
 #include <QMenu>
@@ -366,7 +368,19 @@ void GraphManagerWidget::on_new_graph_request()
   // get ID from user
   std::vector<std::string> invalid_graph_ids = gm->get_graph_order();
 
-  StringInputDialog id_dialog("Enter new graph ID", invalid_graph_ids);
+  // a free name to start from: graph, graph_2, graph_3...
+  QString suggestion = "graph";
+  for (int k = 2; std::ranges::find(invalid_graph_ids, suggestion.toStdString()) !=
+                  invalid_graph_ids.end();
+       ++k)
+    suggestion = QString("graph_%1").arg(k);
+
+  StringInputDialog id_dialog("New graph",
+                              "A name for the graph, its tab shows it.",
+                              suggestion,
+                              "Next",
+                              invalid_graph_ids,
+                              this);
   std::string       new_graph_id;
 
   {

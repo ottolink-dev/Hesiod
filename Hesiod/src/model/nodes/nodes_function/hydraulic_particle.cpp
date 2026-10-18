@@ -6,7 +6,6 @@
 #include "highmap/gradient.hpp"
 #include "highmap/math.hpp"
 #include "highmap/morphology.hpp"
-#include "highmap/multiscale/downscaling.hpp"
 #include "highmap/opencl/gpu_opencl.hpp"
 #include "highmap/range.hpp"
 

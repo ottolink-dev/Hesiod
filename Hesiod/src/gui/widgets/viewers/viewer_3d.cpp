@@ -10,6 +10,7 @@
 #include "highmap/geometry/path.hpp"
 #include "highmap/morphology.hpp"
 #include "highmap/range.hpp"
+#include "highmap/rocks/rock_field.hpp"
 
 #include "qtr/keys.hpp"
 #include "qtr/primitives.hpp"
@@ -28,6 +29,17 @@
 
 namespace hesiod
 {
+
+// The 3D view does not need a vertex per pixel: a 4K heightmap is a 16M vertex
+// mesh, slow to build on every selection. Capped by viewer.mesh_resolution.
+glm::ivec2 mesh_shape(const glm::ivec2 &shape)
+{
+  const int cap = HSD_CTX.app_settings.viewer.mesh_resolution;
+  const int n = std::max(shape.x, shape.y);
+  if (cap <= 0 || n <= cap)
+    return shape;
+  return {std::max(2, shape.x * cap / n), std::max(2, shape.y * cap / n)};
+}
 
 // 1 port
 template <typename T, typename F>
@@ -104,6 +116,25 @@ Viewer3D::Viewer3D(QPointer<GraphNodeWidget> p_graph_node_widget_, QWidget *pare
   this->update_param_visibility_icons();
 }
 
+void Viewer3D::copy_render_settings_from(const Viewer3D &source)
+{
+  if (!this->p_renderer || !source.p_renderer)
+    return;
+
+  // Renderer serialization includes widget geometry. Keep this view's layout,
+  // and copy only rendering state; Viewer::json_from would also copy the node,
+  // pin and port choices from the embedded preview.
+  auto settings = source.p_renderer->json_to();
+  const QRect geometry = this->p_renderer->geometry();
+  settings["x"] = geometry.x();
+  settings["y"] = geometry.y();
+  settings["width"] = geometry.width();
+  settings["height"] = geometry.height();
+  this->p_renderer->json_from(settings);
+  this->set_render_type(source.get_render_type());
+  this->update_param_visibility_icons();
+}
+
 void Viewer3D::clear()
 {
   Viewer::clear();
@@ -123,7 +154,7 @@ ViewerNodeParam Viewer3D::get_default_view_param() const
       {"points", ""},
       {"path", ""},
       {"trees", "forest"},
-      // {"rocks", ""},
+      {"rocks", "rock_field"},
   };
 
   wp.icons = {
@@ -134,6 +165,7 @@ ViewerNodeParam Viewer3D::get_default_view_param() const
       {"points", HSD_ICON("scatter_plot")},
       {"path", HSD_ICON("conversion_path")},
       {"trees", HSD_ICON("forest")},
+      {"rocks", HSD_ICON("landslide")},
   };
 
   return wp;
@@ -154,6 +186,8 @@ bool Viewer3D::get_param_visibility_state(const std::string &param_name) const
     return this->p_renderer->is_mesh_visible(qtr::keys::mesh::path);
   else if (param_name == "trees")
     return this->p_renderer->is_mesh_visible(qtr::keys::mesh::trees);
+  else if (param_name == "rocks")
+    return this->p_renderer->is_mesh_visible(qtr::keys::mesh::rocks);
   else if (param_name == "color")
     return !this->p_renderer->get_bypass_texture_albedo();
   else if (param_name == "normal_map")
@@ -216,6 +250,8 @@ void Viewer3D::on_view_param_visibility_changed(const std::string &param_name,
     this->p_renderer->set_mesh_visible(qtr::keys::mesh::path, new_state);
   else if (param_name == "trees")
     this->p_renderer->set_mesh_visible(qtr::keys::mesh::trees, new_state);
+  else if (param_name == "rocks")
+    this->p_renderer->set_mesh_visible(qtr::keys::mesh::rocks, new_state);
   else if (param_name == "color")
     this->p_renderer->set_bypass_texture_albedo(!new_state);
   else if (param_name == "normal_map")
@@ -396,15 +432,17 @@ void Viewer3D::update_renderer()
           typeid(hmap::VirtualArray),
           [this, p_node](const hmap::VirtualArray &h)
           {
-            auto arr = h.to_array(p_node->cfg().cm_cpu);
+            const glm::ivec2 shape = mesh_shape(h.shape);
+            auto             arr = h.to_array(shape, p_node->cfg().cm_cpu);
             if (this->p_renderer)
             {
               bool add_skirt = HSD_CTX.app_settings.viewer.add_heighmap_skirt;
 
-              this->p_renderer->set_heightmap_geometry(arr.vector,
-                                                       h.shape.x,
-                                                       h.shape.y,
-                                                       add_skirt);
+              // built in the background, the view follows once it is ready
+              this->p_renderer->set_heightmap_geometry_async(std::move(arr.vector),
+                                                             shape.x,
+                                                             shape.y,
+                                                             add_skirt);
             }
           }))
   {
@@ -420,8 +458,9 @@ void Viewer3D::update_renderer()
           [this, p_node](const hmap::VirtualArray &h, const hmap::VirtualArray &w)
           {
             // TODO do this somewhere else?
-            auto ah = h.to_array(p_node->cfg().cm_cpu); // elevation
-            auto aw = w.to_array(p_node->cfg().cm_cpu); // water depth
+            const glm::ivec2 shape = mesh_shape(h.shape);
+            auto             ah = h.to_array(shape, p_node->cfg().cm_cpu); // elevation
+            auto             aw = w.to_array(shape, p_node->cfg().cm_cpu); // water depth
 
             // water elevation
             ah += aw;
@@ -430,8 +469,8 @@ void Viewer3D::update_renderer()
             // cells at the interface water/ground
             float dh = 1e3f;
 
-            for (int j = 0; j < h.shape.y; ++j)
-              for (int i = 0; i < h.shape.x; ++i)
+            for (int j = 0; j < shape.y; ++j)
+              for (int i = 0; i < shape.x; ++i)
               {
                 if (aw(i, j) <= 0.f)
                   ah(i, j) = 0.f;
@@ -444,8 +483,8 @@ void Viewer3D::update_renderer()
             // remove non-water cells
             float cut_value = -1e3f;
 
-            for (int j = 0; j < h.shape.y; ++j)
-              for (int i = 0; i < h.shape.x; ++i)
+            for (int j = 0; j < shape.y; ++j)
+              for (int i = 0; i < shape.x; ++i)
               {
                 if (ah(i, j) <= 0.f)
                   ah(i, j) = cut_value;
@@ -456,8 +495,8 @@ void Viewer3D::update_renderer()
             // send to renderer
             if (this->p_renderer)
               this->p_renderer->set_water_geometry(ah.vector,
-                                                   h.shape.x,
-                                                   h.shape.y,
+                                                   shape.x,
+                                                   shape.y,
                                                    cut_value);
           }))
   {
@@ -558,6 +597,30 @@ void Viewer3D::update_renderer()
           }))
   {
     this->p_renderer->reset_mesh(qtr::keys::mesh::trees);
+  }
+
+  // rocks
+  if (!helper_try_set_from_port<hmap::RockField>(
+          *p_node,
+          this->view_param.port_ids.at("rocks"),
+          typeid(hmap::RockField),
+          [this](const hmap::RockField &r)
+          {
+            if (this->p_renderer)
+            {
+              QColor    qc(80, 80, 80, 255);
+              glm::vec3 color(qc.redF(), qc.greenF(), qc.blueF());
+
+              qtr::set_rocks(*p_renderer,
+                             r.get_x(),
+                             r.get_y(),
+                             r.get_z(),
+                             r.get_radius(),
+                             color);
+            }
+          }))
+  {
+    this->p_renderer->reset_mesh(qtr::keys::mesh::rocks);
   }
 }
 

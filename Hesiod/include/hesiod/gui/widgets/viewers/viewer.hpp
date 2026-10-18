@@ -1,6 +1,8 @@
 /* Copyright (c) 2025 Otto Link. Distributed under the terms of the GNU General Public
    License. The full license is in the file LICENSE, distributed with this software. */
 #pragma once
+#include <optional>
+
 #include <QComboBox>
 #include <QPointer>
 #include <QPushButton>
@@ -76,6 +78,7 @@ protected:
   void showEvent(QShowEvent *event) override;
 
   BaseNode *safe_get_node();
+  void      follow_selection(); // once the mouse button is released
 
   // --- Should be pure virtual but kept to avoid UB ---
   virtual ViewerNodeParam  get_default_view_param() const;
@@ -93,6 +96,7 @@ protected:
   std::map<std::string, IconCheckBox *>  visibility_icons_map;
   bool                                   prevent_combo_connections = false;
   bool                                   is_node_pinned = false;
+  std::optional<std::string>             selection_to_follow; // see follow_selection()
   IconCheckBox                          *button_pin_current_node;
   QWidget                               *combo_container;
 };

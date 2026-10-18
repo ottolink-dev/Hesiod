@@ -338,6 +338,10 @@ void NodeInfoDialog::update_ports_content()
         new_row.data_info = get_data_info<hmap::Cloud>(ptrs.node, new_row.caption);
       else if (type_name == typeid(hmap::Path).name())
         new_row.data_info = get_data_info<hmap::Path>(ptrs.node, new_row.caption);
+      else if (type_name == typeid(hmap::RockField).name())
+        new_row.data_info = get_data_info<hmap::RockField>(ptrs.node, new_row.caption);
+      else if (type_name == typeid(hmap::Forest).name())
+        new_row.data_info = get_data_info<hmap::Forest>(ptrs.node, new_row.caption);
     }
 
     rows.push_back(new_row);

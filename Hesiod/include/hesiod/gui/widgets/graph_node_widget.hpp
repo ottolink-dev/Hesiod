@@ -5,6 +5,7 @@
 
 #include <QImage>
 #include <QScrollArea>
+#include <QStringList>
 
 #include "gnodegui/graph_viewer.hpp"
 
@@ -14,6 +15,7 @@ namespace hesiod
 {
 
 class GraphNode; // forward
+class GraphControls;
 class GraphEditor;
 class Viewer;
 
@@ -79,6 +81,8 @@ signals:
   void update_started();
   void update_finished();
   void update_progress(const std::string &node_id, float progress);
+  void update_steps(QStringList pass, int done); // see GraphNode::update_steps
+  void update_held(bool held);
 
 public slots:
   void closeEvent(QCloseEvent *event) override;
@@ -120,6 +124,7 @@ protected:
 private:
   QScrollArea *create_attributes_scroll(QWidget *parent, QWidget *attr_widget);
 
+  void create_viewport(bool inherit_preview);
   void backup_selected_ids();
   void reselect_backup_ids();
 
@@ -133,6 +138,7 @@ private:
   std::filesystem::path          last_import_path;
   std::vector<std::string>       selected_ids;
   QPointer<Viewer>               preview_viewer;
+  GraphControls                 *controls = nullptr; // its toolbar, own by this
 };
 
 } // namespace hesiod

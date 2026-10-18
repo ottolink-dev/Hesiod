@@ -10,6 +10,7 @@
 #include "highmap/flora/forest.hpp"
 #include "highmap/geometry/cloud.hpp"
 #include "highmap/geometry/path.hpp"
+#include "highmap/rocks/rock_field.hpp"
 #include "highmap/virtual_array/virtual_array.hpp"
 #include "highmap/virtual_array/virtual_texture.hpp"
 
@@ -31,6 +32,7 @@ struct StyleSettings
       {typeid(hmap::Array).name(), QColor(255, 121, 198, 255)},
       {typeid(hmap::Cloud).name(), QColor(139, 233, 253, 255)},
       {typeid(hmap::Forest).name(), QColor(106, 168, 79, 255)},
+      {typeid(hmap::RockField).name(), QColor(158, 158, 158, 255)},
       {typeid(hmap::VirtualArray).name(), QColor(248, 248, 242, 255)},
       {typeid(hmap::VirtualTexture).name(), QColor(189, 147, 249, 255)},
       {typeid(hmap::Path).name(), QColor(255, 184, 108, 255)},
@@ -47,7 +49,7 @@ struct StyleSettings
       {"Filter", QColor(108, 113, 196, 255)},    {"Operator", QColor(108, 113, 196, 255)},
       {"Hydrology", QColor(38, 139, 210, 255)},  {"Primitive", QColor(42, 161, 152, 255)},
       {"Biomes", QColor(133, 153, 0, 255)},      {"Texture", QColor(0, 0, 0, 255)},
-      {"WIP", QColor(255, 255, 255, 255)},
+      {"Rock", QColor(140, 140, 140, 255)},      {"WIP", QColor(255, 255, 255, 255)},
   };
 };
 

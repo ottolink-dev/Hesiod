@@ -108,6 +108,23 @@ QSize GraphTabStrip::sizeHint() const
   return this->orient == Qt::Vertical ? QSize(kThickness, 400) : QSize(400, kThickness);
 }
 
+QPainterPath GraphTabStrip::current_tab_path() const
+{
+  if (this->current < 0 || this->current >= int(this->tabs.size()))
+    return {};
+
+  // as painted, see paintEvent()
+  const Tab   &tab = this->tabs[this->current];
+  const qreal  top = kTopResting + (kTopActive - kTopResting) * tab.active;
+  const QRectF r(tab.rect.left(), top, tab.rect.width(), kThickness - top);
+
+  QPainterPath path = tab_outline(r, kBase);
+  path.lineTo(r.right() + kFoot, kThickness + kFoot);
+  path.lineTo(r.left() - kFoot, kThickness + kFoot);
+  path.closeSubpath();
+  return this->to_widget().map(path);
+}
+
 QSize GraphTabStrip::minimumSizeHint() const
 {
   // room for the current tab's full name, so it never shows as "g…"
@@ -463,6 +480,30 @@ TabbedCard::TabbedCard(QWidget *card, GraphTabStrip *strip, QWidget *parent)
   strip->setParent(this);
   strip->raise(); // over the card's border
   this->setSizePolicy(card->sizePolicy());
+}
+
+QPainterPath TabbedCard::outline(qreal inset) const
+{
+  const QRectF card = QRectF(this->card->geometry())
+                          .adjusted(inset, inset, -inset, -inset);
+  const qreal radius = std::max(0.0, PanelFrame::radius - inset);
+
+  QPainterPath path;
+  path.addRoundedRect(card, radius, radius);
+
+  QPainterPath tab = this->strip->current_tab_path().translated(this->strip->pos());
+  tab = tab.subtracted(QPainterPathStroker(QPen(Qt::black, 2 * inset)).createStroke(tab));
+
+  // a single closed line: a dash pattern starts over with each piece of a path
+  QPolygonF line;
+  for (const QPolygonF &polygon : path.united(tab).simplified().toFillPolygons())
+    if (polygon.size() > line.size())
+      line = polygon;
+
+  QPainterPath outline;
+  outline.addPolygon(line);
+  outline.closeSubpath();
+  return outline;
 }
 
 QSize TabbedCard::strip_extent() const

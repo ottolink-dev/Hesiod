@@ -16,11 +16,14 @@
 #include <QVBoxLayout>
 #include <QWidgetAction>
 
+#include "gnodegui/style.hpp"
+
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/graph_editor.hpp"
 #include "hesiod/gui/hesiod_node_proxy.hpp"
 #include "hesiod/gui/widgets/custom_qmenu.hpp"
 #include "hesiod/gui/widgets/graph_config_widgets/graph_config_dialog.hpp"
+#include "hesiod/gui/widgets/graph_controls.hpp"
 #include "hesiod/gui/widgets/graph_node_widget.hpp"
 #include "hesiod/gui/widgets/gui_utils.hpp"
 #include "hesiod/gui/widgets/message_dialog.hpp"
@@ -87,6 +90,10 @@ GraphNodeWidget::GraphNodeWidget(std::weak_ptr<GraphNode> p_graph_node, QWidget 
 
   // populate node catalog
   this->set_node_inventory(get_node_inventory());
+
+  // in place of GNodeGUI's toolbar (see GraphTabsWidget)
+  this->controls = new GraphControls(this);
+
   this->setup_connections();
 }
 
@@ -324,6 +331,9 @@ void GraphNodeWidget::json_from(nlohmann::json const &json)
   // Loading graphics is presentation-only; edit requests are not emitted.
   GraphViewer::json_from(gui_json);
 
+  if (json.contains("toolbar"))
+    this->controls->json_from(json["toolbar"]);
+
   // viewers (skipped in headless CLI modes, e.g. --snapshot: no 3D viewer is
   // created there, so there is nothing to restore state into)
   if (!HSD_CTX.headless && json.contains("viewers") && json["viewers"].is_array())
@@ -336,7 +346,7 @@ void GraphNodeWidget::json_from(nlohmann::json const &json)
                            viewer_type_as_string.at(viewer_type));
 
       // TODO add viewer-type specific handling
-      this->on_viewport_request();
+      this->create_viewport(false);
 
       if (auto *p_viewer = dynamic_cast<Viewer3D *>(this->data_viewers.back().get()))
       {
@@ -378,6 +388,7 @@ nlohmann::json GraphNodeWidget::json_to() const
 {
   Logger::log()->trace("GraphNodeWidget::json_to");
   nlohmann::json json = GraphViewer::json_to();
+  json["toolbar"] = this->controls->json_to();
 
   // add the viewports
   for (auto widget : this->data_viewers)
@@ -639,7 +650,8 @@ void GraphNodeWidget::on_graph_settings_request()
 
   int ret = model_config_editor.exec();
 
-  if (ret)
+  // unchanged, the whole graph would still be stopped, reallocated and rebuilt
+  if (ret && new_config.json_to() != gno->get_config_ref()->json_to())
     this->apply_new_config(new_config);
 }
 
@@ -669,7 +681,15 @@ void GraphNodeWidget::on_new_graphics_node_request(const std::string &node_id,
 
   this->add_node(p_proxy, scene_pos, node_id);
   if (auto *gn = this->get_graphics_node_by_id(node_id))
+  {
     gn->set_widget(widget);
+
+    // panning and dragging then move cached images instead of painting every
+    // node and its embedded widgets again on each frame
+    gn->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
+    for (QGraphicsItem *child : gn->childItems())
+      child->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
+  }
 }
 
 std::string GraphNodeWidget::on_new_node_request(const std::string &node_type,
@@ -929,7 +949,11 @@ void GraphNodeWidget::on_nodes_paste_request()
 void GraphNodeWidget::on_viewport_request()
 {
   Logger::log()->trace("GraphNodeWidget::on_viewport_request");
+  this->create_viewport(true);
+}
 
+void GraphNodeWidget::create_viewport(bool inherit_preview)
+{
   // no independent 3D viewer window in headless CLI modes (e.g. --snapshot):
   // it would receive paint events and crash without a real GUI window context
   if (HSD_CTX.headless)
@@ -950,7 +974,11 @@ void GraphNodeWidget::on_viewport_request()
     }
   }
 
-  this->data_viewers.push_back(new Viewer3D(this)); // no parent, independant window
+  auto *viewer = new Viewer3D(this); // no parent, independent window
+  if (inherit_preview)
+    if (const auto *preview = dynamic_cast<Viewer3D *>(this->preview_viewer.data()))
+      viewer->copy_render_settings_from(*preview);
+  this->data_viewers.push_back(viewer);
   this->data_viewers.back()->show();
   Viewer *p_viewer = dynamic_cast<Viewer *>(this->data_viewers.back().get());
 
@@ -1100,6 +1128,56 @@ void GraphNodeWidget::setup_connections()
                 this,
                 []() { QApplication::restoreOverrideCursor(); });
 
+  // While the nodes are not all at the same resolution (an update stopped half
+  // way after it changed), each shows the one of its data under it: in orange
+  // when it is not the graph's
+  const auto show_resolutions = [this]()
+  {
+    auto gno = this->p_graph_node.lock();
+    if (!gno || !gno->get_config_ref())
+      return;
+
+    const glm::ivec2 graph_shape = gno->get_config_ref()->shape;
+    bool             mixed = false;
+
+    for (const auto &[node_id, _] : gno->get_nodes())
+      if (BaseNode *p_node = gno->get_node_ref_by_id<BaseNode>(node_id))
+      {
+        const glm::ivec2 shape = p_node->get_computed_shape();
+        mixed |= shape.x > 0 && shape != graph_shape;
+      }
+
+    for (const auto &[node_id, _] : gno->get_nodes())
+    {
+      gngui::GraphicsNode *p_gfx_node = this->get_graphics_node_by_id(node_id);
+      BaseNode            *p_node = gno->get_node_ref_by_id<BaseNode>(node_id);
+      if (!p_gfx_node || !p_node)
+        continue;
+
+      const glm::ivec2 shape = p_node->get_computed_shape();
+      if (!mixed || shape.x == 0)
+      {
+        p_gfx_node->set_footer("");
+        continue;
+      }
+
+      const QString text = shape.x != shape.y
+                               ? QString("%1 × %2").arg(shape.x).arg(shape.y)
+                           : shape.x % 1024 == 0 ? QString("%1K").arg(shape.x / 1024)
+                                                 : QString::number(shape.x);
+
+      QColor quiet = GN_STYLE->node.color_caption;
+      quiet.setAlphaF(0.55f);
+      p_gfx_node->set_footer(text, shape == graph_shape ? quiet : QColor());
+    }
+  };
+
+  this->connect(this,
+                &GraphNodeWidget::compute_finished,
+                this,
+                [show_resolutions](const std::string &) { show_resolutions(); });
+  this->connect(this, &GraphNodeWidget::config_changed, this, show_resolutions);
+
   // GraphNodeWidget -> GFX node
   this->connect(this,
                 &GraphNodeWidget::compute_started,
@@ -1138,6 +1216,24 @@ void GraphNodeWidget::setup_connections()
   {
     if (safe_this)
       Q_EMIT safe_this->update_finished();
+  };
+
+  gno->update_steps =
+      [safe_this = QPointer(this)](const std::vector<std::string> &pass, int done)
+  {
+    if (!safe_this)
+      return;
+
+    QStringList ids;
+    for (const auto &id : pass)
+      ids << QString::fromStdString(id);
+    Q_EMIT safe_this->update_steps(ids, done);
+  };
+
+  gno->update_held = [safe_this = QPointer(this)](bool held)
+  {
+    if (safe_this)
+      Q_EMIT safe_this->update_held(held);
   };
 
   gno->compute_started = [safe_this = QPointer(this)](const std::string &node_id)

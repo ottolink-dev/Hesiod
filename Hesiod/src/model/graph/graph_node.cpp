@@ -43,6 +43,9 @@ GraphNode::GraphNode(const std::string &id, const std::shared_ptr<GraphConfig> &
 
     if (this->update_progress)
       this->update_progress(current_id, progress);
+
+    if (this->update_steps)
+      this->update_steps(sorted_ids, before_update ? idx : idx + 1);
   };
 
   this->graph_progress_conn = this->graph_progress_event.subscribe(lambda);

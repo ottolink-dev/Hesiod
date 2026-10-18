@@ -10,15 +10,19 @@
 #include <QPainter>
 #include <QString>
 
+#include "hesiod/gui/widgets/rail/rail_style.hpp"
+
 namespace meta::qt
 {
 struct Theme;
 }
 
-// Shared by the viewport toolbar's pieces (rail, panels, snap guide): the
-// tools, the rail's edges and metrics, colours and icons.
+// Shared by the viewport toolbar's pieces (rail, panels): the tools, colours
+// and icons. The rail's edges and metrics are the generic ones of rail_style.
 namespace hesiod::viewport
 {
+
+using namespace hesiod::rail;
 
 // --- tools (rail entries); values are persisted nowhere, order is free
 enum Tool : int
@@ -38,49 +42,10 @@ enum Tool : int
   ToolMore
 };
 
-enum class Edge : int
-{
-  Left,
-  Right,
-  Top,
-  Bottom
-};
-
-inline bool is_vertical(Edge e) { return e == Edge::Left || e == Edge::Right; }
-
-// --- rail metrics (logical px)
-constexpr int kCell = 34;       // one tool button
-constexpr int kPad = 4;         // rail end padding
-constexpr int kThick = 42;      // rail thickness
-constexpr int kSquare = 38;     // folded rail while dragging
-constexpr int kSep = 9;         // separator slot
-constexpr int kMargin = 10;     // distance from the viewport edges
-constexpr int kMagnet = 28;     // snap to a corner within this distance
-constexpr int kCenterSnap = 32; // drop this close to an edge's middle to centre on it
-constexpr int kRadius = 12;     // rail corners; cells use kRadius minus their inset
-
 constexpr double kPi = std::numbers::pi;
 
-QColor surface_color();
-QColor border_color();
-bool   animations_on();
-int    anim_ms(int ms); // 0 when UI animations are off
-
-// The rail's size follows the "Viewport toolbar size" setting (percent); the
-// metrics above are its 100 % values. Rounded to whole pixels so the cells
-// and hairlines stay crisp.
-qreal rail_scale();
-qreal scaled(int base);
-qreal cell_px();
-qreal pad_px();
-qreal thick_px();
-qreal square_px();
-qreal sep_px();
-qreal radius_px();
-
-// icons (data/icons/vp_*.svg, settings, settings_backup_restore), in `ink`
+// icons (data/icons/vp_*.svg, settings_backup_restore), in `ink`
 void paint_icon(QPainter &p, int tool, const QRectF &r, const QColor &ink);
-void paint_gear(QPainter &p, const QPointF &c, qreal size, const QColor &ink);
 void paint_reset(QPainter &p, const QPointF &c, qreal size, const QColor &ink);
 
 QString                tool_title(int tool);

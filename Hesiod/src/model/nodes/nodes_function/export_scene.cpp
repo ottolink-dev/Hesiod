@@ -2,8 +2,10 @@
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
 #include "highmap/export.hpp"
+#include "highmap/flora/forest.hpp"
 #include "highmap/geometry/cloud.hpp"
 #include "highmap/geometry/path.hpp"
+#include "highmap/rocks/rock_field.hpp"
 #include "highmap/texture.hpp"
 #include "highmap/transform.hpp"
 #include "highmap/virtual_array/virtual_texture.hpp"
@@ -25,6 +27,8 @@ namespace hesiod
 
 constexpr const char *P_HEIGHTMAP = "heightmap";
 constexpr const char *P_TEXTURE   = "texture";
+constexpr const char *P_FOREST    = "forest";
+constexpr const char *P_ROCKS     = "rocks";
 constexpr const char *P_CLOUD_1   = "cloud 1";
 constexpr const char *P_CLOUD_2   = "cloud 2";
 constexpr const char *P_PATH_1    = "path 1";
@@ -51,6 +55,8 @@ void setup_export_scene_node(BaseNode &node)
   // ports
   node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_HEIGHTMAP);
   node.add_port<hmap::VirtualTexture>(gnode::PortType::IN, P_TEXTURE);
+  node.add_port<hmap::Forest>(gnode::PortType::IN, P_FOREST);
+  node.add_port<hmap::RockField>(gnode::PortType::IN, P_ROCKS);
   node.add_port<hmap::Cloud>(gnode::PortType::IN, P_CLOUD_1);
   node.add_port<hmap::Cloud>(gnode::PortType::IN, P_CLOUD_2);
   node.add_port<hmap::Path>(gnode::PortType::IN, P_PATH_1);
@@ -91,6 +97,8 @@ void compute_export_scene_node(BaseNode &node)
 
   auto *p_elev   = node.get_value_ref<hmap::VirtualArray>(P_HEIGHTMAP);
   auto *p_color  = node.get_value_ref<hmap::VirtualTexture>(P_TEXTURE);
+  auto *p_forest = node.get_value_ref<hmap::Forest>(P_FOREST);
+  auto *p_rocks  = node.get_value_ref<hmap::RockField>(P_ROCKS);
   auto *p_cloud1 = node.get_value_ref<hmap::Cloud>(P_CLOUD_1);
   auto *p_cloud2 = node.get_value_ref<hmap::Cloud>(P_CLOUD_2);
   auto *p_path1  = node.get_value_ref<hmap::Path>(P_PATH_1);
@@ -161,6 +169,52 @@ void compute_export_scene_node(BaseNode &node)
     t.to_png(texture_fname, CV_16U);
   }
 
+  // --- Gather forests (optional)
+
+  std::vector<hmap::Forest> forests;
+  if (p_forest && !p_forest->empty())
+  {
+    if (flip_x || flip_y)
+    {
+      hmap::Forest f = *p_forest;
+      for (auto &item : f)
+      {
+        if (flip_x)
+          item.position.x = 1.f - item.position.x;
+        if (flip_y)
+          item.position.y = 1.f - item.position.y;
+      }
+      forests.push_back(std::move(f));
+    }
+    else
+    {
+      forests.push_back(*p_forest);
+    }
+  }
+
+  // --- Gather rock fields (optional)
+
+  std::vector<hmap::RockField> rock_fields;
+  if (p_rocks && !p_rocks->empty())
+  {
+    if (flip_x || flip_y)
+    {
+      hmap::RockField rf = *p_rocks;
+      for (auto &item : rf)
+      {
+        if (flip_x)
+          item.position.x = 1.f - item.position.x;
+        if (flip_y)
+          item.position.y = 1.f - item.position.y;
+      }
+      rock_fields.push_back(std::move(rf));
+    }
+    else
+    {
+      rock_fields.push_back(*p_rocks);
+    }
+  }
+
   // --- Gather clouds (optional)
 
   std::vector<hmap::Cloud> clouds;
@@ -227,7 +281,8 @@ void compute_export_scene_node(BaseNode &node)
 
   hmap::export_usd(fname,
                    array,
-                   {},
+                   forests,
+                   rock_fields,
                    clouds,
                    paths,
                    mesh_type,

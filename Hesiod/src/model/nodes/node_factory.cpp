@@ -171,7 +171,9 @@ std::map<std::string, std::string> get_node_inventory()
       {"CloudSetValues", "Geometry/Cloud"},
       {"CloudShuffle", "Geometry/Cloud"},
       {"CloudToArrayInterp", "Geometry/Cloud"},
+      {"CloudToForest", "Flora"},
       {"CloudToPath", "Geometry/Cloud"},
+      {"CloudToRocks", "Rock"},
       {"CloudToVectors", "Geometry/Cloud"},
       {"CoastalErosionDiffusion", "Erosion/Water"},
       {"CoastalErosionProfile", "Erosion/Water"},
@@ -202,11 +204,13 @@ std::map<std::string, std::string> get_node_inventory()
       {"ExportAsCubemap", "WIP"}, // "Export"},
       {"ExportCloud", "Export"},
       {"ExportCloudToPly", "Export"},
+      {"ExportForest", "Export"},
       {"ExportHeightmap", "Export"},
       {"ExportHeightmapStreamed", "Export"},
       {"ExportNormalMap", "Export"},
       {"ExportPath", "Export"},
       {"ExportPointsToPly", "Export"},
+      {"ExportRocks", "Export"},
       {"ExportScene", "WIP"},
       {"ExportTexture", "Export"},
       {"ExportTextureStreamed", "Export"},
@@ -224,6 +228,7 @@ std::map<std::string, std::string> get_node_inventory()
       {"FlowSimulationViscous", "WIP"}, // , "Hydrology"},
       {"FlowStream", "WIP"},            // Hydrology
       {"Fold", "Filter/Recast"},
+      {"ForestProcess", "Flora"},
       {"GaborWaveFbm", "Primitive/Coherent"},
       {"Gain", "Filter/Recurve"},
       {"GammaCorrection", "Filter/Recurve"},
@@ -248,8 +253,7 @@ std::map<std::string, std::string> get_node_inventory()
       {"HydraulicSaleve", "Erosion/Hydraulic"},
       {"HydraulicSchott", "WIP"}, // "Erosion/Hydraulic"
       {"HydraulicStreamLog", "Erosion/Hydraulic"},
-      {"HydraulicStreamUpscaleAmplification", "WIP"}, // "Erosion/Hydraulic"
-      {"HydraulicVpipes", "WIP"},                     // "Erosion/Hydraulic"
+      {"HydraulicVpipes", "WIP"}, // "Erosion/Hydraulic"
       {"ImportHeightmap", "Export"},
       {"ImportTexture", "Export"},
       {"Inverse", "Math/Base"},
@@ -336,6 +340,9 @@ std::map<std::string, std::string> get_node_inventory()
       {"Ridgelines", "Primitive/Authoring"},
       {"Rift", "Primitive/Geological"},
       {"Rifts", "Erosion/Hydraulic"},
+      {"RockSimulation", "Rock"},
+      {"RocksProcess", "Rock"},
+      {"RocksToHeightmap", "Rock"},
       {"Rotate", "Operator/Transform"},
       {"RotateDisplacement", "Math"},
       {"Rugosity", "Terrain Features/Advanced"},
@@ -498,7 +505,9 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
     SETUP_NODE(CloudSetValues, cloud_set_values);
     SETUP_NODE(CloudShuffle, cloud_shuffle);
     SETUP_NODE(CloudToArrayInterp, cloud_to_array_interp);
+    SETUP_NODE(CloudToForest, cloud_to_forest);
     SETUP_NODE(CloudToPath, cloud_to_path);
+    SETUP_NODE(CloudToRocks, cloud_to_rocks);
     SETUP_NODE(CloudToVectors, cloud_to_vectors);
     SETUP_NODE(CoastalErosionDiffusion, coastal_erosion_diffusion);
     SETUP_NODE(CoastalErosionProfile, coastal_erosion_profile);
@@ -526,10 +535,12 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
     SETUP_NODE(ExportAsCubemap, export_as_cubemap);
     SETUP_NODE(ExportCloud, export_cloud);
     SETUP_NODE(ExportCloudToPly, export_cloud_to_ply);
+    SETUP_NODE(ExportForest, export_forest);
     SETUP_NODE(ExportHeightmapStreamed, export_heightmap_streamed);
     SETUP_NODE(ExportNormalMap, export_normal_map);
     SETUP_NODE(ExportPath, export_path);
     SETUP_NODE(ExportPointsToPly, export_points_to_ply);
+    SETUP_NODE(ExportRocks, export_rocks);
     SETUP_NODE(ExportScene, export_scene);
     SETUP_NODE(ExportTexture, export_texture);
     SETUP_NODE(ExportTextureStreamed, export_texture_streamed);
@@ -546,6 +557,7 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
     SETUP_NODE(FlowSimulationViscous, flow_simulation_viscous);
     SETUP_NODE(FlowStream, flow_stream);
     SETUP_NODE(Fold, fold);
+    SETUP_NODE(ForestProcess, forest_process);
     SETUP_NODE(GammaCorrection, gamma_correction);
     SETUP_NODE(GammaCorrectionLocal, gamma_correction_local);
     SETUP_NODE(GaussianDecay, gaussian_decay);
@@ -567,8 +579,6 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
     SETUP_NODE(HydraulicProcedural, hydraulic_procedural);
     SETUP_NODE(HydraulicSaleve, hydraulic_saleve);
     SETUP_NODE(HydraulicSchott, hydraulic_schott);
-    SETUP_NODE(HydraulicStreamUpscaleAmplification,
-               hydraulic_stream_upscale_amplification);
     SETUP_NODE(HydraulicVpipes, hydraulic_vpipes);
     SETUP_NODE(ImportHeightmap, import_heightmap);
     SETUP_NODE(ImportTexture, import_texture);
@@ -644,6 +654,9 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
     SETUP_NODE(Ridgelines, ridgelines);
     SETUP_NODE(Rift, rift);
     SETUP_NODE(Rifts, rifts);
+    SETUP_NODE(RockSimulation, rock_simulation);
+    SETUP_NODE(RocksProcess, rocks_process);
+    SETUP_NODE(RocksToHeightmap, rocks_to_heightmap);
     SETUP_NODE(Rotate, rotate);
     SETUP_NODE(RotateDisplacement, rotate_displacement);
     SETUP_NODE(Rugosity, rugosity);

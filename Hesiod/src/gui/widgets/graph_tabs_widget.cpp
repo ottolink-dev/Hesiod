@@ -35,12 +35,14 @@ GraphTabsWidget::GraphTabsWidget(std::weak_ptr<GraphManager> p_graph_manager,
   AppContext &ctx = HSD_CTX;
 
   // styles (GNodeGUI)
+  GN_STYLE->viewer.add_toolbar = false; // see GraphControls
   GN_STYLE->viewer.add_new_icon = false;
   GN_STYLE->viewer.add_load_save_icons = false;
   GN_STYLE->viewer.add_group = ctx.app_settings.node_editor.enable_node_groups;
   GN_STYLE->node.color_port_data = ctx.style_settings.data_color_map;
   GN_STYLE->node.color_category = ctx.style_settings.category_color_map;
   GN_STYLE->node.port_radius = ctx.app_settings.node_editor.port_radius;
+  GN_STYLE->node.show_compute_time = ctx.app_settings.node_editor.show_compute_time;
 
   // outer frame of the workspace: the dark base the panel cards sit on
   this->setObjectName("hsdBase");

@@ -11,7 +11,7 @@ GITHUB_BASE_URL = "https://raw.githubusercontent.com/marella/material-design-ico
 OUT_DIR = "Hesiod/data/icons/"
 
 ICONS = [
-    "account_tree", "add", "bakery_dining", "bookmark", "check",
+    "account_tree", "landslide", "add", "bakery_dining", "bookmark", "check",
     "cloud_download", "exit_to_app", "file_open", "forest", "hdr_strong", "help", "home",
     "info", "landscape", "link", "palette", "public", "push_pin", "refresh",
     "restore", "save", "save_as", "scatter_plot", "settings",

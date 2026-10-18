@@ -46,6 +46,8 @@ struct AppSettings
     QColor hover{"#8B8B8B"};
     QColor pressed{"#ABABAB"};
     QColor separator{"#ABABAB"};
+    QColor building{"#FFB86C"}; // a graph being updated
+    QColor warning{"#FF5555"};  // e.g. a graph left partly up to date
   } colors;
 
   struct Icons
@@ -159,7 +161,9 @@ struct AppSettings
     bool        disable_during_update = false;
     bool        enable_node_groups = true;
     bool        live_update = false;
-    bool        async_update = true; // compute in the background, see GraphWorker
+    bool        async_update = true;       // compute in the background, see GraphWorker
+    bool        show_compute_time = true;  // on each node, see Style::Node
+    bool        show_build_border = false; // around the editor while it updates
     float       port_radius = 7.f;
   } node_editor;
 
@@ -168,7 +172,8 @@ struct AppSettings
     int  width = 512;
     int  height = 512;
     bool add_heighmap_skirt = true;
-    int  toolbar_scale = 100; // viewport toolbar size, percent
+    int  mesh_resolution = 1024; // 3D view mesh, vertices per side at most (0: full)
+    int  toolbar_scale = 100;    // viewport toolbar size, percent
   } viewer;
 
   struct Window // main window

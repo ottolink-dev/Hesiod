@@ -31,6 +31,10 @@ GraphManager::GraphManager(const std::string &id)
   {
     if (this->update_held)
       this->update_held(held);
+
+    for (auto &[_, graph] : this->graph_nodes)
+      if (graph->update_held)
+        graph->update_held(held);
   };
 }
 
@@ -549,6 +553,11 @@ void GraphManager::on_update_failed(std::exception_ptr error)
   // the update died on
   if (this->update_progress)
     this->update_progress(100.f);
+
+  // what was queued is dropped too: the update of every graph is over
+  for (auto &[_, graph] : this->graph_nodes)
+    if (graph->update_finished)
+      graph->update_finished();
 
   if (this->update_failed)
     this->update_failed(failure);

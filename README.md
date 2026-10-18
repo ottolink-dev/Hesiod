@@ -5,7 +5,7 @@ A desktop application for node-based procedural terrain generation.
 - Discord: https://discord.gg/HBgFCjdV8W
 - tutorial videos (WIP): https://www.youtube.com/@Hesiod-s9n
 - documentation (WIP): https://hesiodengine.com/docs/
-- roadmap: https://github.com/otto-link/Hesiod/discussions/608
+- roadmap: https://github.com/ottolink-dev/Hesiod/discussions/608
 
 >[!WARNING] 
 > Work in progress, use at your own risk!
@@ -22,7 +22,13 @@ This project is licensed under the GNU General Public License v3.0.
 
 ### Standalone executables for Windows and Linux
 
-Available here: https://sourceforge.net/projects/hesiod
+Download from https://hesiodengine.com/#download and choose **Stable** or
+**Dev build**. Extract the entire ZIP and keep the bundled runtime files and
+`data` folder together. On Windows, run `hesiod.exe`; on Linux, run
+`chmod +x hesiod.AppImage` followed by `./hesiod.AppImage` from the extracted folder.
+
+See the [installation guide](docs/getting_started/installation.md) for platform
+requirements, troubleshooting and the status of experimental macOS packages.
 
 ### Nix / NixOS
 
@@ -52,7 +58,7 @@ run-time files such as the texture cache are written.
 
 Use `PowerShell` to clone the repository (because Visual Studio won't clone the submodules) using `git` command lines:
 ``` bash
-git clone --recurse-submodules git@github.com:otto-link/Hesiod.git
+git clone --recurse-submodules https://github.com/ottolink-dev/Hesiod.git
 ```
 
 Submodules are fetched over https; no GitHub account is required to build.
@@ -78,7 +84,7 @@ sudo apt-get -y install libglfw3 libglfw3-dev libglew-dev libopengl-dev freeglut
 
 Use `git` to retrieve the sources: 
 ``` bash
-git clone git@github.com:otto-link/Hesiod.git
+git clone https://github.com/ottolink-dev/Hesiod.git
 cd Hesiod
 git submodule update --init --recursive
 ```

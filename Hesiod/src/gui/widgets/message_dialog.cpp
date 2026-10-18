@@ -253,6 +253,12 @@ MessageDialog::MessageDialog(QWidget       *parent,
       background: DEEP; border: 1px solid BORDER; border-radius: 8px; }
     QDialog#hsdMessage QLabel#detailKey { color: FAINT; font-size: 12px; }
     QDialog#hsdMessage QLabel#detailValue { color: INK; font-size: 12px; }
+    QDialog#hsdMessage QLabel#messageError { color: DANGER; font-size: 12px; }
+    QDialog#hsdMessage QLineEdit {
+      background: DEEP; color: INK; border: 1px solid BORDER; border-radius: 7px;
+      padding: 7px 10px; font-size: 13px; selection-background-color: ACCENT; }
+    QDialog#hsdMessage QLineEdit:hover { border-color: FAINT; }
+    QDialog#hsdMessage QLineEdit:focus { border-color: ACCENT; }
     QDialog#hsdMessage QPushButton {
       background: FIELD; color: INK; border: 1px solid BORDER; border-radius: 7px;
       padding: 7px 18px; font-size: 13px; min-width: 64px; }
@@ -449,6 +455,24 @@ void MessageDialog::paintEvent(QPaintEvent *)
   p.setPen(QPen(border(), 1));
   p.setBrush(Qt::NoBrush);
   p.drawPath(shape);
+}
+
+bool MessageDialog::event(QEvent *event)
+{
+  const bool done = QDialog::event(event);
+
+  // content that grows or shrinks once shown (a section folding) resizes the
+  // card, which stays centred where it is
+  if (event->type() == QEvent::LayoutRequest && this->isVisible())
+  {
+    const QPoint center = this->geometry().center();
+    this->adjustSize();
+    QRect geom(QPoint(0, 0), this->size());
+    geom.moveCenter(center);
+    this->move(geom.topLeft());
+  }
+
+  return done;
 }
 
 void MessageDialog::showEvent(QShowEvent *event)

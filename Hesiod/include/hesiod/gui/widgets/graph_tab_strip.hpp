@@ -4,6 +4,7 @@
 #include <functional>
 #include <vector>
 
+#include <QPainterPath>
 #include <QStringList>
 #include <QTransform>
 #include <QWidget>
@@ -35,6 +36,9 @@ public:
   void set_tabs(const QStringList &names, int current);
 
   Qt::Orientation orientation() const { return this->orient; }
+
+  // the current tab's surface, reaching a little into the card (widget space)
+  QPainterPath current_tab_path() const;
 
   std::function<void(int)> on_selected; // a tab was clicked
   std::function<void()>    on_new;      // the "+" was clicked
@@ -90,6 +94,9 @@ class TabbedCard : public QWidget
 {
 public:
   TabbedCard(QWidget *card, GraphTabStrip *strip, QWidget *parent = nullptr);
+
+  // the card and its current tab as one shape, inset by this much
+  QPainterPath outline(qreal inset) const;
 
   QSize sizeHint() const override;
   QSize minimumSizeHint() const override;

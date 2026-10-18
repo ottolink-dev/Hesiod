@@ -118,6 +118,8 @@ void AppSettings::json_from(nlohmann::json const &json)
   json_safe_get(json, "colors.hover", colors.hover);
   json_safe_get(json, "colors.pressed", colors.pressed);
   json_safe_get(json, "colors.separator", colors.separator);
+  json_safe_get(json, "colors.building", colors.building);
+  json_safe_get(json, "colors.warning", colors.warning);
 
   json_safe_get(json, "global.omp_num_threads", global.omp_num_threads);
   json_safe_get(json, "global.icon_path", global.icon_path);
@@ -300,11 +302,14 @@ void AppSettings::json_from(nlohmann::json const &json)
   json_safe_get(json, "node_editor.enable_node_groups", node_editor.enable_node_groups);
   json_safe_get(json, "node_editor.live_update", node_editor.live_update);
   json_safe_get(json, "node_editor.async_update", node_editor.async_update);
+  json_safe_get(json, "node_editor.show_compute_time", node_editor.show_compute_time);
+  json_safe_get(json, "node_editor.show_build_border", node_editor.show_build_border);
   json_safe_get(json, "node_editor.port_radius", node_editor.port_radius);
 
   json_safe_get(json, "viewer.width", viewer.width);
   json_safe_get(json, "viewer.height", viewer.height);
   json_safe_get(json, "viewer.add_heighmap_skirt", viewer.add_heighmap_skirt);
+  json_safe_get(json, "viewer.mesh_resolution", viewer.mesh_resolution);
   json_safe_get(json, "viewer.toolbar_scale", viewer.toolbar_scale);
 
   // window
@@ -345,6 +350,8 @@ nlohmann::json AppSettings::json_to() const
   json["colors.hover"] = colors.hover.name().toStdString();
   json["colors.pressed"] = colors.pressed.name().toStdString();
   json["colors.separator"] = colors.separator.name().toStdString();
+  json["colors.building"] = colors.building.name().toStdString();
+  json["colors.warning"] = colors.warning.name().toStdString();
 
   json["global.omp_num_threads"] = global.omp_num_threads;
   json["global.icon_path"] = global.icon_path;
@@ -411,11 +418,14 @@ nlohmann::json AppSettings::json_to() const
   json["node_editor.enable_node_groups"] = node_editor.enable_node_groups;
   json["node_editor.live_update"] = node_editor.live_update;
   json["node_editor.async_update"] = node_editor.async_update;
+  json["node_editor.show_compute_time"] = node_editor.show_compute_time;
+  json["node_editor.show_build_border"] = node_editor.show_build_border;
   json["node_editor.port_radius"] = node_editor.port_radius;
 
   json["viewer.width"] = viewer.width;
   json["viewer.height"] = viewer.height;
   json["viewer.add_heighmap_skirt"] = viewer.add_heighmap_skirt;
+  json["viewer.mesh_resolution"] = viewer.mesh_resolution;
   json["viewer.toolbar_scale"] = viewer.toolbar_scale;
 
   json["window.geom_main.x"] = window.geom_main.x;

@@ -2,6 +2,7 @@
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
 #include "highmap/flora/forest.hpp"
+#include "highmap/rocks/rock_field.hpp"
 #include "highmap/virtual_array/virtual_texture.hpp"
 
 #include "hesiod/logger.hpp"
@@ -24,6 +25,7 @@ void setup_preview_node(BaseNode &node)
   node.add_port<hmap::Cloud>(gnode::PortType::IN, "cloud");
   node.add_port<hmap::Path>(gnode::PortType::IN, "path");
   node.add_port<hmap::Forest>(gnode::PortType::IN, "forest");
+  node.add_port<hmap::RockField>(gnode::PortType::IN, "rocks");
 }
 
 void compute_preview_node(BaseNode &node)

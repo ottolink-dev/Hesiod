@@ -12,6 +12,7 @@
 #include "highmap/flora/forest.hpp"
 #include "highmap/geometry/cloud.hpp"
 #include "highmap/geometry/path.hpp"
+#include "highmap/rocks/rock_field.hpp"
 #include "highmap/texture.hpp"
 
 #include "hesiod/app/hesiod_application.hpp"
@@ -295,6 +296,18 @@ void DataPreview::update_preview()
       }
       else
         Logger::log()->error("DataPreview::update_preview: Forest nullptr or empty");
+    }
+    // ---- RockField ----
+    else if (data_type == typeid(hmap::RockField).name())
+    {
+      const hmap::RockField *p_rocks = static_cast<const hmap::RockField *>(blind_ptr);
+      if (p_rocks && p_rocks->size() > 0)
+      {
+        img = p_rocks->to_img_8bit(shape);
+        img_format = QImage::Format_RGB888;
+      }
+      else
+        Logger::log()->error("DataPreview::update_preview: RockField nullptr or empty");
     }
   }
 

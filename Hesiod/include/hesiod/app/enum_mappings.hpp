@@ -15,6 +15,7 @@
 #include "highmap/morphology.hpp"
 #include "highmap/primitives.hpp"
 #include "highmap/range.hpp"
+#include "highmap/scatter/scatter_field.hpp"
 #include "highmap/transform.hpp"
 
 #include "hesiod/model/nodes/base_node.hpp"
@@ -284,6 +285,13 @@ static struct EnumMappings
       {"Edge distance squared", hmap::VoronoiReturnType::EDGE_DISTANCE_SQUARED},
       {"Cell value", hmap::VoronoiReturnType::CONSTANT},
       {"Cell value * (F2 - F1)", hmap::VoronoiReturnType::CONSTANT_F2MF1_SQUARED}};
+
+  const std::map<std::string, int> scatter_shape_map = {
+      {"Disk", hmap::ScatterShape::SCATTER_SHAPE_DISK},
+      {"Polygon", hmap::ScatterShape::SCATTER_SHAPE_POLYGON},
+      {"Cone", hmap::ScatterShape::SCATTER_SHAPE_CONE},
+      {"Pyramid", hmap::ScatterShape::SCATTER_SHAPE_PYRAMID},
+      {"Smooth Dome", hmap::ScatterShape::SCATTER_SHAPE_SMOOTH_DOME}};
 } enum_mappings;
 
 } // namespace hesiod

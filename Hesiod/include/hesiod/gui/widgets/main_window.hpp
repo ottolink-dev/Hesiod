@@ -2,10 +2,8 @@
    License. The full license is in the file LICENSE, distributed with this software. */
 #pragma once
 #include <QCloseEvent>
-#include <QLabel>
 #include <QMainWindow>
 #include <QMenuBar>
-#include <QProgressBar>
 
 namespace hesiod
 {
@@ -45,13 +43,10 @@ protected:
 
 private:
   void setup_frameless_window();
-  void setup_progress_bar();
   void setup_status_bar();
 
-  TitleBar     *title_bar = nullptr;
-  QProgressBar *progress_bar;
-  QLabel       *update_held_label = nullptr; // see GraphManager::update_held
-  bool          frameless = false;
+  TitleBar *title_bar = nullptr;
+  bool      frameless = false;
 };
 
 } // namespace hesiod

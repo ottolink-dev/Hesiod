@@ -6,6 +6,7 @@
 
 #include <QElapsedTimer>
 #include <QEvent>
+#include <QGuiApplication>
 #include <QObject>
 #include <QTimer>
 #include <QWidget>
@@ -78,7 +79,12 @@ protected:
     const qint64 last = widget->property("_hsd_last_update_request").toLongLong();
     widget->setProperty("_hsd_last_update_request", now);
 
-    if (last == 0 || now - last > stream_gap_ms)
+    // a press-and-drag (panning, moving nodes, a slider) streams from its first
+    // frame, however long a frame takes: counted as isolated, a slow full
+    // repaint would make the next one isolated too, and so on
+    const bool dragging = QGuiApplication::mouseButtons() != Qt::NoButton;
+
+    if (!dragging && (last == 0 || now - last > stream_gap_ms))
     {
       widget->update(); // isolated update: clean right away
       return false;

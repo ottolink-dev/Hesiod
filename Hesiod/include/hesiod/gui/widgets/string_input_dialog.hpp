@@ -9,12 +9,11 @@
  * @copyright Copyright (c) 2025
  */
 #pragma once
-#include <QDialog>
 #include <QLabel>
 #include <QLineEdit>
-#include <QPushButton>
 #include <QSet>
-#include <QVBoxLayout>
+
+#include "hesiod/gui/widgets/message_dialog.hpp"
 
 namespace hesiod
 {
@@ -22,20 +21,23 @@ namespace hesiod
 // =====================================
 // StringInputDialog
 // =====================================
-class StringInputDialog : public QDialog
-{
-  Q_OBJECT
 
+// Asks for a name, in the application's dialog chrome. An empty name, or one of
+// invalid_strings, is refused with a word under the field.
+class StringInputDialog : public MessageDialog
+{
 public:
-  StringInputDialog(const std::string              &window_title = "",
+  StringInputDialog(const QString                  &title,
+                    const QString                  &text,
+                    const QString                  &value,
+                    const QString                  &accept_label,
                     const std::vector<std::string> &invalid_strings = {},
                     QWidget                        *parent = nullptr);
 
-  QString     get_text() const { return input_line->text(); }
-  std::string get_text_std_string() const { return input_line->text().toStdString(); }
+  QString     get_text() const { return input_line->text().trimmed(); }
+  std::string get_text_std_string() const { return this->get_text().toStdString(); }
 
-private slots:
-  void validate_input();
+  void accept() override;
 
 private:
   QLineEdit    *input_line;

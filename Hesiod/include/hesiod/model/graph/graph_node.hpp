@@ -78,6 +78,12 @@ public:
   std::function<void()>                                           update_finished;
   std::function<void(const std::string &node_id, float progress)> update_progress;
 
+  // for the editor of this graph (update_progress goes to the GraphManager): the
+  // nodes of the current pass and how many of them it is done with, and the
+  // update held
+  std::function<void(const std::vector<std::string> &pass, int done)> update_steps;
+  std::function<void(bool held)> update_held; // see GraphWorker::hold()
+
   // --- Broadcast Callbacks
   std::function<void(const std::string &graph_id, const std::string &tag)>
                                               broadcast_node_updated;

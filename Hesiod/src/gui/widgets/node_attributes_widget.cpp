@@ -327,13 +327,20 @@ QWidget *NodeAttributesWidget::create_toolbar()
                   if (!p_node)
                     return;
 
-                  auto *c = meta_container();
-                  if (c && !p_node->get_initial_meta_state().empty())
-                  {
-                    c->json_from(p_node->get_initial_meta_state(), true);
-                    this->sync_from_model();
-                    gno->update(this->node_id);
-                  }
+                  // the initial state is the whole group's, in values only: the
+                  // part of the container shown goes back to it
+                  auto                 *c = meta_container();
+                  const nlohmann::json &initial = p_node->get_initial_meta_state();
+                  const auto name = p_node->get_meta_group().current_container_name();
+                  if (!c || !name || !initial.contains("containers") ||
+                      !initial["containers"].contains(*name))
+                    return;
+
+                  c->json_from(initial["containers"][*name],
+                               meta::SerializationMode::state,
+                               true);
+                  this->sync_from_model();
+                  gno->update(this->node_id);
                 });
 
   this->connect(help_act,
