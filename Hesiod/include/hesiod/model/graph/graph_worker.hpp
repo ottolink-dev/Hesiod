@@ -89,13 +89,13 @@ private:
   std::set<std::string>      started; // those the update thread could compute
   std::exception_ptr         error;   // what the update thread ended with
   std::thread                thread;
-  int                        pass = 0; // identifies the update in progress
   bool                       start_next_pending = false;
   bool                       held = false; // see hold()
 
   // shared with the update thread
-  std::mutex mutex;
-  bool       cancelled = false;
+  std::mutex        started_mutex;
+  std::atomic<bool> cancelled = false;
+  std::atomic<int>  pass = 0; // identifies the update in progress
 
   std::shared_ptr<int> alive = std::make_shared<int>(); // for what is posted
 };

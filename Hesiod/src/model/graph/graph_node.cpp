@@ -33,30 +33,17 @@ GraphNode::GraphNode(const std::string &id, const std::shared_ptr<GraphConfig> &
 
     int nids = static_cast<int>(sorted_ids.size());
 
-    if (before_update)
-    {
-      int   current_completed = this->completed_count.load();
-      float progress = 100.f * static_cast<float>(current_completed) /
-                       static_cast<float>(nids);
+    int current_completed = before_update ? this->completed_count.load()
+                                          : ++this->completed_count;
 
-      if (this->update_progress)
-        this->update_progress(current_id, progress);
+    float progress = 100.f * static_cast<float>(current_completed) /
+                     static_cast<float>(nids);
 
-      if (this->update_steps)
-        this->update_steps(sorted_ids, current_completed);
-    }
-    else
-    {
-      int   current_completed = ++this->completed_count;
-      float progress = 100.f * static_cast<float>(current_completed) /
-                       static_cast<float>(nids);
+    if (this->update_progress)
+      this->update_progress(current_id, progress);
 
-      if (this->update_progress)
-        this->update_progress(current_id, progress);
-
-      if (this->update_steps)
-        this->update_steps(sorted_ids, current_completed);
-    }
+    if (this->update_steps)
+      this->update_steps(sorted_ids, current_completed);
   };
 
   this->graph_progress_conn = this->graph_progress_event.subscribe(lambda);

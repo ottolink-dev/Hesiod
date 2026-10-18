@@ -19,10 +19,7 @@ thread_local bool is_update_thread = false;
 GraphWorker::~GraphWorker()
 {
   // returns once the node being computed, if any, is done
-  {
-    std::lock_guard<std::mutex> lock(this->mutex);
-    this->cancelled = true;
-  }
+  this->cancelled = true;
 
   if (this->thread.joinable())
     this->thread.join();
@@ -37,12 +34,14 @@ bool GraphWorker::check_cancel(int pass, const std::string &node_id)
       this->thread_setup();
   }
 
-  std::lock_guard<std::mutex> lock(this->mutex);
-
-  if (pass != this->pass || this->cancelled)
+  if (pass != this->pass.load() || this->cancelled.load())
     return true;
 
-  this->started.insert(node_id);
+  {
+    std::lock_guard<std::mutex> lock(this->started_mutex);
+    this->started.insert(node_id);
+  }
+
   return false;
 }
 
@@ -148,7 +147,6 @@ void GraphWorker::end_pass()
   if (this->held && !this->jobs.empty() && this->held_changed)
     this->held_changed(true);
 
-  std::lock_guard<std::mutex> lock(this->mutex);
   this->cancelled = false;
 }
 
@@ -174,9 +172,9 @@ void GraphWorker::finish()
         ids.push_back(node_id);
 
     if (job.all)
-      graph->gnode::Graph::update();
+      graph->execute_parallel(graph->topological_sort(ids));
     else if (!ids.empty())
-      graph->gnode::Graph::update(ids);
+      graph->execute_parallel(graph->get_nodes_to_update(ids));
 
     if (graph->update_finished)
       graph->update_finished();
@@ -199,10 +197,7 @@ bool GraphWorker::hold()
 
   // without waiting: the node being computed ends in the background
   if (this->thread.joinable())
-  {
-    std::lock_guard<std::mutex> lock(this->mutex);
     this->cancelled = true;
-  }
   else if (this->held_changed)
     this->held_changed(true); // nothing running, what is queued waits
 
@@ -259,10 +254,7 @@ bool GraphWorker::request(GraphNode &graph, const std::vector<std::string> *p_no
 
   // what the update in progress computes from now on is outdated
   if (this->graph.get() == &graph)
-  {
-    std::lock_guard<std::mutex> lock(this->mutex);
     this->cancelled = true;
-  }
 
   if (std::exchange(this->held, false) && this->held_changed)
     this->held_changed(false);
@@ -327,7 +319,10 @@ void GraphWorker::start_next()
 
     this->graph = graph;
     this->planned = std::move(planned);
-    this->started.clear();
+    {
+      std::lock_guard<std::mutex> lock(this->started_mutex);
+      this->started.clear();
+    }
     this->error = nullptr;
     const int pass = ++this->pass;
 
@@ -376,11 +371,7 @@ void GraphWorker::stop()
 
   Logger::log()->trace("GraphWorker::stop: stopping update thread");
 
-  {
-    std::lock_guard<std::mutex> lock(this->mutex);
-    this->cancelled = true;
-  }
-
+  this->cancelled = true;
   this->end_pass();
 
   // what is left resumes once the caller is done with the graphs
