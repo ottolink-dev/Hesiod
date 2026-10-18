@@ -124,7 +124,7 @@ void Viewer3D::copy_render_settings_from(const Viewer3D &source)
   // Renderer serialization includes widget geometry. Keep this view's layout,
   // and copy only rendering state; Viewer::json_from would also copy the node,
   // pin and port choices from the embedded preview.
-  auto settings = source.p_renderer->json_to();
+  auto        settings = source.p_renderer->json_to();
   const QRect geometry = this->p_renderer->geometry();
   settings["x"] = geometry.x();
   settings["y"] = geometry.y();

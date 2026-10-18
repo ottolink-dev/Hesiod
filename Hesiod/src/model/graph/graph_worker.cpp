@@ -171,10 +171,24 @@ void GraphWorker::finish()
       if (graph->get_node(node_id))
         ids.push_back(node_id);
 
+    // Ensure thread setup runs on worker threads during synchronous finish
+    graph->cancel_update_callback = [this](const std::string &node_id)
+    {
+      if (!is_update_thread)
+      {
+        is_update_thread = true;
+        if (this->thread_setup)
+          this->thread_setup();
+      }
+      return false;
+    };
+
     if (job.all)
       graph->execute_parallel(graph->topological_sort(ids));
     else if (!ids.empty())
       graph->execute_parallel(graph->get_nodes_to_update(ids));
+
+    graph->cancel_update_callback = nullptr;
 
     if (graph->update_finished)
       graph->update_finished();
