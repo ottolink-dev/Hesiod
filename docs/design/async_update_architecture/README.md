@@ -4,10 +4,14 @@ This document describes the multi-tier threading model, dependency-driven DAG sc
 
 ## Overview
 
-The graph update architecture separates user interactions on the GUI thread from heavy computational node processing in the background. It distributes execution across three distinct tiers:
+The graph update architecture separates user interactions and state changes on the application/GUI thread from heavy computational node processing in the background. Following the principle of **separation of concerns**, update scheduling, coalescing, and lifecycle orchestration are implemented directly in `external/GNode` via `gnode::GraphWorker`:
+- **GNode ("Here is a graph, update it")**: `gnode::GraphWorker` manages update requests, queue coalescing, cancellation, pass synchronization, and invokes node execution.
+- **Application Hooks ("Follow what's going on")**: Applications (like Hesiod) configure `GraphWorker` static hooks (`post_to_caller`, `thread_setup`, `enabled`) and node lifecycle hooks (`on_pre_async_compute()`, `on_async_compute_cancelled()`) to freeze UI-bound parameters into immutable compute snapshots, dispatch completion callbacks to their event loop (Qt), or initialize thread-local runtime state (OpenMP).
 
-1. **GUI Thread (Qt Event Loop)**: Coordinates graph updates, freezes node states (`begin_background_compute()`) before starting asynchronous passes, and handles completion callbacks without blocking the UI.
-2. **Pass Coordinator Thread**: A dedicated background thread managed by `hesiod::GraphWorker` that orchestrates a single update pass.
+Execution spans three distinct tiers:
+
+1. **Application / GUI Thread (Qt Event Loop)**: Edits node parameters and triggers requests. Freezes node states via the `on_pre_async_compute()` lifecycle hook before background execution begins, and processes `post_to_caller` callbacks asynchronously without blocking the UI.
+2. **Pass Coordinator Thread (`gnode::GraphWorker`)**: A dedicated background thread managed by `gnode::GraphWorker` that orchestrates an individual update pass and calls `gnode::Graph::execute_parallel()`.
 3. **Task Worker Pool (`gnode::ThreadPool`)**: A pool of worker threads executing independent DAG nodes concurrently as their upstream dependencies complete.
 
 ## Architecture & Thread Tiers
@@ -18,14 +22,14 @@ The following diagram illustrates how the tiers communicate:
 
 ```mermaid
 graph TB
-    subgraph GUI_Tier ["GUI Thread (Qt Event Loop)"]
+    subgraph GUI_Tier ["GUI / Application Thread (Qt Event Loop)"]
         UI["User Interactions / Parameter Edits"]
-        GW["GraphWorker"]
-        Snap["Snapshot Creation<br/><code>begin_background_compute()</code>"]
-        PostRecv["Completion Handler<br/><code>end_pass()</code>"]
+        PostRecv["Caller Event Loop / Dispatcher<br/><code>post_to_caller()</code>"]
+        SnapHook["Lifecycle Hook Implementation<br/><code>BaseNode::on_pre_async_compute()</code>"]
     end
 
-    subgraph Worker_Tier ["GraphWorker Background Thread"]
+    subgraph GNode_Worker_Tier ["GNode Worker Tier (gnode::GraphWorker)"]
+        GW["GraphWorker<br/>Request Coalescing & Pass Lifecycle"]
         CoordThread["Pass Coordinator Thread<br/>(1 per active pass)"]
         GNodeCoord["<code>Graph::execute_parallel()</code><br/>DAG In-Degree Orchestrator"]
     end
@@ -36,15 +40,15 @@ graph TB
         Tn["Pool Worker N"]
     end
 
-    UI -->|triggers| GW
-    GW -->|1. Snapshots planned nodes| Snap
-    GW -->|2. Spawns std::thread| CoordThread
-    CoordThread -->|3. Calls| GNodeCoord
-    GNodeCoord -->|4. Enqueues in-degree 0 tasks| T1
-    GNodeCoord -->|4. Enqueues in-degree 0 tasks| T2
-    GNodeCoord -->|4. Enqueues in-degree 0 tasks| Tn
+    UI -->|1. Triggers request| GW
+    GW -->|2. Invokes lifecycle hook| SnapHook
+    GW -->|3. Spawns std::thread| CoordThread
+    CoordThread -->|4. Calls| GNodeCoord
+    GNodeCoord -->|5. Enqueues in-degree 0 tasks| T1
+    GNodeCoord -->|5. Enqueues in-degree 0 tasks| T2
+    GNodeCoord -->|5. Enqueues in-degree 0 tasks| Tn
     CoordThread -.->|Blocks on sync_cv| GNodeCoord
-    CoordThread -->|5. Posts end_pass to event loop| PostRecv
+    CoordThread -->|6. Posts completion via hook| PostRecv
 ```
 
 Source: [thread_architecture.mmd](diagrams/thread_architecture.mmd)
@@ -53,11 +57,12 @@ Source: [thread_architecture.mmd](diagrams/thread_architecture.mmd)
 
 The end-to-end execution of a pass proceeds as follows:
 
-1. When an update is triggered, `GraphWorker::start_next()` snapshots all dirty nodes upfront on the GUI thread by invoking `BaseNode::begin_background_compute()`.
+1. When an update is triggered, `gnode::GraphWorker::start_next()` invokes `Node::on_pre_async_compute()` on all dirty nodes upfront on the calling thread (e.g. Hesiod's `BaseNode` creates thread-safe parameter snapshots).
 2. A coordinator thread is spawned to execute `gnode::Graph::execute_parallel()`.
 3. In-degree counts are computed for all dirty nodes in the scheduled subgraph. Nodes with in-degree 0 are dispatched immediately to the `ThreadPool`.
 4. As each node finishes, it atomically decrements the in-degree of its downstream neighbors. When a neighbor's in-degree reaches 0, it is enqueued to the pool.
 5. The coordinator waits on a `std::condition_variable` until all dirty nodes finish or cancellation is signaled.
+6. When the pass completes or is cancelled, `GraphWorker::end_pass()` calls `Node::on_async_compute_cancelled()` on any unfinished nodes and dispatches `Graph::update_finished` back to the caller via `post_to_caller`.
 
 ![Sequence Flow](diagrams/sequence_flow.svg)
 
@@ -70,7 +75,7 @@ sequenceDiagram
 
     Note over GUI: User edits parameter or requests update
     GUI->>GUI: GraphWorker::start_next()
-    GUI->>GUI: Snapshot all planned nodes: begin_background_compute()
+    GUI->>GUI: Snapshot dirty nodes: node->on_pre_async_compute()
     GUI->>WT: Spawn std::thread(graph->execute_parallel)
 
     Note over WT: Graph::execute_parallel()
@@ -102,7 +107,7 @@ sequenceDiagram
     Note over WT: Unblocked from wait
     WT->>WT: ~ThreadPool() joins all pool workers safely
     WT->>GUI: post(end_pass, start_next)
-    GUI->>GUI: end_pass(): cancel unstarted snapshots, emit update_finished
+    GUI->>GUI: end_pass(): on_async_compute_cancelled, emit update_finished
 ```
 
 Source: [sequence_flow.mmd](diagrams/sequence_flow.mmd)

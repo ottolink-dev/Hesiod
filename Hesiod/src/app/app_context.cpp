@@ -149,7 +149,7 @@ void AppContext::new_project()
   // the graphs of an interactive session are updated in the background
   GraphWorker::enabled = [this]()
   { return !this->headless && this->app_settings.node_editor.async_update; };
-  GraphWorker::post_to_gui = [](std::function<void()> fct)
+  GraphWorker::post_to_caller = [](std::function<void()> fct)
   { QMetaObject::invokeMethod(qApp, std::move(fct), Qt::QueuedConnection); };
   GraphWorker::thread_setup = [this]()
   { hmap::init_openmp(this->app_settings.global.omp_num_threads); };

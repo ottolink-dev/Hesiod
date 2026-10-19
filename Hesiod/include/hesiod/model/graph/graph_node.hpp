@@ -6,6 +6,7 @@
 #include "nlohmann/json.hpp"
 
 #include "gnode/graph.hpp"
+#include "gnode/graph_worker.hpp"
 #include "highmap/coord_frame.hpp"
 
 #include "hesiod/model/graph/broadcast_param.hpp"
@@ -15,14 +16,13 @@ namespace hesiod
 {
 
 class BaseNode; // forward
-class GraphWorker;
+using GraphWorker = gnode::GraphWorker;
 
 // =====================================
 // GraphNode
 // =====================================
 class GraphNode : public gnode::Graph,
-                  public hmap::CoordFrame,
-                  public std::enable_shared_from_this<GraphNode>
+                  public hmap::CoordFrame
 {
 public:
   GraphNode() = delete;
@@ -74,7 +74,6 @@ public:
 
   // --- Update Callbacks
   std::function<void()>                                           update_started;
-  std::function<void()>                                           update_finished;
   std::function<void(const std::string &node_id, float progress)> update_progress;
 
   // for the editor of this graph (update_progress goes to the GraphManager): the

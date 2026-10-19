@@ -6,7 +6,7 @@ sequenceDiagram
 
     Note over GUI: User edits parameter or requests update
     GUI->>GUI: GraphWorker::start_next()
-    GUI->>GUI: Snapshot all planned nodes: begin_background_compute()
+    GUI->>GUI: Snapshot dirty nodes: node->on_pre_async_compute()
     GUI->>WT: Spawn std::thread(graph->execute_parallel)
 
     Note over WT: Graph::execute_parallel()

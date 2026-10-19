@@ -183,7 +183,7 @@ void BaseNode::begin_background_compute()
 bool BaseNode::is_port_busy(int port_index) const
 {
   // the update thread only computes the node that rewrites its data
-  if (GraphWorker::in_update_thread() || port_index < 0 ||
+  if (gnode::GraphWorker::in_worker_thread() || port_index < 0 ||
       port_index >= this->get_nports())
     return false;
 
@@ -203,7 +203,7 @@ bool BaseNode::is_port_busy(int port_index) const
 meta::ContainerGroup &BaseNode::get_meta_group()
 {
   // the update thread computes from the snapshot, see begin_background_compute()
-  if (this->frozen_meta_group && GraphWorker::in_update_thread())
+  if (this->frozen_meta_group && gnode::GraphWorker::in_worker_thread())
     return *this->frozen_meta_group;
 
   if (!this->meta_group)
@@ -217,7 +217,7 @@ meta::ContainerGroup &BaseNode::get_meta_group()
 
 const meta::ContainerGroup &BaseNode::get_meta_group() const
 {
-  if (this->frozen_meta_group && GraphWorker::in_update_thread())
+  if (this->frozen_meta_group && gnode::GraphWorker::in_worker_thread())
     return *this->frozen_meta_group;
 
   return *this->meta_group;

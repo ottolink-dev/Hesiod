@@ -396,7 +396,7 @@ void GraphManager::on_broadcast_node_updated(const std::string &graph_id,
   Logger::log()->trace("GraphManager::on_broadcast_node_updated: broadcasting {}", tag);
 
   // a Broadcast updated in the background reports from the update thread
-  if (GraphWorker::in_update_thread())
+  if (GraphWorker::in_worker_thread())
     return this->worker->post([this, graph_id, tag]()
                               { this->on_broadcast_node_updated(graph_id, tag); });
 

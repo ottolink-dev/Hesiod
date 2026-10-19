@@ -1,12 +1,12 @@
 graph TB
-    subgraph GUI_Tier ["GUI Thread (Qt Event Loop)"]
+    subgraph GUI_Tier ["GUI / Application Thread (Qt Event Loop)"]
         UI["User Interactions / Parameter Edits"]
-        GW["GraphWorker"]
-        Snap["Snapshot Creation<br/><code>begin_background_compute()</code>"]
-        PostRecv["Completion Handler<br/><code>end_pass()</code>"]
+        PostRecv["Caller Event Loop / Dispatcher<br/><code>post_to_caller()</code>"]
+        SnapHook["Lifecycle Hook Implementation<br/><code>BaseNode::on_pre_async_compute()</code>"]
     end
 
-    subgraph Worker_Tier ["GraphWorker Background Thread"]
+    subgraph GNode_Worker_Tier ["GNode Worker Tier (gnode::GraphWorker)"]
+        GW["GraphWorker<br/>Request Coalescing & Pass Lifecycle"]
         CoordThread["Pass Coordinator Thread<br/>(1 per active pass)"]
         GNodeCoord["<code>Graph::execute_parallel()</code><br/>DAG In-Degree Orchestrator"]
     end
@@ -17,12 +17,12 @@ graph TB
         Tn["Pool Worker N"]
     end
 
-    UI -->|triggers| GW
-    GW -->|1. Snapshots planned nodes| Snap
-    GW -->|2. Spawns std::thread| CoordThread
-    CoordThread -->|3. Calls| GNodeCoord
-    GNodeCoord -->|4. Enqueues in-degree 0 tasks| T1
-    GNodeCoord -->|4. Enqueues in-degree 0 tasks| T2
-    GNodeCoord -->|4. Enqueues in-degree 0 tasks| Tn
+    UI -->|1. Triggers request| GW
+    GW -->|2. Invokes lifecycle hook| SnapHook
+    GW -->|3. Spawns std::thread| CoordThread
+    CoordThread -->|4. Calls| GNodeCoord
+    GNodeCoord -->|5. Enqueues in-degree 0 tasks| T1
+    GNodeCoord -->|5. Enqueues in-degree 0 tasks| T2
+    GNodeCoord -->|5. Enqueues in-degree 0 tasks| Tn
     CoordThread -.->|Blocks on sync_cv| GNodeCoord
-    CoordThread -->|5. Posts end_pass to event loop| PostRecv
+    CoordThread -->|6. Posts completion via hook| PostRecv

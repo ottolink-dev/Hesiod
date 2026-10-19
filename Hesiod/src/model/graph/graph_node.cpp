@@ -118,7 +118,7 @@ std::shared_ptr<GraphNode> GraphNode::get_shared()
 {
   try
   {
-    return shared_from_this();
+    return std::dynamic_pointer_cast<GraphNode>(shared_from_this());
   }
   catch (...)
   {

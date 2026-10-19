@@ -9,12 +9,14 @@
 #include <filesystem> // must be here,
                       // https://bugreports.qt.io/browse/QTBUG-73263
 
+#include "gnode/graph_worker.hpp"
+
 namespace hesiod
 {
 
 class GraphNode; // forward
 class GraphConfig;
-class GraphWorker;
+using GraphWorker = gnode::GraphWorker;
 
 // =====================================
 // GraphManager
