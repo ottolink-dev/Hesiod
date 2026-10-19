@@ -21,8 +21,7 @@ using GraphWorker = gnode::GraphWorker;
 // =====================================
 // GraphNode
 // =====================================
-class GraphNode : public gnode::Graph,
-                  public hmap::CoordFrame
+class GraphNode : public gnode::Graph, public hmap::CoordFrame
 {
 public:
   GraphNode() = delete;
