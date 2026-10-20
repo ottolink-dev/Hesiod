@@ -5947,6 +5947,309 @@
             }
         }
     },
+    "ErosionMultiscale": {
+        "category": "Erosion/Hydraulic",
+        "description": "ErosionMultiscale is a multiscale particle erosion. The terrain is split into a downsampled pyramid and eroded from coarse to fine: at each level, particles follow the downhill gradient in short traced batches, cut into their path, carry sediment and drop it according to three discharge thresholds (suspended load, bed load and coarse sediments), and a shaping pass sharpens ridges and settles slopes after every particle pass. Each level is upsampled back onto the stored detail of the next one. A given seed always gives the same result. The precipitation input and the optional orographic mask restrict where particles are released. Heights are read in absolute units: 1.0 is Terrain Height, over a map Terrain Width wide.",
+        "label": "ErosionMultiscale",
+        "parameter_groups": [
+            {
+                "keys": [
+                    "duration",
+                    "downcutting",
+                    "erosion_scale",
+                    "seed",
+                    "suspended_amount",
+                    "suspended_angle",
+                    "bed_load_amount",
+                    "bed_load_angle",
+                    "coarse_amount",
+                    "coarse_angle",
+                    "shape",
+                    "shape_sharpness",
+                    "shape_detail_scale",
+                    "orographic_enable",
+                    "directional_precipitation",
+                    "direction",
+                    "rain_shadow",
+                    "slope_range",
+                    "altitude_range",
+                    "orographic_reverse",
+                    "world_width",
+                    "world_height",
+                    "mask_activate",
+                    "mask_type",
+                    "mask_inverse",
+                    "mask_radius",
+                    "mask_gain",
+                    "post_mix_method",
+                    "post_mix",
+                    "post_inverse",
+                    "post_gamma",
+                    "post_gain",
+                    "post_smoothing_radius",
+                    "post_remap",
+                    "post_saturate"
+                ],
+                "name": "main"
+            }
+        ],
+        "parameters": {
+            "altitude_range": {
+                "description": "Normalized altitude window that receives precipitation. Disable to use all altitudes.",
+                "key": "altitude_range",
+                "label": "Altitude",
+                "type": "Value range"
+            },
+            "bed_load_amount": {
+                "description": "Sediment rolled along the bed and dropped on slopes gentler than the discharge angle, filling valley floors.",
+                "key": "bed_load_amount",
+                "label": "Bed Load",
+                "type": "Float"
+            },
+            "bed_load_angle": {
+                "description": "Slope angle below which the bed load is dropped.",
+                "key": "bed_load_angle",
+                "label": "Bed Load Discharge Angle",
+                "type": "Float"
+            },
+            "coarse_amount": {
+                "description": "Coarse debris dropped where the path slope is close to the discharge angle, building talus aprons and fans.",
+                "key": "coarse_amount",
+                "label": "Coarse Sediments",
+                "type": "Float"
+            },
+            "coarse_angle": {
+                "description": "Slope angle around which coarse sediments are dropped.",
+                "key": "coarse_angle",
+                "label": "Coarse Discharge Angle",
+                "type": "Float"
+            },
+            "direction": {
+                "description": "Direction the moist air comes from, in degrees (0 points to +X, counter-clockwise).",
+                "key": "direction",
+                "label": "Direction",
+                "type": "Float"
+            },
+            "directional_precipitation": {
+                "description": "Adds a rain shadow: terrain hidden from the wind direction behind higher ground receives less precipitation.",
+                "key": "directional_precipitation",
+                "label": "Directional Precipitation",
+                "type": "Bool"
+            },
+            "downcutting": {
+                "description": "Strength of the vertical incision along particle paths.",
+                "key": "downcutting",
+                "label": "Downcutting",
+                "type": "Float"
+            },
+            "duration": {
+                "description": "Number of particle passes at the coarsest level (finer levels run fewer). Longer durations carve deeper, more mature drainage and take longer to compute.",
+                "key": "duration",
+                "label": "Duration",
+                "type": "Float"
+            },
+            "erosion_scale": {
+                "description": "Size of the largest eroded features, in meters. It sets how many pyramid levels are simulated. Values above 20% of Terrain Width are softly limited.",
+                "key": "erosion_scale",
+                "label": "Erosion Scale",
+                "type": "Float"
+            },
+            "mask_activate": {
+                "description": "Enables or disables the internal mask. If the node's 'mask' input is connected, this setting is bypassed and the input mask is used instead.",
+                "key": "mask_activate",
+                "label": "Activate Default Mask",
+                "type": "Bool"
+            },
+            "mask_gain": {
+                "description": "Controls the intensity or influence of the internal mask. Bypassed if the 'mask' input is connected.",
+                "key": "mask_gain",
+                "label": "Mask Gain",
+                "type": "Float"
+            },
+            "mask_inverse": {
+                "description": "Inverts the internal mask, applying the operator where the mask is low. Ignored if a 'mask' input is provided.",
+                "key": "mask_inverse",
+                "label": "Inverse Mask",
+                "type": "Bool"
+            },
+            "mask_radius": {
+                "description": "Defines the smoothing radius for the internal mask. A value of 0 disables smoothing. This is bypassed if the 'mask' input is used.",
+                "key": "mask_radius",
+                "label": "Mask Radius",
+                "type": "Float"
+            },
+            "mask_type": {
+                "description": "Specifies how the internal mask is computed: 'Elevation' uses height, 'Gradient Norm' uses slope, and 'Elevation mid-range' selects the middle portion of the height range. This parameter is ignored when a 'mask' input is connected.",
+                "key": "mask_type",
+                "label": "Mask Type",
+                "type": "Choice"
+            },
+            "orographic_enable": {
+                "description": "Builds a precipitation mask from the slope and altitude windows, and optionally a rain shadow, to restrict where particles are released. It is multiplied with the precipitation input when both are present.",
+                "key": "orographic_enable",
+                "label": "Enable",
+                "type": "Bool"
+            },
+            "orographic_reverse": {
+                "description": "Inverts the orographic precipitation mask.",
+                "key": "orographic_reverse",
+                "label": "Reverse",
+                "type": "Bool"
+            },
+            "post_gain": {
+                "description": "Mid-centered gain transformation applied to the elevation values. This is a non-linear recurve operator centered around the mid elevation (typically 0.5). Increasing the gain pushes values toward the minimum and maximum elevations, creating flatter low/high regions with a steeper transition around the midpoint.",
+                "key": "post_gain",
+                "label": "Gain",
+                "type": "Float"
+            },
+            "post_gamma": {
+                "description": "Standard gamma correction applied to the elevation values. This is a monotonic power-law remapping that shifts emphasis toward low or high elevations, making the overall shape sharper or bulkier without changing its ordering.",
+                "key": "post_gamma",
+                "label": "Gamma",
+                "type": "Float"
+            },
+            "post_inverse": {
+                "description": "Inverts the output values after processing, flipping low and high values across the midrange.",
+                "key": "post_inverse",
+                "label": "Invert Output",
+                "type": "Bool"
+            },
+            "post_mix": {
+                "description": "Mixing factor for blending input and output values. A value of 0 uses only the input, 1 uses only the output, and intermediate values perform a linear interpolation.",
+                "key": "post_mix",
+                "label": "Mix Factor",
+                "type": "Float"
+            },
+            "post_mix_method": {
+                "description": "Method used to combine input and output values. Options include linear interpolation (default), min, max, smooth min, smooth max, add, and subtract.",
+                "key": "post_mix_method",
+                "label": "Mix Method",
+                "type": "Enumeration"
+            },
+            "post_remap": {
+                "description": "Linearly remaps the output values to a specified target range (default is [0, 1]).",
+                "key": "post_remap",
+                "label": "Remap Range",
+                "type": "Value range"
+            },
+            "post_saturate": {
+                "description": "Modifies the amplitude of elevations by first clamping them to a given interval and then scaling them so that the restricted interval matches the original input range. This enhances contrast in elevation variations while maintaining overall structure.",
+                "key": "post_saturate",
+                "label": "Saturation Range",
+                "type": "Value range"
+            },
+            "post_smoothing_radius": {
+                "description": "Defines the radius for post-processing smoothing, determining the size of the neighborhood used to average local values and reduce high-frequency detail. A radius of 0 disables smoothing.",
+                "key": "post_smoothing_radius",
+                "label": "Smoothing Radius",
+                "type": "Float"
+            },
+            "rain_shadow": {
+                "description": "Strength of the rain shadow. Low values only shade the steepest lee faces, 1 casts long shadows behind every ridge.",
+                "key": "rain_shadow",
+                "label": "Rain Shadow",
+                "type": "Float"
+            },
+            "seed": {
+                "description": "Random seed number. The random seed is an offset to the randomized process. A different seed will produce a new result.",
+                "key": "seed",
+                "label": "Seed",
+                "type": "Random seed number"
+            },
+            "shape": {
+                "description": "Strength of the shaping pass run after each particle pass.",
+                "key": "shape",
+                "label": "Shape",
+                "type": "Float"
+            },
+            "shape_detail_scale": {
+                "description": "Finest level that still receives shaping. 0 keeps shaping on the coarse levels only.",
+                "key": "shape_detail_scale",
+                "label": "Detail Scale",
+                "type": "Float"
+            },
+            "shape_sharpness": {
+                "description": "Balance of the shaping pass between slope relaxation (low) and ridge sharpening (high).",
+                "key": "shape_sharpness",
+                "label": "Sharpness",
+                "type": "Float"
+            },
+            "slope_range": {
+                "description": "Slope window, in degrees, that receives precipitation. Disable to use all slopes.",
+                "key": "slope_range",
+                "label": "Slope",
+                "type": "Value range"
+            },
+            "suspended_amount": {
+                "description": "Fine sediment kept in suspension: on paths steeper than the discharge angle, deposition is damped.",
+                "key": "suspended_amount",
+                "label": "Suspended Load",
+                "type": "Float"
+            },
+            "suspended_angle": {
+                "description": "Slope angle above which the suspended load stops settling.",
+                "key": "suspended_angle",
+                "label": "Suspended Discharge Angle",
+                "type": "Float"
+            },
+            "world_height": {
+                "description": "Physical height of a 1.0 elevation. With Terrain Width it sets the slopes seen by the erosion.",
+                "key": "world_height",
+                "label": "Terrain Height",
+                "type": "Float"
+            },
+            "world_width": {
+                "description": "Physical width of the map. Erosion Scale is measured against it.",
+                "key": "world_width",
+                "label": "Terrain Width",
+                "type": "Float"
+            }
+        },
+        "ports": {
+            "deposits": {
+                "caption": "deposits",
+                "data_type": "VirtualArray",
+                "description": "Sediment deposited by the erosion, normalized in [0, 1].",
+                "type": "output"
+            },
+            "flow": {
+                "caption": "flow",
+                "data_type": "VirtualArray",
+                "description": "Particle flow at full resolution, log-scaled and normalized in [0, 1].",
+                "type": "output"
+            },
+            "input": {
+                "caption": "input",
+                "data_type": "VirtualArray",
+                "description": "Input elevation map to erode.",
+                "type": "input"
+            },
+            "mask": {
+                "caption": "mask",
+                "data_type": "VirtualArray",
+                "description": "Mask blending the eroded terrain with the input (expected in [0, 1]).",
+                "type": "input"
+            },
+            "output": {
+                "caption": "output",
+                "data_type": "VirtualArray",
+                "description": "Eroded terrain after post-processing.",
+                "type": "output"
+            },
+            "precipitation": {
+                "caption": "precipitation",
+                "data_type": "VirtualArray",
+                "description": "Optional precipitation map in [0, 1]: particles are released with a probability given by this map.",
+                "type": "input"
+            },
+            "wear": {
+                "caption": "wear",
+                "data_type": "VirtualArray",
+                "description": "Material removed by the erosion, normalized in [0, 1].",
+                "type": "output"
+            }
+        }
+    },
     "ExpandShrink": {
         "category": "Filter/Recast",
         "description": "ExpandShrink is a maximum/minimum filter with a weighted kernel. It can be used to enhance or extract features while preserving the essential structure of the heightmap.",

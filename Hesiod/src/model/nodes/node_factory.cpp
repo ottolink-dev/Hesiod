@@ -198,6 +198,7 @@ std::map<std::string, std::string> get_node_inventory()
       {"DirectionalBlur", "Filter/Smoothing"},
       {"DistanceShaper", "Terrain Features/Morphology"},
       {"DistanceTransform", "Terrain Features/Morphology"},
+      {"ErosionMultiscale", "Erosion/Hydraulic"},
       {"ExpandShrink", "Filter/Recast"},
       {"ExportAsset", "Export"},
       {"ExportAsCubemap", "WIP"}, // "Export"},
@@ -501,6 +502,7 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
     SETUP_NODE(DirectionalBlur, directional_blur);
     SETUP_NODE(DistanceShaper, distance_shaper);
     SETUP_NODE(DistanceTransform, distance_transform);
+    SETUP_NODE(ErosionMultiscale, erosion_multiscale);
     SETUP_NODE(ExpandShrink, expand_shrink);
     SETUP_NODE(ExportAsset, export_asset);
     SETUP_NODE(ExportAsCubemap, export_as_cubemap);
