@@ -315,33 +315,32 @@ QWidget *NodeAttributesWidget::create_toolbar()
                   }
                 });
 
-  this->connect(reset_act,
-                &QAction::triggered,
-                this,
-                [this, meta_container]()
-                {
-                  auto gno = this->p_graph_node.lock();
-                  if (!gno)
-                    return;
-                  BaseNode *p_node = gno->get_node_ref_by_id<BaseNode>(this->node_id);
-                  if (!p_node)
-                    return;
+  this->connect(
+      reset_act,
+      &QAction::triggered,
+      this,
+      [this, meta_container]()
+      {
+        auto gno = this->p_graph_node.lock();
+        if (!gno)
+          return;
+        BaseNode *p_node = gno->get_node_ref_by_id<BaseNode>(this->node_id);
+        if (!p_node)
+          return;
 
-                  // the initial state is the whole group's, in values only: the
-                  // part of the container shown goes back to it
-                  auto                 *c = meta_container();
-                  const nlohmann::json &initial = p_node->get_initial_meta_state();
-                  const auto name = p_node->get_meta_group().current_container_name();
-                  if (!c || !name || !initial.contains("containers") ||
-                      !initial["containers"].contains(*name))
-                    return;
+        // the initial state is the whole group's, in values only: the
+        // part of the container shown goes back to it
+        auto                 *c = meta_container();
+        const nlohmann::json &initial = p_node->get_initial_meta_state();
+        const auto            name = p_node->get_meta_group().current_container_name();
+        if (!c || !name || !initial.contains("containers") ||
+            !initial["containers"].contains(*name))
+          return;
 
-                  c->json_from(initial["containers"][*name],
-                               meta::SerializationMode::state,
-                               true);
-                  this->sync_from_model();
-                  gno->update(this->node_id);
-                });
+        c->json_from(initial["containers"][*name], meta::SerializationMode::state, true);
+        this->sync_from_model();
+        gno->update(this->node_id);
+      });
 
   this->connect(help_act,
                 &QAction::triggered,

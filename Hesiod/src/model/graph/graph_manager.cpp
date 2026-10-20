@@ -11,12 +11,12 @@
 
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/logger.hpp"
-#include "hesiod/profiling.hpp"
 #include "hesiod/model/graph/graph_config.hpp"
 #include "hesiod/model/graph/graph_manager.hpp"
 #include "hesiod/model/graph/graph_node.hpp"
 #include "hesiod/model/graph/graph_worker.hpp"
 #include "hesiod/model/utils.hpp"
+#include "hesiod/profiling.hpp"
 
 namespace hesiod
 {

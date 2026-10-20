@@ -20,7 +20,7 @@ QString launch_directory;
 void initialize_bundle_runtime()
 {
 #ifdef Q_OS_MACOS
-  const QDir executable(QCoreApplication::applicationDirPath());
+  const QDir    executable(QCoreApplication::applicationDirPath());
   const QString resources = QFileInfo(executable.filePath("../Resources/data"))
                                 .canonicalFilePath();
   if (resources.isEmpty() || executable.dirName() != "MacOS")
@@ -28,8 +28,10 @@ void initialize_bundle_runtime()
 
   // A workspace per installed location avoids mixing assets between concurrent
   // copies of the application. Nothing in the signed bundle is ever modified.
-  const QString key = QString::fromLatin1(QCryptographicHash::hash(
-      resources.toUtf8(), QCryptographicHash::Sha256).toHex().left(16));
+  const QString key = QString::fromLatin1(
+      QCryptographicHash::hash(resources.toUtf8(), QCryptographicHash::Sha256)
+          .toHex()
+          .left(16));
   const QString storage = QStandardPaths::writableLocation(
       QStandardPaths::AppLocalDataLocation);
   if (storage.isEmpty())
@@ -41,7 +43,7 @@ void initialize_bundle_runtime()
   QLockFile lock(workspace.filePath(".assets.lock"));
   if (!lock.tryLock(10000))
     throw std::runtime_error("Cannot lock Hesiod's runtime workspace");
-  const QString link = workspace.filePath("data");
+  const QString   link = workspace.filePath("data");
   const QFileInfo existing(link);
   if (existing.isSymLink())
   {
@@ -64,7 +66,8 @@ std::string resolve_launch_path(const std::string &path)
 {
   if (path.empty() || launch_directory.isEmpty())
     return path;
-  return QDir(launch_directory).absoluteFilePath(QString::fromStdString(path))
+  return QDir(launch_directory)
+      .absoluteFilePath(QString::fromStdString(path))
       .toStdString();
 }
 } // namespace hesiod

@@ -88,7 +88,7 @@ int main(int argc, char *argv[])
     }
 #endif
     [[maybe_unused]] hesiod::ProfileMemorySampler memory_sampler;
-    hesiod::HesiodApplication app(argc, argv);
+    hesiod::HesiodApplication                     app(argc, argv);
 
     if (!app.is_headless())
     {

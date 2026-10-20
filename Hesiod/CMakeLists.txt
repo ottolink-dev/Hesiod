@@ -54,17 +54,19 @@ add_library(hesiod_core OBJECT ${HESIOD_SOURCES} ${HESIOD_GUI_INCLUDES})
 add_executable(${PROJECT_NAME} app/main.cpp)
 target_link_libraries(${PROJECT_NAME} PRIVATE hesiod_core)
 if(APPLE)
-  set_target_properties(${PROJECT_NAME} PROPERTIES
-    MACOSX_BUNDLE TRUE
-    OUTPUT_NAME Hesiod
-    MACOSX_BUNDLE_GUI_IDENTIFIER com.hesiodengine.Hesiod
-    MACOSX_BUNDLE_BUNDLE_NAME Hesiod
-    MACOSX_BUNDLE_BUNDLE_VERSION "${hesiod-root_VERSION}"
-    MACOSX_BUNDLE_SHORT_VERSION_STRING "${hesiod-root_VERSION}")
-  add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory
-      "${EXECUTABLE_OUTPUT_PATH}/data"
-      "$<TARGET_BUNDLE_CONTENT_DIR:${PROJECT_NAME}>/Resources/data"
+  set_target_properties(
+    ${PROJECT_NAME}
+    PROPERTIES MACOSX_BUNDLE TRUE
+               OUTPUT_NAME Hesiod
+               MACOSX_BUNDLE_GUI_IDENTIFIER com.hesiodengine.Hesiod
+               MACOSX_BUNDLE_BUNDLE_NAME Hesiod
+               MACOSX_BUNDLE_BUNDLE_VERSION "${hesiod-root_VERSION}"
+               MACOSX_BUNDLE_SHORT_VERSION_STRING "${hesiod-root_VERSION}")
+  add_custom_command(
+    TARGET ${PROJECT_NAME}
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory "${EXECUTABLE_OUTPUT_PATH}/data"
+            "$<TARGET_BUNDLE_CONTENT_DIR:${PROJECT_NAME}>/Resources/data"
     VERBATIM)
 endif()
 
@@ -186,14 +188,18 @@ if(HESIOD_ENABLE_TESTS)
     graph_editor PROPERTIES WORKING_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}
                             ENVIRONMENT "QT_QPA_PLATFORM=offscreen")
 
-  add_executable(profile_highmap ${CMAKE_SOURCE_DIR}/tests/profiling/highmap_workload.cpp)
+  add_executable(profile_highmap
+                 ${CMAKE_SOURCE_DIR}/tests/profiling/highmap_workload.cpp)
   set_target_properties(profile_highmap PROPERTIES AUTOMOC OFF)
-  target_include_directories(profile_highmap PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+  target_include_directories(profile_highmap
+                             PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
   target_link_libraries(profile_highmap PRIVATE highmap hesiod_tracy)
   add_test(NAME profiling_highmap COMMAND profile_highmap)
 
-  # Explicit desktop workload; requires a real OpenGL display, not offscreen CTest.
-  add_executable(profile_viewer ${CMAKE_SOURCE_DIR}/tests/gui/profile_viewer.cpp)
+  # Explicit desktop workload; requires a real OpenGL display, not offscreen
+  # CTest.
+  add_executable(profile_viewer
+                 ${CMAKE_SOURCE_DIR}/tests/gui/profile_viewer.cpp)
   target_link_libraries(profile_viewer PRIVATE hesiod_core Qt6::Test)
 
   add_executable(test_autosave ${CMAKE_SOURCE_DIR}/tests/gui/test_autosave.cpp)

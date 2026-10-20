@@ -5,8 +5,8 @@
 
 #include <QTimer>
 
-#include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/app/bundle_runtime.hpp"
+#include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/cli/batch_mode.hpp"
 #include "hesiod/gui/project_ui.hpp"
 #include "hesiod/gui/widgets/graph_tabs_widget.hpp"

@@ -24,22 +24,22 @@ constexpr const char *P_OUT         = "output";
 constexpr const char *P_SOURCES     = "sources";
 constexpr const char *P_WATER_DEPTH = "water_depth";
 
-constexpr const char *A_CONTROL_POINTS_COUNT          = "control_points_count";
-constexpr const char *A_DEPTH                         = "depth";
-constexpr const char *A_DISTANCE_EXPONENT             = "distance_exponent";
-constexpr const char *A_ELEVATION_RATIO               = "elevation_ratio";
-constexpr const char *A_ENABLE_WIDTH_DEPTH_SCALING    = "enable_width_depth_scaling";
-constexpr const char *A_FAVOR_DOMAIN_CENTER           = "favor_domain_center";
-constexpr const char *A_FAVOR_STREAM_MERGING          = "favor_stream_merging";
-constexpr const char *A_RADIAL_PROFILE                = "radial_profile";
-constexpr const char *A_RADIAL_PROFILE_PARAMETER      = "radial_profile_parameter";
-constexpr const char *A_SEED                          = "seed";
-constexpr const char *A_TRUNCATE_MERGING_PATHS        = "truncate_merging_paths";
-constexpr const char *A_UPWARD_PENALIZATION           = "upward_penalization";
-constexpr const char *A_VALLEY_FACTOR                 = "valley_factor";
-constexpr const char *A_VALLEY_RADIUS                 = "valley_radius";
-constexpr const char *A_WIDTH                         = "width";
-constexpr const char *A_WIDTH_EXPONENT                = "width_exponent";
+constexpr const char *A_CONTROL_POINTS_COUNT       = "control_points_count";
+constexpr const char *A_DEPTH                      = "depth";
+constexpr const char *A_DISTANCE_EXPONENT          = "distance_exponent";
+constexpr const char *A_ELEVATION_RATIO            = "elevation_ratio";
+constexpr const char *A_ENABLE_WIDTH_DEPTH_SCALING = "enable_width_depth_scaling";
+constexpr const char *A_FAVOR_DOMAIN_CENTER        = "favor_domain_center";
+constexpr const char *A_FAVOR_STREAM_MERGING       = "favor_stream_merging";
+constexpr const char *A_RADIAL_PROFILE             = "radial_profile";
+constexpr const char *A_RADIAL_PROFILE_PARAMETER   = "radial_profile_parameter";
+constexpr const char *A_SEED                       = "seed";
+constexpr const char *A_TRUNCATE_MERGING_PATHS     = "truncate_merging_paths";
+constexpr const char *A_UPWARD_PENALIZATION        = "upward_penalization";
+constexpr const char *A_VALLEY_FACTOR              = "valley_factor";
+constexpr const char *A_VALLEY_RADIUS              = "valley_radius";
+constexpr const char *A_WIDTH                      = "width";
+constexpr const char *A_WIDTH_EXPONENT             = "width_exponent";
 
 // -----------------------------------------------------------------------------
 // Setup
