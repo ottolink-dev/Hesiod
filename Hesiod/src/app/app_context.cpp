@@ -24,6 +24,21 @@ void AppContext::initialize()
 
   this->load_settings();
   this->load_node_documentation();
+
+  // initialize default GraphWorker hooks
+  GraphWorker::enabled = [this]()
+  { return !this->headless && this->app_settings.node_editor.async_update; };
+
+  GraphWorker::post_to_caller = [](std::function<void()> fct)
+  {
+    if (qApp)
+      QMetaObject::invokeMethod(qApp, std::move(fct), Qt::QueuedConnection);
+    else
+      fct();
+  };
+
+  GraphWorker::thread_setup = [this]()
+  { hmap::init_openmp(this->app_settings.global.omp_num_threads); };
 }
 
 void AppContext::load_node_documentation()
