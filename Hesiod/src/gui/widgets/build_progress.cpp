@@ -94,6 +94,9 @@ void BuildProgress::on_update_held(bool held)
 void BuildProgress::on_update_finished()
 {
   this->updating = this->held = false;
+  this->done_ids.clear();
+  this->pass.clear();
+  this->done_before = this->done = this->total = 0;
   this->refresh();
 }
 

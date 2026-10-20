@@ -56,7 +56,7 @@ public:
   void set_p_worker(GraphWorker *new_p_worker) { this->p_worker = new_p_worker; }
   void stop_update(); // before modifying the graph, see GraphWorker::stop()
   void execute_parallel(const std::vector<std::string> &dirty_node_ids,
-                        size_t                          num_threads = 0);
+                        size_t                          num_threads = 0) override;
 
   // --- Inter-graph Broadcasting ---
   BroadcastMap *get_p_broadcast_params() { return this->p_broadcast_params; }
