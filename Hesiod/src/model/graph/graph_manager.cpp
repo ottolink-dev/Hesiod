@@ -107,8 +107,41 @@ void GraphManager::export_flatten()
 {
   Logger::log()->trace("GraphManager::export_flatten");
 
-  // what is exported has to be computed first
+  // Finish any pending background work first
   this->worker->finish();
+
+  // Switch to sequential mode for export: synchronously update all graphs
+  // so that inter-graph broadcasts and receives compute deterministically.
+  for (const auto &gid : this->graph_order)
+  {
+    if (auto *graph = this->get_graph_ref_by_id(gid))
+      graph->set_p_worker(nullptr);
+  }
+
+  try
+  {
+    for (const auto &gid : this->graph_order)
+    {
+      if (auto *graph = this->get_graph_ref_by_id(gid))
+        graph->update();
+    }
+  }
+  catch (...)
+  {
+    for (const auto &gid : this->graph_order)
+    {
+      if (auto *graph = this->get_graph_ref_by_id(gid))
+        graph->set_p_worker(this->worker.get());
+    }
+    this->on_update_failed(std::current_exception());
+    return;
+  }
+
+  for (const auto &gid : this->graph_order)
+  {
+    if (auto *graph = this->get_graph_ref_by_id(gid))
+      graph->set_p_worker(this->worker.get());
+  }
 
   // create config
   auto export_cfg = GraphConfig();
