@@ -193,3 +193,75 @@ flowchart TD
 ```
 
 Source: [cancellation_and_exceptions.mmd](diagrams/cancellation_and_exceptions.mmd)
+
+## Multi-Graph Updates and Synchronous Convergence
+
+In complex Hesiod projects, graphs can depend on one another through cross-graph broadcast nodes (`BroadcastNode` and `ReceiveNode` pairs managed by `hesiod::GraphManager`).
+
+### Asynchronous Propagation
+
+During normal asynchronous execution:
+1. When a `BroadcastNode` completes on a pool worker thread, `GraphManager::on_broadcast_node_updated()` detects that it is executing in a worker thread (`GraphWorker::in_worker_thread()`).
+2. It marshals the notification back to the GUI thread via `worker->post(...)`.
+3. The GUI event loop processes the posted notification, determines downstream graphs, and calls `GraphWorker::request()` on receiver graphs. Receiver graphs are queued and scheduled sequentially or concurrently according to layer hierarchy rules.
+
+### Synchronous Flush Convergence in `finish()`
+
+When an operation requires synchronous outputs (e.g. `GraphManager::export_flatten()` or synchronous CLI pipelines):
+1. The caller thread invokes `GraphWorker::finish()`, setting `is_finishing = true`.
+2. As worker pool threads execute `BroadcastNode`s during `finish()`, calls to `GraphWorker::post()` bypass the Qt event loop (which is blocked by the caller thread) and enqueue directly into an internal thread-safe `flush_callbacks` queue.
+3. Between compute steps, `finish()` drains and executes `flush_callbacks` directly on the caller thread.
+4. Calling `on_broadcast_node_updated()` immediately calls `request()` on dependent receiver graphs, pushing new jobs onto `this->jobs`.
+5. The `finish()` loop continues until both `this->jobs` and `flush_callbacks` are completely drained, ensuring all cascading inter-graph computations complete before `finish()` returns.
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant GUI as Caller / GUI Thread (Qt Event Loop)
+    participant GW as GraphWorker
+    participant Pool as ThreadPool (Worker Threads)
+    participant GM as GraphManager
+
+    Note over GUI,Pool: --- Asynchronous Inter-Graph Broadcast Flow ---
+
+    GUI->>GW: request(Graph_A, dirty_nodes)
+    GW->>Pool: execute_parallel(Graph_A)
+    Pool->>Pool: Execute BroadcastNode (tag) in Graph_A
+
+    Note over Pool: in_worker_thread() is true
+    Pool->>GM: on_broadcast_node_updated(Graph_A, tag)
+    GM->>GW: post([this, tag]() { on_broadcast_node_updated(); })
+    GW->>GUI: post_to_caller(Qt event loop)
+
+    Note over GUI: Qt event loop processes posted task asynchronously
+    GUI->>GM: execute posted on_broadcast_node_updated(tag)
+    loop For each dependent receiver graph (Graph_B)
+        GM->>GW: request(Graph_B, dirty_nodes)
+    end
+    GW->>Pool: schedule start_next() for Graph_B
+
+    Note over GUI,Pool: --- Synchronous Flush Convergence during finish() ---
+
+    Note over GUI: Caller blocks in GraphWorker::finish() (e.g. export_flatten)
+    GUI->>GW: finish() [sets is_finishing = true]
+
+    loop While jobs or flush_callbacks remain
+        opt If pending jobs in queue
+            GW->>Pool: execute_parallel(Graph_A)
+            Pool->>GM: on_broadcast_node_updated(tag)
+            GM->>GW: post(callback)
+            Note over GW: is_finishing is true: callback enqueued to flush_callbacks
+        end
+
+        Note over GUI: Caller drains flush_callbacks synchronously
+        GW->>GM: callback() runs directly on Caller thread
+        GM->>GW: request(Graph_B) adds Graph_B to jobs queue
+        Note over GW: jobs queue now has Graph_B; loop continues
+        GW->>Pool: execute_parallel(Graph_B)
+    end
+
+    Note over GUI: is_finishing = false; all graphs fully updated
+```
+
+Source: [multigraph_broadcast_flow.mmd](diagrams/multigraph_broadcast_flow.mmd)
+
