@@ -742,6 +742,21 @@ private Q_SLOTS:
 
   void graph_worker_async_parallel_update()
   {
+    // Explicitly enable background updates and route completion through the Qt event loop
+    const auto orig_enabled = GraphWorker::enabled;
+    const auto orig_post_to_caller = GraphWorker::post_to_caller;
+
+    auto cleanup = qScopeGuard(
+        [&]()
+        {
+          GraphWorker::enabled = orig_enabled;
+          GraphWorker::post_to_caller = orig_post_to_caller;
+        });
+
+    GraphWorker::enabled = []() { return true; };
+    GraphWorker::post_to_caller = [](std::function<void()> fct)
+    { QMetaObject::invokeMethod(qApp, std::move(fct), Qt::QueuedConnection); };
+
     auto config = small_config();
     auto graph = std::make_shared<GraphNode>("worker_test", config);
 
@@ -758,16 +773,38 @@ private Q_SLOTS:
     graph->new_link(b, "output", d, "input 1");
     graph->new_link(c, "output", d, "input 2");
 
+    const auto        caller_thread_id = std::this_thread::get_id();
+    std::atomic<bool> executed_off_caller_thread = false;
+    std::atomic<bool> in_worker_thread_flag = false;
+    bool              completion_on_caller_thread = false;
+
+    graph->compute_started = [&](const std::string &)
+    {
+      if (std::this_thread::get_id() != caller_thread_id)
+        executed_off_caller_thread = true;
+
+      if (GraphWorker::in_worker_thread())
+        in_worker_thread_flag = true;
+    };
+
     bool finished = false;
     graph->update_finished = [&]()
     {
+      completion_on_caller_thread = (std::this_thread::get_id() == caller_thread_id);
       finished = true;
     };
 
     graph->update();
 
+    // Verify update returned asynchronously before completion was delivered
+    QVERIFY(!finished);
+
     // Process event loop until background update completes
     QTRY_VERIFY_WITH_TIMEOUT(finished, 5000);
+
+    QVERIFY(executed_off_caller_thread.load());
+    QVERIFY(in_worker_thread_flag.load());
+    QVERIFY(completion_on_caller_thread);
 
     QVERIFY(graph->get_node(d) != nullptr);
   }
