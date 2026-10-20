@@ -23071,6 +23071,299 @@
             }
         }
     },
+    "SnowCover": {
+        "category": "Hydrology",
+        "description": "SnowCover simulates snowfall, avalanche settling and melt. Snow falls above the snow line on the coarsest level of a Gaussian pyramid and slides wherever the snow surface is steeper than the slip-off slope (a slope that softens as the snow gets deeper than the adhered snow mass). It melts uniformly, along a directional sun-exposure map or along a connected melt map, and is pushed back up the pyramid while the finer levels only re-settle it. Only snow deeper than 1 m stays on the terrain. Outputs are the terrain with snow, a soft snow coverage mask, a hard snow mask, the snow depth and a 'texture' snow layer that the viewers pick up automatically. Heights are read in absolute units: 1.0 is Terrain Height (or Verticality without Real Scale).",
+        "label": "SnowCover",
+        "parameter_groups": [
+            {
+                "keys": [
+                    "duration",
+                    "intensity",
+                    "settle_duration",
+                    "melt_type",
+                    "melt",
+                    "melt_remnants",
+                    "direction",
+                    "snow_line",
+                    "snow_color",
+                    "ground_color",
+                    "slip_off_angle",
+                    "adhered_snow_mass",
+                    "model_scale",
+                    "real_scale",
+                    "world_width",
+                    "world_height",
+                    "terrain_scale",
+                    "verticality",
+                    "mask_activate",
+                    "mask_type",
+                    "mask_inverse",
+                    "mask_radius",
+                    "mask_gain",
+                    "post_mix_method",
+                    "post_mix",
+                    "post_inverse",
+                    "post_gamma",
+                    "post_gain",
+                    "post_smoothing_radius",
+                    "post_remap",
+                    "post_saturate"
+                ],
+                "name": "main"
+            }
+        ],
+        "parameters": {
+            "adhered_snow_mass": {
+                "description": "Snow depth, in meters, that still holds on steep slopes. The slip-off slope drops to zero when the snow is twice this deep.",
+                "key": "adhered_snow_mass",
+                "label": "Adhered Snow Mass",
+                "type": "Float"
+            },
+            "direction": {
+                "description": "Rotation of the sun path used by the Directional melt type, in degrees.",
+                "key": "direction",
+                "label": "Direction",
+                "type": "Float"
+            },
+            "duration": {
+                "description": "Snowfall duration. Longer snowfall lays down more snow.",
+                "key": "duration",
+                "label": "Duration",
+                "type": "Float"
+            },
+            "ground_color": {
+                "description": "Color under the snow in the 'texture' output when no 'texture_in' is connected.",
+                "key": "ground_color",
+                "label": "Ground Color",
+                "type": "Color"
+            },
+            "intensity": {
+                "description": "Amount of snow that falls per step of the snowfall.",
+                "key": "intensity",
+                "label": "Intensity",
+                "type": "Float"
+            },
+            "mask_activate": {
+                "description": "Enables or disables the internal mask. If the node's 'mask' input is connected, this setting is bypassed and the input mask is used instead.",
+                "key": "mask_activate",
+                "label": "Activate Default Mask",
+                "type": "Bool"
+            },
+            "mask_gain": {
+                "description": "Controls the intensity or influence of the internal mask. Bypassed if the 'mask' input is connected.",
+                "key": "mask_gain",
+                "label": "Mask Gain",
+                "type": "Float"
+            },
+            "mask_inverse": {
+                "description": "Inverts the internal mask, applying the operator where the mask is low. Ignored if a 'mask' input is provided.",
+                "key": "mask_inverse",
+                "label": "Inverse Mask",
+                "type": "Bool"
+            },
+            "mask_radius": {
+                "description": "Defines the smoothing radius for the internal mask. A value of 0 disables smoothing. This is bypassed if the 'mask' input is used.",
+                "key": "mask_radius",
+                "label": "Mask Radius",
+                "type": "Float"
+            },
+            "mask_type": {
+                "description": "Specifies how the internal mask is computed: 'Elevation' uses height, 'Gradient Norm' uses slope, and 'Elevation mid-range' selects the middle portion of the height range. This parameter is ignored when a 'mask' input is connected.",
+                "key": "mask_type",
+                "label": "Mask Type",
+                "type": "Choice"
+            },
+            "melt": {
+                "description": "Amount of snow melted at each step of the simulation.",
+                "key": "melt",
+                "label": "Melt",
+                "type": "Float"
+            },
+            "melt_remnants": {
+                "description": "Constant melt added everywhere on top of the sun exposure (Directional melt type only).",
+                "key": "melt_remnants",
+                "label": "Melt Remnants",
+                "type": "Float"
+            },
+            "melt_type": {
+                "description": "Uniform melts the same amount everywhere. Directional melts more where the terrain receives more sun over a spring sun path (latitude 65, February to May), rotated by Direction. A connected 'melt' map overrides both.",
+                "key": "melt_type",
+                "label": "Melt Type",
+                "type": "Enumeration"
+            },
+            "model_scale": {
+                "description": "Size of the snow model. Larger values settle the snow over larger distances and run more pyramid levels.",
+                "key": "model_scale",
+                "label": "Model Scale",
+                "type": "Float"
+            },
+            "post_gain": {
+                "description": "Mid-centered gain transformation applied to the elevation values. This is a non-linear recurve operator centered around the mid elevation (typically 0.5). Increasing the gain pushes values toward the minimum and maximum elevations, creating flatter low/high regions with a steeper transition around the midpoint.",
+                "key": "post_gain",
+                "label": "Gain",
+                "type": "Float"
+            },
+            "post_gamma": {
+                "description": "Standard gamma correction applied to the elevation values. This is a monotonic power-law remapping that shifts emphasis toward low or high elevations, making the overall shape sharper or bulkier without changing its ordering.",
+                "key": "post_gamma",
+                "label": "Gamma",
+                "type": "Float"
+            },
+            "post_inverse": {
+                "description": "Inverts the output values after processing, flipping low and high values across the midrange.",
+                "key": "post_inverse",
+                "label": "Invert Output",
+                "type": "Bool"
+            },
+            "post_mix": {
+                "description": "Mixing factor for blending input and output values. A value of 0 uses only the input, 1 uses only the output, and intermediate values perform a linear interpolation.",
+                "key": "post_mix",
+                "label": "Mix Factor",
+                "type": "Float"
+            },
+            "post_mix_method": {
+                "description": "Method used to combine input and output values. Options include linear interpolation (default), min, max, smooth min, smooth max, add, and subtract.",
+                "key": "post_mix_method",
+                "label": "Mix Method",
+                "type": "Enumeration"
+            },
+            "post_remap": {
+                "description": "Linearly remaps the output values to a specified target range (default is [0, 1]).",
+                "key": "post_remap",
+                "label": "Remap Range",
+                "type": "Value range"
+            },
+            "post_saturate": {
+                "description": "Modifies the amplitude of elevations by first clamping them to a given interval and then scaling them so that the restricted interval matches the original input range. This enhances contrast in elevation variations while maintaining overall structure.",
+                "key": "post_saturate",
+                "label": "Saturation Range",
+                "type": "Value range"
+            },
+            "post_smoothing_radius": {
+                "description": "Defines the radius for post-processing smoothing, determining the size of the neighborhood used to average local values and reduce high-frequency detail. A radius of 0 disables smoothing.",
+                "key": "post_smoothing_radius",
+                "label": "Smoothing Radius",
+                "type": "Float"
+            },
+            "real_scale": {
+                "description": "Uses Terrain Width and Terrain Height as the physical size of the map. When disabled, Terrain Scale and Verticality are used instead.",
+                "key": "real_scale",
+                "label": "Real Scale",
+                "type": "Bool"
+            },
+            "settle_duration": {
+                "description": "Duration of the settling that follows the snowfall, letting the snow slide into stable positions.",
+                "key": "settle_duration",
+                "label": "Settle Duration",
+                "type": "Float"
+            },
+            "slip_off_angle": {
+                "description": "Slope angle above which shallow snow slides off, in degrees.",
+                "key": "slip_off_angle",
+                "label": "Slip-off Angle",
+                "type": "Float"
+            },
+            "snow_color": {
+                "description": "Snow color of the 'texture' output.",
+                "key": "snow_color",
+                "label": "Snow Color",
+                "type": "Color"
+            },
+            "snow_line": {
+                "description": "Normalized altitude below which no snow falls.",
+                "key": "snow_line",
+                "label": "Snow Line",
+                "type": "Float"
+            },
+            "terrain_scale": {
+                "description": "Map width in meters, used when Real Scale is disabled.",
+                "key": "terrain_scale",
+                "label": "Terrain Scale",
+                "type": "Integer"
+            },
+            "verticality": {
+                "description": "Height of a 1.0 elevation in meters, used when Real Scale is disabled.",
+                "key": "verticality",
+                "label": "Verticality",
+                "type": "Integer"
+            },
+            "world_height": {
+                "description": "Physical height of a 1.0 elevation, used with Real Scale.",
+                "key": "world_height",
+                "label": "Terrain Height",
+                "type": "Float"
+            },
+            "world_width": {
+                "description": "Physical width of the map, used with Real Scale.",
+                "key": "world_width",
+                "label": "Terrain Width",
+                "type": "Float"
+            }
+        },
+        "ports": {
+            "depth": {
+                "caption": "depth",
+                "data_type": "VirtualArray",
+                "description": "Visible snow depth, in input units.",
+                "type": "output"
+            },
+            "hard": {
+                "caption": "hard",
+                "data_type": "VirtualArray",
+                "description": "Binary mask of snow deeper than 1 m.",
+                "type": "output"
+            },
+            "input": {
+                "caption": "input",
+                "data_type": "VirtualArray",
+                "description": "Input terrain.",
+                "type": "input"
+            },
+            "mask": {
+                "caption": "mask",
+                "data_type": "VirtualArray",
+                "description": "Mask blending the snow-covered terrain with the input (expected in [0, 1]).",
+                "type": "input"
+            },
+            "melt": {
+                "caption": "melt",
+                "data_type": "VirtualArray",
+                "description": "Optional melt multiplier in [0, 1]. Overrides the Melt Type.",
+                "type": "input"
+            },
+            "output": {
+                "caption": "output",
+                "data_type": "VirtualArray",
+                "description": "Terrain with the settled snow on top, after post-processing.",
+                "type": "output"
+            },
+            "snow": {
+                "caption": "snow",
+                "data_type": "VirtualArray",
+                "description": "Soft snow coverage mask in [0, 1].",
+                "type": "output"
+            },
+            "snowfall": {
+                "caption": "snowfall",
+                "data_type": "VirtualArray",
+                "description": "Optional snowfall multiplier in [0, 1].",
+                "type": "input"
+            },
+            "texture": {
+                "caption": "texture",
+                "data_type": "VirtualTexture",
+                "description": "Snow layer: the snow color blended over 'texture_in' (or the ground color) by the soft snow mask. Shown automatically by the viewers.",
+                "type": "output"
+            },
+            "texture_in": {
+                "caption": "texture_in",
+                "data_type": "VirtualTexture",
+                "description": "Optional texture to put the snow on.",
+                "type": "input"
+            }
+        }
+    },
     "SnowMeltingMap": {
         "category": "Hydrology",
         "description": "No description available",
