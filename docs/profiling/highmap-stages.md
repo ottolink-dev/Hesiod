@@ -21,10 +21,10 @@ uses one Tracy client per executable. Disabled hooks do not evaluate metadata.
 | `HighMap::for_each_tile` | Dispatch including validation, computation and optional trimming; text records compute mode, array and tile dimensions |
 | `HighMap::tile.acquire`, `.algorithm`, `.release` | Tile storage access, callback and release, respectively |
 | `HighMap::distributed_tile_loop` | Dispatch and joining worker threads, including waiting |
-| `HighMap::single_array` / `single_array_downscaled` | Full-array computation, including intermediate-array lifetimes |
+| `HighMap::single_array` | Full-array computation, including intermediate-array lifetimes |
 | `HighMap::single_array.gather` | Input and output materialisation and resampling before the callback |
 | `HighMap::single_array.algorithm` | The supplied callback |
-| `HighMap::single_array.scatter` | Output resampling/write-back; downscaled mode also reconstructs high-frequency content |
+| `HighMap::single_array.scatter` | Output resampling/write-back |
 | `HighMap::VirtualArray::*` | Array materialisation, write-back/interpolation and overlap synchronization |
 | `HighMap::VirtualTexture::*` | Channel gathering/scattering and display-byte conversion |
 | `HighMap::hydraulic_blur.*` | Clamp, smoothing and combination stages |

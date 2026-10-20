@@ -25,8 +25,7 @@ int main()
   for (bool reduced : {false, true})
     for (auto mode : {hmap::VA_SEQUENTIAL,
                       hmap::VA_DISTRIBUTED,
-                      hmap::VA_SINGLE_ARRAY,
-                      hmap::VA_SINGLE_ARRAY_DOWNSCALED})
+                      hmap::VA_SINGLE_ARRAY})
     {
       HSD_PROFILE_ZONE("HighMap workload::dispatch_mode");
       HSD_PROFILE_TEXT(hmap::to_string(mode));
@@ -36,16 +35,14 @@ int main()
       // native resolution, so use a constant to check their reconstruction.
       hmap::Array source(glm::ivec2(32, 24));
       for (size_t i = 0; i < source.vector.size(); ++i)
-        source.vector[i] = (mode == hmap::VA_SINGLE_ARRAY ||
-                            mode == hmap::VA_SINGLE_ARRAY_DOWNSCALED)
+        source.vector[i] = (mode == hmap::VA_SINGLE_ARRAY)
                                ? 2.f
                                : static_cast<float>(i) / 1024.f;
       input.from_array(source, sequential);
       output.fill(0.f, sequential);
       hmap::ComputeMode cm{.mode = mode,
                            .trim_storage = true,
-                           .stride = reduced ? 2 : 1,
-                           .k_cutoff = reduced ? 0.5f : 1.f};
+                           .stride = reduced ? 2 : 1};
       hmap::for_each_tile(
           {&input},
           {&output},
