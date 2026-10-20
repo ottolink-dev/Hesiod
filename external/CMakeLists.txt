@@ -44,3 +44,6 @@ add_subdirectory(QTerrainRenderer)
 
 # QTextureDownloader
 add_subdirectory(QTextureDownloader)
+
+# FastNoiseSIMD (vendored, MIT)
+add_subdirectory(FastNoiseSIMD)

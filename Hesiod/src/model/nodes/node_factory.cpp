@@ -285,6 +285,7 @@ std::map<std::string, std::string> get_node_inventory()
       {"MorphologicalOperators", "Terrain Features"},
       {"MountainCone", "Primitive/Geological"},
       {"MountainInselberg", "Primitive/Geological"},
+      {"MountainMassif", "Primitive/Geological"},
       {"MountainRangeRadial", "WIP"}, // , "Primitive/Geological"},
       {"MountainStump", "Primitive/Geological"},
       {"MountainTibesti", "Primitive/Geological"},
@@ -583,6 +584,7 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
     SETUP_NODE(MorphologicalOperators, morphological_operators);
     SETUP_NODE(MountainCone, mountain_cone);
     SETUP_NODE(MountainInselberg, mountain_inselberg);
+    SETUP_NODE(MountainMassif, mountain_massif);
     SETUP_NODE(MountainRangeRadial, mountain_range_radial);
     SETUP_NODE(MountainStump, mountain_stump);
     SETUP_NODE(MountainTibesti, mountain_tibesti);

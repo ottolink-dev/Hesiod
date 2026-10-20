@@ -106,6 +106,7 @@ target_link_libraries(
          Qt6::WebEngineWidgets
          qterrain-renderer
          qtexture_downloader
+         fastnoise_simd
          ZLIB::ZLIB)
 
 # custom window chrome (frameless main window with native snap / resize)

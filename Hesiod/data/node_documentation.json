@@ -15448,6 +15448,139 @@
             }
         }
     },
+    "MountainMassif": {
+        "category": "Primitive/Geological",
+        "description": "MountainMassif builds a ridged mountain massif from three seeded ridge layers (direction-warped Voronoi cells shaped by terraced, warped Perlin noise) under a smooth radial footprint. Except for the Basic style, the massif is then worked by the same multiscale particle erosion as ErosionMultiscale, using a per-style preset; Strata also blends fractal terraces over the upper part of the massif. The node computes on a square power-of-two grid and resamples to the graph resolution. Raw heights are absolute (peaks typically around 0.15 to 0.3) and are remapped to [0, 1] by default: disable Remap Range to keep them.",
+        "label": "MountainMassif",
+        "parameter_groups": [
+            {
+                "keys": [
+                    "style",
+                    "scale",
+                    "height",
+                    "bulk",
+                    "reduce_details",
+                    "seed",
+                    "center",
+                    "world_width",
+                    "world_height",
+                    "post_inverse",
+                    "post_gamma",
+                    "post_gain",
+                    "post_smoothing_radius",
+                    "post_remap",
+                    "post_saturate"
+                ],
+                "name": "main"
+            }
+        ],
+        "parameters": {
+            "bulk": {
+                "description": "Exponential remap of the final heights. Low pulls mid elevations down for slimmer peaks, High lifts them for a bulkier massif, Medium leaves them unchanged.",
+                "key": "bulk",
+                "label": "Bulk",
+                "type": "Enumeration"
+            },
+            "center": {
+                "description": "Center of the radial footprint, in unit coordinates.",
+                "key": "center",
+                "label": "Position",
+                "type": "Vec2Float"
+            },
+            "height": {
+                "description": "Height multiplier applied before erosion. More height gives the erosion more relief to carve.",
+                "key": "height",
+                "label": "Height",
+                "type": "Float"
+            },
+            "post_gain": {
+                "description": "Mid-centered gain transformation applied to the elevation values. This is a non-linear recurve operator centered around the mid elevation (typically 0.5). Increasing the gain pushes values toward the minimum and maximum elevations, creating flatter low/high regions with a steeper transition around the midpoint.",
+                "key": "post_gain",
+                "label": "Gain",
+                "type": "Float"
+            },
+            "post_gamma": {
+                "description": "Standard gamma correction applied to the elevation values. This is a monotonic power-law remapping that shifts emphasis toward low or high elevations, making the overall shape sharper or bulkier without changing its ordering.",
+                "key": "post_gamma",
+                "label": "Gamma",
+                "type": "Float"
+            },
+            "post_inverse": {
+                "description": "Inverts the output values after processing, flipping low and high values across the midrange.",
+                "key": "post_inverse",
+                "label": "Invert Output",
+                "type": "Bool"
+            },
+            "post_remap": {
+                "description": "Linearly remaps the output values to a specified target range (default is [0, 1]).",
+                "key": "post_remap",
+                "label": "Remap Range",
+                "type": "Value range"
+            },
+            "post_saturate": {
+                "description": "Modifies the amplitude of elevations by first clamping them to a given interval and then scaling them so that the restricted interval matches the original input range. This enhances contrast in elevation variations while maintaining overall structure.",
+                "key": "post_saturate",
+                "label": "Saturation Range",
+                "type": "Value range"
+            },
+            "post_smoothing_radius": {
+                "description": "Defines the radius for post-processing smoothing, determining the size of the neighborhood used to average local values and reduce high-frequency detail. A radius of 0 disables smoothing.",
+                "key": "post_smoothing_radius",
+                "label": "Smoothing Radius",
+                "type": "Float"
+            },
+            "reduce_details": {
+                "description": "Uses smoother erosion shaping. Only affects the Eroded and Old styles.",
+                "key": "reduce_details",
+                "label": "Reduce Details",
+                "type": "Bool"
+            },
+            "scale": {
+                "description": "Radius of the radial footprint, as a fraction of the map size. The ridge layers keep their own randomized scales.",
+                "key": "scale",
+                "label": "Scale",
+                "type": "Float"
+            },
+            "seed": {
+                "description": "Random seed number. The random seed is an offset to the randomized process. A different seed will produce a new result.",
+                "key": "seed",
+                "label": "Seed",
+                "type": "Random seed number"
+            },
+            "style": {
+                "description": "Overall look. Basic: ridges only. Eroded: light erosion. Old: long, gentle erosion with coarse sediment, for worn ranges. Alpine: strong downcutting with bed load and heights doubled. Strata: Alpine plus fractal terraces blended over the upper part of the massif.",
+                "key": "style",
+                "label": "Style",
+                "type": "Enumeration"
+            },
+            "world_height": {
+                "description": "Physical height of a 1.0 elevation, used by the erosion presets together with Terrain Width.",
+                "key": "world_height",
+                "label": "Terrain Height",
+                "type": "Float"
+            },
+            "world_width": {
+                "description": "Physical width of the map, used by the erosion presets. With Terrain Height it sets the slopes seen by the erosion.",
+                "key": "world_width",
+                "label": "Terrain Width",
+                "type": "Float"
+            }
+        },
+        "ports": {
+            "envelope": {
+                "caption": "envelope",
+                "data_type": "VirtualArray",
+                "description": "Optional envelope multiplied with the generated massif (applied relative to its minimum).",
+                "type": "input"
+            },
+            "output": {
+                "caption": "output",
+                "data_type": "VirtualArray",
+                "description": "Generated massif heightmap.",
+                "type": "output"
+            }
+        }
+    },
     "MountainRangeRadial": {
         "category": "WIP",
         "description": "Generates a heightmap representing a radial mountain range emanating from a specified center.",
