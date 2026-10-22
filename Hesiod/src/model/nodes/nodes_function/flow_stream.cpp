@@ -201,7 +201,7 @@ void compute_flow_stream_node(BaseNode &node)
 
         *pa_water_depth = *pa_in - *pa_out;
       },
-      node.cfg().cm_single_array);
+      node.cfg().cm_cpu);
 
   p_out->sync_overlap_buffers();
   p_water_depth->sync_overlap_buffers();
