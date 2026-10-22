@@ -136,6 +136,7 @@ HesiodApplication::HesiodApplication(int &argc, char **argv, StartupMode mode)
   {
     // stop here, skip the rest
     this->headless = true;
+    this->context.headless = true;
     this->headless_exit_code = ret;
     return;
   }

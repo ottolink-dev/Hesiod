@@ -300,6 +300,8 @@ void run_batch_mode(const std::string                  &filename,
 
   graph_manager.update();
 
+  graph_manager.get_worker().finish();
+
   string_to_file(graph_manager.runtime_info_to_string('|'), "batch.log");
 
   // flatten & export if there is a configuration defined

@@ -1,0 +1,41 @@
+sequenceDiagram
+    autonumber
+    participant GUI as GUI Thread
+    participant WT as Worker Thread (GraphWorker)
+    participant TP as ThreadPool Workers (GNode)
+
+    Note over GUI: User edits parameter or requests update
+    GUI->>GUI: GraphWorker::start_next()
+    GUI->>GUI: Snapshot dirty nodes: node->on_pre_async_compute()
+    GUI->>WT: Spawn std::thread(graph->execute_parallel)
+
+    Note over WT: Graph::execute_parallel()
+    WT->>WT: Calculate in-degree for dirty subgraph
+    WT->>WT: Create sync_mutex, sync_cv, cancelled=false
+    WT->>WT: Create ThreadPool
+    WT->>TP: enqueue(initial nodes with in_degree == 0)
+
+    par Parallel Task Execution
+        TP->>TP: Check cancel_update_callback(node_id)
+        alt is cancelled or pass mismatched
+            TP->>WT: cancelled = true, sync_cv.notify_all()
+        else proceed with node compute
+            TP->>TP: Node::update() / compute() using frozen snapshots
+            critical Atomic in-degree decrement
+                TP->>TP: For each downstream node:<br/>in_degree.fetch_sub(1) == 1?
+            end
+            opt If downstream in_degree reaches 0
+                TP->>TP: enqueue(downstream_node)
+            end
+            critical Atomic remaining decrement
+                TP->>WT: if (--remaining_nodes == 0)<br/>lock(sync_mutex) & sync_cv.notify_all()
+            end
+        end
+    and Coordinator Wait
+        WT->>WT: sync_cv.wait(lock, remaining_nodes == 0 || cancelled)
+    end
+
+    Note over WT: Unblocked from wait
+    WT->>WT: ~ThreadPool() joins all pool workers safely
+    WT->>GUI: post(end_pass, start_next)
+    GUI->>GUI: end_pass(): cancel unstarted snapshots, emit update_finished

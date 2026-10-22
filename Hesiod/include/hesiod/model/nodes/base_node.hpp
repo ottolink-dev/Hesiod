@@ -76,6 +76,9 @@ public:
   void begin_background_compute();
   void cancel_background_compute() { this->computing = false; } // not computed after all
 
+  void on_pre_async_compute() override { this->begin_background_compute(); }
+  void on_async_compute_cancelled() override { this->cancel_background_compute(); }
+
   // gnode::Node accessors, see begin_background_compute()
   template <typename T> T *get_value_ref(int port_index) const
   {

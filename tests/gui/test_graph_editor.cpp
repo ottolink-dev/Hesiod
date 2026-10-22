@@ -18,6 +18,7 @@
 #include "hesiod/gui/widgets/graph_node_widget.hpp"
 #include "hesiod/model/graph/graph_manager.hpp"
 #include "hesiod/model/graph/graph_node.hpp"
+#include "hesiod/model/graph/graph_worker.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/utils.hpp"
 
@@ -701,6 +702,124 @@ private Q_SLOTS:
     QVERIFY(graph->get_nodes().empty());
     QVERIFY(consistent(*graph, widget));
     QCoreApplication::sendPostedEvents(nullptr, QEvent::DeferredDelete);
+  }
+
+  void parallel_branch_execution_and_convergence()
+  {
+    auto config = small_config();
+    auto graph = std::make_shared<GraphNode>("diamond", config);
+
+    // diamond DAG: a -> b, a -> c, b -> d, c -> d
+    const auto a = graph->add_node("Thru");
+    const auto b = graph->add_node("Thru");
+    const auto c = graph->add_node("Thru");
+    const auto d = graph->add_node("Blend");
+
+    graph->new_link(a, "output", b, "input");
+    graph->new_link(a, "output", c, "input");
+    graph->new_link(b, "output", d, "input 1");
+    graph->new_link(c, "output", d, "input 2");
+
+    std::atomic<int> completed(0);
+    std::vector<std::string> order;
+    std::mutex order_mutex;
+
+    graph->compute_finished = [&](const std::string &node_id)
+    {
+      std::lock_guard<std::mutex> lock(order_mutex);
+      order.push_back(node_id);
+      completed++;
+    };
+
+    graph->execute_parallel(graph->topological_sort({a, b, c, d}), 4);
+
+    QCOMPARE(completed.load(), 4);
+    QCOMPARE(order.size(), size_t(4));
+
+    // a must finish before b and c; b and c must finish before d
+    auto it_a = std::ranges::find(order, a);
+    auto it_b = std::ranges::find(order, b);
+    auto it_c = std::ranges::find(order, c);
+    auto it_d = std::ranges::find(order, d);
+
+    QVERIFY(it_a != order.end());
+    QVERIFY(it_b != order.end());
+    QVERIFY(it_c != order.end());
+    QVERIFY(it_d != order.end());
+
+    QVERIFY(it_a < it_b);
+    QVERIFY(it_a < it_c);
+    QVERIFY(it_b < it_d);
+    QVERIFY(it_c < it_d);
+  }
+
+  void graph_worker_async_parallel_update()
+  {
+    // Explicitly enable background updates and route completion through the Qt event loop
+    const auto orig_enabled = GraphWorker::enabled;
+    const auto orig_post_to_caller = GraphWorker::post_to_caller;
+
+    auto cleanup = qScopeGuard(
+        [&]()
+        {
+          GraphWorker::enabled = orig_enabled;
+          GraphWorker::post_to_caller = orig_post_to_caller;
+        });
+
+    GraphWorker::enabled = []() { return true; };
+    GraphWorker::post_to_caller = [](std::function<void()> fct)
+    { QMetaObject::invokeMethod(qApp, std::move(fct), Qt::QueuedConnection); };
+
+    auto config = small_config();
+    auto graph = std::make_shared<GraphNode>("worker_test", config);
+
+    GraphWorker worker;
+    graph->set_p_worker(&worker);
+
+    const auto a = graph->add_node("Thru");
+    const auto b = graph->add_node("Thru");
+    const auto c = graph->add_node("Thru");
+    const auto d = graph->add_node("Blend");
+
+    graph->new_link(a, "output", b, "input");
+    graph->new_link(a, "output", c, "input");
+    graph->new_link(b, "output", d, "input 1");
+    graph->new_link(c, "output", d, "input 2");
+
+    const auto        caller_thread_id = std::this_thread::get_id();
+    std::atomic<bool> executed_off_caller_thread = false;
+    std::atomic<bool> in_worker_thread_flag = false;
+    bool              completion_on_caller_thread = false;
+
+    graph->compute_started = [&](const std::string &)
+    {
+      if (std::this_thread::get_id() != caller_thread_id)
+        executed_off_caller_thread = true;
+
+      if (GraphWorker::in_worker_thread())
+        in_worker_thread_flag = true;
+    };
+
+    bool finished = false;
+    graph->update_finished = [&]()
+    {
+      completion_on_caller_thread = (std::this_thread::get_id() == caller_thread_id);
+      finished = true;
+    };
+
+    graph->update();
+
+    // Verify update returned asynchronously before completion was delivered
+    QVERIFY(!finished);
+
+    // Process event loop until background update completes
+    QTRY_VERIFY_WITH_TIMEOUT(finished, 5000);
+
+    QVERIFY(executed_off_caller_thread.load());
+    QVERIFY(in_worker_thread_flag.load());
+    QVERIFY(completion_on_caller_thread);
+
+    QVERIFY(graph->get_node(d) != nullptr);
   }
 };
 

@@ -6,6 +6,7 @@
 #include "nlohmann/json.hpp"
 
 #include "gnode/graph.hpp"
+#include "gnode/graph_worker.hpp"
 #include "highmap/coord_frame.hpp"
 
 #include "hesiod/model/graph/broadcast_param.hpp"
@@ -15,14 +16,12 @@ namespace hesiod
 {
 
 class BaseNode; // forward
-class GraphWorker;
+using GraphWorker = gnode::GraphWorker;
 
 // =====================================
 // GraphNode
 // =====================================
-class GraphNode : public gnode::Graph,
-                  public hmap::CoordFrame,
-                  public std::enable_shared_from_this<GraphNode>
+class GraphNode : public gnode::Graph, public hmap::CoordFrame
 {
 public:
   GraphNode() = delete;
@@ -56,6 +55,8 @@ public:
   // afterwards, and update_finished comes once the graph is up to date.
   void set_p_worker(GraphWorker *new_p_worker) { this->p_worker = new_p_worker; }
   void stop_update(); // before modifying the graph, see GraphWorker::stop()
+  void execute_parallel(const std::vector<std::string> &dirty_node_ids,
+                        size_t                          num_threads = 0) override;
 
   // --- Inter-graph Broadcasting ---
   BroadcastMap *get_p_broadcast_params() { return this->p_broadcast_params; }
@@ -72,7 +73,6 @@ public:
 
   // --- Update Callbacks
   std::function<void()>                                           update_started;
-  std::function<void()>                                           update_finished;
   std::function<void(const std::string &node_id, float progress)> update_progress;
 
   // for the editor of this graph (update_progress goes to the GraphManager): the
@@ -100,6 +100,7 @@ private:
   BroadcastMap                *p_broadcast_params = nullptr; // own by GraphManager
   gnode::EventConnection       graph_progress_conn;
   GraphWorker                 *p_worker = nullptr; // own by GraphManager
+  std::atomic<int>             completed_count = 0;
 };
 
 } // namespace hesiod

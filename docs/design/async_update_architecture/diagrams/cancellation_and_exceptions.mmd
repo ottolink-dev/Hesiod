@@ -1,0 +1,20 @@
+flowchart TD
+    Start(["Node threw exception OR cancel requested"]) --> Decision{"Source of event?"}
+
+    Decision -->|Exception during Node::update| CatchBlock["catch (...) in Pool Worker"]
+    CatchBlock --> LockErr["lock(error_mutex)"]
+    LockErr --> StoreErr["captured_error = std::current_exception()"]
+    StoreErr --> SetCancel["cancelled.store(true)"]
+    SetCancel --> DecrRem["--remaining_nodes"]
+    DecrRem --> WakeCV["lock(sync_mutex) & sync_cv.notify_all()"]
+
+    Decision -->|GUI calls cancel or stop| SetGWCancel["GraphWorker::cancelled.store(true)"]
+    SetGWCancel --> CheckCb["Worker checks cancel_update_callback(node_id)"]
+    CheckCb --> SetGNodeCancel["cancelled.store(true)"]
+    SetGNodeCancel --> WakeCV
+
+    WakeCV --> UnblockCoordinator["sync_cv.wait() unblocks in Coordinator"]
+    UnblockCoordinator --> DrainPool["~ThreadPool() destructor joins pool workers<br/><i>(Safe: stack primitives declared before pool)</i>"]
+    DrainPool --> RethrowCheck{"captured_error != nullptr?"}
+    RethrowCheck -->|Yes| Rethrow["rethrow_exception(captured_error)"]
+    RethrowCheck -->|No| CleanReturn["Return to Worker Thread -> GUI end_pass()"]

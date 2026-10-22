@@ -1,0 +1,36 @@
+classDiagram
+    class GraphWorker_Primitives {
+        +std::atomic~bool~ cancelled
+        +std::atomic~int~ pass
+        +std::mutex started_mutex
+        +std::set~string~ started
+        -- Purpose --
+        cancelled: Signals background threads to stop early without blocking GUI
+        pass: Discards obsolete callbacks & results if graph was modified
+        started_mutex: Protects the set of nodes that began execution across pool threads
+    }
+
+    class GNode_ExecuteParallel_Primitives {
+        +std::atomic~int~ remaining_nodes
+        +std::atomic~bool~ cancelled
+        +std::mutex sync_mutex
+        +std::condition_variable sync_cv
+        +std::mutex error_mutex
+        +std::exception_ptr captured_error
+        -- Purpose --
+        remaining_nodes: Counts down dirty nodes left to execute
+        sync_mutex + sync_cv: Blocks coordinator thread until remaining_nodes == 0 or cancelled
+        error_mutex + captured_error: Captures first thrown exception thread-safely
+    }
+
+    class GNode_DAG_Dependency_Primitives {
+        +std::atomic~int~ in_degree_per_node
+        +ThreadPool::queue_mutex
+        +ThreadPool::cv
+        -- Purpose --
+        in_degree: Lock-free atomic count of unresolved upstream dirty parents
+        queue_mutex: Protects ThreadPool task queue when scheduling ready nodes
+    }
+
+    GraphWorker_Primitives <.. GNode_ExecuteParallel_Primitives : cancel_update_callback bridges them
+    GNode_ExecuteParallel_Primitives *-- GNode_DAG_Dependency_Primitives : coordinates scheduling
