@@ -120,6 +120,8 @@ protected:
   void request_connection(const gngui::LinkEndpoints &link) override;
   void request_deletion(const std::vector<std::string>          &ids,
                         const std::vector<gngui::LinkEndpoints> &links) override;
+  void request_rewire(const std::vector<gngui::LinkEndpoints> &removed,
+                      const std::vector<gngui::LinkEndpoints> &added) override;
 
 private:
   QScrollArea *create_attributes_scroll(QWidget *parent, QWidget *attr_widget);

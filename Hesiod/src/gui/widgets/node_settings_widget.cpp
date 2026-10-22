@@ -5,6 +5,7 @@
 #include <QScrollArea>
 #include <QScrollBar>
 #include <QStyle>
+#include <QTimer>
 #include <QVBoxLayout>
 
 #include "meta_qt/designs/industrial/panel_chrome.hpp"
@@ -48,11 +49,27 @@ void NodeSettingsWidget::setup_connections()
   if (!this->p_graph_node_widget)
     return;
 
-  // connect selection changes -> update UI
+  // connect selection changes -> update UI: once for a burst of them (a click
+  // deselects and selects, a box selects node after node), and only once a
+  // box selection is done
+  auto *refresh = new QTimer(this);
+  refresh->setSingleShot(true);
+  refresh->setInterval(0);
+  this->connect(refresh, &QTimer::timeout, this, &NodeSettingsWidget::update_content);
+
   this->connect(this->p_graph_node_widget,
                 &gngui::GraphViewer::selection_has_changed,
                 this,
-                &NodeSettingsWidget::update_content);
+                [this, refresh]()
+                {
+                  if (this->p_graph_node_widget &&
+                      !this->p_graph_node_widget->get_is_selecting_with_rubber_band())
+                    refresh->start();
+                });
+  this->connect(this->p_graph_node_widget,
+                &gngui::GraphViewer::rubber_band_selection_finished,
+                refresh,
+                qOverload<>(&QTimer::start));
 }
 
 void NodeSettingsWidget::setup_layout()
