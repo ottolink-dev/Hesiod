@@ -77,13 +77,6 @@ void NodeWidget::setup_layout()
       }
     }
   }
-
-  if (!this->msg.empty())
-  {
-    auto *label = new QLabel(msg.c_str());
-    resize_font(label, -2);
-    this->layout->addWidget(label);
-  }
 }
 
 QSize NodeWidget::sizeHint() const

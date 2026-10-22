@@ -680,6 +680,7 @@ void GraphNodeWidget::on_new_graphics_node_request(const std::string &node_id,
   auto *widget = node_widget_factory(p_node->get_label(), p_node->get_shared(), this);
 
   this->add_node(p_proxy, scene_pos, node_id);
+  apply_node_status_icons(p_node->get_label(), p_node->get_shared(), this, node_id);
   if (auto *gn = this->get_graphics_node_by_id(node_id))
   {
     gn->set_widget(widget);

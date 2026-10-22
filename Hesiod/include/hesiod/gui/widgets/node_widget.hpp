@@ -118,4 +118,9 @@ QWidget *node_widget_factory(const std::string        &node_type,
                              QPointer<GraphNodeWidget> p_gnw,
                              QWidget                  *parent = nullptr);
 
+void apply_node_status_icons(const std::string      &node_type,
+                             std::weak_ptr<BaseNode> model,
+                             GraphNodeWidget        *p_gnw,
+                             const std::string      &node_id);
+
 } // namespace hesiod
