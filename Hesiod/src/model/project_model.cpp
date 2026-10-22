@@ -63,7 +63,6 @@ void ProjectModel::json_from(nlohmann::json const &json)
   if (json.contains("graph_manager"))
   {
     this->graph_manager->json_from(json["graph_manager"]);
-    this->graph_manager->update();
   }
   else
   {

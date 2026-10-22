@@ -590,6 +590,9 @@ void HesiodApplication::load_project_model_and_ui(const std::string &fname,
   // viewer_render_type, so this line never puts a stale mode back.
   this->set_viewer_render_type(this->viewer_render_type);
 
+  if (!blank_startup)
+    this->context.project_model->get_graph_manager_ref()->update();
+
   if (opened_at_1k > 0)
     this->notify(std::format("Project loaded at 1K resolution ({} graph{} lowered by "
                              "the application setting). Bake resolution is unchanged.",
