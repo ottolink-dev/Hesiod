@@ -11,18 +11,20 @@
 #include "hesiod/model/graph/broadcast_param.hpp"
 #include "hesiod/model/graph/graph_config.hpp"
 
+namespace gnode
+{
+class GraphWorker;
+}
+
 namespace hesiod
 {
 
 class BaseNode; // forward
-class GraphWorker;
 
 // =====================================
 // GraphNode
 // =====================================
-class GraphNode : public gnode::Graph,
-                  public hmap::CoordFrame,
-                  public std::enable_shared_from_this<GraphNode>
+class GraphNode : public gnode::Graph, public hmap::CoordFrame
 {
 public:
   GraphNode() = delete;
@@ -54,7 +56,7 @@ public:
   // --- Background Update (GraphWorker of the GraphManager, if any) ---
   // An update then returns at once, after update_started: the nodes are computed
   // afterwards, and update_finished comes once the graph is up to date.
-  void set_p_worker(GraphWorker *new_p_worker) { this->p_worker = new_p_worker; }
+  void set_p_worker(gnode::GraphWorker *new_p_worker) { this->p_worker = new_p_worker; }
   void stop_update(); // before modifying the graph, see GraphWorker::stop()
 
   // --- Inter-graph Broadcasting ---
@@ -72,7 +74,6 @@ public:
 
   // --- Update Callbacks
   std::function<void()>                                           update_started;
-  std::function<void()>                                           update_finished;
   std::function<void(const std::string &node_id, float progress)> update_progress;
 
   // for the editor of this graph (update_progress goes to the GraphManager): the
@@ -99,7 +100,7 @@ private:
   std::shared_ptr<GraphConfig> config;
   BroadcastMap                *p_broadcast_params = nullptr; // own by GraphManager
   gnode::EventConnection       graph_progress_conn;
-  GraphWorker                 *p_worker = nullptr; // own by GraphManager
+  gnode::GraphWorker          *p_worker = nullptr; // own by GraphManager
 };
 
 } // namespace hesiod

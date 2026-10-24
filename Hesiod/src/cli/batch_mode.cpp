@@ -5,6 +5,7 @@
 
 #include <QTimer>
 
+#include "gnode/graph_worker.hpp"
 #include "hesiod/app/bundle_runtime.hpp"
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/cli/batch_mode.hpp"
@@ -299,6 +300,8 @@ void run_batch_mode(const std::string                  &filename,
     setup_callbacks(graph_manager);
 
   graph_manager.update();
+
+  graph_manager.get_worker().finish();
 
   string_to_file(graph_manager.runtime_info_to_string('|'), "batch.log");
 

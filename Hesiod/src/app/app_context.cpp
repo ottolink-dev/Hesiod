@@ -9,10 +9,10 @@
 
 #include "highmap/openmp.hpp"
 
+#include "gnode/graph_worker.hpp"
 #include "hesiod/app/app_context.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/graph/graph_manager.hpp"
-#include "hesiod/model/graph/graph_worker.hpp"
 #include "hesiod/model/utils.hpp"
 
 namespace hesiod
@@ -24,6 +24,21 @@ void AppContext::initialize()
 
   this->load_settings();
   this->load_node_documentation();
+
+  // initialize default GraphWorker hooks
+  gnode::GraphWorker::enabled = [this]()
+  { return !this->headless && this->app_settings.node_editor.async_update; };
+
+  gnode::GraphWorker::post_to_caller = [](std::function<void()> fct)
+  {
+    if (qApp)
+      QMetaObject::invokeMethod(qApp, std::move(fct), Qt::QueuedConnection);
+    else
+      fct();
+  };
+
+  gnode::GraphWorker::thread_setup = [this]()
+  { hmap::init_openmp(this->app_settings.global.omp_num_threads); };
 }
 
 void AppContext::load_node_documentation()
@@ -147,11 +162,16 @@ void AppContext::new_project()
   this->project_model = std::make_unique<ProjectModel>();
 
   // the graphs of an interactive session are updated in the background
-  GraphWorker::enabled = [this]()
+  gnode::GraphWorker::enabled = [this]()
   { return !this->headless && this->app_settings.node_editor.async_update; };
-  GraphWorker::post_to_gui = [](std::function<void()> fct)
-  { QMetaObject::invokeMethod(qApp, std::move(fct), Qt::QueuedConnection); };
-  GraphWorker::thread_setup = [this]()
+  gnode::GraphWorker::post_to_caller = [](std::function<void()> fct)
+  {
+    if (qApp)
+      QMetaObject::invokeMethod(qApp, std::move(fct), Qt::QueuedConnection);
+    else
+      fct();
+  };
+  gnode::GraphWorker::thread_setup = [this]()
   { hmap::init_openmp(this->app_settings.global.omp_num_threads); };
 }
 

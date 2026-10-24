@@ -11,6 +11,7 @@
 #include <QSettings>
 #include <QSignalBlocker>
 
+#include "gnode/graph_worker.hpp"
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/widgets/containers/graph_manager_widget.hpp"
 #include "hesiod/gui/widgets/dialogs/string_input_dialog.hpp"
@@ -21,7 +22,6 @@
 #include "hesiod/model/graph/flatten_config.hpp"
 #include "hesiod/model/graph/graph_manager.hpp"
 #include "hesiod/model/graph/graph_node.hpp"
-#include "hesiod/model/graph/graph_worker.hpp"
 #include "hesiod/model/utils.hpp"
 
 #define MINIMUM_WIDTH 384

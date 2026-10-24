@@ -9,12 +9,16 @@
 #include <filesystem> // must be here,
                       // https://bugreports.qt.io/browse/QTBUG-73263
 
+namespace gnode
+{
+class GraphWorker;
+}
+
 namespace hesiod
 {
 
 class GraphNode; // forward
 class GraphConfig;
-class GraphWorker;
 
 // =====================================
 // GraphManager
@@ -38,7 +42,7 @@ public:
   int                             get_graph_order_index(const std::string &graph_id);
   GraphNode                      *get_graph_ref_by_id(const std::string &graph_id);
   std::string                     get_id() const;
-  GraphWorker                    &get_worker(); // updates the graphs in the background
+  gnode::GraphWorker             &get_worker(); // updates the graphs in the background
 
   void set_export_param(const FlattenConfig &new_export_param);
   void set_graph_order(const std::vector<std::string> &new_graph_order);
@@ -93,7 +97,7 @@ private:
   FlattenConfig            export_param;
 
   // last: it has to stop before the graphs go
-  std::unique_ptr<GraphWorker> worker;
+  std::unique_ptr<gnode::GraphWorker> worker;
 };
 
 } // namespace hesiod

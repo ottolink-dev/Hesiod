@@ -2,9 +2,9 @@
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
 #include "hesiod/model/graph/graph_node.hpp"
+#include "gnode/graph_worker.hpp"
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/logger.hpp"
-#include "hesiod/model/graph/graph_worker.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/broadcast_node.hpp"
 #include "hesiod/model/nodes/legacy/legacy_converter.hpp"
@@ -120,7 +120,7 @@ std::shared_ptr<GraphNode> GraphNode::get_shared()
 {
   try
   {
-    return shared_from_this();
+    return std::dynamic_pointer_cast<GraphNode>(gnode::Graph::shared_from_this());
   }
   catch (...)
   {

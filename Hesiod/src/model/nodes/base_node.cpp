@@ -21,9 +21,9 @@
 #include "meta/ext/array/array.hpp"
 #include "meta/metadata/keys.hpp"
 
+#include "gnode/graph_worker.hpp"
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/logger.hpp"
-#include "hesiod/model/graph/graph_worker.hpp"
 #include "hesiod/model/nodes/attributes.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/legacy/legacy_converter.hpp"
@@ -163,6 +163,10 @@ void BaseNode::compute()
     throw std::bad_alloc();
 }
 
+void BaseNode::on_pre_async_compute() { this->begin_background_compute(); }
+
+void BaseNode::on_async_compute_cancelled() { this->cancel_background_compute(); }
+
 void BaseNode::begin_background_compute()
 {
   this->frozen_meta_group.reset();
@@ -194,7 +198,7 @@ void BaseNode::begin_background_compute()
 bool BaseNode::is_port_busy(int port_index) const
 {
   // the update thread only computes the node that rewrites its data
-  if (GraphWorker::in_update_thread() || port_index < 0 ||
+  if (gnode::GraphWorker::in_worker_thread() || port_index < 0 ||
       port_index >= this->get_nports())
     return false;
 
@@ -214,7 +218,7 @@ bool BaseNode::is_port_busy(int port_index) const
 meta::ContainerGroup &BaseNode::get_meta_group()
 {
   // the update thread computes from the snapshot, see begin_background_compute()
-  if (this->frozen_meta_group && GraphWorker::in_update_thread())
+  if (this->frozen_meta_group && gnode::GraphWorker::in_worker_thread())
     return *this->frozen_meta_group;
 
   if (!this->meta_group)
@@ -228,7 +232,7 @@ meta::ContainerGroup &BaseNode::get_meta_group()
 
 const meta::ContainerGroup &BaseNode::get_meta_group() const
 {
-  if (this->frozen_meta_group && GraphWorker::in_update_thread())
+  if (this->frozen_meta_group && gnode::GraphWorker::in_worker_thread())
     return *this->frozen_meta_group;
 
   return *this->meta_group;

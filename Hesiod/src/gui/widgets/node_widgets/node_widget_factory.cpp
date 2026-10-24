@@ -109,9 +109,9 @@ void apply_node_status_icons(const std::string      &node_type,
 
   if (is_not_tileable)
   {
-    icons.push_back(
-        {.icon = HSD_ICON("grid_off"),
-         .tooltip = "Not tileable: this node does not support seamless periodic tiling"});
+    icons.push_back({.icon = HSD_ICON("grid_off"),
+                     .tooltip = "This node requires data to be gathered in memory and "
+                                "cannot efficiently process very large terrains."});
   }
 
   gfx_node->set_status_icons(icons);

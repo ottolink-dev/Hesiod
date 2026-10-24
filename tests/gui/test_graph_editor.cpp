@@ -18,7 +18,7 @@
 #include "hesiod/gui/widgets/graph/graph_node_widget.hpp"
 #include "hesiod/model/graph/graph_manager.hpp"
 #include "hesiod/model/graph/graph_node.hpp"
-#include "hesiod/model/graph/graph_worker.hpp"
+#include "gnode/graph_worker.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/utils.hpp"
 
@@ -709,9 +709,9 @@ private Q_SLOTS:
     auto            graph = std::make_shared<GraphNode>("empty", small_config());
     GraphNodeWidget widget(graph);
     widget.scene()->setParent(&widget);
-    GraphWorker     worker;
+    gnode::GraphWorker worker;
     worker.enabled = []() { return true; };
-    worker.post_to_gui = [](std::function<void()> fct) { fct(); };
+    worker.post_to_caller = [](std::function<void()> fct) { fct(); };
     graph->set_p_worker(&worker);
 
     int started = 0;
