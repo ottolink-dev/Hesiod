@@ -38,6 +38,7 @@
 #include "highmap/opencl/gpu_opencl.hpp"
 #include "highmap/openmp.hpp"
 
+#include "gnode/graph_worker.hpp"
 #include "hesiod/app/bundle_runtime.hpp"
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/app/ui_scale.hpp"
@@ -64,7 +65,6 @@
 #include "hesiod/model/constants/color_gradient.hpp"
 #include "hesiod/model/graph/graph_manager.hpp"
 #include "hesiod/model/graph/graph_node.hpp"
-#include "hesiod/model/graph/graph_worker.hpp"
 #include "hesiod/model/utils.hpp"
 
 namespace fs = std::filesystem;
@@ -136,6 +136,7 @@ HesiodApplication::HesiodApplication(int &argc, char **argv, StartupMode mode)
   {
     // stop here, skip the rest
     this->headless = true;
+    this->context.headless = true;
     this->headless_exit_code = ret;
     return;
   }

@@ -69,10 +69,13 @@ public:
   void compute() override;
   void set_compute_fct(std::function<void(BaseNode &node)> new_compute_fct);
 
-  // Called on the GUI thread right before the node is computed on the update
-  // thread of a GraphWorker: it computes from a snapshot of its settings, which
-  // stay editable meanwhile, and its data is not handed out to other threads
-  // until it is done (nullptr from get_value_ref, as for an empty port).
+  // Called on the caller/GUI thread right before an async pass computes on
+  // worker threads (see gnode::GraphWorker): it computes from a snapshot of its
+  // settings, which stay editable meanwhile, and its data is not handed out to
+  // other threads until it is done (nullptr from get_value_ref, as for an empty port).
+  void on_pre_async_compute() override;
+  void on_async_compute_cancelled() override;
+
   void begin_background_compute();
   void cancel_background_compute() { this->computing = false; } // not computed after all
 

@@ -4,13 +4,13 @@
 
 #include <QEvent>
 
+#include "gnode/graph_worker.hpp"
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/widgets/graph/graph_controls.hpp"
 #include "hesiod/gui/widgets/graph/graph_node_widget.hpp"
 #include "hesiod/gui/widgets/rail/snap_guide.hpp"
 #include "hesiod/gui/widgets/rail/tool_rail.hpp"
 #include "hesiod/model/graph/graph_manager.hpp"
-#include "hesiod/model/graph/graph_worker.hpp"
 
 namespace hesiod
 {
