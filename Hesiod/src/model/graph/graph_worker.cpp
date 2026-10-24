@@ -392,7 +392,11 @@ void GraphWorker::start_next()
         ids.push_back(node_id);
 
     if (ids.empty())
+    {
+      if (graph->update_finished)
+        graph->update_finished();
       continue;
+    }
 
     // left by a cancelled update of the whole graph, they would still be dirty and
     // GNode does not update a node with dirty nodes upstream
