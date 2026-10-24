@@ -173,8 +173,7 @@ static struct EnumMappings
       {"Ruggedness", hmap::gpu::LocalMetrics::LM_RUGGEDNESS},
       {"Rugosity Concave", hmap::gpu::LocalMetrics::LM_RUGOSITY_CONCAVE},
       {"Rugosity Convex", hmap::gpu::LocalMetrics::LM_RUGOSITY_CONVEX},
-      {"Topographic Residual",
-       hmap::gpu::LocalMetrics::LM_TOPOGRAPHIC_RESIDUAL}};
+      {"Topographic Residual", hmap::gpu::LocalMetrics::LM_TOPOGRAPHIC_RESIDUAL}};
 
   const std::map<std::string, int> mask_combine_method_map = {
       {"union", MaskCombineMethod::UNION},

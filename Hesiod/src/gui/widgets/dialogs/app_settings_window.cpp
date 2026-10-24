@@ -922,6 +922,7 @@ void AppSettingsWindow::setup_pages()
         false,
         "parameters attributes controls");
 
+#if HSD_ENABLE_TEXTURE_DOWNLOADER
     QVBoxLayout *tools = this->add_card(page, "Tools");
     this->add_row(
         tools,
@@ -930,6 +931,7 @@ void AppSettingsWindow::setup_pages()
         this->make_toggle(HSD_SETTING(bool, interface.enable_texture_downloader)),
         true,
         "textures download materials");
+#endif
   }
 
   // --- Node editor

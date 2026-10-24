@@ -38,6 +38,10 @@ option(HESIOD_UNUSED_FUNCTIONS "Detect unused static functions" OFF)
 option(HESIOD_PROFILE_BUILD "Enable build time profiling (-ftime-trace)" OFF)
 option(HESIOD_ENABLE_PCH "Enable Precompiled Headers (PCH)" OFF)
 
+option(HESIOD_ENABLE_GRAPH_MANAGER "Enable Graph Layout Manager in UI" ON)
+option(HESIOD_ENABLE_TEXTURE_DOWNLOADER "Enable Texture Downloader in UI" OFF)
+option(HESIOD_ENABLE_HEIGHTMAPPER "Enable Tangram Heightmapper in UI" OFF)
+
 # ------------------------------
 # Modules
 # ------------------------------
@@ -76,6 +80,13 @@ message(
   STATUS "│ HESIOD_UNUSED_FUNCTIONS:            ${HESIOD_UNUSED_FUNCTIONS}")
 message(STATUS "│ HESIOD_PROFILE_BUILD:               ${HESIOD_PROFILE_BUILD}")
 message(STATUS "│ HESIOD_ENABLE_PCH:                  ${HESIOD_ENABLE_PCH}")
+message(
+  STATUS "│ HESIOD_ENABLE_GRAPH_MANAGER:        ${HESIOD_ENABLE_GRAPH_MANAGER}")
+message(
+  STATUS
+    "│ HESIOD_ENABLE_TEXTURE_DOWNLOADER:   ${HESIOD_ENABLE_TEXTURE_DOWNLOADER}")
+message(
+  STATUS "│ HESIOD_ENABLE_HEIGHTMAPPER:         ${HESIOD_ENABLE_HEIGHTMAPPER}")
 message(STATUS "│ CMAKE_BUILD_TYPE:                   ${CMAKE_BUILD_TYPE}")
 message(STATUS "│ CMAKE_CXX_COMPILER_ID:              ${CMAKE_CXX_COMPILER_ID}")
 message(STATUS "│ Qt6_VERSION:                        ${Qt6_VERSION}")

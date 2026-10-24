@@ -150,17 +150,21 @@ void ProjectUI::initialize(ProjectModel *project)
                        { this->get_graph_tabs_widget_ref()->set_show_viewer(state); });
   }
 
+#if HSD_ENABLE_TEXTURE_DOWNLOADER
   if (HSD_CTX.app_settings.interface.enable_texture_downloader)
   {
     // no parent, top-level window (managed by a QPointer)
     this->texture_downloader = new qtd::TextureDownloader();
   }
+#endif
 
+#if HSD_ENABLE_HEIGHTMAPPER
   if (HSD_CTX.app_settings.interface.enable_heightmapper_widget)
   {
     // no parent, top-level window (managed by a QPointer)
     this->heightmapper_widget = new HeightmapperWidget();
   }
+#endif
 
   // connections
   this->setup_connections();
@@ -227,17 +231,21 @@ void ProjectUI::setup_connections()
                 this,
                 [this]() { Q_EMIT this->graph_manager_widget->update_finished(); });
 
+#if HSD_ENABLE_TEXTURE_DOWNLOADER
   // qtd::TextureDownloader -> GraphTabsWidget
   this->connect(this->texture_downloader,
                 &qtd::TextureDownloader::textures_retrieved,
                 this->graph_tabs_widget,
                 &GraphTabsWidget::on_textures_request);
+#endif
 
+#if HSD_ENABLE_HEIGHTMAPPER
   // HeightmapperWidget -> GraphTabsWidget
   this->connect(this->heightmapper_widget,
                 &HeightmapperWidget::heightmap_download_ready,
                 this->graph_tabs_widget,
                 &GraphTabsWidget::on_heightmap_download_ready);
+#endif
 }
 
 } // namespace hesiod
