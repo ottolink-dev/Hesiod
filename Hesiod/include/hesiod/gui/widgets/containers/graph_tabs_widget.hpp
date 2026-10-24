@@ -1,0 +1,96 @@
+/* Copyright (c) 2025 Otto Link. Distributed under the terms of the GNU General Public
+   License. The full license is in the file LICENSE, distributed with this software. */
+#pragma once
+#include <memory>
+
+#include <QHBoxLayout>
+#include <QTabWidget>
+#include <QWidget>
+
+#include "nlohmann/json.hpp"
+
+#include "hesiod/gui/widgets/containers/heightmapper_widget.hpp"
+
+namespace hesiod
+{
+
+class GraphManager; // forward
+class GraphWorkspaceWidget;
+
+// =====================================
+// GraphTabsWidget
+// =====================================
+class GraphTabsWidget : public QWidget
+{
+  Q_OBJECT
+
+public:
+  GraphTabsWidget(std::weak_ptr<GraphManager> p_graph_manager, QWidget *parent = nullptr);
+
+  void clear();
+  void set_show_node_settings_widget(bool new_state);
+  void set_show_viewer(bool new_state);
+  // 0: 2D viewer, 1: 3D renderer (qtr::RenderType); also used for new graphs
+  void set_viewer_render_type(int new_type);
+  void set_show_node_library_pan(bool new_state);
+
+  // --- Serialization ---
+  void           json_from(nlohmann::json const &json);
+  nlohmann::json json_to() const;
+
+  std::string get_selected_graph_id() const;
+
+  // actions on one graph, from its tab menu or the main Graph menu
+  enum class GraphAction
+  {
+    SETTINGS,
+    CLEAR,
+    REMOVE,
+  };
+  bool can_delete_graph() const;
+  void run_graph_action(const std::string &graph_id, GraphAction action);
+
+  QSize sizeHint() const override;
+
+signals:
+  // --- UI
+  void has_been_cleared(const std::string &graph_id);
+  void has_changed();
+  void new_node_created(const std::string &graph_id, const std::string &id);
+  void node_deleted(const std::string &graph_id, const std::string &id);
+  void node_library_toggle_requested();
+
+  // --- Graph
+  void update_started();
+  void update_finished();
+
+public slots:
+  // --- From GraphNodeWidget signals ---
+  void on_copy_buffer_has_changed(const nlohmann::json &new_json);
+  void on_has_been_cleared(const std::string &graph_id);
+  void on_heightmap_download_ready(const HeightmapperWidget::DownloadInfo &info);
+  void on_new_node_created(const std::string &graph_id, const std::string &id);
+  void on_node_deleted(const std::string &graph_id, const std::string &id);
+  void on_textures_request(const std::vector<std::string> &texture_paths);
+
+  void set_selected_tab(const std::string &graph_id);
+  void update_receive_nodes_tag_list();
+  void update_tab_widget();
+  void sync_tab_strips(); // every workspace's tab strip shows the current tabs
+  void show_tab_menu(int index, const QPoint &global_pos); // right click on a tab
+  void zoom_to_content();
+
+private:
+  void setup_connections();
+
+  // --- Members ---
+  std::weak_ptr<GraphManager> p_graph_manager; // own by MainWindow
+  QTabWidget                 *tab_widget;      // own by this
+  std::map<std::string, QPointer<GraphWorkspaceWidget>> graph_workspace_widget_map;
+  bool                                                  show_node_settings_widget;
+  bool                                                  show_viewer;
+  int                                                   viewer_render_type = 1;
+  QHBoxLayout                                          *main_layout;
+};
+
+} // namespace hesiod

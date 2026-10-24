@@ -9,7 +9,7 @@
 #include "hesiod/model/nodes/node_factory.hpp"
 #include "hesiod/model/utils.hpp"
 
-#include "hesiod/gui/widgets/gui_utils.hpp"
+#include "hesiod/gui/widgets/utils/gui_utils.hpp"
 
 // specific nodes
 #include "hesiod/model/nodes/broadcast_node.hpp"

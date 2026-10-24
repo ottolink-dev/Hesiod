@@ -4,7 +4,7 @@
 #include <QGridLayout>
 
 #include "hesiod/gui/widgets/graph_config_widgets/overlap_selector_widget.hpp"
-#include "hesiod/gui/widgets/gui_utils.hpp"
+#include "hesiod/gui/widgets/utils/gui_utils.hpp"
 
 namespace hesiod
 {

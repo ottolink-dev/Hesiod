@@ -6,7 +6,7 @@
 #include "gnodegui/style.hpp"
 
 #include "hesiod/app/hesiod_application.hpp"
-#include "hesiod/gui/widgets/gui_utils.hpp"
+#include "hesiod/gui/widgets/utils/gui_utils.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/utils.hpp"
 

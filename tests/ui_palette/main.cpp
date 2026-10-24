@@ -30,9 +30,9 @@
 #include <QPushButton>
 
 #include "hesiod/app/ui_scale.hpp"
-#include "hesiod/gui/widgets/fractional_repaint_filter.hpp"
-#include "hesiod/gui/widgets/node_palette_sidebar.hpp"
-#include "hesiod/gui/widgets/scrollable_dialog.hpp"
+#include "hesiod/gui/widgets/utils/fractional_repaint_filter.hpp"
+#include "hesiod/gui/widgets/node_widgets/node_palette_sidebar.hpp"
+#include "hesiod/gui/widgets/dialogs/scrollable_dialog.hpp"
 
 using namespace hesiod;
 

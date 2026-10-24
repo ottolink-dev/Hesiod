@@ -13,11 +13,11 @@ add_executable(
   ${TARGET}
   main.cpp
   ${HESIOD_SRC}/src/app/ui_scale.cpp
-  ${HESIOD_SRC}/src/gui/widgets/node_palette_sidebar.cpp
-  ${HESIOD_SRC}/src/gui/widgets/scrollable_dialog.cpp
+  ${HESIOD_SRC}/src/gui/widgets/node_widgets/node_palette_sidebar.cpp
+  ${HESIOD_SRC}/src/gui/widgets/dialogs/scrollable_dialog.cpp
   ${HESIOD_SRC}/src/logger.cpp
-  ${HESIOD_SRC}/include/hesiod/gui/widgets/node_palette_sidebar.hpp
-  ${HESIOD_SRC}/include/hesiod/gui/widgets/scrollable_dialog.hpp)
+  ${HESIOD_SRC}/include/hesiod/gui/widgets/node_widgets/node_palette_sidebar.hpp
+  ${HESIOD_SRC}/include/hesiod/gui/widgets/dialogs/scrollable_dialog.hpp)
 
 set_target_properties(${TARGET} PROPERTIES AUTOMOC ON)
 

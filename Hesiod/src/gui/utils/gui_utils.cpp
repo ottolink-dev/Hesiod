@@ -15,8 +15,8 @@
 #include <QApplication>
 
 #include "hesiod/app/hesiod_application.hpp"
-#include "hesiod/gui/widgets/gui_utils.hpp"
-#include "hesiod/gui/widgets/node_palette_sidebar.hpp"
+#include "hesiod/gui/widgets/node_widgets/node_palette_sidebar.hpp"
+#include "hesiod/gui/widgets/utils/gui_utils.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/utils.hpp"
 

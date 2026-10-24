@@ -6,7 +6,7 @@
 
 #include <QPointer>
 
-#include "hesiod/gui/widgets/message_dialog.hpp"
+#include "hesiod/gui/widgets/dialogs/message_dialog.hpp"
 #include "hesiod/model/graph/bake_config.hpp"
 
 class QLineEdit;

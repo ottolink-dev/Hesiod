@@ -15,10 +15,10 @@
 #include <QWheelEvent>
 
 #include "hesiod/app/hesiod_application.hpp"
-#include "hesiod/gui/widgets/gui_utils.hpp"
 #include "hesiod/gui/widgets/rail/rail_owner.hpp"
 #include "hesiod/gui/widgets/rail/snap_guide.hpp"
 #include "hesiod/gui/widgets/rail/tool_rail.hpp"
+#include "hesiod/gui/widgets/utils/gui_utils.hpp"
 
 namespace hesiod::rail
 {

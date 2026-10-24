@@ -4,10 +4,10 @@
 #include <QLabel>
 #include <QPushButton>
 
-#include "hesiod/gui/widgets/data_preview.hpp"
-#include "hesiod/gui/widgets/graph_node_widget.hpp"
-#include "hesiod/gui/widgets/gui_utils.hpp"
-#include "hesiod/gui/widgets/node_widget.hpp"
+#include "hesiod/gui/widgets/graph/data_preview.hpp"
+#include "hesiod/gui/widgets/graph/graph_node_widget.hpp"
+#include "hesiod/gui/widgets/node_widgets/node_widget.hpp"
+#include "hesiod/gui/widgets/utils/gui_utils.hpp"
 #include "hesiod/logger.hpp"
 
 namespace hesiod

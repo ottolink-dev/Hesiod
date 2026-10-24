@@ -9,7 +9,7 @@
 #include "meta_qt/ui/theme.hpp"
 
 #include "hesiod/app/hesiod_application.hpp"
-#include "hesiod/gui/widgets/gui_utils.hpp"
+#include "hesiod/gui/widgets/utils/gui_utils.hpp"
 #include "hesiod/gui/widgets/viewers/viewport/viewport_rail.hpp"
 #include "hesiod/gui/widgets/viewers/viewport/viewport_style.hpp"
 

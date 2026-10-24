@@ -8,7 +8,7 @@
 
 #include "meta/core/event.hpp"
 
-#include "hesiod/gui/widgets/message_dialog.hpp"
+#include "hesiod/gui/widgets/dialogs/message_dialog.hpp"
 #include "hesiod/model/graph/graph_config.hpp"
 
 class QLabel;

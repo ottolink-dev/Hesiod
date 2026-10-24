@@ -18,7 +18,7 @@
 
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/widgets/graph_config_widgets/graph_config_dialog.hpp"
-#include "hesiod/gui/widgets/properties_panel_design.hpp"
+#include "hesiod/gui/widgets/node_widgets/properties_panel_design.hpp"
 #include "hesiod/logger.hpp"
 
 namespace hesiod

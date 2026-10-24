@@ -10,9 +10,9 @@
 #include "qtr/render_widget.hpp"
 
 #include "hesiod/app/hesiod_application.hpp"
-#include "hesiod/gui/widgets/graph_node_widget.hpp"
-#include "hesiod/gui/widgets/menu_chrome.hpp"
-#include "hesiod/gui/widgets/properties_panel_design.hpp"
+#include "hesiod/gui/widgets/chrome/menu_chrome.hpp"
+#include "hesiod/gui/widgets/graph/graph_node_widget.hpp"
+#include "hesiod/gui/widgets/node_widgets/properties_panel_design.hpp"
 #include "hesiod/gui/widgets/rail/snap_guide.hpp"
 #include "hesiod/gui/widgets/viewers/viewport/panel_model.hpp"
 #include "hesiod/gui/widgets/viewers/viewport/viewport_panel.hpp"

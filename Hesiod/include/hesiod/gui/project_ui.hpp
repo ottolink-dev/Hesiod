@@ -8,7 +8,7 @@
 
 #include "qtd/texture_downloader.hpp"
 
-#include "hesiod/gui/widgets/heightmapper_widget.hpp"
+#include "hesiod/gui/widgets/containers/heightmapper_widget.hpp"
 
 namespace hesiod
 {

@@ -8,9 +8,9 @@
 #include <QPixmap>
 
 #include "hesiod/app/hesiod_application.hpp"
-#include "hesiod/gui/widgets/gui_utils.hpp"
-#include "hesiod/gui/widgets/properties_panel_design.hpp"
+#include "hesiod/gui/widgets/node_widgets/properties_panel_design.hpp"
 #include "hesiod/gui/widgets/rail/rail_style.hpp"
+#include "hesiod/gui/widgets/utils/gui_utils.hpp"
 
 namespace hesiod::rail
 {

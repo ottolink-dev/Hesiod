@@ -13,8 +13,8 @@
 
 #include "gnodegui/style.hpp"
 #include "hesiod/app/hesiod_application.hpp"
-#include "hesiod/gui/widgets/data_preview.hpp"
-#include "hesiod/gui/widgets/graph_node_widget.hpp"
+#include "hesiod/gui/widgets/graph/data_preview.hpp"
+#include "hesiod/gui/widgets/graph/graph_node_widget.hpp"
 #include "hesiod/gui/widgets/viewers/viewer_3d.hpp"
 #include "hesiod/model/graph/graph_node.hpp"
 #include "hesiod/profiling.hpp"
