@@ -4,6 +4,7 @@
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/graph/graph_node.hpp"
+#include "hesiod/model/nodes/boundary_nodes.hpp"
 #include "hesiod/model/utils.hpp"
 
 namespace hesiod
@@ -15,8 +16,6 @@ SubGraphNode::SubGraphNode(const std::string                &label,
     : BaseNode(label, parent_config), hmap::CoordFrame(), subgraph(subgraph)
 {
   Logger::log()->trace("SubGraphNode::SubGraphNode: label: {}", label);
-
-  this->subgraph_impl = std::make_shared<gnode::SubGraphNode>(label, this->subgraph);
 }
 
 std::shared_ptr<GraphNode> SubGraphNode::get_subgraph() const
@@ -27,23 +26,72 @@ std::shared_ptr<GraphNode> SubGraphNode::get_subgraph() const
 void SubGraphNode::set_subgraph(const std::shared_ptr<GraphNode> &new_subgraph)
 {
   this->subgraph = new_subgraph;
-
-  if (this->subgraph_impl)
-    this->subgraph_impl->set_subgraph(this->subgraph);
+  this->auto_bind_ports();
 }
 
 void SubGraphNode::auto_bind_ports()
 {
-  if (this->subgraph_impl)
-    this->subgraph_impl->auto_bind_ports();
+  if (!this->subgraph)
+    return;
+
+  this->inputs.clear();
+  this->outputs.clear();
+
+  for (const auto &[_, node_ptr] : this->subgraph->get_nodes())
+  {
+    auto input_node = std::dynamic_pointer_cast<gnode::ISubGraphInputNode>(node_ptr);
+    if (input_node)
+    {
+      std::string slot_name = input_node->get_slot_name();
+      if (!this->has_port(slot_name))
+      {
+        this->expose_input<hmap::VirtualArray>(input_node);
+      }
+      else
+      {
+        this->inputs.push_back({slot_name, input_node});
+      }
+    }
+
+    auto output_node = std::dynamic_pointer_cast<gnode::ISubGraphOutputNode>(node_ptr);
+    if (output_node)
+    {
+      std::string slot_name = output_node->get_slot_name();
+      if (!this->has_port(slot_name))
+      {
+        this->expose_output<hmap::VirtualArray>(output_node);
+      }
+      else
+      {
+        this->outputs.push_back({slot_name, output_node});
+      }
+    }
+  }
 }
 
 void SubGraphNode::compute()
 {
   Logger::log()->trace("SubGraphNode::compute: label: {}", this->get_label());
 
-  if (this->subgraph_impl)
-    this->subgraph_impl->compute();
+  // 1. Pull values from parent graph into child NodeIn boundary nodes
+  for (auto &[port_name, in_node] : this->inputs)
+  {
+    if (in_node)
+      in_node->pull_from_parent(this, port_name);
+  }
+
+  // 2. Evaluate child graph
+  if (this->subgraph)
+  {
+    this->subgraph->update();
+  }
+
+  // 3. Push values from child NodeOut boundary nodes to parent graph
+  for (auto &[port_name, out_node] : this->outputs)
+  {
+    if (out_node)
+      out_node->push_to_parent(this, port_name);
+  }
 }
 
 void SubGraphNode::json_from(nlohmann::json const &json)
@@ -73,9 +121,9 @@ void SubGraphNode::json_from(nlohmann::json const &json)
     {
       auto cfg = std::make_shared<GraphConfig>();
       this->subgraph = std::make_shared<GraphNode>(this->get_id() + "_inner", cfg);
-      this->set_subgraph(this->subgraph);
     }
     this->subgraph->json_from(json["subgraph"]);
+    this->auto_bind_ports();
   }
 }
 

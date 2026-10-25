@@ -3,6 +3,7 @@
 #pragma once
 #include <memory>
 #include <string>
+#include <vector>
 
 #include "gnode/subgraph.hpp"
 #include "highmap/coord_frame.hpp"
@@ -34,17 +35,21 @@ public:
   void auto_bind_ports();
 
   template <typename T>
-  void expose_input(const std::shared_ptr<gnode::NodeIn<T>> &node_in)
+  void expose_input(const std::shared_ptr<gnode::ISubGraphInputNode> &node_in)
   {
-    if (this->subgraph_impl)
-      this->subgraph_impl->expose_input<T>(node_in);
+    const std::string &name = node_in->get_slot_name();
+    if (!this->has_port(name))
+      this->add_port<T>(gnode::PortType::IN, name, CONFIG((*this)));
+    this->inputs.push_back({name, node_in});
   }
 
   template <typename T>
-  void expose_output(const std::shared_ptr<gnode::NodeOut<T>> &node_out)
+  void expose_output(const std::shared_ptr<gnode::ISubGraphOutputNode> &node_out)
   {
-    if (this->subgraph_impl)
-      this->subgraph_impl->expose_output<T>(node_out);
+    const std::string &name = node_out->get_slot_name();
+    if (!this->has_port(name))
+      this->add_port<T>(gnode::PortType::OUT, name, CONFIG((*this)));
+    this->outputs.push_back({name, node_out});
   }
 
   // --- Compute override ---
@@ -55,8 +60,21 @@ public:
   nlohmann::json json_to() const override;
 
 private:
-  std::shared_ptr<GraphNode>           subgraph;
-  std::shared_ptr<gnode::SubGraphNode> subgraph_impl;
+  struct InputBinding
+  {
+    std::string                                name;
+    std::shared_ptr<gnode::ISubGraphInputNode> node;
+  };
+
+  struct OutputBinding
+  {
+    std::string                                 name;
+    std::shared_ptr<gnode::ISubGraphOutputNode> node;
+  };
+
+  std::shared_ptr<GraphNode>  subgraph;
+  std::vector<InputBinding>   inputs;
+  std::vector<OutputBinding>  outputs;
 };
 
 } // namespace hesiod

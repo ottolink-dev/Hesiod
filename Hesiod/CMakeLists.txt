@@ -221,4 +221,9 @@ if(HESIOD_ENABLE_TESTS)
   set_tests_properties(
     autosave PROPERTIES WORKING_DIRECTORY ${EXECUTABLE_OUTPUT_PATH} ENVIRONMENT
                         "QT_QPA_PLATFORM=offscreen")
+
+  add_executable(test_subgraph_system ${CMAKE_SOURCE_DIR}/tests/model/test_subgraph_system.cpp)
+  add_dependencies(test_subgraph_system test_model_headers)
+  target_link_libraries(test_subgraph_system PRIVATE hesiod_core Qt6::Test)
+  add_test(NAME subgraph_system COMMAND test_subgraph_system)
 endif()

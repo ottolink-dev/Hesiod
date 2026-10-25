@@ -59,7 +59,10 @@ BaseNode::BaseNode(const std::string &label, std::weak_ptr<GraphConfig> config)
 {
   Logger::log()->trace("BaseNode::BaseNode, label: {}", label);
 
-  this->category = get_node_inventory().at(label);
+  const auto &inventory = get_node_inventory();
+  auto        it        = inventory.find(label);
+  this->category        = (it != inventory.end()) ? it->second : "Custom";
+
   this->update_runtime_info(NodeRuntimeStep::NRS_INIT);
 
   // initialize documentation

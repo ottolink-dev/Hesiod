@@ -15,6 +15,7 @@
 #include "hesiod/model/nodes/broadcast_node.hpp"
 #include "hesiod/model/nodes/receive_node.hpp"
 #include "hesiod/model/nodes/subgraph_node.hpp"
+#include "hesiod/model/nodes/boundary_nodes.hpp"
 
 // setup node, create ports, attributes, define compute function,
 // define attributes tooltips...
@@ -291,6 +292,8 @@ std::map<std::string, std::string> get_node_inventory()
       {"MountainTibesti", "Primitive/Geological"},
       {"Mudslide", "WIP"}, // "Erosion"},
       {"Multisteps", "Primitive/Geological"},
+      {"NodeIn", "System/SubGraph"},
+      {"NodeOut", "System/SubGraph"},
       {"NormalMapToHeightmap", "WIP"},
       {"Paraboloid", "Primitive/Function"},
       {"Path", "Geometry/Path"},
@@ -430,6 +433,18 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
   else if (node_type == "SubGraph")
   {
     auto sptr = std::make_shared<hesiod::SubGraphNode>(node_type, config);
+    sptr->finalize_attributes();
+    return sptr;
+  }
+  else if (node_type == "NodeIn")
+  {
+    auto sptr = std::make_shared<hesiod::NodeIn<hmap::VirtualArray>>("in", config);
+    sptr->finalize_attributes();
+    return sptr;
+  }
+  else if (node_type == "NodeOut")
+  {
+    auto sptr = std::make_shared<hesiod::NodeOut<hmap::VirtualArray>>("out", config);
     sptr->finalize_attributes();
     return sptr;
   }
