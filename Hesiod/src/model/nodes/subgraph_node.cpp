@@ -80,10 +80,24 @@ void SubGraphNode::compute()
       in_node->pull_from_parent(this, port_name);
   }
 
-  // 2. Evaluate child graph
+  // 2. Evaluate child graph synchronously inside parent worker thread pass
   if (this->subgraph)
   {
-    this->subgraph->update();
+    // Save worker and set to nullptr to ensure synchronous evaluation
+    gnode::GraphWorker *saved_worker = this->subgraph->get_p_worker();
+    this->subgraph->set_p_worker(nullptr);
+
+    try
+    {
+      this->subgraph->update();
+    }
+    catch (...)
+    {
+      this->subgraph->set_p_worker(saved_worker);
+      throw;
+    }
+
+    this->subgraph->set_p_worker(saved_worker);
   }
 
   // 3. Push values from child NodeOut boundary nodes to parent graph
