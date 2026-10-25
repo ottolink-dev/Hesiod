@@ -41,6 +41,8 @@ public:
   const std::vector<std::string> &get_graph_order();
   int                             get_graph_order_index(const std::string &graph_id);
   GraphNode                      *get_graph_ref_by_id(const std::string &graph_id);
+  std::shared_ptr<GraphNode>      get_root_graph() const;
+  void                            set_root_graph(const std::shared_ptr<GraphNode> &new_root_graph);
   std::string                     get_id() const;
   gnode::GraphWorker             &get_worker(); // updates the graphs in the background
 
@@ -90,6 +92,7 @@ private:
   void on_update_failed(std::exception_ptr error);
 
   std::string              id;
+  std::shared_ptr<GraphNode> root_graph;
   GraphNodeMap             graph_nodes;
   int                      id_count = 0;
   std::vector<std::string> graph_order;

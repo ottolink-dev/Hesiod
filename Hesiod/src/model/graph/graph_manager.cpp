@@ -275,11 +275,24 @@ int GraphManager::get_graph_order_index(const std::string &graph_id)
 
 GraphNode *GraphManager::get_graph_ref_by_id(const std::string &graph_id)
 {
+  if (this->root_graph && (graph_id == "root" || graph_id == this->root_graph->get_id()))
+    return this->root_graph.get();
+
   auto it = graph_nodes.find(graph_id);
   if (it == graph_nodes.end())
     return nullptr;
   else
     return it->second.get();
+}
+
+std::shared_ptr<GraphNode> GraphManager::get_root_graph() const
+{
+  return this->root_graph;
+}
+
+void GraphManager::set_root_graph(const std::shared_ptr<GraphNode> &new_root_graph)
+{
+  this->root_graph = new_root_graph;
 }
 
 std::string GraphManager::get_id() const { return this->id; }
