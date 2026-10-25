@@ -208,8 +208,6 @@ void compute_seed_forest_node(BaseNode &node)
   hmap::VirtualArray empty_va;
   const auto        &exclusion_va = p_exclusion ? *p_exclusion : empty_va;
 
-  Logger::log()->debug("HERE 1");
-
   *p_out_forest = hmap::va::seed_forest_clusters(species_count,
                                                  tree_count,
                                                  *p_out_density,
@@ -219,8 +217,6 @@ void compute_seed_forest_node(BaseNode &node)
                                                  options,
                                                  node.cfg().cm_cpu);
 
-  Logger::log()->debug("HERE 2");
-
   *p_out_forest = hmap::grow_forest_iterative(*p_out_forest,
                                               options.species,
                                               /* iterations */ 15,
@@ -228,8 +224,6 @@ void compute_seed_forest_node(BaseNode &node)
                                               hmap::InteractionMatrix{},
                                               hmap::Array{}, // TODO VA version
                                               0.8f);
-
-  Logger::log()->debug("HERE 3");
 
   hmap::Array elev_array = p_elevation->to_array(node.cfg().cm_cpu);
   p_out_forest->set_elevation_from_terrain(elev_array);

@@ -17448,6 +17448,192 @@
             }
         }
     },
+    "PlaceRocksProcedural": {
+        "category": "Rock",
+        "description": "Places rocks procedurally across a terrain based on elevation, slope, optional density, and power-law size distribution.",
+        "label": "PlaceRocksProcedural",
+        "parameter_groups": [
+            {
+                "keys": [
+                    "rock_count",
+                    "min_elev",
+                    "max_elev",
+                    "max_slope",
+                    "seed",
+                    "bulkify_amp",
+                    "weight_elev",
+                    "weight_slope",
+                    "weight_rivers",
+                    "river_talus_ref",
+                    "river_clipping_ratio",
+                    "weight_secondary",
+                    "class_id",
+                    "radius_min",
+                    "radius_max",
+                    "power_law_alpha",
+                    "size_slope_weight",
+                    "size_elevation_gain",
+                    "size_elevation_exponent",
+                    "exclusion_threshold"
+                ],
+                "name": "main"
+            }
+        ],
+        "parameters": {
+            "bulkify_amp": {
+                "description": "Amplitude of the bulkify pulse filter applied to the terrain to guide drainage lines.",
+                "key": "bulkify_amp",
+                "label": "Bulkify Amplitude",
+                "type": "Float"
+            },
+            "class_id": {
+                "description": "Rock material or mesh class identifier assigned to the placed rocks.",
+                "key": "class_id",
+                "label": "Class ID",
+                "type": "Integer"
+            },
+            "exclusion_threshold": {
+                "description": "Threshold for the exclusion mask above which rock placement is forbidden.",
+                "key": "exclusion_threshold",
+                "label": "Exclusion Threshold",
+                "type": "Float"
+            },
+            "max_elev": {
+                "description": "Elevation mapped to 1 in normalized elevation range.",
+                "key": "max_elev",
+                "label": "Max Elevation",
+                "type": "Float"
+            },
+            "max_slope": {
+                "description": "Maximum slope threshold above which rock size is attenuated.",
+                "key": "max_slope",
+                "label": "Max Slope",
+                "type": "Float"
+            },
+            "min_elev": {
+                "description": "Elevation mapped to 0 in normalized elevation range.",
+                "key": "min_elev",
+                "label": "Min Elevation",
+                "type": "Float"
+            },
+            "power_law_alpha": {
+                "description": "Power-law (Pareto) scaling exponent for rock size distribution.",
+                "key": "power_law_alpha",
+                "label": "Power Law Alpha",
+                "type": "Float"
+            },
+            "radius_max": {
+                "description": "Maximum rock radius.",
+                "key": "radius_max",
+                "label": "Max Radius",
+                "type": "Float"
+            },
+            "radius_min": {
+                "description": "Minimum rock radius.",
+                "key": "radius_min",
+                "label": "Min Radius",
+                "type": "Float"
+            },
+            "river_clipping_ratio": {
+                "description": "Flow accumulation clipping ratio.",
+                "key": "river_clipping_ratio",
+                "label": "River Clipping Ratio",
+                "type": "Float"
+            },
+            "river_talus_ref": {
+                "description": "Reference talus for river flow partitioning.",
+                "key": "river_talus_ref",
+                "label": "River Talus Ref",
+                "type": "Float"
+            },
+            "rock_count": {
+                "description": "Target number of rocks to distribute across the terrain.",
+                "key": "rock_count",
+                "label": "Rock Count",
+                "type": "Integer"
+            },
+            "seed": {
+                "description": "Random seed number. The random seed is an offset to the randomized process. A different seed will produce a new result.",
+                "key": "seed",
+                "label": "Seed",
+                "type": "Random seed number"
+            },
+            "size_elevation_exponent": {
+                "description": "Power-law exponent governing the maximum rock size and elevation relation.",
+                "key": "size_elevation_exponent",
+                "label": "Elevation Exponent",
+                "type": "Float"
+            },
+            "size_elevation_gain": {
+                "description": "Low-elevation influence on the maximum rock size (0 = none).",
+                "key": "size_elevation_gain",
+                "label": "Elevation Gain",
+                "type": "Float"
+            },
+            "size_slope_weight": {
+                "description": "Reduces maximum rock size on steep slopes (0 = no effect, 1 = full attenuation).",
+                "key": "size_slope_weight",
+                "label": "Slope Attenuation",
+                "type": "Float"
+            },
+            "weight_elev": {
+                "description": "Weight for the inverted elevation criterion (prefers valleys and low elevation).",
+                "key": "weight_elev",
+                "label": "Elevation Weight",
+                "type": "Float"
+            },
+            "weight_rivers": {
+                "description": "Weight for the river accumulation criterion.",
+                "key": "weight_rivers",
+                "label": "Rivers Weight",
+                "type": "Float"
+            },
+            "weight_secondary": {
+                "description": "Weight for the secondary density modulation input.",
+                "key": "weight_secondary",
+                "label": "Secondary Weight",
+                "type": "Float"
+            },
+            "weight_slope": {
+                "description": "Weight for the slope/talus criterion (penalizes steep slopes).",
+                "key": "weight_slope",
+                "label": "Slope Weight",
+                "type": "Float"
+            }
+        },
+        "ports": {
+            "density": {
+                "caption": "density",
+                "data_type": "VirtualArray",
+                "description": "Output synthesized rock density map.",
+                "type": "output"
+            },
+            "elevation": {
+                "caption": "elevation",
+                "data_type": "VirtualArray",
+                "description": "Input terrain elevation heightmap.",
+                "type": "input"
+            },
+            "exclusion_mask": {
+                "caption": "exclusion_mask",
+                "data_type": "VirtualArray",
+                "description": "Optional exclusion mask to prohibit rocks in masked regions.",
+                "type": "input"
+            },
+            "rock_field": {
+                "caption": "rock_field",
+                "data_type": "RockField",
+                "description": "Output procedural rock field containing placed rocks with positions and sizes.",
+                "type": "output"
+            },
+            "secondary_density": {
+                "caption": "secondary_density",
+                "data_type": "VirtualArray",
+                "description": "Optional secondary density map modulating the rock density.",
+                "type": "input"
+            }
+        }
+    },
     "Plateau": {
         "category": "Filter/Recurve",
         "description": "Plateau node manipulates the elevation values to create flats, elevated regions surrounded by steep slopes.",

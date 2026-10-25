@@ -303,6 +303,7 @@ std::map<std::string, std::string> get_node_inventory()
       {"PathToCloud", "Geometry/Path"},
       {"PathToHeightmap", "Geometry/Path"},
       {"PathTransform", "Geometry/Path"},
+      {"PlaceRocksProcedural", "Rock"},
       {"Phasor", "Primitive/Coherent"},
       {"Plateau", "Filter/Recurve"},
       {"Plates", "Primitive/Geological"},
@@ -601,6 +602,7 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
     SETUP_NODE(PathToCloud, path_to_cloud);
     SETUP_NODE(PathToHeightmap, path_to_heightmap);
     SETUP_NODE(PathTransform, path_transform);
+    SETUP_NODE(PlaceRocksProcedural, place_rocks_procedural);
     SETUP_NODE(Phasor, phasor);
     SETUP_NODE(Plateau, plateau);
     SETUP_NODE(Plates, plates);
