@@ -6,9 +6,9 @@
 #include <vector>
 
 #include "gnode/subgraph.hpp"
-#include "highmap/coord_frame.hpp"
 #include "hesiod/model/graph/graph_config.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
+#include "highmap/coord_frame.hpp"
 
 namespace hesiod
 {
@@ -72,9 +72,9 @@ private:
     std::shared_ptr<gnode::ISubGraphOutputNode> node;
   };
 
-  std::shared_ptr<GraphNode>  subgraph;
-  std::vector<InputBinding>   inputs;
-  std::vector<OutputBinding>  outputs;
+  std::shared_ptr<GraphNode> subgraph;
+  std::vector<InputBinding>  inputs;
+  std::vector<OutputBinding> outputs;
 };
 
 } // namespace hesiod

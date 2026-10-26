@@ -77,6 +77,7 @@ public slots:
   void on_subgraph_open_requested(const std::string &parent_graph_id,
                                   const std::string &subgraph_node_id);
   void update_receive_nodes_tag_list();
+  void sync_parent_subgraph_nodes(const std::string &child_graph_id);
   void update_tab_widget();
   void update_breadcrumb_bars();
   void sync_tab_strips(); // every workspace's tab strip shows the current tabs

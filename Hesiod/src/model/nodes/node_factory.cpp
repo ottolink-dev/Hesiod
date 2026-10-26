@@ -12,10 +12,10 @@
 #include "hesiod/gui/widgets/utils/gui_utils.hpp"
 
 // specific nodes
+#include "hesiod/model/nodes/boundary_nodes.hpp"
 #include "hesiod/model/nodes/broadcast_node.hpp"
 #include "hesiod/model/nodes/receive_node.hpp"
 #include "hesiod/model/nodes/subgraph_node.hpp"
-#include "hesiod/model/nodes/boundary_nodes.hpp"
 
 // setup node, create ports, attributes, define compute function,
 // define attributes tooltips...

@@ -56,9 +56,9 @@ public:
   // --- Background Update (GraphWorker of the GraphManager, if any) ---
   // An update then returns at once, after update_started: the nodes are computed
   // afterwards, and update_finished comes once the graph is up to date.
-  void                set_p_worker(gnode::GraphWorker *new_p_worker) { this->p_worker = new_p_worker; }
+  void set_p_worker(gnode::GraphWorker *new_p_worker) { this->p_worker = new_p_worker; }
   gnode::GraphWorker *get_p_worker() const { return this->p_worker; }
-  void                stop_update(); // before modifying the graph, see GraphWorker::stop()
+  void stop_update(); // before modifying the graph, see GraphWorker::stop()
 
   // --- Inter-graph Broadcasting ---
   BroadcastMap *get_p_broadcast_params() { return this->p_broadcast_params; }

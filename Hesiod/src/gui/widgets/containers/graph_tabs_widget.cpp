@@ -18,6 +18,7 @@
 #include "hesiod/gui/widgets/graph/graph_node_widget.hpp"
 #include "hesiod/gui/widgets/graph/graph_tab_strip.hpp"
 #include "hesiod/gui/widgets/node_widgets/node_settings_widget.hpp"
+#include "hesiod/gui/widgets/node_widgets/subgraph_node_widget.hpp"
 #include "hesiod/gui/widgets/viewers/viewer_3d.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/graph/graph_manager.hpp"
@@ -192,6 +193,8 @@ void GraphTabsWidget::on_new_node_created(const std::string &graph_id,
     if (p_node->get_node_type() == "Receive")
       this->update_receive_nodes_tag_list();
 
+    this->sync_parent_subgraph_nodes(graph_id);
+
     Q_EMIT this->new_node_created(graph_id, id);
     Q_EMIT this->has_changed();
   }
@@ -204,6 +207,8 @@ void GraphTabsWidget::on_new_node_created(const std::string &graph_id,
 
 void GraphTabsWidget::on_node_deleted(const std::string &graph_id, const std::string &id)
 {
+  this->sync_parent_subgraph_nodes(graph_id);
+
   Q_EMIT this->node_deleted(graph_id, id);
   Q_EMIT this->has_changed();
 }
@@ -259,7 +264,7 @@ void GraphTabsWidget::set_selected_tab(const std::string &graph_id)
 }
 
 void GraphTabsWidget::on_subgraph_open_requested(const std::string &parent_graph_id,
-                                                const std::string &subgraph_node_id)
+                                                 const std::string &subgraph_node_id)
 {
   Logger::log()->trace("GraphTabsWidget::on_subgraph_open_requested: parent={}, node={}",
                        parent_graph_id,
@@ -309,7 +314,7 @@ void GraphTabsWidget::update_breadcrumb_bars()
     std::vector<std::pair<std::string, std::string>> path;
 
     // Check if it's the root graph or find its parent
-    std::string current_id = id;
+    std::string              current_id = id;
     std::vector<std::string> ancestry;
     ancestry.push_back(current_id);
 
@@ -394,6 +399,47 @@ void GraphTabsWidget::update_receive_nodes_tag_list()
         if (p_rnode)
           p_rnode->update_tag_list(tags);
       }
+}
+
+void GraphTabsWidget::sync_parent_subgraph_nodes(const std::string &child_graph_id)
+{
+  Logger::log()->trace("GraphTabsWidget::sync_parent_subgraph_nodes: {}", child_graph_id);
+
+  auto gm = this->p_graph_manager.lock();
+  if (!gm)
+    return;
+
+  for (const auto &parent_cand_id : gm->get_graph_order())
+  {
+    GraphNode *parent_graph = gm->get_graph_ref_by_id(parent_cand_id);
+    if (!parent_graph)
+      continue;
+
+    for (const auto &[parent_node_id, node_ptr] : parent_graph->get_nodes())
+    {
+      auto *sgn = dynamic_cast<SubGraphNode *>(node_ptr.get());
+      if (sgn && sgn->get_subgraph() && sgn->get_subgraph()->get_id() == child_graph_id)
+      {
+        sgn->auto_bind_ports();
+
+        // Update graphics node representation in parent workspace
+        auto it_ws = this->graph_workspace_widget_map.find(parent_cand_id);
+        if (it_ws != this->graph_workspace_widget_map.end() && it_ws->second)
+        {
+          auto *gnw = it_ws->second->get_graph_node_widget();
+          if (gnw)
+          {
+            auto *gfx_node = gnw->get_graphics_node_by_id(parent_node_id);
+            if (gfx_node)
+            {
+              gfx_node->update_geometry();
+              gfx_node->update();
+            }
+          }
+        }
+      }
+    }
+  }
 }
 
 void GraphTabsWidget::update_tab_widget()
@@ -503,9 +549,7 @@ void GraphTabsWidget::update_tab_widget()
                   &GraphNodeWidget::subgraph_open_requested,
                   this,
                   [this, id](const std::string &node_id)
-                  {
-                    this->on_subgraph_open_requested(id, node_id);
-                  });
+                  { this->on_subgraph_open_requested(id, node_id); });
     this->connect(workspace_widget,
                   &GraphWorkspaceWidget::node_library_toggle_requested,
                   this,
@@ -517,9 +561,7 @@ void GraphTabsWidget::update_tab_widget()
                     &GraphBreadcrumbBar::item_clicked,
                     this,
                     [this](int, const std::string &target_graph_id)
-                    {
-                      this->set_selected_tab(target_graph_id);
-                    });
+                    { this->set_selected_tab(target_graph_id); });
     }
 
     // Create tab container

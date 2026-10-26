@@ -19,8 +19,7 @@ namespace hesiod
 // =====================================
 // NodeIn
 // =====================================
-template <typename T>
-class NodeIn : public BaseNode, public gnode::ISubGraphInputNode
+template <typename T> class NodeIn : public BaseNode, public gnode::ISubGraphInputNode
 {
 public:
   NodeIn(const std::string &slot_name, std::weak_ptr<GraphConfig> config)
@@ -41,23 +40,26 @@ public:
       return;
 
     T *parent_val = parent_node->get_value_ref<T>(port_label);
-    T *inner_val  = this->get_value_ref<T>("value");
+    T *inner_val = this->get_value_ref<T>("value");
 
     if (parent_val && inner_val)
     {
       if constexpr (std::is_same_v<T, hmap::VirtualArray>)
       {
-        const hmap::CoordFrame *parent_frame = dynamic_cast<const hmap::CoordFrame *>(parent_node);
-        const BaseNode         *parent_base  = dynamic_cast<const BaseNode *>(parent_node);
+        const hmap::CoordFrame *parent_frame = dynamic_cast<const hmap::CoordFrame *>(
+            parent_node);
+        const BaseNode *parent_base = dynamic_cast<const BaseNode *>(parent_node);
 
-        const hmap::CoordFrame *inner_frame  = dynamic_cast<const hmap::CoordFrame *>(this->get_p_graph());
+        const hmap::CoordFrame *inner_frame = dynamic_cast<const hmap::CoordFrame *>(
+            this->get_p_graph());
 
         bool frames_differ = false;
         if (parent_frame && inner_frame)
         {
           frames_differ = (parent_frame->get_origin() != inner_frame->get_origin()) ||
                           (parent_frame->get_size() != inner_frame->get_size()) ||
-                          (parent_frame->get_rotation_angle() != inner_frame->get_rotation_angle());
+                          (parent_frame->get_rotation_angle() !=
+                           inner_frame->get_rotation_angle());
         }
 
         bool configs_differ = false;
@@ -69,11 +71,16 @@ public:
         if (frames_differ || configs_differ)
         {
           // on-the-fly spatial interpolation
-          hmap::CoordFrame default_frame;
-          const hmap::CoordFrame &src_frame = parent_frame ? *parent_frame : default_frame;
+          hmap::CoordFrame        default_frame;
+          const hmap::CoordFrame &src_frame = parent_frame ? *parent_frame
+                                                           : default_frame;
           const hmap::CoordFrame &dst_frame = inner_frame ? *inner_frame : default_frame;
 
-          hmap::interpolate_heightmap(*parent_val, *inner_val, src_frame, dst_frame, this->cfg().cm_cpu);
+          hmap::interpolate_heightmap(*parent_val,
+                                      *inner_val,
+                                      src_frame,
+                                      dst_frame,
+                                      this->cfg().cm_cpu);
           this->is_dirty = true;
           return;
         }
@@ -114,8 +121,7 @@ private:
 // =====================================
 // NodeOut
 // =====================================
-template <typename T>
-class NodeOut : public BaseNode, public gnode::ISubGraphOutputNode
+template <typename T> class NodeOut : public BaseNode, public gnode::ISubGraphOutputNode
 {
 public:
   NodeOut(const std::string &slot_name, std::weak_ptr<GraphConfig> config)
@@ -135,7 +141,7 @@ public:
     if (!parent_node)
       return;
 
-    T *inner_val  = this->get_value_ref<T>("value");
+    T *inner_val = this->get_value_ref<T>("value");
     T *parent_val = parent_node->get_value_ref<T>(port_label);
 
     if (inner_val && parent_val)

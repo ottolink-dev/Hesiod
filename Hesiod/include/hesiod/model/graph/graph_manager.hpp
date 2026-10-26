@@ -42,9 +42,9 @@ public:
   int                             get_graph_order_index(const std::string &graph_id);
   GraphNode                      *get_graph_ref_by_id(const std::string &graph_id);
   std::shared_ptr<GraphNode>      get_root_graph() const;
-  void                            set_root_graph(const std::shared_ptr<GraphNode> &new_root_graph);
-  std::string                     get_id() const;
-  gnode::GraphWorker             &get_worker(); // updates the graphs in the background
+  void                set_root_graph(const std::shared_ptr<GraphNode> &new_root_graph);
+  std::string         get_id() const;
+  gnode::GraphWorker &get_worker(); // updates the graphs in the background
 
   void set_export_param(const FlattenConfig &new_export_param);
   void set_graph_order(const std::vector<std::string> &new_graph_order);
@@ -91,13 +91,13 @@ private:
   void on_update_progress(const std::string &node_id, float progress);
   void on_update_failed(std::exception_ptr error);
 
-  std::string              id;
+  std::string                id;
   std::shared_ptr<GraphNode> root_graph;
-  GraphNodeMap             graph_nodes;
-  int                      id_count = 0;
-  std::vector<std::string> graph_order;
-  BroadcastMap             broadcast_params;
-  FlattenConfig            export_param;
+  GraphNodeMap               graph_nodes;
+  int                        id_count = 0;
+  std::vector<std::string>   graph_order;
+  BroadcastMap               broadcast_params;
+  FlattenConfig              export_param;
 
   // last: it has to stop before the graphs go
   std::unique_ptr<gnode::GraphWorker> worker;

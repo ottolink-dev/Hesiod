@@ -21,24 +21,12 @@ SubGraphNode::SubGraphNode(const std::string                &label,
   {
     auto cfg_ptr = parent_config.lock();
     this->subgraph = std::make_shared<GraphNode>(label + "_graph", cfg_ptr);
-
-    auto in_node = std::make_shared<NodeIn<hmap::VirtualArray>>("in", parent_config);
-    auto out_node = std::make_shared<NodeOut<hmap::VirtualArray>>("out", parent_config);
-
-    in_node->finalize_attributes();
-    out_node->finalize_attributes();
-
-    this->subgraph->add_node(in_node, "in_1");
-    this->subgraph->add_node(out_node, "out_1");
   }
 
   this->auto_bind_ports();
 }
 
-std::shared_ptr<GraphNode> SubGraphNode::get_subgraph() const
-{
-  return this->subgraph;
-}
+std::shared_ptr<GraphNode> SubGraphNode::get_subgraph() const { return this->subgraph; }
 
 void SubGraphNode::set_subgraph(const std::shared_ptr<GraphNode> &new_subgraph)
 {

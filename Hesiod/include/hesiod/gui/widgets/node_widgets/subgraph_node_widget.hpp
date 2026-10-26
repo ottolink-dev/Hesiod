@@ -25,6 +25,7 @@ public:
 
   void on_compute_finished() override;
   void on_compute_started() override;
+  void update_node_summary();
 
 signals:
   void open_subgraph_requested(const std::string &node_id);
@@ -34,7 +35,6 @@ protected:
 
 private:
   void setup_subgraph_ui();
-  void update_node_summary();
 
   QLabel      *summary_label = nullptr;
   QPushButton *open_button = nullptr;

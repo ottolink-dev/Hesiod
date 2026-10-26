@@ -47,14 +47,19 @@ DataPreview::DataPreview(std::weak_ptr<BaseNode> model, QWidget *parent)
   this->setStyleSheet("QLabel { background-color : gray; }");
 
   // Select first output, or fallback to first port
-  this->preview_port_index = 0;
+  this->preview_port_index = -1;
   for (int k = 0; k < p_model->get_nports(); ++k)
+  {
     if (p_model->get_port_label(k) != "" &&
         p_model->get_port_type(k) == gnode::PortType::OUT)
     {
       this->preview_port_index = k;
       break;
     }
+  }
+
+  if (this->preview_port_index < 0 && p_model->get_nports() > 0)
+    this->preview_port_index = 0;
 
   this->update_preview();
 }
@@ -164,6 +169,12 @@ void DataPreview::update_preview()
   if (!p_model)
   {
     Logger::log()->error("DataPreview::update_preview: p_model_node is nullptr");
+    return;
+  }
+
+  if (this->preview_port_index < 0 || this->preview_port_index >= p_model->get_nports())
+  {
+    this->clear_preview();
     return;
   }
 

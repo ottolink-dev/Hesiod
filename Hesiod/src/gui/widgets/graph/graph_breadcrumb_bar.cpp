@@ -17,8 +17,8 @@ GraphBreadcrumbBar::GraphBreadcrumbBar(QWidget *parent) : QWidget(parent)
   this->layout->setSpacing(4);
   this->setLayout(this->layout);
 
-  this->setStyleSheet(
-      "QWidget#hsdBreadcrumbBar { background-color: #1e1e1e; border-bottom: 1px solid #333333; }");
+  this->setStyleSheet("QWidget#hsdBreadcrumbBar { background-color: #1e1e1e; "
+                      "border-bottom: 1px solid #333333; }");
 }
 
 void GraphBreadcrumbBar::set_path(
@@ -47,15 +47,16 @@ void GraphBreadcrumbBar::set_path(
     if (i == path.size() - 1)
     {
       // Current active node (last in path)
-      btn->setStyleSheet(
-          "QPushButton { color: #ffffff; font-weight: bold; font-size: 11px; padding: 2px 6px; "
-          "background: transparent; border: none; }");
+      btn->setStyleSheet("QPushButton { color: #ffffff; font-weight: bold; font-size: "
+                         "11px; padding: 2px 6px; "
+                         "background: transparent; border: none; }");
     }
     else
     {
       // Ancestor nodes
       btn->setStyleSheet(
-          "QPushButton { color: #88aaff; font-size: 11px; padding: 2px 6px; background: transparent; "
+          "QPushButton { color: #88aaff; font-size: 11px; padding: 2px 6px; background: "
+          "transparent; "
           "border: none; } "
           "QPushButton:hover { color: #bcd4ff; text-decoration: underline; }");
 

@@ -28,12 +28,14 @@ void SubGraphNodeWidget::setup_subgraph_ui()
 {
   this->summary_label = new QLabel(this);
   this->summary_label->setAlignment(Qt::AlignCenter);
-  this->summary_label->setStyleSheet("QLabel { color: #cccccc; font-size: 11px; padding: 4px; }");
+  this->summary_label->setStyleSheet(
+      "QLabel { color: #cccccc; font-size: 11px; padding: 4px; }");
   this->layout->addWidget(this->summary_label);
 
   this->open_button = new QPushButton("Dive Into SubGraph", this);
   this->open_button->setStyleSheet(
-      "QPushButton { background-color: #2b2b2b; color: #ffffff; border: 1px solid #444444; "
+      "QPushButton { background-color: #2b2b2b; color: #ffffff; border: 1px solid "
+      "#444444; "
       "border-radius: 4px; padding: 4px 8px; font-weight: bold; } "
       "QPushButton:hover { background-color: #3d3d3d; border-color: #666666; }");
   this->layout->addWidget(this->open_button);
