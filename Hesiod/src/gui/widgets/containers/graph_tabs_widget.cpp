@@ -14,6 +14,7 @@
 #include "hesiod/gui/widgets/containers/graph_tabs_widget.hpp"
 #include "hesiod/gui/widgets/containers/graph_workspace_widget.hpp"
 #include "hesiod/gui/widgets/dialogs/message_dialog.hpp"
+#include "hesiod/gui/widgets/graph/graph_breadcrumb_bar.hpp"
 #include "hesiod/gui/widgets/graph/graph_node_widget.hpp"
 #include "hesiod/gui/widgets/graph/graph_tab_strip.hpp"
 #include "hesiod/gui/widgets/node_widgets/node_settings_widget.hpp"
@@ -22,6 +23,7 @@
 #include "hesiod/model/graph/graph_manager.hpp"
 #include "hesiod/model/graph/graph_node.hpp"
 #include "hesiod/model/nodes/receive_node.hpp"
+#include "hesiod/model/nodes/subgraph_node.hpp"
 
 namespace hesiod
 {
@@ -256,6 +258,96 @@ void GraphTabsWidget::set_selected_tab(const std::string &graph_id)
   }
 }
 
+void GraphTabsWidget::on_subgraph_open_requested(const std::string &parent_graph_id,
+                                                const std::string &subgraph_node_id)
+{
+  Logger::log()->trace("GraphTabsWidget::on_subgraph_open_requested: parent={}, node={}",
+                       parent_graph_id,
+                       subgraph_node_id);
+
+  auto gm = this->p_graph_manager.lock();
+  if (!gm)
+    return;
+
+  GraphNode *parent_graph = gm->get_graph_ref_by_id(parent_graph_id);
+  if (!parent_graph)
+    return;
+
+  auto *subgraph_node = dynamic_cast<SubGraphNode *>(
+      parent_graph->get_node(subgraph_node_id));
+  if (!subgraph_node)
+    return;
+
+  auto child_graph = subgraph_node->get_subgraph();
+  if (!child_graph)
+    return;
+
+  const std::string child_id = child_graph->get_id();
+
+  // If child graph is not yet in GraphManager, register it
+  if (!gm->get_graph_ref_by_id(child_id))
+  {
+    gm->add_graph_node(child_graph, child_id);
+    this->update_tab_widget();
+  }
+
+  this->set_selected_tab(child_id);
+}
+
+void GraphTabsWidget::update_breadcrumb_bars()
+{
+  auto gm = this->p_graph_manager.lock();
+  if (!gm)
+    return;
+
+  for (auto &[id, gww] : this->graph_workspace_widget_map)
+  {
+    if (!gww || !gww->get_breadcrumb_bar())
+      continue;
+
+    // Find path from root to this graph in the hierarchy
+    std::vector<std::pair<std::string, std::string>> path;
+
+    // Check if it's the root graph or find its parent
+    std::string current_id = id;
+    std::vector<std::string> ancestry;
+    ancestry.push_back(current_id);
+
+    // Look up through SubGraphNodes across all graphs to trace ancestry
+    bool parent_found = true;
+    while (parent_found)
+    {
+      parent_found = false;
+      for (const auto &cand_id : gm->get_graph_order())
+      {
+        GraphNode *cand_graph = gm->get_graph_ref_by_id(cand_id);
+        if (!cand_graph)
+          continue;
+
+        for (const auto &node_pair : cand_graph->get_nodes())
+        {
+          auto *sgn = dynamic_cast<SubGraphNode *>(node_pair.second.get());
+          if (sgn && sgn->get_subgraph() && sgn->get_subgraph()->get_id() == current_id)
+          {
+            ancestry.push_back(cand_id);
+            current_id = cand_id;
+            parent_found = true;
+            break;
+          }
+        }
+        if (parent_found)
+          break;
+      }
+    }
+
+    // Build path from root downwards
+    for (auto it = ancestry.rbegin(); it != ancestry.rend(); ++it)
+      path.emplace_back(*it, *it);
+
+    gww->get_breadcrumb_bar()->set_path(path);
+  }
+}
+
 void GraphTabsWidget::setup_connections()
 {
   Logger::log()->trace("GraphTabsWidget::setup_connections");
@@ -407,10 +499,28 @@ void GraphTabsWidget::update_tab_widget()
                   &GraphNodeWidget::update_finished,
                   this,
                   [this]() { emit update_finished(); });
+    this->connect(gnw,
+                  &GraphNodeWidget::subgraph_open_requested,
+                  this,
+                  [this, id](const std::string &node_id)
+                  {
+                    this->on_subgraph_open_requested(id, node_id);
+                  });
     this->connect(workspace_widget,
                   &GraphWorkspaceWidget::node_library_toggle_requested,
                   this,
                   &GraphTabsWidget::node_library_toggle_requested);
+
+    if (workspace_widget->get_breadcrumb_bar())
+    {
+      this->connect(workspace_widget->get_breadcrumb_bar(),
+                    &GraphBreadcrumbBar::item_clicked,
+                    this,
+                    [this](int, const std::string &target_graph_id)
+                    {
+                      this->set_selected_tab(target_graph_id);
+                    });
+    }
 
     // Create tab container
     QWidget *tab = new QWidget();
@@ -439,6 +549,7 @@ void GraphTabsWidget::update_tab_widget()
   }
 
   this->sync_tab_strips();
+  this->update_breadcrumb_bars();
 }
 
 void GraphTabsWidget::sync_tab_strips()

@@ -73,6 +73,7 @@ signals:
   void has_been_cleared(const std::string &graph_id);
   void new_node_created(const std::string &graph_id, const std::string &id);
   void node_deleted(const std::string &graph_id, const std::string &id);
+  void subgraph_open_requested(const std::string &subgraph_node_id);
 
   // --- Graph update ---
   void compute_started(const std::string &node_id);

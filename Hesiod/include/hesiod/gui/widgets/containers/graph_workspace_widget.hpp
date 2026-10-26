@@ -12,6 +12,7 @@ class QToolButton;
 namespace hesiod
 {
 
+class GraphBreadcrumbBar;
 class GraphNode; // forward
 class GraphNodeWidget;
 class GraphTabStrip;
@@ -33,6 +34,7 @@ public:
   void           json_from(nlohmann::json const &json);
   nlohmann::json json_to() const;
 
+  GraphBreadcrumbBar *get_breadcrumb_bar() const { return this->breadcrumb_bar; }
   GraphNodeWidget    *get_graph_node_widget() const;
   GraphTabStrip      *get_tab_strip() const { return this->tab_strip; }
   NodeSettingsWidget *get_node_settings_widget() const;
@@ -47,6 +49,7 @@ private:
   void setup_layout();
 
   std::weak_ptr<GraphNode> p_graph_node;
+  GraphBreadcrumbBar      *breadcrumb_bar = nullptr;
   GraphNodeWidget         *graph_node_widget = nullptr;
   GraphTabStrip           *tab_strip = nullptr; // graph tabs on the editor's top edge
   NodeSettingsWidget      *node_settings_widget = nullptr;

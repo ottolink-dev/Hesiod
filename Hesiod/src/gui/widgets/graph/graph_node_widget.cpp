@@ -30,6 +30,7 @@
 #include "hesiod/gui/widgets/graph_config_widgets/graph_config_dialog.hpp"
 #include "hesiod/gui/widgets/node_widgets/node_attributes_widget.hpp"
 #include "hesiod/gui/widgets/node_widgets/node_widget.hpp"
+#include "hesiod/gui/widgets/node_widgets/subgraph_node_widget.hpp"
 #include "hesiod/gui/widgets/utils/gui_utils.hpp"
 #include "hesiod/gui/widgets/viewers/viewer_3d.hpp"
 #include "hesiod/logger.hpp"
@@ -684,6 +685,14 @@ void GraphNodeWidget::on_new_graphics_node_request(const std::string &node_id,
   if (auto *gn = this->get_graphics_node_by_id(node_id))
   {
     gn->set_widget(widget);
+
+    if (auto *sgw = dynamic_cast<SubGraphNodeWidget *>(widget))
+    {
+      this->connect(sgw,
+                    &SubGraphNodeWidget::open_subgraph_requested,
+                    this,
+                    &GraphNodeWidget::subgraph_open_requested);
+    }
 
     // panning and dragging then move cached images instead of painting every
     // node and its embedded widgets again on each frame

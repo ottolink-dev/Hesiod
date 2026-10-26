@@ -7,6 +7,7 @@
 #include <QSplitter>
 #include <QTimer>
 #include <QToolButton>
+#include <QVBoxLayout>
 
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/widgets/containers/graph_workspace_widget.hpp"
@@ -14,6 +15,7 @@
 #include "hesiod/gui/widgets/controls/grip_splitter.hpp"
 #include "hesiod/gui/widgets/graph/build_border.hpp"
 #include "hesiod/gui/widgets/graph/build_progress.hpp"
+#include "hesiod/gui/widgets/graph/graph_breadcrumb_bar.hpp"
 #include "hesiod/gui/widgets/graph/graph_node_widget.hpp"
 #include "hesiod/gui/widgets/graph/graph_tab_strip.hpp"
 #include "hesiod/gui/widgets/node_widgets/node_library_widget.hpp"
@@ -244,10 +246,23 @@ void GraphWorkspaceWidget::setup_layout()
     this->graph_node_widget->set_preview_viewer(this->viewer);
   }
 
+  // graph editor pane: breadcrumb bar above graph node widget
+  QWidget     *editor_pane = new QWidget();
+  QVBoxLayout *editor_layout = new QVBoxLayout(editor_pane);
+  editor_layout->setContentsMargins(0, 0, 0, 0);
+  editor_layout->setSpacing(0);
+
+  this->breadcrumb_bar = new GraphBreadcrumbBar(editor_pane);
+  editor_layout->addWidget(this->breadcrumb_bar);
+  editor_layout->addWidget(this->graph_node_widget, 1);
+
+  // initialize breadcrumb bar with current graph info
+  this->breadcrumb_bar->set_path({{gno->get_id(), gno->get_id()}});
+
   // the graph fills its card, with the project's graphs as tabs on its left
   // edge (GraphTabsWidget keeps every workspace's strip in step)
   this->tab_strip = new GraphTabStrip(Qt::Vertical);
-  QWidget *graph_card = wrap(this->graph_node_widget);
+  QWidget *graph_card = wrap(editor_pane);
   auto    *tabbed_card = new TabbedCard(graph_card, this->tab_strip);
   v_splitter->addWidget(tabbed_card);
 

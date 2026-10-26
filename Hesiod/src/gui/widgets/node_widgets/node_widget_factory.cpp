@@ -4,6 +4,7 @@
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/widgets/graph/graph_node_widget.hpp"
 #include "hesiod/gui/widgets/node_widgets/node_widget.hpp"
+#include "hesiod/gui/widgets/node_widgets/subgraph_node_widget.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/utils.hpp"
 
@@ -140,6 +141,10 @@ QWidget *node_widget_factory(const std::string        &node_type,
   else if (node_type == "Thru")
   {
     return new ThruNodeWidget(model, p_gnw, msg, parent);
+  }
+  else if (node_type == "SubGraph")
+  {
+    return new SubGraphNodeWidget(model, p_gnw, msg, parent);
   }
 
   // default
