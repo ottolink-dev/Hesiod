@@ -17,23 +17,19 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_IN        = "texture_in";
-constexpr const char *P_SHADING = "shading";
-constexpr const char *P_OUT       = "texture_out";
+constexpr const char *P_IN  = "texture_in";
+constexpr const char *P_OUT = "texture_out";
 
-constexpr const char *A_LEVELS         = "levels";
-constexpr const char *A_EXPOSURE       = "exposure";
-constexpr const char *A_CONTRAST       = "contrast";
-constexpr const char *A_SATURATION     = "saturation";
-constexpr const char *A_TEMPERATURE    = "temperature";
-constexpr const char *A_GAMMA          = "gamma";
-constexpr const char *A_DITHER         = "dither_amp";
-constexpr const char *A_FILMIC         = "filmic_tonemap";
-constexpr const char *A_ACES           = "aces_tonemap";
-constexpr const char *A_AGX            = "agx_tonemap";
-constexpr const char *A_ENABLE_SHADE   = "enable_shading";
-constexpr const char *A_SHADE_RADIUS   = "radius";
-constexpr const char *A_SHADE_STRENGTH = "strength";
+constexpr const char *A_LEVELS      = "levels";
+constexpr const char *A_EXPOSURE    = "exposure";
+constexpr const char *A_CONTRAST    = "contrast";
+constexpr const char *A_SATURATION  = "saturation";
+constexpr const char *A_TEMPERATURE = "temperature";
+constexpr const char *A_GAMMA       = "gamma";
+constexpr const char *A_DITHER      = "dither_amp";
+constexpr const char *A_FILMIC      = "filmic_tonemap";
+constexpr const char *A_ACES        = "aces_tonemap";
+constexpr const char *A_AGX         = "agx_tonemap";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -46,7 +42,6 @@ void setup_color_adjust_node(BaseNode &node)
   // --- Ports
 
   node.add_port<hmap::VirtualTexture>(gnode::PortType::IN, P_IN);
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_SHADING);
   node.add_port<hmap::VirtualTexture>(gnode::PortType::OUT, P_OUT, CONFIG_TEX(node));
 
   // --- Attributes
@@ -67,11 +62,6 @@ void setup_color_adjust_node(BaseNode &node)
 
   node.set_current_category("Dithering");
   add_float(node, A_DITHER, "Dither Amplitude", 0.f, 0.f, 0.5f);
-
-  node.set_current_category("Shading");
-  add_bool(node, A_ENABLE_SHADE, "Enable Shading", true);
-  add_float(node, A_SHADE_RADIUS, "Radius", 0.05f, 0.001f, 0.2f);
-  add_float(node, A_SHADE_STRENGTH, "Strength", 1.f, 0.f, 4.f);
   // clang-format on
 
   // --- Attribute(s) order
@@ -87,9 +77,8 @@ void compute_color_adjust_node(BaseNode &node)
 
   // --- Inputs / Outputs
 
-  auto *p_in        = node.get_value_ref<hmap::VirtualTexture>(P_IN);
-  auto *p_shading = node.get_value_ref<hmap::VirtualArray>(P_SHADING);
-  auto *p_out       = node.get_value_ref<hmap::VirtualTexture>(P_OUT);
+  auto *p_in  = node.get_value_ref<hmap::VirtualTexture>(P_IN);
+  auto *p_out = node.get_value_ref<hmap::VirtualTexture>(P_OUT);
 
   if (!p_in)
     return;
@@ -138,38 +127,6 @@ void compute_color_adjust_node(BaseNode &node)
         color_adjust(*r, *g, *b, param, {region.key.tx, region.key.ty});
       },
       node.cfg().cm_cpu);
-
-  // --- Topographic residual shading (optional)
-
-  const bool enable_shading = node.val<bool>(A_ENABLE_SHADE);
-
-  if (p_shading && enable_shading)
-  {
-    const int   ir             = node.val_pixel_radius(A_SHADE_RADIUS);
-    const float shade_strength = node.val<float>(A_SHADE_STRENGTH);
-
-    std::vector<const hmap::VirtualArray *> vas_in  = {p_shading};
-    std::vector<hmap::VirtualArray *>       vas_out = p_out->channels_ptr();
-
-    hmap::for_each_tile(
-        vas_in,
-        vas_out,
-        [ir, shade_strength](std::vector<const hmap::Array *> p_arrays_in,
-                             std::vector<hmap::Array *>       p_arrays_out,
-                             const hmap::TileRegion &)
-        {
-          auto [pa_z]    = unpack<1>(p_arrays_in);
-          auto [r, g, b] = unpack<3>(p_arrays_out);
-
-          hmap::Texture tile_tex(*r, *g, *b);
-          hmap::shade_topographic_residual(tile_tex, *pa_z, ir, shade_strength);
-
-          *r = std::move(tile_tex[0]);
-          *g = std::move(tile_tex[1]);
-          *b = std::move(tile_tex[2]);
-        },
-        node.cfg().cm_cpu);
-  }
 }
 
 } // namespace hesiod
