@@ -1,6 +1,8 @@
 /* Copyright (c) 2024 Otto Link. Distributed under the terms of the GNU General
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
+#include <stdexcept>
+
 #include "hesiod/model/nodes/attributes.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 
@@ -41,17 +43,25 @@ meta::Attribute<float> &add_angle(BaseNode          &node,
 
 meta::Attribute<meta::Array> &add_array(BaseNode          &node,
                                         const std::string &key,
-                                        const std::string &label)
+                                        const std::string &label,
+                                        glm::ivec2         storage_shape,
+                                        glm::ivec2         canvas_shape)
 {
-  auto      &c = node.get_meta_group().current();
-  const auto shape = node.cfg().shape;
+  if (storage_shape.x <= 0 || storage_shape.y <= 0 || canvas_shape.x <= 0 ||
+      canvas_shape.y <= 0)
+    throw std::invalid_argument("Array storage and canvas dimensions must be positive");
 
-  auto *a = c.add<meta::Array>(key,
-                               meta::Array{shape, std::vector(shape.x * shape.y, 0.f)});
+  auto &c = node.get_meta_group().current();
+
+  auto *a = c.add<meta::Array>(
+      key,
+      meta::Array{
+          storage_shape,
+          std::vector(static_cast<size_t>(storage_shape.x) * storage_shape.y, 0.f)});
 
   a->metadata().try_add(meta::keys::ui::label, std::string(label));
-  a->metadata().try_add(meta::keys::ui::width, shape.x);
-  a->metadata().try_add(meta::keys::ui::height, shape.y);
+  a->metadata().try_add(meta::keys::ui::width, canvas_shape.x);
+  a->metadata().try_add(meta::keys::ui::height, canvas_shape.y);
 
   set_doc_type(*a, "Array");
   apply_category_if_set(node, *a);

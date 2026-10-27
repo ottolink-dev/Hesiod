@@ -39,7 +39,9 @@ meta::Attribute<float> &add_angle(BaseNode          &node,
 
 meta::Attribute<meta::Array> &add_array(BaseNode          &node,
                                         const std::string &key,
-                                        const std::string &label);
+                                        const std::string &label,
+                                        glm::ivec2         storage_shape,
+                                        glm::ivec2         canvas_shape);
 
 meta::Attribute<bool> &add_bool(BaseNode          &node,
                                 const std::string &key,

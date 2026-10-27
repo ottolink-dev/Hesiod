@@ -269,6 +269,12 @@ void AppSettings::json_from(nlohmann::json const &json)
   }
 
   json_safe_get(json, "node_editor.default_resolution", node_editor.default_resolution);
+  json_safe_get(json,
+                "node_editor.brush_storage_resolution",
+                node_editor.brush_storage_resolution);
+  if (node_editor.brush_storage_resolution < 128 ||
+      node_editor.brush_storage_resolution > 4096)
+    node_editor.brush_storage_resolution = 512;
   json_safe_get(json, "node_editor.open_projects_at_1k", node_editor.open_projects_at_1k);
   json_safe_get(json, "node_editor.default_tiling", node_editor.default_tiling);
   json_safe_get(json, "node_editor.default_overlap", node_editor.default_overlap);
@@ -398,6 +404,7 @@ nlohmann::json AppSettings::json_to() const
 
   json["node_editor.gpu_device_name"] = node_editor.gpu_device_name;
   json["node_editor.default_resolution"] = node_editor.default_resolution;
+  json["node_editor.brush_storage_resolution"] = node_editor.brush_storage_resolution;
   json["node_editor.open_projects_at_1k"] = node_editor.open_projects_at_1k;
   json["node_editor.default_tiling"] = node_editor.default_tiling;
   json["node_editor.default_overlap"] = node_editor.default_overlap;

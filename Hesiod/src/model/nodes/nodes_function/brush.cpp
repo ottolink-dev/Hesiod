@@ -3,6 +3,7 @@
  * this software. */
 #include "meta/metadata/keys.hpp"
 
+#include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/attributes.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
@@ -26,9 +27,16 @@ void setup_brush_node(BaseNode &node)
   node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_OUT, CONFIG(node));
 
   // attribute(s)
-  // Categorised so the industrial panel gives the canvas its own section
-  // rather than dropping it into the node's root group.
-  auto &paint = add_array(node, "hmap", "HeightMap");
+  // Storage belongs to the painting, not to the graph output. Loading a saved
+  // painting replaces this initial shape without resampling its data.
+  const int resolution = HSD_CTX.app_settings.node_editor.brush_storage_resolution;
+
+  auto &paint = add_array(node,
+                          "hmap",
+                          "HeightMap",
+                          {resolution, resolution},
+                          {256, 256});
+  // Give the canvas its own section in the industrial panel.
   paint.metadata()
       .try_add(std::string(meta::keys::ui::category), std::string("Brush"))
       ->value() = "Brush";
@@ -48,16 +56,17 @@ void compute_brush_node(BaseNode &node)
   hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
   // retrieve raw data and convert them to an hmap::Array
-  const auto arr = node.get_meta_group().current().value<meta::Array>("hmap");
+  const auto &arr = node.get_meta_group().current().value<meta::Array>("hmap");
 
   // reject degenerate data (e.g. a zero shape persisted by older releases)
   // instead of resampling an inconsistent array
-  hmap::Array array(node.get_config_ref()->shape);
+  hmap::Array array;
 
   if (arr.shape.x <= 0 || arr.shape.y <= 0 ||
       arr.vector.size() !=
           static_cast<size_t>(arr.shape.x) * static_cast<size_t>(arr.shape.y))
   {
+    array = hmap::Array(node.cfg().shape);
     Logger::log()->error(
         "Brush node [{}]: invalid heightmap data (shape {}x{}, {} values), "
         "falling back to a zeroed heightmap",

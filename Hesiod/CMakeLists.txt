@@ -221,4 +221,11 @@ if(HESIOD_ENABLE_TESTS)
   set_tests_properties(
     autosave PROPERTIES WORKING_DIRECTORY ${EXECUTABLE_OUTPUT_PATH} ENVIRONMENT
                         "QT_QPA_PLATFORM=offscreen")
+
+  add_executable(test_brush_storage ${CMAKE_SOURCE_DIR}/tests/model/test_brush_storage.cpp)
+  target_link_libraries(test_brush_storage PRIVATE hesiod_core Qt6::Test)
+  add_test(NAME brush_storage COMMAND test_brush_storage)
+  set_tests_properties(
+    brush_storage PROPERTIES WORKING_DIRECTORY ${EXECUTABLE_OUTPUT_PATH} ENVIRONMENT
+                             "QT_QPA_PLATFORM=offscreen")
 endif()

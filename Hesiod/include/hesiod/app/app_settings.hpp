@@ -143,6 +143,8 @@ struct AppSettings
   {
     std::string gpu_device_name = ""; // let CLWrapper decides
     int         default_resolution = 1024;
+    // New Brush nodes only. Saved paintings retain their stored shape.
+    int         brush_storage_resolution = 512;
     bool        open_projects_at_1k = false; // cap graphs above 1024 on load
     int         default_tiling = 4;
     float       default_overlap = 0.5f;
