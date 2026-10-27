@@ -34,6 +34,8 @@ public:
   // --- External port binding ---
   void auto_bind_ports();
 
+  void sync_outputs();
+
   template <typename T>
   void expose_input(const std::shared_ptr<gnode::ISubGraphInputNode> &node_in,
                     const std::string                                &port_name)

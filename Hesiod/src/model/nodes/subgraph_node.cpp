@@ -144,6 +144,11 @@ void SubGraphNode::compute()
   }
 
   // 3. Push values from child NodeOut boundary nodes to parent graph
+  this->sync_outputs();
+}
+
+void SubGraphNode::sync_outputs()
+{
   for (auto &[port_name, out_node] : this->outputs)
   {
     if (out_node)

@@ -67,7 +67,17 @@ GraphTabsWidget::GraphTabsWidget(std::weak_ptr<GraphManager> p_graph_manager,
   this->connect(this->tab_widget,
                 &QTabWidget::currentChanged,
                 this,
-                [this](int) { this->sync_tab_strips(); });
+                [this](int index)
+                {
+                  this->sync_tab_strips();
+
+                  if (index >= 0 && index < this->tab_widget->count())
+                  {
+                    const std::string graph_id = this->tab_widget->tabText(index)
+                                                     .toStdString();
+                    this->sync_parent_subgraph_nodes(graph_id);
+                  }
+                });
   this->update_tab_widget();
 
   this->setup_connections(); // "permanent" ones
@@ -421,6 +431,7 @@ void GraphTabsWidget::sync_parent_subgraph_nodes(const std::string &child_graph_
       if (sgn && sgn->get_subgraph() && sgn->get_subgraph()->get_id() == child_graph_id)
       {
         sgn->auto_bind_ports();
+        sgn->sync_outputs();
 
         // Update graphics node representation in parent workspace
         auto it_ws = this->graph_workspace_widget_map.find(parent_cand_id);
@@ -436,6 +447,9 @@ void GraphTabsWidget::sync_parent_subgraph_nodes(const std::string &child_graph_
                 Q_EMIT proxy->ports_changed();
               else
                 gfx_node->on_ports_changed();
+
+              if (auto *sgw = dynamic_cast<SubGraphNodeWidget *>(gfx_node->get_widget()))
+                sgw->on_compute_finished();
             }
           }
         }
@@ -546,7 +560,11 @@ void GraphTabsWidget::update_tab_widget()
     this->connect(gnw,
                   &GraphNodeWidget::update_finished,
                   this,
-                  [this]() { emit update_finished(); });
+                  [this, id]()
+                  {
+                    this->sync_parent_subgraph_nodes(id);
+                    emit update_finished();
+                  });
     this->connect(gnw,
                   &GraphNodeWidget::subgraph_open_requested,
                   this,
