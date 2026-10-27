@@ -59,8 +59,8 @@ int main(int argc, char **argv)
   auto sub_node = std::make_shared<hesiod::SubGraphNode>("SubTerrain", cfg_parent, inner_graph);
   sub_node->auto_bind_ports();
 
-  assert(sub_node->has_port("elevation"));
-  assert(sub_node->has_port("result"));
+  assert(sub_node->has_port("in_1"));
+  assert(sub_node->has_port("out_1"));
 
   // 3. Put in parent graph and link from a source node
   auto parent_graph = std::make_shared<hesiod::GraphNode>("parent_graph", cfg_parent);
@@ -68,7 +68,7 @@ int main(int argc, char **argv)
 
   parent_graph->add_node(src_node, "src_1");
   parent_graph->add_node(sub_node, "sub_1");
-  parent_graph->new_link("src_1", "output", "sub_1", "elevation");
+  parent_graph->new_link("src_1", "output", "sub_1", "in_1");
 
   // Populate source node's output
   hmap::VirtualArray *p_src = src_node->get_value_ref<hmap::VirtualArray>("output");
@@ -78,13 +78,37 @@ int main(int argc, char **argv)
   // 4. Update parent graph
   parent_graph->update();
 
-  hmap::VirtualArray *p_out = sub_node->get_value_ref<hmap::VirtualArray>("result");
+  hmap::VirtualArray *p_out = sub_node->get_value_ref<hmap::VirtualArray>("out_1");
   assert(p_out != nullptr);
   float out_min = p_out->min(cfg_parent->cm_cpu);
   float out_max = p_out->max(cfg_parent->cm_cpu);
 
   std::cout << "SubGraph output range: [" << out_min << ", " << out_max << "]" << std::endl;
   assert(out_min == 42.0f && out_max == 42.0f);
+
+  // 5. Test dynamic addition and removal of boundary nodes
+  std::cout << "Testing dynamic port updates on boundary node changes..." << std::endl;
+  auto in_node_2 = std::make_shared<hesiod::NodeIn<hmap::VirtualArray>>("elevation_2", cfg_child);
+  inner_graph->add_node(in_node_2, "in_2");
+  sub_node->auto_bind_ports();
+
+  assert(sub_node->get_nports(gnode::PortType::IN) == 2);
+  assert(sub_node->has_port("in_1"));
+  assert(sub_node->has_port("in_2"));
+
+  // Remove in_1 from inner graph
+  inner_graph->remove_node("in_1");
+  sub_node->auto_bind_ports();
+
+  assert(sub_node->get_nports(gnode::PortType::IN) == 1);
+  assert(!sub_node->has_port("in_1"));
+  assert(sub_node->has_port("in_2"));
+
+  // Verify incident links in parent graph to in_1 were cleaned up
+  for (const auto &link : parent_graph->get_link_views(sub_node->get_id()))
+  {
+    assert(link.port_label_to != "in_1");
+  }
 
   std::cout << "All SubGraph tests passed successfully!" << std::endl;
   return 0;

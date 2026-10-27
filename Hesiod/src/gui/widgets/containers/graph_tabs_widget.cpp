@@ -432,8 +432,10 @@ void GraphTabsWidget::sync_parent_subgraph_nodes(const std::string &child_graph_
             auto *gfx_node = gnw->get_graphics_node_by_id(parent_node_id);
             if (gfx_node)
             {
-              gfx_node->update_geometry();
-              gfx_node->update();
+              if (auto *proxy = gfx_node->get_proxy_ref())
+                Q_EMIT proxy->ports_changed();
+              else
+                gfx_node->on_ports_changed();
             }
           }
         }

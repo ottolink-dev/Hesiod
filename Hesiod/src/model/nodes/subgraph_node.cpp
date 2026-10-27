@@ -39,38 +39,76 @@ void SubGraphNode::auto_bind_ports()
   if (!this->subgraph)
     return;
 
-  this->inputs.clear();
-  this->outputs.clear();
+  // 1. Collect desired slots from child graph boundary nodes using their node ID
+  std::vector<std::pair<std::string, std::shared_ptr<gnode::ISubGraphInputNode>>> desired_inputs;
+  std::vector<std::pair<std::string, std::shared_ptr<gnode::ISubGraphOutputNode>>> desired_outputs;
+  std::unordered_set<std::string> desired_slot_names;
 
-  for (const auto &[_, node_ptr] : this->subgraph->get_nodes())
+  for (const auto &[inner_node_id, node_ptr] : this->subgraph->get_nodes())
   {
     auto input_node = std::dynamic_pointer_cast<gnode::ISubGraphInputNode>(node_ptr);
     if (input_node)
     {
-      std::string slot_name = input_node->get_slot_name();
-      if (!this->has_port(slot_name))
-      {
-        this->expose_input<hmap::VirtualArray>(input_node);
-      }
-      else
-      {
-        this->inputs.push_back({slot_name, input_node});
-      }
+      const std::string port_name = inner_node_id;
+      desired_inputs.push_back({port_name, input_node});
+      desired_slot_names.insert(port_name);
     }
 
     auto output_node = std::dynamic_pointer_cast<gnode::ISubGraphOutputNode>(node_ptr);
     if (output_node)
     {
-      std::string slot_name = output_node->get_slot_name();
-      if (!this->has_port(slot_name))
-      {
-        this->expose_output<hmap::VirtualArray>(output_node);
-      }
-      else
-      {
-        this->outputs.push_back({slot_name, output_node});
-      }
+      const std::string port_name = inner_node_id;
+      desired_outputs.push_back({port_name, output_node});
+      desired_slot_names.insert(port_name);
     }
+  }
+
+  // 2. Remove ports that no longer exist in the child graph
+  // If this node is part of a parent graph, also remove parent links connected to removed ports
+  gnode::Graph *parent_graph = this->get_p_graph();
+
+  for (int i = this->get_nports() - 1; i >= 0; --i)
+  {
+    const std::string port_label = this->get_port_label(i);
+    if (desired_slot_names.find(port_label) == desired_slot_names.end())
+    {
+      if (parent_graph)
+      {
+        for (const auto &link : parent_graph->get_link_views(this->get_id()))
+        {
+          if ((link.from == this->get_id() && link.port_label_from == port_label) ||
+              (link.to == this->get_id() && link.port_label_to == port_label))
+          {
+            parent_graph->remove_link(link.from,
+                                      link.port_label_from,
+                                      link.to,
+                                      link.port_label_to);
+          }
+        }
+      }
+
+      this->remove_port(i);
+    }
+  }
+
+  // 3. Update bindings and add newly created boundary ports
+  this->inputs.clear();
+  this->outputs.clear();
+
+  for (auto &[port_name, input_node] : desired_inputs)
+  {
+    if (!this->has_port(port_name))
+      this->expose_input<hmap::VirtualArray>(input_node, port_name);
+    else
+      this->inputs.push_back({port_name, input_node});
+  }
+
+  for (auto &[port_name, output_node] : desired_outputs)
+  {
+    if (!this->has_port(port_name))
+      this->expose_output<hmap::VirtualArray>(output_node, port_name);
+    else
+      this->outputs.push_back({port_name, output_node});
   }
 }
 

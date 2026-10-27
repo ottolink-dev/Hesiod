@@ -35,21 +35,21 @@ public:
   void auto_bind_ports();
 
   template <typename T>
-  void expose_input(const std::shared_ptr<gnode::ISubGraphInputNode> &node_in)
+  void expose_input(const std::shared_ptr<gnode::ISubGraphInputNode> &node_in,
+                    const std::string                                &port_name)
   {
-    const std::string &name = node_in->get_slot_name();
-    if (!this->has_port(name))
-      this->add_port<T>(gnode::PortType::IN, name, CONFIG((*this)));
-    this->inputs.push_back({name, node_in});
+    if (!this->has_port(port_name))
+      this->add_port<T>(gnode::PortType::IN, port_name, CONFIG((*this)));
+    this->inputs.push_back({port_name, node_in});
   }
 
   template <typename T>
-  void expose_output(const std::shared_ptr<gnode::ISubGraphOutputNode> &node_out)
+  void expose_output(const std::shared_ptr<gnode::ISubGraphOutputNode> &node_out,
+                     const std::string                                 &port_name)
   {
-    const std::string &name = node_out->get_slot_name();
-    if (!this->has_port(name))
-      this->add_port<T>(gnode::PortType::OUT, name, CONFIG((*this)));
-    this->outputs.push_back({name, node_out});
+    if (!this->has_port(port_name))
+      this->add_port<T>(gnode::PortType::OUT, port_name, CONFIG((*this)));
+    this->outputs.push_back({port_name, node_out});
   }
 
   // --- Compute override ---
