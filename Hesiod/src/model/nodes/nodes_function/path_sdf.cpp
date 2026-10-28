@@ -49,26 +49,12 @@ void compute_path_sdf_node(BaseNode &node)
   hmap::VirtualArray *p_dy   = node.get_value_ref<hmap::VirtualArray>(P_DY);
   hmap::VirtualArray *p_out  = node.get_value_ref<hmap::VirtualArray>(P_SDF);
 
-  if (!p_path || !p_out)
-  {
+  if (!p_path)
     return;
-  }
 
   if (p_path->size() <= 1)
   {
-    // fill with zeros
-    hmap::for_each_tile(
-        {},
-        {p_out},
-        [](std::vector<const hmap::Array *>,
-           std::vector<hmap::Array *> p_arrays_out,
-           const hmap::TileRegion &)
-        {
-          auto [pa_out] = unpack<1>(p_arrays_out);
-          *pa_out       = 0.f;
-        },
-        node.cfg().cm_cpu);
-
+    p_out->fill(0.f, node.cfg().cm_cpu);
     return;
   }
 
@@ -82,13 +68,13 @@ void compute_path_sdf_node(BaseNode &node)
         auto [pa_dx, pa_dy] = unpack<2>(p_arrays_in);
         auto [pa_out]       = unpack<1>(p_arrays_out);
 
-        *pa_out = hmap::path_sdf_to_array(*p_path,
-                                          region.shape,
-                                          region.bbox,
-                                          pa_dx,
-                                          pa_dy);
+        *pa_out = hmap::gpu::path_sdf_to_array(*p_path,
+                                               region.shape,
+                                               region.bbox,
+                                               pa_dx,
+                                               pa_dy);
       },
-      node.cfg().cm_cpu);
+      node.cfg().cm_gpu);
 
   // post-process
   post_process_heightmap(node, *p_out);
