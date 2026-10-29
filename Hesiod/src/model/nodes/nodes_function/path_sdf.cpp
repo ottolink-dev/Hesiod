@@ -15,10 +15,11 @@ namespace hesiod
 // -----------------------------------------------------------------------------
 // Ports & Attributes
 // -----------------------------------------------------------------------------
-constexpr const char *P_DX   = "dx";
-constexpr const char *P_DY   = "dy";
-constexpr const char *P_PATH = "path";
-constexpr const char *P_SDF  = "sdf";
+constexpr const char *A_SMOOTH_PATH = "smooth_path";
+constexpr const char *P_DX          = "dx";
+constexpr const char *P_DY          = "dy";
+constexpr const char *P_PATH        = "path";
+constexpr const char *P_SDF         = "sdf";
 
 void setup_path_sdf_node(BaseNode &node)
 {
@@ -31,6 +32,7 @@ void setup_path_sdf_node(BaseNode &node)
   node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_SDF, CONFIG(node));
 
   // attribute(s)
+  add_bool(node, A_SMOOTH_PATH, "Enable Path Smoothing", false);
 
   setup_post_process_heightmap_attributes(node,
                                           {.add_mix = false, .remap_active_state = true});
@@ -58,21 +60,34 @@ void compute_path_sdf_node(BaseNode &node)
     return;
   }
 
+  const bool smooth_path = node.val<bool>(A_SMOOTH_PATH);
+
   hmap::for_each_tile(
       {p_dx, p_dy},
       {p_out},
-      [&node, p_path](std::vector<const hmap::Array *> p_arrays_in,
-                      std::vector<hmap::Array *>       p_arrays_out,
-                      const hmap::TileRegion          &region)
+      [&node, p_path, smooth_path](std::vector<const hmap::Array *> p_arrays_in,
+                                   std::vector<hmap::Array *>       p_arrays_out,
+                                   const hmap::TileRegion          &region)
       {
         auto [pa_dx, pa_dy] = unpack<2>(p_arrays_in);
         auto [pa_out]       = unpack<1>(p_arrays_out);
 
-        *pa_out = hmap::gpu::path_sdf_to_array(*p_path,
-                                               region.shape,
-                                               region.bbox,
-                                               pa_dx,
-                                               pa_dy);
+        if (smooth_path)
+        {
+          *pa_out = hmap::gpu::path_sdf_bezier_to_array(*p_path,
+                                                        region.shape,
+                                                        region.bbox,
+                                                        pa_dx,
+                                                        pa_dy);
+        }
+        else
+        {
+          *pa_out = hmap::gpu::path_sdf_to_array(*p_path,
+                                                 region.shape,
+                                                 region.bbox,
+                                                 pa_dx,
+                                                 pa_dy);
+        }
       },
       node.cfg().cm_gpu);
 
