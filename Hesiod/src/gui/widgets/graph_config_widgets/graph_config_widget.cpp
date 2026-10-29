@@ -6,7 +6,12 @@
 #include <format>
 #include <string>
 
+#include <QGuiApplication>
 #include <QLabel>
+#include <QScreen>
+#include <QScrollArea>
+#include <QScrollBar>
+#include <QShowEvent>
 #include <QVBoxLayout>
 
 #include "meta/core/attribute_container.hpp"
@@ -19,6 +24,7 @@
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/widgets/graph_config_widgets/graph_config_dialog.hpp"
 #include "hesiod/gui/widgets/node_widgets/properties_panel_design.hpp"
+#include "hesiod/gui/widgets/utils/gui_utils.hpp"
 #include "hesiod/logger.hpp"
 
 namespace hesiod
@@ -87,6 +93,33 @@ glm::ivec2 shape_for(int aspect_index, int long_edge, int custom_height)
     return {long_edge, snap(long_edge * ratio.y / ratio.x)};
   return {snap(long_edge * ratio.x / ratio.y), long_edge};
 }
+
+// QScrollArea with a sizeHint that follows its content's natural height,
+// allowing the parent MessageDialog (via adjustSize) to expand to fit all
+// sections when screen space permits, while still scrolling when constrained.
+class NaturalScrollArea final : public QScrollArea
+{
+public:
+  using QScrollArea::QScrollArea;
+
+  QSize sizeHint() const override
+  {
+    if (const QWidget *w = this->widget())
+      return QSize(w->sizeHint().width(), w->sizeHint().height());
+    return QScrollArea::sizeHint();
+  }
+
+  QSize minimumSizeHint() const override { return QSize(0, 120); }
+
+protected:
+  bool eventFilter(QObject *watched, QEvent *event) override
+  {
+    if (watched == this->widget() &&
+        (event->type() == QEvent::LayoutRequest || event->type() == QEvent::Resize))
+      this->updateGeometry();
+    return QScrollArea::eventFilter(watched, event);
+  }
+};
 
 } // namespace
 
@@ -196,17 +229,33 @@ GraphConfigDialog::GraphConfigDialog(GraphConfig &config, QWidget *parent)
                                    "padding: 0px 16px 2px 16px;")
                                .arg(HSD_CTX.app_settings.colors.text_secondary.name());
 
+  // --- scrollable body container
+  this->scroll_area = new NaturalScrollArea(this);
+  this->scroll_area->setObjectName("graphConfigScroll");
+  this->scroll_area->setWidgetResizable(true);
+  this->scroll_area->setFrameShape(QFrame::NoFrame);
+  this->scroll_area->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+  this->scroll_area->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+
+  auto *container = new QWidget();
+  container->setObjectName("graphConfigContainer");
+  container->setAttribute(Qt::WA_TranslucentBackground);
+
+  auto *content_layout = new QVBoxLayout(container);
+  content_layout->setContentsMargins(0, 0, 0, 0);
+  content_layout->setSpacing(4);
+
   const auto add_section = [&](meta::AttributeContainer &c, QLabel *note)
   {
     QWidget *widget = meta::qt::render(c, options, this);
     widget->setAttribute(Qt::WA_TranslucentBackground);
-    this->body()->addWidget(widget);
+    content_layout->addWidget(widget);
     this->rows.push_back(widget);
     if (note)
     {
       note->setWordWrap(true);
       note->setStyleSheet(note_css);
-      this->body()->addWidget(note);
+      content_layout->addWidget(note);
     }
   };
 
@@ -218,6 +267,32 @@ GraphConfigDialog::GraphConfigDialog(GraphConfig &config, QWidget *parent)
               new QLabel("These change how the graph is computed (tiles, threads, the "
                          "GPU), never the result itself.",
                          this));
+
+  this->scroll_area->setWidget(container);
+  container->installEventFilter(this->scroll_area);
+  this->body()->addWidget(this->scroll_area);
+
+  // --- scrollbar style
+  const auto &colors = HSD_CTX.app_settings.colors;
+  const QString
+      scroll_css = QString("QScrollArea#graphConfigScroll QScrollBar:vertical {"
+                           "  width: 10px; background: transparent; margin: 4px 2px 4px "
+                           "0px; border: none; }"
+                           "QScrollArea#graphConfigScroll QScrollBar::handle:vertical {"
+                           "  background: %1; border-radius: 4px; min-height: 30px; }"
+                           "QScrollArea#graphConfigScroll "
+                           "QScrollBar::handle:vertical:hover { background: %2; }"
+                           "QScrollArea#graphConfigScroll QScrollBar::add-line:vertical,"
+                           "QScrollArea#graphConfigScroll QScrollBar::sub-line:vertical "
+                           "{ height: 0px; border: none; }"
+                           "QScrollArea#graphConfigScroll QScrollBar::add-page:vertical,"
+                           "QScrollArea#graphConfigScroll QScrollBar::sub-page:vertical "
+                           "{ background: transparent; }")
+                       .arg(mix_colors(colors.bg_primary, colors.text_primary, 0.25)
+                                .name(),
+                            mix_colors(colors.bg_primary, colors.text_primary, 0.45)
+                                .name());
+  this->setStyleSheet(this->styleSheet() + scroll_css);
 
   // the size the choices add up to, live
   for (const char *key : {"aspect", "resolution", "height"})
@@ -284,6 +359,31 @@ void GraphConfigDialog::accept()
                        this->config.overlap);
 
   MessageDialog::accept();
+}
+
+void GraphConfigDialog::showEvent(QShowEvent *event)
+{
+  if (this->scroll_area)
+  {
+    const QWidget *anchor = this->parentWidget() ? this->parentWidget()->window()
+                                                 : nullptr;
+    const QScreen *screen = anchor && anchor->screen() ? anchor->screen()
+                                                       : this->screen();
+    if (!screen)
+      screen = QGuiApplication::primaryScreen();
+
+    const int available_height = screen ? screen->availableGeometry().height() : 800;
+    // Cap the dialog to 85% of available screen height
+    constexpr double kScreenHeightRatio = 0.85;
+    constexpr int    kChromeOverhead = 180;
+    const int        max_dialog_height = std::max(300,
+                                           int(available_height * kScreenHeightRatio));
+    const int max_scroll_height = std::max(180, max_dialog_height - kChromeOverhead);
+
+    this->scroll_area->setMaximumHeight(max_scroll_height);
+  }
+
+  MessageDialog::showEvent(event);
 }
 
 } // namespace hesiod

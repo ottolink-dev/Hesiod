@@ -9,10 +9,15 @@
 #include <QDir>
 #include <QFileDialog>
 #include <QFrame>
+#include <QGuiApplication>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
+#include <QScreen>
+#include <QScrollArea>
+#include <QScrollBar>
+#include <QShowEvent>
 #include <QVBoxLayout>
 
 #include "meta/core/attribute_container.hpp"
@@ -25,6 +30,7 @@
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/widgets/graph_config_widgets/bake_config_dialog.hpp"
 #include "hesiod/gui/widgets/node_widgets/properties_panel_design.hpp"
+#include "hesiod/gui/widgets/utils/gui_utils.hpp"
 
 namespace hesiod
 {
@@ -82,6 +88,33 @@ std::any default_for(const std::string &key)
     return d.max_tile_resolution;
   return {};
 }
+
+// QScrollArea with a sizeHint that follows its content's natural height,
+// allowing the parent MessageDialog (via adjustSize) to expand to fit all
+// sections when screen space permits, while still scrolling when constrained.
+class NaturalScrollArea final : public QScrollArea
+{
+public:
+  using QScrollArea::QScrollArea;
+
+  QSize sizeHint() const override
+  {
+    if (const QWidget *w = this->widget())
+      return QSize(w->sizeHint().width(), w->sizeHint().height());
+    return QScrollArea::sizeHint();
+  }
+
+  QSize minimumSizeHint() const override { return QSize(0, 120); }
+
+protected:
+  bool eventFilter(QObject *watched, QEvent *event) override
+  {
+    if (watched == this->widget() &&
+        (event->type() == QEvent::LayoutRequest || event->type() == QEvent::Resize))
+      this->updateGeometry();
+    return QScrollArea::eventFilter(watched, event);
+  }
+};
 
 } // namespace
 
@@ -200,11 +233,27 @@ BakeConfigDialog::BakeConfigDialog(int               max_size,
                                    "padding: 0px 16px 2px 16px;")
                                .arg(HSD_CTX.app_settings.colors.text_secondary.name());
 
+  // --- scrollable body container
+  this->scroll_area = new NaturalScrollArea(this);
+  this->scroll_area->setObjectName("bakeConfigScroll");
+  this->scroll_area->setWidgetResizable(true);
+  this->scroll_area->setFrameShape(QFrame::NoFrame);
+  this->scroll_area->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+  this->scroll_area->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+
+  auto *container = new QWidget();
+  container->setObjectName("bakeConfigContainer");
+  container->setAttribute(Qt::WA_TranslucentBackground);
+
+  auto *content_layout = new QVBoxLayout(container);
+  content_layout->setContentsMargins(0, 0, 0, 0);
+  content_layout->setSpacing(4);
+
   const auto add_section = [&](meta::AttributeContainer &c, const QString &note)
   {
     QWidget *rows = meta::qt::render(c, render_options, this);
     rows->setAttribute(Qt::WA_TranslucentBackground);
-    this->body()->addWidget(rows);
+    content_layout->addWidget(rows);
     this->rows.push_back(rows);
 
     if (!note.isEmpty())
@@ -212,7 +261,7 @@ BakeConfigDialog::BakeConfigDialog(int               max_size,
       auto *label = new QLabel(note, this);
       label->setWordWrap(true);
       label->setStyleSheet(note_css);
-      this->body()->addWidget(label);
+      content_layout->addWidget(label);
     }
   };
 
@@ -282,7 +331,7 @@ BakeConfigDialog::BakeConfigDialog(int               max_size,
     auto *wrap = new QHBoxLayout();
     wrap->setContentsMargins(14, 4, 14, 8); // aligned with the section cards
     wrap->addWidget(card);
-    this->body()->addLayout(wrap);
+    content_layout->addLayout(wrap);
   }
 
   add_section(*this->output,
@@ -292,6 +341,32 @@ BakeConfigDialog::BakeConfigDialog(int               max_size,
   add_section(*this->memory,
               "Streams tiles to disk and evaluates them one after the other. Uses far "
               "less RAM on very large graphs, but bakes more slowly.");
+
+  this->scroll_area->setWidget(container);
+  container->installEventFilter(this->scroll_area);
+  this->body()->addWidget(this->scroll_area);
+
+  // --- scrollbar style
+  const auto &colors = HSD_CTX.app_settings.colors;
+  const QString
+      scroll_css = QString("QScrollArea#bakeConfigScroll QScrollBar:vertical {"
+                           "  width: 10px; background: transparent; margin: 4px 2px 4px "
+                           "0px; border: none; }"
+                           "QScrollArea#bakeConfigScroll QScrollBar::handle:vertical {"
+                           "  background: %1; border-radius: 4px; min-height: 30px; }"
+                           "QScrollArea#bakeConfigScroll "
+                           "QScrollBar::handle:vertical:hover { background: %2; }"
+                           "QScrollArea#bakeConfigScroll QScrollBar::add-line:vertical,"
+                           "QScrollArea#bakeConfigScroll QScrollBar::sub-line:vertical { "
+                           "height: 0px; border: none; }"
+                           "QScrollArea#bakeConfigScroll QScrollBar::add-page:vertical,"
+                           "QScrollArea#bakeConfigScroll QScrollBar::sub-page:vertical { "
+                           "background: transparent; }")
+                       .arg(mix_colors(colors.bg_primary, colors.text_primary, 0.25)
+                                .name(),
+                            mix_colors(colors.bg_primary, colors.text_primary, 0.45)
+                                .name());
+  this->setStyleSheet(this->styleSheet() + scroll_css);
 
   this->add_button("Cancel", Role::Secondary, false, true);
   this->add_button("Bake", Role::Primary, true);
@@ -318,6 +393,31 @@ BakeConfig BakeConfigDialog::get_bake_settings() const
   config.max_tile_resolution = this->memory->value<int>("max_tile_resolution");
   config.export_dir = this->folder_edit->text().trimmed().toStdString();
   return config;
+}
+
+void BakeConfigDialog::showEvent(QShowEvent *event)
+{
+  if (this->scroll_area)
+  {
+    const QWidget *anchor = this->parentWidget() ? this->parentWidget()->window()
+                                                 : nullptr;
+    const QScreen *screen = anchor && anchor->screen() ? anchor->screen()
+                                                       : this->screen();
+    if (!screen)
+      screen = QGuiApplication::primaryScreen();
+
+    const int available_height = screen ? screen->availableGeometry().height() : 800;
+    // Cap the dialog to 85% of available screen height
+    constexpr double kScreenHeightRatio = 0.85;
+    constexpr int    kChromeOverhead = 180;
+    const int        max_dialog_height = std::max(300,
+                                           int(available_height * kScreenHeightRatio));
+    const int max_scroll_height = std::max(180, max_dialog_height - kChromeOverhead);
+
+    this->scroll_area->setMaximumHeight(max_scroll_height);
+  }
+
+  MessageDialog::showEvent(event);
 }
 
 } // namespace hesiod
