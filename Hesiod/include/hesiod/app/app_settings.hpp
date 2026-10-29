@@ -92,7 +92,6 @@ struct AppSettings
   struct Interface
   {
     bool enable_data_preview_in_node_body = true;
-    bool enable_node_settings_in_node_body = false;
     bool enable_texture_downloader = true;
     bool enable_heightmapper_widget = true;
     bool enable_tool_tips = true;

@@ -914,13 +914,6 @@ void AppSettingsWindow::setup_pages()
         this->make_toggle(HSD_SETTING(bool, interface.enable_data_preview_in_node_body)),
         false,
         "thumbnail image picture");
-    this->add_row(
-        nodes,
-        "Inline settings",
-        "Show node parameters inside the node body.",
-        this->make_toggle(HSD_SETTING(bool, interface.enable_node_settings_in_node_body)),
-        false,
-        "parameters attributes controls");
 
 #if HSD_ENABLE_TEXTURE_DOWNLOADER
     QVBoxLayout *tools = this->add_card(page, "Tools");

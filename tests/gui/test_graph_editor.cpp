@@ -734,7 +734,6 @@ int main(int argc, char **argv)
   qputenv("XDG_CACHE_HOME", config_dir.path().toUtf8());
   qputenv("QT_LOGGING_RULES", HESIOD_QPUTENV_QT_LOGGING_RULES);
   HesiodApplication app(argc, argv, HesiodApplication::StartupMode::ContextOnly);
-  app.get_context().app_settings.interface.enable_node_settings_in_node_body = false;
   GN_STYLE->viewer.add_toolbar = false;
   GraphEditorTest tests;
   return QTest::qExec(&tests, argc, argv);

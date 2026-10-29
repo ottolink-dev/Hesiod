@@ -141,9 +141,6 @@ void AppSettings::json_from(nlohmann::json const &json)
                 "interface.enable_data_preview_in_node_body",
                 interface.enable_data_preview_in_node_body);
   json_safe_get(json,
-                "interface.enable_node_settings_in_node_body",
-                interface.enable_node_settings_in_node_body);
-  json_safe_get(json,
                 "interface.enable_texture_downloader",
                 interface.enable_texture_downloader);
   json_safe_get(json,
@@ -364,8 +361,6 @@ nlohmann::json AppSettings::json_to() const
 
   json["interface.enable_data_preview_in_node_body"] =
       interface.enable_data_preview_in_node_body;
-  json["interface.enable_node_settings_in_node_body"] =
-      interface.enable_node_settings_in_node_body;
   json["interface.enable_texture_downloader"] = interface.enable_texture_downloader;
   json["interface.enable_heightmapper_widget"] = interface.enable_heightmapper_widget;
   json["interface.enable_tool_tips"] = interface.enable_tool_tips;

@@ -1190,22 +1190,6 @@ void GraphNodeWidget::setup_connections()
                 this,
                 &GraphNodeWidget::on_compute_finished);
 
-  this->connect(this,
-                &GraphNodeWidget::compute_finished,
-                this,
-                [this](const std::string &node_id)
-                {
-                  if (HSD_CTX.app_settings.interface.enable_node_settings_in_node_body)
-                  {
-                    // force update of the graphics node to update the node settings
-                    // content
-                    gngui::GraphicsNode *p_gfx_node = this->get_graphics_node_by_id(
-                        node_id);
-                    if (p_gfx_node)
-                      p_gfx_node->update();
-                  }
-                });
-
   // GraphNode
   gno->update_started = [safe_this = QPointer(this)]()
   {
