@@ -24,22 +24,21 @@ constexpr const char *P_OUT         = "output";
 constexpr const char *P_SOURCES     = "sources";
 constexpr const char *P_WATER_DEPTH = "water_depth";
 
-constexpr const char *A_CONTROL_POINTS_COUNT       = "control_points_count";
-constexpr const char *A_DEPTH                      = "depth";
-constexpr const char *A_DISTANCE_EXPONENT          = "distance_exponent";
-constexpr const char *A_ELEVATION_RATIO            = "elevation_ratio";
-constexpr const char *A_ENABLE_WIDTH_DEPTH_SCALING = "enable_width_depth_scaling";
-constexpr const char *A_FAVOR_DOMAIN_CENTER        = "favor_domain_center";
-constexpr const char *A_FAVOR_STREAM_MERGING       = "favor_stream_merging";
-constexpr const char *A_RADIAL_PROFILE             = "radial_profile";
-constexpr const char *A_RADIAL_PROFILE_PARAMETER   = "radial_profile_parameter";
-constexpr const char *A_SEED                       = "seed";
-constexpr const char *A_TRUNCATE_MERGING_PATHS     = "truncate_merging_paths";
-constexpr const char *A_UPWARD_PENALIZATION        = "upward_penalization";
-constexpr const char *A_VALLEY_FACTOR              = "valley_factor";
-constexpr const char *A_VALLEY_RADIUS              = "valley_radius";
-constexpr const char *A_WIDTH                      = "width";
-constexpr const char *A_WIDTH_EXPONENT             = "width_exponent";
+constexpr const char *A_CONTROL_POINTS_COUNT     = "control_points_count";
+constexpr const char *A_DEPTH                    = "depth";
+constexpr const char *A_DISTANCE_EXPONENT        = "distance_exponent";
+constexpr const char *A_ELEVATION_RATIO          = "elevation_ratio";
+constexpr const char *A_FAVOR_DOMAIN_CENTER      = "favor_domain_center";
+constexpr const char *A_FAVOR_STREAM_MERGING     = "favor_stream_merging";
+constexpr const char *A_RADIAL_PROFILE           = "radial_profile";
+constexpr const char *A_RADIAL_PROFILE_PARAMETER = "radial_profile_parameter";
+constexpr const char *A_SEED                     = "seed";
+constexpr const char *A_TRUNCATE_MERGING_PATHS   = "truncate_merging_paths";
+constexpr const char *A_UPWARD_PENALIZATION      = "upward_penalization";
+constexpr const char *A_VALLEY_FACTOR            = "valley_factor";
+constexpr const char *A_VALLEY_RADIUS            = "valley_radius";
+constexpr const char *A_WIDTH                    = "width";
+constexpr const char *A_WIDTH_EXPONENT           = "width_exponent";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -62,16 +61,16 @@ void setup_flow_stream_node(BaseNode &node)
   // clang-format off
   node.set_current_category("Pathfinding");
   add_seed(node, A_SEED, "Seed");
-  add_int(node, A_CONTROL_POINTS_COUNT, "Control Points Count", 4096, 100, 50000);
-  add_float(node, A_ELEVATION_RATIO, "Elevation vs Slope Weight", 0.5f, 0.f, 0.99f);
-  add_float(node, A_DISTANCE_EXPONENT, "Distance Exponent", 2.f, 0.1f, 4.f);
-  add_float(node, A_UPWARD_PENALIZATION, "Upward Penalization", 100.f, 0.f, 1000.f);
+  add_int(node, A_CONTROL_POINTS_COUNT, "Control Points Count", 10000, 100, 50000);
+  add_float(node, A_ELEVATION_RATIO, "Elevation vs Slope Weight", 0.95f, 0.f, 0.99f);
+  add_float(node, A_DISTANCE_EXPONENT, "Distance Exponent", 1.f, 0.1f, 4.f);
+  add_float(node, A_UPWARD_PENALIZATION, "Upward Penalization", 1000.f, 0.f, 1000.f);
   add_bool(node, A_FAVOR_DOMAIN_CENTER, "Favor Domain Center", true);
 
   node.set_current_category("Stream Merging");
   add_bool(node, A_FAVOR_STREAM_MERGING, "Favor Stream Merging", true);
   add_float(node, A_VALLEY_RADIUS, "Valley Radius", 0.05f, 0.001f, 0.2f);
-  add_float(node, A_VALLEY_FACTOR, "Valley Factor", 0.35f, 0.01f, 2.f);
+  add_float(node, A_VALLEY_FACTOR, "Valley Factor", 2.f, 0.01f, 4.f);
   add_bool(node, A_TRUNCATE_MERGING_PATHS, "Truncate Merging Streams", true);
 
   node.set_current_category("Riverbed");
@@ -79,8 +78,7 @@ void setup_flow_stream_node(BaseNode &node)
 
   node.set_current_category("Carving");
   add_float(node, A_WIDTH, "Width", 0.02f, 0.001f, 0.2f);
-  add_float(node, A_WIDTH_EXPONENT, "Width Exponent", 0.5f, 0.1f, 3.f);
-  add_bool(node, A_ENABLE_WIDTH_DEPTH_SCALING, "Width Depth Scaling", true);
+  add_float(node, A_WIDTH_EXPONENT, "Width Exponent", 2.f, 0.1f, 3.f);
   add_enum(node, A_RADIAL_PROFILE, "Radial Profile", enum_mappings.radial_profile_map, "Smoothstep Upper");
   add_float(node, A_RADIAL_PROFILE_PARAMETER, "Profile Sharpness", 2.f, 0.f, 8.f);
   // clang-format on
@@ -126,12 +124,11 @@ void compute_flow_stream_node(BaseNode &node)
   const auto valley_factor        = node.val<float>(A_VALLEY_FACTOR);
   const auto truncate_merging     = node.val<bool>(A_TRUNCATE_MERGING_PATHS);
 
-  const auto depth                      = node.val<float>(A_DEPTH);
-  const auto width                      = node.val<float>(A_WIDTH);
-  const auto width_exponent             = node.val<float>(A_WIDTH_EXPONENT);
-  const auto enable_width_depth_scaling = node.val<bool>(A_ENABLE_WIDTH_DEPTH_SCALING);
-  const auto radial_profile             = node.val_enum<hmap::RadialProfile>(A_RADIAL_PROFILE);
-  const auto radial_profile_parameter   = node.val<float>(A_RADIAL_PROFILE_PARAMETER);
+  const auto depth                    = node.val<float>(A_DEPTH);
+  const auto width                    = node.val<float>(A_WIDTH);
+  const auto width_exponent           = node.val<float>(A_WIDTH_EXPONENT);
+  const auto radial_profile           = node.val_enum<hmap::RadialProfile>(A_RADIAL_PROFILE);
+  const auto radial_profile_parameter = node.val<float>(A_RADIAL_PROFILE_PARAMETER);
   // clang-format on
 
   // --- Flow stream paths
@@ -164,7 +161,10 @@ void compute_flow_stream_node(BaseNode &node)
 
   hmap::Graph stream_graph = hmap::hydrology_paths_to_graph(path_list, 1e-3f);
 
-  // --- Carve river trench
+  // enforce strict monotonic downflow along all stream branches
+  stream_graph.enforce_downhill_elevation(0.01f);
+
+  // --- Carve river network
 
   hmap::for_each_tile(
       {p_in, p_noise_r},
@@ -184,20 +184,18 @@ void compute_flow_stream_node(BaseNode &node)
           return;
         }
 
-        hmap::trench(*pa_out,
-                     stream_graph,
-                     width,
-                     width_exponent,
-                     enable_width_depth_scaling,
-                     radial_profile,
-                     radial_profile_parameter,
-                     hmap::ElevationLongitudinalProfile::ELP_DECREASING,
-                     /* elevation_shift */ -depth,
-                     /* min_slope */ 0.001f,
-                     pa_noise_r,
-                     nullptr,
-                     32,
-                     region.bbox);
+        hmap::carve_river(*pa_out,
+                          stream_graph,
+                          /* outlet_width */ width,
+                          /* headwater_width */ 0.001f,
+                          width_exponent,
+                          depth,
+                          /* bank_width_ratio */ 1.0f,
+                          radial_profile,
+                          radial_profile_parameter,
+                          pa_noise_r,
+                          /* p_river_mask */ nullptr,
+                          region.bbox);
 
         *pa_water_depth = *pa_in - *pa_out;
       },

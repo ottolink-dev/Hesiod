@@ -8296,7 +8296,6 @@
                 "keys": [
                     "width",
                     "width_exponent",
-                    "enable_width_depth_scaling",
                     "radial_profile",
                     "radial_profile_parameter"
                 ],
@@ -8327,12 +8326,6 @@
                 "key": "elevation_ratio",
                 "label": "Elevation vs Slope Weight",
                 "type": "Float"
-            },
-            "enable_width_depth_scaling": {
-                "description": "Modulates trench width based on local elevation difference.",
-                "key": "enable_width_depth_scaling",
-                "label": "Width Depth Scaling",
-                "type": "Bool"
             },
             "favor_domain_center": {
                 "description": "Biases flow paths toward passing through the center of the domain.",
