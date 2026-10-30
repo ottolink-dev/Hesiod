@@ -159,6 +159,11 @@ void compute_flow_stream_node(BaseNode &node)
 
   // --- Stream graph
 
+  for (auto &path : path_list)
+  {
+    path.enforce_monotonic_values(true);
+  }
+
   hmap::Graph stream_graph = hmap::hydrology_paths_to_graph(path_list, 1e-3f);
 
   // enforce strict monotonic downflow along all stream branches
