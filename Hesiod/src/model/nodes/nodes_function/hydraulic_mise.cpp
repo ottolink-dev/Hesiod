@@ -66,6 +66,7 @@ constexpr const char *A_WARP        = "warp";
 constexpr const char *A_ANTIALIAS   = "antialias";
 
 // Solver options
+constexpr const char *A_CUTOFF_RESOLUTION  = "cutoff_resolution";
 constexpr const char *A_EXTRAPOLATE_BORDER = "extrapolate_border";
 constexpr const char *A_EXACT_FLOOD        = "exact_flood";
 
@@ -130,6 +131,7 @@ void setup_hydraulic_mise_node(BaseNode &node)
   add_float(node, A_ANTIALIAS, "Antialias Factor", 0.1f, 0.f, 1.f);
 
   node.set_current_category("Solver Options");
+  add_int(node, A_CUTOFF_RESOLUTION, "Cut-off Resolution", 4096, 64, 4096);
   add_bool(node, A_EXTRAPOLATE_BORDER, "Extrapolate Border", true);
   add_bool(node, A_EXACT_FLOOD, "Exact Flood Queue", false);
   // clang-format on
@@ -220,39 +222,23 @@ void compute_hydraulic_mise_node(BaseNode &node)
     return;
   }
 
+  const int cutoff_resolution = node.val<int>(A_CUTOFF_RESOLUTION);
+
   // --- Compute
 
-  hmap::for_each_tile(
-      {p_in, p_mask, p_bedrock, p_erodibility, p_moisture, p_outlet},
-      {p_out, p_sediment, p_flow, p_erosion, p_deposition},
-      [&params](std::vector<const hmap::Array *> p_arrays_in,
-                std::vector<hmap::Array *>       p_arrays_out,
-                const hmap::TileRegion &)
-      {
-        auto [pa_in,
-              pa_mask,
-              pa_bedrock,
-              pa_erodibility,
-              pa_moisture,
-              pa_outlet] = unpack<6>(p_arrays_in);
-        auto [pa_out, pa_sediment, pa_flow, pa_erosion, pa_deposition] = unpack<5>(
-            p_arrays_out);
-
-        *pa_out = *pa_in;
-
-        hmap::hydraulic_mise(*pa_out,
-                             pa_mask,
-                             params,
-                             pa_bedrock,
-                             pa_erodibility,
-                             pa_moisture,
-                             pa_outlet,
-                             pa_sediment,
-                             pa_flow,
-                             pa_erosion,
-                             pa_deposition);
-      },
-      node.cfg().cm_single_array);
+  *p_out = hmap::va::hydraulic_mise(node.cfg().cm_cpu,
+                                    *p_in,
+                                    cutoff_resolution,
+                                    params,
+                                    p_mask,
+                                    p_bedrock,
+                                    p_erodibility,
+                                    p_moisture,
+                                    p_outlet,
+                                    p_sediment,
+                                    p_flow,
+                                    p_erosion,
+                                    p_deposition);
 
   // --- Post-treatments
 
