@@ -8288,7 +8288,8 @@
             },
             {
                 "keys": [
-                    "depth"
+                    "depth",
+                    "slope"
                 ],
                 "name": "Riverbed"
             },
@@ -8357,6 +8358,12 @@
                 "label": "Seed",
                 "type": "Random seed number"
             },
+            "slope": {
+                "description": "Talus slope factor used for carving the riverbed, scaled by the mesh resolution.",
+                "key": "slope",
+                "label": "Slope",
+                "type": "Float"
+            },
             "truncate_merging_paths": {
                 "description": "Truncates streams at the point where they intersect previously traced streams.",
                 "key": "truncate_merging_paths",
@@ -8399,12 +8406,6 @@
                 "caption": "input",
                 "data_type": "VirtualArray",
                 "description": "Input heightmap terrain.",
-                "type": "input"
-            },
-            "noise_r": {
-                "caption": "noise_r",
-                "data_type": "VirtualArray",
-                "description": "Optional noise array to perturb trench width.",
                 "type": "input"
             },
             "output": {

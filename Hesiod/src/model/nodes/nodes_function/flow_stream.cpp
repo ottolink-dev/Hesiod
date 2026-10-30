@@ -19,7 +19,6 @@ namespace hesiod
 // -----------------------------------------------------------------------------
 
 constexpr const char *P_IN          = "input";
-constexpr const char *P_NOISE_R     = "noise_r";
 constexpr const char *P_OUT         = "output";
 constexpr const char *P_SOURCES     = "sources";
 constexpr const char *P_WATER_DEPTH = "water_depth";
@@ -33,6 +32,7 @@ constexpr const char *A_FAVOR_STREAM_MERGING     = "favor_stream_merging";
 constexpr const char *A_RADIAL_PROFILE           = "radial_profile";
 constexpr const char *A_RADIAL_PROFILE_PARAMETER = "radial_profile_parameter";
 constexpr const char *A_SEED                     = "seed";
+constexpr const char *A_SLOPE                    = "slope";
 constexpr const char *A_TRUNCATE_MERGING_PATHS   = "truncate_merging_paths";
 constexpr const char *A_UPWARD_PENALIZATION      = "upward_penalization";
 constexpr const char *A_VALLEY_FACTOR            = "valley_factor";
@@ -52,7 +52,6 @@ void setup_flow_stream_node(BaseNode &node)
 
   node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_IN);
   node.add_port<hmap::Cloud>(gnode::PortType::IN, P_SOURCES);
-  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_NOISE_R);
   node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_OUT, CONFIG(node));
   node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_WATER_DEPTH, CONFIG(node));
 
@@ -75,6 +74,7 @@ void setup_flow_stream_node(BaseNode &node)
 
   node.set_current_category("Riverbed");
   add_float(node, A_DEPTH, "Depth", 0.02f, 0.f, 0.2f);
+  add_float(node, A_SLOPE, "Slope", 0.5f, 0.01f, 10.f);
 
   node.set_current_category("Carving");
   add_float(node, A_WIDTH, "Width", 0.02f, 0.001f, 0.2f);
@@ -94,7 +94,6 @@ void compute_flow_stream_node(BaseNode &node)
 
   const auto *p_in          = node.get_value_ref<hmap::VirtualArray>(P_IN);
   const auto *p_cloud       = node.get_value_ref<hmap::Cloud>(P_SOURCES);
-  const auto *p_noise_r     = node.get_value_ref<hmap::VirtualArray>(P_NOISE_R);
   auto       *p_out         = node.get_value_ref<hmap::VirtualArray>(P_OUT);
   auto       *p_water_depth = node.get_value_ref<hmap::VirtualArray>(P_WATER_DEPTH);
 
@@ -125,6 +124,7 @@ void compute_flow_stream_node(BaseNode &node)
   const auto truncate_merging     = node.val<bool>(A_TRUNCATE_MERGING_PATHS);
 
   const auto depth                    = node.val<float>(A_DEPTH);
+  const auto slope                    = node.val<float>(A_SLOPE);
   const auto width                    = node.val<float>(A_WIDTH);
   const auto width_exponent           = node.val<float>(A_WIDTH_EXPONENT);
   const auto radial_profile           = node.val_enum<hmap::RadialProfile>(A_RADIAL_PROFILE);
@@ -171,17 +171,51 @@ void compute_flow_stream_node(BaseNode &node)
 
   // --- Carve river network
 
+  const float talus = slope / float(p_out->shape.x);
+
   hmap::for_each_tile(
-      {p_in, p_noise_r},
-      {p_out, p_water_depth},
+      {p_in},
+      {p_out},
       [&](std::vector<const hmap::Array *> p_arrays_in,
           std::vector<hmap::Array *>       p_arrays_out,
           const hmap::TileRegion          &region)
       {
-        auto [pa_in, pa_noise_r]      = unpack<2>(p_arrays_in);
-        auto [pa_out, pa_water_depth] = unpack<2>(p_arrays_out);
+        auto [pa_in]  = unpack<1>(p_arrays_in);
+        auto [pa_out] = unpack<1>(p_arrays_out);
 
         *pa_out = *pa_in;
+
+        if (stream_graph.empty())
+          return;
+
+        hmap::carve_river(*pa_out,
+                          stream_graph,
+                          talus,
+                          /* outlet_width */ width,
+                          /* headwater_width */ 0.f,
+                          width_exponent,
+                          depth,
+                          /* depth_exponent */ 0.3f,
+                          seed,
+                          /* talus_noise_ratio */ 0.05f,
+                          radial_profile,
+                          radial_profile_parameter,
+                          /* p_river_mask */ nullptr,
+                          region.bbox);
+      },
+      node.cfg().cm_cpu);
+
+  p_out->sync_overlap_buffers();
+
+  hmap::for_each_tile(
+      {p_in, p_out},
+      {p_water_depth},
+      [&](std::vector<const hmap::Array *> p_arrays_in,
+          std::vector<hmap::Array *>       p_arrays_out,
+          const hmap::TileRegion          &region)
+      {
+        auto [pa_in, pa_out]  = unpack<2>(p_arrays_in);
+        auto [pa_water_depth] = unpack<1>(p_arrays_out);
 
         if (stream_graph.empty())
         {
@@ -189,25 +223,11 @@ void compute_flow_stream_node(BaseNode &node)
           return;
         }
 
-        hmap::carve_river(*pa_out,
-                          stream_graph,
-                          /* outlet_width */ width,
-                          /* headwater_width */ 0.001f,
-                          width_exponent,
-                          depth,
-                          /* bank_width_ratio */ 1.0f,
-                          radial_profile,
-                          radial_profile_parameter,
-                          pa_noise_r,
-                          /* p_river_mask */ nullptr,
-                          region.bbox);
-
         *pa_water_depth = *pa_in - *pa_out;
       },
       node.cfg().cm_cpu);
 
-  p_out->sync_overlap_buffers();
-  p_water_depth->sync_overlap_buffers();
+  // p_water_depth->sync_overlap_buffers();
 }
 
 } // namespace hesiod
