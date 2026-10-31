@@ -8,6 +8,7 @@
 #include "hesiod/model/nodes/base_node.hpp"
 
 class QToolButton;
+class QUndoStack;
 
 namespace hesiod
 {
@@ -36,6 +37,7 @@ public:
   GraphNodeWidget    *get_graph_node_widget() const;
   GraphTabStrip      *get_tab_strip() const { return this->tab_strip; }
   NodeSettingsWidget *get_node_settings_widget() const;
+  QUndoStack         *get_undo_stack() const { return this->undo_stack; }
   Viewer3D           *get_viewer() const;
   void                set_node_library_visible(bool new_state);
 
@@ -47,6 +49,7 @@ private:
   void setup_layout();
 
   std::weak_ptr<GraphNode> p_graph_node;
+  QUndoStack              *undo_stack = nullptr;
   GraphNodeWidget         *graph_node_widget = nullptr;
   GraphTabStrip           *tab_strip = nullptr; // graph tabs on the editor's top edge
   NodeSettingsWidget      *node_settings_widget = nullptr;

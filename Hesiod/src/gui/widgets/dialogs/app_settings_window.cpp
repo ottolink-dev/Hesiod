@@ -941,6 +941,14 @@ void AppSettingsWindow::setup_pages()
                   this->make_toggle(HSD_SETTING(bool, node_editor.live_update)),
                   false,
                   "realtime compute refresh");
+    this->add_row(
+        editing,
+        "Merge node setting undo steps",
+        "Merge consecutive parameter changes on the same node into a single "
+        "undo step.",
+        this->make_toggle(HSD_SETTING(bool, node_editor.merge_node_attribute_undo)),
+        false,
+        "undo redo history merge parameters slider");
     this->add_row(editing,
                   "Compute in background",
                   "Keep the interface usable while the graph is computed: navigate, "

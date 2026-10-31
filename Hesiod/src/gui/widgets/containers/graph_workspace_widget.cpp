@@ -7,6 +7,7 @@
 #include <QSplitter>
 #include <QTimer>
 #include <QToolButton>
+#include <QUndoStack>
 
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/widgets/containers/graph_workspace_widget.hpp"
@@ -33,6 +34,8 @@ GraphWorkspaceWidget::GraphWorkspaceWidget(std::weak_ptr<GraphNode> p_graph_node
     : QWidget(parent), p_graph_node(p_graph_node)
 {
   Logger::log()->trace("GraphWorkspaceWidget::GraphWorkspaceWidget");
+
+  this->undo_stack = new QUndoStack(this);
 
   auto gno = this->p_graph_node.lock();
   if (!gno)

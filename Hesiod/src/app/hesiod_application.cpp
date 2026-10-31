@@ -44,6 +44,7 @@
 #include "hesiod/app/ui_scale.hpp"
 #include "hesiod/cli/batch_mode.hpp"
 #include "hesiod/gui/project_ui.hpp"
+#include "hesiod/gui/undo/undo_manager.hpp"
 #include "hesiod/gui/widgets/chrome/menu_chrome.hpp"
 #include "hesiod/gui/widgets/chrome/window_chrome.hpp"
 #include "hesiod/gui/widgets/containers/graph_manager_widget.hpp"
@@ -1708,6 +1709,19 @@ void HesiodApplication::setup_menu_bar()
   quit->setShortcut(tr("Ctrl+Q"));
   quit->setIcon(HSD_ICON("menu_quit"));
   file_menu->addAction(quit);
+
+  // --- edit
+
+  QMenu *edit_menu = add_menu(this->main_window->menu_bar(), "&Edit");
+
+  QUndoStack *undo_stack = UndoManager::instance().get_stack();
+  QAction    *undo_action = undo_stack->createUndoAction(this, tr("&Undo"));
+  undo_action->setShortcut(QKeySequence::Undo);
+  edit_menu->addAction(undo_action);
+
+  QAction *redo_action = undo_stack->createRedoAction(this, tr("&Redo"));
+  redo_action->setShortcuts({QKeySequence::Redo, QKeySequence(tr("Ctrl+Y"))});
+  edit_menu->addAction(redo_action);
 
   // --- project
 
