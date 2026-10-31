@@ -9,6 +9,7 @@
 
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/project_ui.hpp"
+#include "hesiod/gui/undo/undo_manager.hpp"
 #include "hesiod/gui/widgets/chrome/menu_chrome.hpp"
 #include "hesiod/gui/widgets/containers/graph_manager_widget.hpp"
 #include "hesiod/gui/widgets/containers/graph_tabs_widget.hpp"
@@ -88,6 +89,7 @@ void GraphTabsWidget::clear()
   }
 
   this->graph_workspace_widget_map.clear();
+  UndoManager::instance().clear();
 }
 
 std::string GraphTabsWidget::get_selected_graph_id() const

@@ -44,6 +44,8 @@ private:
   gnode::EventConnection    post_update_conn;
 
   meta::qt::MetaWidget *meta_widget = nullptr;
+  nlohmann::json        state_before_edit;
+  bool                  is_in_edit = false;
 };
 
 } // namespace hesiod

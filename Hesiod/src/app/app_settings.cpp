@@ -298,6 +298,9 @@ void AppSettings::json_from(nlohmann::json const &json)
                 node_editor.disable_during_update);
   json_safe_get(json, "node_editor.enable_node_groups", node_editor.enable_node_groups);
   json_safe_get(json, "node_editor.live_update", node_editor.live_update);
+  json_safe_get(json,
+                "node_editor.merge_node_attribute_undo",
+                node_editor.merge_node_attribute_undo);
   json_safe_get(json, "node_editor.async_update", node_editor.async_update);
   json_safe_get(json, "node_editor.show_compute_time", node_editor.show_compute_time);
   json_safe_get(json, "node_editor.show_build_border", node_editor.show_build_border);
@@ -412,6 +415,7 @@ nlohmann::json AppSettings::json_to() const
   json["node_editor.disable_during_update"] = node_editor.disable_during_update;
   json["node_editor.enable_node_groups"] = node_editor.enable_node_groups;
   json["node_editor.live_update"] = node_editor.live_update;
+  json["node_editor.merge_node_attribute_undo"] = node_editor.merge_node_attribute_undo;
   json["node_editor.async_update"] = node_editor.async_update;
   json["node_editor.show_compute_time"] = node_editor.show_compute_time;
   json["node_editor.show_build_border"] = node_editor.show_build_border;

@@ -21,6 +21,8 @@
 #include "meta_qt/widgets/collapsible_section.hpp"
 
 #include "hesiod/app/hesiod_application.hpp"
+#include "hesiod/gui/undo/change_node_attribute_command.hpp"
+#include "hesiod/gui/undo/undo_manager.hpp"
 #include "hesiod/gui/widgets/dialogs/documentation_popup.hpp"
 #include "hesiod/gui/widgets/node_widgets/node_attributes_widget.hpp"
 #include "hesiod/gui/widgets/node_widgets/properties_panel_design.hpp"
@@ -527,6 +529,62 @@ void NodeAttributesWidget::setup_layout()
                       p->updateGeometry();
                   });
   }
+
+  // Push undo commands on user edits
+  auto get_container_info = [this]() -> std::pair<std::string, meta::AttributeContainer *>
+  {
+    auto gno = this->p_graph_node.lock();
+    if (!gno)
+      return {"", nullptr};
+
+    BaseNode *p_current = gno->get_node_ref_by_id<BaseNode>(this->node_id);
+    if (!p_current)
+      return {"", nullptr};
+
+    const std::string name = p_current->get_meta_group()
+                                 .current_container_name()
+                                 .value_or(std::string{});
+    return {name, &p_current->get_meta_group().current()};
+  };
+
+  this->connect(this->meta_widget,
+                &meta::qt::MetaWidget::edit_started,
+                this,
+                [this, get_container_info]()
+                {
+                  auto [name, container] = get_container_info();
+                  if (container)
+                  {
+                    this->state_before_edit = container->json_to(
+                        meta::SerializationMode::state);
+                    this->is_in_edit = true;
+                  }
+                });
+
+  this->connect(
+      this->meta_widget,
+      &meta::qt::MetaWidget::edit_ended,
+      this,
+      [this, get_container_info]()
+      {
+        auto [name, container] = get_container_info();
+        if (container && this->is_in_edit)
+        {
+          nlohmann::json new_state = container->json_to(meta::SerializationMode::state);
+          if (new_state != this->state_before_edit)
+          {
+            if (QUndoStack *stack = UndoManager::instance().get_stack())
+            {
+              stack->push(new ChangeNodeAttributeCommand(this->p_graph_node,
+                                                         this->node_id,
+                                                         name,
+                                                         this->state_before_edit,
+                                                         new_state));
+            }
+          }
+        }
+        this->is_in_edit = false;
+      });
 
   // Recompute on value_changed or edit_ended depending on app settings.
   auto signal = HSD_CTX.app_settings.node_editor.live_update
