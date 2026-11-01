@@ -32,6 +32,8 @@ public:
 
   void clear();
 
+  void delete_user_preset(const std::string &node_type, const std::string &preset_name);
+
   bool export_preset(const std::string &node_type,
                      const std::string &preset_name,
                      const std::string &file_path) const;

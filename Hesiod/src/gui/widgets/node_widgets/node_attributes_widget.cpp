@@ -187,6 +187,13 @@ QWidget *NodeAttributesWidget::create_toolbar()
         [node_type](const std::string &name)
         { NodePresetManager::get_instance().save_user_preset(node_type, name); });
 
+    this->connect(
+        preset_combo,
+        &meta::qt::PresetComboBox::preset_deleted,
+        this,
+        [node_type](const std::string &name)
+        { NodePresetManager::get_instance().delete_user_preset(node_type, name); });
+
     layout->addWidget(preset_combo);
   }
 

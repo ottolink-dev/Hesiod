@@ -51,6 +51,59 @@ void NodePresetManager::clear()
   this->snapshot_managers.clear();
 }
 
+void NodePresetManager::delete_user_preset(const std::string &node_type,
+                                           const std::string &preset_name)
+{
+  Logger::log()->trace("NodePresetManager::delete_user_preset: {}::{}",
+                       node_type,
+                       preset_name);
+
+  // Search through all writable (non-bundled) preset files that contain this preset
+  for (const auto &file_info : this->preset_files)
+  {
+    if (file_info.is_bundled)
+      continue;
+
+    auto it = file_info.node_type_to_presets.find(node_type);
+    if (it == file_info.node_type_to_presets.end())
+      continue;
+
+    const auto &preset_list = it->second;
+    if (std::find(preset_list.begin(), preset_list.end(), preset_name) == preset_list.end())
+      continue;
+
+    // Found in this file; remove it from JSON
+    try
+    {
+      nlohmann::json root;
+      std::ifstream in(file_info.file_path);
+      if (in.is_open())
+        in >> root;
+      in.close();
+
+      if (root.contains("presets") && root["presets"].is_object() &&
+          root["presets"].contains(node_type) && root["presets"][node_type].is_object())
+      {
+        root["presets"][node_type].erase(preset_name);
+        if (root["presets"][node_type].empty())
+          root["presets"].erase(node_type);
+
+        std::ofstream out(file_info.file_path);
+        if (out.is_open())
+          out << root.dump(2);
+      }
+    }
+    catch (const std::exception &e)
+    {
+      Logger::log()->error("NodePresetManager::delete_user_preset: error removing from {}: {}",
+                           file_info.file_path,
+                           e.what());
+    }
+  }
+
+  this->rescan_files();
+}
+
 bool NodePresetManager::export_preset(const std::string &node_type,
                                       const std::string &preset_name,
                                       const std::string &file_path) const
