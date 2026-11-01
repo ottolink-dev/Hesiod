@@ -347,12 +347,17 @@ void NodeAttributesWidget::setup_layout()
   if (this->add_toolbar)
     main_layout->addWidget(this->create_toolbar());
 
+  const PropertiesPanelDesign &panel = properties_panel_design();
+
   // --- Preset combo box backed by Meta SnapshotManager
   std::string node_type = p_node->get_node_type();
   if (!node_type.empty())
   {
     auto &sm = NodePresetManager::get_instance().get_snapshot_manager(node_type);
     auto *preset_combo = new meta::qt::PresetComboBox(&sm, this);
+
+    if (panel.has_own_chrome && panel.theme)
+      preset_combo->set_theme(*panel.theme);
 
     preset_combo->set_snapshot_provider(
         [this]() -> nlohmann::json
@@ -428,8 +433,6 @@ void NodeAttributesWidget::setup_layout()
   // --- Meta ContainerGroupWidget
 
   // Registers the designs on first call and validates the configured name.
-
-  const PropertiesPanelDesign &panel = properties_panel_design();
 
   meta::qt::RowContext row_ctx;
   row_ctx.theme = panel.theme;
