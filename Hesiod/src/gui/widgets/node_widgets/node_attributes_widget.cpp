@@ -108,8 +108,6 @@ QWidget *NodeAttributesWidget::create_toolbar()
   auto *info_act = make_action(HSD_ICON("info"), "Node Information");
   auto *bckp_act = make_action(HSD_ICON("bookmark"), "Backup State");
   auto *revert_act = make_action(HSD_ICON("u_turn_left"), "Revert State");
-  auto *load_act = make_action(HSD_ICON("file_open"), "Load Preset");
-  auto *save_act = make_action(HSD_ICON("save"), "Save Preset");
   auto *doc_act = make_action(HSD_ICON("link"), "Online Documentation");
 
   // Visible on the bar: the three that get reached while actually working on a
@@ -215,9 +213,6 @@ QWidget *NodeAttributesWidget::create_toolbar()
   overflow_menu->addAction(bckp_act);
   overflow_menu->addAction(revert_act);
   overflow_menu->addSeparator();
-  overflow_menu->addAction(load_act);
-  overflow_menu->addAction(save_act);
-  overflow_menu->addSeparator();
   overflow_menu->addAction(doc_act);
 
   if (panel.has_own_chrome)
@@ -301,96 +296,6 @@ QWidget *NodeAttributesWidget::create_toolbar()
                       if (auto gno = this->p_graph_node.lock())
                         gno->update(this->node_id);
                     }
-                  }
-                });
-
-  this->connect(load_act,
-                &QAction::triggered,
-                this,
-                [this]()
-                {
-                  auto gno = this->p_graph_node.lock();
-                  if (!gno)
-                    return;
-
-                  BaseNode *p_node = gno->get_node_ref_by_id<BaseNode>(this->node_id);
-                  if (!p_node)
-                    return;
-
-                  QString fname = QFileDialog::getOpenFileName(nullptr,
-                                                               "preset.json",
-                                                               ".",
-                                                               "json file (*.json)");
-
-                  if (!fname.isNull() && !fname.isEmpty())
-                  {
-                    std::ifstream file(fname.toStdString());
-
-                    if (file.is_open())
-                    {
-                      try
-                      {
-                        nlohmann::json json;
-                        file >> json;
-                        file.close();
-                        Logger::log()->trace("JSON successfully loaded from {}",
-                                             fname.toStdString());
-
-                        auto          &group = p_node->get_meta_group();
-                        nlohmann::json group_json = convert_legacy_container_group_json(
-                            group,
-                            json);
-
-                        group.json_from(group_json, meta::SerializationMode::state);
-                        this->sync_from_model();
-
-                        gno->update(this->node_id);
-                      }
-                      catch (const std::exception &e)
-                      {
-                        Logger::log()->error("Failed to load preset {}: {}",
-                                             fname.toStdString(),
-                                             e.what());
-                      }
-                    }
-                    else
-                      Logger::log()->error("Could not open file {} to load JSON",
-                                           fname.toStdString());
-                  }
-                });
-
-  this->connect(save_act,
-                &QAction::triggered,
-                this,
-                [this]()
-                {
-                  auto gno = this->p_graph_node.lock();
-                  if (!gno)
-                    return;
-
-                  BaseNode *p_node = gno->get_node_ref_by_id<BaseNode>(this->node_id);
-                  if (!p_node)
-                    return;
-
-                  QString fname = QFileDialog::getSaveFileName(nullptr,
-                                                               "preset.json",
-                                                               ".",
-                                                               "json file (*.json)");
-
-                  if (!fname.isNull() && !fname.isEmpty())
-                  {
-                    std::ofstream file(fname.toStdString());
-
-                    if (file.is_open())
-                    {
-                      file << p_node->get_meta_group()
-                                  .json_to(meta::SerializationMode::state)
-                                  .dump(4);
-                      file.close();
-                    }
-                    else
-                      Logger::log()->error("Could not open file {} to save JSON",
-                                           fname.toStdString());
                   }
                 });
 

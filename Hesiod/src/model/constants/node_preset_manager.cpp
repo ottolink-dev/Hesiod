@@ -69,14 +69,15 @@ void NodePresetManager::delete_user_preset(const std::string &node_type,
       continue;
 
     const auto &preset_list = it->second;
-    if (std::find(preset_list.begin(), preset_list.end(), preset_name) == preset_list.end())
+    if (std::find(preset_list.begin(), preset_list.end(), preset_name) ==
+        preset_list.end())
       continue;
 
     // Found in this file; remove it from JSON
     try
     {
       nlohmann::json root;
-      std::ifstream in(file_info.file_path);
+      std::ifstream  in(file_info.file_path);
       if (in.is_open())
         in >> root;
       in.close();
@@ -95,9 +96,10 @@ void NodePresetManager::delete_user_preset(const std::string &node_type,
     }
     catch (const std::exception &e)
     {
-      Logger::log()->error("NodePresetManager::delete_user_preset: error removing from {}: {}",
-                           file_info.file_path,
-                           e.what());
+      Logger::log()->error(
+          "NodePresetManager::delete_user_preset: error removing from {}: {}",
+          file_info.file_path,
+          e.what());
     }
   }
 
