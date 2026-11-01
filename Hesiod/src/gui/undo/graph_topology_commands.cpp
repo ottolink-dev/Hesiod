@@ -162,6 +162,12 @@ void EraseCommand::undo()
   }
 
   batch.commit();
+
+  // Restore selection for deleted nodes so settings panel and viewers re-attach
+  for (const auto &sn : this->saved_nodes)
+  {
+    this->widget->set_node_as_selected(sn.id);
+  }
 }
 
 // =====================================
