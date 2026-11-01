@@ -6,14 +6,17 @@
 
 #include <QDesktopServices>
 #include <QFileDialog>
+#include <QFrame>
 #include <QHBoxLayout>
 #include <QHeaderView>
 #include <QMessageBox>
+#include <QShowEvent>
 #include <QSplitter>
 #include <QUrl>
 
 #include "meta_qt/ui/theme.hpp"
 
+#include "hesiod/gui/widgets/controls/control_tones.hpp"
 #include "hesiod/gui/widgets/dialogs/node_preset_config_widget.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/constants/node_preset_manager.hpp"
@@ -31,24 +34,39 @@ NodePresetConfigWidget::NodePresetConfigWidget(QWidget *parent) : QWidget(parent
   main_layout->setContentsMargins(0, 0, 0, 0);
 
   auto *splitter = new QSplitter(Qt::Horizontal, this);
+  splitter->setObjectName("presetSplitter");
 
   // --- Left pane: collection list & actions
-  auto *left_widget = new QWidget(splitter);
-  auto *left_layout = new QVBoxLayout(left_widget);
-  left_layout->setContentsMargins(0, 0, 0, 0);
-  left_layout->setSpacing(6);
+  auto *left_card = new QFrame(splitter);
+  left_card->setObjectName("presetCard");
 
-  this->file_list = new QListWidget(left_widget);
+  auto *left_layout = new QVBoxLayout(left_card);
+  left_layout->setContentsMargins(10, 10, 10, 10);
+  left_layout->setSpacing(8);
+
+  auto *left_heading = new QLabel(tr("COLLECTIONS"), left_card);
+  left_heading->setObjectName("cardHeading");
+  left_layout->addWidget(left_heading);
+
+  this->file_list = new QListWidget(left_card);
+  this->file_list->setObjectName("presetFileList");
   this->file_list->setSelectionMode(QAbstractItemView::SingleSelection);
   left_layout->addWidget(this->file_list);
 
   auto *btn_layout = new QHBoxLayout();
   btn_layout->setSpacing(4);
 
-  this->add_button = new QPushButton(tr("Add..."), left_widget);
-  this->remove_button = new QPushButton(tr("Remove"), left_widget);
-  this->reload_button = new QPushButton(tr("Reload"), left_widget);
-  this->open_folder_button = new QPushButton(tr("Open Folder"), left_widget);
+  this->add_button = new QPushButton(tr("Add..."), left_card);
+  this->add_button->setObjectName("secondaryButton");
+
+  this->remove_button = new QPushButton(tr("Remove"), left_card);
+  this->remove_button->setObjectName("secondaryButton");
+
+  this->reload_button = new QPushButton(tr("Reload"), left_card);
+  this->reload_button->setObjectName("secondaryButton");
+
+  this->open_folder_button = new QPushButton(tr("Folder"), left_card);
+  this->open_folder_button->setObjectName("secondaryButton");
 
   btn_layout->addWidget(this->add_button);
   btn_layout->addWidget(this->remove_button);
@@ -58,17 +76,29 @@ NodePresetConfigWidget::NodePresetConfigWidget(QWidget *parent) : QWidget(parent
   left_layout->addLayout(btn_layout);
 
   // --- Right pane: details, tree & raw preview
-  auto *right_widget = new QWidget(splitter);
-  auto *right_layout = new QVBoxLayout(right_widget);
-  right_layout->setContentsMargins(6, 0, 0, 0);
-  right_layout->setSpacing(6);
+  auto *right_card = new QFrame(splitter);
+  right_card->setObjectName("presetCard");
 
-  this->file_title_label = new QLabel(tr("<b>No selection</b>"), right_widget);
-  this->file_author_label = new QLabel(right_widget);
-  this->file_comment_label = new QLabel(right_widget);
+  auto *right_layout = new QVBoxLayout(right_card);
+  right_layout->setContentsMargins(10, 10, 10, 10);
+  right_layout->setSpacing(8);
+
+  auto *right_heading = new QLabel(tr("DETAILS & PRESETS"), right_card);
+  right_heading->setObjectName("cardHeading");
+  right_layout->addWidget(right_heading);
+
+  this->file_title_label = new QLabel(tr("<b>No selection</b>"), right_card);
+  this->file_title_label->setObjectName("fileTitle");
+
+  this->file_author_label = new QLabel(right_card);
+  this->file_author_label->setObjectName("fileMeta");
+
+  this->file_comment_label = new QLabel(right_card);
+  this->file_comment_label->setObjectName("fileMeta");
   this->file_comment_label->setWordWrap(true);
-  this->file_path_label = new QLabel(right_widget);
-  this->file_path_label->setStyleSheet("color: gray; font-size: 11px;");
+
+  this->file_path_label = new QLabel(right_card);
+  this->file_path_label->setObjectName("filePath");
   this->file_path_label->setWordWrap(true);
 
   right_layout->addWidget(this->file_title_label);
@@ -76,27 +106,32 @@ NodePresetConfigWidget::NodePresetConfigWidget(QWidget *parent) : QWidget(parent
   right_layout->addWidget(this->file_comment_label);
   right_layout->addWidget(this->file_path_label);
 
-  this->preset_tree = new QTreeWidget(right_widget);
+  this->preset_tree = new QTreeWidget(right_card);
+  this->preset_tree->setObjectName("presetTree");
   this->preset_tree->setHeaderLabels({tr("Node / Preset"), tr("Count")});
   this->preset_tree->header()->setSectionResizeMode(0, QHeaderView::Stretch);
   this->preset_tree->header()->setSectionResizeMode(1, QHeaderView::ResizeToContents);
   right_layout->addWidget(this->preset_tree);
 
-  this->raw_json_view = new QTextEdit(right_widget);
+  this->raw_json_view = new QTextEdit(right_card);
+  this->raw_json_view->setObjectName("presetRawJson");
   this->raw_json_view->setReadOnly(true);
   this->raw_json_view->setVisible(false);
   this->raw_json_view->setFont(meta::qt::ui_font(11));
   right_layout->addWidget(this->raw_json_view);
 
-  this->toggle_raw_button = new QPushButton(tr("View Raw JSON"), right_widget);
+  this->toggle_raw_button = new QPushButton(tr("View Raw JSON"), right_card);
+  this->toggle_raw_button->setObjectName("secondaryButton");
   right_layout->addWidget(this->toggle_raw_button);
 
-  splitter->addWidget(left_widget);
-  splitter->addWidget(right_widget);
+  splitter->addWidget(left_card);
+  splitter->addWidget(right_card);
   splitter->setStretchFactor(0, 1);
   splitter->setStretchFactor(1, 2);
 
   main_layout->addWidget(splitter);
+
+  this->apply_styling();
 
   // --- Connections
   this->connect(this->file_list,
@@ -313,6 +348,140 @@ void NodePresetConfigWidget::update_details_panel(int index)
   }
   else
     this->raw_json_view->clear();
+}
+
+void NodePresetConfigWidget::showEvent(QShowEvent *event)
+{
+  QWidget::showEvent(event);
+  this->apply_styling();
+}
+
+void NodePresetConfigWidget::apply_styling()
+{
+  const ControlTones t = control_tones();
+
+  QString css = R"(
+    QFrame#presetCard {
+      background: CARD;
+      border: 1px solid BORDER;
+      border-radius: 10px;
+    }
+
+    QLabel#cardHeading {
+      color: FAINT;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      padding: 2px 0px 4px 2px;
+    }
+
+    QLabel#fileTitle {
+      font-size: 14px;
+      font-weight: 600;
+      color: INK;
+    }
+
+    QLabel#fileMeta {
+      font-size: 12px;
+      color: DIM;
+    }
+
+    QLabel#filePath {
+      font-size: 11px;
+      color: FAINT;
+    }
+
+    QListWidget#presetFileList,
+    QTreeWidget#presetTree,
+    QTextEdit#presetRawJson {
+      background: FIELD;
+      border: 1px solid BORDER;
+      border-radius: 7px;
+      color: INK;
+      padding: 4px;
+    }
+
+    QListWidget#presetFileList::item {
+      padding: 6px 8px;
+      border-radius: 5px;
+      color: INK;
+    }
+
+    QListWidget#presetFileList::item:hover {
+      background: NAV_HOVER;
+    }
+
+    QListWidget#presetFileList::item:selected {
+      background: NAV_ACTIVE;
+      color: INK;
+      font-weight: 600;
+    }
+
+    QTreeWidget#presetTree::item {
+      padding: 4px 6px;
+      border-radius: 4px;
+    }
+
+    QTreeWidget#presetTree::item:selected {
+      background: NAV_ACTIVE;
+      color: INK;
+    }
+
+    QHeaderView::section {
+      background: transparent;
+      color: DIM;
+      border: none;
+      border-bottom: 1px solid BORDER;
+      padding: 4px 6px;
+      font-weight: 600;
+      font-size: 11px;
+    }
+
+    QPushButton#secondaryButton {
+      background: FIELD;
+      color: INK;
+      border: 1px solid BORDER;
+      border-radius: 7px;
+      padding: 6px 12px;
+      font-size: 12px;
+    }
+
+    QPushButton#secondaryButton:hover {
+      border-color: FAINT;
+    }
+
+    QPushButton#secondaryButton:disabled {
+      color: GHOST;
+    }
+
+    QSplitter#presetSplitter::handle {
+      background: transparent;
+      width: 8px;
+    }
+  )";
+
+  auto mix_colors = [](const QColor &a, const QColor &b, qreal t) -> QColor
+  {
+    return QColor::fromRgbF(a.redF() * (1.0 - t) + b.redF() * t,
+                            a.greenF() * (1.0 - t) + b.greenF() * t,
+                            a.blueF() * (1.0 - t) + b.blueF() * t);
+  };
+
+  const std::pair<const char *, QColor> tokens[] = {
+      {"NAV_ACTIVE", mix_colors(t.sidebar, t.card, 0.85)},
+      {"NAV_HOVER", mix_colors(t.sidebar, t.card, 0.45)},
+      {"CARD", t.card},
+      {"BORDER", t.border},
+      {"FIELD", t.field},
+      {"GHOST", mix_colors(t.sidebar, t.ink, 0.28)},
+      {"FAINT", t.ink_faint},
+      {"DIM", t.ink_dim},
+      {"INK", t.ink}};
+
+  for (const auto &[key, value] : tokens)
+    css.replace(key, value.name());
+
+  this->setStyleSheet(css);
 }
 
 } // namespace hesiod

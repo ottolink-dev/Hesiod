@@ -21,6 +21,9 @@ public:
 
   void refresh();
 
+protected:
+  void showEvent(QShowEvent *event) override;
+
 private slots:
   void on_add_file_clicked();
   void on_file_selection_changed();
@@ -31,6 +34,7 @@ private slots:
   void on_toggle_raw_json();
 
 private:
+  void apply_styling();
   void update_details_panel(int index);
 
   QPushButton *add_button = nullptr;
