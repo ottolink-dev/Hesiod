@@ -19,6 +19,7 @@
 #include "meta_qt/ui/design_registry.hpp"
 #include "meta_qt/ui/theme.hpp"
 #include "meta_qt/widgets/collapsible_section.hpp"
+#include "meta_qt/widgets/preset_combo_box.hpp"
 
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/widgets/dialogs/documentation_popup.hpp"
@@ -26,7 +27,9 @@
 #include "hesiod/gui/widgets/node_widgets/properties_panel_design.hpp"
 #include "hesiod/gui/widgets/node_widgets/properties_panel_header.hpp"
 #include "hesiod/logger.hpp"
+#include "hesiod/model/constants/node_preset_manager.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
+#include "hesiod/model/nodes/legacy/legacy_converter.hpp"
 
 namespace hesiod
 {
@@ -120,6 +123,73 @@ QWidget *NodeAttributesWidget::create_toolbar()
     layout->addWidget(btn);
   }
 
+  // State/preset buttons operate on the Meta container json (snapshot manager
+  // for state, json_to/json_from for presets).
+  auto meta_container = [this]() -> meta::AttributeContainer *
+  {
+    auto gno = this->p_graph_node.lock();
+    if (!gno)
+      return nullptr;
+    BaseNode *p_node = gno->get_node_ref_by_id<BaseNode>(this->node_id);
+    if (!p_node)
+      return nullptr;
+    return &p_node->get_meta_group().current();
+  };
+
+  // Preset combo box backed by Meta SnapshotManager
+  std::string node_type;
+  if (auto gno = this->p_graph_node.lock())
+    if (BaseNode *p_node = gno->get_node_ref_by_id<BaseNode>(this->node_id))
+      node_type = p_node->get_node_type();
+
+  if (!node_type.empty())
+  {
+    auto &sm = NodePresetManager::get_instance().get_snapshot_manager(node_type);
+    auto *preset_combo = new meta::qt::PresetComboBox(&sm, toolbar);
+    preset_combo->setFixedWidth(130);
+
+    preset_combo->set_snapshot_provider(
+        [this]() -> nlohmann::json
+        {
+          if (auto gno = this->p_graph_node.lock())
+            if (BaseNode *p_node = gno->get_node_ref_by_id<BaseNode>(this->node_id))
+              return p_node->get_meta_group().json_to(meta::SerializationMode::state);
+
+          return nlohmann::json::object();
+        });
+
+    this->connect(
+        preset_combo,
+        &meta::qt::PresetComboBox::preset_selected,
+        this,
+        [this](const std::string &, const nlohmann::json &snapshot)
+        {
+          if (auto gno = this->p_graph_node.lock())
+          {
+            if (BaseNode *p_node = gno->get_node_ref_by_id<BaseNode>(this->node_id))
+            {
+              auto          &group = p_node->get_meta_group();
+              nlohmann::json group_json = convert_legacy_container_group_json(group,
+                                                                              snapshot);
+
+              group.json_from(group_json, meta::SerializationMode::state);
+              this->sync_from_model();
+
+              gno->update(this->node_id);
+            }
+          }
+        });
+
+    this->connect(
+        preset_combo,
+        &meta::qt::PresetComboBox::preset_saved,
+        this,
+        [node_type](const std::string &name)
+        { NodePresetManager::get_instance().save_user_preset(node_type, name); });
+
+    layout->addWidget(preset_combo);
+  }
+
   if (!panel.has_own_chrome)
     layout->addStretch();
 
@@ -201,19 +271,6 @@ QWidget *NodeAttributesWidget::create_toolbar()
                     this->p_graph_node_widget->on_node_info(this->node_id);
                 });
 
-  // State/preset buttons operate on the Meta container json (snapshot manager
-  // for state, json_to/json_from for presets).
-  auto meta_container = [this]() -> meta::AttributeContainer *
-  {
-    auto gno = this->p_graph_node.lock();
-    if (!gno)
-      return nullptr;
-    BaseNode *p_node = gno->get_node_ref_by_id<BaseNode>(this->node_id);
-    if (!p_node)
-      return nullptr;
-    return &p_node->get_meta_group().current();
-  };
-
   this->connect(bckp_act,
                 &QAction::triggered,
                 this,
@@ -243,10 +300,14 @@ QWidget *NodeAttributesWidget::create_toolbar()
   this->connect(load_act,
                 &QAction::triggered,
                 this,
-                [this, meta_container]()
+                [this]()
                 {
-                  auto *c = meta_container();
-                  if (!c)
+                  auto gno = this->p_graph_node.lock();
+                  if (!gno)
+                    return;
+
+                  BaseNode *p_node = gno->get_node_ref_by_id<BaseNode>(this->node_id);
+                  if (!p_node)
                     return;
 
                   QString fname = QFileDialog::getOpenFileName(nullptr,
@@ -268,10 +329,15 @@ QWidget *NodeAttributesWidget::create_toolbar()
                         Logger::log()->trace("JSON successfully loaded from {}",
                                              fname.toStdString());
 
-                        c->json_from(json, true);
+                        auto          &group = p_node->get_meta_group();
+                        nlohmann::json group_json = convert_legacy_container_group_json(
+                            group,
+                            json);
+
+                        group.json_from(group_json, meta::SerializationMode::state);
                         this->sync_from_model();
-                        if (auto gno = this->p_graph_node.lock())
-                          gno->update(this->node_id);
+
+                        gno->update(this->node_id);
                       }
                       catch (const std::exception &e)
                       {
@@ -289,10 +355,14 @@ QWidget *NodeAttributesWidget::create_toolbar()
   this->connect(save_act,
                 &QAction::triggered,
                 this,
-                [this, meta_container]()
+                [this]()
                 {
-                  auto *c = meta_container();
-                  if (!c)
+                  auto gno = this->p_graph_node.lock();
+                  if (!gno)
+                    return;
+
+                  BaseNode *p_node = gno->get_node_ref_by_id<BaseNode>(this->node_id);
+                  if (!p_node)
                     return;
 
                   QString fname = QFileDialog::getSaveFileName(nullptr,
@@ -306,7 +376,9 @@ QWidget *NodeAttributesWidget::create_toolbar()
 
                     if (file.is_open())
                     {
-                      file << c->json_to().dump(4);
+                      file << p_node->get_meta_group()
+                                  .json_to(meta::SerializationMode::state)
+                                  .dump(4);
                       file.close();
                     }
                     else
