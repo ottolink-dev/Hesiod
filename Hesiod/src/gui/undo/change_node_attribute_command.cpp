@@ -16,10 +16,39 @@ ChangeNodeAttributeCommand::ChangeNodeAttributeCommand(
     const nlohmann::json    &old_state,
     const nlohmann::json    &new_state,
     QUndoCommand            *parent)
-    : QUndoCommand(parent), p_graph_node(p_graph_node), node_id(node_id),
-      container_name(container_name), old_state(old_state), new_state(new_state)
+    : ChangeNodeAttributeCommand(p_graph_node,
+                                 node_id,
+                                 container_name,
+                                 container_name,
+                                 old_state,
+                                 new_state,
+                                 parent)
 {
-  this->setText(QString("Change %1 Settings").arg(QString::fromStdString(node_id)));
+}
+
+ChangeNodeAttributeCommand::ChangeNodeAttributeCommand(
+    std::weak_ptr<GraphNode> p_graph_node,
+    const std::string       &node_id,
+    const std::string       &old_container_name,
+    const std::string       &new_container_name,
+    const nlohmann::json    &old_state,
+    const nlohmann::json    &new_state,
+    QUndoCommand            *parent)
+    : QUndoCommand(parent), p_graph_node(p_graph_node), node_id(node_id),
+      old_container_name(old_container_name), new_container_name(new_container_name),
+      old_state(old_state), new_state(new_state)
+{
+  if (old_container_name != new_container_name && !old_container_name.empty() &&
+      !new_container_name.empty())
+  {
+    this->setText(QString("Switch %1 Category to %2")
+                      .arg(QString::fromStdString(node_id))
+                      .arg(QString::fromStdString(new_container_name)));
+  }
+  else
+  {
+    this->setText(QString("Change %1 Settings").arg(QString::fromStdString(node_id)));
+  }
 }
 
 int ChangeNodeAttributeCommand::id() const { return UndoId_ChangeNodeAttribute; }
@@ -33,7 +62,11 @@ bool ChangeNodeAttributeCommand::mergeWith(const QUndoCommand *other)
     return false;
 
   const auto *cmd = static_cast<const ChangeNodeAttributeCommand *>(other);
-  if (cmd->node_id != this->node_id || cmd->container_name != this->container_name)
+  if (cmd->node_id != this->node_id)
+    return false;
+
+  if (cmd->old_container_name != this->old_container_name ||
+      cmd->new_container_name != this->new_container_name)
     return false;
 
   if (this->p_graph_node.lock() != cmd->p_graph_node.lock())
@@ -43,7 +76,10 @@ bool ChangeNodeAttributeCommand::mergeWith(const QUndoCommand *other)
   return true;
 }
 
-void ChangeNodeAttributeCommand::undo() { this->apply_state(this->old_state); }
+void ChangeNodeAttributeCommand::undo()
+{
+  this->apply(this->old_container_name, this->old_state);
+}
 
 void ChangeNodeAttributeCommand::redo()
 {
@@ -53,10 +89,11 @@ void ChangeNodeAttributeCommand::redo()
     return;
   }
 
-  this->apply_state(this->new_state);
+  this->apply(this->new_container_name, this->new_state);
 }
 
-void ChangeNodeAttributeCommand::apply_state(const nlohmann::json &state)
+void ChangeNodeAttributeCommand::apply(const std::string    &target_container_name,
+                                       const nlohmann::json &state)
 {
   auto gno = this->p_graph_node.lock();
   if (!gno)
@@ -66,18 +103,27 @@ void ChangeNodeAttributeCommand::apply_state(const nlohmann::json &state)
   if (!p_node)
     return;
 
-  auto                     &group = p_node->get_meta_group();
-  meta::AttributeContainer *container = nullptr;
+  auto &group = p_node->get_meta_group();
 
-  if (this->container_name.empty())
-    container = &group.current();
-  else
-    container = group.find(this->container_name);
+  if (!target_container_name.empty() && group.contains(target_container_name))
+  {
+    group.set_current(target_container_name);
+  }
 
-  if (!container)
-    return;
+  if (!state.empty())
+  {
+    meta::AttributeContainer *container = nullptr;
 
-  container->json_from(state, meta::SerializationMode::state, true);
+    if (target_container_name.empty())
+      container = &group.current();
+    else
+      container = group.find(target_container_name);
+
+    if (container)
+      container->json_from(state, meta::SerializationMode::state, true);
+  }
+
+  p_node->post_update_event.notify(*p_node);
   gno->update(this->node_id);
 }
 
