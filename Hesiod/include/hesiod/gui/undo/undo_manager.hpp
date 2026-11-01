@@ -15,6 +15,7 @@ namespace hesiod
 enum UndoCommandId : int
 {
   UndoId_ChangeNodeAttribute = 1,
+  UndoId_ChangeNodeGroupState,
   UndoId_GraphTopology,
 };
 

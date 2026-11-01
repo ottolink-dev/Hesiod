@@ -53,4 +53,30 @@ private:
   bool                     is_first_redo = true;
 };
 
+// =====================================
+// ChangeNodeGroupStateCommand
+// =====================================
+class ChangeNodeGroupStateCommand : public QUndoCommand
+{
+public:
+  ChangeNodeGroupStateCommand(std::weak_ptr<GraphNode> p_graph_node,
+                              const std::string       &node_id,
+                              const std::string       &action_label,
+                              const nlohmann::json    &old_group_state,
+                              const nlohmann::json    &new_group_state,
+                              QUndoCommand            *parent = nullptr);
+
+  void undo() override;
+  void redo() override;
+  int  id() const override;
+
+private:
+  void apply(const nlohmann::json &group_state);
+
+  std::weak_ptr<GraphNode> p_graph_node;
+  std::string              node_id;
+  nlohmann::json           old_group_state;
+  nlohmann::json           new_group_state;
+};
+
 } // namespace hesiod

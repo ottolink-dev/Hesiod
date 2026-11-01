@@ -127,4 +127,54 @@ void ChangeNodeAttributeCommand::apply(const std::string    &target_container_na
   gno->update(this->node_id);
 }
 
+// =====================================
+// ChangeNodeGroupStateCommand
+// =====================================
+
+ChangeNodeGroupStateCommand::ChangeNodeGroupStateCommand(
+    std::weak_ptr<GraphNode> p_graph_node,
+    const std::string       &node_id,
+    const std::string       &action_label,
+    const nlohmann::json    &old_group_state,
+    const nlohmann::json    &new_group_state,
+    QUndoCommand            *parent)
+    : QUndoCommand(parent), p_graph_node(p_graph_node), node_id(node_id),
+      old_group_state(old_group_state), new_group_state(new_group_state)
+{
+  if (!action_label.empty())
+  {
+    this->setText(QString::fromStdString(action_label));
+  }
+  else
+  {
+    this->setText(QString("Change %1 Settings").arg(QString::fromStdString(node_id)));
+  }
+}
+
+int ChangeNodeGroupStateCommand::id() const { return UndoId_ChangeNodeGroupState; }
+
+void ChangeNodeGroupStateCommand::undo() { this->apply(this->old_group_state); }
+
+void ChangeNodeGroupStateCommand::redo() { this->apply(this->new_group_state); }
+
+void ChangeNodeGroupStateCommand::apply(const nlohmann::json &group_state)
+{
+  auto gno = this->p_graph_node.lock();
+  if (!gno)
+    return;
+
+  BaseNode *p_node = gno->get_node_ref_by_id<BaseNode>(this->node_id);
+  if (!p_node)
+    return;
+
+  if (!group_state.empty())
+  {
+    auto &group = p_node->get_meta_group();
+    group.json_from(group_state, meta::SerializationMode::state, true);
+  }
+
+  p_node->post_update_event.notify(*p_node);
+  gno->update(this->node_id);
+}
+
 } // namespace hesiod

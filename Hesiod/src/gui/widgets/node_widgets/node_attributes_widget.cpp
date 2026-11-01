@@ -391,20 +391,35 @@ void NodeAttributesWidget::setup_layout()
         preset_combo,
         &meta::qt::PresetComboBox::preset_selected,
         this,
-        [this](const std::string &, const nlohmann::json &snapshot)
+        [this](const std::string &name, const nlohmann::json &snapshot)
         {
           if (auto gno = this->p_graph_node.lock())
           {
             if (BaseNode *p_node = gno->get_node_ref_by_id<BaseNode>(this->node_id))
             {
               auto          &group = p_node->get_meta_group();
+              nlohmann::json old_state = group.json_to(meta::SerializationMode::state);
               nlohmann::json group_json = convert_legacy_container_group_json(group,
                                                                               snapshot);
 
-              group.json_from(group_json, meta::SerializationMode::state);
-              this->sync_from_model();
-
-              gno->update(this->node_id);
+              if (old_state != group_json)
+              {
+                const std::string label = "Apply Preset " + name + " to " + this->node_id;
+                if (QUndoStack *stack = UndoManager::instance().get_stack())
+                {
+                  stack->push(new ChangeNodeGroupStateCommand(this->p_graph_node,
+                                                              this->node_id,
+                                                              label,
+                                                              old_state,
+                                                              group_json));
+                }
+                else
+                {
+                  group.json_from(group_json, meta::SerializationMode::state, true);
+                  p_node->post_update_event.notify(*p_node);
+                  gno->update(this->node_id);
+                }
+              }
             }
           }
         });
