@@ -46,6 +46,8 @@ private:
   meta::qt::MetaWidget *meta_widget = nullptr;
   nlohmann::json        state_before_edit;
   bool                  is_in_edit = false;
+  std::string           current_container_name;
+  bool                  is_switching_container_programmatically = false;
 };
 
 } // namespace hesiod

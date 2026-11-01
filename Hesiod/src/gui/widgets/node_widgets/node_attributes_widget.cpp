@@ -319,11 +319,27 @@ void NodeAttributesWidget::sync_from_model()
   if (!gno)
     return;
 
-  if (!gno->get_node_ref_by_id<BaseNode>(this->node_id))
+  BaseNode *p_node = gno->get_node_ref_by_id<BaseNode>(this->node_id);
+  if (!p_node)
     return;
+
+  if (dynamic_cast<meta::qt::ContainerGroupWidget *>(this->meta_widget))
+  {
+    const std::string model_container = p_node->get_meta_group()
+                                            .current_container_name()
+                                            .value_or(std::string{});
+
+    if (!model_container.empty())
+    {
+      this->is_switching_container_programmatically = true;
+      this->current_container_name = model_container;
+    }
+  }
 
   if (this->meta_widget)
     this->meta_widget->on_sync_widget_from_model();
+
+  this->is_switching_container_programmatically = false;
 }
 
 bool NodeAttributesWidget::is_meta_backed() const { return this->meta_widget != nullptr; }
@@ -587,6 +603,10 @@ void NodeAttributesWidget::setup_layout()
   if (auto *group_widget = dynamic_cast<meta::qt::ContainerGroupWidget *>(
           this->meta_widget))
   {
+    this->current_container_name = p_node->get_meta_group()
+                                       .current_container_name()
+                                       .value_or(std::string{});
+
     group_widget->setStyleSheet("QTabBar::tab {"
                                 "  min-height: 20px;"
                                 "  padding: 4px 8px;"
@@ -602,11 +622,31 @@ void NodeAttributesWidget::setup_layout()
     this->connect(group_widget,
                   &meta::qt::ContainerGroupWidget::current_container_changed,
                   this,
-                  [this](const std::string &)
+                  [this](const std::string &new_container)
                   {
+                    if (this->is_switching_container_programmatically)
+                      return;
+
                     auto gno = this->p_graph_node.lock();
                     if (!gno)
                       return;
+
+                    const std::string old_container = this->current_container_name;
+                    this->current_container_name = new_container;
+
+                    if (old_container != new_container && !old_container.empty())
+                    {
+                      if (QUndoStack *stack = UndoManager::instance().get_stack())
+                      {
+                        stack->push(new ChangeNodeAttributeCommand(this->p_graph_node,
+                                                                   this->node_id,
+                                                                   old_container,
+                                                                   new_container,
+                                                                   nlohmann::json{},
+                                                                   nlohmann::json{}));
+                      }
+                    }
+
                     gno->update(this->node_id);
                   });
   }
