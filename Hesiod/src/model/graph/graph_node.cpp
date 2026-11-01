@@ -51,13 +51,13 @@ GraphNode::GraphNode(const std::string &id, const std::shared_ptr<GraphConfig> &
   this->graph_progress_conn = this->graph_progress_event.subscribe(lambda);
 }
 
-std::string GraphNode::add_node(const std::string &node_type)
+std::string GraphNode::add_node(const std::string &node_type, const std::string &id)
 {
-  Logger::log()->trace("GraphNode::add_node: node_type = {}", node_type);
+  Logger::log()->trace("GraphNode::add_node: node_type = {}, id = {}", node_type, id);
 
   std::shared_ptr<gnode::Node> node = node_factory(node_type, this->config);
 
-  std::string node_id = this->add_node(node);
+  std::string node_id = this->add_node(node, id);
 
   return node_id;
 }
