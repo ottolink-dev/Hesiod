@@ -3,6 +3,7 @@
 ## User Interface
 
 - [Node Settings Management](node_settings/node_settings_management.md)
+- [Node Presets](node_settings/presets.md)
 - [Bake and Export](bake_and_export/bake_and_export.md)
 
 ## HeightMap Model
