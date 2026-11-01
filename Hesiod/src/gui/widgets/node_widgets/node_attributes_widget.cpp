@@ -134,67 +134,6 @@ QWidget *NodeAttributesWidget::create_toolbar()
     return &p_node->get_meta_group().current();
   };
 
-  // Preset combo box backed by Meta SnapshotManager
-  std::string node_type;
-  if (auto gno = this->p_graph_node.lock())
-    if (BaseNode *p_node = gno->get_node_ref_by_id<BaseNode>(this->node_id))
-      node_type = p_node->get_node_type();
-
-  if (!node_type.empty())
-  {
-    auto &sm = NodePresetManager::get_instance().get_snapshot_manager(node_type);
-    auto *preset_combo = new meta::qt::PresetComboBox(&sm, toolbar);
-    preset_combo->setFixedWidth(130);
-
-    preset_combo->set_snapshot_provider(
-        [this]() -> nlohmann::json
-        {
-          if (auto gno = this->p_graph_node.lock())
-            if (BaseNode *p_node = gno->get_node_ref_by_id<BaseNode>(this->node_id))
-              return p_node->get_meta_group().json_to(meta::SerializationMode::state);
-
-          return nlohmann::json::object();
-        });
-
-    this->connect(
-        preset_combo,
-        &meta::qt::PresetComboBox::preset_selected,
-        this,
-        [this](const std::string &, const nlohmann::json &snapshot)
-        {
-          if (auto gno = this->p_graph_node.lock())
-          {
-            if (BaseNode *p_node = gno->get_node_ref_by_id<BaseNode>(this->node_id))
-            {
-              auto          &group = p_node->get_meta_group();
-              nlohmann::json group_json = convert_legacy_container_group_json(group,
-                                                                              snapshot);
-
-              group.json_from(group_json, meta::SerializationMode::state);
-              this->sync_from_model();
-
-              gno->update(this->node_id);
-            }
-          }
-        });
-
-    this->connect(
-        preset_combo,
-        &meta::qt::PresetComboBox::preset_saved,
-        this,
-        [node_type](const std::string &name)
-        { NodePresetManager::get_instance().save_user_preset(node_type, name); });
-
-    this->connect(
-        preset_combo,
-        &meta::qt::PresetComboBox::preset_deleted,
-        this,
-        [node_type](const std::string &name)
-        { NodePresetManager::get_instance().delete_user_preset(node_type, name); });
-
-    layout->addWidget(preset_combo);
-  }
-
   if (!panel.has_own_chrome)
     layout->addStretch();
 
@@ -407,6 +346,62 @@ void NodeAttributesWidget::setup_layout()
 
   if (this->add_toolbar)
     main_layout->addWidget(this->create_toolbar());
+
+  // --- Preset combo box backed by Meta SnapshotManager
+  std::string node_type = p_node->get_node_type();
+  if (!node_type.empty())
+  {
+    auto &sm = NodePresetManager::get_instance().get_snapshot_manager(node_type);
+    auto *preset_combo = new meta::qt::PresetComboBox(&sm, this);
+
+    preset_combo->set_snapshot_provider(
+        [this]() -> nlohmann::json
+        {
+          if (auto gno = this->p_graph_node.lock())
+            if (BaseNode *p_node = gno->get_node_ref_by_id<BaseNode>(this->node_id))
+              return p_node->get_meta_group().json_to(meta::SerializationMode::state);
+
+          return nlohmann::json::object();
+        });
+
+    this->connect(
+        preset_combo,
+        &meta::qt::PresetComboBox::preset_selected,
+        this,
+        [this](const std::string &, const nlohmann::json &snapshot)
+        {
+          if (auto gno = this->p_graph_node.lock())
+          {
+            if (BaseNode *p_node = gno->get_node_ref_by_id<BaseNode>(this->node_id))
+            {
+              auto          &group = p_node->get_meta_group();
+              nlohmann::json group_json = convert_legacy_container_group_json(group,
+                                                                              snapshot);
+
+              group.json_from(group_json, meta::SerializationMode::state);
+              this->sync_from_model();
+
+              gno->update(this->node_id);
+            }
+          }
+        });
+
+    this->connect(
+        preset_combo,
+        &meta::qt::PresetComboBox::preset_saved,
+        this,
+        [node_type](const std::string &name)
+        { NodePresetManager::get_instance().save_user_preset(node_type, name); });
+
+    this->connect(
+        preset_combo,
+        &meta::qt::PresetComboBox::preset_deleted,
+        this,
+        [node_type](const std::string &name)
+        { NodePresetManager::get_instance().delete_user_preset(node_type, name); });
+
+    main_layout->addWidget(preset_combo);
+  }
 
   // --- position pickers (XY canvases) take the shape of the domain: a 2:1
   // graph gets a 2:1 plane, so a point sits where it will in the terrain
