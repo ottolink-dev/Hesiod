@@ -1,0 +1,8 @@
+{
+    "format_version": 1,
+    "title": "Default Node Presets",
+    "author": "Hesiod",
+    "comment": "Default bundled presets for standard nodes.",
+    "presets": {
+    }
+}

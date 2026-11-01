@@ -45,6 +45,7 @@
 #include "hesiod/gui/widgets/dialogs/app_settings_window.hpp"
 #include "hesiod/gui/widgets/dialogs/color_picker_dialog.hpp"
 #include "hesiod/gui/widgets/dialogs/message_dialog.hpp"
+#include "hesiod/gui/widgets/dialogs/node_preset_config_widget.hpp"
 #include "hesiod/gui/widgets/node_widgets/node_palette_sidebar.hpp"
 #include "hesiod/gui/widgets/utils/fuzzy_match.hpp"
 #include "hesiod/gui/widgets/utils/gui_utils.hpp"
@@ -1109,6 +1110,17 @@ void AppSettingsWindow::setup_pages()
                0,
                1000,
                " ms");
+  }
+
+  // --- Presets
+  {
+    QVBoxLayout *page = this->add_page(
+        "Presets",
+        "Manage global and bundled node preset files available across projects.");
+
+    auto *config_widget = new NodePresetConfigWidget();
+    config_widget->setMinimumHeight(400);
+    page->addWidget(config_widget);
   }
 
   // pages end with a stretch so short pages stay top-aligned
