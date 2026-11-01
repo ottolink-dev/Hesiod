@@ -43,7 +43,7 @@ public:
   // --- Node Factory (create nodes from their type) ---
   // Construction does not compute: callers update after setting parameters and
   // connections, so compound edits never evaluate a partially constructed graph.
-  std::string add_node(const std::string &node_type);
+  std::string add_node(const std::string &node_type, const std::string &id = "");
 
   // --- GNode::Graph override ---
   std::string  add_node(const std::shared_ptr<gnode::Node> &p_node,
