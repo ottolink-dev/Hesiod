@@ -23251,6 +23251,156 @@
             }
         }
     },
+    "SnowMantle": {
+        "category": "WIP",
+        "description": "Simulates snow mantle accumulation over a terrain using altitude thresholding, slope shedding, directional wind bias, ridge/peak enhancement, solar melting, high-frequency noise modulation, and downhill thermal mass-preserving transport.",
+        "label": "SnowMantle",
+        "parameter_groups": [
+            {
+                "keys": [
+                    "strength",
+                    "snowline",
+                    "falloff",
+                    "coverage",
+                    "talus_coverage",
+                    "talus",
+                    "peaks",
+                    "directional",
+                    "wind_direction",
+                    "melt",
+                    "sun_azimuth",
+                    "sun_zenith",
+                    "thermal_duration",
+                    "thermal_talus"
+                ],
+                "name": "main"
+            }
+        ],
+        "parameters": {
+            "coverage": {
+                "description": "Coverage expansion or contraction via thresholding.",
+                "key": "coverage",
+                "label": "Coverage Expansion",
+                "type": "Float"
+            },
+            "directional": {
+                "description": "Strength of the directional wind accumulation/erosion bias.",
+                "key": "directional",
+                "label": "Wind Directional Bias",
+                "type": "Float"
+            },
+            "falloff": {
+                "description": "Transition width around the snowline altitude.",
+                "key": "falloff",
+                "label": "Snowline Falloff",
+                "type": "Float"
+            },
+            "melt": {
+                "description": "Strength of solar radiation melting effect.",
+                "key": "melt",
+                "label": "Solar Melt Strength",
+                "type": "Float"
+            },
+            "peaks": {
+                "description": "Bonus accumulation factor for convex ridges and mountain peaks.",
+                "key": "peaks",
+                "label": "Peaks & Ridges Bonus",
+                "type": "Float"
+            },
+            "snowline": {
+                "description": "Base elevation threshold for snow accumulation.",
+                "key": "snowline",
+                "label": "Snowline Altitude",
+                "type": "Float"
+            },
+            "strength": {
+                "description": "Total snow layer accumulation thickness.",
+                "key": "strength",
+                "label": "Snow Amount",
+                "type": "Float"
+            },
+            "sun_azimuth": {
+                "description": "Solar azimuth direction in degrees for melting.",
+                "key": "sun_azimuth",
+                "label": "Sun Azimuth",
+                "type": "Float"
+            },
+            "sun_zenith": {
+                "description": "Solar zenith angle in degrees for melting.",
+                "key": "sun_zenith",
+                "label": "Sun Zenith",
+                "type": "Float"
+            },
+            "talus": {
+                "description": "Slope angle above which snow sheds rapidly.",
+                "key": "talus",
+                "label": "Slope",
+                "type": "Float"
+            },
+            "talus_coverage": {
+                "description": "Intensity of snow shedding on steep slopes.",
+                "key": "talus_coverage",
+                "label": "Slope Shedding Strength",
+                "type": "Float"
+            },
+            "thermal_duration": {
+                "description": "Duration scaling factor for downhill mass-preserving thermal transport.",
+                "key": "thermal_duration",
+                "label": "Thermal Duration",
+                "type": "Float"
+            },
+            "thermal_talus": {
+                "description": "Repose slope angle for snow downhill flow.",
+                "key": "thermal_talus",
+                "label": "Thermal Slope",
+                "type": "Float"
+            },
+            "wind_direction": {
+                "description": "Wind direction azimuth angle in degrees.",
+                "key": "wind_direction",
+                "label": "Wind Azimuth",
+                "type": "Float"
+            }
+        },
+        "ports": {
+            "elevation": {
+                "caption": "elevation",
+                "data_type": "VirtualArray",
+                "description": "Output heightmap combining bedrock elevation and accumulated snow mantle.",
+                "type": "output"
+            },
+            "elevation_in": {
+                "caption": "elevation_in",
+                "data_type": "VirtualArray",
+                "description": "Input terrain elevation heightmap.",
+                "type": "input"
+            },
+            "mask": {
+                "caption": "mask",
+                "data_type": "VirtualArray",
+                "description": "Optional spatial accumulation mask.",
+                "type": "input"
+            },
+            "noise": {
+                "caption": "noise",
+                "data_type": "VirtualArray",
+                "description": "Optional high-frequency noise map to modulate snow accumulation.",
+                "type": "input"
+            },
+            "snow_depth": {
+                "caption": "snow_depth",
+                "data_type": "VirtualArray",
+                "description": "Output snow thickness map.",
+                "type": "output"
+            },
+            "snow_depth_in": {
+                "caption": "snow_depth_in",
+                "data_type": "VirtualArray",
+                "description": "Optional preexisting snow layer to accumulate upon.",
+                "type": "input"
+            }
+        }
+    },
     "SnowMeltingMap": {
         "category": "Hydrology",
         "description": "No description available",
