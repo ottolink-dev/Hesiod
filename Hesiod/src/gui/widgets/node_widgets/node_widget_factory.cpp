@@ -55,42 +55,42 @@ void apply_node_status_icons(const std::string      &node_type,
   if (contains<std::string>(wip_nodes, node_type))
     is_wip = true;
 
-  static const std::vector<std::string> not_tileable_nodes = {"Compare",
-                                                              "Debug",
-                                                              "DepressionFilling",
-                                                              "DistanceTransform",
-                                                              "ExportAsCubemap",
-                                                              "ExportAsset",
-                                                              "ExportHeightmap",
-                                                              "ExportScene",
-                                                              "ExportTexture",
-                                                              "ExportTiled",
-                                                              "FloodingFromBoundaries",
-                                                              "FloodingFromPoint",
-                                                              "FloodingLakeSystem",
-                                                              "FlowSimulation",
-                                                              "FlowSimulationViscous",
-                                                              "FlowStream",
-                                                              "ImportHeightmap",
-                                                              "ImportTexture",
-                                                              "KmeansClustering2",
-                                                              "KmeansClustering3",
-                                                              "MakePeriodic",
-                                                              "MakePeriodicStitching",
-                                                              "Mudslide",
-                                                              "Preview",
-                                                              "QuiltingBlend",
-                                                              "QuiltingExpand",
-                                                              "QuiltingShuffle",
-                                                              "RockSimulation",
-                                                              "Rotate",
-                                                              "SnowSimulation",
-                                                              "TerrainTexture",
-                                                              "TextureQuiltingExpand",
-                                                              "TextureQuiltingShuffle",
-                                                              "TextureUvChecker",
-                                                              "Translate",
-                                                              "Zoom"};
+  static const std::vector<std::string> not_tileable_nodes = {
+      "Compare",
+      "Debug",
+      "DistanceTransform", // TODO
+      "ExportAsCubemap",
+      "ExportAsset",
+      "ExportHeightmap",
+      "ExportScene",
+      "ExportTexture",
+      "ExportTiled",
+      "FloodingFromBoundaries", // TODO
+      "FloodingFromPoint",      // TODO
+      "FloodingLakeSystem",     // TODO
+      "FlowSimulation",         // TODO
+      "FlowSimulationViscous",  // TODO
+      "FlowStream",             // TODO
+      "ImportHeightmap",
+      "ImportTexture",
+      "KmeansClustering2",
+      "KmeansClustering3",
+      "MakePeriodic",          // TODO
+      "MakePeriodicStitching", // TODO
+      "Mudslide",              // TODO
+      "Preview",
+      "QuiltingBlend",          // TODO
+      "QuiltingExpand",         // TODO
+      "QuiltingShuffle",        // TODO
+      "RockSimulation",         // TODO
+      "Rotate",                 // TODO
+      "SnowSimulation",         // TODO
+      "TextureQuiltingExpand",  // TODO
+      "TextureQuiltingShuffle", // TODO
+      "TextureUvChecker",       // TODO
+      "Translate",              // TODO
+      "Zoom"                    // TODO
+  };
 
   const bool is_not_tileable = contains<std::string>(not_tileable_nodes, node_type);
 

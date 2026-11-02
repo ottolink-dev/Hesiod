@@ -47,6 +47,7 @@ constexpr const char *A_NOISE_SCALE   = "noise_scale";
 constexpr const char *A_COLOR_NOISE   = "color_noise";
 constexpr const char *A_DETAIL        = "detail";
 constexpr const char *A_CAVITY        = "cavity";
+constexpr const char *A_RADIUS        = "radius";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -94,6 +95,7 @@ void setup_terrain_texture_node(BaseNode &node)
   add_float(node, A_COLOR_NOISE, "Color Noise", 1.f, 0.f, 2.f);
   add_float(node, A_DETAIL, "Relief Detail", 1.f, 0.f, 2.f);
   add_float(node, A_CAVITY, "Cavity Shading", 0.6f, 0.f, 1.f);
+  add_float(node, A_RADIUS, "Region Radius", 0.05f, 0.001f, 0.5f);
 }
 
 // -----------------------------------------------------------------------------
@@ -123,6 +125,8 @@ void compute_terrain_texture_node(BaseNode &node)
 
   // --- Params
 
+  const int nx = p_z->shape.x;
+
   const hmap::TerrainTextureParams p = {
       .grass         = rgb(node.val<glm::vec4>(A_GRASS)),
       .dry           = rgb(node.val<glm::vec4>(A_DRY)),
@@ -131,11 +135,11 @@ void compute_terrain_texture_node(BaseNode &node)
       .rock          = rgb(node.val<glm::vec4>(A_ROCK)),
       .ridge         = rgb(node.val<glm::vec4>(A_RIDGE)),
       .snow          = rgb(node.val<glm::vec4>(A_SNOW)),
-      .rock_slope    = node.val<float>(A_ROCK_SLOPE),
+      .rock_talus    = node.val<float>(A_ROCK_SLOPE) / float(nx),
       .rock_edge     = node.val<float>(A_ROCK_EDGE),
       .strata        = node.val<float>(A_STRATA),
       .streaks       = node.val<float>(A_STREAKS),
-      .streak_length = node.val<float>(A_STREAK_LENGTH),
+      .streak_length = node.val_radius(A_STREAK_LENGTH, 0),
       .flow          = node.val<float>(A_FLOW),
       .flow_width    = node.val<float>(A_FLOW_WIDTH),
       .deposition    = node.val<float>(A_DEPOSITION),
@@ -146,31 +150,36 @@ void compute_terrain_texture_node(BaseNode &node)
       .color_noise   = node.val<float>(A_COLOR_NOISE),
       .detail        = node.val<float>(A_DETAIL),
       .cavity        = node.val<float>(A_CAVITY),
+      .ir_region     = node.val_radius(A_RADIUS, 1),
   };
 
   // --- Compute
 
-  // fall lines and drainage cross tile borders: work on the whole map at once
+  glm::vec2 z_range = p_z->range(node.cfg().cm_cpu);
+
   hmap::for_each_tile(
       {p_z, p_dep, p_noise},
       p_tex->channels_ptr(),
-      [&p](std::vector<const hmap::Array *> p_arrays_in,
-           std::vector<hmap::Array *>       p_arrays_out,
-           const hmap::TileRegion          &region)
+      [&](std::vector<const hmap::Array *> p_arrays_in,
+          std::vector<hmap::Array *>       p_arrays_out,
+          const hmap::TileRegion          &region)
       {
         auto [pa_z, pa_dep, pa_noise] = unpack<3>(p_arrays_in);
-        hmap::Texture tex             = hmap::terrain_texture(*pa_z,
+
+        hmap::Texture tex = hmap::terrain_texture(*pa_z,
                                                   pa_dep,
                                                   p,
                                                   region.bbox,
-                                                  0.f,
-                                                  -1.f,
+                                                  z_range.x,
+                                                  z_range.y,
                                                   pa_noise);
 
         for (size_t ch = 0; ch < p_arrays_out.size() && ch < tex.channels.size(); ++ch)
           *p_arrays_out[ch] = std::move(tex.channels[ch]);
       },
-      node.cfg().cm_single_array);
+      node.cfg().cm_cpu);
+
+  p_tex->sync_overlap_buffers();
 }
 
 } // namespace hesiod
