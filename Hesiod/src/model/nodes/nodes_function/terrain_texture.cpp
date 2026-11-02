@@ -139,7 +139,7 @@ void compute_terrain_texture_node(BaseNode &node)
       .rock_edge     = node.val<float>(A_ROCK_EDGE),
       .strata        = node.val<float>(A_STRATA),
       .streaks       = node.val<float>(A_STREAKS),
-      .streak_length = node.val_radius(A_STREAK_LENGTH, 0),
+      .streak_length = node.val_pixel_radius(A_STREAK_LENGTH, 0),
       .flow          = node.val<float>(A_FLOW),
       .flow_width    = node.val<float>(A_FLOW_WIDTH),
       .deposition    = node.val<float>(A_DEPOSITION),
@@ -150,7 +150,7 @@ void compute_terrain_texture_node(BaseNode &node)
       .color_noise   = node.val<float>(A_COLOR_NOISE),
       .detail        = node.val<float>(A_DETAIL),
       .cavity        = node.val<float>(A_CAVITY),
-      .ir_region     = node.val_radius(A_RADIUS, 1),
+      .ir_region     = node.val_pixel_radius(A_RADIUS, 1),
   };
 
   // --- Compute
