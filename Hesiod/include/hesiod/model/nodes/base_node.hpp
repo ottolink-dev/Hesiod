@@ -136,6 +136,11 @@ public:
                     static_cast<int>(this->val<float>(key) * this->cfg().shape.x));
   }
 
+  float val_talus(const std::string &key) const
+  {
+    return this->val<float>(key) / static_cast<float>(this->cfg().shape.x);
+  }
+
   template <typename T> void set_value(const std::string &key, T new_value)
   {
     this->get_meta_group().current().value<T>(key) = new_value;

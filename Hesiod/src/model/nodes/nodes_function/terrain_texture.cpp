@@ -125,8 +125,6 @@ void compute_terrain_texture_node(BaseNode &node)
 
   // --- Params
 
-  const int nx = p_z->shape.x;
-
   const hmap::TerrainTextureParams p = {
       .grass         = rgb(node.val<glm::vec4>(A_GRASS)),
       .dry           = rgb(node.val<glm::vec4>(A_DRY)),
@@ -135,7 +133,7 @@ void compute_terrain_texture_node(BaseNode &node)
       .rock          = rgb(node.val<glm::vec4>(A_ROCK)),
       .ridge         = rgb(node.val<glm::vec4>(A_RIDGE)),
       .snow          = rgb(node.val<glm::vec4>(A_SNOW)),
-      .rock_talus    = node.val<float>(A_ROCK_SLOPE) / float(nx),
+      .rock_talus    = node.val_talus(A_ROCK_SLOPE),
       .rock_edge     = node.val<float>(A_ROCK_EDGE),
       .strata        = node.val<float>(A_STRATA),
       .streaks       = node.val<float>(A_STREAKS),

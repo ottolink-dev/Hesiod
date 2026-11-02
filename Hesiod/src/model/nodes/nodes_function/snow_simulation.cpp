@@ -105,7 +105,6 @@ void compute_snow_simulation_node(BaseNode &node)
 
   // clang-format off
   const auto snow_depth          = node.val<float>(A_SNOW_DEPTH);
-  const auto talus_global        = node.val<float>(A_TALUS_GLOBAL);
   const auto duration           = node.val<float>(A_DURATION);
   const auto outflow_boundaries = node.val<bool>(A_OUTFLOW_BOUNDARIES);
   const auto dmap_type          = node.val_enum<DefaultMapOptions::Type>(A_DMAP_TYPE);
@@ -125,7 +124,7 @@ void compute_snow_simulation_node(BaseNode &node)
 
   const int   nx         = p_z->shape.x;
   const int   iterations = int(duration * nx);
-  const float talus      = talus_global / nx;
+  const float talus      = node.val_talus(A_TALUS_GLOBAL);
 
   // --- Create talus virtual array
 

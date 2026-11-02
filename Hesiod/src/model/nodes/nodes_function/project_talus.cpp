@@ -70,11 +70,9 @@ void compute_project_talus_node(BaseNode &node)
   // --- Params
 
   // clang-format off
-  const auto slope     = node.val<float>(A_SLOPE);
+  const auto talus     = node.val_talus(A_SLOPE);
   const auto direction = node.val<int>(A_DIRECTION);
   // clang-format on
-
-  float talus = slope / float(p_in->shape.x);
 
   // --- Prepare mask
 
