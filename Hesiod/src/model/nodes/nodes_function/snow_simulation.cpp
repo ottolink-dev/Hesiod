@@ -64,7 +64,7 @@ void setup_snow_simulation_node(BaseNode &node)
 
   node.set_current_category("Solver");
   add_float(node, A_DURATION, "Simulation Duration", 2.f, 0.f, FLT_MAX);
-  add_bool(node, A_OUTFLOW_BOUNDARIES, "Outflow Boundaries", true);
+  add_bool(node, A_OUTFLOW_BOUNDARIES, "Outflow Boundaries", false);
 
   node.set_current_category("Physics");
   add_float(node, A_TALUS_GLOBAL, "Base Repose Slope", 1.5f, 0.f, FLT_MAX);
