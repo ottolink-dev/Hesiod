@@ -443,8 +443,6 @@ private:
 
 TitleBar::TitleBar(QWidget *window) : QWidget(window), p_window(window)
 {
-  const auto &colors = HSD_CTX.app_settings.colors;
-
   this->setObjectName("hsdTitleBar");
   this->setFixedHeight(40);
   this->setAttribute(Qt::WA_StyledBackground, false);
@@ -484,33 +482,7 @@ TitleBar::TitleBar(QWidget *window) : QWidget(window), p_window(window)
       this->on_title_clicked(pos);
   };
 
-  const QString family = meta::qt::ui_font(13).family();
-  const QString ink = colors.text_primary.name();
-  const QString ink_dim = mix_colors(colors.text_primary, colors.bg_deep, 0.35).name();
-  const QString hover = mix_colors(colors.bg_deep, colors.text_primary, 0.08).name();
-  const QString pressed = mix_colors(colors.bg_deep, colors.text_primary, 0.13).name();
-
-  QString css = QString(R"(
-    QWidget#hsdTitleBar { background: transparent; }
-    QMenuBar#hsdTitleMenuBar {
-      background: transparent; border: none; padding: 0; margin: 0;
-      color: INK_DIM; spacing: 2px; FONT_FAMILY font-size: 13px; }
-    QMenuBar#hsdTitleMenuBar::item {
-      background: transparent; color: INK_DIM; padding: 5px 10px; border-radius: 6px; }
-    QMenuBar#hsdTitleMenuBar::item:selected { background: HOVER; color: INK; }
-    QMenuBar#hsdTitleMenuBar::item:pressed { background: PRESSED; color: INK; }
-    QLineEdit#hsdTitleEditor {
-      background: transparent; border: none; color: INK; FONT_FAMILY font-size: 12px;
-      selection-background-color: ACCENT; }
-  )");
-  css.replace("FONT_FAMILY",
-              family.isEmpty() ? QString() : QString("font-family: \"%1\";").arg(family));
-  css.replace("INK_DIM", ink_dim);
-  css.replace("INK", ink);
-  css.replace("HOVER", hover);
-  css.replace("PRESSED", pressed);
-  css.replace("ACCENT", colors.accent.name());
-  this->setStyleSheet(css);
+  this->update_style();
 
   // caption actions
   this->connect(this->p_min,
@@ -540,6 +512,50 @@ void TitleBar::add_trailing_widget(QWidget *widget)
   widget->setParent(this);
   this->p_trailing->addWidget(widget, 0, Qt::AlignVCenter);
   this->place_title();
+}
+
+void TitleBar::update_style()
+{
+  const auto   &colors = HSD_CTX.app_settings.colors;
+  const QString family = meta::qt::ui_font(13).family();
+  const QString ink = colors.text_primary.name();
+  const QString ink_dim = mix_colors(colors.text_primary, colors.bg_deep, 0.35).name();
+  const QString hover = mix_colors(colors.bg_deep, colors.text_primary, 0.08).name();
+  const QString pressed = mix_colors(colors.bg_deep, colors.text_primary, 0.13).name();
+
+  QString css = QString(R"(
+    QWidget#hsdTitleBar { background: transparent; }
+    QMenuBar#hsdTitleMenuBar {
+      background: transparent; border: none; padding: 0; margin: 0;
+      color: INK_DIM; spacing: 2px; FONT_FAMILY font-size: 13px; }
+    QMenuBar#hsdTitleMenuBar::item {
+      background: transparent; color: INK_DIM; padding: 5px 10px; border-radius: 6px; }
+    QMenuBar#hsdTitleMenuBar::item:selected { background: HOVER; color: INK; }
+    QMenuBar#hsdTitleMenuBar::item:pressed { background: PRESSED; color: INK; }
+    QLineEdit#hsdTitleEditor {
+      background: transparent; border: none; color: INK; FONT_FAMILY font-size: 12px;
+      selection-background-color: ACCENT; }
+  )");
+  css.replace("FONT_FAMILY",
+              family.isEmpty() ? QString() : QString("font-family: \"%1\";").arg(family));
+  css.replace("INK_DIM", ink_dim);
+  css.replace("INK", ink);
+  css.replace("HOVER", hover);
+  css.replace("PRESSED", pressed);
+  css.replace("ACCENT", colors.accent.name());
+  this->setStyleSheet(css);
+
+  if (this->p_chip)
+    this->p_chip->update();
+
+  if (this->p_min)
+    this->p_min->update();
+
+  if (this->p_max)
+    this->p_max->update();
+
+  if (this->p_close)
+    this->p_close->update();
 }
 
 void TitleBar::begin_title_rename(const QString                       &current,

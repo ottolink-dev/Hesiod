@@ -49,6 +49,7 @@
 #include "hesiod/gui/widgets/node_widgets/node_palette_sidebar.hpp"
 #include "hesiod/gui/widgets/utils/fuzzy_match.hpp"
 #include "hesiod/gui/widgets/utils/gui_utils.hpp"
+#include "hesiod/gui/widgets/viewers/viewer_3d.hpp"
 #include "hesiod/gui/widgets/viewers/viewport_controls.hpp"
 #include "hesiod/logger.hpp"
 
@@ -860,6 +861,15 @@ void AppSettingsWindow::setup_pages()
   {
     QVBoxLayout *page = this->add_page("Interface", "Scale, behavior and extra tools.");
 
+    QVBoxLayout *appearance = this->add_card(page, "Appearance");
+    this->add_row(
+        appearance,
+        "Dark mode",
+        "Switch between dark and light visual style.",
+        this->make_toggle(HSD_SETTING(bool, interface.dark_mode), Theme | Palette),
+        false,
+        "theme style dark light appearance color");
+
     QVBoxLayout *scale = this->add_card(page, "Scale");
     this->add_row(scale,
                   "Interface scale",
@@ -1249,11 +1259,18 @@ QString AppSettingsWindow::apply_effects(unsigned effects)
     apply_animation_settings(ctx.app_settings.interface.enable_ui_animations);
 
   if (effects & Theme)
+  {
     if (auto *app = qobject_cast<QApplication *>(QCoreApplication::instance()))
       apply_global_style(*app);
+    this->apply_stylesheet();
+    this->update();
+  }
 
   if (effects & (Theme | Palette))
+  {
     NodePaletteSidebar::restyle_all(current_node_palette_style());
+    Viewer3D::restyle_all();
+  }
 
   if (effects & ViewportToolbar)
     ViewportControls::relayout_all();

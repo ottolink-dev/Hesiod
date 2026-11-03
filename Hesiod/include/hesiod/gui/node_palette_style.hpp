@@ -19,6 +19,9 @@ namespace hesiod
  */
 struct NodePaletteStyle
 {
+  static NodePaletteStyle make_dark();
+  static NodePaletteStyle make_light();
+
   // --- surfaces
   QColor surface{"#242424"};          ///< resting category button
   QColor surface_hover{"#303030"};    ///< hovered category button

@@ -23,6 +23,46 @@
 namespace hesiod
 {
 
+AppSettings::Colors AppSettings::Colors::make_dark()
+{
+  Colors c;
+  c.bg_deep = QColor("#191919");
+  c.bg_primary = QColor("#2B2B2B");
+  c.bg_secondary = QColor("#4B4B4B");
+  c.text_primary = QColor("#F4F4F5");
+  c.text_secondary = QColor("#949495");
+  c.text_disabled = QColor("#3C3C3C");
+  c.accent = QColor("#5E81AC");
+  c.accent_bw = QColor("#FFFFFF");
+  c.border = QColor("#5B5B5B");
+  c.hover = QColor("#8B8B8B");
+  c.pressed = QColor("#ABABAB");
+  c.separator = QColor("#ABABAB");
+  c.building = QColor("#FFB86C");
+  c.warning = QColor("#FF5555");
+  return c;
+}
+
+AppSettings::Colors AppSettings::Colors::make_light()
+{
+  Colors c;
+  c.bg_deep = QColor("#E1E2E4");
+  c.bg_primary = QColor("#EDEDED");
+  c.bg_secondary = QColor("#FBFBFB");
+  c.text_primary = QColor("#1C1E21");
+  c.text_secondary = QColor("#5E636A");
+  c.text_disabled = QColor("#A5A9B0");
+  c.accent = QColor("#3B679B");
+  c.accent_bw = QColor("#1C1E21");
+  c.border = QColor("#C3C7CE");
+  c.hover = QColor("#D8DCE3");
+  c.pressed = QColor("#B0B5BD");
+  c.separator = QColor("#C3C7CE");
+  c.building = QColor("#D9822B");
+  c.warning = QColor("#D9383A");
+  return c;
+}
+
 AppSettings::Icons::Icons()
 {
   Logger::log()->trace("AppSettings::Icons::Icons");
@@ -150,6 +190,7 @@ void AppSettings::json_from(nlohmann::json const &json)
   json_safe_get(json,
                 "interface.enable_example_selector_at_startup",
                 interface.enable_example_selector_at_startup);
+  json_safe_get(json, "interface.dark_mode", interface.dark_mode);
   json_safe_get(json,
                 "interface.properties_panel_design",
                 interface.properties_panel_design);
@@ -369,6 +410,7 @@ nlohmann::json AppSettings::json_to() const
   json["interface.enable_tool_tips"] = interface.enable_tool_tips;
   json["interface.enable_example_selector_at_startup"] =
       interface.enable_example_selector_at_startup;
+  json["interface.dark_mode"] = interface.dark_mode;
   json["interface.properties_panel_design"] = interface.properties_panel_design;
   json["interface.properties_panel_theme"] = interface.properties_panel_theme;
   json["interface.ui_scale"] = ui_scale::sanitize(interface.ui_scale);

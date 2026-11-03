@@ -18,6 +18,7 @@
 #include "hesiod/gui/widgets/graph/graph_node_widget.hpp"
 #include "hesiod/gui/widgets/graph/graph_tab_strip.hpp"
 #include "hesiod/gui/widgets/node_widgets/node_settings_widget.hpp"
+#include "hesiod/gui/widgets/utils/gui_utils.hpp"
 #include "hesiod/gui/widgets/viewers/viewer_3d.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/graph/graph_manager.hpp"
@@ -33,17 +34,8 @@ GraphTabsWidget::GraphTabsWidget(std::weak_ptr<GraphManager> p_graph_manager,
 {
   Logger::log()->trace("GraphTabsWidget::GraphTabsWidget");
 
-  AppContext &ctx = HSD_CTX;
-
   // styles (GNodeGUI)
-  GN_STYLE->viewer.add_toolbar = false; // see GraphControls
-  GN_STYLE->viewer.add_new_icon = false;
-  GN_STYLE->viewer.add_load_save_icons = false;
-  GN_STYLE->viewer.add_group = ctx.app_settings.node_editor.enable_node_groups;
-  GN_STYLE->node.color_port_data = ctx.style_settings.data_color_map;
-  GN_STYLE->node.color_category = ctx.style_settings.category_color_map;
-  GN_STYLE->node.port_radius = ctx.app_settings.node_editor.port_radius;
-  GN_STYLE->node.show_compute_time = ctx.app_settings.node_editor.show_compute_time;
+  apply_graph_style();
 
   // outer frame of the workspace: the dark base the panel cards sit on
   this->setObjectName("hsdBase");

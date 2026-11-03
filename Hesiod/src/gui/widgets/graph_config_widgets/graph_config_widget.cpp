@@ -45,12 +45,9 @@ constexpr int kShapeSnap = 16; // short edges stay tiling-friendly
 
 const meta::qt::Theme &config_theme()
 {
-  static const meta::qt::Theme theme = []()
-  {
-    meta::qt::Theme t = *properties_panel_design().theme;
-    t.group_accents = {{"Domain", QColor("#7d9cc0")}, {"Computation", QColor("#3aa899")}};
-    return t;
-  }();
+  static meta::qt::Theme theme;
+  theme = *properties_panel_design().theme;
+  theme.group_accents = {{"Domain", QColor("#7d9cc0")}, {"Computation", QColor("#3aa899")}};
   return theme;
 }
 

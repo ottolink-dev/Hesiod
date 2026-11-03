@@ -88,27 +88,24 @@ QString tool_title(int tool)
 // node settings do
 const meta::qt::Theme &viewport_theme()
 {
-  static const meta::qt::Theme theme = []()
-  {
-    meta::qt::Theme t = *properties_panel_design().theme;
-    t.group_accents = {{"Sun", QColor("#cfa143")},
-                       {"Light", QColor("#c06478")},
-                       {"Camera", QColor("#7d9cc0")},
-                       {"Navigation", QColor("#3aa899")},
-                       {"Layers", QColor("#7aa86a")},
-                       {"Debug", QColor("#9a9a9a")},
-                       {"Albedo", QColor("#d98a5e")},
-                       {"Normal Map", QColor("#a08bb8")},
-                       {"Water", QColor("#4a9ecc")},
-                       {"Foam", QColor("#8fb8cf")},
-                       {"Waves", QColor("#3aa899")},
-                       {"Sky", QColor("#7d9cc0")},
-                       {"Fog", QColor("#9a9a9a")},
-                       {"Scattering", QColor("#a08bb8")},
-                       {"Display", QColor("#3aa899")},
-                       {"Background", QColor("#9a9a9a")}};
-    return t;
-  }();
+  static meta::qt::Theme theme;
+  theme = *properties_panel_design().theme;
+  theme.group_accents = {{"Sun", QColor("#cfa143")},
+                         {"Light", QColor("#c06478")},
+                         {"Camera", QColor("#7d9cc0")},
+                         {"Navigation", QColor("#3aa899")},
+                         {"Layers", QColor("#7aa86a")},
+                         {"Debug", QColor("#9a9a9a")},
+                         {"Albedo", QColor("#d98a5e")},
+                         {"Normal Map", QColor("#a08bb8")},
+                         {"Water", QColor("#4a9ecc")},
+                         {"Foam", QColor("#8fb8cf")},
+                         {"Waves", QColor("#3aa899")},
+                         {"Sky", QColor("#7d9cc0")},
+                         {"Fog", QColor("#9a9a9a")},
+                         {"Scattering", QColor("#a08bb8")},
+                         {"Display", QColor("#3aa899")},
+                         {"Background", QColor("#9a9a9a")}};
   return theme;
 }
 

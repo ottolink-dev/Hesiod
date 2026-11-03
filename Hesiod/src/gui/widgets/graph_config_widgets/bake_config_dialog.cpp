@@ -40,14 +40,11 @@ namespace
 
 const meta::qt::Theme &bake_theme()
 {
-  static const meta::qt::Theme theme = []()
-  {
-    meta::qt::Theme t = *properties_panel_design().theme;
-    t.group_accents = {{"Output", QColor("#cfa143")},
-                       {"Options", QColor("#7d9cc0")},
-                       {"Large Graphs", QColor("#3aa899")}};
-    return t;
-  }();
+  static meta::qt::Theme theme;
+  theme = *properties_panel_design().theme;
+  theme.group_accents = {{"Output", QColor("#cfa143")},
+                         {"Options", QColor("#7d9cc0")},
+                         {"Large Graphs", QColor("#3aa899")}};
   return theme;
 }
 

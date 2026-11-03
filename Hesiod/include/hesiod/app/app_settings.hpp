@@ -34,6 +34,9 @@ struct AppSettings
 
   struct Colors
   {
+    static Colors make_dark();
+    static Colors make_light();
+
     QColor bg_deep{"#191919"};
     QColor bg_primary{"#2B2B2B"};
     QColor bg_secondary{"#4B4B4B"};
@@ -96,6 +99,9 @@ struct AppSettings
     bool enable_heightmapper_widget = true;
     bool enable_tool_tips = true;
     bool enable_example_selector_at_startup = true;
+
+    // Dark / light mode
+    bool dark_mode = true;
 
     // Node properties panel look. Both are names resolved at runtime, not
     // enums, so registering a new design or colourway does not mean editing

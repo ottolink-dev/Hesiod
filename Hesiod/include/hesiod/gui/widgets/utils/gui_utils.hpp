@@ -20,6 +20,8 @@ void add_qmenu_spacer(QMenu *menu, int height = 8);
 
 void apply_global_style(QApplication &app);
 
+void apply_graph_style();
+
 // Linear blend of two colours, alpha included; `amount` is clamped to [0, 1].
 QColor mix_colors(const QColor &from, const QColor &to, qreal amount);
 

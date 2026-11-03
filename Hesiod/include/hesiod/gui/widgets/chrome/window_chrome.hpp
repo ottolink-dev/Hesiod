@@ -69,6 +69,8 @@ class TitleChip;
 // in place.
 class TitleBar : public QWidget
 {
+  Q_OBJECT
+
 public:
   explicit TitleBar(QWidget *window);
 
@@ -96,6 +98,8 @@ public:
 
   void begin_title_rename(const QString                       &current,
                           std::function<void(const QString &)> commit);
+
+  void update_style();
 
   std::function<void(const QPoint &global_pos)> on_title_clicked;
   std::function<void()>                         on_title_rename_requested;
