@@ -184,24 +184,7 @@ void apply_graph_style()
     auto       &link = p_style->link;
 
     node.color_category = ctx.style_settings.category_color_map;
-
-    // Node face color: slightly lighter in dark mode, or slightly darker in light mode than the node editor background
-    const QColor &editor_bg = active_theme.node_editor_bg;
-    if (active_theme.is_dark)
-    {
-      constexpr qreal factor = 0.08;
-      node.color_bg = QColor::fromRgbF(editor_bg.redF() * (1.0 - factor) + factor,
-                                       editor_bg.greenF() * (1.0 - factor) + factor,
-                                       editor_bg.blueF() * (1.0 - factor) + factor);
-    }
-    else
-    {
-      constexpr qreal factor = 0.06;
-      node.color_bg = QColor::fromRgbF(editor_bg.redF() * (1.0 - factor),
-                                       editor_bg.greenF() * (1.0 - factor),
-                                       editor_bg.blueF() * (1.0 - factor));
-    }
-
+    node.color_bg = theme.section_surface;
     node.color_bg_light = theme.section_header;
 
     // Node border: in dark mode use theme.hairline; in light mode ensure a crisp dark
