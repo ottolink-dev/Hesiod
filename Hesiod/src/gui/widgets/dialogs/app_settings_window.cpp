@@ -37,6 +37,8 @@
 
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/app/ui_scale.hpp"
+#include "hesiod/gui/theme/theme.hpp"
+#include "hesiod/gui/theme/theme_registry.hpp"
 #include "hesiod/gui/widgets/chrome/window_chrome.hpp"
 #include "hesiod/gui/widgets/controls/color_swatch.hpp"
 #include "hesiod/gui/widgets/controls/control_tones.hpp"
@@ -694,6 +696,46 @@ AppSettingsWindow::Control AppSettingsWindow::make_choice(
   return control;
 }
 
+AppSettingsWindow::Control AppSettingsWindow::make_string_choice(
+    std::function<std::string &(AppSettings &)> access,
+    const std::vector<std::string>             &items,
+    unsigned                                    effects)
+{
+  auto *combo = new QComboBox();
+  combo->setObjectName("settingsChoice");
+  for (const auto &item : items)
+    combo->addItem(QString::fromStdString(item), QString::fromStdString(item));
+
+  auto    draft = std::make_shared<std::string>(access(HSD_CTX.app_settings));
+  QString draft_qstr = QString::fromStdString(*draft);
+  if (combo->findData(draft_qstr) < 0)
+    combo->addItem(draft_qstr, draft_qstr);
+  combo->setCurrentIndex(combo->findData(draft_qstr));
+
+  Control control;
+  control.widget = combo;
+  control.focus = combo;
+  control.binding = make_binding<std::string>(
+      access,
+      draft,
+      [combo](const std::string &value)
+      {
+        const QSignalBlocker block(combo);
+        combo->setCurrentIndex(combo->findData(QString::fromStdString(value)));
+      });
+  control.binding->effects = effects;
+
+  this->connect(combo,
+                QOverload<int>::of(&QComboBox::currentIndexChanged),
+                this,
+                [this, draft, combo](int index)
+                {
+                  *draft = combo->itemData(index).toString().toStdString();
+                  this->update_state();
+                });
+  return control;
+}
+
 AppSettingsWindow::Control AppSettingsWindow::make_color(
     std::function<QColor &(AppSettings &)> access,
     unsigned                               effects)
@@ -862,13 +904,16 @@ void AppSettingsWindow::setup_pages()
     QVBoxLayout *page = this->add_page("Interface", "Scale, behavior and extra tools.");
 
     QVBoxLayout *appearance = this->add_card(page, "Appearance");
-    this->add_row(
-        appearance,
-        "Dark mode",
-        "Switch between dark and light visual style.",
-        this->make_toggle(HSD_SETTING(bool, interface.dark_mode), Theme | Palette),
-        false,
-        "theme style dark light appearance color");
+
+    std::vector<std::string> themes = ThemeRegistry::instance().available_theme_names();
+    this->add_row(appearance,
+                  "Theme",
+                  "Color palette for the interface and workspace.",
+                  this->make_string_choice(HSD_SETTING(std::string, interface.theme_name),
+                                           themes,
+                                           Theme | Palette),
+                  false,
+                  "theme style dark light appearance color palette");
 
     QVBoxLayout *scale = this->add_card(page, "Scale");
     this->add_row(scale,
@@ -1060,27 +1105,6 @@ void AppSettingsWindow::setup_pages()
         this->make_toggle(HSD_SETTING(bool, interface.enable_node_palette_sidebar)),
         true,
         "sidebar categories flyout");
-
-    QVBoxLayout *colors = this->add_card(page, "Colors");
-    const auto   color_row =
-        [&](const QString &label, std::function<QColor &(AppSettings &)> access)
-    {
-      this->add_row(colors,
-                    label,
-                    QString(),
-                    this->make_color(access, Theme | Palette),
-                    false,
-                    "colour theme");
-    };
-    color_row("Category button", HSD_SETTING(QColor, node_palette.surface));
-    color_row("Category button, hovered",
-              HSD_SETTING(QColor, node_palette.surface_hover));
-    color_row("Category button, open",
-              HSD_SETTING(QColor, node_palette.surface_selected));
-    color_row("Flyout background", HSD_SETTING(QColor, node_palette.flyout_bg));
-    color_row("Flyout border", HSD_SETTING(QColor, node_palette.flyout_border));
-    color_row("Label", HSD_SETTING(QColor, node_palette.text));
-    color_row("Label, active", HSD_SETTING(QColor, node_palette.text_active));
 
     QVBoxLayout *metrics = this->add_card(page, "Layout");
     const auto   metric_row = [&](const QString                      &label,

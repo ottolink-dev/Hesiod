@@ -28,6 +28,7 @@
 #include "meta_qt/ui/theme.hpp"
 
 #include "hesiod/app/hesiod_application.hpp"
+#include "hesiod/gui/theme/theme.hpp"
 #include "hesiod/gui/widgets/graph_config_widgets/bake_config_dialog.hpp"
 #include "hesiod/gui/widgets/node_widgets/properties_panel_design.hpp"
 #include "hesiod/gui/widgets/utils/gui_utils.hpp"
@@ -42,9 +43,10 @@ const meta::qt::Theme &bake_theme()
 {
   static meta::qt::Theme theme;
   theme = *properties_panel_design().theme;
-  theme.group_accents = {{"Output", QColor("#cfa143")},
-                         {"Options", QColor("#7d9cc0")},
-                         {"Large Graphs", QColor("#3aa899")}};
+  theme.group_accents = {
+      {"Output", ThemeDefinition::derive_group_accent("Output")},
+      {"Options", ThemeDefinition::derive_group_accent("Options")},
+      {"Large Graphs", ThemeDefinition::derive_group_accent("Large Graphs")}};
   return theme;
 }
 

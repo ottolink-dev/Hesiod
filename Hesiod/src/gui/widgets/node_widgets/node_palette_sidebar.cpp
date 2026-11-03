@@ -24,36 +24,11 @@ constexpr double kPi = 3.14159265358979323846;
 #include <QTimer>
 #include <QVBoxLayout>
 
+#include "hesiod/gui/theme/theme.hpp"
 #include "hesiod/gui/widgets/node_widgets/node_palette_sidebar.hpp"
 
 namespace hesiod
 {
-
-NodePaletteStyle NodePaletteStyle::make_dark()
-{
-  NodePaletteStyle s;
-  s.surface = QColor("#242424");
-  s.surface_hover = QColor("#303030");
-  s.surface_selected = QColor("#3b3b3b");
-  s.flyout_bg = QColor("#1e1e1e");
-  s.flyout_border = QColor("#3a3a3a");
-  s.text = QColor("#b9b9b9");
-  s.text_active = QColor("#f2f2f2");
-  return s;
-}
-
-NodePaletteStyle NodePaletteStyle::make_light()
-{
-  NodePaletteStyle s;
-  s.surface = QColor("#F0F1F3");
-  s.surface_hover = QColor("#E2E5E9");
-  s.surface_selected = QColor("#D4D8DF");
-  s.flyout_bg = QColor("#FFFFFF");
-  s.flyout_border = QColor("#C3C7CE");
-  s.text = QColor("#5E636A");
-  s.text_active = QColor("#1C1E21");
-  return s;
-}
 
 namespace
 {

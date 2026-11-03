@@ -34,9 +34,6 @@ struct AppSettings
 
   struct Colors
   {
-    static Colors make_dark();
-    static Colors make_light();
-
     QColor bg_deep{"#191919"};
     QColor bg_primary{"#2B2B2B"};
     QColor bg_secondary{"#4B4B4B"};
@@ -100,8 +97,8 @@ struct AppSettings
     bool enable_tool_tips = true;
     bool enable_example_selector_at_startup = true;
 
-    // Dark / light mode
-    bool dark_mode = true;
+    // Theme name (e.g. "Dark", "Light", or any custom theme in ~/.config/hesiod/themes)
+    std::string theme_name = "Dark";
 
     // Node properties panel look. Both are names resolved at runtime, not
     // enums, so registering a new design or colourway does not mean editing

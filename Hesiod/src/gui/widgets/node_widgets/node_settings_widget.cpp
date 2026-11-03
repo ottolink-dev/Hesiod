@@ -120,10 +120,11 @@ void NodeSettingsWidget::setup_layout()
 
       // ...but only its space: with nothing to scroll, Qt would still draw a
       // handle over the whole height, which reads as content that is cut off
-      this->scroll->setStyleSheet(meta::qt::industrial::scrollbar_stylesheet(*panel.theme) +
-                            "QScrollBar[idle=\"true\"]::handle:vertical,"
-                            "QScrollBar[idle=\"true\"]::handle:vertical:hover { "
-                            "background: transparent; }");
+      this->scroll->setStyleSheet(
+          meta::qt::industrial::scrollbar_stylesheet(*panel.theme) +
+          "QScrollBar[idle=\"true\"]::handle:vertical,"
+          "QScrollBar[idle=\"true\"]::handle:vertical:hover { "
+          "background: transparent; }");
       QScrollBar *bar = this->scroll->verticalScrollBar();
       bar->setProperty("idle", true); // empty until the first node is shown
       this->connect(bar,

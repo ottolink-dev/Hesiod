@@ -22,6 +22,7 @@
 #include "meta_qt/ui/theme.hpp"
 
 #include "hesiod/app/hesiod_application.hpp"
+#include "hesiod/gui/theme/theme.hpp"
 #include "hesiod/gui/widgets/graph_config_widgets/graph_config_dialog.hpp"
 #include "hesiod/gui/widgets/node_widgets/properties_panel_design.hpp"
 #include "hesiod/gui/widgets/utils/gui_utils.hpp"
@@ -47,7 +48,9 @@ const meta::qt::Theme &config_theme()
 {
   static meta::qt::Theme theme;
   theme = *properties_panel_design().theme;
-  theme.group_accents = {{"Domain", QColor("#7d9cc0")}, {"Computation", QColor("#3aa899")}};
+  theme.group_accents = {
+      {"Domain", ThemeDefinition::derive_group_accent("Domain")},
+      {"Computation", ThemeDefinition::derive_group_accent("Computation")}};
   return theme;
 }
 

@@ -6,11 +6,16 @@
 #include <QColor>
 #include <QPalette>
 
+#include "gnodegui/graph_viewer.hpp"
 #include "gnodegui/style.hpp"
 #include "meta_qt/ui/theme.hpp"
 
 #include "hesiod/app/hesiod_application.hpp"
+#include "hesiod/gui/theme/theme.hpp"
+#include "hesiod/gui/theme/theme_registry.hpp"
 #include "hesiod/gui/widgets/chrome/window_chrome.hpp"
+#include "hesiod/gui/widgets/graph/graph_node_widget.hpp"
+#include "hesiod/gui/widgets/graph/graph_tab_strip.hpp"
 #include "hesiod/gui/widgets/node_widgets/node_palette_sidebar.hpp"
 #include "hesiod/gui/widgets/node_widgets/node_settings_widget.hpp"
 #include "hesiod/gui/widgets/node_widgets/properties_panel_design.hpp"
@@ -27,17 +32,17 @@ void apply_global_style(QApplication &app)
 
   AppContext &ctx = HSD_CTX;
 
-  // Sync palette colors with current dark/light mode setting
-  if (ctx.app_settings.interface.dark_mode)
+  // Resolve theme from registry based on theme_name
+  std::string theme_name = ctx.app_settings.interface.theme_name;
+  if (!ThemeRegistry::instance().has_theme(theme_name))
   {
-    ctx.app_settings.colors = AppSettings::Colors::make_dark();
-    ctx.app_settings.node_palette = NodePaletteStyle::make_dark();
+    theme_name = "Dark";
+    ctx.app_settings.interface.theme_name = theme_name;
   }
-  else
-  {
-    ctx.app_settings.colors = AppSettings::Colors::make_light();
-    ctx.app_settings.node_palette = NodePaletteStyle::make_light();
-  }
+
+  ThemeDefinition active_theme = ThemeRegistry::instance().get_theme(theme_name);
+  ctx.app_settings.colors = active_theme.derive_app_colors();
+  ctx.app_settings.node_palette = active_theme.derive_node_palette_style();
 
   std::string style_sheet =
 #include "hesiod/gui/darkstyle.css"
@@ -136,6 +141,16 @@ void apply_global_style(QApplication &app)
 
   // synchronize graph viewer and node styles
   apply_graph_style();
+
+  // update all active graph viewers and tab strips
+  for (QWidget *top : QApplication::topLevelWidgets())
+  {
+    for (GraphNodeWidget *gnw : top->findChildren<GraphNodeWidget *>())
+      gnw->update_style();
+
+    for (GraphTabStrip *strip : top->findChildren<GraphTabStrip *>())
+      strip->update();
+  }
 }
 
 void apply_graph_style()
@@ -153,12 +168,12 @@ void apply_graph_style()
   p_style->node.color_category = ctx.style_settings.category_color_map;
   p_style->node.port_radius = ctx.app_settings.node_editor.port_radius;
   p_style->node.show_compute_time = ctx.app_settings.node_editor.show_compute_time;
-  // Keep a dark background for the node editor background, even in light mode
-  p_style->viewer.color_bg = QColor("#2B2B2B");
+
+  ThemeDefinition active_theme = ThemeRegistry::instance().get_theme(
+      ctx.app_settings.interface.theme_name);
+  p_style->viewer.color_bg = active_theme.node_editor_bg;
   p_style->viewer.disable_during_update = ctx.app_settings.node_editor
                                               .disable_during_update;
-
-  constexpr qreal kCategoryTint = 0.22;
 
   const auto &design = properties_panel_design();
   if (design.has_own_chrome && design.theme)
@@ -168,27 +183,44 @@ void apply_graph_style()
     auto       &viewer = p_style->viewer;
     auto       &link = p_style->link;
 
-    auto tint_towards = [](const QColor &surface, const QColor &accent, qreal t)
+    node.color_category = ctx.style_settings.category_color_map;
+
+    // Node face color: slightly lighter in dark mode, or slightly darker in light mode than the node editor background
+    const QColor &editor_bg = active_theme.node_editor_bg;
+    if (active_theme.is_dark)
     {
-      return QColor::fromRgbF(surface.redF() * (1.0 - t) + accent.redF() * t,
-                              surface.greenF() * (1.0 - t) + accent.greenF() * t,
-                              surface.blueF() * (1.0 - t) + accent.blueF() * t);
-    };
+      constexpr qreal factor = 0.08;
+      node.color_bg = QColor::fromRgbF(editor_bg.redF() * (1.0 - factor) + factor,
+                                       editor_bg.greenF() * (1.0 - factor) + factor,
+                                       editor_bg.blueF() * (1.0 - factor) + factor);
+    }
+    else
+    {
+      constexpr qreal factor = 0.06;
+      node.color_bg = QColor::fromRgbF(editor_bg.redF() * (1.0 - factor),
+                                       editor_bg.greenF() * (1.0 - factor),
+                                       editor_bg.blueF() * (1.0 - factor));
+    }
 
-    std::map<std::string, QColor> tinted_categories;
-    for (const auto &[category, color] : ctx.style_settings.category_color_map)
-      tinted_categories[category] = tint_towards(theme.section_header,
-                                                 color,
-                                                 kCategoryTint);
-
-    node.color_category = tinted_categories;
-    node.color_bg = theme.section_surface;
     node.color_bg_light = theme.section_header;
-    node.color_border = theme.hairline;
-    node.color_border_hovered = theme.field_border_hover;
+
+    // Node border: in dark mode use theme.hairline; in light mode ensure a crisp dark
+    // border
+    if (active_theme.is_dark)
+    {
+      node.color_border = theme.hairline;
+      node.color_border_hovered = theme.field_border_hover;
+    }
+    else
+    {
+      node.color_border = QColor("#5A5D62");
+      node.color_border_hovered = theme.ink_primary;
+    }
+
     node.color_caption = theme.ink_section_title;
     node.color_icon = theme.ink_icon;
     node.color_comment = theme.ink_secondary;
+    node.color_port_label = theme.ink_primary;
     node.color_selected = theme.accent;
     node.color_pinned = theme.accent;
     node.color_port_hovered = theme.accent;
@@ -196,12 +228,30 @@ void apply_graph_style()
     node.color_port_data_default = theme.ink_secondary;
     node.color_port_not_selectable = theme.ink_locked;
 
+    // In light mode, ensure data port and link colors that were pastel or near-white
+    // (such as VirtualArray) have enough contrast against the light node surface and
+    // editor background
+    auto data_colors = ctx.style_settings.data_color_map;
+    if (!active_theme.is_dark)
+    {
+      for (auto &[_, col] : data_colors)
+      {
+        if (col.lightness() > 160)
+        {
+          col = QColor::fromHsl(col.hslHue() >= 0 ? col.hslHue() : 210,
+                                std::max(60, col.hslSaturation()),
+                                55);
+        }
+      }
+    }
+    node.color_port_data = data_colors;
+
     node.rounding_radius = theme.metrics.section_card_radius;
     node.pen_width = 1.f;
     node.pen_width_hovered = 1.f;
 
-    // Keep a dark background for the node editor background, even in light mode
-    viewer.color_bg = QColor("#2B2B2B");
+    // Node editor background from theme
+    viewer.color_bg = active_theme.node_editor_bg;
     viewer.color_toolbar = theme.ink_icon;
     link.color_default = theme.ink_secondary;
     link.color_selected = theme.accent;
