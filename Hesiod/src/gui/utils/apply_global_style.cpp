@@ -45,7 +45,7 @@ void apply_global_style(QApplication &app)
   ctx.app_settings.node_palette = active_theme.derive_node_palette_style();
 
   std::string style_sheet =
-#include "hesiod/gui/darkstyle.css"
+#include "hesiod/gui/styles/darkstyle.css"
       ;
 
   std::map<std::string, QColor> place_holders = {

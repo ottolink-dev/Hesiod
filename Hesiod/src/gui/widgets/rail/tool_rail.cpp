@@ -33,10 +33,10 @@ ToolRail::ToolRail(RailOwner *owner, SnapGuide *guide, QWidget *parent)
 
   // Over a GL view a child is painted as a root: without these Qt fills its
   // whole rectangle first, and the rounded corners sit on a square.
+  this->setObjectName("hsdToolRail");
   this->setAttribute(Qt::WA_NoSystemBackground);
   this->setAttribute(Qt::WA_TranslucentBackground);
   this->setAutoFillBackground(false);
-  this->setStyleSheet("QWidget#hsdToolRail { background: transparent; }");
 
   this->expand_anim = new QVariantAnimation(this);
   this->expand_anim->setEasingCurve(QEasingCurve::OutCubic);
