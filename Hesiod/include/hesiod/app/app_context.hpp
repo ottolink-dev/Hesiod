@@ -9,7 +9,7 @@
 
 #include "hesiod/app/app_settings.hpp"
 #include "hesiod/app/enum_mappings.hpp"
-#include "hesiod/app/style_settings.hpp"
+#include "hesiod/gui/theme/node_graph_palette.hpp"
 #include "hesiod/model/error/error_manager.hpp"
 #include "hesiod/model/project_model.hpp"
 
@@ -55,10 +55,10 @@ public:
   std::vector<std::string> settings_pending_restart;
 
   // global settings
-  AppSettings    app_settings;
-  StyleSettings  style_settings;
-  nlohmann::json node_documentation;
-  ErrorManager   error_manager;
+  AppSettings           app_settings;
+  NodeGraphColorPalette node_graph_palette;
+  nlohmann::json        node_documentation;
+  ErrorManager          error_manager;
 
   // project
   std::unique_ptr<ProjectModel> project_model;

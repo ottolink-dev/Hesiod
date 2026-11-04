@@ -164,8 +164,8 @@ void apply_graph_style()
   p_style->viewer.add_new_icon = false;
   p_style->viewer.add_load_save_icons = false;
   p_style->viewer.add_group = ctx.app_settings.node_editor.enable_node_groups;
-  p_style->node.color_port_data = ctx.style_settings.data_color_map;
-  p_style->node.color_category = ctx.style_settings.category_color_map;
+  p_style->node.color_port_data = ctx.node_graph_palette.data_color_map;
+  p_style->node.color_category = ctx.node_graph_palette.category_color_map;
   p_style->node.port_radius = ctx.app_settings.node_editor.port_radius;
   p_style->node.show_compute_time = ctx.app_settings.node_editor.show_compute_time;
 
@@ -183,7 +183,7 @@ void apply_graph_style()
     auto       &viewer = p_style->viewer;
     auto       &link = p_style->link;
 
-    node.color_category = ctx.style_settings.category_color_map;
+    node.color_category = ctx.node_graph_palette.category_color_map;
     node.color_bg = theme.section_surface;
     node.color_bg_light = theme.section_header;
 
@@ -214,7 +214,7 @@ void apply_graph_style()
     // In light mode, ensure data port and link colors that were pastel or near-white
     // (such as VirtualArray) have enough contrast against the light node surface and
     // editor background
-    auto data_colors = ctx.style_settings.data_color_map;
+    auto data_colors = ctx.node_graph_palette.data_color_map;
     if (!active_theme.is_dark)
     {
       for (auto &[_, col] : data_colors)

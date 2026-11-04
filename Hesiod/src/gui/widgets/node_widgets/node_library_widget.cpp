@@ -160,8 +160,8 @@ void NodeLibraryWidget::setup_layout()
     category_nodes[categories_str].push_back(node_type);
   }
 
-  // retrieve the category → color map from the style settings
-  const auto &color_map = HSD_CTX.style_settings.category_color_map;
+  // retrieve the category → color map from the node graph palette
+  const auto &color_map = HSD_CTX.node_graph_palette.category_color_map;
   QColor      base = HSD_CTX.app_settings.colors.bg_primary;
 
   // keep track of QTreeWidgetItems per path so we can build the hierarchy

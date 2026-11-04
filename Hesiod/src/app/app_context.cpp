@@ -179,7 +179,7 @@ void AppContext::reset_settings()
 {
   // reset to default values
   this->app_settings = AppSettings();
-  this->style_settings = StyleSettings();
+  this->node_graph_palette = NodeGraphColorPalette();
 }
 
 void AppContext::restore_state()
@@ -223,11 +223,13 @@ void AppContext::settings_json_from(nlohmann::json const &json)
   else
     Logger::log()->error("AppContext::settings_json_from: could not parse app_settings");
 
-  if (json.contains("style_settings"))
-    this->style_settings.json_from(json["style_settings"]);
+  if (json.contains("node_graph_palette"))
+    this->node_graph_palette.json_from(json["node_graph_palette"]);
+  else if (json.contains("style_settings"))
+    this->node_graph_palette.json_from(json["style_settings"]);
   else
     Logger::log()->error(
-        "AppContext::settings_json_from: could not parse style_settings");
+        "AppContext::settings_json_from: could not parse node_graph_palette");
 }
 
 nlohmann::json AppContext::settings_json_to() const
@@ -236,7 +238,7 @@ nlohmann::json AppContext::settings_json_to() const
 
   nlohmann::json json;
   json["app_settings"] = this->app_settings.json_to();
-  json["style_settings"] = this->style_settings.json_to();
+  json["node_graph_palette"] = this->node_graph_palette.json_to();
   return json;
 }
 
