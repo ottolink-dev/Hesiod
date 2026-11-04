@@ -18,6 +18,7 @@
 
 #include "hesiod/gui/widgets/controls/control_tones.hpp"
 #include "hesiod/gui/widgets/dialogs/node_preset_config_widget.hpp"
+#include "hesiod/gui/widgets/utils/gui_utils.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/constants/node_preset_manager.hpp"
 
@@ -459,13 +460,6 @@ void NodePresetConfigWidget::apply_styling()
       width: 8px;
     }
   )";
-
-  auto mix_colors = [](const QColor &a, const QColor &b, qreal t) -> QColor
-  {
-    return QColor::fromRgbF(a.redF() * (1.0 - t) + b.redF() * t,
-                            a.greenF() * (1.0 - t) + b.greenF() * t,
-                            a.blueF() * (1.0 - t) + b.blueF() * t);
-  };
 
   const std::pair<const char *, QColor> tokens[] = {
       {"NAV_ACTIVE", mix_colors(t.sidebar, t.card, 0.85)},

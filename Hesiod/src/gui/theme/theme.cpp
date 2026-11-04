@@ -4,23 +4,11 @@
 #include <algorithm>
 
 #include "hesiod/gui/theme/theme.hpp"
+#include "hesiod/gui/widgets/utils/gui_utils.hpp"
 #include "hesiod/model/utils.hpp"
 
 namespace hesiod
 {
-
-namespace
-{
-
-QColor mix(const QColor &a, const QColor &b, double t)
-{
-  t = std::clamp(t, 0.0, 1.0);
-  return QColor(static_cast<int>(a.red() * (1.0 - t) + b.red() * t),
-                static_cast<int>(a.green() * (1.0 - t) + b.green() * t),
-                static_cast<int>(a.blue() * (1.0 - t) + b.blue() * t));
-}
-
-} // namespace
 
 ThemeDefinition ThemeDefinition::make_default_dark()
 {
@@ -74,22 +62,22 @@ AppSettings::Colors ThemeDefinition::derive_app_colors() const
 
   if (this->is_dark)
   {
-    c.bg_secondary = mix(this->surface, QColor("#FFFFFF"), 0.12);
-    c.text_disabled = mix(this->text_muted, this->background, 0.65);
+    c.bg_secondary = mix_colors(this->surface, QColor("#FFFFFF"), 0.12);
+    c.text_disabled = mix_colors(this->text_muted, this->background, 0.65);
     c.accent_bw = QColor("#FFFFFF");
-    c.hover = mix(this->surface, QColor("#FFFFFF"), 0.35);
-    c.pressed = mix(this->surface, QColor("#FFFFFF"), 0.50);
-    c.separator = mix(this->border, this->text_muted, 0.30);
+    c.hover = mix_colors(this->surface, QColor("#FFFFFF"), 0.35);
+    c.pressed = mix_colors(this->surface, QColor("#FFFFFF"), 0.50);
+    c.separator = mix_colors(this->border, this->text_muted, 0.30);
     c.building = QColor("#FFB86C");
     c.warning = QColor("#FF5555");
   }
   else
   {
-    c.bg_secondary = mix(this->surface, QColor("#FFFFFF"), 0.70);
-    c.text_disabled = mix(this->text_muted, this->surface, 0.55);
+    c.bg_secondary = mix_colors(this->surface, QColor("#FFFFFF"), 0.70);
+    c.text_disabled = mix_colors(this->text_muted, this->surface, 0.55);
     c.accent_bw = this->text;
-    c.hover = mix(this->surface, this->border, 0.40);
-    c.pressed = mix(this->surface, this->border, 0.75);
+    c.hover = mix_colors(this->surface, this->border, 0.40);
+    c.pressed = mix_colors(this->surface, this->border, 0.75);
     c.separator = this->border;
     c.building = QColor("#D9822B");
     c.warning = QColor("#D9383A");
@@ -104,19 +92,19 @@ NodePaletteStyle ThemeDefinition::derive_node_palette_style() const
 
   if (this->is_dark)
   {
-    s.surface = mix(this->surface, this->background, 0.35);
-    s.surface_hover = mix(this->surface, QColor("#FFFFFF"), 0.05);
-    s.surface_selected = mix(this->surface, this->accent, 0.15);
-    s.flyout_bg = mix(this->background, this->surface, 0.25);
+    s.surface = mix_colors(this->surface, this->background, 0.35);
+    s.surface_hover = mix_colors(this->surface, QColor("#FFFFFF"), 0.05);
+    s.surface_selected = mix_colors(this->surface, this->accent, 0.15);
+    s.flyout_bg = mix_colors(this->background, this->surface, 0.25);
     s.flyout_border = this->border;
     s.text = this->text_muted;
     s.text_active = this->text;
   }
   else
   {
-    s.surface = mix(this->surface, QColor("#FFFFFF"), 0.20);
-    s.surface_hover = mix(this->surface, this->border, 0.25);
-    s.surface_selected = mix(this->surface, this->accent, 0.18);
+    s.surface = mix_colors(this->surface, QColor("#FFFFFF"), 0.20);
+    s.surface_hover = mix_colors(this->surface, this->border, 0.25);
+    s.surface_selected = mix_colors(this->surface, this->accent, 0.18);
     s.flyout_bg = QColor("#FFFFFF");
     s.flyout_border = this->border;
     s.text = this->text_muted;
