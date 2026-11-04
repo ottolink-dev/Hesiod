@@ -175,7 +175,7 @@ void compute_terrain_texture_node(BaseNode &node)
         for (size_t ch = 0; ch < p_arrays_out.size() && ch < tex.channels.size(); ++ch)
           *p_arrays_out[ch] = std::move(tex.channels[ch]);
       },
-      node.cfg().cm_cpu);
+      node.cfg().cm_gpu);
 
   p_tex->sync_overlap_buffers();
 }

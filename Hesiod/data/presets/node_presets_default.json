@@ -29,7 +29,7 @@
                             }
                         },
                         "flow": {
-                            "value": 0.2
+                            "value": 0.20000000298023224
                         },
                         "flow_width": {
                             "value": 0.5
@@ -65,10 +65,10 @@
                             }
                         },
                         "rock_edge": {
-                            "value": 0.16
+                            "value": 0.15000000596046448
                         },
                         "rock_slope": {
-                            "value": 3.584
+                            "value": 3.0
                         },
                         "sediment": {
                             "value": {
@@ -90,10 +90,10 @@
                             }
                         },
                         "snow_amount": {
-                            "value": 0.85
+                            "value": 1.0
                         },
                         "snow_line": {
-                            "value": 0.7
+                            "value": 0.8500000238418579
                         },
                         "soil": {
                             "value": {
@@ -122,13 +122,13 @@
                             }
                         },
                         "strata": {
-                            "value": 0.4
+                            "value": 0.3499999940395355
                         },
                         "streak_length": {
                             "value": 0.05999999865889549
                         },
                         "streaks": {
-                            "value": 0.85
+                            "value": 0.800000011920929
                         }
                     }
                 },
@@ -158,7 +158,7 @@
                             }
                         },
                         "flow": {
-                            "value": 0.2
+                            "value": 0.20000000298023224
                         },
                         "flow_width": {
                             "value": 0.5
@@ -194,10 +194,10 @@
                             }
                         },
                         "rock_edge": {
-                            "value": 0.18
+                            "value": 0.15000000596046448
                         },
                         "rock_slope": {
-                            "value": 2.56
+                            "value": 3.0
                         },
                         "sediment": {
                             "value": {
@@ -222,7 +222,7 @@
                             "value": 1.0
                         },
                         "snow_line": {
-                            "value": 0.45
+                            "value": 0.8500000238418579
                         },
                         "soil": {
                             "value": {
@@ -251,13 +251,13 @@
                             }
                         },
                         "strata": {
-                            "value": 0.5
+                            "value": 0.3499999940395355
                         },
                         "streak_length": {
                             "value": 0.05999999865889549
                         },
                         "streaks": {
-                            "value": 0.9
+                            "value": 0.800000011920929
                         }
                     }
                 },
@@ -287,7 +287,7 @@
                             }
                         },
                         "flow": {
-                            "value": 0.9
+                            "value": 0.20000000298023224
                         },
                         "flow_width": {
                             "value": 0.5
@@ -323,10 +323,10 @@
                             }
                         },
                         "rock_edge": {
-                            "value": 0.2
+                            "value": 0.15000000596046448
                         },
                         "rock_slope": {
-                            "value": 5.632
+                            "value": 3.0
                         },
                         "sediment": {
                             "value": {
@@ -348,10 +348,10 @@
                             }
                         },
                         "snow_amount": {
-                            "value": 0.0
+                            "value": 1.0
                         },
                         "snow_line": {
-                            "value": 1.2
+                            "value": 0.8500000238418579
                         },
                         "soil": {
                             "value": {
@@ -380,13 +380,13 @@
                             }
                         },
                         "strata": {
-                            "value": 0.2
+                            "value": 0.3499999940395355
                         },
                         "streak_length": {
                             "value": 0.05999999865889549
                         },
                         "streaks": {
-                            "value": 0.2
+                            "value": 0.800000011920929
                         }
                     }
                 },
@@ -396,7 +396,7 @@
                 "containers": {
                     "main": {
                         "cavity": {
-                            "value": 0.8
+                            "value": 0.6000000238418579
                         },
                         "color_noise": {
                             "value": 1.0
@@ -416,7 +416,7 @@
                             }
                         },
                         "flow": {
-                            "value": 0.2
+                            "value": 0.20000000298023224
                         },
                         "flow_width": {
                             "value": 0.5
@@ -452,10 +452,10 @@
                             }
                         },
                         "rock_edge": {
-                            "value": 0.14
+                            "value": 0.15000000596046448
                         },
                         "rock_slope": {
-                            "value": 3.072
+                            "value": 3.0
                         },
                         "sediment": {
                             "value": {
@@ -477,10 +477,10 @@
                             }
                         },
                         "snow_amount": {
-                            "value": 0.45
+                            "value": 1.0
                         },
                         "snow_line": {
-                            "value": 0.8
+                            "value": 0.8500000238418579
                         },
                         "soil": {
                             "value": {
@@ -509,13 +509,13 @@
                             }
                         },
                         "strata": {
-                            "value": 0.3
+                            "value": 0.3499999940395355
                         },
                         "streak_length": {
                             "value": 0.05999999865889549
                         },
                         "streaks": {
-                            "value": 0.2
+                            "value": 0.800000011920929
                         }
                     }
                 },
@@ -545,7 +545,7 @@
                             }
                         },
                         "flow": {
-                            "value": 0.2
+                            "value": 0.20000000298023224
                         },
                         "flow_width": {
                             "value": 0.5
@@ -581,10 +581,10 @@
                             }
                         },
                         "rock_edge": {
-                            "value": 0.15
+                            "value": 0.15000000596046448
                         },
                         "rock_slope": {
-                            "value": 3.584
+                            "value": 3.0
                         },
                         "sediment": {
                             "value": {
@@ -606,10 +606,10 @@
                             }
                         },
                         "snow_amount": {
-                            "value": 0.35
+                            "value": 1.0
                         },
                         "snow_line": {
-                            "value": 0.85
+                            "value": 0.8500000238418579
                         },
                         "soil": {
                             "value": {
@@ -638,13 +638,13 @@
                             }
                         },
                         "strata": {
-                            "value": 0.25
+                            "value": 0.3499999940395355
                         },
                         "streak_length": {
                             "value": 0.05999999865889549
                         },
                         "streaks": {
-                            "value": 0.2
+                            "value": 0.800000011920929
                         }
                     }
                 },
@@ -660,7 +660,7 @@
                             "value": 1.0
                         },
                         "deposition_amount": {
-                            "value": 0.7
+                            "value": 0.5
                         },
                         "detail": {
                             "value": 2.0
@@ -674,7 +674,7 @@
                             }
                         },
                         "flow": {
-                            "value": 0.95
+                            "value": 0.20000000298023224
                         },
                         "flow_width": {
                             "value": 0.5
@@ -713,7 +713,7 @@
                             "value": 0.15000000596046448
                         },
                         "rock_slope": {
-                            "value": 5.12
+                            "value": 3.0
                         },
                         "sediment": {
                             "value": {
@@ -735,10 +735,10 @@
                             }
                         },
                         "snow_amount": {
-                            "value": 0.0
+                            "value": 1.0
                         },
                         "snow_line": {
-                            "value": 1.5
+                            "value": 0.8500000238418579
                         },
                         "soil": {
                             "value": {
@@ -773,7 +773,7 @@
                             "value": 0.05999999865889549
                         },
                         "streaks": {
-                            "value": 0.2
+                            "value": 0.800000011920929
                         }
                     }
                 },
@@ -803,7 +803,7 @@
                             }
                         },
                         "flow": {
-                            "value": 0.2
+                            "value": 0.20000000298023224
                         },
                         "flow_width": {
                             "value": 0.5
@@ -839,10 +839,10 @@
                             }
                         },
                         "rock_edge": {
-                            "value": 0.18
+                            "value": 0.15000000596046448
                         },
                         "rock_slope": {
-                            "value": 3.072
+                            "value": 3.0
                         },
                         "sediment": {
                             "value": {
@@ -864,10 +864,10 @@
                             }
                         },
                         "snow_amount": {
-                            "value": 0.0
+                            "value": 1.0
                         },
                         "snow_line": {
-                            "value": 1.5
+                            "value": 0.8500000238418579
                         },
                         "soil": {
                             "value": {
@@ -896,13 +896,13 @@
                             }
                         },
                         "strata": {
-                            "value": 0.65
+                            "value": 0.3499999940395355
                         },
                         "streak_length": {
                             "value": 0.05999999865889549
                         },
                         "streaks": {
-                            "value": 0.75
+                            "value": 0.800000011920929
                         }
                     }
                 },
@@ -932,7 +932,7 @@
                             }
                         },
                         "flow": {
-                            "value": 0.2
+                            "value": 0.20000000298023224
                         },
                         "flow_width": {
                             "value": 0.5
@@ -971,7 +971,7 @@
                             "value": 0.15000000596046448
                         },
                         "rock_slope": {
-                            "value": 6.144
+                            "value": 3.0
                         },
                         "sediment": {
                             "value": {
@@ -993,10 +993,10 @@
                             }
                         },
                         "snow_amount": {
-                            "value": 0.0
+                            "value": 1.0
                         },
                         "snow_line": {
-                            "value": 1.5
+                            "value": 0.8500000238418579
                         },
                         "soil": {
                             "value": {
@@ -1025,13 +1025,13 @@
                             }
                         },
                         "strata": {
-                            "value": 0.25
+                            "value": 0.3499999940395355
                         },
                         "streak_length": {
                             "value": 0.05999999865889549
                         },
                         "streaks": {
-                            "value": 0.6
+                            "value": 0.800000011920929
                         }
                     }
                 },
@@ -1061,7 +1061,7 @@
                             }
                         },
                         "flow": {
-                            "value": 0.2
+                            "value": 0.20000000298023224
                         },
                         "flow_width": {
                             "value": 0.5
@@ -1097,10 +1097,10 @@
                             }
                         },
                         "rock_edge": {
-                            "value": 0.16
+                            "value": 0.15000000596046448
                         },
                         "rock_slope": {
-                            "value": 3.584
+                            "value": 3.0
                         },
                         "sediment": {
                             "value": {
@@ -1122,10 +1122,10 @@
                             }
                         },
                         "snow_amount": {
-                            "value": 0.0
+                            "value": 1.0
                         },
                         "snow_line": {
-                            "value": 1.5
+                            "value": 0.8500000238418579
                         },
                         "soil": {
                             "value": {
@@ -1154,13 +1154,13 @@
                             }
                         },
                         "strata": {
-                            "value": 0.45
+                            "value": 0.3499999940395355
                         },
                         "streak_length": {
                             "value": 0.05999999865889549
                         },
                         "streaks": {
-                            "value": 0.85
+                            "value": 0.800000011920929
                         }
                     }
                 },
