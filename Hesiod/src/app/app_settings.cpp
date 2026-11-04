@@ -297,6 +297,10 @@ void AppSettings::json_from(nlohmann::json const &json)
     json_safe_get(json, "window.geom_heightmapper.y", window.geom_heightmapper.y);
     json_safe_get(json, "window.geom_heightmapper.w", window.geom_heightmapper.w);
     json_safe_get(json, "window.geom_heightmapper.h", window.geom_heightmapper.h);
+    json_safe_get(json, "window.geom_node_inspector.x", window.geom_node_inspector.x);
+    json_safe_get(json, "window.geom_node_inspector.y", window.geom_node_inspector.y);
+    json_safe_get(json, "window.geom_node_inspector.w", window.geom_node_inspector.w);
+    json_safe_get(json, "window.geom_node_inspector.h", window.geom_node_inspector.h);
   }
 }
 
@@ -389,9 +393,14 @@ nlohmann::json AppSettings::json_to() const
   json["window.geom_heightmapper.y"] = window.geom_heightmapper.y;
   json["window.geom_heightmapper.w"] = window.geom_heightmapper.w;
   json["window.geom_heightmapper.h"] = window.geom_heightmapper.h;
+  json["window.geom_node_inspector.x"] = window.geom_node_inspector.x;
+  json["window.geom_node_inspector.y"] = window.geom_node_inspector.y;
+  json["window.geom_node_inspector.w"] = window.geom_node_inspector.w;
+  json["window.geom_node_inspector.h"] = window.geom_node_inspector.h;
   json["window.show_graph_manager_widget"] = window.show_graph_manager_widget;
   json["window.show_texture_downloader_widget"] = window.show_texture_downloader_widget;
   json["window.show_heightmapper_widget"] = window.show_heightmapper_widget;
+  json["window.show_node_inspector"] = window.show_node_inspector;
 
   return json;
 }

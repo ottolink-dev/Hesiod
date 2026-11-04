@@ -17,6 +17,7 @@ namespace hesiod
 class Project;
 class GraphManagerWidget;
 class GraphTabsWidget;
+class NodeInspectorWidget;
 
 // =====================================
 // ProjectUI
@@ -42,6 +43,7 @@ public:
   GraphManagerWidget     *get_graph_manager_widget_ref();
   GraphTabsWidget        *get_graph_tabs_widget_ref();
   HeightmapperWidget     *get_heightmapper_widget_ref();
+  NodeInspectorWidget    *get_node_inspector_widget_ref();
   qtd::TextureDownloader *get_texture_downloader_ref();
 
 private:
@@ -49,6 +51,7 @@ private:
   GraphTabsWidget                 *graph_tabs_widget;
   QPointer<qtd::TextureDownloader> texture_downloader;
   QPointer<HeightmapperWidget>     heightmapper_widget;
+  QPointer<NodeInspectorWidget>    node_inspector_widget;
 };
 
 } // namespace hesiod
