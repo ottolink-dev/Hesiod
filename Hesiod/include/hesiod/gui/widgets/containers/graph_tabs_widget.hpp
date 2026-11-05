@@ -38,7 +38,8 @@ public:
   void           json_from(nlohmann::json const &json);
   nlohmann::json json_to() const;
 
-  std::string get_selected_graph_id() const;
+  std::string           get_selected_graph_id() const;
+  GraphWorkspaceWidget *get_workspace_widget(const std::string &graph_id) const;
 
   // actions on one graph, from its tab menu or the main Graph menu
   enum class GraphAction

@@ -6,7 +6,6 @@
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/widgets/graph/data_preview.hpp"
 #include "hesiod/gui/widgets/graph/graph_node_widget.hpp"
-#include "hesiod/gui/widgets/node_widgets/node_attributes_widget.hpp"
 #include "hesiod/gui/widgets/node_widgets/node_widget.hpp"
 #include "hesiod/gui/widgets/utils/gui_utils.hpp"
 #include "hesiod/logger.hpp"
@@ -59,24 +58,6 @@ void NodeWidget::setup_layout()
 
   this->data_preview = new DataPreview(model, this);
   this->layout->addWidget(this->data_preview);
-
-  if (HSD_CTX.app_settings.interface.enable_node_settings_in_node_body)
-  {
-    GraphNode *p_graph = this->p_gnw->get_p_graph_node(); // lifetime safe
-
-    if (p_graph)
-    {
-      auto m = this->model.lock();
-      if (m)
-      {
-        QWidget *attr_widget = new NodeAttributesWidget(p_graph->get_shared(),
-                                                        /* node_id */ m->get_id(),
-                                                        this->p_gnw,
-                                                        /* add_toolbar */ false);
-        this->layout->addWidget(attr_widget);
-      }
-    }
-  }
 }
 
 QSize NodeWidget::sizeHint() const

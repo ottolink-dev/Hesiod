@@ -441,4 +441,17 @@ QProgressBar::chunk {
     background-color: COLOR_ACCENT;
     width: 20px;
 }
+
+/* Chrome & Viewport Components -------------------------------------------- */
+QWidget#hsdTitleChip,
+QWidget#sunDome,
+QWidget#hsdToolRail {
+    background: transparent;
+    border: none;
+}
+
+QGraphicsView#hsdCoordFrame {
+    border: 1px solid COLOR_BORDER;
+    border-radius: 4px;
+}
 )"" 

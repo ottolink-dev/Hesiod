@@ -8288,7 +8288,8 @@
             },
             {
                 "keys": [
-                    "depth"
+                    "depth",
+                    "slope"
                 ],
                 "name": "Riverbed"
             },
@@ -8296,7 +8297,6 @@
                 "keys": [
                     "width",
                     "width_exponent",
-                    "enable_width_depth_scaling",
                     "radial_profile",
                     "radial_profile_parameter"
                 ],
@@ -8328,12 +8328,6 @@
                 "label": "Elevation vs Slope Weight",
                 "type": "Float"
             },
-            "enable_width_depth_scaling": {
-                "description": "Modulates trench width based on local elevation difference.",
-                "key": "enable_width_depth_scaling",
-                "label": "Width Depth Scaling",
-                "type": "Bool"
-            },
             "favor_domain_center": {
                 "description": "Biases flow paths toward passing through the center of the domain.",
                 "key": "favor_domain_center",
@@ -8363,6 +8357,12 @@
                 "key": "seed",
                 "label": "Seed",
                 "type": "Random seed number"
+            },
+            "slope": {
+                "description": "Talus slope factor used for carving the riverbed, scaled by the mesh resolution.",
+                "key": "slope",
+                "label": "Slope",
+                "type": "Float"
             },
             "truncate_merging_paths": {
                 "description": "Truncates streams at the point where they intersect previously traced streams.",
@@ -8406,12 +8406,6 @@
                 "caption": "input",
                 "data_type": "VirtualArray",
                 "description": "Input heightmap terrain.",
-                "type": "input"
-            },
-            "noise_r": {
-                "caption": "noise_r",
-                "data_type": "VirtualArray",
-                "description": "Optional noise array to perturb trench width.",
                 "type": "input"
             },
             "output": {

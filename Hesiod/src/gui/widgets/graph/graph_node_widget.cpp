@@ -21,6 +21,8 @@
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/graph_editor.hpp"
 #include "hesiod/gui/hesiod_node_proxy.hpp"
+#include "hesiod/gui/undo/graph_topology_commands.hpp"
+#include "hesiod/gui/undo/undo_manager.hpp"
 #include "hesiod/gui/widgets/controls/custom_qmenu.hpp"
 #include "hesiod/gui/widgets/dialogs/message_dialog.hpp"
 #include "hesiod/gui/widgets/dialogs/node_info_dialog.hpp"
@@ -404,13 +406,27 @@ nlohmann::json GraphNodeWidget::json_to() const
 
 void GraphNodeWidget::request_connection(const gngui::LinkEndpoints &link)
 {
-  perform_graph_edit([&]() { this->editor->connect(link); });
+  perform_graph_edit(
+      [&]()
+      {
+        if (QUndoStack *stack = UndoManager::instance().get_stack())
+          stack->push(new ConnectCommand(this, link));
+        else
+          this->editor->connect(link);
+      });
 }
 
 void GraphNodeWidget::request_deletion(const std::vector<std::string>          &ids,
                                        const std::vector<gngui::LinkEndpoints> &links)
 {
-  perform_graph_edit([&]() { this->editor->erase(ids, links); });
+  perform_graph_edit(
+      [&]()
+      {
+        if (QUndoStack *stack = UndoManager::instance().get_stack())
+          stack->push(new EraseCommand(this, ids, links));
+        else
+          this->editor->erase(ids, links);
+      });
 }
 
 void GraphNodeWidget::on_connection_dropped(const std::string &node_id,
@@ -706,7 +722,16 @@ std::string GraphNodeWidget::on_new_node_request(const std::string &node_type,
                                                  QPointF            scene_pos)
 {
   const auto id = perform_graph_edit(
-      [&]() { return this->editor->add_node(node_type, scene_pos); });
+      [&]() -> std::string
+      {
+        if (QUndoStack *stack = UndoManager::instance().get_stack())
+        {
+          auto *cmd = new AddNodeCommand(this, node_type, scene_pos);
+          stack->push(cmd);
+          return cmd->get_created_node_id();
+        }
+        return this->editor->add_node(node_type, scene_pos);
+      });
   // A drag-to-create gesture needs the ID before its outer batch commits.
   this->last_node_created_id = id;
   return id;
@@ -1199,22 +1224,6 @@ void GraphNodeWidget::setup_connections()
                 this,
                 &GraphNodeWidget::on_compute_finished);
 
-  this->connect(this,
-                &GraphNodeWidget::compute_finished,
-                this,
-                [this](const std::string &node_id)
-                {
-                  if (HSD_CTX.app_settings.interface.enable_node_settings_in_node_body)
-                  {
-                    // force update of the graphics node to update the node settings
-                    // content
-                    gngui::GraphicsNode *p_gfx_node = this->get_graphics_node_by_id(
-                        node_id);
-                    if (p_gfx_node)
-                      p_gfx_node->update();
-                  }
-                });
-
   // GraphNode
   gno->update_started = [safe_this = QPointer(this)]()
   {
@@ -1267,6 +1276,55 @@ void GraphNodeWidget::update_graph_model(const std::vector<std::string> &node_id
 void GraphNodeWidget::update_graph_model(const std::string &node_id)
 {
   this->update_graph_model(std::vector<std::string>{node_id});
+}
+
+void GraphNodeWidget::mousePressEvent(QMouseEvent *event)
+{
+  this->node_press_positions.clear();
+  if (event->button() == Qt::LeftButton)
+  {
+    std::vector<QPointF> positions;
+    const auto           ids = this->get_selected_node_ids(&positions);
+    for (size_t i = 0; i < ids.size() && i < positions.size(); ++i)
+      this->node_press_positions.push_back({ids[i], positions[i]});
+  }
+
+  GraphViewer::mousePressEvent(event);
+}
+
+void GraphNodeWidget::mouseReleaseEvent(QMouseEvent *event)
+{
+  GraphViewer::mouseReleaseEvent(event);
+
+  if (!this->node_press_positions.empty() && event->button() == Qt::LeftButton)
+  {
+    std::vector<std::string> ids;
+    std::vector<QPointF>     old_pos;
+    std::vector<QPointF>     new_pos;
+
+    for (const auto &[id, initial_pos] : this->node_press_positions)
+    {
+      if (auto *gfx = this->get_graphics_node_by_id(id))
+      {
+        if (gfx->pos() != initial_pos)
+        {
+          ids.push_back(id);
+          old_pos.push_back(initial_pos);
+          new_pos.push_back(gfx->pos());
+        }
+      }
+    }
+
+    if (!ids.empty())
+    {
+      if (QUndoStack *stack = UndoManager::instance().get_stack())
+      {
+        stack->push(new MoveNodesCommand(this, ids, old_pos, new_pos));
+      }
+    }
+
+    this->node_press_positions.clear();
+  }
 }
 
 } // namespace hesiod

@@ -10,6 +10,7 @@
 #include "hesiod/model/graph/bake_config.hpp"
 
 class QLineEdit;
+class QScrollArea;
 
 namespace meta
 {
@@ -38,6 +39,9 @@ public:
 
   BakeConfig get_bake_settings() const;
 
+protected:
+  void showEvent(QShowEvent *event) override;
+
 private:
   // one container per section, so each section's note can sit under it
   std::unique_ptr<meta::AttributeContainer> output;
@@ -45,6 +49,7 @@ private:
   std::unique_ptr<meta::AttributeContainer> memory;
   std::vector<QPointer<QWidget>>            rows; // subscribe to the containers
   QLineEdit                                *folder_edit = nullptr;
+  QScrollArea                              *scroll_area = nullptr;
 };
 
 } // namespace hesiod

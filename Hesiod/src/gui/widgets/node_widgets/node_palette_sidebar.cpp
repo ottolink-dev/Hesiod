@@ -24,6 +24,7 @@ constexpr double kPi = 3.14159265358979323846;
 #include <QTimer>
 #include <QVBoxLayout>
 
+#include "hesiod/gui/theme/theme.hpp"
 #include "hesiod/gui/widgets/node_widgets/node_palette_sidebar.hpp"
 
 namespace hesiod
@@ -234,10 +235,10 @@ int glyph_shape_for(const QString &category)
 // CategoryRailButton
 // =====================================
 
-CategoryRailButton::CategoryRailButton(const QString          &category,
-                                       const QColor           &accent,
-                                       const NodePaletteStyle &style,
-                                       QWidget                *parent)
+CategoryRailButton::CategoryRailButton(const QString            &category,
+                                       const QColor             &accent,
+                                       const NodePalettePalette &style,
+                                       QWidget                  *parent)
     : QAbstractButton(parent), category(category), accent(accent), style(style)
 {
   this->setText(category);
@@ -431,7 +432,7 @@ void CategoryRailButton::set_open(bool state)
   this->update();
 }
 
-void CategoryRailButton::set_style(const NodePaletteStyle &new_style)
+void CategoryRailButton::set_style(const NodePalettePalette &new_style)
 {
   this->style = new_style;
   this->surface_animation.stop();
@@ -463,7 +464,7 @@ QColor CategoryRailButton::target_surface() const
 NodePaletteSidebar::NodePaletteSidebar(
     const std::map<std::string, std::string> &inventory,
     const std::map<std::string, QColor>      &category_colors,
-    const NodePaletteStyle                   &style,
+    const NodePalettePalette                 &style,
     QWidget                                  *parent)
     : QWidget(parent), category_colors(category_colors), style(style)
 {
@@ -815,7 +816,7 @@ bool NodePaletteSidebar::eventFilter(QObject *watched, QEvent *event)
   return QWidget::eventFilter(watched, event);
 }
 
-const NodePaletteStyle &NodePaletteSidebar::get_style() const { return this->style; }
+const NodePalettePalette &NodePaletteSidebar::get_style() const { return this->style; }
 
 QMenu *NodePaletteSidebar::menu_at(int index) const
 {
@@ -871,7 +872,7 @@ void NodePaletteSidebar::open_category(int index)
 
 int NodePaletteSidebar::open_category_index() const { return this->open_index; }
 
-void NodePaletteSidebar::restyle_all(const NodePaletteStyle &style)
+void NodePaletteSidebar::restyle_all(const NodePalettePalette &style)
 {
   for (NodePaletteSidebar *sidebar : live_sidebars())
     sidebar->set_style(style);
@@ -879,7 +880,7 @@ void NodePaletteSidebar::restyle_all(const NodePaletteStyle &style)
 
 QLineEdit *NodePaletteSidebar::search_field() const { return this->search; }
 
-void NodePaletteSidebar::set_style(const NodePaletteStyle &new_style)
+void NodePaletteSidebar::set_style(const NodePalettePalette &new_style)
 {
   this->style = new_style;
 

@@ -43,9 +43,10 @@ public:
                              QPointF               scene_pos = QPointF(0.f, 0.f));
   nlohmann::json json_to() const;
 
-  bool       get_is_selecting_with_rubber_band() const;
-  GraphNode *get_p_graph_node();
-  void       set_json_copy_buffer(nlohmann::json const &new_json_copy_buffer);
+  bool         get_is_selecting_with_rubber_band() const;
+  GraphNode   *get_p_graph_node();
+  GraphEditor *get_editor() const { return this->editor.get(); }
+  void         set_json_copy_buffer(nlohmann::json const &new_json_copy_buffer);
 
   void add_import_heightmap_node(const QImage &img);
   void add_import_texture_nodes(const std::vector<std::string> &texture_paths);
@@ -122,6 +123,9 @@ protected:
   void request_deletion(const std::vector<std::string>          &ids,
                         const std::vector<gngui::LinkEndpoints> &links) override;
 
+  void mousePressEvent(QMouseEvent *event) override;
+  void mouseReleaseEvent(QMouseEvent *event) override;
+
 private:
   QScrollArea *create_attributes_scroll(QWidget *parent, QWidget *attr_widget);
 
@@ -130,16 +134,17 @@ private:
   void reselect_backup_ids();
 
   // --- Members ---
-  std::weak_ptr<GraphNode>       p_graph_node; // own by GraphManager
-  std::vector<QPointer<QWidget>> data_viewers;
-  std::unique_ptr<GraphEditor>   editor;
-  nlohmann::json                 json_copy_buffer;
-  std::string                    last_node_created_id = "";
-  bool                           is_selecting_with_rubber_band = false;
-  std::filesystem::path          last_import_path;
-  std::vector<std::string>       selected_ids;
-  QPointer<Viewer>               preview_viewer;
-  GraphControls                 *controls = nullptr; // its toolbar, own by this
+  std::weak_ptr<GraphNode>                     p_graph_node; // own by GraphManager
+  std::vector<QPointer<QWidget>>               data_viewers;
+  std::unique_ptr<GraphEditor>                 editor;
+  nlohmann::json                               json_copy_buffer;
+  std::string                                  last_node_created_id = "";
+  bool                                         is_selecting_with_rubber_band = false;
+  std::filesystem::path                        last_import_path;
+  std::vector<std::string>                     selected_ids;
+  std::vector<std::pair<std::string, QPointF>> node_press_positions;
+  QPointer<Viewer>                             preview_viewer;
+  GraphControls *controls = nullptr; // its toolbar, own by this
 };
 
 } // namespace hesiod

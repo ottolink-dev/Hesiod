@@ -19,14 +19,19 @@
 #include "meta_qt/ui/design_registry.hpp"
 #include "meta_qt/ui/theme.hpp"
 #include "meta_qt/widgets/collapsible_section.hpp"
+#include "meta_qt/widgets/preset_combo_box.hpp"
 
 #include "hesiod/app/hesiod_application.hpp"
+#include "hesiod/gui/undo/change_node_attribute_command.hpp"
+#include "hesiod/gui/undo/undo_manager.hpp"
 #include "hesiod/gui/widgets/dialogs/documentation_popup.hpp"
 #include "hesiod/gui/widgets/node_widgets/node_attributes_widget.hpp"
 #include "hesiod/gui/widgets/node_widgets/properties_panel_design.hpp"
 #include "hesiod/gui/widgets/node_widgets/properties_panel_header.hpp"
 #include "hesiod/logger.hpp"
+#include "hesiod/model/constants/node_preset_manager.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
+#include "hesiod/model/nodes/legacy/legacy_converter.hpp"
 
 namespace hesiod
 {
@@ -105,8 +110,6 @@ QWidget *NodeAttributesWidget::create_toolbar()
   auto *info_act = make_action(HSD_ICON("info"), "Node Information");
   auto *bckp_act = make_action(HSD_ICON("bookmark"), "Backup State");
   auto *revert_act = make_action(HSD_ICON("u_turn_left"), "Revert State");
-  auto *load_act = make_action(HSD_ICON("file_open"), "Load Preset");
-  auto *save_act = make_action(HSD_ICON("save"), "Save Preset");
   auto *doc_act = make_action(HSD_ICON("link"), "Online Documentation");
 
   // Visible on the bar: the three that get reached while actually working on a
@@ -119,6 +122,19 @@ QWidget *NodeAttributesWidget::create_toolbar()
     btn->setDefaultAction(action);
     layout->addWidget(btn);
   }
+
+  // State/preset buttons operate on the Meta container json (snapshot manager
+  // for state, json_to/json_from for presets).
+  auto meta_container = [this]() -> meta::AttributeContainer *
+  {
+    auto gno = this->p_graph_node.lock();
+    if (!gno)
+      return nullptr;
+    BaseNode *p_node = gno->get_node_ref_by_id<BaseNode>(this->node_id);
+    if (!p_node)
+      return nullptr;
+    return &p_node->get_meta_group().current();
+  };
 
   if (!panel.has_own_chrome)
     layout->addStretch();
@@ -137,9 +153,6 @@ QWidget *NodeAttributesWidget::create_toolbar()
   overflow_menu->addSeparator();
   overflow_menu->addAction(bckp_act);
   overflow_menu->addAction(revert_act);
-  overflow_menu->addSeparator();
-  overflow_menu->addAction(load_act);
-  overflow_menu->addAction(save_act);
   overflow_menu->addSeparator();
   overflow_menu->addAction(doc_act);
 
@@ -201,19 +214,6 @@ QWidget *NodeAttributesWidget::create_toolbar()
                     this->p_graph_node_widget->on_node_info(this->node_id);
                 });
 
-  // State/preset buttons operate on the Meta container json (snapshot manager
-  // for state, json_to/json_from for presets).
-  auto meta_container = [this]() -> meta::AttributeContainer *
-  {
-    auto gno = this->p_graph_node.lock();
-    if (!gno)
-      return nullptr;
-    BaseNode *p_node = gno->get_node_ref_by_id<BaseNode>(this->node_id);
-    if (!p_node)
-      return nullptr;
-    return &p_node->get_meta_group().current();
-  };
-
   this->connect(bckp_act,
                 &QAction::triggered,
                 this,
@@ -237,81 +237,6 @@ QWidget *NodeAttributesWidget::create_toolbar()
                       if (auto gno = this->p_graph_node.lock())
                         gno->update(this->node_id);
                     }
-                  }
-                });
-
-  this->connect(load_act,
-                &QAction::triggered,
-                this,
-                [this, meta_container]()
-                {
-                  auto *c = meta_container();
-                  if (!c)
-                    return;
-
-                  QString fname = QFileDialog::getOpenFileName(nullptr,
-                                                               "preset.json",
-                                                               ".",
-                                                               "json file (*.json)");
-
-                  if (!fname.isNull() && !fname.isEmpty())
-                  {
-                    std::ifstream file(fname.toStdString());
-
-                    if (file.is_open())
-                    {
-                      try
-                      {
-                        nlohmann::json json;
-                        file >> json;
-                        file.close();
-                        Logger::log()->trace("JSON successfully loaded from {}",
-                                             fname.toStdString());
-
-                        c->json_from(json, true);
-                        this->sync_from_model();
-                        if (auto gno = this->p_graph_node.lock())
-                          gno->update(this->node_id);
-                      }
-                      catch (const std::exception &e)
-                      {
-                        Logger::log()->error("Failed to load preset {}: {}",
-                                             fname.toStdString(),
-                                             e.what());
-                      }
-                    }
-                    else
-                      Logger::log()->error("Could not open file {} to load JSON",
-                                           fname.toStdString());
-                  }
-                });
-
-  this->connect(save_act,
-                &QAction::triggered,
-                this,
-                [this, meta_container]()
-                {
-                  auto *c = meta_container();
-                  if (!c)
-                    return;
-
-                  QString fname = QFileDialog::getSaveFileName(nullptr,
-                                                               "preset.json",
-                                                               ".",
-                                                               "json file (*.json)");
-
-                  if (!fname.isNull() && !fname.isEmpty())
-                  {
-                    std::ofstream file(fname.toStdString());
-
-                    if (file.is_open())
-                    {
-                      file << c->json_to().dump(4);
-                      file.close();
-                    }
-                    else
-                      Logger::log()->error("Could not open file {} to save JSON",
-                                           fname.toStdString());
                   }
                 });
 
@@ -394,11 +319,27 @@ void NodeAttributesWidget::sync_from_model()
   if (!gno)
     return;
 
-  if (!gno->get_node_ref_by_id<BaseNode>(this->node_id))
+  BaseNode *p_node = gno->get_node_ref_by_id<BaseNode>(this->node_id);
+  if (!p_node)
     return;
+
+  if (dynamic_cast<meta::qt::ContainerGroupWidget *>(this->meta_widget))
+  {
+    const std::string model_container = p_node->get_meta_group()
+                                            .current_container_name()
+                                            .value_or(std::string{});
+
+    if (!model_container.empty())
+    {
+      this->is_switching_container_programmatically = true;
+      this->current_container_name = model_container;
+    }
+  }
 
   if (this->meta_widget)
     this->meta_widget->on_sync_widget_from_model();
+
+  this->is_switching_container_programmatically = false;
 }
 
 bool NodeAttributesWidget::is_meta_backed() const { return this->meta_widget != nullptr; }
@@ -423,6 +364,82 @@ void NodeAttributesWidget::setup_layout()
 
   if (this->add_toolbar)
     main_layout->addWidget(this->create_toolbar());
+
+  const PropertiesPanelDesign &panel = properties_panel_design();
+
+  // --- Preset combo box backed by Meta SnapshotManager
+  std::string node_type = p_node->get_node_type();
+  if (!node_type.empty())
+  {
+    auto &sm = NodePresetManager::get_instance().get_snapshot_manager(node_type);
+    auto *preset_combo = new meta::qt::PresetComboBox(&sm, this);
+
+    if (panel.has_own_chrome && panel.theme)
+      preset_combo->set_theme(*panel.theme);
+
+    preset_combo->set_snapshot_provider(
+        [this]() -> nlohmann::json
+        {
+          if (auto gno = this->p_graph_node.lock())
+            if (BaseNode *p_node = gno->get_node_ref_by_id<BaseNode>(this->node_id))
+              return p_node->get_meta_group().json_to(meta::SerializationMode::state);
+
+          return nlohmann::json::object();
+        });
+
+    this->connect(
+        preset_combo,
+        &meta::qt::PresetComboBox::preset_selected,
+        this,
+        [this](const std::string &name, const nlohmann::json &snapshot)
+        {
+          if (auto gno = this->p_graph_node.lock())
+          {
+            if (BaseNode *p_node = gno->get_node_ref_by_id<BaseNode>(this->node_id))
+            {
+              auto          &group = p_node->get_meta_group();
+              nlohmann::json old_state = group.json_to(meta::SerializationMode::state);
+              nlohmann::json group_json = convert_legacy_container_group_json(group,
+                                                                              snapshot);
+
+              if (old_state != group_json)
+              {
+                const std::string label = "Apply Preset " + name + " to " + this->node_id;
+                if (QUndoStack *stack = UndoManager::instance().get_stack())
+                {
+                  stack->push(new ChangeNodeGroupStateCommand(this->p_graph_node,
+                                                              this->node_id,
+                                                              label,
+                                                              old_state,
+                                                              group_json));
+                }
+                else
+                {
+                  group.json_from(group_json, meta::SerializationMode::state, true);
+                  p_node->post_update_event.notify(*p_node);
+                  gno->update(this->node_id);
+                }
+              }
+            }
+          }
+        });
+
+    this->connect(
+        preset_combo,
+        &meta::qt::PresetComboBox::preset_saved,
+        this,
+        [node_type](const std::string &name)
+        { NodePresetManager::get_instance().save_user_preset(node_type, name); });
+
+    this->connect(
+        preset_combo,
+        &meta::qt::PresetComboBox::preset_deleted,
+        this,
+        [node_type](const std::string &name)
+        { NodePresetManager::get_instance().delete_user_preset(node_type, name); });
+
+    main_layout->addWidget(preset_combo);
+  }
 
   // --- position pickers (XY canvases) take the shape of the domain: a 2:1
   // graph gets a 2:1 plane, so a point sits where it will in the terrain
@@ -449,8 +466,6 @@ void NodeAttributesWidget::setup_layout()
   // --- Meta ContainerGroupWidget
 
   // Registers the designs on first call and validates the configured name.
-
-  const PropertiesPanelDesign &panel = properties_panel_design();
 
   meta::qt::RowContext row_ctx;
   row_ctx.theme = panel.theme;
@@ -528,6 +543,62 @@ void NodeAttributesWidget::setup_layout()
                   });
   }
 
+  // Push undo commands on user edits
+  auto get_container_info = [this]() -> std::pair<std::string, meta::AttributeContainer *>
+  {
+    auto gno = this->p_graph_node.lock();
+    if (!gno)
+      return {"", nullptr};
+
+    BaseNode *p_current = gno->get_node_ref_by_id<BaseNode>(this->node_id);
+    if (!p_current)
+      return {"", nullptr};
+
+    const std::string name = p_current->get_meta_group()
+                                 .current_container_name()
+                                 .value_or(std::string{});
+    return {name, &p_current->get_meta_group().current()};
+  };
+
+  this->connect(this->meta_widget,
+                &meta::qt::MetaWidget::edit_started,
+                this,
+                [this, get_container_info]()
+                {
+                  auto [name, container] = get_container_info();
+                  if (container)
+                  {
+                    this->state_before_edit = container->json_to(
+                        meta::SerializationMode::state);
+                    this->is_in_edit = true;
+                  }
+                });
+
+  this->connect(
+      this->meta_widget,
+      &meta::qt::MetaWidget::edit_ended,
+      this,
+      [this, get_container_info]()
+      {
+        auto [name, container] = get_container_info();
+        if (container && this->is_in_edit)
+        {
+          nlohmann::json new_state = container->json_to(meta::SerializationMode::state);
+          if (new_state != this->state_before_edit)
+          {
+            if (QUndoStack *stack = UndoManager::instance().get_stack())
+            {
+              stack->push(new ChangeNodeAttributeCommand(this->p_graph_node,
+                                                         this->node_id,
+                                                         name,
+                                                         this->state_before_edit,
+                                                         new_state));
+            }
+          }
+        }
+        this->is_in_edit = false;
+      });
+
   // Recompute on value_changed or edit_ended depending on app settings.
   auto signal = HSD_CTX.app_settings.node_editor.live_update
                     ? &meta::qt::MetaWidget::value_changed
@@ -547,6 +618,10 @@ void NodeAttributesWidget::setup_layout()
   if (auto *group_widget = dynamic_cast<meta::qt::ContainerGroupWidget *>(
           this->meta_widget))
   {
+    this->current_container_name = p_node->get_meta_group()
+                                       .current_container_name()
+                                       .value_or(std::string{});
+
     group_widget->setStyleSheet("QTabBar::tab {"
                                 "  min-height: 20px;"
                                 "  padding: 4px 8px;"
@@ -562,11 +637,31 @@ void NodeAttributesWidget::setup_layout()
     this->connect(group_widget,
                   &meta::qt::ContainerGroupWidget::current_container_changed,
                   this,
-                  [this](const std::string &)
+                  [this](const std::string &new_container)
                   {
+                    if (this->is_switching_container_programmatically)
+                      return;
+
                     auto gno = this->p_graph_node.lock();
                     if (!gno)
                       return;
+
+                    const std::string old_container = this->current_container_name;
+                    this->current_container_name = new_container;
+
+                    if (old_container != new_container && !old_container.empty())
+                    {
+                      if (QUndoStack *stack = UndoManager::instance().get_stack())
+                      {
+                        stack->push(new ChangeNodeAttributeCommand(this->p_graph_node,
+                                                                   this->node_id,
+                                                                   old_container,
+                                                                   new_container,
+                                                                   nlohmann::json{},
+                                                                   nlohmann::json{}));
+                      }
+                    }
+
                     gno->update(this->node_id);
                   });
   }

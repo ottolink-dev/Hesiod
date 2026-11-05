@@ -37,7 +37,9 @@
 
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/app/ui_scale.hpp"
-#include "hesiod/gui/widgets/chrome/window_chrome.hpp"
+#include "hesiod/gui/theme/style_sheet.hpp"
+#include "hesiod/gui/theme/theme.hpp"
+#include "hesiod/gui/theme/theme_registry.hpp"
 #include "hesiod/gui/widgets/controls/color_swatch.hpp"
 #include "hesiod/gui/widgets/controls/control_tones.hpp"
 #include "hesiod/gui/widgets/controls/step_button.hpp"
@@ -45,9 +47,12 @@
 #include "hesiod/gui/widgets/dialogs/app_settings_window.hpp"
 #include "hesiod/gui/widgets/dialogs/color_picker_dialog.hpp"
 #include "hesiod/gui/widgets/dialogs/message_dialog.hpp"
+#include "hesiod/gui/widgets/dialogs/node_preset_config_widget.hpp"
 #include "hesiod/gui/widgets/node_widgets/node_palette_sidebar.hpp"
+#include "hesiod/gui/widgets/shell/window_chrome.hpp"
 #include "hesiod/gui/widgets/utils/fuzzy_match.hpp"
 #include "hesiod/gui/widgets/utils/gui_utils.hpp"
+#include "hesiod/gui/widgets/viewers/viewer_3d.hpp"
 #include "hesiod/gui/widgets/viewers/viewport_controls.hpp"
 #include "hesiod/logger.hpp"
 
@@ -692,6 +697,46 @@ AppSettingsWindow::Control AppSettingsWindow::make_choice(
   return control;
 }
 
+AppSettingsWindow::Control AppSettingsWindow::make_string_choice(
+    std::function<std::string &(AppSettings &)> access,
+    const std::vector<std::string>             &items,
+    unsigned                                    effects)
+{
+  auto *combo = new QComboBox();
+  combo->setObjectName("settingsChoice");
+  for (const auto &item : items)
+    combo->addItem(QString::fromStdString(item), QString::fromStdString(item));
+
+  auto    draft = std::make_shared<std::string>(access(HSD_CTX.app_settings));
+  QString draft_qstr = QString::fromStdString(*draft);
+  if (combo->findData(draft_qstr) < 0)
+    combo->addItem(draft_qstr, draft_qstr);
+  combo->setCurrentIndex(combo->findData(draft_qstr));
+
+  Control control;
+  control.widget = combo;
+  control.focus = combo;
+  control.binding = make_binding<std::string>(
+      access,
+      draft,
+      [combo](const std::string &value)
+      {
+        const QSignalBlocker block(combo);
+        combo->setCurrentIndex(combo->findData(QString::fromStdString(value)));
+      });
+  control.binding->effects = effects;
+
+  this->connect(combo,
+                QOverload<int>::of(&QComboBox::currentIndexChanged),
+                this,
+                [this, draft, combo](int index)
+                {
+                  *draft = combo->itemData(index).toString().toStdString();
+                  this->update_state();
+                });
+  return control;
+}
+
 AppSettingsWindow::Control AppSettingsWindow::make_color(
     std::function<QColor &(AppSettings &)> access,
     unsigned                               effects)
@@ -859,6 +904,18 @@ void AppSettingsWindow::setup_pages()
   {
     QVBoxLayout *page = this->add_page("Interface", "Scale, behavior and extra tools.");
 
+    QVBoxLayout *appearance = this->add_card(page, "Appearance");
+
+    std::vector<std::string> themes = ThemeRegistry::instance().available_theme_names();
+    this->add_row(appearance,
+                  "Theme",
+                  "Color palette for the interface and workspace.",
+                  this->make_string_choice(HSD_SETTING(std::string, interface.theme_name),
+                                           themes,
+                                           Theme | Palette),
+                  false,
+                  "theme style dark light appearance color palette");
+
     QVBoxLayout *scale = this->add_card(page, "Scale");
     this->add_row(scale,
                   "Interface scale",
@@ -914,13 +971,6 @@ void AppSettingsWindow::setup_pages()
         this->make_toggle(HSD_SETTING(bool, interface.enable_data_preview_in_node_body)),
         false,
         "thumbnail image picture");
-    this->add_row(
-        nodes,
-        "Inline settings",
-        "Show node parameters inside the node body.",
-        this->make_toggle(HSD_SETTING(bool, interface.enable_node_settings_in_node_body)),
-        false,
-        "parameters attributes controls");
 
 #if HSD_ENABLE_TEXTURE_DOWNLOADER
     QVBoxLayout *tools = this->add_card(page, "Tools");
@@ -947,6 +997,14 @@ void AppSettingsWindow::setup_pages()
                   this->make_toggle(HSD_SETTING(bool, node_editor.live_update)),
                   false,
                   "realtime compute refresh");
+    this->add_row(
+        editing,
+        "Merge node setting undo steps",
+        "Merge consecutive parameter changes on the same node into a single "
+        "undo step.",
+        this->make_toggle(HSD_SETTING(bool, node_editor.merge_node_attribute_undo)),
+        false,
+        "undo redo history merge parameters slider");
     this->add_row(editing,
                   "Compute in background",
                   "Keep the interface usable while the graph is computed: navigate, "
@@ -1049,27 +1107,6 @@ void AppSettingsWindow::setup_pages()
         true,
         "sidebar categories flyout");
 
-    QVBoxLayout *colors = this->add_card(page, "Colors");
-    const auto   color_row =
-        [&](const QString &label, std::function<QColor &(AppSettings &)> access)
-    {
-      this->add_row(colors,
-                    label,
-                    QString(),
-                    this->make_color(access, Theme | Palette),
-                    false,
-                    "colour theme");
-    };
-    color_row("Category button", HSD_SETTING(QColor, node_palette.surface));
-    color_row("Category button, hovered",
-              HSD_SETTING(QColor, node_palette.surface_hover));
-    color_row("Category button, open",
-              HSD_SETTING(QColor, node_palette.surface_selected));
-    color_row("Flyout background", HSD_SETTING(QColor, node_palette.flyout_bg));
-    color_row("Flyout border", HSD_SETTING(QColor, node_palette.flyout_border));
-    color_row("Label", HSD_SETTING(QColor, node_palette.text));
-    color_row("Label, active", HSD_SETTING(QColor, node_palette.text_active));
-
     QVBoxLayout *metrics = this->add_card(page, "Layout");
     const auto   metric_row = [&](const QString                      &label,
                                 std::function<int &(AppSettings &)> access,
@@ -1116,6 +1153,17 @@ void AppSettingsWindow::setup_pages()
                0,
                1000,
                " ms");
+  }
+
+  // --- Presets
+  {
+    QVBoxLayout *page = this->add_page(
+        "Presets",
+        "Manage global and bundled node preset files available across projects.");
+
+    auto *config_widget = new NodePresetConfigWidget();
+    config_widget->setMinimumHeight(400);
+    page->addWidget(config_widget);
   }
 
   // pages end with a stretch so short pages stay top-aligned
@@ -1236,11 +1284,18 @@ QString AppSettingsWindow::apply_effects(unsigned effects)
     apply_animation_settings(ctx.app_settings.interface.enable_ui_animations);
 
   if (effects & Theme)
+  {
     if (auto *app = qobject_cast<QApplication *>(QCoreApplication::instance()))
       apply_global_style(*app);
+    this->apply_stylesheet();
+    this->update();
+  }
 
   if (effects & (Theme | Palette))
-    NodePaletteSidebar::restyle_all(current_node_palette_style());
+  {
+    NodePaletteSidebar::restyle_all(current_node_palette_palette());
+    Viewer3D::restyle_all();
+  }
 
   if (effects & ViewportToolbar)
     ViewportControls::relayout_all();
@@ -1510,105 +1565,12 @@ void AppSettingsWindow::apply_stylesheet()
 {
   const ControlTones t = control_tones();
 
-  QString css = R"(
-    QDialog#hsdSettings QWidget { background: transparent; color: INK; }
-    QDialog#hsdSettings QLabel#sidebarTitle { font-size: 15px; font-weight: 600; }
-    QDialog#hsdSettings QLabel#sidebarVersion { color: FAINT; font-size: 11px; }
-    QDialog#hsdSettings QLabel#searchStatus { color: FAINT; font-size: 11px; padding: 0px 8px; }
+  static constexpr std::string_view css_template =
+#include "hesiod/gui/styles/app_settings.css"
+      ;
 
-    QDialog#hsdSettings QLineEdit#settingsSearch {
-      background: FIELD; border: 1px solid BORDER; border-radius: 7px;
-      padding: 6px 6px; font-size: 13px; color: INK;
-      selection-background-color: ACCENT; }
-    QDialog#hsdSettings QLineEdit#settingsSearch:focus { border-color: ACCENT; }
-
-    QDialog#hsdSettings QPushButton#navButton {
-      text-align: left; padding: 8px 12px; border: none; border-radius: 7px;
-      color: DIM; font-size: 13px; background: transparent; }
-    QDialog#hsdSettings QPushButton#navButton:hover { background: NAV_HOVER; color: INK; }
-    QDialog#hsdSettings QPushButton#navButton:checked {
-      background: NAV_ACTIVE; color: INK; font-weight: 600; }
-    QDialog#hsdSettings QPushButton#navButton[modified="true"] { color: ACCENT_TEXT; }
-    QDialog#hsdSettings QPushButton#navButton:disabled { color: GHOST; }
-    QDialog#hsdSettings QLabel#navCount {
-      background: ACCENT_SOFT; color: INK; border-radius: 8px;
-      padding: 0px 7px; font-size: 11px; font-weight: 600; }
-
-    QDialog#hsdSettings QLabel#pageTitle { font-size: 22px; font-weight: 600; }
-    QDialog#hsdSettings QLabel#pageSubtitle { color: DIM; font-size: 13px; }
-    QDialog#hsdSettings QLabel#cardHeading {
-      color: FAINT; font-size: 11px; font-weight: 600; letter-spacing: 1px;
-      padding: 8px 0px 4px 4px; }
-
-    QDialog#hsdSettings QFrame#card {
-      background: CARD; border: 1px solid BORDER; border-radius: 10px; }
-    QDialog#hsdSettings QFrame#rowDivider { background: BORDER; border: none; }
-    QDialog#hsdSettings QWidget#row { border-radius: 8px; }
-    QDialog#hsdSettings QWidget#row[modified="true"] { background: MODIFIED_BG; }
-    QDialog#hsdSettings QWidget#row[hit="true"] { background: ACCENT_SOFT; }
-    QDialog#hsdSettings QLabel#rowLabel { font-size: 13px; }
-    QDialog#hsdSettings QLabel#rowDescription { color: DIM; font-size: 12px; }
-    QDialog#hsdSettings QLabel#restartTag {
-      color: WARN; background: WARN_SOFT; border-radius: 4px;
-      padding: 1px 6px; font-size: 10px; font-weight: 600; }
-    QDialog#hsdSettings QLabel#modifiedTag {
-      color: ACCENT_TEXT; background: ACCENT_SOFT; border-radius: 4px;
-      padding: 1px 6px; font-size: 10px; font-weight: 600; }
-
-    QDialog#hsdSettings QFrame#restartBanner {
-      background: WARN_SOFT; border: 1px solid WARN_BORDER; border-radius: 8px; }
-    QDialog#hsdSettings QLabel#restartLabel { color: INK; font-size: 12px; }
-
-    QDialog#hsdSettings QFrame#stepper {
-      background: FIELD; border: 1px solid BORDER; border-radius: 7px; }
-    QDialog#hsdSettings QFrame#stepper:hover { border-color: FAINT; }
-    QDialog#hsdSettings QAbstractSpinBox {
-      background: transparent; border: none; color: INK; font-size: 13px;
-      selection-background-color: ACCENT; padding: 0px; min-height: 28px; }
-
-    QDialog#hsdSettings QComboBox#settingsChoice {
-      background: FIELD; border: 1px solid BORDER; border-radius: 7px; color: INK;
-      font-size: 13px; padding: 4px 10px; min-height: 22px; min-width: 110px; }
-    QDialog#hsdSettings QComboBox#settingsChoice:hover { border-color: FAINT; }
-    QDialog#hsdSettings QComboBox#settingsChoice::drop-down { border: none; width: 20px; }
-
-    QDialog#hsdSettings QPushButton#presetChip {
-      background: FIELD; color: DIM; border: 1px solid BORDER; border-radius: 12px;
-      padding: 3px 9px; font-size: 11px; }
-    QDialog#hsdSettings QPushButton#presetChip:hover { color: INK; border-color: FAINT; }
-    QDialog#hsdSettings QPushButton#presetChip:checked {
-      background: ACCENT_SOFT; color: INK; border-color: ACCENT; }
-
-    QDialog#hsdSettings QPushButton#primaryButton {
-      background: ACCENT; color: #ffffff; border: 1px solid ACCENT; border-radius: 7px;
-      padding: 7px 22px; font-size: 13px; font-weight: 600; }
-    QDialog#hsdSettings QPushButton#primaryButton:hover { background: ACCENT_HOVER; }
-    QDialog#hsdSettings QPushButton#primaryButton:disabled {
-      background: FIELD; border-color: BORDER; color: GHOST; }
-    QDialog#hsdSettings QPushButton#secondaryButton {
-      background: FIELD; color: INK; border: 1px solid BORDER; border-radius: 7px;
-      padding: 7px 16px; font-size: 13px; }
-    QDialog#hsdSettings QPushButton#secondaryButton:hover { border-color: FAINT; }
-    QDialog#hsdSettings QPushButton#secondaryButton:disabled { color: GHOST; }
-    QDialog#hsdSettings QPushButton#ghostButton {
-      background: transparent; color: DIM; border: 1px solid transparent;
-      border-radius: 7px; padding: 7px 12px; font-size: 13px; }
-    QDialog#hsdSettings QPushButton#ghostButton:hover { background: FIELD; color: INK; }
-    QDialog#hsdSettings QLabel#footerStatus { color: DIM; font-size: 12px; }
-
-    QDialog#hsdSettings QScrollBar:vertical {
-      width: 10px; background: transparent; margin: 4px 2px 4px 0px; border: none; }
-    QDialog#hsdSettings QScrollBar::handle:vertical {
-      background: BORDER; border-radius: 4px; min-height: 36px; }
-    QDialog#hsdSettings QScrollBar::handle:vertical:hover { background: FAINT; }
-    QDialog#hsdSettings QScrollBar::add-line:vertical,
-    QDialog#hsdSettings QScrollBar::sub-line:vertical { height: 0px; border: none; }
-    QDialog#hsdSettings QScrollBar::add-page:vertical,
-    QDialog#hsdSettings QScrollBar::sub-page:vertical { background: transparent; }
-  )";
-
-  const QColor                          warn("#d9a441");
-  const std::pair<const char *, QColor> tokens[] = {
+  const QColor                        warn("#d9a441");
+  const std::map<std::string, QColor> color_tokens = {
       {"ACCENT_HOVER", t.accent.lighter(112)},
       {"ACCENT_SOFT", t.accent_soft},
       {"ACCENT_TEXT", t.accent.lighter(135)},
@@ -1626,8 +1588,8 @@ void AppSettingsWindow::apply_stylesheet()
       {"FAINT", t.ink_faint},
       {"DIM", t.ink_dim},
       {"INK", t.ink}};
-  for (const auto &[key, value] : tokens)
-    css.replace(key, value.name());
+
+  QString css = render_stylesheet(css_template, {}, color_tokens);
 
   const QString family = meta::qt::ui_font(13).family();
   if (!family.isEmpty())

@@ -83,13 +83,12 @@ void compute_thermal_scree_node(BaseNode &node)
   // --- Params
 
   // clang-format off
-  const auto talus_global = node.val<float>(A_TALUS_GLOBAL);
   const auto zmax_value   = node.val<float>(A_ZMAX);
   const auto duration     = node.val<float>(A_DURATION);
   const auto scale_talus  = node.val<bool>(A_SCALE_TALUS);
   // clang-format on
 
-  const float talus      = talus_global / float(p_out->shape.x);
+  const float talus      = node.val_talus(A_TALUS_GLOBAL);
   const int   iterations = int(duration * p_out->shape.x);
 
   // --- Prepare mask

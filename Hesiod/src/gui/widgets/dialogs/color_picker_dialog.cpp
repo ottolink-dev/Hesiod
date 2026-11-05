@@ -20,6 +20,7 @@
 #include "meta_qt/ui/theme.hpp"
 
 #include "hesiod/app/hesiod_application.hpp"
+#include "hesiod/gui/theme/style_sheet.hpp"
 #include "hesiod/gui/widgets/dialogs/color_picker_dialog.hpp"
 #include "hesiod/gui/widgets/utils/gui_utils.hpp"
 
@@ -575,22 +576,22 @@ ColorPickerDialog::ColorPickerDialog(const QColor  &initial,
                      });
 
   // --- extra styling
-  QString                               css = R"(
-    QDialog#hsdMessage QLabel#fieldLabel { color: FAINT; font-size: 11px; }
-    QDialog#hsdMessage QLineEdit#hexField, QDialog#hsdMessage QSpinBox#channelField {
-      background: DEEP; color: INK; border: 1px solid BORDER; border-radius: 6px;
-      padding: 4px 6px; font-size: 12px; selection-background-color: ACCENT; }
-    QDialog#hsdMessage QLineEdit#hexField:focus,
-    QDialog#hsdMessage QSpinBox#channelField:focus { border-color: ACCENT; }
-  )";
-  const std::pair<const char *, QColor> tokens[] = {
+  static constexpr std::string_view css_template =
+      "QDialog#hsdMessage QLabel#fieldLabel { color: FAINT; font-size: 11px; }"
+      "QDialog#hsdMessage QLineEdit#hexField, QDialog#hsdMessage QSpinBox#channelField {"
+      "  background: DEEP; color: INK; border: 1px solid BORDER; border-radius: 6px;"
+      "  padding: 4px 6px; font-size: 12px; selection-background-color: ACCENT; }"
+      "QDialog#hsdMessage QLineEdit#hexField:focus,"
+      "QDialog#hsdMessage QSpinBox#channelField:focus { border-color: ACCENT; }";
+
+  const std::map<std::string, QColor> color_tokens = {
       {"ACCENT", colors.accent},
       {"DEEP", colors.bg_deep},
       {"BORDER", edge_color()},
       {"FAINT", mix_colors(colors.bg_primary, colors.text_primary, 0.45)},
       {"INK", colors.text_primary}};
-  for (const auto &[key, value] : tokens)
-    css.replace(key, value.name());
+
+  QString css = render_stylesheet(css_template, {}, color_tokens);
   this->setStyleSheet(this->styleSheet() + css);
 
   this->set_from_color(start, Source::None);

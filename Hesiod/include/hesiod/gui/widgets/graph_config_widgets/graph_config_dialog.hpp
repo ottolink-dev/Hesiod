@@ -12,6 +12,7 @@
 #include "hesiod/model/graph/graph_config.hpp"
 
 class QLabel;
+class QScrollArea;
 
 namespace meta
 {
@@ -37,6 +38,9 @@ public:
 
   void accept() override;
 
+protected:
+  void showEvent(QShowEvent *event) override;
+
 private:
   glm::ivec2 shape() const; // from the aspect / resolution / height choices
   void       update_summary();
@@ -48,6 +52,7 @@ private:
   std::vector<QPointer<QWidget>>            rows; // subscribe to the containers
   std::vector<meta::EventConnection>        connections;
   QLabel                                   *summary = nullptr;
+  QScrollArea                              *scroll_area = nullptr;
 };
 
 } // namespace hesiod

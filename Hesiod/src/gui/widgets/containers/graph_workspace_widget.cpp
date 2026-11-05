@@ -7,6 +7,7 @@
 #include <QSplitter>
 #include <QTimer>
 #include <QToolButton>
+#include <QUndoStack>
 #include <QVBoxLayout>
 
 #include "hesiod/app/hesiod_application.hpp"
@@ -35,6 +36,8 @@ GraphWorkspaceWidget::GraphWorkspaceWidget(std::weak_ptr<GraphNode> p_graph_node
     : QWidget(parent), p_graph_node(p_graph_node)
 {
   Logger::log()->trace("GraphWorkspaceWidget::GraphWorkspaceWidget");
+
+  this->undo_stack = new QUndoStack(this);
 
   auto gno = this->p_graph_node.lock();
   if (!gno)
@@ -201,8 +204,8 @@ void GraphWorkspaceWidget::setup_layout()
     {
       this->node_palette_sidebar = new NodePaletteSidebar(
           get_node_inventory(),
-          HSD_CTX.style_settings.category_color_map,
-          current_node_palette_style());
+          HSD_CTX.node_graph_palette.category_color_map,
+          current_node_palette_palette());
       library = this->node_palette_sidebar;
     }
     else

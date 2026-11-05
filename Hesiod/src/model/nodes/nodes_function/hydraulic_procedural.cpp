@@ -136,10 +136,8 @@ void compute_hydraulic_procedural_node(BaseNode &node)
       float                noise_amp;
     };
 
-    const int   nx        = p_in->shape.x;
-    const float talus_ref = node.val<float>(A_TALUS_REF);
-    const float talus     = talus_ref / float(nx);
-    const auto  ep        = node.val_enum<hmap::ErosionProfile>(A_EROSION_PROFILE);
+    const float talus = node.val_talus(A_TALUS_REF);
+    const auto  ep    = node.val_enum<hmap::ErosionProfile>(A_EROSION_PROFILE);
 
     return P{
         .kp_global                 = node.val<float>(A_KP_GLOBAL),

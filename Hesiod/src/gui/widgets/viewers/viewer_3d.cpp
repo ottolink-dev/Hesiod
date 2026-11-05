@@ -350,6 +350,7 @@ void Viewer3D::setup_layout()
 
   // add viewer
   this->p_renderer = new qtr::RenderWidget("");
+  this->update_style();
   grid->addWidget(dynamic_cast<QWidget *>(p_renderer), 0, 0, row_count, 1);
 
   // TODO hardcoded
@@ -393,6 +394,57 @@ void Viewer3D::setup_layout()
                   [this](const std::string &) { this->sync_pin_label(); });
     this->sync_pin_label();
   }
+}
+
+void Viewer3D::restyle_all()
+{
+  for (QWidget *top : QApplication::topLevelWidgets())
+    for (Viewer3D *viewer : top->findChildren<Viewer3D *>())
+      viewer->update_style();
+}
+
+void Viewer3D::update_style()
+{
+  if (!this->p_renderer)
+    return;
+
+  const auto &colors = HSD_CTX.app_settings.colors;
+
+  qtr::UIStyle style;
+  style.bg_dark = glm::vec4(colors.bg_deep.redF(),
+                            colors.bg_deep.greenF(),
+                            colors.bg_deep.blueF(),
+                            colors.bg_deep.alphaF());
+  style.bg_light = glm::vec4(colors.bg_secondary.redF(),
+                             colors.bg_secondary.greenF(),
+                             colors.bg_secondary.blueF(),
+                             colors.bg_secondary.alphaF());
+  style.text = glm::vec4(colors.text_primary.redF(),
+                         colors.text_primary.greenF(),
+                         colors.text_primary.blueF(),
+                         colors.text_primary.alphaF());
+  style.text_disabled = glm::vec4(colors.text_disabled.redF(),
+                                  colors.text_disabled.greenF(),
+                                  colors.text_disabled.blueF(),
+                                  colors.text_disabled.alphaF());
+  style.accent = glm::vec4(colors.accent.redF(),
+                           colors.accent.greenF(),
+                           colors.accent.blueF(),
+                           colors.accent.alphaF());
+  style.accent_hover = glm::vec4(colors.hover.redF(),
+                                 colors.hover.greenF(),
+                                 colors.hover.blueF(),
+                                 colors.hover.alphaF());
+  style.accent_active = glm::vec4(colors.pressed.redF(),
+                                  colors.pressed.greenF(),
+                                  colors.pressed.blueF(),
+                                  colors.pressed.alphaF());
+  style.border = glm::vec4(colors.border.redF(),
+                           colors.border.greenF(),
+                           colors.border.blueF(),
+                           colors.border.alphaF());
+
+  this->p_renderer->set_ui_style(style);
 }
 
 void Viewer3D::update_renderer()

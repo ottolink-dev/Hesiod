@@ -44,6 +44,9 @@ public:
   void set_skybox(const std::filesystem::path path);
   void setup_layout() override;
   void setup_connections() override;
+  void update_style();
+
+  static void restyle_all();
 
 public slots:
   void on_view_param_visibility_changed(const std::string &param_name, bool new_state);

@@ -41,6 +41,13 @@ NodeSettingsWidget::NodeSettingsWidget(QPointer<GraphNodeWidget> p_graph_node_wi
   this->update_content();
 }
 
+void NodeSettingsWidget::restyle_all()
+{
+  for (QWidget *top : QApplication::topLevelWidgets())
+    for (NodeSettingsWidget *w : top->findChildren<NodeSettingsWidget *>())
+      w->update_content();
+}
+
 void NodeSettingsWidget::setup_connections()
 {
   Logger::log()->trace("NodeSettingsWidget::setup_connections");
@@ -96,12 +103,12 @@ void NodeSettingsWidget::setup_layout()
 
     this->attr_layout->setSpacing(2);
 
-    auto *scroll = new QScrollArea();
+    this->scroll = new QScrollArea();
 
     // As-needed, not off. Some canvases are sized from the array resolution
     // rather than the dock, so on a narrow dock turning this off left the
     // right-hand side of a Brush clipped with no way to reach it.
-    scroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    this->scroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 
     if (panel.has_own_chrome)
     {
@@ -109,15 +116,16 @@ void NodeSettingsWidget::setup_layout()
       // on expand narrows the viewport and reflows every row, so padding jumps
       // sideways for reasons unrelated to what was clicked. Costs a few pixels
       // and removes a whole class of confusion.
-      scroll->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+      this->scroll->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 
       // ...but only its space: with nothing to scroll, Qt would still draw a
       // handle over the whole height, which reads as content that is cut off
-      scroll->setStyleSheet(meta::qt::industrial::scrollbar_stylesheet(*panel.theme) +
-                            "QScrollBar[idle=\"true\"]::handle:vertical,"
-                            "QScrollBar[idle=\"true\"]::handle:vertical:hover { "
-                            "background: transparent; }");
-      QScrollBar *bar = scroll->verticalScrollBar();
+      this->scroll->setStyleSheet(
+          meta::qt::industrial::scrollbar_stylesheet(*panel.theme) +
+          "QScrollBar[idle=\"true\"]::handle:vertical,"
+          "QScrollBar[idle=\"true\"]::handle:vertical:hover { "
+          "background: transparent; }");
+      QScrollBar *bar = this->scroll->verticalScrollBar();
       bar->setProperty("idle", true); // empty until the first node is shown
       this->connect(bar,
                     &QScrollBar::rangeChanged,
@@ -132,12 +140,12 @@ void NodeSettingsWidget::setup_layout()
                     });
     }
 
-    scroll->setWidget(container);
-    scroll->setWidgetResizable(true);
-    scroll->setFrameShape(QFrame::NoFrame);
-    scroll->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    this->scroll->setWidget(container);
+    this->scroll->setWidgetResizable(true);
+    this->scroll->setFrameShape(QFrame::NoFrame);
+    this->scroll->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-    layout->addWidget(scroll);
+    layout->addWidget(this->scroll);
   }
 }
 
@@ -148,6 +156,15 @@ void NodeSettingsWidget::update_content()
   if (!this->p_graph_node_widget)
     return;
 
+  const PropertiesPanelDesign &panel = properties_panel_design();
+  if (this->scroll && panel.has_own_chrome)
+  {
+    this->scroll->setStyleSheet(meta::qt::industrial::scrollbar_stylesheet(*panel.theme) +
+                                "QScrollBar[idle=\"true\"]::handle:vertical,"
+                                "QScrollBar[idle=\"true\"]::handle:vertical:hover { "
+                                "background: transparent; }");
+  }
+
   clear_layout(this->attr_layout);
   this->attr_widgets.clear();
 
@@ -156,7 +173,6 @@ void NodeSettingsWidget::update_content()
   if (!p_gno)
     return;
 
-  const PropertiesPanelDesign &panel = properties_panel_design();
   if (panel.has_own_chrome)
     this->attr_layout->addSpacing(4);
   else

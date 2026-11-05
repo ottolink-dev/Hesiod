@@ -56,7 +56,6 @@ int main(int argc, char **argv)
   [[maybe_unused]] ProfileMemorySampler sampler;
   omp_set_num_threads(1);
   auto &settings = app.get_context().app_settings;
-  settings.interface.enable_node_settings_in_node_body = false;
   settings.viewer.mesh_resolution = 256;
   settings.node_editor.preview_w = 128;
   settings.node_editor.preview_h = 128;

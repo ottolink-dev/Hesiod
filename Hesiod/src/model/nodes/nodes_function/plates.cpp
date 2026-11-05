@@ -64,7 +64,7 @@ void compute_plates_node(BaseNode &node)
   hmap::VirtualArray *p_env = node.get_value_ref<hmap::VirtualArray>(P_ENVELOPE);
   hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
-  float talus = node.val<float>(A_SLOPE) / float(p_out->shape.x);
+  float talus = node.val_talus(A_SLOPE);
 
   hmap::for_each_tile(
       {},

@@ -79,7 +79,7 @@ protected:
     const int   margin = theme_.metrics.section_card_margin;
     const QRect card = rect().adjusted(margin, 5, -margin, -5);
     painter.setPen(Qt::NoPen);
-    painter.setBrush(theme_.page.lighter(125));
+    painter.setBrush(theme_.section_surface);
     painter.drawRoundedRect(card,
                             theme_.metrics.section_card_radius,
                             theme_.metrics.section_card_radius);

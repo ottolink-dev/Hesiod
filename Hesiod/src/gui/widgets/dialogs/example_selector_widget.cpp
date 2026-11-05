@@ -35,9 +35,10 @@
 #include <QWheelEvent>
 
 #include "hesiod/app/hesiod_application.hpp"
-#include "hesiod/gui/widgets/chrome/window_chrome.hpp"
+#include "hesiod/gui/theme/style_sheet.hpp"
 #include "hesiod/gui/widgets/dialogs/example_selector_dialog.hpp"
 #include "hesiod/gui/widgets/node_widgets/properties_panel_design.hpp"
+#include "hesiod/gui/widgets/shell/window_chrome.hpp"
 #include "hesiod/logger.hpp"
 #include "meta_qt/ui/theme.hpp"
 
@@ -774,72 +775,21 @@ ExampleSelectorDialog::ExampleSelectorDialog(const QString &examples_path,
 void ExampleSelectorDialog::apply_theme()
 {
   const auto t = selector_theme();
-  QString    css = QStringLiteral(R"(
-    QDialog#exampleSelector { background: transparent; }
-    QWidget { font-family: "UI_FONT"; font-size: 14px; }
-    QLabel { color: INK; background: transparent; border: none; }
-    QWidget#selectorTitleBar { background: BAR; border: none;
-      border-top-left-radius: CARD_RADIUSpx; border-top-right-radius: CARD_RADIUSpx; }
-    QLabel#selectorIdentity { color: ACCENT; }
-    QFrame#selectorTitleDivider { border: none; background: transparent; }
-    QLabel#selectorWindowLabel { color: SECONDARY; font-size: 13px; }
-    QStackedWidget#selectorPages, QWidget#selectorExamplesPage { background: PAGE; border: none; }
-    QWidget#selectorActionPanel, QWidget#selectorRecentHost { background: transparent; }
-    QLabel#selectorBrand { font-size: 38px; font-weight: 700; color: INK; letter-spacing: 6px; }
-    QLabel#selectorBrandSubtitle { color: SECONDARY; font-size: 14px; letter-spacing: 0.5px; }
-    QLabel#selectorBuild { color: SECONDARY; font-size: 12px; }
-    QLabel#selectorSectionLabel { color: SECONDARY; font-size: 11px; font-weight: 600;
-      letter-spacing: 1px; padding-top: 12px; padding-bottom: 2px; padding-left: 2px; }
-    QLabel#selectorHeading { font-size: 20px; font-weight: 600; }
-    QLabel#selectorCount, QLabel#selectorRecentEmpty { color: SECONDARY; font-size: 12px; }
-    QLabel#selectorEmpty { color: SECONDARY; padding: 24px; }
-    QLineEdit { background: BAR; color: INK; border: 1px solid BORDER;
-      border-radius: RADIUSpx; min-height: 40px; padding: 0 12px;
-      selection-background-color: ACCENT; }
-    QLineEdit:hover { border-color: SECONDARY; }
-    QLineEdit:focus { border-color: ACCENT; }
-    QPushButton { color: INK; background: BAR; border: 1px solid BORDER;
-      border-radius: RADIUSpx; min-height: 40px; padding: 0 16px;
-      font-weight: normal; }
-    QPushButton#selectorRecentRow { min-height: 62px; max-height: 62px; padding: 0; border: none; }
-    QPushButton#selectorExamplesTile { min-height: 164px; max-height: 164px; padding: 0; border: none; }
-    QPushButton#selectorProjectCard { min-height: 188px; max-height: 188px; padding: 0; border: none; }
-    QPushButton:hover { background: HOVER; border-color: SECONDARY; }
-    QPushButton:focus { border-color: ACCENT; }
-    QPushButton:pressed { background: FIELD; }
-    QPushButton#selectorWelcomePrimary, QPushButton#selectorPrimaryButton {
-      background: SELECTED; border-color: ACCENT; font-weight: 600; }
-    QPushButton#selectorPrimaryButton:disabled { color: DISABLED; border-color: BORDER; background: BAR; }
-    QPushButton#selectorBackButton { min-height: 32px; padding: 0 12px; }
-    QScrollArea#selectorScroll, QWidget#selectorCardsHost,
-    QScrollArea#selectorActionScroll, QScrollArea#selectorActionScroll > QWidget,
-    QScrollArea#selectorActionScroll > QWidget > QWidget {
-      background: transparent; border: none; }
-    QScrollArea#selectorActionScroll QScrollBar:vertical { width: 6px; margin: 0; background: transparent; border: none; }
-    QScrollArea#selectorActionScroll QScrollBar::handle:vertical { min-height: 32px; background: BORDER; border-radius: 3px; }
-    QScrollArea#selectorActionScroll QScrollBar::add-line:vertical,
-    QScrollArea#selectorActionScroll QScrollBar::sub-line:vertical { height: 0; border: none; }
-    QScrollArea#selectorActionScroll QScrollBar::add-page:vertical,
-    QScrollArea#selectorActionScroll QScrollBar::sub-page:vertical { background: transparent; }
-    QScrollArea#selectorScroll QScrollBar:vertical { width: 8px; margin: 0; background: BAR; border: none; }
-    QScrollArea#selectorScroll QScrollBar::handle:vertical { min-height: 32px; background: ACCENT; border-radius: 4px; }
-    QScrollArea#selectorScroll QScrollBar::add-line:vertical,
-    QScrollArea#selectorScroll QScrollBar::sub-line:vertical { height: 0; border: none; }
-    QScrollArea#selectorScroll QScrollBar::add-page:vertical,
-    QScrollArea#selectorScroll QScrollBar::sub-page:vertical { background: transparent; }
-    QWidget#selectorFooter { background: PAGE; border: none;
-      border-bottom-left-radius: CARD_RADIUSpx; border-bottom-right-radius: CARD_RADIUSpx; }
-    QCheckBox#selectorStartupCheck { color: SECONDARY; background: transparent;
-      border: none; spacing: 9px; }
-    QCheckBox#selectorStartupCheck::indicator { width: 18px; height: 18px;
-      border: 1px solid BORDER; border-radius: 4px; background: FIELD; }
-    QCheckBox#selectorStartupCheck::indicator:checked { background: SELECTED;
-      border-color: ACCENT; image: url(CHECK_ICON); }
-  )");
-  css.replace("UI_FONT", meta::qt::ui_font(14).family());
-  css.replace("CARD_RADIUS", QString::number(t.metrics.section_card_radius));
-  css.replace("RADIUS", QString::number(std::max(6, t.metrics.radius)));
-  const std::pair<const char *, QColor> colors[] = {
+
+  static constexpr std::string_view css_template =
+#include "hesiod/gui/styles/example_selector.css"
+      ;
+
+  const auto &icons = HSD_CTX.app_settings.icons.icon_paths;
+  const auto  check = icons.find("check");
+
+  const std::map<std::string, std::string> string_tokens = {
+      {"UI_FONT", meta::qt::ui_font(14).family().toStdString()},
+      {"CARD_RADIUS", std::to_string(t.metrics.section_card_radius)},
+      {"RADIUS", std::to_string(std::max(6, t.metrics.radius))},
+      {"CHECK_ICON", check != icons.end() ? check->second : "data/icons/pp_check.svg"}};
+
+  const std::map<std::string, QColor> color_tokens = {
       {"PAGE", t.page},
       {"BAR", t.bar},
       {"INK", t.ink_primary},
@@ -850,13 +800,8 @@ void ExampleSelectorDialog::apply_theme()
       {"HOVER", t.field_hover},
       {"DISABLED", t.ink_locked},
       {"SELECTED", blend_color(t.bar, t.accent, 0.14)}};
-  for (const auto &[key, value] : colors)
-    css.replace(key, value.name());
-  const auto &icons = HSD_CTX.app_settings.icons.icon_paths;
-  const auto  check = icons.find("check");
-  css.replace("CHECK_ICON",
-              check != icons.end() ? QString::fromStdString(check->second)
-                                   : QStringLiteral("data/icons/pp_check.svg"));
+
+  QString css = render_stylesheet(css_template, string_tokens, color_tokens);
   this->setStyleSheet(css);
   this->update();
 }

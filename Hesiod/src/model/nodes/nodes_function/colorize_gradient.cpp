@@ -28,6 +28,9 @@ constexpr const char *A_GRADIENT         = "gradient";
 constexpr const char *A_REVERSE_COLORMAP = "reverse_colormap";
 constexpr const char *A_REVERSE_ALPHA    = "reverse_alpha";
 constexpr const char *A_CLAMP_ALPHA      = "clamp_alpha";
+constexpr const char *A_ENABLE_SHADE     = "enable_shading";
+constexpr const char *A_SHADE_RADIUS     = "radius";
+constexpr const char *A_SHADE_STRENGTH   = "strength";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -46,6 +49,8 @@ void setup_colorize_gradient_node(BaseNode &node)
 
   // --- Attributes
 
+  // clang-format off
+  node.set_current_category("Gradient");
   add_color_gradient(node, A_GRADIENT, "gradient");
 
   node.set_metadata(
@@ -56,6 +61,12 @@ void setup_colorize_gradient_node(BaseNode &node)
   add_bool(node, A_REVERSE_COLORMAP, "reverse_colormap", false);
   add_bool(node, A_REVERSE_ALPHA, "reverse_alpha", false);
   add_bool(node, A_CLAMP_ALPHA, "clamp_alpha", true);
+
+  node.set_current_category("Shading");
+  add_bool(node, A_ENABLE_SHADE, "Enable Shading", true);
+  add_float(node, A_SHADE_RADIUS, "Radius", 0.05f, 0.001f, 0.2f);
+  add_float(node, A_SHADE_STRENGTH, "Strength", 1.f, 0.f, 4.f);
+  // clang-format on
 }
 
 // -----------------------------------------------------------------------------
@@ -147,6 +158,38 @@ void compute_colorize_gradient_node(BaseNode &node)
                  p_alpha_copy,
                  reverse_colormap,
                  p_noise);
+
+  // --- Topographic residual shading (optional)
+
+  const bool enable_shading = node.val<bool>(A_ENABLE_SHADE);
+
+  if (enable_shading)
+  {
+    const int   ir             = node.val_pixel_radius(A_SHADE_RADIUS);
+    const float shade_strength = node.val<float>(A_SHADE_STRENGTH);
+
+    std::vector<const hmap::VirtualArray *> vas_in  = {p_level};
+    std::vector<hmap::VirtualArray *>       vas_out = p_tex->channels_ptr();
+
+    hmap::for_each_tile(
+        vas_in,
+        vas_out,
+        [ir, shade_strength](std::vector<const hmap::Array *> p_arrays_in,
+                             std::vector<hmap::Array *>       p_arrays_out,
+                             const hmap::TileRegion &)
+        {
+          auto [pa_z]    = unpack<1>(p_arrays_in);
+          auto [r, g, b] = unpack<3>(p_arrays_out);
+
+          hmap::Texture tile_tex(*r, *g, *b);
+          hmap::shade_topographic_residual(tile_tex, *pa_z, ir, shade_strength);
+
+          *r = std::move(tile_tex[0]);
+          *g = std::move(tile_tex[1]);
+          *b = std::move(tile_tex[2]);
+        },
+        node.cfg().cm_cpu);
+  }
 }
 
 } // namespace hesiod

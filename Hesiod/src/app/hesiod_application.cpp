@@ -44,8 +44,7 @@
 #include "hesiod/app/ui_scale.hpp"
 #include "hesiod/cli/batch_mode.hpp"
 #include "hesiod/gui/project_ui.hpp"
-#include "hesiod/gui/widgets/chrome/menu_chrome.hpp"
-#include "hesiod/gui/widgets/chrome/window_chrome.hpp"
+#include "hesiod/gui/undo/undo_manager.hpp"
 #include "hesiod/gui/widgets/containers/graph_manager_widget.hpp"
 #include "hesiod/gui/widgets/containers/graph_tabs_widget.hpp"
 #include "hesiod/gui/widgets/dialogs/about_dialog.hpp"
@@ -55,9 +54,12 @@
 #include "hesiod/gui/widgets/dialogs/error_dialog.hpp"
 #include "hesiod/gui/widgets/dialogs/example_selector_dialog.hpp"
 #include "hesiod/gui/widgets/dialogs/message_dialog.hpp"
+#include "hesiod/gui/widgets/dialogs/node_inspector_widget.hpp"
 #include "hesiod/gui/widgets/dialogs/project_settings_dialog.hpp"
 #include "hesiod/gui/widgets/dialogs/splash_screen.hpp"
 #include "hesiod/gui/widgets/graph_config_widgets/bake_config_dialog.hpp"
+#include "hesiod/gui/widgets/shell/menu_chrome.hpp"
+#include "hesiod/gui/widgets/shell/window_chrome.hpp"
 #include "hesiod/gui/widgets/utils/fractional_repaint_filter.hpp"
 #include "hesiod/gui/widgets/utils/gui_utils.hpp"
 #include "hesiod/gui/widgets/utils/tool_tip_blocker.hpp"
@@ -542,6 +544,12 @@ void HesiodApplication::load_project_model_and_ui(const std::string &fname,
         this->context.app_settings.window.show_heightmapper_widget);
   }
 #endif
+
+  if (this->project_ui->get_node_inspector_widget_ref())
+  {
+    this->project_ui->get_node_inspector_widget_ref()->setVisible(
+        this->context.app_settings.window.show_node_inspector);
+  }
 
   // --- connections
 
@@ -1709,6 +1717,19 @@ void HesiodApplication::setup_menu_bar()
   quit->setIcon(HSD_ICON("menu_quit"));
   file_menu->addAction(quit);
 
+  // --- edit
+
+  QMenu *edit_menu = add_menu(this->main_window->menu_bar(), "&Edit");
+
+  QUndoStack *undo_stack = UndoManager::instance().get_stack();
+  QAction    *undo_action = undo_stack->createUndoAction(this, tr("&Undo"));
+  undo_action->setShortcut(QKeySequence::Undo);
+  edit_menu->addAction(undo_action);
+
+  QAction *redo_action = undo_stack->createRedoAction(this, tr("&Redo"));
+  redo_action->setShortcuts({QKeySequence::Redo, QKeySequence(tr("Ctrl+Y"))});
+  edit_menu->addAction(redo_action);
+
   // --- project
 
   QMenu *project_menu = add_menu(this->main_window->menu_bar(), "&Project");
@@ -1837,6 +1858,10 @@ void HesiodApplication::setup_menu_bar()
   }
 #endif
 
+  auto *show_node_inspector = new QAction("Node Inspector", this);
+  show_node_inspector->setIcon(HSD_ICON("info"));
+  view_menu->addAction(show_node_inspector);
+
   // window entries show their icon at full strength only while it is open
   this->connect(view_menu,
                 &QMenu::aboutToShow,
@@ -1854,7 +1879,8 @@ void HesiodApplication::setup_menu_bar()
                  ,
                  show_heightmapper_widget
 #endif
-  ]()
+                 ,
+                 show_node_inspector]()
                 {
                   auto set_icon = [](QAction *action, const char *name, QWidget *window)
                   {
@@ -1886,6 +1912,9 @@ void HesiodApplication::setup_menu_bar()
                            "menu_heightmapper",
                            this->project_ui->get_heightmapper_widget_ref());
 #endif
+                  set_icon(show_node_inspector,
+                           "info",
+                           this->project_ui->get_node_inspector_widget_ref());
                 });
 
   view_menu->addSeparator();
@@ -2061,6 +2090,20 @@ void HesiodApplication::setup_menu_bar()
         });
   }
 #endif
+
+  this->connect(show_node_inspector,
+                &QAction::triggered,
+                this,
+                [this, show_node_inspector]()
+                {
+                  if (auto *inspector = this->project_ui->get_node_inspector_widget_ref())
+                  {
+                    bool state = inspector->isVisible();
+                    this->context.app_settings.window.show_node_inspector = !state;
+                    inspector->setVisible(!state);
+                    show_node_inspector->setChecked(!state);
+                  }
+                });
 
   // graphs
   this->connect(

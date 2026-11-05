@@ -9,7 +9,7 @@
 
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/project_ui.hpp"
-#include "hesiod/gui/widgets/chrome/menu_chrome.hpp"
+#include "hesiod/gui/undo/undo_manager.hpp"
 #include "hesiod/gui/widgets/containers/graph_manager_widget.hpp"
 #include "hesiod/gui/widgets/containers/graph_tabs_widget.hpp"
 #include "hesiod/gui/widgets/containers/graph_workspace_widget.hpp"
@@ -19,6 +19,8 @@
 #include "hesiod/gui/widgets/graph/graph_tab_strip.hpp"
 #include "hesiod/gui/widgets/node_widgets/node_settings_widget.hpp"
 #include "hesiod/gui/widgets/node_widgets/subgraph_node_widget.hpp"
+#include "hesiod/gui/widgets/shell/menu_chrome.hpp"
+#include "hesiod/gui/widgets/utils/gui_utils.hpp"
 #include "hesiod/gui/widgets/viewers/viewer_3d.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/graph/graph_manager.hpp"
@@ -35,17 +37,8 @@ GraphTabsWidget::GraphTabsWidget(std::weak_ptr<GraphManager> p_graph_manager,
 {
   Logger::log()->trace("GraphTabsWidget::GraphTabsWidget");
 
-  AppContext &ctx = HSD_CTX;
-
   // styles (GNodeGUI)
-  GN_STYLE->viewer.add_toolbar = false; // see GraphControls
-  GN_STYLE->viewer.add_new_icon = false;
-  GN_STYLE->viewer.add_load_save_icons = false;
-  GN_STYLE->viewer.add_group = ctx.app_settings.node_editor.enable_node_groups;
-  GN_STYLE->node.color_port_data = ctx.style_settings.data_color_map;
-  GN_STYLE->node.color_category = ctx.style_settings.category_color_map;
-  GN_STYLE->node.port_radius = ctx.app_settings.node_editor.port_radius;
-  GN_STYLE->node.show_compute_time = ctx.app_settings.node_editor.show_compute_time;
+  apply_graph_style();
 
   // outer frame of the workspace: the dark base the panel cards sit on
   this->setObjectName("hsdBase");
@@ -101,12 +94,23 @@ void GraphTabsWidget::clear()
   }
 
   this->graph_workspace_widget_map.clear();
+  UndoManager::instance().clear();
 }
 
 std::string GraphTabsWidget::get_selected_graph_id() const
 {
   QString selected_tab_text = this->tab_widget->tabText(this->tab_widget->currentIndex());
   return selected_tab_text.toStdString();
+}
+
+GraphWorkspaceWidget *GraphTabsWidget::get_workspace_widget(
+    const std::string &graph_id) const
+{
+  auto it = this->graph_workspace_widget_map.find(graph_id);
+  if (it != this->graph_workspace_widget_map.end() && it->second)
+    return it->second.data();
+
+  return nullptr;
 }
 
 void GraphTabsWidget::on_heightmap_download_ready(
