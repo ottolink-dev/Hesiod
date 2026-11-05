@@ -1,0 +1,46 @@
+Overnight profiling failure investigation, 2026-10-09
+
+Reproduction: original frozen overnight binary and fixtures, 512x512,
+1x1 tiles, zero overlap, one CPU thread, offscreen Qt, no Tracy capture
+connected. Run under GDB. Original overnight artifacts remain unchanged.
+
+FlowStream
+GDB reproduces SIGSEGV at HighMap/src/hydrology/flow_stream.cpp:107:
+  size_t npts = i_path_list[kmin].size();
+The function only accepts strict local minima along non-corner boundary
+pixels as exits. The synthetic GaussianPulse terrain has no such minima.
+There is no guard for zero exits/paths before indexing path zero.
+Optimized build prevented GDB from displaying vector sizes; the exact
+crash location is confirmed, with the empty-path cause supported by the
+exit-selection logic and fixture geometry.
+The overnight run recorded signal 6; GDB stops earlier at SIGSEGV.
+Fix direction: define no-exit behavior (controlled error or an explicit
+fallback), validate returned paths, and add no-exit regression cases.
+Simply returning an empty Path is insufficient: dig_river uses
+path_copy.size() - 1 in an unsigned loop, so callers must handle empties.
+For useful profiling, additionally use terrain with known valid outlets;
+retain the Gaussian fixture as a regression, not successful timing coverage.
+
+HydraulicVpipes
+Reproduces CL_INVALID_KERNEL_NAME for hydraulic_vpipes_flow_simulation.
+HighMap/src/erosion/hydraulic_vpipes_gpu.cpp requests four obsolete names:
+  hydraulic_vpipes_flow_simulation
+  hydraulic_vpipes_velocity
+  hydraulic_vpipes_erosion_deposition
+  hydraulic_vpipes_advection
+Bundled kernels instead define flow_pass, water_pass, erosion_pass and
+sediment_transport_pass under the hydraulic_vpipes_ prefix. They use
+image2d_t inputs and separate outputs, while the caller binds buffers;
+scalar signatures differ too. A rename alone cannot fix this.
+HighMap/src/hydrology/flow_simulation.cpp already demonstrates current
+image bindings for flow_pass and water_pass.
+Fix direction: port all four erosion stages to the current kernel API,
+then test finite terrain/water/sediment outputs and repeat focused captures.
+The Hesiod wrapper also leaves moisture, mask, bedrock, water_depth and
+sediment ports unused by the GPU call; that is a separate correctness gap.
+The caught node exception leaves application exit code zero. The profiling
+runner correctly rejects the run based on its error log.
+
+Both nodes are currently in the factory's WIP group but are not deprecated.
+No production source or frozen suite files were changed for this investigation.
+Evidence: FlowStream-gdb.log and HydraulicVpipes-gdb.log in this directory.

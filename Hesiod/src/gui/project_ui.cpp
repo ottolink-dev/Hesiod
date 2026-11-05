@@ -7,9 +7,10 @@
 #include "hesiod/app/app_settings.hpp"
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/project_ui.hpp"
-#include "hesiod/gui/widgets/graph_manager_widget.hpp"
-#include "hesiod/gui/widgets/graph_tabs_widget.hpp"
-#include "hesiod/gui/widgets/heightmapper_widget.hpp"
+#include "hesiod/gui/widgets/containers/graph_manager_widget.hpp"
+#include "hesiod/gui/widgets/containers/graph_tabs_widget.hpp"
+#include "hesiod/gui/widgets/containers/heightmapper_widget.hpp"
+#include "hesiod/gui/widgets/dialogs/node_inspector_widget.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/project_model.hpp"
 #include "hesiod/model/utils.hpp"
@@ -40,6 +41,7 @@ ProjectUI::~ProjectUI()
   // returned and no one will drain the deferred-delete queue. Both QPointers
   // are already null if cleanup() ran, and deleting null is a no-op.
   delete this->heightmapper_widget.data();
+  delete this->node_inspector_widget.data();
   delete this->texture_downloader.data();
 }
 
@@ -68,6 +70,9 @@ void ProjectUI::cleanup()
   if (this->heightmapper_widget)
     this->heightmapper_widget->deleteLater();
 
+  if (this->node_inspector_widget)
+    this->node_inspector_widget->deleteLater();
+
   QCoreApplication::processEvents();
 }
 
@@ -84,6 +89,11 @@ GraphTabsWidget *ProjectUI::get_graph_tabs_widget_ref()
 HeightmapperWidget *ProjectUI::get_heightmapper_widget_ref()
 {
   return this->heightmapper_widget.get();
+}
+
+NodeInspectorWidget *ProjectUI::get_node_inspector_widget_ref()
+{
+  return this->node_inspector_widget.get();
 }
 
 qtd::TextureDownloader *ProjectUI::get_texture_downloader_ref()
@@ -150,17 +160,24 @@ void ProjectUI::initialize(ProjectModel *project)
                        { this->get_graph_tabs_widget_ref()->set_show_viewer(state); });
   }
 
+#if HSD_ENABLE_TEXTURE_DOWNLOADER
   if (HSD_CTX.app_settings.interface.enable_texture_downloader)
   {
     // no parent, top-level window (managed by a QPointer)
     this->texture_downloader = new qtd::TextureDownloader();
   }
+#endif
 
+#if HSD_ENABLE_HEIGHTMAPPER
   if (HSD_CTX.app_settings.interface.enable_heightmapper_widget)
   {
     // no parent, top-level window (managed by a QPointer)
     this->heightmapper_widget = new HeightmapperWidget();
   }
+#endif
+
+  this->node_inspector_widget = new NodeInspectorWidget(p_graph_manager->get_shared(),
+                                                        nullptr);
 
   // connections
   this->setup_connections();
@@ -227,17 +244,45 @@ void ProjectUI::setup_connections()
                 this,
                 [this]() { Q_EMIT this->graph_manager_widget->update_finished(); });
 
+  // GraphTabsWidget -> NodeInspectorWidget
+  if (this->node_inspector_widget)
+  {
+    this->connect(this->graph_tabs_widget,
+                  &GraphTabsWidget::has_been_cleared,
+                  this->node_inspector_widget,
+                  &NodeInspectorWidget::refresh_content);
+
+    this->connect(this->graph_tabs_widget,
+                  &GraphTabsWidget::new_node_created,
+                  this->node_inspector_widget,
+                  &NodeInspectorWidget::refresh_content);
+
+    this->connect(this->graph_tabs_widget,
+                  &GraphTabsWidget::node_deleted,
+                  this->node_inspector_widget,
+                  &NodeInspectorWidget::refresh_content);
+
+    this->connect(this->graph_tabs_widget,
+                  &GraphTabsWidget::update_finished,
+                  this->node_inspector_widget,
+                  &NodeInspectorWidget::refresh_content);
+  }
+
+#if HSD_ENABLE_TEXTURE_DOWNLOADER
   // qtd::TextureDownloader -> GraphTabsWidget
   this->connect(this->texture_downloader,
                 &qtd::TextureDownloader::textures_retrieved,
                 this->graph_tabs_widget,
                 &GraphTabsWidget::on_textures_request);
+#endif
 
+#if HSD_ENABLE_HEIGHTMAPPER
   // HeightmapperWidget -> GraphTabsWidget
   this->connect(this->heightmapper_widget,
                 &HeightmapperWidget::heightmap_download_ready,
                 this->graph_tabs_widget,
                 &GraphTabsWidget::on_heightmap_download_ready);
+#endif
 }
 
 } // namespace hesiod

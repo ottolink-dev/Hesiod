@@ -182,7 +182,7 @@ void compute_select_soil_node(BaseNode &node)
   {
     int   nx    = p_out->shape.x;
     int   ir    = std::max(1, (int)(node.val<float>(A_RADIUS_GRADIENT) * nx));
-    float talus = node.val<float>(A_TALUS_REF) / nx;
+    float talus = node.val_talus(A_TALUS_REF);
 
     hmap::for_each_tile(
         {p_in},

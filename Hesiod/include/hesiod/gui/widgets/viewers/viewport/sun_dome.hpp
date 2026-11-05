@@ -14,7 +14,7 @@
 #include "meta_qt/ui/theme.hpp"
 
 #include "hesiod/app/hesiod_application.hpp"
-#include "hesiod/gui/widgets/gui_utils.hpp"
+#include "hesiod/gui/widgets/utils/gui_utils.hpp"
 #include "hesiod/gui/widgets/viewers/viewport/viewport_style.hpp"
 
 namespace hesiod::viewport
@@ -39,7 +39,6 @@ public:
     this->setObjectName("sunDome");
     this->setAttribute(Qt::WA_NoSystemBackground);
     this->setAutoFillBackground(false);
-    this->setStyleSheet("QWidget#sunDome { background: transparent; }");
     this->setFixedHeight(176);
     this->setCursor(Qt::CrossCursor);
     this->setToolTip("Drag to move the sun. Centre: overhead, rim: horizon.");

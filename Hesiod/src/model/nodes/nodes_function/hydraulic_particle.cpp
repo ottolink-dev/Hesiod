@@ -166,7 +166,7 @@ void compute_hydraulic_particle_node(BaseNode &node)
   const bool  enable_default_bedrock = node.val<bool>(A_ENABLE_DEFAULT_BEDROCK);
   const float bd_elevation_strength  = node.val<float>(A_BD_ELEVATION_STRENGTH);
   const float bd_slope_strength      = node.val<float>(A_BD_SLOPE_STRENGTH);
-  const float bd_talus               = node.val<float>(A_BD_SLOPE) / p_out->shape.x;
+  const float bd_talus               = node.val_talus(A_BD_SLOPE);
 
   const bool  enable_ridge_forcing      = node.val<bool>(A_ENABLE_RIDGE_FORCING);
   const float ridge_spatial_frequency   = node.val<float>(A_RIDGE_SPATIAL_FREQUENCY);

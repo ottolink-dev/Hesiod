@@ -9,19 +9,20 @@
 #include "highmap/coord_frame.hpp"
 #include "highmap/interpolate/interpolate_array.hpp"
 
+#include "gnode/graph_worker.hpp"
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/graph/graph_config.hpp"
 #include "hesiod/model/graph/graph_manager.hpp"
 #include "hesiod/model/graph/graph_node.hpp"
-#include "hesiod/model/graph/graph_worker.hpp"
 #include "hesiod/model/utils.hpp"
+#include "hesiod/profiling.hpp"
 
 namespace hesiod
 {
 
 GraphManager::GraphManager(const std::string &id)
-    : id(id), worker(std::make_unique<GraphWorker>())
+    : id(id), worker(std::make_unique<gnode::GraphWorker>())
 {
   Logger::log()->trace("GraphManager::GraphManager: id: {}", id);
 
@@ -105,6 +106,7 @@ void GraphManager::clear()
 
 void GraphManager::export_flatten()
 {
+  HSD_PROFILE_ZONE("GraphManager::export_flatten");
   Logger::log()->trace("GraphManager::export_flatten");
 
   // Finish any pending background work first
@@ -282,7 +284,7 @@ GraphNode *GraphManager::get_graph_ref_by_id(const std::string &graph_id)
 
 std::string GraphManager::get_id() const { return this->id; }
 
-GraphWorker &GraphManager::get_worker() { return *this->worker; }
+gnode::GraphWorker &GraphManager::get_worker() { return *this->worker; }
 
 std::shared_ptr<GraphManager> GraphManager::get_shared()
 {
@@ -429,7 +431,7 @@ void GraphManager::on_broadcast_node_updated(const std::string &graph_id,
   Logger::log()->trace("GraphManager::on_broadcast_node_updated: broadcasting {}", tag);
 
   // a Broadcast updated in the background reports from the update thread
-  if (GraphWorker::in_worker_thread())
+  if (gnode::GraphWorker::in_worker_thread())
     return this->worker->post([this, graph_id, tag]()
                               { this->on_broadcast_node_updated(graph_id, tag); });
 
@@ -541,6 +543,8 @@ void GraphManager::set_id(const std::string &new_id) { this->id = new_id; }
 
 void GraphManager::update()
 {
+  HSD_PROFILE_ZONE("GraphManager::update");
+  HSD_PROFILE_TEXT(this->id);
   Logger::log()->trace("GraphManager::update()");
 
   // BaseNode::compute contains per-node failures; what reaches here is a

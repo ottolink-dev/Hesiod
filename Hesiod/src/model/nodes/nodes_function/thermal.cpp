@@ -92,12 +92,11 @@ void compute_thermal_node(BaseNode &node)
 
   // clang-format off
   const auto type = node.val<std::string>(A_TYPE);
-  const auto talus_global = node.val<float>(A_TALUS);
   const auto duration = node.val<float>(A_DURATION);
   const auto scale_talus = node.val<bool>(A_SCALE_TALUS);
   // clang-format on
 
-  const float talus      = talus_global / float(p_out->shape.x);
+  const float talus      = node.val_talus(A_TALUS);
   const int   iterations = int(duration * p_out->shape.x);
 
   // --- Talus map

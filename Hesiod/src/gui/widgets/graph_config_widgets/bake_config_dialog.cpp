@@ -9,10 +9,15 @@
 #include <QDir>
 #include <QFileDialog>
 #include <QFrame>
+#include <QGuiApplication>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
+#include <QScreen>
+#include <QScrollArea>
+#include <QScrollBar>
+#include <QShowEvent>
 #include <QVBoxLayout>
 
 #include "meta/core/attribute_container.hpp"
@@ -23,8 +28,11 @@
 #include "meta_qt/ui/theme.hpp"
 
 #include "hesiod/app/hesiod_application.hpp"
+#include "hesiod/gui/theme/theme.hpp"
+#include "hesiod/gui/widgets/dialogs/natural_scroll_area.hpp"
 #include "hesiod/gui/widgets/graph_config_widgets/bake_config_dialog.hpp"
-#include "hesiod/gui/widgets/properties_panel_design.hpp"
+#include "hesiod/gui/widgets/node_widgets/properties_panel_design.hpp"
+#include "hesiod/gui/widgets/utils/gui_utils.hpp"
 
 namespace hesiod
 {
@@ -34,14 +42,12 @@ namespace
 
 const meta::qt::Theme &bake_theme()
 {
-  static const meta::qt::Theme theme = []()
-  {
-    meta::qt::Theme t = *properties_panel_design().theme;
-    t.group_accents = {{"Output", QColor("#cfa143")},
-                       {"Options", QColor("#7d9cc0")},
-                       {"Large Graphs", QColor("#3aa899")}};
-    return t;
-  }();
+  static meta::qt::Theme theme;
+  theme = *properties_panel_design().theme;
+  theme.group_accents = {
+      {"Output", ThemeDefinition::derive_group_accent("Output")},
+      {"Options", ThemeDefinition::derive_group_accent("Options")},
+      {"Large Graphs", ThemeDefinition::derive_group_accent("Large Graphs")}};
   return theme;
 }
 
@@ -200,11 +206,27 @@ BakeConfigDialog::BakeConfigDialog(int               max_size,
                                    "padding: 0px 16px 2px 16px;")
                                .arg(HSD_CTX.app_settings.colors.text_secondary.name());
 
+  // --- scrollable body container
+  this->scroll_area = new NaturalScrollArea(this);
+  this->scroll_area->setObjectName("bakeConfigScroll");
+  this->scroll_area->setWidgetResizable(true);
+  this->scroll_area->setFrameShape(QFrame::NoFrame);
+  this->scroll_area->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+  this->scroll_area->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+
+  auto *container = new QWidget();
+  container->setObjectName("bakeConfigContainer");
+  container->setAttribute(Qt::WA_TranslucentBackground);
+
+  auto *content_layout = new QVBoxLayout(container);
+  content_layout->setContentsMargins(0, 0, 0, 0);
+  content_layout->setSpacing(4);
+
   const auto add_section = [&](meta::AttributeContainer &c, const QString &note)
   {
     QWidget *rows = meta::qt::render(c, render_options, this);
     rows->setAttribute(Qt::WA_TranslucentBackground);
-    this->body()->addWidget(rows);
+    content_layout->addWidget(rows);
     this->rows.push_back(rows);
 
     if (!note.isEmpty())
@@ -212,7 +234,7 @@ BakeConfigDialog::BakeConfigDialog(int               max_size,
       auto *label = new QLabel(note, this);
       label->setWordWrap(true);
       label->setStyleSheet(note_css);
-      this->body()->addWidget(label);
+      content_layout->addWidget(label);
     }
   };
 
@@ -282,7 +304,7 @@ BakeConfigDialog::BakeConfigDialog(int               max_size,
     auto *wrap = new QHBoxLayout();
     wrap->setContentsMargins(14, 4, 14, 8); // aligned with the section cards
     wrap->addWidget(card);
-    this->body()->addLayout(wrap);
+    content_layout->addLayout(wrap);
   }
 
   add_section(*this->output,
@@ -292,6 +314,32 @@ BakeConfigDialog::BakeConfigDialog(int               max_size,
   add_section(*this->memory,
               "Streams tiles to disk and evaluates them one after the other. Uses far "
               "less RAM on very large graphs, but bakes more slowly.");
+
+  this->scroll_area->setWidget(container);
+  container->installEventFilter(this->scroll_area);
+  this->body()->addWidget(this->scroll_area);
+
+  // --- scrollbar style
+  const auto &colors = HSD_CTX.app_settings.colors;
+  const QString
+      scroll_css = QString("QScrollArea#bakeConfigScroll QScrollBar:vertical {"
+                           "  width: 10px; background: transparent; margin: 4px 2px 4px "
+                           "0px; border: none; }"
+                           "QScrollArea#bakeConfigScroll QScrollBar::handle:vertical {"
+                           "  background: %1; border-radius: 4px; min-height: 30px; }"
+                           "QScrollArea#bakeConfigScroll "
+                           "QScrollBar::handle:vertical:hover { background: %2; }"
+                           "QScrollArea#bakeConfigScroll QScrollBar::add-line:vertical,"
+                           "QScrollArea#bakeConfigScroll QScrollBar::sub-line:vertical { "
+                           "height: 0px; border: none; }"
+                           "QScrollArea#bakeConfigScroll QScrollBar::add-page:vertical,"
+                           "QScrollArea#bakeConfigScroll QScrollBar::sub-page:vertical { "
+                           "background: transparent; }")
+                       .arg(mix_colors(colors.bg_primary, colors.text_primary, 0.25)
+                                .name(),
+                            mix_colors(colors.bg_primary, colors.text_primary, 0.45)
+                                .name());
+  this->setStyleSheet(this->styleSheet() + scroll_css);
 
   this->add_button("Cancel", Role::Secondary, false, true);
   this->add_button("Bake", Role::Primary, true);
@@ -318,6 +366,12 @@ BakeConfig BakeConfigDialog::get_bake_settings() const
   config.max_tile_resolution = this->memory->value<int>("max_tile_resolution");
   config.export_dir = this->folder_edit->text().trimmed().toStdString();
   return config;
+}
+
+void BakeConfigDialog::showEvent(QShowEvent *event)
+{
+  clamp_dialog_scroll_height(this->scroll_area, this);
+  MessageDialog::showEvent(event);
 }
 
 } // namespace hesiod

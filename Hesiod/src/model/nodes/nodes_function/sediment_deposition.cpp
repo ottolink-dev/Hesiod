@@ -58,7 +58,7 @@ void compute_sediment_deposition_node(BaseNode &node)
     hmap::VirtualArray *p_deposition_map = node.get_value_ref<hmap::VirtualArray>(
         P_DEPOSITION);
 
-    float talus = node.val<float>(A_TALUS_GLOBAL) / (float)p_out->shape.x;
+    float talus = node.val_talus(A_TALUS_GLOBAL);
 
     hmap::VirtualArray talus_map = hmap::VirtualArray(CONFIG(node));
     talus_map.fill(talus, node.cfg().cm_cpu);

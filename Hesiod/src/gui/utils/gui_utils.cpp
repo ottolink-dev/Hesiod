@@ -15,8 +15,8 @@
 #include <QApplication>
 
 #include "hesiod/app/hesiod_application.hpp"
-#include "hesiod/gui/widgets/gui_utils.hpp"
-#include "hesiod/gui/widgets/node_palette_sidebar.hpp"
+#include "hesiod/gui/widgets/node_widgets/node_palette_sidebar.hpp"
+#include "hesiod/gui/widgets/utils/gui_utils.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/utils.hpp"
 
@@ -55,14 +55,14 @@ void apply_animation_settings(bool enabled)
 
   // reach the sidebars that already exist: a motion setting that only applies
   // to widgets created later looks like it did nothing
-  NodePaletteStyle style = current_node_palette_style();
+  NodePalettePalette style = current_node_palette_palette();
   style.animations = enabled;
   NodePaletteSidebar::restyle_all(style);
 }
 
-NodePaletteStyle current_node_palette_style()
+NodePalettePalette current_node_palette_palette()
 {
-  NodePaletteStyle style = HSD_CTX.app_settings.node_palette;
+  NodePalettePalette style = HSD_CTX.app_settings.node_palette;
   style.animations = HSD_CTX.app_settings.interface.enable_ui_animations;
   return style;
 }

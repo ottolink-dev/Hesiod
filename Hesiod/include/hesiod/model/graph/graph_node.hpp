@@ -6,17 +6,20 @@
 #include "nlohmann/json.hpp"
 
 #include "gnode/graph.hpp"
-#include "gnode/graph_worker.hpp"
 #include "highmap/coord_frame.hpp"
 
 #include "hesiod/model/graph/broadcast_param.hpp"
 #include "hesiod/model/graph/graph_config.hpp"
 
+namespace gnode
+{
+class GraphWorker;
+}
+
 namespace hesiod
 {
 
 class BaseNode; // forward
-using GraphWorker = gnode::GraphWorker;
 
 // =====================================
 // GraphNode
@@ -40,7 +43,7 @@ public:
   // --- Node Factory (create nodes from their type) ---
   // Construction does not compute: callers update after setting parameters and
   // connections, so compound edits never evaluate a partially constructed graph.
-  std::string add_node(const std::string &node_type);
+  std::string add_node(const std::string &node_type, const std::string &id = "");
 
   // --- GNode::Graph override ---
   std::string  add_node(const std::shared_ptr<gnode::Node> &p_node,
@@ -53,10 +56,8 @@ public:
   // --- Background Update (GraphWorker of the GraphManager, if any) ---
   // An update then returns at once, after update_started: the nodes are computed
   // afterwards, and update_finished comes once the graph is up to date.
-  void set_p_worker(GraphWorker *new_p_worker) { this->p_worker = new_p_worker; }
+  void set_p_worker(gnode::GraphWorker *new_p_worker) { this->p_worker = new_p_worker; }
   void stop_update(); // before modifying the graph, see GraphWorker::stop()
-  void execute_parallel(const std::vector<std::string> &dirty_node_ids,
-                        size_t                          num_threads = 0) override;
 
   // --- Inter-graph Broadcasting ---
   BroadcastMap *get_p_broadcast_params() { return this->p_broadcast_params; }
@@ -99,8 +100,7 @@ private:
   std::shared_ptr<GraphConfig> config;
   BroadcastMap                *p_broadcast_params = nullptr; // own by GraphManager
   gnode::EventConnection       graph_progress_conn;
-  GraphWorker                 *p_worker = nullptr; // own by GraphManager
-  std::atomic<int>             completed_count = 0;
+  gnode::GraphWorker          *p_worker = nullptr; // own by GraphManager
 };
 
 } // namespace hesiod

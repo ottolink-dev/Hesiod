@@ -6,7 +6,12 @@
 #include <format>
 #include <string>
 
+#include <QGuiApplication>
 #include <QLabel>
+#include <QScreen>
+#include <QScrollArea>
+#include <QScrollBar>
+#include <QShowEvent>
 #include <QVBoxLayout>
 
 #include "meta/core/attribute_container.hpp"
@@ -17,8 +22,11 @@
 #include "meta_qt/ui/theme.hpp"
 
 #include "hesiod/app/hesiod_application.hpp"
+#include "hesiod/gui/theme/theme.hpp"
+#include "hesiod/gui/widgets/dialogs/natural_scroll_area.hpp"
 #include "hesiod/gui/widgets/graph_config_widgets/graph_config_dialog.hpp"
-#include "hesiod/gui/widgets/properties_panel_design.hpp"
+#include "hesiod/gui/widgets/node_widgets/properties_panel_design.hpp"
+#include "hesiod/gui/widgets/utils/gui_utils.hpp"
 #include "hesiod/logger.hpp"
 
 namespace hesiod
@@ -39,12 +47,11 @@ constexpr int kShapeSnap = 16; // short edges stay tiling-friendly
 
 const meta::qt::Theme &config_theme()
 {
-  static const meta::qt::Theme theme = []()
-  {
-    meta::qt::Theme t = *properties_panel_design().theme;
-    t.group_accents = {{"Domain", QColor("#7d9cc0")}, {"Computation", QColor("#3aa899")}};
-    return t;
-  }();
+  static meta::qt::Theme theme;
+  theme = *properties_panel_design().theme;
+  theme.group_accents = {
+      {"Domain", ThemeDefinition::derive_group_accent("Domain")},
+      {"Computation", ThemeDefinition::derive_group_accent("Computation")}};
   return theme;
 }
 
@@ -196,17 +203,33 @@ GraphConfigDialog::GraphConfigDialog(GraphConfig &config, QWidget *parent)
                                    "padding: 0px 16px 2px 16px;")
                                .arg(HSD_CTX.app_settings.colors.text_secondary.name());
 
+  // --- scrollable body container
+  this->scroll_area = new NaturalScrollArea(this);
+  this->scroll_area->setObjectName("graphConfigScroll");
+  this->scroll_area->setWidgetResizable(true);
+  this->scroll_area->setFrameShape(QFrame::NoFrame);
+  this->scroll_area->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+  this->scroll_area->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+
+  auto *container = new QWidget();
+  container->setObjectName("graphConfigContainer");
+  container->setAttribute(Qt::WA_TranslucentBackground);
+
+  auto *content_layout = new QVBoxLayout(container);
+  content_layout->setContentsMargins(0, 0, 0, 0);
+  content_layout->setSpacing(4);
+
   const auto add_section = [&](meta::AttributeContainer &c, QLabel *note)
   {
     QWidget *widget = meta::qt::render(c, options, this);
     widget->setAttribute(Qt::WA_TranslucentBackground);
-    this->body()->addWidget(widget);
+    content_layout->addWidget(widget);
     this->rows.push_back(widget);
     if (note)
     {
       note->setWordWrap(true);
       note->setStyleSheet(note_css);
-      this->body()->addWidget(note);
+      content_layout->addWidget(note);
     }
   };
 
@@ -218,6 +241,32 @@ GraphConfigDialog::GraphConfigDialog(GraphConfig &config, QWidget *parent)
               new QLabel("These change how the graph is computed (tiles, threads, the "
                          "GPU), never the result itself.",
                          this));
+
+  this->scroll_area->setWidget(container);
+  container->installEventFilter(this->scroll_area);
+  this->body()->addWidget(this->scroll_area);
+
+  // --- scrollbar style
+  const auto &colors = HSD_CTX.app_settings.colors;
+  const QString
+      scroll_css = QString("QScrollArea#graphConfigScroll QScrollBar:vertical {"
+                           "  width: 10px; background: transparent; margin: 4px 2px 4px "
+                           "0px; border: none; }"
+                           "QScrollArea#graphConfigScroll QScrollBar::handle:vertical {"
+                           "  background: %1; border-radius: 4px; min-height: 30px; }"
+                           "QScrollArea#graphConfigScroll "
+                           "QScrollBar::handle:vertical:hover { background: %2; }"
+                           "QScrollArea#graphConfigScroll QScrollBar::add-line:vertical,"
+                           "QScrollArea#graphConfigScroll QScrollBar::sub-line:vertical "
+                           "{ height: 0px; border: none; }"
+                           "QScrollArea#graphConfigScroll QScrollBar::add-page:vertical,"
+                           "QScrollArea#graphConfigScroll QScrollBar::sub-page:vertical "
+                           "{ background: transparent; }")
+                       .arg(mix_colors(colors.bg_primary, colors.text_primary, 0.25)
+                                .name(),
+                            mix_colors(colors.bg_primary, colors.text_primary, 0.45)
+                                .name());
+  this->setStyleSheet(this->styleSheet() + scroll_css);
 
   // the size the choices add up to, live
   for (const char *key : {"aspect", "resolution", "height"})
@@ -284,6 +333,12 @@ void GraphConfigDialog::accept()
                        this->config.overlap);
 
   MessageDialog::accept();
+}
+
+void GraphConfigDialog::showEvent(QShowEvent *event)
+{
+  clamp_dialog_scroll_height(this->scroll_area, this);
+  MessageDialog::showEvent(event);
 }
 
 } // namespace hesiod

@@ -1,6 +1,8 @@
 /* Copyright (c) 2025 Otto Link. Distributed under the terms of the GNU General
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
+#include <format>
+
 #include <algorithm>
 #include <utility>
 
@@ -12,13 +14,14 @@
 #include <QVBoxLayout>
 
 #include "hesiod/app/hesiod_application.hpp"
-#include "hesiod/gui/widgets/graph_node_widget.hpp"
-#include "hesiod/gui/widgets/gui_utils.hpp"
-#include "hesiod/gui/widgets/icon_check_box.hpp"
+#include "hesiod/gui/widgets/controls/icon_check_box.hpp"
+#include "hesiod/gui/widgets/graph/graph_node_widget.hpp"
+#include "hesiod/gui/widgets/utils/gui_utils.hpp"
 #include "hesiod/gui/widgets/viewers/viewer.hpp"
 #include "hesiod/gui/widgets/viewers/viewer_3d.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/graph/graph_node.hpp"
+#include "hesiod/profiling.hpp"
 
 namespace hesiod
 {
@@ -271,6 +274,9 @@ BaseNode *Viewer::safe_get_node()
 
 void Viewer::set_current_node_id(const std::string &new_id)
 {
+  HSD_PROFILE_ZONE("Viewer::set_current_node_id");
+  HSD_PROFILE_TEXT(
+      std::format("viewer={:p} node={}", static_cast<const void *>(this), new_id));
   Logger::log()->trace("Viewer::set_current_node_id: {}", new_id);
 
   // store current view state
@@ -303,7 +309,12 @@ void Viewer::set_current_node_id(const std::string &new_id)
     {
       this->post_update_conn = p_node->post_update_event.subscribe(
           [this](gnode::Node &)
-          { QMetaObject::invokeMethod(this, "update_renderer", Qt::QueuedConnection); });
+          {
+            HSD_PROFILE_ZONE("Viewer::queue_renderer_update");
+            // This callback can run on the graph worker: do not read GUI state.
+            HSD_PROFILE_TEXT(std::format("viewer={:p}", static_cast<const void *>(this)));
+            QMetaObject::invokeMethod(this, "update_renderer", Qt::QueuedConnection);
+          });
     }
   }
 
@@ -506,6 +517,10 @@ void Viewer::update_renderer()
 
 void Viewer::update_widgets()
 {
+  HSD_PROFILE_ZONE("Viewer::update_widgets");
+  HSD_PROFILE_TEXT(std::format("viewer={:p} node={}",
+                               static_cast<const void *>(this),
+                               this->current_node_id));
   Logger::log()->trace("Viewer::update_widgets");
 
   // --- update pinned node button

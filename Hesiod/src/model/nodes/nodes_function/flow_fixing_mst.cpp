@@ -92,7 +92,7 @@ void compute_flow_fixing_mst_node(BaseNode &node)
   const auto nx                   = float(p_in->shape.x);
   const auto seed                 = static_cast<uint>(node.val<int>(A_SEED));
   const auto control_points_count = static_cast<size_t>(node.val<int>(A_CONTROL_POINTS_COUNT));
-  const auto riverbed_talus      = node.val<float>(A_RIVERBED_SLOPE) / std::max(1.f, nx);
+  const auto riverbed_talus      = node.val_talus(A_RIVERBED_SLOPE);
   const auto elevation_ratio     = node.val<float>(A_ELEVATION_RATIO);
   const auto distance_exponent   = node.val<float>(A_DISTANCE_EXPONENT);
   const auto upward_penalization = node.val<float>(A_UPWARD_PENALIZATION);

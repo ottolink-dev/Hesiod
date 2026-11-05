@@ -1,0 +1,7 @@
+# Preserve original measurement bytes, including CSV CRLF and log whitespace.
+* -text
+*.csv -text whitespace=cr-at-eol linguist-generated=true
+*.json -text linguist-generated=true
+*.log -text -whitespace linguist-generated=true
+*.gz -text linguist-generated=true
+SHA256SUMS -text linguist-generated=true

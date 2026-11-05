@@ -177,6 +177,15 @@ Start the main executable:
 bin/./hesiod
 ```
 
+## Profiling with Tracy
+
+Optional Tracy instrumentation and repeatable node sweeps are documented in the
+[profiling guide](docs/profiling/README.md). Profiling is disabled by default;
+normal builds do not require Tracy.
+
+The [Day 1 baseline](docs/profiling/baselines/2026-10-08/README.md) preserves the
+initial results, CSV, fixtures, provenance and known coverage gaps for issue #783.
+
 ## Dependencies and module structures
 
 ```mermaid

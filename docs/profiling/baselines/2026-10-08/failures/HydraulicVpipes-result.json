@@ -1,0 +1,23 @@
+{
+  "case": "HydraulicVpipes",
+  "target": "HydraulicVpipes",
+  "size": 512,
+  "repeat": 1,
+  "mode": "tracy",
+  "command": [
+    "/home/barrulus/dev/Hesiod/build/tracy/overnight/bin/hesiod",
+    "--batch=/home/barrulus/dev/Hesiod/build/tracy/overnight/fixtures/HydraulicVpipes.hsd",
+    "--shape=512,512",
+    "--tiling=1,1",
+    "--overlap=0"
+  ],
+  "graph_sha256": "8f18e7b5339db4def155c2acb2108854b79faa36c254cb187bfee30971d74c20",
+  "status": "failed",
+  "app_exit": 0,
+  "capture_exit": 0,
+  "known_single_tile_noop_warnings": 0,
+  "compiled_setting_defaults_used": 59,
+  "error": "application logged an error; inspect app.log",
+  "failure_kind": "ValueError",
+  "wall_seconds_including_profiler_shutdown": 0.730621863003762
+}

@@ -1,0 +1,10 @@
+{
+  "description": "Issue 783 measurement pilot: deterministic CPU input, no preview/export nodes. Defaults are tied to the recorded source and binary hashes.",
+  "source": {"type": "GaussianPulse", "values": {"radius": 0.2, "center": [0.5, 0.5]}},
+  "cases": [
+    {"name": "source", "target": "GaussianPulse", "reason": "Input-only baseline"},
+    {"name": "abs", "target": "Abs", "values": {"vshift": 0.5}, "reason": "Configurable tiled CPU control"},
+    {"name": "distance", "target": "DistanceTransform", "values": {"threshold": 0.5, "transform_type": 1, "reverse_input": false}, "reason": "Forced single-array CPU approximate transform; other variants remain untested"},
+    {"name": "normal", "target": "HeightmapToNormalMap", "reason": "Explicit gather/scatter and multiple channels"}
+  ]
+}

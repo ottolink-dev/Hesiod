@@ -38,33 +38,35 @@
 #include "highmap/opencl/gpu_opencl.hpp"
 #include "highmap/openmp.hpp"
 
+#include "gnode/graph_worker.hpp"
 #include "hesiod/app/bundle_runtime.hpp"
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/app/ui_scale.hpp"
 #include "hesiod/cli/batch_mode.hpp"
 #include "hesiod/gui/project_ui.hpp"
-#include "hesiod/gui/widgets/about_dialog.hpp"
-#include "hesiod/gui/widgets/batch_export_progress_dialog.hpp"
-#include "hesiod/gui/widgets/color_picker_dialog.hpp"
-#include "hesiod/gui/widgets/documentation_popup.hpp"
-#include "hesiod/gui/widgets/error_dialog.hpp"
-#include "hesiod/gui/widgets/example_selector_dialog.hpp"
-#include "hesiod/gui/widgets/fractional_repaint_filter.hpp"
+#include "hesiod/gui/undo/undo_manager.hpp"
+#include "hesiod/gui/widgets/containers/graph_manager_widget.hpp"
+#include "hesiod/gui/widgets/containers/graph_tabs_widget.hpp"
+#include "hesiod/gui/widgets/dialogs/about_dialog.hpp"
+#include "hesiod/gui/widgets/dialogs/batch_export_progress_dialog.hpp"
+#include "hesiod/gui/widgets/dialogs/color_picker_dialog.hpp"
+#include "hesiod/gui/widgets/dialogs/documentation_popup.hpp"
+#include "hesiod/gui/widgets/dialogs/error_dialog.hpp"
+#include "hesiod/gui/widgets/dialogs/example_selector_dialog.hpp"
+#include "hesiod/gui/widgets/dialogs/message_dialog.hpp"
+#include "hesiod/gui/widgets/dialogs/node_inspector_widget.hpp"
+#include "hesiod/gui/widgets/dialogs/project_settings_dialog.hpp"
+#include "hesiod/gui/widgets/dialogs/splash_screen.hpp"
 #include "hesiod/gui/widgets/graph_config_widgets/bake_config_dialog.hpp"
-#include "hesiod/gui/widgets/graph_manager_widget.hpp"
-#include "hesiod/gui/widgets/graph_tabs_widget.hpp"
-#include "hesiod/gui/widgets/gui_utils.hpp"
-#include "hesiod/gui/widgets/menu_chrome.hpp"
-#include "hesiod/gui/widgets/message_dialog.hpp"
-#include "hesiod/gui/widgets/project_settings_dialog.hpp"
-#include "hesiod/gui/widgets/splash_screen.hpp"
-#include "hesiod/gui/widgets/tool_tip_blocker.hpp"
-#include "hesiod/gui/widgets/window_chrome.hpp"
+#include "hesiod/gui/widgets/shell/menu_chrome.hpp"
+#include "hesiod/gui/widgets/shell/window_chrome.hpp"
+#include "hesiod/gui/widgets/utils/fractional_repaint_filter.hpp"
+#include "hesiod/gui/widgets/utils/gui_utils.hpp"
+#include "hesiod/gui/widgets/utils/tool_tip_blocker.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/constants/color_gradient.hpp"
 #include "hesiod/model/graph/graph_manager.hpp"
 #include "hesiod/model/graph/graph_node.hpp"
-#include "hesiod/model/graph/graph_worker.hpp"
 #include "hesiod/model/utils.hpp"
 
 namespace fs = std::filesystem;
@@ -522,19 +524,31 @@ void HesiodApplication::load_project_model_and_ui(const std::string &fname,
     this->main_window->setCentralWidget(this->project_ui->get_widget());
 
   // reset other visibility state
+#if HSD_ENABLE_GRAPH_MANAGER
   this->project_ui->get_graph_manager_widget_ref()->setVisible(
       this->context.app_settings.window.show_graph_manager_widget);
+#endif
 
+#if HSD_ENABLE_TEXTURE_DOWNLOADER
   if (this->context.app_settings.interface.enable_texture_downloader)
   {
     this->project_ui->get_texture_downloader_ref()->setVisible(
         this->context.app_settings.window.show_texture_downloader_widget);
   }
+#endif
 
+#if HSD_ENABLE_HEIGHTMAPPER
   if (this->context.app_settings.interface.enable_heightmapper_widget)
   {
     this->project_ui->get_heightmapper_widget_ref()->setVisible(
         this->context.app_settings.window.show_heightmapper_widget);
+  }
+#endif
+
+  if (this->project_ui->get_node_inspector_widget_ref())
+  {
+    this->project_ui->get_node_inspector_widget_ref()->setVisible(
+        this->context.app_settings.window.show_node_inspector);
   }
 
   // --- connections
@@ -590,6 +604,9 @@ void HesiodApplication::load_project_model_and_ui(const std::string &fname,
   // in Viewer3D::json_from) through set_viewer_render_type, which also updates
   // viewer_render_type, so this line never puts a stale mode back.
   this->set_viewer_render_type(this->viewer_render_type);
+
+  if (!blank_startup)
+    this->context.project_model->get_graph_manager_ref()->update();
 
   if (opened_at_1k > 0)
     this->notify(std::format("Project loaded at 1K resolution ({} graph{} lowered by "
@@ -1700,6 +1717,19 @@ void HesiodApplication::setup_menu_bar()
   quit->setIcon(HSD_ICON("menu_quit"));
   file_menu->addAction(quit);
 
+  // --- edit
+
+  QMenu *edit_menu = add_menu(this->main_window->menu_bar(), "&Edit");
+
+  QUndoStack *undo_stack = UndoManager::instance().get_stack();
+  QAction    *undo_action = undo_stack->createUndoAction(this, tr("&Undo"));
+  undo_action->setShortcut(QKeySequence::Undo);
+  edit_menu->addAction(undo_action);
+
+  QAction *redo_action = undo_stack->createRedoAction(this, tr("&Redo"));
+  redo_action->setShortcuts({QKeySequence::Redo, QKeySequence(tr("Ctrl+Y"))});
+  edit_menu->addAction(redo_action);
+
   // --- project
 
   QMenu *project_menu = add_menu(this->main_window->menu_bar(), "&Project");
@@ -1802,10 +1832,13 @@ void HesiodApplication::setup_menu_bar()
 
   QMenu *view_menu = add_menu(this->main_window->menu_bar(), "&View");
 
+#if HSD_ENABLE_GRAPH_MANAGER
   auto *show_layout_manager = new QAction("Graph Layout Manager", this);
   show_layout_manager->setIcon(HSD_ICON("menu_graph_manager"));
   view_menu->addAction(show_layout_manager);
+#endif
 
+#if HSD_ENABLE_TEXTURE_DOWNLOADER
   // texture dld
   auto *show_texture_downloader = new QAction("Texture Downloader", this);
   show_texture_downloader->setIcon(HSD_ICON("menu_texture_downloader"));
@@ -1814,46 +1847,75 @@ void HesiodApplication::setup_menu_bar()
     view_menu->addSeparator();
     view_menu->addAction(show_texture_downloader);
   }
+#endif
 
+#if HSD_ENABLE_HEIGHTMAPPER
   auto *show_heightmapper_widget = new QAction("Tangram Heightmapper", this);
   show_heightmapper_widget->setIcon(HSD_ICON("menu_heightmapper"));
   if (this->context.app_settings.interface.enable_heightmapper_widget)
   {
     view_menu->addAction(show_heightmapper_widget);
   }
+#endif
+
+  auto *show_node_inspector = new QAction("Node Inspector", this);
+  show_node_inspector->setIcon(HSD_ICON("info"));
+  view_menu->addAction(show_node_inspector);
 
   // window entries show their icon at full strength only while it is open
-  this->connect(
-      view_menu,
-      &QMenu::aboutToShow,
-      this,
-      [this, show_layout_manager, show_texture_downloader, show_heightmapper_widget]()
-      {
-        auto set_icon = [](QAction *action, const char *name, QWidget *window)
-        {
-          QIcon icon = HSD_ICON(name);
-          if (!window || !window->isVisible())
-          {
-            QPixmap faded(64, 64);
-            faded.fill(Qt::transparent);
-            QPainter painter(&faded);
-            painter.setOpacity(0.35);
-            painter.drawPixmap(0, 0, icon.pixmap(64, 64));
-            painter.end();
-            icon = QIcon(faded);
-          }
-          action->setIcon(icon);
-        };
-        set_icon(show_layout_manager,
-                 "menu_graph_manager",
-                 this->project_ui->get_graph_manager_widget_ref());
-        set_icon(show_texture_downloader,
-                 "menu_texture_downloader",
-                 this->project_ui->get_texture_downloader_ref());
-        set_icon(show_heightmapper_widget,
-                 "menu_heightmapper",
-                 this->project_ui->get_heightmapper_widget_ref());
-      });
+  this->connect(view_menu,
+                &QMenu::aboutToShow,
+                this,
+                [this
+#if HSD_ENABLE_GRAPH_MANAGER
+                 ,
+                 show_layout_manager
+#endif
+#if HSD_ENABLE_TEXTURE_DOWNLOADER
+                 ,
+                 show_texture_downloader
+#endif
+#if HSD_ENABLE_HEIGHTMAPPER
+                 ,
+                 show_heightmapper_widget
+#endif
+                 ,
+                 show_node_inspector]()
+                {
+                  auto set_icon = [](QAction *action, const char *name, QWidget *window)
+                  {
+                    QIcon icon = HSD_ICON(name);
+                    if (!window || !window->isVisible())
+                    {
+                      QPixmap faded(64, 64);
+                      faded.fill(Qt::transparent);
+                      QPainter painter(&faded);
+                      painter.setOpacity(0.35);
+                      painter.drawPixmap(0, 0, icon.pixmap(64, 64));
+                      painter.end();
+                      icon = QIcon(faded);
+                    }
+                    action->setIcon(icon);
+                  };
+#if HSD_ENABLE_GRAPH_MANAGER
+                  set_icon(show_layout_manager,
+                           "menu_graph_manager",
+                           this->project_ui->get_graph_manager_widget_ref());
+#endif
+#if HSD_ENABLE_TEXTURE_DOWNLOADER
+                  set_icon(show_texture_downloader,
+                           "menu_texture_downloader",
+                           this->project_ui->get_texture_downloader_ref());
+#endif
+#if HSD_ENABLE_HEIGHTMAPPER
+                  set_icon(show_heightmapper_widget,
+                           "menu_heightmapper",
+                           this->project_ui->get_heightmapper_widget_ref());
+#endif
+                  set_icon(show_node_inspector,
+                           "info",
+                           this->project_ui->get_node_inspector_widget_ref());
+                });
 
   view_menu->addSeparator();
 
@@ -1980,6 +2042,7 @@ void HesiodApplication::setup_menu_bar()
                 this,
                 &HesiodApplication::on_toggle_node_library_pan);
 
+#if HSD_ENABLE_GRAPH_MANAGER
   this->connect(
       show_layout_manager,
       &QAction::triggered,
@@ -1991,7 +2054,9 @@ void HesiodApplication::setup_menu_bar()
         this->project_ui->get_graph_manager_widget_ref()->setVisible(!state);
         show_layout_manager->setChecked(!state);
       });
+#endif
 
+#if HSD_ENABLE_TEXTURE_DOWNLOADER
   if (this->context.app_settings.interface.enable_texture_downloader)
   {
     this->connect(
@@ -2006,7 +2071,9 @@ void HesiodApplication::setup_menu_bar()
           show_texture_downloader->setChecked(!state);
         });
   }
+#endif
 
+#if HSD_ENABLE_HEIGHTMAPPER
   if (this->context.app_settings.interface.enable_heightmapper_widget)
   {
     this->connect(
@@ -2022,6 +2089,21 @@ void HesiodApplication::setup_menu_bar()
           show_heightmapper_widget->setChecked(!state);
         });
   }
+#endif
+
+  this->connect(show_node_inspector,
+                &QAction::triggered,
+                this,
+                [this, show_node_inspector]()
+                {
+                  if (auto *inspector = this->project_ui->get_node_inspector_widget_ref())
+                  {
+                    bool state = inspector->isVisible();
+                    this->context.app_settings.window.show_node_inspector = !state;
+                    inspector->setVisible(!state);
+                    show_node_inspector->setChecked(!state);
+                  }
+                });
 
   // graphs
   this->connect(

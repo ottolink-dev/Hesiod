@@ -114,12 +114,11 @@ void compute_hydraulic_schott_node(BaseNode &node)
   const auto flow_routing_exponent  = node.val<float>(A_FLOW_ROUTING_EXPONENT);
   const auto thermal_weight         = node.val<float>(A_THERMAL_WEIGHT);
   const auto deposition_weight      = node.val<float>(A_DEPOSITION_WEIGHT);
-  const auto talus_global           = node.val<float>(A_TALUS);
   const auto scale_talus            = node.val<bool>(A_SCALE_TALUS);
   // clang-format on
 
   const int   iterations = int(duration * p_out->shape.x);
-  const float talus      = talus_global / float(p_out->shape.x);
+  const float talus      = node.val_talus(A_TALUS);
 
   // --- Talus map
 

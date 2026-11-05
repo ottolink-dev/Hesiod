@@ -9,10 +9,10 @@
 
 #include "highmap/openmp.hpp"
 
+#include "gnode/graph_worker.hpp"
 #include "hesiod/app/app_context.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/graph/graph_manager.hpp"
-#include "hesiod/model/graph/graph_worker.hpp"
 #include "hesiod/model/utils.hpp"
 
 namespace hesiod
@@ -26,10 +26,10 @@ void AppContext::initialize()
   this->load_node_documentation();
 
   // initialize default GraphWorker hooks
-  GraphWorker::enabled = [this]()
+  gnode::GraphWorker::enabled = [this]()
   { return !this->headless && this->app_settings.node_editor.async_update; };
 
-  GraphWorker::post_to_caller = [](std::function<void()> fct)
+  gnode::GraphWorker::post_to_caller = [](std::function<void()> fct)
   {
     if (qApp)
       QMetaObject::invokeMethod(qApp, std::move(fct), Qt::QueuedConnection);
@@ -37,7 +37,7 @@ void AppContext::initialize()
       fct();
   };
 
-  GraphWorker::thread_setup = [this]()
+  gnode::GraphWorker::thread_setup = [this]()
   { hmap::init_openmp(this->app_settings.global.omp_num_threads); };
 }
 
@@ -162,11 +162,16 @@ void AppContext::new_project()
   this->project_model = std::make_unique<ProjectModel>();
 
   // the graphs of an interactive session are updated in the background
-  GraphWorker::enabled = [this]()
+  gnode::GraphWorker::enabled = [this]()
   { return !this->headless && this->app_settings.node_editor.async_update; };
-  GraphWorker::post_to_caller = [](std::function<void()> fct)
-  { QMetaObject::invokeMethod(qApp, std::move(fct), Qt::QueuedConnection); };
-  GraphWorker::thread_setup = [this]()
+  gnode::GraphWorker::post_to_caller = [](std::function<void()> fct)
+  {
+    if (qApp)
+      QMetaObject::invokeMethod(qApp, std::move(fct), Qt::QueuedConnection);
+    else
+      fct();
+  };
+  gnode::GraphWorker::thread_setup = [this]()
   { hmap::init_openmp(this->app_settings.global.omp_num_threads); };
 }
 
@@ -174,7 +179,7 @@ void AppContext::reset_settings()
 {
   // reset to default values
   this->app_settings = AppSettings();
-  this->style_settings = StyleSettings();
+  this->node_graph_palette = NodeGraphColorPalette();
 }
 
 void AppContext::restore_state()
@@ -218,11 +223,13 @@ void AppContext::settings_json_from(nlohmann::json const &json)
   else
     Logger::log()->error("AppContext::settings_json_from: could not parse app_settings");
 
-  if (json.contains("style_settings"))
-    this->style_settings.json_from(json["style_settings"]);
+  if (json.contains("node_graph_palette"))
+    this->node_graph_palette.json_from(json["node_graph_palette"]);
+  else if (json.contains("style_settings"))
+    this->node_graph_palette.json_from(json["style_settings"]);
   else
     Logger::log()->error(
-        "AppContext::settings_json_from: could not parse style_settings");
+        "AppContext::settings_json_from: could not parse node_graph_palette");
 }
 
 nlohmann::json AppContext::settings_json_to() const
@@ -231,7 +238,7 @@ nlohmann::json AppContext::settings_json_to() const
 
   nlohmann::json json;
   json["app_settings"] = this->app_settings.json_to();
-  json["style_settings"] = this->style_settings.json_to();
+  json["node_graph_palette"] = this->node_graph_palette.json_to();
   return json;
 }
 

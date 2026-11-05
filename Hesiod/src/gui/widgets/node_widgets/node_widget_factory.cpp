@@ -1,12 +1,120 @@
 /* Copyright (c) 2025 Otto Link. Distributed under the terms of the GNU General
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
-#include "hesiod/gui/widgets/node_widget.hpp"
+#include "hesiod/app/hesiod_application.hpp"
+#include "hesiod/gui/widgets/graph/graph_node_widget.hpp"
+#include "hesiod/gui/widgets/node_widgets/node_widget.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/utils.hpp"
 
 namespace hesiod
 {
+
+void apply_node_status_icons(const std::string      &node_type,
+                             std::weak_ptr<BaseNode> model,
+                             GraphNodeWidget        *p_gnw,
+                             const std::string      &node_id)
+{
+  if (!p_gnw)
+    return;
+
+  auto *gfx_node = p_gnw->get_graphics_node_by_id(node_id);
+  if (!gfx_node)
+    return;
+
+  std::vector<gngui::GraphicsNode::StatusIcon> icons;
+
+  bool is_wip = false;
+  bool is_deprecated = false;
+
+  if (auto m = model.lock())
+  {
+    std::string cat = m->get_category();
+
+    if (cat.find("WIP") != std::string::npos)
+      is_wip = true;
+
+    if (cat.find("DEPRECATED") != std::string::npos)
+      is_deprecated = true;
+  }
+
+  static const std::vector<std::string> wip_nodes = {"CoastalErosionDiffusion",
+                                                     "HydraulicProcedural",
+                                                     "HydraulicSaleve",
+                                                     "Island",
+                                                     "MountainCone",
+                                                     "MountainInselberg",
+                                                     "MountainStump",
+                                                     "MountainTibesti",
+                                                     "Strata",
+                                                     "Recurve",
+                                                     "Rifts",
+                                                     "ShatteredPeak",
+                                                     "WaterDepthFromMask"};
+
+  if (contains<std::string>(wip_nodes, node_type))
+    is_wip = true;
+
+  static const std::vector<std::string> not_tileable_nodes = {
+      "Compare",
+      "Debug",
+      "DistanceTransform", // TODO
+      "ExportAsCubemap",
+      "ExportAsset",
+      "ExportHeightmap",
+      "ExportScene",
+      "ExportTexture",
+      "ExportTiled",
+      "FloodingFromBoundaries", // TODO
+      "FloodingFromPoint",      // TODO
+      "FloodingLakeSystem",     // TODO
+      "FlowSimulation",         // TODO
+      "FlowSimulationViscous",  // TODO
+      "FlowStream",             // TODO
+      "ImportHeightmap",
+      "ImportTexture",
+      "KmeansClustering2",
+      "KmeansClustering3",
+      "MakePeriodic",          // TODO
+      "MakePeriodicStitching", // TODO
+      "Mudslide",              // TODO
+      "Preview",
+      "QuiltingBlend",          // TODO
+      "QuiltingExpand",         // TODO
+      "QuiltingShuffle",        // TODO
+      "RockSimulation",         // TODO
+      "Rotate",                 // TODO
+      "SnowSimulation",         // TODO
+      "TextureQuiltingExpand",  // TODO
+      "TextureQuiltingShuffle", // TODO
+      "TextureUvChecker",       // TODO
+      "Translate",              // TODO
+      "Zoom"                    // TODO
+  };
+
+  const bool is_not_tileable = contains<std::string>(not_tileable_nodes, node_type);
+
+  if (is_deprecated)
+  {
+    icons.push_back(
+        {.icon = HSD_ICON("event_busy"), .tooltip = "Deprecated: this node is obsolete"});
+  }
+
+  if (is_wip)
+  {
+    icons.push_back({.icon = HSD_ICON("construction"),
+                     .tooltip = "Work in progress: node subject to change"});
+  }
+
+  if (is_not_tileable)
+  {
+    icons.push_back({.icon = HSD_ICON("grid_off"),
+                     .tooltip = "This node requires data to be gathered in memory and "
+                                "cannot efficiently process very large terrains."});
+  }
+
+  gfx_node->set_status_icons(icons);
+}
 
 QWidget *node_widget_factory(const std::string        &node_type,
                              std::weak_ptr<BaseNode>   model,
@@ -14,36 +122,6 @@ QWidget *node_widget_factory(const std::string        &node_type,
                              QWidget                  *parent)
 {
   std::string msg = "";
-
-  // automatic msg for WIP and DEPRECATED categories
-  if (auto m = model.lock())
-  {
-    std::string cat = m->get_category();
-
-    if (cat.find("WIP") != std::string::npos)
-      msg = "Work in progress\nNode subject to change";
-
-    if (cat.find("DEPRECATED") != std::string::npos)
-      msg = "!!! Deprecated !!!";
-  }
-
-  // manually adjust msg for some
-  std::vector<std::string> wip_nodes = {"CoastalErosionDiffusion",
-                                        "HydraulicProcedural",
-                                        "HydraulicSaleve",
-                                        "Island",
-                                        "MountainCone",
-                                        "MountainInselberg",
-                                        "MountainStump",
-                                        "MountainTibesti",
-                                        "Strata",
-                                        "Recurve",
-                                        "Rifts",
-                                        "ShatteredPeak",
-                                        "WaterDepthFromMask"};
-
-  if (contains<std::string>(wip_nodes, node_type))
-    msg = "Work in progress\nNode subject to change";
 
   // create node
   if (node_type.starts_with("Export"))

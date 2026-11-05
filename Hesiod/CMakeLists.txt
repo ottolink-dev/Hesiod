@@ -89,6 +89,7 @@ target_compile_features(hesiod_core PUBLIC cxx_std_20)
 target_link_libraries(
   hesiod_core
   PUBLIC hesiod_options
+         hesiod_tracy
          hesiod_platform
          hesiod_qt_logging
          hesiod_git_version
@@ -125,6 +126,18 @@ else()
   message(
     STATUS
       "Hesiod: Qt6::GuiPrivate not found, interface scale applies on restart")
+endif()
+
+if(HESIOD_ENABLE_GRAPH_MANAGER)
+  target_compile_definitions(hesiod_core PUBLIC HSD_ENABLE_GRAPH_MANAGER=1)
+endif()
+
+if(HESIOD_ENABLE_TEXTURE_DOWNLOADER)
+  target_compile_definitions(hesiod_core PUBLIC HSD_ENABLE_TEXTURE_DOWNLOADER=1)
+endif()
+
+if(HESIOD_ENABLE_HEIGHTMAPPER)
+  target_compile_definitions(hesiod_core PUBLIC HSD_ENABLE_HEIGHTMAPPER=1)
 endif()
 
 # ------------------------------
@@ -186,6 +199,20 @@ if(HESIOD_ENABLE_TESTS)
   set_tests_properties(
     graph_editor PROPERTIES WORKING_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}
                             ENVIRONMENT "QT_QPA_PLATFORM=offscreen")
+
+  add_executable(profile_highmap
+                 ${CMAKE_SOURCE_DIR}/tests/profiling/highmap_workload.cpp)
+  set_target_properties(profile_highmap PROPERTIES AUTOMOC OFF)
+  target_include_directories(profile_highmap
+                             PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+  target_link_libraries(profile_highmap PRIVATE highmap hesiod_tracy)
+  add_test(NAME profiling_highmap COMMAND profile_highmap)
+
+  # Explicit desktop workload; requires a real OpenGL display, not offscreen
+  # CTest.
+  add_executable(profile_viewer
+                 ${CMAKE_SOURCE_DIR}/tests/gui/profile_viewer.cpp)
+  target_link_libraries(profile_viewer PRIVATE hesiod_core Qt6::Test)
 
   add_executable(test_autosave ${CMAKE_SOURCE_DIR}/tests/gui/test_autosave.cpp)
   add_dependencies(test_autosave test_model_headers)

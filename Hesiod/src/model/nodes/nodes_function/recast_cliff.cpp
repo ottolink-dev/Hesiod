@@ -116,7 +116,7 @@ void compute_recast_cliff_node(BaseNode &node)
 
   // --- Params
 
-  const auto talus      = node.val<float>(A_TALUS_GLOBAL) / (float)p_out->shape.x;
+  const auto talus      = node.val_talus(A_TALUS_GLOBAL);
   const auto ir         = node.val_pixel_radius(A_RADIUS, 0);
   const auto amplitude  = node.val<float>(A_AMPLITUDE);
   const auto gain       = node.val<float>(A_GAIN);

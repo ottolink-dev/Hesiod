@@ -73,7 +73,7 @@ void compute_valley_fill_node(BaseNode &node)
 
   // --- prepapre talus field
 
-  float talus      = node.val<float>(A_TALUS_GLOBAL) / (float)p_out->shape.x;
+  float talus      = node.val_talus(A_TALUS_GLOBAL);
   int   iterations = int(node.val<float>(A_DURATION) * p_out->shape.x);
 
   hmap::VirtualArray talus_map = hmap::VirtualArray(CONFIG(node));

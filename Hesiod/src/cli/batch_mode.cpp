@@ -5,12 +5,13 @@
 
 #include <QTimer>
 
+#include "gnode/graph_worker.hpp"
 #include "hesiod/app/bundle_runtime.hpp"
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/cli/batch_mode.hpp"
 #include "hesiod/gui/project_ui.hpp"
-#include "hesiod/gui/widgets/graph_tabs_widget.hpp"
-#include "hesiod/gui/widgets/gui_utils.hpp"
+#include "hesiod/gui/widgets/containers/graph_tabs_widget.hpp"
+#include "hesiod/gui/widgets/utils/gui_utils.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/graph/graph_manager.hpp"
 #include "hesiod/model/graph/graph_node.hpp"

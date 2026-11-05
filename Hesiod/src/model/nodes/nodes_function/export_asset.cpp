@@ -16,6 +16,7 @@
 #include "hesiod/model/nodes/node_factory.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 #include "hesiod/model/utils.hpp"
+#include "hesiod/profiling.hpp"
 
 namespace hesiod
 {
@@ -150,7 +151,11 @@ void compute_export_asset_node(BaseNode &node)
 
   // --- Convert elevation
 
-  hmap::Array array = p_elev->to_array(node.cfg().cm_cpu);
+  hmap::Array array = [&]
+  {
+    HSD_PROFILE_ZONE("ExportAsset::elevation_to_array");
+    return p_elev->to_array(node.cfg().cm_cpu);
+  }();
   if (flip_x)
     hmap::flip_lr(array);
   if (flip_y)
@@ -162,6 +167,7 @@ void compute_export_asset_node(BaseNode &node)
 
   if (p_color)
   {
+    HSD_PROFILE_ZONE("ExportAsset::texture_export");
     texture_fname   = fname + ".png";
     hmap::Texture t = p_color->to_texture(p_color->shape, node.cfg().cm_cpu);
     if (flip_x)
@@ -175,7 +181,11 @@ void compute_export_asset_node(BaseNode &node)
 
   std::string nmap_fname = fname + "_nmap.png";
 
-  hmap::Texture nvec = hmap::normal_map(array);
+  hmap::Texture nvec = [&]
+  {
+    HSD_PROFILE_ZONE("ExportAsset::normal_map");
+    return hmap::normal_map(array);
+  }();
 
   hmap::Array nx = nvec.channel(0);
   hmap::Array ny = nvec.channel(1);
@@ -183,12 +193,16 @@ void compute_export_asset_node(BaseNode &node)
   hmap::Array alpha(node.cfg().shape, 1.f);
 
   hmap::VirtualTexture normal_map(CONFIG_TEX(node));
-  normal_map.from_arrays({&nx, &ny, &nz, &alpha}, node.cfg().cm_cpu);
+  {
+    HSD_PROFILE_ZONE("ExportAsset::normal_map_to_virtual");
+    normal_map.from_arrays({&nx, &ny, &nz, &alpha}, node.cfg().cm_cpu);
+  }
 
   // --- Blend detail normal map
 
   if (p_nmap)
   {
+    HSD_PROFILE_ZONE("ExportAsset::blend_normal_map");
     hmap::Texture t_nmap = p_nmap->to_texture(p_nmap->shape, node.cfg().cm_cpu);
     if (flip_x)
       hmap::flip_lr(t_nmap);
@@ -208,12 +222,16 @@ void compute_export_asset_node(BaseNode &node)
                          blending_method);
   }
 
-  normal_map.to_png(nmap_fname, node.cfg().cm_cpu, CV_16U);
+  {
+    HSD_PROFILE_ZONE("ExportAsset::normal_map_write");
+    normal_map.to_png(nmap_fname, node.cfg().cm_cpu, CV_16U);
+  }
 
   // --- Export asset
 
   if (p_mask)
   {
+    HSD_PROFILE_ZONE("ExportAsset::masked_export");
     hmap::Array mask = p_mask->to_array(node.cfg().cm_cpu);
     if (flip_x)
       hmap::flip_lr(mask);
@@ -232,6 +250,7 @@ void compute_export_asset_node(BaseNode &node)
   }
   else
   {
+    HSD_PROFILE_ZONE("ExportAsset::export");
     hmap::export_asset(fname,
                        array,
                        mesh_type,

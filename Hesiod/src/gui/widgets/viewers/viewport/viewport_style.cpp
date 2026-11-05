@@ -5,8 +5,9 @@
 #include "meta_qt/ui/theme.hpp"
 
 #include "hesiod/app/hesiod_application.hpp"
-#include "hesiod/gui/widgets/gui_utils.hpp"
-#include "hesiod/gui/widgets/properties_panel_design.hpp"
+#include "hesiod/gui/theme/theme.hpp"
+#include "hesiod/gui/widgets/node_widgets/properties_panel_design.hpp"
+#include "hesiod/gui/widgets/utils/gui_utils.hpp"
 #include "hesiod/gui/widgets/viewers/viewport/viewport_style.hpp"
 
 namespace hesiod::viewport
@@ -88,27 +89,30 @@ QString tool_title(int tool)
 // node settings do
 const meta::qt::Theme &viewport_theme()
 {
-  static const meta::qt::Theme theme = []()
-  {
-    meta::qt::Theme t = *properties_panel_design().theme;
-    t.group_accents = {{"Sun", QColor("#cfa143")},
-                       {"Light", QColor("#c06478")},
-                       {"Camera", QColor("#7d9cc0")},
-                       {"Navigation", QColor("#3aa899")},
-                       {"Layers", QColor("#7aa86a")},
-                       {"Debug", QColor("#9a9a9a")},
-                       {"Albedo", QColor("#d98a5e")},
-                       {"Normal Map", QColor("#a08bb8")},
-                       {"Water", QColor("#4a9ecc")},
-                       {"Foam", QColor("#8fb8cf")},
-                       {"Waves", QColor("#3aa899")},
-                       {"Sky", QColor("#7d9cc0")},
-                       {"Fog", QColor("#9a9a9a")},
-                       {"Scattering", QColor("#a08bb8")},
-                       {"Display", QColor("#3aa899")},
-                       {"Background", QColor("#9a9a9a")}};
-    return t;
-  }();
+  static meta::qt::Theme theme;
+  theme = *properties_panel_design().theme;
+
+  const std::vector<std::string> group_names = {"Sun",
+                                                "Light",
+                                                "Camera",
+                                                "Navigation",
+                                                "Layers",
+                                                "Debug",
+                                                "Albedo",
+                                                "Normal Map",
+                                                "Water",
+                                                "Foam",
+                                                "Waves",
+                                                "Sky",
+                                                "Fog",
+                                                "Scattering",
+                                                "Display",
+                                                "Background"};
+
+  theme.group_accents.clear();
+  for (const auto &name : group_names)
+    theme.group_accents[name] = ThemeDefinition::derive_group_accent(name);
+
   return theme;
 }
 

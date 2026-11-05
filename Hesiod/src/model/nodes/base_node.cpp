@@ -21,14 +21,15 @@
 #include "meta/ext/array/array.hpp"
 #include "meta/metadata/keys.hpp"
 
+#include "gnode/graph_worker.hpp"
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/logger.hpp"
-#include "hesiod/model/graph/graph_worker.hpp"
 #include "hesiod/model/nodes/attributes.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/legacy/legacy_converter.hpp"
 #include "hesiod/model/nodes/node_factory.hpp"
 #include "hesiod/model/utils.hpp"
+#include "hesiod/profiling.hpp"
 
 namespace hesiod
 {
@@ -93,6 +94,8 @@ const GraphConfig &BaseNode::cfg() const
 
 void BaseNode::compute()
 {
+  HSD_PROFILE_ZONE("BaseNode::compute");
+  HSD_PROFILE_TEXT(std::format("{} id={}", this->get_node_type(), this->get_id()));
   if (this->compute_started)
     this->compute_started(this->get_id());
 
@@ -106,6 +109,14 @@ void BaseNode::compute()
 
   try
   {
+    HSD_PROFILE_ZONE("Node algorithm");
+    HSD_PROFILE_TEXT(std::format("{} id={} shape={}x{} tiling={}x{}",
+                                 this->get_node_type(),
+                                 this->get_id(),
+                                 this->cfg().shape.x,
+                                 this->cfg().shape.y,
+                                 this->cfg().tiling.x,
+                                 this->cfg().tiling.y));
     this->compute_fct(*this);
     this->computed_shape = this->cfg().shape;
   }
@@ -151,6 +162,10 @@ void BaseNode::compute()
   if (out_of_memory)
     throw std::bad_alloc();
 }
+
+void BaseNode::on_pre_async_compute() { this->begin_background_compute(); }
+
+void BaseNode::on_async_compute_cancelled() { this->cancel_background_compute(); }
 
 void BaseNode::begin_background_compute()
 {
