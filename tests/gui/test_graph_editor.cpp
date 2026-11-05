@@ -15,6 +15,7 @@
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/graph_editor.hpp"
 #include "hesiod/gui/hesiod_node_proxy.hpp"
+#include "hesiod/gui/widgets/dialogs/node_inspector_widget.hpp"
 #include "hesiod/gui/widgets/graph/graph_node_widget.hpp"
 #include "hesiod/model/graph/graph_manager.hpp"
 #include "hesiod/model/graph/graph_node.hpp"
@@ -722,6 +723,64 @@ private Q_SLOTS:
     widget.on_graph_reload_request();
     QCOMPARE(started, 1);
     QCOMPARE(finished, 1);
+  }
+
+  void test_node_inspector()
+  {
+    auto gm = std::make_shared<GraphManager>("gm_test");
+    auto graph1 = std::make_shared<GraphNode>("g1", small_config());
+    auto graph2 = std::make_shared<GraphNode>("g2", small_config());
+
+    gm->add_graph_node(graph1, "g1");
+    gm->add_graph_node(graph2, "g2");
+
+    graph1->add_node("Constant", "c1");
+    graph1->add_node("Thru", "t1");
+    graph2->add_node("Constant", "c2");
+
+    NodeInspectorWidget inspector(gm);
+    inspector.refresh_content();
+
+    auto *table = inspector.findChild<QTableView *>();
+    QVERIFY(table != nullptr);
+
+    auto *proxy = qobject_cast<QSortFilterProxyModel *>(table->model());
+    QVERIFY(proxy != nullptr);
+
+    // 3 nodes in total across all graphs
+    QCOMPARE(proxy->rowCount(), 3);
+
+    // Filter by text "Thru"
+    auto *search_edit = inspector.findChild<QLineEdit *>();
+    QVERIFY(search_edit != nullptr);
+    search_edit->setText("Thru");
+    QCOMPARE(proxy->rowCount(), 1);
+
+    // Clear filter
+    search_edit->clear();
+    QCOMPARE(proxy->rowCount(), 3);
+
+    // Test editing comment directly in model for node c1
+    int c1_row = -1;
+    for (int r = 0; r < proxy->rowCount(); ++r)
+    {
+      if (proxy->data(proxy->index(r, NodeInspectorModel::Column::COL_ID)).toString() == "c1")
+      {
+        c1_row = r;
+        break;
+      }
+    }
+    QVERIFY(c1_row != -1);
+
+    QModelIndex comment_idx = proxy->index(c1_row, NodeInspectorModel::Column::COL_COMMENT);
+    QVERIFY(proxy->flags(comment_idx) & Qt::ItemIsEditable);
+    QVERIFY(proxy->setData(comment_idx, "my note", Qt::EditRole));
+    QCOMPARE(proxy->data(comment_idx, Qt::DisplayRole).toString(), "my note");
+
+    // Check underlying BaseNode
+    BaseNode *c1 = graph1->get_node_ref_by_id<BaseNode>("c1");
+    QVERIFY(c1 != nullptr);
+    QCOMPARE(c1->get_comment(), "my note");
   }
 };
 

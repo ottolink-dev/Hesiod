@@ -90,6 +90,16 @@ std::string GraphTabsWidget::get_selected_graph_id() const
   return selected_tab_text.toStdString();
 }
 
+GraphWorkspaceWidget *GraphTabsWidget::get_workspace_widget(
+    const std::string &graph_id) const
+{
+  auto it = this->graph_workspace_widget_map.find(graph_id);
+  if (it != this->graph_workspace_widget_map.end() && it->second)
+    return it->second.data();
+
+  return nullptr;
+}
+
 void GraphTabsWidget::on_heightmap_download_ready(
     const HeightmapperWidget::DownloadInfo &info)
 {

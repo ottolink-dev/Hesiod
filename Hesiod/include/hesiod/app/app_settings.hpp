@@ -193,12 +193,14 @@ struct AppSettings
     WindowGeometry geom_main;
     WindowGeometry geom_graph_manager;
     WindowGeometry geom_heightmapper;
+    WindowGeometry geom_node_inspector;
 
     int progress_bar_width = 200;
 
     bool show_graph_manager_widget = false;
     bool show_texture_downloader_widget = false;
     bool show_heightmapper_widget = false;
+    bool show_node_inspector = false;
   } window;
 };
 
