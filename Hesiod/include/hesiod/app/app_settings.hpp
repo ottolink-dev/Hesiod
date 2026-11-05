@@ -6,7 +6,7 @@
 
 #include "nlohmann/json.hpp"
 
-#include "hesiod/gui/node_palette_style.hpp"
+#include "hesiod/gui/theme/node_palette_palette.hpp"
 
 #define HSD_ICON(name)                                                                   \
   static_cast<hesiod::HesiodApplication *>(QCoreApplication::instance())                 \
@@ -139,7 +139,7 @@ struct AppSettings
   } interface;
 
   /// Look of the node palette sidebar. Only read when it is enabled.
-  NodePaletteStyle node_palette;
+  NodePalettePalette node_palette;
 
   struct NodeEditor
   {

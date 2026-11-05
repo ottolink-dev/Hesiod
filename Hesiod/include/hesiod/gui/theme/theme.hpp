@@ -10,7 +10,7 @@
 #include <nlohmann/json.hpp>
 
 #include "hesiod/app/app_settings.hpp"
-#include "hesiod/gui/node_palette_style.hpp"
+#include "hesiod/gui/theme/node_palette_palette.hpp"
 
 namespace hesiod
 {
@@ -44,7 +44,7 @@ struct ThemeDefinition
 
   // --- Derived subsystem configurations
   AppSettings::Colors derive_app_colors() const;
-  NodePaletteStyle    derive_node_palette_style() const;
+  NodePalettePalette  derive_node_palette_palette() const;
 
   // --- Serialization
   nlohmann::json                        json_to() const;

@@ -9,7 +9,7 @@
 
 #include "hesiod/app/app_settings.hpp"
 #include "hesiod/app/enum_mappings.hpp"
-#include "hesiod/gui/theme/node_graph_palette.hpp"
+#include "hesiod/gui/theme/node_graph_color_palette.hpp"
 #include "hesiod/model/error/error_manager.hpp"
 #include "hesiod/model/project_model.hpp"
 

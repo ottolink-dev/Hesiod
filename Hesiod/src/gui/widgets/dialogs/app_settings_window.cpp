@@ -1293,7 +1293,7 @@ QString AppSettingsWindow::apply_effects(unsigned effects)
 
   if (effects & (Theme | Palette))
   {
-    NodePaletteSidebar::restyle_all(current_node_palette_style());
+    NodePaletteSidebar::restyle_all(current_node_palette_palette());
     Viewer3D::restyle_all();
   }
 

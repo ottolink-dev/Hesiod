@@ -86,9 +86,9 @@ AppSettings::Colors ThemeDefinition::derive_app_colors() const
   return c;
 }
 
-NodePaletteStyle ThemeDefinition::derive_node_palette_style() const
+NodePalettePalette ThemeDefinition::derive_node_palette_palette() const
 {
-  NodePaletteStyle s;
+  NodePalettePalette s;
 
   if (this->is_dark)
   {

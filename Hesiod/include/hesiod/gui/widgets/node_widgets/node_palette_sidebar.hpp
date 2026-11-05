@@ -13,7 +13,7 @@
 #include <QVariantAnimation>
 #include <QWidget>
 
-#include "hesiod/gui/node_palette_style.hpp"
+#include "hesiod/gui/theme/node_palette_palette.hpp"
 
 namespace hesiod
 {
@@ -33,12 +33,12 @@ class CategoryRailButton : public QAbstractButton
   Q_OBJECT
 
 public:
-  CategoryRailButton(const QString          &category,
-                     const QColor           &accent,
-                     const NodePaletteStyle &style,
-                     QWidget                *parent = nullptr);
+  CategoryRailButton(const QString            &category,
+                     const QColor             &accent,
+                     const NodePalettePalette &style,
+                     QWidget                  *parent = nullptr);
 
-  void set_style(const NodePaletteStyle &style);
+  void set_style(const NodePalettePalette &style);
 
   /// True while this category's flyout is open; drives the selected surface.
   void set_open(bool state);
@@ -63,13 +63,13 @@ private:
   QColor target_surface() const;
   void   retarget_surface();
 
-  QString           category;
-  QColor            accent;
-  NodePaletteStyle  style;
-  bool              open = false;
-  bool              hovering = false;
-  QColor            surface;
-  QVariantAnimation surface_animation;
+  QString            category;
+  QColor             accent;
+  NodePalettePalette style;
+  bool               open = false;
+  bool               hovering = false;
+  QColor             surface;
+  QVariantAnimation  surface_animation;
 };
 
 // =====================================
@@ -101,16 +101,16 @@ public:
    */
   NodePaletteSidebar(const std::map<std::string, std::string> &inventory,
                      const std::map<std::string, QColor>      &category_colors,
-                     const NodePaletteStyle                   &style,
+                     const NodePalettePalette                 &style,
                      QWidget                                  *parent = nullptr);
   ~NodePaletteSidebar() override;
 
   // --- Style
-  void                    set_style(const NodePaletteStyle &style);
-  const NodePaletteStyle &get_style() const;
+  void                      set_style(const NodePalettePalette &style);
+  const NodePalettePalette &get_style() const;
 
   /// Restyle every sidebar alive in this process (settings changed).
-  static void restyle_all(const NodePaletteStyle &style);
+  static void restyle_all(const NodePalettePalette &style);
 
   // --- Inspection (also the test surface)
   QStringList              category_names() const;
@@ -146,7 +146,7 @@ private:
   QColor accent_for(const QString &category) const;
 
   std::map<std::string, QColor> category_colors;
-  NodePaletteStyle              style;
+  NodePalettePalette            style;
 
   QWidget   *rail = nullptr;
   QLineEdit *search = nullptr;

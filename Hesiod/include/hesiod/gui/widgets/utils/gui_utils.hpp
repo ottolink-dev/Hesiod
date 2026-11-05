@@ -11,7 +11,7 @@
 #include <QLayout>
 #include <QWidget>
 
-#include "hesiod/gui/node_palette_style.hpp"
+#include "hesiod/gui/theme/node_palette_palette.hpp"
 
 namespace hesiod
 {
@@ -39,7 +39,7 @@ QColor panel_border_color();
 void apply_animation_settings(bool enabled);
 
 /// The node palette style currently configured in the application settings.
-NodePaletteStyle current_node_palette_style();
+NodePalettePalette current_node_palette_palette();
 
 void clear_layout(QLayout *layout);
 

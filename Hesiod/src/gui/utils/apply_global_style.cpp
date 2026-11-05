@@ -42,7 +42,7 @@ void apply_global_style(QApplication &app)
 
   ThemeDefinition active_theme = ThemeRegistry::instance().get_theme(theme_name);
   ctx.app_settings.colors = active_theme.derive_app_colors();
-  ctx.app_settings.node_palette = active_theme.derive_node_palette_style();
+  ctx.app_settings.node_palette = active_theme.derive_node_palette_palette();
 
   std::string style_sheet =
 #include "hesiod/gui/styles/darkstyle.css"
@@ -137,7 +137,7 @@ void apply_global_style(QApplication &app)
   NodeSettingsWidget::restyle_all();
 
   // update node palette sidebars
-  NodePaletteSidebar::restyle_all(current_node_palette_style());
+  NodePaletteSidebar::restyle_all(current_node_palette_palette());
 
   // synchronize graph viewer and node styles
   apply_graph_style();
