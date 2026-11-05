@@ -18,8 +18,8 @@
 #include "highmap/texture.hpp"
 
 #include "hesiod/app/hesiod_application.hpp"
-#include "hesiod/gui/widgets/chrome/menu_chrome.hpp"
 #include "hesiod/gui/widgets/graph/data_preview.hpp"
+#include "hesiod/gui/widgets/shell/menu_chrome.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/profiling.hpp"
 

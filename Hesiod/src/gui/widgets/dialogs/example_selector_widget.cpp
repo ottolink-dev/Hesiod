@@ -36,9 +36,9 @@
 
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/theme/style_sheet.hpp"
-#include "hesiod/gui/widgets/chrome/window_chrome.hpp"
 #include "hesiod/gui/widgets/dialogs/example_selector_dialog.hpp"
 #include "hesiod/gui/widgets/node_widgets/properties_panel_design.hpp"
+#include "hesiod/gui/widgets/shell/window_chrome.hpp"
 #include "hesiod/logger.hpp"
 #include "meta_qt/ui/theme.hpp"
 

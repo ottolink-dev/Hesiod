@@ -19,7 +19,7 @@
 
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/theme/style_sheet.hpp"
-#include "hesiod/gui/widgets/chrome/window_chrome.hpp"
+#include "hesiod/gui/widgets/shell/window_chrome.hpp"
 #include "hesiod/gui/widgets/utils/gui_utils.hpp"
 
 namespace hesiod

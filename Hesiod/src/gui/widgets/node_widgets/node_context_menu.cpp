@@ -4,9 +4,9 @@
 #include <QPointer>
 
 #include "hesiod/app/hesiod_application.hpp"
-#include "hesiod/gui/widgets/chrome/menu_chrome.hpp"
 #include "hesiod/gui/widgets/dialogs/documentation_popup.hpp"
 #include "hesiod/gui/widgets/graph/graph_node_widget.hpp"
+#include "hesiod/gui/widgets/shell/menu_chrome.hpp"
 #include "hesiod/gui/widgets/viewers/viewer.hpp"
 #include "hesiod/model/graph/graph_node.hpp"
 

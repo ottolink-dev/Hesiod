@@ -12,7 +12,7 @@
 #include <QVariantAnimation>
 
 #include "hesiod/app/hesiod_application.hpp"
-#include "hesiod/gui/widgets/chrome/menu_chrome.hpp"
+#include "hesiod/gui/widgets/shell/menu_chrome.hpp"
 #include "hesiod/gui/widgets/utils/gui_utils.hpp"
 
 namespace hesiod

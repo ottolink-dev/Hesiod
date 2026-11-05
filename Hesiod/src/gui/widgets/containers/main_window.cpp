@@ -11,8 +11,8 @@
 
 #include "gnode/graph_worker.hpp"
 #include "hesiod/app/hesiod_application.hpp"
-#include "hesiod/gui/widgets/chrome/window_chrome.hpp"
 #include "hesiod/gui/widgets/containers/main_window.hpp"
+#include "hesiod/gui/widgets/shell/window_chrome.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/graph/graph_manager.hpp"
 
