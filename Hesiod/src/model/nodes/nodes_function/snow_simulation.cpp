@@ -4,9 +4,8 @@
 #include "highmap/hydrology/hydrology.hpp"
 #include "highmap/range.hpp"
 
-#include "hesiod/model/nodes/attributes.hpp"
-
 #include "hesiod/logger.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
@@ -182,13 +181,17 @@ void compute_snow_simulation_node(BaseNode &node)
       {p_z_out, p_snow_depth},
       [&](std::vector<const hmap::Array *> p_arrays_in,
           std::vector<hmap::Array *>       p_arrays_out,
-          const hmap::TileRegion &)
+          const hmap::TileRegion          &region,
+          hmap::ICommunicator             &comm)
       {
         auto [pa_z, pa_depth_map, pa_melting_map, pa_talus_map] = unpack<4>(p_arrays_in);
         auto [pa_z_out, pa_snow_depth]                          = unpack<2>(p_arrays_out);
 
         hmap::Array depth_map_scaled = *pa_depth_map;
         hmap::remap(depth_map_scaled, 0.f, 1.f, dmin, dmax);
+
+        // buffers sync when multihreading
+        const int sync_interval = 10;
 
         *pa_snow_depth = hmap::gpu::snow_simulation(*pa_z,
                                                     snow_depth_updated,
@@ -206,22 +209,12 @@ void compute_snow_simulation_node(BaseNode &node)
                                                     k_creep,
                                                     post_filter,
                                                     thermal_talus_ratio,
-                                                    outflow_boundaries);
-
-        // clamp lower threshold and rebound minimum to zero
-        if (clamp_min_ratio > 0.f)
-        {
-          const float s_min = clamp_min_ratio * snow_depth_updated;
-          hmap::clamp_min(*pa_snow_depth, s_min);
-          *pa_snow_depth -= s_min;
-        }
-
-        // force minimum snow depth to be actually "zero" (more convenient)
-        if (shift_to_zero)
-        {
-          float smax = pa_snow_depth->max();
-          hmap::remap(*pa_snow_depth, 0.f, smax);
-        }
+                                                    outflow_boundaries,
+                                                    clamp_min_ratio * snow_depth_updated,
+                                                    shift_to_zero,
+                                                    sync_interval,
+                                                    region,
+                                                    comm);
 
         *pa_z_out = *pa_z + *pa_snow_depth;
       },
