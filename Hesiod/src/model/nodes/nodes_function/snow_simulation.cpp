@@ -125,6 +125,9 @@ void compute_snow_simulation_node(BaseNode &node)
   const int   iterations = int(duration * nx);
   const float talus      = node.val_talus(A_TALUS_GLOBAL);
 
+  // buffers sync when multithreading (heuristic)
+  const int sync_interval = std::max(30, (node.cfg().halo * 3) / 4);
+
   // --- Create talus virtual array
 
   hmap::VirtualArray talus_map = hmap::VirtualArray(CONFIG(node));
@@ -189,9 +192,6 @@ void compute_snow_simulation_node(BaseNode &node)
 
         hmap::Array depth_map_scaled = *pa_depth_map;
         hmap::remap(depth_map_scaled, 0.f, 1.f, dmin, dmax);
-
-        // buffers sync when multihreading
-        const int sync_interval = 100;
 
         *pa_snow_depth = hmap::gpu::snow_simulation(*pa_z,
                                                     snow_depth_updated,
