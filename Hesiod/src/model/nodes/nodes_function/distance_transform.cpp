@@ -54,6 +54,10 @@ void setup_distance_transform_node(BaseNode &node)
   add_bool(node, A_USE_DISTRIBUTED_COMPUTATION, "Use Distributed Algorithm", false);
 }
 
+// -----------------------------------------------------------------------------
+// Compute
+// -----------------------------------------------------------------------------
+
 void compute_distance_transform_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
@@ -69,13 +73,15 @@ void compute_distance_transform_node(BaseNode &node)
   // --- Params
 
   // clang-format off
-  const auto reverse_input = node.val<bool>(A_REVERSE_INPUT);
-  const auto threshold = node.val<float>(A_THRESHOLD);
+  const auto reverse_input               = node.val<bool>(A_REVERSE_INPUT);
+  const auto threshold                   = node.val<float>(A_THRESHOLD);
   const auto use_distributed_computation = node.val<bool>(A_USE_DISTRIBUTED_COMPUTATION);
   // clang-format on
 
   const auto cm = use_distributed_computation ? node.cfg().cm_cpu
                                               : node.cfg().cm_single_array;
+
+  // --- Compute
 
   hmap::for_each_tile(
       {p_in},
@@ -99,7 +105,8 @@ void compute_distance_transform_node(BaseNode &node)
       },
       cm);
 
-  // post-process
+  // --- Post-process
+
   post_process_heightmap(node, *p_out);
 }
 

@@ -66,7 +66,6 @@ void apply_node_status_icons(const std::string      &node_type,
       "ExportTiled",
       "FloodingFromBoundaries", // TODO
       "FloodingFromPoint",      // TODO
-      "FloodingLakeSystem",     // TODO
       "FlowSimulation",         // TODO
       "FlowSimulationViscous",  // TODO
       "FlowStream",             // TODO
