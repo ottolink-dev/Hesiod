@@ -58,7 +58,6 @@ void apply_node_status_icons(const std::string      &node_type,
   static const std::vector<std::string> not_tileable_nodes = {
       "Compare",
       "Debug",
-      "DistanceTransform", // TODO
       "ExportAsCubemap",
       "ExportAsset",
       "ExportHeightmap",
@@ -84,7 +83,6 @@ void apply_node_status_icons(const std::string      &node_type,
       "QuiltingShuffle",        // TODO
       "RockSimulation",         // TODO
       "Rotate",                 // TODO
-      "SnowSimulation",         // TODO
       "TextureQuiltingExpand",  // TODO
       "TextureQuiltingShuffle", // TODO
       "TextureUvChecker",       // TODO
