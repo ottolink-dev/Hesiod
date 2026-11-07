@@ -64,9 +64,7 @@ void apply_node_status_icons(const std::string      &node_type,
       "ExportScene",
       "ExportTexture",
       "ExportTiled",
-      "FlowSimulation",        // TODO
-      "FlowSimulationViscous", // TODO
-      "FlowStream",            // TODO
+      "FlowStream", // TODO
       "ImportHeightmap",
       "ImportTexture",
       "KmeansClustering2",
