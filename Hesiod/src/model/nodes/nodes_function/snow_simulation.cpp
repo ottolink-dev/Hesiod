@@ -191,7 +191,7 @@ void compute_snow_simulation_node(BaseNode &node)
         hmap::remap(depth_map_scaled, 0.f, 1.f, dmin, dmax);
 
         // buffers sync when multihreading
-        const int sync_interval = 10;
+        const int sync_interval = 100;
 
         *pa_snow_depth = hmap::gpu::snow_simulation(*pa_z,
                                                     snow_depth_updated,

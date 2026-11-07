@@ -45,8 +45,6 @@ void setup_depression_filling_node(BaseNode &node)
   add_bool(node, A_REMAP_FILL_MAP, "Remap Fill Map", true);
   // clang-format on
 
-  // --- Attribute(s) order
-
   setup_post_process_heightmap_attributes(node,
                                           {.add_mix = true, .remap_active_state = false});
 

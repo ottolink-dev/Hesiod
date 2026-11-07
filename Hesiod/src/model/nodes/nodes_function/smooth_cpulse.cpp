@@ -75,7 +75,7 @@ void compute_smooth_cpulse_node(BaseNode &node)
           hmap::ICommunicator             &comm)
       {
         auto [pa_in, pa_mask] = unpack<2>(p_arrays_in);
-        auto [pa_out]               = unpack<1>(p_arrays_out);
+        auto [pa_out]         = unpack<1>(p_arrays_out);
 
         *pa_out = *pa_in;
 
