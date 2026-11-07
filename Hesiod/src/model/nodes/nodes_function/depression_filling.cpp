@@ -79,35 +79,36 @@ void compute_depression_filling_node(BaseNode &node)
   const auto use_distributed_computation = node.val<bool>(A_USE_DISTRIBUTED_COMPUTATION);
   // clang-format on
 
+  const auto cm = use_distributed_computation ? node.cfg().cm_cpu
+                                              : node.cfg().cm_single_array;
+
   // --- Compute
 
-  if (use_distributed_computation)
-  {
-    *p_out = hmap::va::depression_filling_priority_flood(*p_in,
-                                                         smoothing,
-                                                         p_fill_map,
-                                                         node.cfg().cm_cpu);
-  }
-  else
-  {
-    hmap::for_each_tile(
-        {p_in},
-        {p_out, p_fill_map},
-        [&](std::vector<const hmap::Array *> p_arrays_in,
-            std::vector<hmap::Array *>       p_arrays_out,
-            const hmap::TileRegion &)
-        {
-          auto [pa_in]               = unpack<1>(p_arrays_in);
-          auto [pa_out, pa_fill_map] = unpack<2>(p_arrays_out);
+  hmap::for_each_tile(
+      {p_in},
+      {p_out, p_fill_map},
+      [&](std::vector<const hmap::Array *> p_arrays_in,
+          std::vector<hmap::Array *>       p_arrays_out,
+          const hmap::TileRegion          &region,
+          hmap::ICommunicator             &comm)
+      {
+        auto [pa_in]               = unpack<1>(p_arrays_in);
+        auto [pa_out, pa_fill_map] = unpack<2>(p_arrays_out);
 
-          *pa_out = *pa_in;
+        *pa_out = *pa_in;
 
-          hmap::depression_filling_priority_flood(*pa_out, smoothing);
+        hmap::depression_filling_priority_flood(*pa_out,
+                                                smoothing,
+                                                true, // outflow_left
+                                                true, // ...
+                                                true, // ...
+                                                true, // ...
+                                                region,
+                                                comm);
 
-          *pa_fill_map = *pa_out - *pa_in;
-        },
-        node.cfg().cm_single_array);
-  }
+        *pa_fill_map = *pa_out - *pa_in;
+      },
+      cm);
 
   // --- Post-process
 
