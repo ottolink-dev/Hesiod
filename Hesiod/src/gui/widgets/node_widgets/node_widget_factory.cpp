@@ -58,19 +58,13 @@ void apply_node_status_icons(const std::string      &node_type,
   static const std::vector<std::string> not_tileable_nodes = {
       "Compare",
       "Debug",
-      "DistanceTransform", // TODO
       "ExportAsCubemap",
       "ExportAsset",
       "ExportHeightmap",
       "ExportScene",
       "ExportTexture",
       "ExportTiled",
-      "FloodingFromBoundaries", // TODO
-      "FloodingFromPoint",      // TODO
-      "FloodingLakeSystem",     // TODO
-      "FlowSimulation",         // TODO
-      "FlowSimulationViscous",  // TODO
-      "FlowStream",             // TODO
+      "FlowStream", // TODO
       "ImportHeightmap",
       "ImportTexture",
       "KmeansClustering2",
@@ -84,10 +78,9 @@ void apply_node_status_icons(const std::string      &node_type,
       "QuiltingShuffle",        // TODO
       "RockSimulation",         // TODO
       "Rotate",                 // TODO
-      "SnowSimulation",         // TODO
       "TextureQuiltingExpand",  // TODO
       "TextureQuiltingShuffle", // TODO
-      "TextureUvChecker",       // TODO
+      "TextureUvChecker",
       "Translate",              // TODO
       "Zoom"                    // TODO
   };

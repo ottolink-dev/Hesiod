@@ -92,7 +92,7 @@ int parse_args(args::ArgumentParser &parser,
   args::Flag min_memory_arg(batch_args,
                             "min-memory",
                             "Minimal memory footprint mode (storage mode: "
-                            "VA_DISK_LRU_MIN, compute mode: VA_SEQUENTIAL)",
+                            "VA_DISK_LRU_STREAM, compute mode: VA_SEQUENTIAL)",
                             {"min-memory", "low-memory"});
 
   args::Flag ipc_arg(batch_args,
@@ -210,10 +210,10 @@ void run_batch_mode(const std::string                  &filename,
 
   if (min_memory)
   {
-    config.storage_mode = hmap::StorageMode::VA_DISK_LRU_MIN;
+    config.storage_mode = hmap::StorageMode::VA_DISK_LRU_STREAM;
     config.cm_cpu.mode = hmap::ForEachMode::VA_SEQUENTIAL;
     config.cm_gpu.mode = hmap::ForEachMode::VA_SEQUENTIAL;
-    Logger::log()->info("minimal memory mode enabled (storage mode: VA_DISK_LRU_MIN, "
+    Logger::log()->info("minimal memory mode enabled (storage mode: VA_DISK_LRU_STREAM, "
                         "compute mode: VA_SEQUENTIAL)");
   }
   else if (force_distributed)

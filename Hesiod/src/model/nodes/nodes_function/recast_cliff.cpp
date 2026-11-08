@@ -123,6 +123,9 @@ void compute_recast_cliff_node(BaseNode &node)
   const auto iterations = node.val<int>(A_ITERATIONS);
   const auto angle      = (group == G_DIRECTIONAL) ? node.val<float>(A_ANGLE) : 0.f;
 
+  // buffers sync when multithreading (Poisson solver requires tight syncing)
+  constexpr int sync_interval = 5;
+
   // --- Prepare mask
 
   hmap::VirtualArray mask_default = pre_process_mask(node, p_mask, *p_in);
@@ -136,7 +139,8 @@ void compute_recast_cliff_node(BaseNode &node)
       {p_out, p_cliff_mask},
       [&](std::vector<const hmap::Array *> p_arrays_in,
           std::vector<hmap::Array *>       p_arrays_out,
-          const hmap::TileRegion &)
+          const hmap::TileRegion          &region,
+          hmap::ICommunicator             &comm)
       {
         auto [pa_in, pa_mask, pa_angle] = unpack<3>(p_arrays_in);
         auto [pa_out, pa_cliff_mask]    = unpack<2>(p_arrays_out);
@@ -157,7 +161,10 @@ void compute_recast_cliff_node(BaseNode &node)
                                                 pa_mask,
                                                 gain,
                                                 iterations,
-                                                pa_cliff_mask);
+                                                pa_cliff_mask,
+                                                sync_interval,
+                                                region,
+                                                comm);
           }
           else
           {
@@ -169,7 +176,10 @@ void compute_recast_cliff_node(BaseNode &node)
                                                 pa_mask,
                                                 gain,
                                                 iterations,
-                                                pa_cliff_mask);
+                                                pa_cliff_mask,
+                                                sync_interval,
+                                                region,
+                                                comm);
           }
         }
         else
@@ -181,12 +191,13 @@ void compute_recast_cliff_node(BaseNode &node)
                                   pa_mask,
                                   gain,
                                   iterations,
-                                  pa_cliff_mask);
+                                  pa_cliff_mask,
+                                  sync_interval,
+                                  region,
+                                  comm);
         }
       },
       node.cfg().cm_gpu);
-
-  p_out->sync_overlap_buffers();
 
   // input amplitude preservation
   p_out->remap(p_in->min(node.cfg().cm_cpu),

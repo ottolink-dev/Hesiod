@@ -31,7 +31,6 @@ constexpr const char *A_OUTFLOW_BOUNDARIES      = "outflow_boundaries";
 constexpr const char *A_DRY_OUT_RATIO           = "dry_out_ratio";
 constexpr const char *A_FLUX_DIFFUSION          = "flux_diffusion";
 constexpr const char *A_FLUX_DIFFUSION_STRENGTH = "flux_diffusion_strength";
-constexpr const char *A_SOLVER_STRIDE           = "solver_stride";
 constexpr const char *A_DEPTH_MAP_TYPE          = "depth_map_type";
 constexpr const char *A_POST_FILTER             = "post_filter";
 constexpr const char *A_RADIUS                  = "radius";
@@ -65,7 +64,6 @@ void setup_flow_simulation_node(BaseNode &node)
   add_float(node, A_DRY_OUT_RATIO, "Dry-Out Threshold Ratio", 0.01f, 0.f, 1.f);
   add_bool(node, A_FLUX_DIFFUSION, "Enable Flux Diffusion", true);
   add_float(node, A_FLUX_DIFFUSION_STRENGTH, "Flux Diffusion Strength", 1e-6f, 1e-6f, 1e-1f, "{:.2e}", true);
-  add_int(node, A_SOLVER_STRIDE, "Solver Iteration Stride", 1, 1, 32);
 
   node.set_current_category("Post-Filter");
   add_bool(node, A_AREA_FILTER, "Remove Small Flow Regions", true);
@@ -103,18 +101,18 @@ void compute_flow_simulation_node(BaseNode &node)
   const auto dry_out_ratio      = node.val<float>(A_DRY_OUT_RATIO);
   const auto flux_diffusion     = node.val<bool>(A_FLUX_DIFFUSION);
   const auto flux_strength      = node.val<float>(A_FLUX_DIFFUSION_STRENGTH);
-  const auto solver_stride      = node.val<int>(A_SOLVER_STRIDE);
   const auto post_filter        = node.val<bool>(A_POST_FILTER);
   const auto area_filter        = node.val<bool>(A_AREA_FILTER);
   const auto radius_limit       = node.val<float>(A_RADIUS_LIMIT);
   // clang-format on
 
+  // buffers sync when multithreading (coupling needs to be tight for
+  // non-viscous flow, pretty dynamic)
+  const int sync_interval = 30;
+
   // --- Compute mode
 
-  hmap::ComputeMode cm = node.cfg().cm_gpu;
-  cm.stride            = solver_stride;
-
-  int   iterations  = int(duration * p_z->shape.x / cm.stride);
+  int   iterations  = int(duration * p_z->shape.x);
   float water_depth = water_depth_init;
 
   // --- Resolve depth map
@@ -150,7 +148,8 @@ void compute_flow_simulation_node(BaseNode &node)
       {p_water_out},
       [&](std::vector<const hmap::Array *> p_arrays_in,
           std::vector<hmap::Array *>       p_arrays_out,
-          const hmap::TileRegion &)
+          const hmap::TileRegion          &region,
+          hmap::ICommunicator             &comm)
       {
         auto [pa_z, pa_depth, pa_rain] = unpack<3>(p_arrays_in);
         auto [pa_water]                = unpack<1>(p_arrays_out);
@@ -171,9 +170,12 @@ void compute_flow_simulation_node(BaseNode &node)
                                                /* evap_rate */ 0.f,
                                                outflow_boundaries,
                                                /* pa_u */ nullptr,
-                                               /* pa_v */ nullptr);
+                                               /* pa_v */ nullptr,
+                                               sync_interval,
+                                               region,
+                                               comm);
       },
-      cm);
+      node.cfg().cm_gpu);
 
   // --- Post-filter
 
@@ -192,7 +194,7 @@ void compute_flow_simulation_node(BaseNode &node)
 
           *pa_water = hmap::area_remove(*pa_water, area_pixels);
         },
-        node.cfg().cm_single_array); // mandatory
+        node.cfg().cm_cpu);
   }
 
   if (post_filter)

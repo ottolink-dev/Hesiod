@@ -100,6 +100,9 @@ void compute_flow_simulation_viscous_node(BaseNode &node)
   const auto shift_to_zero      = node.val<bool>(A_SHIFT_TO_ZERO);
   // clang-format on
 
+  // buffers sync when multithreading (heuristic)
+  const int sync_interval = std::max(30, (node.cfg().halo * 3) / 4);
+
   // --- Compute mode
 
   hmap::ComputeMode cm = node.cfg().cm_gpu;
@@ -148,7 +151,8 @@ void compute_flow_simulation_viscous_node(BaseNode &node)
       {p_z_out, p_depth_out},
       [&](std::vector<const hmap::Array *> p_arrays_in,
           std::vector<hmap::Array *>       p_arrays_out,
-          const hmap::TileRegion &)
+          const hmap::TileRegion          &region,
+          hmap::ICommunicator             &comm)
       {
         auto [pa_z, pa_depth_map]     = unpack<2>(p_arrays_in);
         auto [pa_z_out, pa_depth_out] = unpack<2>(p_arrays_out);
@@ -165,7 +169,10 @@ void compute_flow_simulation_viscous_node(BaseNode &node)
                                                            /* viscosity */ 1.f,
                                                            power,
                                                            /* evap_rate */ 0.f,
-                                                           outflow_boundaries);
+                                                           outflow_boundaries,
+                                                           sync_interval,
+                                                           region,
+                                                           comm);
 
         *pa_z_out = *pa_z + *pa_depth_out;
       },

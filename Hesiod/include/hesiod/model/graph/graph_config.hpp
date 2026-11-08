@@ -43,7 +43,7 @@ struct GraphConfig
   hmap::ComputeMode cm_single_array = {.mode = hmap::ForEachMode::VA_SINGLE_ARRAY,
                                        .trim_storage = false};
 
-  hmap::StorageMode storage_mode = hmap::StorageMode::VA_DISK_LRU;
+  hmap::StorageMode storage_mode = hmap::StorageMode::VA_DISK_LRU_FULL;
 
   // computed from tiling and overlap
   glm::ivec2 tile_shape;

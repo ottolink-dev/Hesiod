@@ -133,7 +133,7 @@ def parse_arguments():
         "--low-memory",
         action="store_true",
         dest="min_memory",
-        help="Minimal memory footprint mode (storage mode: VA_DISK_LRU_MIN, compute mode: VA_SEQUENTIAL).",
+        help="Minimal memory footprint mode (storage mode: VA_DISK_LRU_STREAM, compute mode: VA_SEQUENTIAL).",
     )
     parser.add_argument(
         "-o",

@@ -738,7 +738,7 @@ void HesiodApplication::on_export_batch()
 
       if (bake_settings.min_memory)
       {
-        bake_config.storage_mode = hmap::StorageMode::VA_DISK_LRU_MIN;
+        bake_config.storage_mode = hmap::StorageMode::VA_DISK_LRU_STREAM;
         bake_config.cm_cpu.mode = hmap::ForEachMode::VA_SEQUENTIAL;
         bake_config.cm_gpu.mode = hmap::ForEachMode::VA_SEQUENTIAL;
       }

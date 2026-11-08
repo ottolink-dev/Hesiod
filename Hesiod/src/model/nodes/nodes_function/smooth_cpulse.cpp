@@ -66,7 +66,22 @@ void compute_smooth_cpulse_node(BaseNode &node)
 
   int ir = node.val_pixel_radius(A_RADIUS);
 
-  *p_out = hmap::va::smooth_cpulse(*p_in, ir, p_mask, node.cfg().cm_gpu);
+  hmap::for_each_tile(
+      {p_in, p_mask},
+      {p_out},
+      [&](std::vector<const hmap::Array *> p_arrays_in,
+          std::vector<hmap::Array *>       p_arrays_out,
+          const hmap::TileRegion          &region,
+          hmap::ICommunicator             &comm)
+      {
+        auto [pa_in, pa_mask] = unpack<2>(p_arrays_in);
+        auto [pa_out]         = unpack<1>(p_arrays_out);
+
+        *pa_out = *pa_in;
+
+        hmap::gpu::smooth_cpulse(*pa_out, ir, pa_mask, region, comm);
+      },
+      node.cfg().cm_gpu);
 
   // post-process
   post_process_heightmap(node, *p_out, p_in);
