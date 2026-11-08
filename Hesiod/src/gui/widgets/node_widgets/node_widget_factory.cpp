@@ -80,7 +80,7 @@ void apply_node_status_icons(const std::string      &node_type,
       "Rotate",                 // TODO
       "TextureQuiltingExpand",  // TODO
       "TextureQuiltingShuffle", // TODO
-      "TextureUvChecker",       // TODO
+      "TextureUvChecker",
       "Translate",              // TODO
       "Zoom"                    // TODO
   };
