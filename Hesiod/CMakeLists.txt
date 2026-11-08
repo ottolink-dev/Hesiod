@@ -203,6 +203,7 @@ if(HESIOD_ENABLE_TESTS)
   add_executable(profile_highmap
                  ${CMAKE_SOURCE_DIR}/tests/profiling/highmap_workload.cpp)
   set_target_properties(profile_highmap PROPERTIES AUTOMOC OFF)
+  target_compile_features(profile_highmap PRIVATE cxx_std_20)
   target_include_directories(profile_highmap
                              PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
   target_link_libraries(profile_highmap PRIVATE highmap hesiod_tracy)
