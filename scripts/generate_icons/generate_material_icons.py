@@ -11,13 +11,15 @@ GITHUB_BASE_URL = "https://raw.githubusercontent.com/marella/material-design-ico
 OUT_DIR = "Hesiod/data/icons/"
 
 ICONS = [
-    "account_tree", "event_busy", "construction", "grid_off", "landslide", "add", "bakery_dining", "bookmark", "check",
-    "cloud_download", "exit_to_app", "file_open", "forest", "hdr_strong", "help", "home",
-    "info", "landscape", "link", "palette", "public", "push_pin", "refresh",
-    "restore", "save", "save_as", "scatter_plot", "settings",
-    "settings_backup_restore", "tune", "u_turn_left", "visibility",
-    "visibility_off", "waves"
+    "account_tree", "add", "bakery_dining", "bookmark", "check",
+    "cloud_download", "construction", "event_busy", "exit_to_app", "file_open",
+    "forest", "grid_off", "hdr_strong", "help", "home",
+    "hourglass_top", "info", "landscape", "landslide", "link",
+    "palette", "public", "push_pin", "refresh", "restore",
+    "save", "save_as", "scatter_plot", "settings", "settings_backup_restore",
+    "tune", "u_turn_left", "visibility", "visibility_off", "waves"
 ]
+
 ICONS_ACCENT = ["push_pin", "visibility"]
 ICONS_DISABLED = ["push_pin", "visibility_off"]
 
