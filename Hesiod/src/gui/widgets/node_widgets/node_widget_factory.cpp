@@ -69,6 +69,7 @@ void apply_node_status_icons(const std::string      &node_type,
       "ImportTexture",
       "KmeansClustering2",
       "KmeansClustering3",
+      "LooseSymmetry",         // TODO
       "MakePeriodic",          // TODO
       "MakePeriodicStitching", // TODO
       "Mudslide",              // TODO
