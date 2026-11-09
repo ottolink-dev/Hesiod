@@ -4898,7 +4898,7 @@
                     "radius",
                     "ctype",
                     "clamping",
-                    "satmax",
+                    "normalize",
                     "approx",
                     "post_mix_method",
                     "post_mix",
@@ -4930,6 +4930,12 @@
                 "key": "ctype",
                 "label": "Curvature Type",
                 "type": "Enumeration"
+            },
+            "normalize": {
+                "description": "Normalizes the output values using standard deviation global scaling.",
+                "key": "normalize",
+                "label": "Normalize",
+                "type": "Bool"
             },
             "post_gain": {
                 "description": "Mid-centered gain transformation applied to the elevation values. This is a non-linear recurve operator centered around the mid elevation (typically 0.5). Increasing the gain pushes values toward the minimum and maximum elevations, creating flatter low/high regions with a steeper transition around the midpoint.",
@@ -4983,12 +4989,6 @@
                 "description": "No description",
                 "key": "radius",
                 "label": "Radius",
-                "type": "Float"
-            },
-            "satmax": {
-                "description": "No description",
-                "key": "satmax",
-                "label": "Saturation Ratio",
                 "type": "Float"
             }
         },
@@ -14104,7 +14104,7 @@
                 "keys": [
                     "radius",
                     "metric",
-                    "satmax",
+                    "normalize",
                     "post_mix_method",
                     "post_mix",
                     "post_inverse",
@@ -14126,10 +14126,16 @@
                 "type": "Enumeration"
             },
             "min_max_kernel": {
-                "description": "No description",
+                "description": "Kernel shape used for morphological min/max operations (e.g. Cross, Box, Octagon).",
                 "key": "min_max_kernel",
                 "label": "Kernel Type",
                 "type": "Enumeration"
+            },
+            "normalize": {
+                "description": "Normalizes the output values using standard deviation global scaling.",
+                "key": "normalize",
+                "label": "Normalize",
+                "type": "Bool"
             },
             "post_gain": {
                 "description": "Mid-centered gain transformation applied to the elevation values. This is a non-linear recurve operator centered around the mid elevation (typically 0.5). Increasing the gain pushes values toward the minimum and maximum elevations, creating flatter low/high regions with a steeper transition around the midpoint.",
@@ -14183,12 +14189,6 @@
                 "description": "Defines the spatial radius used to compute the local metric. It controls the size of the neighborhood around each point, with larger values producing smoother, more global features and smaller values capturing fine details.",
                 "key": "radius",
                 "label": "Radius",
-                "type": "Float"
-            },
-            "satmax": {
-                "description": "Upper percentile used for adaptive saturation of the output values. Values above this percentile are progressively compressed to reduce the influence of extreme outliers, improving contrast in the majority of the data while preserving overall structure.",
-                "key": "satmax",
-                "label": "Saturation Ratio",
                 "type": "Float"
             }
         },
@@ -20962,8 +20962,7 @@
             {
                 "keys": [
                     "radius",
-                    "clamp_max",
-                    "vc_max",
+                    "normalize",
                     "post_inverse",
                     "post_gamma",
                     "post_gain",
@@ -20975,10 +20974,10 @@
             }
         ],
         "parameters": {
-            "clamp_max": {
-                "description": "Decides whether the rugosity values are clamped.",
-                "key": "clamp_max",
-                "label": "clamp_max",
+            "normalize": {
+                "description": "Normalizes the output values using standard deviation global scaling.",
+                "key": "normalize",
+                "label": "Normalize",
                 "type": "Bool"
             },
             "post_gain": {
@@ -21021,12 +21020,6 @@
                 "description": "Filter radius with respect to the domain size.",
                 "key": "radius",
                 "label": "radius",
-                "type": "Float"
-            },
-            "vc_max": {
-                "description": "Rugosity clamping upper bound.",
-                "key": "vc_max",
-                "label": "vc_max",
                 "type": "Float"
             }
         },

@@ -24,8 +24,8 @@ constexpr const char *P_OUT = "mask";
 
 constexpr const char *A_RADIUS         = "radius";
 constexpr const char *A_METRIC         = "metric";
-constexpr const char *A_SATMAX         = "satmax";
 constexpr const char *A_MIN_MAX_KERNEL = "min_max_kernel";
+constexpr const char *A_NORMALIZE      = "normalize";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -45,7 +45,7 @@ void setup_local_metrics_node(BaseNode &node)
   // clang-format off
   add_float(node, A_RADIUS, "Radius", 0.05f, 0.f, 0.5f);
   add_enum(node, A_METRIC, "Local Metric", enum_mappings.local_metrics_map, "Rugosity Convex");
-  add_float(node, A_SATMAX, "Saturation Ratio", 2.f, 0.f, 20.f, "{:.0f}%");
+  add_bool(node, A_NORMALIZE, "Normalize", true);
   // clang-format on
 
   // --- Attribute(s) order
@@ -81,13 +81,11 @@ void compute_local_metrics_node(BaseNode &node)
 
   // clang-format off
   const auto metric      = node.val_enum<hmap::gpu::LocalMetrics>(A_METRIC);
-  const auto sat_perc    = 0.01f * node.val<float>(A_SATMAX);
+  const auto normalize   = node.val<bool>(A_NORMALIZE);
   const auto kernel_type = node.val_enum<hmap::MinMaxKernel>(A_MIN_MAX_KERNEL);
   // clang-format on
 
-  const int   ir     = node.val_pixel_radius(A_RADIUS);
-  const float satmin = sat_perc;
-  const float satmax = 1.f - sat_perc;
+  const int ir = node.val_pixel_radius(A_RADIUS);
 
   // --- Compute
 
@@ -107,7 +105,22 @@ void compute_local_metrics_node(BaseNode &node)
 
   // --- Post-process
 
-  post_apply_saturate_percentile(node, *p_out, satmin, satmax);
+  if (normalize)
+  {
+    hmap::for_each_tile(
+        {},
+        {p_out},
+        [&](std::vector<const hmap::Array *>,
+            std::vector<hmap::Array *> p_arrays_out,
+            const hmap::TileRegion &,
+            hmap::ICommunicator &comm)
+        {
+          auto [pa_out] = unpack<1>(p_arrays_out);
+          hmap::normalize_and_clip(*pa_out, 2.5f, true, true, comm);
+        },
+        node.cfg().cm_cpu);
+  }
+
   post_process_heightmap(node, *p_out);
 }
 
