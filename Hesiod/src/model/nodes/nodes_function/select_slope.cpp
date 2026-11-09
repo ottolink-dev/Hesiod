@@ -29,9 +29,10 @@ constexpr const char *G_INWARD_OUTWARD = "Inward / Outward";
 
 constexpr const char *A_ANGLE          = "angle";
 constexpr const char *A_CENTER         = "center";
+constexpr const char *A_MIN_MAX_KERNEL = "min_max_kernel";
+constexpr const char *A_NORMALIZE      = "normalize";
 constexpr const char *A_RADIUS         = "radius";
 constexpr const char *A_SIGMA          = "sigma";
-constexpr const char *A_MIN_MAX_KERNEL = "min_max_kernel";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -53,6 +54,7 @@ void setup_select_slope_node(BaseNode &node)
 
     node.set_current_category("Slope Parameters");
     add_float(node, A_RADIUS, "Radius", 0.f, 0.f, 1.f);
+    add_bool(node, A_NORMALIZE, "Normalize", true);
 
     setup_post_process_heightmap_attributes(
         node,
@@ -122,42 +124,29 @@ void compute_select_slope_node(BaseNode &node)
   if (group == G_SLOPE)
   {
     const auto kernel_type = node.val_enum<hmap::MinMaxKernel>(A_MIN_MAX_KERNEL);
-    int        ir          = node.val_pixel_radius(A_RADIUS, 0);
+    const int  ir          = node.val_pixel_radius(A_RADIUS, 0);
+    const bool normalize   = node.val<bool>(A_NORMALIZE);
 
-    if (ir > 0)
-    {
-      hmap::for_each_tile(
-          {p_in},
-          {p_out},
-          [&node, ir, kernel_type](std::vector<const hmap::Array *> p_arrays_in,
-                                   std::vector<hmap::Array *>       p_arrays_out,
-                                   const hmap::TileRegion &)
-          {
-            auto [pa_in]  = unpack<1>(p_arrays_in);
-            auto [pa_out] = unpack<1>(p_arrays_out);
+    hmap::for_each_tile(
+        {p_in},
+        {p_out},
+        [&](std::vector<const hmap::Array *> p_arrays_in,
+            std::vector<hmap::Array *>       p_arrays_out,
+            const hmap::TileRegion          &region,
+            hmap::ICommunicator             &comm)
+        {
+          auto [pa_in]  = unpack<1>(p_arrays_in);
+          auto [pa_out] = unpack<1>(p_arrays_out);
 
-            *pa_out = hmap::gpu::morphological_gradient(*pa_in, ir, kernel_type);
-          },
-          node.cfg().cm_gpu);
-    }
-    else
-    {
-      hmap::for_each_tile(
-          {p_in},
-          {p_out},
-          [&node](std::vector<const hmap::Array *> p_arrays_in,
-                  std::vector<hmap::Array *>       p_arrays_out,
-                  const hmap::TileRegion &)
-          {
-            auto [pa_in]  = unpack<1>(p_arrays_in);
-            auto [pa_out] = unpack<1>(p_arrays_out);
+          *pa_out = hmap::gpu::select_slope(*pa_in,
+                                            ir,
+                                            normalize,
+                                            kernel_type,
+                                            region,
+                                            comm);
+        },
+        node.cfg().cm_gpu);
 
-            *pa_out = hmap::gradient_norm(*pa_in);
-          },
-          node.cfg().cm_cpu);
-    }
-
-    p_out->sync_overlap_buffers();
     post_process_heightmap(node, *p_out);
   }
   else if (group == G_ANGLE)

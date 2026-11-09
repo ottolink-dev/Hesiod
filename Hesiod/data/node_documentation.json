@@ -21275,6 +21275,7 @@
             {
                 "keys": [
                     "radius",
+                    "normalize",
                     "concave",
                     "post_filter",
                     "post_mix_method",
@@ -21291,6 +21292,7 @@
             {
                 "keys": [
                     "radius",
+                    "normalize",
                     "ridge_select",
                     "post_inverse",
                     "post_gamma",
@@ -21304,6 +21306,7 @@
             {
                 "keys": [
                     "radius",
+                    "normalize",
                     "post_inverse",
                     "post_gamma",
                     "post_gain",
@@ -21319,6 +21322,12 @@
                 "description": "Decides whether concave (cavity/depression) or convex (ridge/peak) features are detected.",
                 "key": "concave",
                 "label": "",
+                "type": "Bool"
+            },
+            "normalize": {
+                "description": "Normalizes the extracted feature map using global scaling.",
+                "key": "normalize",
+                "label": "Normalize",
                 "type": "Bool"
             },
             "post_filter": {
@@ -21514,6 +21523,7 @@
             {
                 "keys": [
                     "radius",
+                    "normalize",
                     "post_inverse",
                     "post_gamma",
                     "post_gain",
@@ -21567,10 +21577,16 @@
                 "type": "Vec2Float"
             },
             "min_max_kernel": {
-                "description": "No description",
+                "description": "Kernel shape used for morphological gradient or min/max operations (e.g. Cross, Box, Octagon).",
                 "key": "min_max_kernel",
                 "label": "Kernel Type",
                 "type": "Enumeration"
+            },
+            "normalize": {
+                "description": "Normalizes the extracted feature map using global scaling.",
+                "key": "normalize",
+                "label": "Normalize",
+                "type": "Bool"
             },
             "post_gain": {
                 "description": "Mid-centered gain transformation applied to the elevation values. This is a non-linear recurve operator centered around the mid elevation (typically 0.5). Increasing the gain pushes values toward the minimum and maximum elevations, creating flatter low/high regions with a steeper transition around the midpoint.",
@@ -21661,6 +21677,7 @@
                     "talus_ref",
                     "clipping_ratio",
                     "flow_gamma",
+                    "normalize",
                     "post_mix_method",
                     "post_mix",
                     "post_inverse",
@@ -21677,11 +21694,10 @@
                     "rmax",
                     "rmin",
                     "steps",
+                    "normalize",
                     "smaller_scales_weight",
                     "curvature_clamp_mode",
                     "curvature_clamping",
-                    "saturation_limit",
-                    "k_saturation",
                     "post_inverse",
                     "post_gamma",
                     "post_gain",
@@ -21698,6 +21714,7 @@
                     "gradient_gain",
                     "curvature_weight",
                     "gradient_weight",
+                    "normalize",
                     "curvature_clamp_mode",
                     "curvature_clamping",
                     "post_inverse",
@@ -21780,10 +21797,16 @@
                 "type": "Float"
             },
             "min_max_kernel": {
-                "description": "No description",
+                "description": "Kernel shape used for morphological gradient or min/max operations (e.g. Cross, Box, Octagon).",
                 "key": "min_max_kernel",
                 "label": "Kernel Type",
                 "type": "Enumeration"
+            },
+            "normalize": {
+                "description": "Normalizes the extracted feature map using global scaling.",
+                "key": "normalize",
+                "label": "Normalize",
+                "type": "Bool"
             },
             "post_gain": {
                 "description": "Mid-centered gain transformation applied to the elevation values. This is a non-linear recurve operator centered around the mid elevation (typically 0.5). Increasing the gain pushes values toward the minimum and maximum elevations, creating flatter low/high regions with a steeper transition around the midpoint.",
