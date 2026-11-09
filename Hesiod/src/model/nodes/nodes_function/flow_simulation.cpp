@@ -2,6 +2,7 @@
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
 #include "highmap/hydrology/hydrology.hpp"
+#include "highmap/math/constants.hpp"
 #include "highmap/morphology.hpp"
 #include "highmap/primitives.hpp"
 #include "highmap/range.hpp"
@@ -181,7 +182,7 @@ void compute_flow_simulation_node(BaseNode &node)
 
   if (area_filter)
   {
-    float area_pixels = M_PI * std::pow(radius_limit * p_z->shape.x, 2);
+    float area_pixels = hmap::cte::pi * std::pow(radius_limit * p_z->shape.x, 2);
 
     hmap::for_each_tile(
         {},

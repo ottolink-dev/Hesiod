@@ -1,6 +1,7 @@
 /* Copyright (c) 2023 Otto Link. Distributed under the terms of the GNU General
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
+#include "highmap/math/constants.hpp"
 #include "highmap/primitives.hpp"
 
 #include "hesiod/model/nodes/attributes.hpp"
@@ -80,7 +81,7 @@ void compute_wave_sine_node(BaseNode &node)
 
   // phase_shift slider is in degrees (range -180..180, matching `angle`);
   // hmap::wave_sine expects radians in cos(2*pi*r + phase). Convert here.
-  const float phase_rad = phase_shift * float(M_PI / 180.0);
+  const float phase_rad = phase_shift * hmap::cte::deg_to_rad;
 
   // --- Compute
 

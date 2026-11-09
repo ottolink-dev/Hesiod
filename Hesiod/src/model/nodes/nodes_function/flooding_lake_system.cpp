@@ -2,6 +2,7 @@
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
 #include "highmap/hydrology/hydrology.hpp"
+#include "highmap/math/constants.hpp"
 #include "highmap/range.hpp"
 
 #include "hesiod/model/nodes/attributes.hpp"
@@ -63,7 +64,7 @@ void compute_flooding_lake_system_node(BaseNode &node)
   // clang-format off
   const auto  use_distributed_computation = node.val<bool>(A_USE_DISTRIBUTED_COMPUTATION);
   const int   ir                          = node.val_pixel_radius(A_MININAL_RADIUS, 0);
-  const float surface_threshold           = M_PI * ir * ir;
+  const float surface_threshold           = hmap::cte::pi * ir * ir;
   // clang-format on
 
   const auto cm = use_distributed_computation ? node.cfg().cm_cpu
