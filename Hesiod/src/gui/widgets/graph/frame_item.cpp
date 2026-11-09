@@ -3,6 +3,8 @@
  * this software. */
 #include <QGraphicsSceneMouseEvent>
 
+#include "highmap/math/constants.hpp"
+
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/widgets/graph/coord_frame_widget.hpp"
 #include "hesiod/logger.hpp"
@@ -85,7 +87,7 @@ void FrameItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 
     float pos_angle = std::atan2(pos.y(), pos.x());
     float center_angle = std::atan2(center.y(), center.x());
-    float delta = (pos_angle - center_angle) / M_PI * 180.f;
+    float delta = (pos_angle - center_angle) * hmap::cte::rad_to_deg;
 
     this->set_angle(this->angle + delta);
   }

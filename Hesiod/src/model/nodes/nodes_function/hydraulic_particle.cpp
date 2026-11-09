@@ -5,6 +5,7 @@
 #include "highmap/filters.hpp"
 #include "highmap/gradient.hpp"
 #include "highmap/math.hpp"
+#include "highmap/math/constants.hpp"
 #include "highmap/morphology.hpp"
 #include "highmap/opencl/gpu_opencl.hpp"
 #include "highmap/range.hpp"
@@ -224,7 +225,8 @@ void compute_hydraulic_particle_node(BaseNode &node)
           hmap::Array ridges = hmap::gpu::gabor_wave_fbm(region.shape,
                                                          kr,
                                                          seed + 1,
-                                                         angle * 180.f / M_PI + 90.f,
+                                                         angle * hmap::cte::rad_to_deg +
+                                                             90.f,
                                                          0.f,
                                                          octaves,
                                                          weight,

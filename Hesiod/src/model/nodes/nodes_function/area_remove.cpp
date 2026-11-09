@@ -2,6 +2,7 @@
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
 #include "highmap/local_metrics.hpp"
+#include "highmap/math/constants.hpp"
 #include "highmap/opencl/gpu_opencl.hpp"
 #include "highmap/range.hpp"
 
@@ -63,7 +64,7 @@ void compute_area_remove_node(BaseNode &node)
   const auto radius   = node.val<float>(A_RADIUS);
   const auto bg_value = node.val<float>(A_BG_VALUE);
 
-  const float area_pixels = M_PI * std::pow(radius * p_in->shape.x, 2);
+  const float area_pixels = hmap::cte::pi * std::pow(radius * p_in->shape.x, 2);
 
   // --- Compute
 

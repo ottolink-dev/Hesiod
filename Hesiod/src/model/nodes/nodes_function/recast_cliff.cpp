@@ -2,6 +2,7 @@
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
 #include "highmap/filters.hpp"
+#include "highmap/math/constants.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/attributes.hpp"
@@ -152,7 +153,7 @@ void compute_recast_cliff_node(BaseNode &node)
           if (pa_angle)
           {
             hmap::Array angle_deg(pa_in->shape, angle);
-            angle_deg += (*pa_angle) * (180.f / static_cast<float>(M_PI));
+            angle_deg += (*pa_angle) * hmap::cte::rad_to_deg;
             hmap::gpu::recast_cliff_directional(*pa_out,
                                                 talus,
                                                 ir,
