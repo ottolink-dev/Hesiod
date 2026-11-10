@@ -68,6 +68,7 @@ void apply_node_status_icons(const std::string      &node_type,
       "ExportScene",
       "ExportTexture",
       "ExportTiled",
+      "Flip",
       "FlowStream", // TODO
       "ImportHeightmap",
       "ImportTexture",
