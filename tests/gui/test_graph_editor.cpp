@@ -21,6 +21,7 @@
 #include "hesiod/model/graph/graph_node.hpp"
 #include "gnode/graph_worker.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
+#include "hesiod/model/nodes/node_factory.hpp"
 #include "hesiod/model/utils.hpp"
 
 using namespace hesiod;
@@ -781,6 +782,79 @@ private Q_SLOTS:
     BaseNode *c1 = graph1->get_node_ref_by_id<BaseNode>("c1");
     QVERIFY(c1 != nullptr);
     QCOMPARE(c1->get_comment(), "my note");
+  }
+
+  void test_flip_node_modes()
+  {
+    Fixture f;
+    const auto c = f.add("Constant");
+    const auto flip_id = f.add("Flip");
+    f.editor.connect({c, "output", flip_id, "input"});
+
+    auto *node_c = f.graph->get_node_ref_by_id<BaseNode>(c);
+    auto *node_f = f.graph->get_node_ref_by_id<BaseNode>(flip_id);
+    QVERIFY(node_c != nullptr);
+    QVERIFY(node_f != nullptr);
+
+    // Populate the input array with distinct values across coordinates
+    // (0,0)=0, (3,0)=3, (0,3)=12, (3,3)=15
+    auto *va_in = node_c->get_value_ref<hmap::VirtualArray>("output");
+    QVERIFY(va_in != nullptr);
+    const glm::ivec2 shape = f.config->shape;
+    hmap::Array in_arr(shape);
+    for (int j = 0; j < shape.y; ++j)
+      for (int i = 0; i < shape.x; ++i)
+        in_arr(i, j) = static_cast<float>(i + shape.x * j);
+    va_in->from_array(in_arr, f.config->cm_cpu);
+
+    auto *va_out = node_f->get_value_ref<hmap::VirtualArray>("output");
+    QVERIFY(va_out != nullptr);
+
+    // 1. Identity (no flipping)
+    node_f->set_value<bool>("flip_ud", false);
+    node_f->set_value<bool>("flip_lr", false);
+    node_f->set_value<bool>("transpose", false);
+    compute_flip_node(*node_f);
+    hmap::Array out_arr = va_out->to_array(f.config->cm_cpu);
+    for (int j = 0; j < shape.y; ++j)
+      for (int i = 0; i < shape.x; ++i)
+        QCOMPARE(out_arr(i, j), in_arr(i, j));
+
+    // 2. Flip LR: x -> shape.x - 1 - x
+    node_f->set_value<bool>("flip_lr", true);
+    compute_flip_node(*node_f);
+    out_arr = va_out->to_array(f.config->cm_cpu);
+    for (int j = 0; j < shape.y; ++j)
+      for (int i = 0; i < shape.x; ++i)
+        QCOMPARE(out_arr(i, j), in_arr(shape.x - 1 - i, j));
+
+    // 3. Flip UD: y -> shape.y - 1 - y
+    node_f->set_value<bool>("flip_lr", false);
+    node_f->set_value<bool>("flip_ud", true);
+    compute_flip_node(*node_f);
+    out_arr = va_out->to_array(f.config->cm_cpu);
+    for (int j = 0; j < shape.y; ++j)
+      for (int i = 0; i < shape.x; ++i)
+        QCOMPARE(out_arr(i, j), in_arr(i, shape.y - 1 - j));
+
+    // 4. Flip both LR and UD
+    node_f->set_value<bool>("flip_lr", true);
+    node_f->set_value<bool>("flip_ud", true);
+    compute_flip_node(*node_f);
+    out_arr = va_out->to_array(f.config->cm_cpu);
+    for (int j = 0; j < shape.y; ++j)
+      for (int i = 0; i < shape.x; ++i)
+        QCOMPARE(out_arr(i, j), in_arr(shape.x - 1 - i, shape.y - 1 - j));
+
+    // 5. Transpose: (i, j) -> (j, i)
+    node_f->set_value<bool>("flip_lr", false);
+    node_f->set_value<bool>("flip_ud", false);
+    node_f->set_value<bool>("transpose", true);
+    compute_flip_node(*node_f);
+    out_arr = va_out->to_array(f.config->cm_cpu);
+    for (int j = 0; j < shape.y; ++j)
+      for (int i = 0; i < shape.x; ++i)
+        QCOMPARE(out_arr(i, j), in_arr(j, i));
   }
 };
 

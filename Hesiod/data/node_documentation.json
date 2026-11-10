@@ -7618,6 +7618,111 @@
             }
         }
     },
+    "Flip": {
+        "category": "Operator/Transform",
+        "description": "Flip a heightmap along the X and/or Y axis, or transpose it.",
+        "label": "Flip",
+        "parameter_groups": [
+            {
+                "keys": [
+                    "flip_ud",
+                    "flip_lr",
+                    "transpose",
+                    "post_mix_method",
+                    "post_mix",
+                    "post_inverse",
+                    "post_gamma",
+                    "post_gain",
+                    "post_smoothing_radius",
+                    "post_remap",
+                    "post_saturate"
+                ],
+                "name": "main"
+            }
+        ],
+        "parameters": {
+            "flip_ud": {
+                "description": "Flip vertically (up/down).",
+                "key": "flip_ud",
+                "label": "Flip Up/Down",
+                "type": "Bool"
+            },
+            "flip_lr": {
+                "description": "Flip horizontally (left/right).",
+                "key": "flip_lr",
+                "label": "Flip Left/Right",
+                "type": "Bool"
+            },
+            "transpose": {
+                "description": "Transpose the heightmap array.",
+                "key": "transpose",
+                "label": "Transpose",
+                "type": "Bool"
+            },
+            "post_gain": {
+                "description": "Mid-centered gain transformation applied to the elevation values.",
+                "key": "post_gain",
+                "label": "Gain",
+                "type": "Float"
+            },
+            "post_gamma": {
+                "description": "Standard gamma correction applied to the elevation values.",
+                "key": "post_gamma",
+                "label": "Gamma",
+                "type": "Float"
+            },
+            "post_inverse": {
+                "description": "Inverts the output values after processing.",
+                "key": "post_inverse",
+                "label": "Invert Output",
+                "type": "Bool"
+            },
+            "post_mix": {
+                "description": "Mixing factor for blending input and output values.",
+                "key": "post_mix",
+                "label": "Mix Factor",
+                "type": "Float"
+            },
+            "post_mix_method": {
+                "description": "Method used to combine input and output values.",
+                "key": "post_mix_method",
+                "label": "Mix Method",
+                "type": "Enumeration"
+            },
+            "post_remap": {
+                "description": "Linearly remaps the output values to a specified target range.",
+                "key": "post_remap",
+                "label": "Remap Range",
+                "type": "Value range"
+            },
+            "post_saturate": {
+                "description": "Modifies the amplitude of elevations.",
+                "key": "post_saturate",
+                "label": "Saturation Range",
+                "type": "Value range"
+            },
+            "post_smoothing_radius": {
+                "description": "Defines the radius for post-processing smoothing.",
+                "key": "post_smoothing_radius",
+                "label": "Smoothing Radius",
+                "type": "Float"
+            }
+        },
+        "ports": {
+            "input": {
+                "caption": "input",
+                "data_type": "VirtualArray",
+                "description": "Input heightmap.",
+                "type": "input"
+            },
+            "output": {
+                "caption": "output",
+                "data_type": "VirtualArray",
+                "description": "Output heightmap.",
+                "type": "output"
+            }
+        }
+    },
     "FloodingFromBoundaries": {
         "category": "Hydrology",
         "description": "No description available",
@@ -12007,7 +12112,7 @@
     },
     "HydraulicStreamLog": {
         "category": "Erosion/Hydraulic",
-        "description": "HydraulicStreamLog is a multiscale hydraulic erosion operator using a flow-stream formulation and an infinite flow-direction algorithm (D∞). Erosion intensity is driven by flow accumulation, terrain gradient, moisture, and optional bedrock limits. Multi-resolution scheduling carves broad macro-valleys with optional domain warping at coarse levels before fine-detail channel incision.",
+        "description": "HydraulicStreamLog is a multiscale hydraulic erosion operator using a flow-stream formulation and an infinite flow-direction algorithm (D\u221e). Erosion intensity is driven by flow accumulation, terrain gradient, moisture, and optional bedrock limits. Multi-resolution scheduling carves broad macro-valleys with optional domain warping at coarse levels before fine-detail channel incision.",
         "label": "HydraulicStreamLog",
         "parameter_groups": [
             {
@@ -12823,7 +12928,7 @@
             "land_mask": {
                 "caption": "land_mask",
                 "data_type": "VirtualArray",
-                "description": "Binary mask defining the island’s footprint; nonzero pixels are considered land. Consider using the node IslandLandMask to generate this mask.",
+                "description": "Binary mask defining the island\u2019s footprint; nonzero pixels are considered land. Consider using the node IslandLandMask to generate this mask.",
                 "type": "input"
             },
             "output": {
@@ -16168,7 +16273,7 @@
                 "type": "Float"
             },
             "noise_inflate": {
-                "description": "Controls how noise affects the step profile. ‘Inflate’ pushes elevations outward, while ‘Deflate’ pulls them inward.",
+                "description": "Controls how noise affects the step profile. \u2018Inflate\u2019 pushes elevations outward, while \u2018Deflate\u2019 pulls them inward.",
                 "key": "noise_inflate",
                 "label": "",
                 "type": "Bool"
@@ -26102,7 +26207,7 @@
             "output": {
                 "caption": "output",
                 "data_type": "VirtualArray",
-                "description": "Resulting heightmap that combines the target’s base shape with the source’s high-frequency details.",
+                "description": "Resulting heightmap that combines the target\u2019s base shape with the source\u2019s high-frequency details.",
                 "type": "output"
             },
             "source": {
