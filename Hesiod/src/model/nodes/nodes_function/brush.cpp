@@ -1,6 +1,8 @@
 /* Copyright (c) 2023 Otto Link. Distributed under the terms of the GNU General
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
+#include "highmap/transform.hpp"
+
 #include "meta/metadata/keys.hpp"
 
 #include "hesiod/logger.hpp"
@@ -70,7 +72,10 @@ void compute_brush_node(BaseNode &node)
   {
     hmap::Array painted(arr.shape);
     painted.vector = arr.vector;
-    array          = painted.resample_to_shape_bilinear(node.get_config_ref()->shape);
+    hmap::flip_ud(painted);
+    // hmap::flip_lr(painted);
+
+    array = painted.resample_to_shape_bilinear(node.get_config_ref()->shape);
   }
 
   // Array -> VirtualArray

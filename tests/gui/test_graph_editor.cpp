@@ -22,6 +22,7 @@
 #include "gnode/graph_worker.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/utils.hpp"
+#include "meta/ext/array/array.hpp"
 
 using namespace hesiod;
 
@@ -781,6 +782,44 @@ private Q_SLOTS:
     BaseNode *c1 = graph1->get_node_ref_by_id<BaseNode>("c1");
     QVERIFY(c1 != nullptr);
     QCOMPARE(c1->get_comment(), "my note");
+  }
+
+  void brush_node_array_output_orientation_matches_canvas()
+  {
+    auto config = std::make_shared<GraphConfig>();
+    config->set_shape({4, 4});
+    config->set_tiling({1, 1});
+    config->set_overlap(0.f);
+    config->storage_mode = hmap::StorageMode::VA_RAM;
+
+    auto graph = std::make_shared<GraphNode>("brush_test_graph", config);
+    const auto id = graph->add_node("Brush", "brush_node");
+    auto *node = graph->get_node_ref_by_id<BaseNode>(id);
+    QVERIFY(node != nullptr);
+
+    // Set up a 4x4 array with an asymmetric pattern:
+    // row 0 (canvas top) has 1.0f at (0, 0), all other entries 0.0f
+    meta::Array arr;
+    arr.shape = glm::ivec2(4, 4);
+    arr.vector.assign(16, 0.f);
+    arr.vector[0] = 1.0f; // top-left in canvas coordinates (x=0, y=0)
+
+    node->get_meta_group().current().value<meta::Array>("hmap") = arr;
+
+    // Compute node
+    node->compute();
+
+    // Verify output port
+    auto *p_out = node->get_value_ref<hmap::VirtualArray>("output");
+    QVERIFY(p_out != nullptr);
+
+    hmap::Array out_array = p_out->to_array(glm::ivec2(4, 4), node->cfg().cm_cpu);
+
+    // In Hesiod/HighMap image coordinate convention:
+    // (0, 0) in canvas (top row) corresponds to y = height - 1 = 3 in HighMap array
+    // so out_array(0, 3) must be non-zero (near 1.0) and out_array(0, 0) must be 0.0
+    QVERIFY(out_array(0, 3) > 0.5f);
+    QCOMPARE(out_array(0, 0), 0.0f);
   }
 };
 
