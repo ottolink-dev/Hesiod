@@ -146,8 +146,15 @@ jobs:
           if-no-files-found: error
           retention-days: 14
 
+  build-macos:
+    needs: source
+    uses: ./.github/workflows/macos-build.yml
+    with:
+      source-ref: ${{ needs.source.outputs.sha }}
+      artifact-name: weekly-macos
+
   publish:
-    needs: [source, build]
+    needs: [source, build, build-macos]
     if: >-
       github.repository == 'ottolink-dev/Hesiod' &&
       (github.event_name == 'schedule' || inputs.publish)
@@ -166,7 +173,7 @@ jobs:
         with:
           python-version: '3.12'
       - run: python -m pip install -r scripts/ci/requirements.txt
-      - name: Publish both platforms to the website
+      - name: Publish all platforms to the website
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.WEBSITE_R2_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.WEBSITE_R2_SECRET_ACCESS_KEY }}

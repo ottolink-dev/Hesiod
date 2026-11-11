@@ -1,6 +1,15 @@
 name: macOS Apple Silicon build
 
 on:
+  workflow_call:
+    inputs:
+      source-ref:
+        description: Application revision to build
+        type: string
+        required: true
+      artifact-name:
+        type: string
+        default: hesiod-macos-arm64
   workflow_dispatch:
   push:
     branches: [main, dev]
@@ -31,6 +40,7 @@ jobs:
           python-version: '3.12'
       - uses: actions/checkout@v4
         with:
+          ref: ${{ inputs.source-ref || github.sha }}
           submodules: recursive
           persist-credentials: false
       - name: Install native dependencies
@@ -41,7 +51,7 @@ jobs:
       - name: Build ARM64 application
         run: bash scripts/build-macos.sh
       - name: Test the dependency audit
-        run: python3 -m unittest discover -s tests/ci -p test_macos_bundle.py -v
+        run: python3 -m unittest discover -s tests/ci -p 'test_macos*.py' -v
       - name: Verify executable architecture
         run: lipo build/macos/bin/Hesiod.app/Contents/MacOS/Hesiod -verify_arch arm64
       - name: Package standalone app (ad-hoc signed, not notarized)
@@ -52,7 +62,7 @@ jobs:
           --report output/macos-package/verification.json
       - uses: actions/upload-artifact@v4
         with:
-          name: hesiod-macos-arm64
+          name: ${{ inputs.artifact-name || 'hesiod-macos-arm64' }}
           path: |
             output/macos-package/*.zip
             output/macos-package/*.sha256

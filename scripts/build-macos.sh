@@ -12,23 +12,7 @@ source_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 build_dir="${HESIOD_BUILD_DIR:-$source_dir/build/macos}"
 brew_prefix="$(brew --prefix)"
 
-# Keep fixes to pinned dependencies reproducible until they land upstream.
-apply_patch_once() {
-  local module="$1" patch_file="$2"
-  if git -C "$source_dir/external/$module" apply --reverse --check "$patch_file" 2>/dev/null; then
-    return # Already applied.
-  fi
-  git -C "$source_dir/external/$module" apply --check "$patch_file"
-  git -C "$source_dir/external/$module" apply "$patch_file"
-}
-apply_patch_once HighMap "$source_dir/scripts/macos/patches/highmap-macos.patch"
-# Newer HighMap revisions already supply this helper; retain compatibility
-# with the older dependency pinned by main as well as the current dev branch.
-if ! grep -Eq 'float[[:space:]]+hash13f[[:space:]]*\(' \
-    "$source_dir/external/HighMap/HighMap/src/gpu_opencl/kernels/common/_common_rand.cl"; then
-  apply_patch_once HighMap "$source_dir/scripts/macos/patches/highmap-hash13.patch"
-fi
-apply_patch_once Meta "$source_dir/scripts/macos/patches/meta-sstream.patch"
+source "$source_dir/scripts/macos/patch_dependencies.sh"
 
 cmake -S "$source_dir" -B "$build_dir" -G Ninja \
   -DCMAKE_BUILD_TYPE=Release \
