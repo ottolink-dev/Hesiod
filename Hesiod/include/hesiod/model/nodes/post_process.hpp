@@ -27,6 +27,12 @@ void post_apply_enveloppe(BaseNode                 &node,
                           hmap::VirtualArray       &h,
                           const hmap::VirtualArray *p_env);
 
+void post_apply_normalize_and_clip(BaseNode           &node,
+                                   hmap::VirtualArray &h,
+                                   float               multiplier = 2.5f,
+                                   bool                smooth_transition = true,
+                                   bool                range_01 = true);
+
 void post_apply_saturate_percentile(BaseNode           &node,
                                     hmap::VirtualArray &h,
                                     float               satmin,

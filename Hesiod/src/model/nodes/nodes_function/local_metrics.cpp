@@ -106,20 +106,7 @@ void compute_local_metrics_node(BaseNode &node)
   // --- Post-process
 
   if (normalize)
-  {
-    hmap::for_each_tile(
-        {},
-        {p_out},
-        [&](std::vector<const hmap::Array *>,
-            std::vector<hmap::Array *> p_arrays_out,
-            const hmap::TileRegion &,
-            hmap::ICommunicator &comm)
-        {
-          auto [pa_out] = unpack<1>(p_arrays_out);
-          hmap::normalize_and_clip(*pa_out, 2.5f, true, true, comm);
-        },
-        node.cfg().cm_cpu);
-  }
+    post_apply_normalize_and_clip(node, *p_out);
 
   post_process_heightmap(node, *p_out);
 }

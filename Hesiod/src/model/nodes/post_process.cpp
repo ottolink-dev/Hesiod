@@ -48,6 +48,31 @@ void post_apply_enveloppe(BaseNode                 &node,
       node.cfg().cm_cpu);
 }
 
+void post_apply_normalize_and_clip(BaseNode           &node,
+                                   hmap::VirtualArray &h,
+                                   float               multiplier,
+                                   bool                smooth_transition,
+                                   bool                range_01)
+{
+  Logger::log()->trace("post_apply_normalize_and_clip: [{}]/[{}]",
+                       node.get_node_type(),
+                       node.get_id());
+
+  hmap::for_each_tile(
+      {},
+      {&h},
+      [multiplier, smooth_transition, range_01](std::vector<const hmap::Array *>,
+                                                std::vector<hmap::Array *> p_arrays_out,
+                                                const hmap::TileRegion &,
+                                                hmap::ICommunicator &comm)
+      {
+        auto [pa_out] = unpack<1>(p_arrays_out);
+
+        hmap::normalize_and_clip(*pa_out, multiplier, smooth_transition, range_01, comm);
+      },
+      node.cfg().cm_cpu);
+}
+
 void post_apply_saturate_percentile(BaseNode           &node,
                                     hmap::VirtualArray &h,
                                     float               satmin,
