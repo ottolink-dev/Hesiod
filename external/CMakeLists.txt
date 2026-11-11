@@ -14,6 +14,15 @@ set(GNODEGUI_ENABLE_TESTS OFF)
 add_subdirectory(GNodeGUI)
 
 # HighMap
+# FetchContent uses the first declaration, so pin LightUSD before HighMap
+# declares its moving main branch. Keep this revision aligned with
+# nix/highmap-sources.nix; newer LightUSD defaults to an incompatible API.
+include(FetchContent)
+FetchContent_Declare(
+  LightUSD
+  GIT_REPOSITORY https://github.com/lighttransport/LightUSD.git
+  GIT_TAG 1fdd60a6171724b5ce0e6716c25b2bba1aed7ad3)
+
 set(HIGHMAP_ENABLE_DOCS OFF)
 set(HIGHMAP_ENABLE_EXAMPLES OFF)
 set(HIGHMAP_ENABLE_TESTS OFF)
