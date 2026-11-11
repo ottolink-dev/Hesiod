@@ -344,7 +344,7 @@ std::map<std::string, std::string> get_node_inventory()
       {"SelectCurvature", "Terrain Features/Selector"},
       {"SelectMultiband3", "Terrain Features/Selector"},
       {"SelectSlope", "Terrain Features/Selector"},
-      {"SelectSoil", "Terrain Features/ForTexturing"},
+      {"SelectSoil", "Terrain Features/Selector"},
       {"SelectTransitions", "Terrain Features/Selector"},
       {"SelectValue", "Terrain Features/Selector"},
       {"SetAlpha", "Texture"},
