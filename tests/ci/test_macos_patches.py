@@ -47,7 +47,9 @@ class DependencyPatchTests(unittest.TestCase):
                 kernel.write_text('float hash13f(float3 p);\n')
                 meta = root / 'external/Meta/Meta/include/meta/type/attribute_traits_std.inl'
                 meta.parent.mkdir(parents=True)
-                shutil.copy2(ROOT / 'external/Meta/Meta/include/meta/type/attribute_traits_std.inl', meta)
+                meta.write_text(' * @copyright Copyright (c) 2026\n */\n#pragma once\n'
+                                '#include <string>\n#include <vector>\n\n'
+                                '  }\n};\n\n} // namespace meta')
                 subprocess.run(['git', 'init', '-q', str(root / 'external/Meta')], check=True)
                 shutil.copytree(ROOT / 'scripts/macos', root / 'scripts/macos')
                 command = ['bash', '-euc', 'source_dir="$1"; source "$1/scripts/macos/patch_dependencies.sh"',
