@@ -22,11 +22,11 @@ namespace hesiod
 constexpr const char *P_IN  = "input";
 constexpr const char *P_OUT = "mask";
 
-constexpr const char *A_RADIUS   = "radius";
-constexpr const char *A_CTYPE    = "ctype";
-constexpr const char *A_CLAMPING = "clamping";
-constexpr const char *A_SATMAX   = "satmax";
-constexpr const char *A_APPROX   = "approx";
+constexpr const char *A_RADIUS    = "radius";
+constexpr const char *A_CTYPE     = "ctype";
+constexpr const char *A_CLAMPING  = "clamping";
+constexpr const char *A_APPROX    = "approx";
+constexpr const char *A_NORMALIZE = "normalize";
 
 // -----------------------------------------------------------------------------
 // Setup
@@ -49,11 +49,9 @@ void setup_curvatures_node(BaseNode &node)
   add_float(node, A_RADIUS, "Radius", 0.f, 0.f, 0.5f);
   add_enum(node, A_CTYPE, "Curvature Type", enum_mappings.curvature_type_map, "Mean");
   add_choice(node, A_CLAMPING, "Values Kept", choices);
-  add_float(node, A_SATMAX, "Saturation Ratio", 2.f, 0.f, 20.f, "{:.0f}%");
+  add_bool(node, A_NORMALIZE, "Normalize", true);
   add_bool(node, A_APPROX, "Approx. Algo.", false);
   // clang-format on
-
-  // --- Attribute(s) order
 
   setup_post_process_heightmap_attributes(node,
                                           {.add_mix = true, .remap_active_state = true});
@@ -77,16 +75,15 @@ void compute_curvatures_node(BaseNode &node)
 
   // --- Params
 
+  // clang-format off
   const auto ctype       = node.val_enum<hmap::CurvatureType>(A_CTYPE);
   const auto clamping    = node.val<std::string>(A_CLAMPING);
+  const auto normalize   = node.val<bool>(A_NORMALIZE);
   const auto approx_algo = node.val<bool>(A_APPROX);
-  const auto sat_perc    = 0.01f * node.val<float>(A_SATMAX);
   // clang-format on
 
-  const bool  keep_both = (clamping == "Both");
-  const int   ir        = node.val_pixel_radius(A_RADIUS);
-  const float satmin    = sat_perc;
-  const float satmax    = 1.f - sat_perc;
+  const bool keep_both = (clamping == "Both");
+  const int  ir        = node.val_pixel_radius(A_RADIUS);
 
   // --- Compute
 
@@ -115,7 +112,22 @@ void compute_curvatures_node(BaseNode &node)
 
   // --- Post-process
 
-  post_apply_saturate_percentile(node, *p_out, satmin, satmax);
+  if (normalize)
+  {
+    hmap::for_each_tile(
+        {},
+        {p_out},
+        [&](std::vector<const hmap::Array *>,
+            std::vector<hmap::Array *> p_arrays_out,
+            const hmap::TileRegion &,
+            hmap::ICommunicator &comm)
+        {
+          auto [pa_out] = unpack<1>(p_arrays_out);
+          hmap::normalize_and_clip(*pa_out, 2.5f, true, true, comm);
+        },
+        node.cfg().cm_cpu);
+  }
+
   post_process_heightmap(node, *p_out);
 }
 

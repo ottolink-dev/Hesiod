@@ -22,6 +22,8 @@
 #include "meta_qt/ui/theme.hpp"
 
 #include "hesiod/app/hesiod_application.hpp"
+#include "hesiod/gui/theme/theme.hpp"
+#include "hesiod/gui/widgets/dialogs/natural_scroll_area.hpp"
 #include "hesiod/gui/widgets/graph_config_widgets/graph_config_dialog.hpp"
 #include "hesiod/gui/widgets/node_widgets/properties_panel_design.hpp"
 #include "hesiod/gui/widgets/utils/gui_utils.hpp"
@@ -45,12 +47,11 @@ constexpr int kShapeSnap = 16; // short edges stay tiling-friendly
 
 const meta::qt::Theme &config_theme()
 {
-  static const meta::qt::Theme theme = []()
-  {
-    meta::qt::Theme t = *properties_panel_design().theme;
-    t.group_accents = {{"Domain", QColor("#7d9cc0")}, {"Computation", QColor("#3aa899")}};
-    return t;
-  }();
+  static meta::qt::Theme theme;
+  theme = *properties_panel_design().theme;
+  theme.group_accents = {
+      {"Domain", ThemeDefinition::derive_group_accent("Domain")},
+      {"Computation", ThemeDefinition::derive_group_accent("Computation")}};
   return theme;
 }
 
@@ -93,33 +94,6 @@ glm::ivec2 shape_for(int aspect_index, int long_edge, int custom_height)
     return {long_edge, snap(long_edge * ratio.y / ratio.x)};
   return {snap(long_edge * ratio.x / ratio.y), long_edge};
 }
-
-// QScrollArea with a sizeHint that follows its content's natural height,
-// allowing the parent MessageDialog (via adjustSize) to expand to fit all
-// sections when screen space permits, while still scrolling when constrained.
-class NaturalScrollArea final : public QScrollArea
-{
-public:
-  using QScrollArea::QScrollArea;
-
-  QSize sizeHint() const override
-  {
-    if (const QWidget *w = this->widget())
-      return QSize(w->sizeHint().width(), w->sizeHint().height());
-    return QScrollArea::sizeHint();
-  }
-
-  QSize minimumSizeHint() const override { return QSize(0, 120); }
-
-protected:
-  bool eventFilter(QObject *watched, QEvent *event) override
-  {
-    if (watched == this->widget() &&
-        (event->type() == QEvent::LayoutRequest || event->type() == QEvent::Resize))
-      this->updateGeometry();
-    return QScrollArea::eventFilter(watched, event);
-  }
-};
 
 } // namespace
 
@@ -363,26 +337,7 @@ void GraphConfigDialog::accept()
 
 void GraphConfigDialog::showEvent(QShowEvent *event)
 {
-  if (this->scroll_area)
-  {
-    const QWidget *anchor = this->parentWidget() ? this->parentWidget()->window()
-                                                 : nullptr;
-    const QScreen *screen = anchor && anchor->screen() ? anchor->screen()
-                                                       : this->screen();
-    if (!screen)
-      screen = QGuiApplication::primaryScreen();
-
-    const int available_height = screen ? screen->availableGeometry().height() : 800;
-    // Cap the dialog to 85% of available screen height
-    constexpr double kScreenHeightRatio = 0.85;
-    constexpr int    kChromeOverhead = 180;
-    const int        max_dialog_height = std::max(300,
-                                           int(available_height * kScreenHeightRatio));
-    const int max_scroll_height = std::max(180, max_dialog_height - kChromeOverhead);
-
-    this->scroll_area->setMaximumHeight(max_scroll_height);
-  }
-
+  clamp_dialog_scroll_height(this->scroll_area, this);
   MessageDialog::showEvent(event);
 }
 

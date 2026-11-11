@@ -1,16 +1,16 @@
 /* Copyright (c) 2025 Otto Link. Distributed under the terms of the GNU General
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
-#include "hesiod/app/style_settings.hpp"
+#include "hesiod/gui/theme/node_graph_color_palette.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/utils.hpp"
 
 namespace hesiod
 {
 
-void StyleSettings::json_from(nlohmann::json const &json)
+void NodeGraphColorPalette::json_from(nlohmann::json const &json)
 {
-  Logger::log()->trace("StyleSettings::json_from");
+  Logger::log()->trace("NodeGraphColorPalette::json_from");
 
   if (json.contains("data_color_map"))
   {
@@ -25,9 +25,9 @@ void StyleSettings::json_from(nlohmann::json const &json)
   }
 }
 
-nlohmann::json StyleSettings::json_to() const
+nlohmann::json NodeGraphColorPalette::json_to() const
 {
-  Logger::log()->trace("StyleSettings::json_to");
+  Logger::log()->trace("NodeGraphColorPalette::json_to");
 
   nlohmann::json json;
 

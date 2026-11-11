@@ -124,7 +124,7 @@ void compute_flow_stream_node(BaseNode &node)
   const auto truncate_merging     = node.val<bool>(A_TRUNCATE_MERGING_PATHS);
 
   const auto depth                    = node.val<float>(A_DEPTH);
-  const auto slope                    = node.val<float>(A_SLOPE);
+  const auto talus                    = node.val_talus(A_SLOPE);
   const auto width                    = node.val<float>(A_WIDTH);
   const auto width_exponent           = node.val<float>(A_WIDTH_EXPONENT);
   const auto radial_profile           = node.val_enum<hmap::RadialProfile>(A_RADIAL_PROFILE);
@@ -170,8 +170,6 @@ void compute_flow_stream_node(BaseNode &node)
   stream_graph.enforce_downhill_elevation(0.01f);
 
   // --- Carve river network
-
-  const float talus = slope / float(p_out->shape.x);
 
   hmap::for_each_tile(
       {p_in},

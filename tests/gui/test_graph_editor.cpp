@@ -15,11 +15,13 @@
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/graph_editor.hpp"
 #include "hesiod/gui/hesiod_node_proxy.hpp"
+#include "hesiod/gui/widgets/dialogs/node_inspector_widget.hpp"
 #include "hesiod/gui/widgets/graph/graph_node_widget.hpp"
 #include "hesiod/model/graph/graph_manager.hpp"
 #include "hesiod/model/graph/graph_node.hpp"
 #include "gnode/graph_worker.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
+#include "hesiod/model/nodes/node_factory.hpp"
 #include "hesiod/model/utils.hpp"
 
 using namespace hesiod;
@@ -722,6 +724,137 @@ private Q_SLOTS:
     widget.on_graph_reload_request();
     QCOMPARE(started, 1);
     QCOMPARE(finished, 1);
+  }
+
+  void test_node_inspector()
+  {
+    auto gm = std::make_shared<GraphManager>("gm_test");
+    auto graph1 = std::make_shared<GraphNode>("g1", small_config());
+    auto graph2 = std::make_shared<GraphNode>("g2", small_config());
+
+    gm->add_graph_node(graph1, "g1");
+    gm->add_graph_node(graph2, "g2");
+
+    graph1->add_node("Constant", "c1");
+    graph1->add_node("Thru", "t1");
+    graph2->add_node("Constant", "c2");
+
+    NodeInspectorWidget inspector(gm);
+    inspector.refresh_content();
+
+    auto *table = inspector.findChild<QTableView *>();
+    QVERIFY(table != nullptr);
+
+    auto *proxy = qobject_cast<QSortFilterProxyModel *>(table->model());
+    QVERIFY(proxy != nullptr);
+
+    // 3 nodes in total across all graphs
+    QCOMPARE(proxy->rowCount(), 3);
+
+    // Filter by text "Thru"
+    auto *search_edit = inspector.findChild<QLineEdit *>();
+    QVERIFY(search_edit != nullptr);
+    search_edit->setText("Thru");
+    QCOMPARE(proxy->rowCount(), 1);
+
+    // Clear filter
+    search_edit->clear();
+    QCOMPARE(proxy->rowCount(), 3);
+
+    // Test editing comment directly in model for node c1
+    int c1_row = -1;
+    for (int r = 0; r < proxy->rowCount(); ++r)
+    {
+      if (proxy->data(proxy->index(r, NodeInspectorModel::Column::COL_ID)).toString() == "c1")
+      {
+        c1_row = r;
+        break;
+      }
+    }
+    QVERIFY(c1_row != -1);
+
+    QModelIndex comment_idx = proxy->index(c1_row, NodeInspectorModel::Column::COL_COMMENT);
+    QVERIFY(proxy->flags(comment_idx) & Qt::ItemIsEditable);
+    QVERIFY(proxy->setData(comment_idx, "my note", Qt::EditRole));
+    QCOMPARE(proxy->data(comment_idx, Qt::DisplayRole).toString(), "my note");
+
+    // Check underlying BaseNode
+    BaseNode *c1 = graph1->get_node_ref_by_id<BaseNode>("c1");
+    QVERIFY(c1 != nullptr);
+    QCOMPARE(c1->get_comment(), "my note");
+  }
+
+  void test_flip_node_modes()
+  {
+    Fixture f;
+    const auto c = f.add("Constant");
+    const auto flip_id = f.add("Flip");
+    f.editor.connect({c, "output", flip_id, "input"});
+
+    auto *node_c = f.graph->get_node_ref_by_id<BaseNode>(c);
+    auto *node_f = f.graph->get_node_ref_by_id<BaseNode>(flip_id);
+    QVERIFY(node_c != nullptr);
+    QVERIFY(node_f != nullptr);
+
+    // Populate the input array with distinct values across coordinates
+    // (0,0)=0, (3,0)=3, (0,3)=12, (3,3)=15
+    auto *va_in = node_c->get_value_ref<hmap::VirtualArray>("output");
+    QVERIFY(va_in != nullptr);
+    const glm::ivec2 shape = f.config->shape;
+    hmap::Array in_arr(shape);
+    for (int j = 0; j < shape.y; ++j)
+      for (int i = 0; i < shape.x; ++i)
+        in_arr(i, j) = static_cast<float>(i + shape.x * j);
+    va_in->from_array(in_arr, f.config->cm_cpu);
+
+    auto *va_out = node_f->get_value_ref<hmap::VirtualArray>("output");
+    QVERIFY(va_out != nullptr);
+
+    // 1. Identity (no flipping)
+    node_f->set_value<bool>("flip_ud", false);
+    node_f->set_value<bool>("flip_lr", false);
+    node_f->set_value<bool>("transpose", false);
+    compute_flip_node(*node_f);
+    hmap::Array out_arr = va_out->to_array(f.config->cm_cpu);
+    for (int j = 0; j < shape.y; ++j)
+      for (int i = 0; i < shape.x; ++i)
+        QCOMPARE(out_arr(i, j), in_arr(i, j));
+
+    // 2. Flip LR: x -> shape.x - 1 - x
+    node_f->set_value<bool>("flip_lr", true);
+    compute_flip_node(*node_f);
+    out_arr = va_out->to_array(f.config->cm_cpu);
+    for (int j = 0; j < shape.y; ++j)
+      for (int i = 0; i < shape.x; ++i)
+        QCOMPARE(out_arr(i, j), in_arr(shape.x - 1 - i, j));
+
+    // 3. Flip UD: y -> shape.y - 1 - y
+    node_f->set_value<bool>("flip_lr", false);
+    node_f->set_value<bool>("flip_ud", true);
+    compute_flip_node(*node_f);
+    out_arr = va_out->to_array(f.config->cm_cpu);
+    for (int j = 0; j < shape.y; ++j)
+      for (int i = 0; i < shape.x; ++i)
+        QCOMPARE(out_arr(i, j), in_arr(i, shape.y - 1 - j));
+
+    // 4. Flip both LR and UD
+    node_f->set_value<bool>("flip_lr", true);
+    node_f->set_value<bool>("flip_ud", true);
+    compute_flip_node(*node_f);
+    out_arr = va_out->to_array(f.config->cm_cpu);
+    for (int j = 0; j < shape.y; ++j)
+      for (int i = 0; i < shape.x; ++i)
+        QCOMPARE(out_arr(i, j), in_arr(shape.x - 1 - i, shape.y - 1 - j));
+
+    // 5. Transpose: (i, j) -> (j, i)
+    node_f->set_value<bool>("flip_lr", false);
+    node_f->set_value<bool>("flip_ud", false);
+    node_f->set_value<bool>("transpose", true);
+    compute_flip_node(*node_f);
+    out_arr = va_out->to_array(f.config->cm_cpu);
+    for (int j = 0; j < shape.y; ++j)
+      for (int i = 0; i < shape.x; ++i)
+        QCOMPARE(out_arr(i, j), in_arr(j, i));
   }
 };
 

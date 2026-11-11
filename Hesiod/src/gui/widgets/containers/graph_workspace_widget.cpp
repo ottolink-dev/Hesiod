@@ -202,8 +202,8 @@ void GraphWorkspaceWidget::setup_layout()
     {
       this->node_palette_sidebar = new NodePaletteSidebar(
           get_node_inventory(),
-          HSD_CTX.style_settings.category_color_map,
-          current_node_palette_style());
+          HSD_CTX.node_graph_palette.category_color_map,
+          current_node_palette_palette());
       library = this->node_palette_sidebar;
     }
     else

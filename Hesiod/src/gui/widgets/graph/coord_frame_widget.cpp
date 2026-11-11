@@ -31,7 +31,7 @@ CoordFrameWidget::CoordFrameWidget(std::weak_ptr<GraphManager> p_graph_manager,
   this->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
   this->setDragMode(QGraphicsView::NoDrag);
   this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-  this->setStyleSheet("QGraphicsView { border: 1px solid #5B5B5B; border-radius: 4px;}");
+  this->setObjectName("hsdCoordFrame");
 
   // flip Y-axis
   QTransform transform;

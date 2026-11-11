@@ -15,45 +15,46 @@ namespace hesiod
 
 const PropertiesPanelDesign &properties_panel_design()
 {
-  static const PropertiesPanelDesign resolved = []()
+  static bool designs_registered = false;
+  if (!designs_registered)
   {
     // Designs register once per process. Both of them, so that stock is a
     // usable fallback rather than another name that resolves to nothing.
     meta::qt::industrial::register_design();
     meta::qt::stock::register_design();
+    designs_registered = true;
+  }
 
-    const AppSettings::Interface &settings = HSD_CTX.app_settings.interface;
+  static PropertiesPanelDesign current;
 
-    PropertiesPanelDesign out;
-    out.design = settings.properties_panel_design;
+  const AppSettings::Interface &settings = HSD_CTX.app_settings.interface;
 
-    if (!meta::qt::DesignRegistry::instance().has_design(out.design))
-    {
-      Logger::log()->warn(
-          "properties_panel_design: '{}' is not a registered design, falling "
-          "back to '{}'. Check interface.properties_panel_design in "
-          "hesiod.json.",
-          out.design,
-          meta::qt::stock::kDesignName);
+  current.design = settings.properties_panel_design;
 
-      out.design = meta::qt::stock::kDesignName;
-    }
+  if (!meta::qt::DesignRegistry::instance().has_design(current.design))
+  {
+    Logger::log()->warn(
+        "properties_panel_design: '{}' is not a registered design, falling "
+        "back to '{}'. Check interface.properties_panel_design in "
+        "hesiod.json.",
+        current.design,
+        meta::qt::stock::kDesignName);
 
-    // Designs name their own theme when they register. Point the chosen one at
-    // whatever the settings ask for so the registry stays the single answer to
-    // "what is this design drawn with", rather than the panel reading a theme
-    // the design itself knows nothing about.
-    if (!settings.properties_panel_theme.empty())
-      meta::qt::DesignRegistry::instance().set_theme(out.design,
-                                                     settings.properties_panel_theme);
+    current.design = meta::qt::stock::kDesignName;
+  }
 
-    out.theme = &meta::qt::DesignRegistry::instance().theme(out.design);
-    out.has_own_chrome = out.design == meta::qt::industrial::kDesignName;
+  // Designs name their own theme when they register. Point the chosen one at
+  // whatever the settings ask for so the registry stays the single answer to
+  // "what is this design drawn with", rather than the panel reading a theme
+  // the design itself knows nothing about.
+  if (!settings.properties_panel_theme.empty())
+    meta::qt::DesignRegistry::instance().set_theme(current.design,
+                                                   settings.properties_panel_theme);
 
-    return out;
-  }();
+  current.theme = &meta::qt::DesignRegistry::instance().theme(current.design);
+  current.has_own_chrome = current.design == meta::qt::industrial::kDesignName;
 
-  return resolved;
+  return current;
 }
 
 } // namespace hesiod

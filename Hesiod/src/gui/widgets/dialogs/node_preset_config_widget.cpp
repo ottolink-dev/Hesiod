@@ -16,8 +16,10 @@
 
 #include "meta_qt/ui/theme.hpp"
 
+#include "hesiod/gui/theme/style_sheet.hpp"
 #include "hesiod/gui/widgets/controls/control_tones.hpp"
 #include "hesiod/gui/widgets/dialogs/node_preset_config_widget.hpp"
+#include "hesiod/gui/widgets/utils/gui_utils.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/constants/node_preset_manager.hpp"
 
@@ -360,114 +362,11 @@ void NodePresetConfigWidget::apply_styling()
 {
   const ControlTones t = control_tones();
 
-  QString css = R"(
-    QFrame#presetCard {
-      background: CARD;
-      border: 1px solid BORDER;
-      border-radius: 10px;
-    }
+  static constexpr std::string_view css_template =
+#include "hesiod/gui/styles/node_preset_config.css"
+      ;
 
-    QLabel#cardHeading {
-      color: FAINT;
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 1px;
-      padding: 2px 0px 4px 2px;
-    }
-
-    QLabel#fileTitle {
-      font-size: 14px;
-      font-weight: 600;
-      color: INK;
-    }
-
-    QLabel#fileMeta {
-      font-size: 12px;
-      color: DIM;
-    }
-
-    QLabel#filePath {
-      font-size: 11px;
-      color: FAINT;
-    }
-
-    QListWidget#presetFileList,
-    QTreeWidget#presetTree,
-    QTextEdit#presetRawJson {
-      background: FIELD;
-      border: 1px solid BORDER;
-      border-radius: 7px;
-      color: INK;
-      padding: 4px;
-    }
-
-    QListWidget#presetFileList::item {
-      padding: 6px 8px;
-      border-radius: 5px;
-      color: INK;
-    }
-
-    QListWidget#presetFileList::item:hover {
-      background: NAV_HOVER;
-    }
-
-    QListWidget#presetFileList::item:selected {
-      background: NAV_ACTIVE;
-      color: INK;
-      font-weight: 600;
-    }
-
-    QTreeWidget#presetTree::item {
-      padding: 4px 6px;
-      border-radius: 4px;
-    }
-
-    QTreeWidget#presetTree::item:selected {
-      background: NAV_ACTIVE;
-      color: INK;
-    }
-
-    QHeaderView::section {
-      background: transparent;
-      color: DIM;
-      border: none;
-      border-bottom: 1px solid BORDER;
-      padding: 4px 6px;
-      font-weight: 600;
-      font-size: 11px;
-    }
-
-    QPushButton#secondaryButton {
-      background: FIELD;
-      color: INK;
-      border: 1px solid BORDER;
-      border-radius: 7px;
-      padding: 6px 12px;
-      font-size: 12px;
-    }
-
-    QPushButton#secondaryButton:hover {
-      border-color: FAINT;
-    }
-
-    QPushButton#secondaryButton:disabled {
-      color: GHOST;
-    }
-
-    QSplitter#presetSplitter::handle {
-      background: transparent;
-      width: 8px;
-    }
-  )";
-
-  auto mix_colors = [](const QColor &a, const QColor &b, qreal t) -> QColor
-  {
-    return QColor::fromRgbF(a.redF() * (1.0 - t) + b.redF() * t,
-                            a.greenF() * (1.0 - t) + b.greenF() * t,
-                            a.blueF() * (1.0 - t) + b.blueF() * t);
-  };
-
-  const std::pair<const char *, QColor> tokens[] = {
+  const std::map<std::string, QColor> color_tokens = {
       {"NAV_ACTIVE", mix_colors(t.sidebar, t.card, 0.85)},
       {"NAV_HOVER", mix_colors(t.sidebar, t.card, 0.45)},
       {"CARD", t.card},
@@ -478,9 +377,7 @@ void NodePresetConfigWidget::apply_styling()
       {"DIM", t.ink_dim},
       {"INK", t.ink}};
 
-  for (const auto &[key, value] : tokens)
-    css.replace(key, value.name());
-
+  QString css = render_stylesheet(css_template, {}, color_tokens);
   this->setStyleSheet(css);
 }
 

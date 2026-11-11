@@ -29,6 +29,8 @@ namespace hesiod
 // labels turned to read top to bottom.
 class GraphTabStrip : public QWidget
 {
+  Q_OBJECT
+
 public:
   explicit GraphTabStrip(Qt::Orientation orientation = Qt::Vertical,
                          QWidget        *parent = nullptr);

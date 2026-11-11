@@ -13,6 +13,7 @@
 #include <QVBoxLayout>
 
 #include "hesiod/app/hesiod_application.hpp"
+#include "hesiod/gui/theme/style_sheet.hpp"
 #include "hesiod/gui/widgets/dialogs/error_dialog.hpp"
 #include "hesiod/gui/widgets/utils/gui_utils.hpp"
 #include "hesiod/logger.hpp"
@@ -197,36 +198,35 @@ void ErrorDialog::setup_ui(const std::vector<Item> &items, bool show_cancel_butt
   }
 
   // --- extra styling for the list
-  QString                               css = R"(
-    QDialog#hsdMessage QFrame#problemFrame {
-      background: DEEP; border: 1px solid BORDER; border-radius: 8px; }
-    QDialog#hsdMessage QWidget#problemRow { border-bottom: 1px solid BORDER; }
-    QDialog#hsdMessage QLabel#problemTag {
-      color: WARN; background: WARN_SOFT; border-radius: 4px;
-      padding: 1px 0px; font-size: 10px; font-weight: 600; }
-    QDialog#hsdMessage QLabel#problemWhat { color: INK; font-size: 12px; }
-    QDialog#hsdMessage QLabel#problemWhy { color: DIM; font-size: 12px; }
-    QDialog#hsdMessage QScrollBar:vertical {
-      width: 10px; background: transparent; margin: 4px 2px 4px 0px; border: none; }
-    QDialog#hsdMessage QScrollBar::handle:vertical {
-      background: BORDER; border-radius: 4px; min-height: 30px; }
-    QDialog#hsdMessage QScrollBar::add-line:vertical,
-    QDialog#hsdMessage QScrollBar::sub-line:vertical { height: 0px; border: none; }
-    QDialog#hsdMessage QScrollBar::add-page:vertical,
-    QDialog#hsdMessage QScrollBar::sub-page:vertical { background: transparent; }
-  )";
-  const QColor                          warn("#d9a441");
-  const QColor                          deep = colors.bg_deep;
-  const std::pair<const char *, QColor> tokens[] = {
+  static constexpr std::string_view css_template =
+      "QDialog#hsdMessage QFrame#problemFrame {"
+      "  background: DEEP; border: 1px solid BORDER; border-radius: 8px; }"
+      "QDialog#hsdMessage QWidget#problemRow { border-bottom: 1px solid BORDER; }"
+      "QDialog#hsdMessage QLabel#problemTag {"
+      "  color: WARN; background: WARN_SOFT; border-radius: 4px;"
+      "  padding: 1px 0px; font-size: 10px; font-weight: 600; }"
+      "QDialog#hsdMessage QLabel#problemWhat { color: INK; font-size: 12px; }"
+      "QDialog#hsdMessage QLabel#problemWhy { color: DIM; font-size: 12px; }"
+      "QDialog#hsdMessage QScrollBar:vertical {"
+      "  width: 10px; background: transparent; margin: 4px 2px 4px 0px; border: none; }"
+      "QDialog#hsdMessage QScrollBar::handle:vertical {"
+      "  background: BORDER; border-radius: 4px; min-height: 30px; }"
+      "QDialog#hsdMessage QScrollBar::add-line:vertical,"
+      "QDialog#hsdMessage QScrollBar::sub-line:vertical { height: 0px; border: none; }"
+      "QDialog#hsdMessage QScrollBar::add-page:vertical,"
+      "QDialog#hsdMessage QScrollBar::sub-page:vertical { background: transparent; }";
+
+  const QColor                        warn("#d9a441");
+  const QColor                        deep = colors.bg_deep;
+  const std::map<std::string, QColor> color_tokens = {
       {"WARN_SOFT", mix_colors(deep, warn, 0.16)},
       {"WARN", warn},
       {"DEEP", deep},
       {"BORDER", panel_border_color()},
       {"DIM", mix_colors(colors.bg_primary, colors.text_primary, 0.66)},
       {"INK", colors.text_primary}};
-  for (const auto &[key, value] : tokens)
-    css.replace(key, value.name());
 
+  QString css = render_stylesheet(css_template, {}, color_tokens);
   this->setStyleSheet(this->styleSheet() + css);
 }
 

@@ -39,7 +39,6 @@ public:
     this->setObjectName("sunDome");
     this->setAttribute(Qt::WA_NoSystemBackground);
     this->setAutoFillBackground(false);
-    this->setStyleSheet("QWidget#sunDome { background: transparent; }");
     this->setFixedHeight(176);
     this->setCursor(Qt::CrossCursor);
     this->setToolTip("Drag to move the sun. Centre: overhead, rim: horizon.");

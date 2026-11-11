@@ -1,6 +1,7 @@
 /* Copyright (c) 2026 Otto Link. Distributed under the terms of the GNU General
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
+#include "highmap/math/constants.hpp"
 #include "highmap/opencl/gpu_opencl.hpp"
 #include "highmap/primitives.hpp"
 #include "highmap/virtual_array/virtual_array.hpp"
@@ -94,7 +95,7 @@ void compute_phasor_node(BaseNode &node)
   // clang-format off
   const auto seed             = node.val<int>(A_SEED);
   const auto kp_global        = node.val<float>(A_KP_GLOBAL);
-  const auto angle_shift_rads = float(M_PI) / 180.f * node.val<float>(A_ANGLE_SHIFT);
+  const auto angle_shift_rads = hmap::cte::deg_to_rad * node.val<float>(A_ANGLE_SHIFT);
   const auto profile          = node.val_enum<hmap::PhasorProfile>(A_PROFILE);
   const auto octaves          = node.val<int>(A_OCTAVES);
   const auto weight           = node.val<float>(A_WEIGHT);

@@ -17,7 +17,7 @@ namespace hesiod
  * multiplies them: Qt's high-DPI scaling (see ui_scale.hpp) does that, so
  * changing the interface scale twice cannot compound into these numbers.
  */
-struct NodePaletteStyle
+struct NodePalettePalette
 {
   // --- surfaces
   QColor surface{"#242424"};          ///< resting category button

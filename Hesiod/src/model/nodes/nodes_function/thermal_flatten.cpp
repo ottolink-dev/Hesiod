@@ -74,7 +74,7 @@ void compute_thermal_flatten_node(BaseNode &node)
   // --- Params
 
   // clang-format off
-  const auto talus       = node.val<float>(A_TALUS_GLOBAL) / float(p_out->shape.x);
+  const auto talus       = node.val_talus(A_TALUS_GLOBAL);
   const auto duration    = node.val<float>(A_DURATION);
   const auto scale_talus = node.val<bool>(A_SCALE_TALUS);
   const auto sigma_inf   = node.val<float>(A_SIGMA_INF);

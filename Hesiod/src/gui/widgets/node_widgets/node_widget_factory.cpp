@@ -38,6 +38,8 @@ void apply_node_status_icons(const std::string      &node_type,
       is_deprecated = true;
   }
 
+  // --- WIP
+
   static const std::vector<std::string> wip_nodes = {"CoastalErosionDiffusion",
                                                      "HydraulicProcedural",
                                                      "HydraulicSaleve",
@@ -55,26 +57,24 @@ void apply_node_status_icons(const std::string      &node_type,
   if (contains<std::string>(wip_nodes, node_type))
     is_wip = true;
 
+  // --- Tileable
+
   static const std::vector<std::string> not_tileable_nodes = {
       "Compare",
       "Debug",
-      "DistanceTransform", // TODO
       "ExportAsCubemap",
       "ExportAsset",
       "ExportHeightmap",
       "ExportScene",
       "ExportTexture",
       "ExportTiled",
-      "FloodingFromBoundaries", // TODO
-      "FloodingFromPoint",      // TODO
-      "FloodingLakeSystem",     // TODO
-      "FlowSimulation",         // TODO
-      "FlowSimulationViscous",  // TODO
-      "FlowStream",             // TODO
+      "Flip",
+      "FlowStream", // TODO
       "ImportHeightmap",
       "ImportTexture",
       "KmeansClustering2",
       "KmeansClustering3",
+      "LooseSymmetry",         // TODO
       "MakePeriodic",          // TODO
       "MakePeriodicStitching", // TODO
       "Mudslide",              // TODO
@@ -84,15 +84,22 @@ void apply_node_status_icons(const std::string      &node_type,
       "QuiltingShuffle",        // TODO
       "RockSimulation",         // TODO
       "Rotate",                 // TODO
-      "SnowSimulation",         // TODO
       "TextureQuiltingExpand",  // TODO
       "TextureQuiltingShuffle", // TODO
-      "TextureUvChecker",       // TODO
-      "Translate",              // TODO
-      "Zoom"                    // TODO
+      "TextureUvChecker",
+      "Translate", // TODO
+      "Zoom"       // TODO
   };
 
   const bool is_not_tileable = contains<std::string>(not_tileable_nodes, node_type);
+
+  // --- Expensive
+
+  static const std::vector<std::string> expensive_nodes = {"FlowSimulationViscous"};
+
+  const bool is_expensive = contains<std::string>(expensive_nodes, node_type);
+
+  // --- Add icons accordingly
 
   if (is_deprecated)
   {
@@ -111,6 +118,12 @@ void apply_node_status_icons(const std::string      &node_type,
     icons.push_back({.icon = HSD_ICON("grid_off"),
                      .tooltip = "This node requires data to be gathered in memory and "
                                 "cannot efficiently process very large terrains."});
+  }
+
+  if (is_expensive)
+  {
+    icons.push_back({.icon = HSD_ICON("hourglass_top"),
+                     .tooltip = "Computationally expensive: updates may be slow."});
   }
 
   gfx_node->set_status_icons(icons);

@@ -482,7 +482,7 @@ void test_category_completeness()
 
   const auto inventory = sample_inventory();
 
-  NodePaletteSidebar sidebar(inventory, sample_colors(), NodePaletteStyle{});
+  NodePaletteSidebar sidebar(inventory, sample_colors(), NodePalettePalette{});
 
   // the rail is exactly the set of distinct top-level categories
   std::set<QString> expected;
@@ -553,7 +553,7 @@ void test_node_creation_signal()
 {
   section("sidebar: node creation");
 
-  NodePaletteSidebar sidebar(sample_inventory(), sample_colors(), NodePaletteStyle{});
+  NodePaletteSidebar sidebar(sample_inventory(), sample_colors(), NodePalettePalette{});
 
   QSignalSpy spy(&sidebar, &NodePaletteSidebar::node_type_selected);
 
@@ -592,7 +592,7 @@ void test_search()
 {
   section("sidebar: search");
 
-  NodePaletteSidebar sidebar(sample_inventory(), sample_colors(), NodePaletteStyle{});
+  NodePaletteSidebar sidebar(sample_inventory(), sample_colors(), NodePalettePalette{});
 
   QLineEdit *field = sidebar.search_field();
   check(field != nullptr, "the rail has a search field");
@@ -633,7 +633,7 @@ void test_flyout_geometry()
   // a deliberately oversized style stands in for a large interface scale: the
   // flyout must still land on the screen and become scrollable rather than
   // running off the bottom
-  NodePaletteStyle style;
+  NodePalettePalette style;
   style.button_height = 92;
   style.flyout_row_height = 76;
   style.icon_size = 44;
@@ -692,7 +692,7 @@ void test_animation_toggle()
 {
   section("sidebar: animations");
 
-  NodePaletteStyle style;
+  NodePalettePalette style;
   style.animations = true;
   style.animation_ms = 400;
 
@@ -723,7 +723,7 @@ void test_animation_toggle()
         "with animations on the hover colour is faded into, not jumped to");
 
   // switching animations off has to settle whatever is running, immediately
-  NodePaletteStyle still = style;
+  NodePalettePalette still = style;
   still.animations = false;
   sidebar.set_style(still);
   check(button->current_surface() == still.surface_hover,
@@ -744,7 +744,7 @@ void test_hover_quick_leave()
 {
   section("sidebar: hover quick leave");
 
-  NodePaletteStyle style;
+  NodePalettePalette style;
   style.animations = false;
 
   NodePaletteSidebar sidebar(sample_inventory(), sample_colors(), style);
@@ -791,7 +791,7 @@ void test_hover_quick_leave()
 
   // Test with animations enabled: rapid enter immediately followed by leave (0ms delay)
   // must stop the fade-in and settle back on base surface, never reaching hover surface.
-  NodePaletteStyle anim_style;
+  NodePalettePalette anim_style;
   anim_style.animations = true;
   anim_style.animation_ms = 400;
 
@@ -826,9 +826,9 @@ void test_restyle()
 {
   section("sidebar: live restyle");
 
-  NodePaletteSidebar sidebar(sample_inventory(), sample_colors(), NodePaletteStyle{});
+  NodePaletteSidebar sidebar(sample_inventory(), sample_colors(), NodePalettePalette{});
 
-  NodePaletteStyle style;
+  NodePalettePalette style;
   style.surface = QColor("#101010");
   style.button_height = 64;
   style.button_spacing = 14;
@@ -881,7 +881,7 @@ void test_real_dpi()
   // untouched defaults: nothing in this test multiplies a metric, so if a
   // logical size comes out different at a different QT_SCALE_FACTOR then
   // something in the widget is scaling on top of Qt
-  const NodePaletteStyle style;
+  const NodePalettePalette style;
 
   // the nodes go on the category root, not in a subcategory, so the *top-level*
   // flyout is the one that has to be taller than the screen and scroll
@@ -975,14 +975,14 @@ void render_reference_images()
   const QString tag = dpr_tag();
 
   {
-    NodePaletteSidebar sidebar(sample_inventory(), sample_colors(), NodePaletteStyle{});
+    NodePaletteSidebar sidebar(sample_inventory(), sample_colors(), NodePalettePalette{});
     render(sidebar, "ui-palette-rail-dpr" + tag + ".png");
   }
 
   {
     // the flyout itself, so the neutral surface and the restrained category
     // accent can be looked at rather than described
-    NodePaletteSidebar sidebar(sample_inventory(), sample_colors(), NodePaletteStyle{});
+    NodePaletteSidebar sidebar(sample_inventory(), sample_colors(), NodePalettePalette{});
     sidebar.resize(sidebar.minimumWidth() + 40, 560);
     sidebar.show();
     QApplication::processEvents();

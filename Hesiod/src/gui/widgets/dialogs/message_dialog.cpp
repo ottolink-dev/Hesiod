@@ -23,6 +23,7 @@
 #include "meta_qt/ui/theme.hpp"
 
 #include "hesiod/app/hesiod_application.hpp"
+#include "hesiod/gui/theme/style_sheet.hpp"
 #include "hesiod/gui/widgets/dialogs/message_dialog.hpp"
 #include "hesiod/gui/widgets/utils/gui_utils.hpp"
 
@@ -244,37 +245,12 @@ MessageDialog::MessageDialog(QWidget       *parent,
 
   this->set_card_width(kWidth);
 
-  QString css = R"(
-    QDialog#hsdMessage QWidget { background: transparent; color: INK; }
-    QDialog#hsdMessage QLabel#messageTitle { font-size: 16px; font-weight: 600; }
-    QDialog#hsdMessage QLabel#messageText { color: DIM; font-size: 13px; }
-    QDialog#hsdMessage QLabel#messageFootnote { color: FAINT; font-size: 12px; }
-    QDialog#hsdMessage QFrame#messageDetails {
-      background: DEEP; border: 1px solid BORDER; border-radius: 8px; }
-    QDialog#hsdMessage QLabel#detailKey { color: FAINT; font-size: 12px; }
-    QDialog#hsdMessage QLabel#detailValue { color: INK; font-size: 12px; }
-    QDialog#hsdMessage QLabel#messageError { color: DANGER; font-size: 12px; }
-    QDialog#hsdMessage QLineEdit {
-      background: DEEP; color: INK; border: 1px solid BORDER; border-radius: 7px;
-      padding: 7px 10px; font-size: 13px; selection-background-color: ACCENT; }
-    QDialog#hsdMessage QLineEdit:hover { border-color: FAINT; }
-    QDialog#hsdMessage QLineEdit:focus { border-color: ACCENT; }
-    QDialog#hsdMessage QPushButton {
-      background: FIELD; color: INK; border: 1px solid BORDER; border-radius: 7px;
-      padding: 7px 18px; font-size: 13px; min-width: 64px; }
-    QDialog#hsdMessage QPushButton:hover { background: FIELD_HOVER; border-color: FAINT; }
-    QDialog#hsdMessage QPushButton:focus { border-color: ACCENT; }
-    QDialog#hsdMessage QPushButton[hsdRole="primary"] {
-      background: ACCENT; border-color: ACCENT; color: #ffffff; font-weight: 600; }
-    QDialog#hsdMessage QPushButton[hsdRole="primary"]:hover { background: ACCENT_HOVER; }
-    QDialog#hsdMessage QPushButton[hsdRole="danger"] {
-      background: transparent; color: DANGER; border-color: transparent; }
-    QDialog#hsdMessage QPushButton[hsdRole="danger"]:hover {
-      background: DANGER_SOFT; border-color: DANGER_BORDER; }
-  )";
+  static constexpr std::string_view css_template =
+#include "hesiod/gui/styles/message_dialog.css"
+      ;
 
-  const QColor                          s = surface();
-  const std::pair<const char *, QColor> tokens[] = {
+  const QColor                        s = surface();
+  const std::map<std::string, QColor> color_tokens = {
       {"ACCENT_HOVER", colors.accent.lighter(112)},
       {"ACCENT", colors.accent},
       {"DANGER_SOFT", mix_colors(s, kDanger, 0.12)},
@@ -287,8 +263,8 @@ MessageDialog::MessageDialog(QWidget       *parent,
       {"FAINT", mix_colors(colors.bg_primary, colors.text_primary, 0.45)},
       {"DIM", mix_colors(colors.bg_primary, colors.text_primary, 0.70)},
       {"INK", colors.text_primary}};
-  for (const auto &[key, value] : tokens)
-    css.replace(key, value.name());
+
+  QString css = render_stylesheet(css_template, {}, color_tokens);
 
   const QString family = meta::qt::ui_font(13).family();
   if (!family.isEmpty())

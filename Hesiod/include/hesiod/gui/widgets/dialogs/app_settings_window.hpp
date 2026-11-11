@@ -94,6 +94,9 @@ private:
   Control make_choice(std::function<int &(AppSettings &)>         access,
                       const std::vector<std::pair<int, QString>> &items,
                       unsigned                                    effects = NoEffect);
+  Control make_string_choice(std::function<std::string &(AppSettings &)> access,
+                             const std::vector<std::string>             &items,
+                             unsigned effects = NoEffect);
   Control make_color(std::function<QColor &(AppSettings &)> access,
                      unsigned                               effects = Theme);
   Control make_scale();

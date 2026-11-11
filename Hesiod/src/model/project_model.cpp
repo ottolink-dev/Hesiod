@@ -92,6 +92,7 @@ void ProjectModel::on_has_changed()
 void ProjectModel::set_bake_config(const BakeConfig &new_bake_config)
 {
   this->bake_config = new_bake_config;
+  this->on_has_changed();
 }
 
 void ProjectModel::set_comment(const std::string &new_comment)

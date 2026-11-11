@@ -28,6 +28,7 @@ constexpr const char *G_VALLEY   = "Valley";
 constexpr const char *G_BLOB_LOG = "Blob (LoG)";
 
 constexpr const char *A_CONCAVE      = "concave";
+constexpr const char *A_NORMALIZE    = "normalize";
 constexpr const char *A_POST_FILTER  = "post_filter";
 constexpr const char *A_RADIUS       = "radius";
 constexpr const char *A_RIDGE_SELECT = "ridge_select";
@@ -52,6 +53,7 @@ void setup_select_curvature_node(BaseNode &node)
 
     node.set_current_category("Cavity Parameters");
     add_float(node, A_RADIUS, "Selection Scale", 0.05f, 0.001f, 0.2f);
+    add_bool(node, A_NORMALIZE, "Normalize", true);
     add_bool(node, A_CONCAVE, "", "Bumps", "Holes", false);
     add_bool(node, A_POST_FILTER, "Enable Smoothing", true);
 
@@ -67,6 +69,7 @@ void setup_select_curvature_node(BaseNode &node)
 
     node.set_current_category("Valley Parameters");
     add_float(node, A_RADIUS, "Radius", 0.05f, 0.001f, 0.5f);
+    add_bool(node, A_NORMALIZE, "Normalize", true);
     add_bool(node, A_RIDGE_SELECT, "Ridge Select", false);
 
     setup_post_process_heightmap_attributes(
@@ -81,6 +84,7 @@ void setup_select_curvature_node(BaseNode &node)
 
     node.set_current_category("Blob Parameters");
     add_float(node, A_RADIUS, "Radius", 0.05f, 0.001f, 0.2f);
+    add_bool(node, A_NORMALIZE, "Normalize", true);
 
     setup_post_process_heightmap_attributes(
         node,
@@ -114,18 +118,24 @@ void compute_select_curvature_node(BaseNode &node)
 
   if (group == G_CAVITIES)
   {
-    int ir = node.val_pixel_radius(A_RADIUS);
+    int        ir        = node.val_pixel_radius(A_RADIUS);
+    const bool normalize = node.val<bool>(A_NORMALIZE);
 
     hmap::for_each_tile(
         {p_in},
         {p_out},
-        [&node, ir](std::vector<const hmap::Array *> p_arrays_in,
-                    std::vector<hmap::Array *>       p_arrays_out,
-                    const hmap::TileRegion &)
+        [&](std::vector<const hmap::Array *> p_arrays_in,
+            std::vector<hmap::Array *>       p_arrays_out,
+            const hmap::TileRegion &,
+            hmap::ICommunicator &comm)
         {
           auto [pa_in]  = unpack<1>(p_arrays_in);
           auto [pa_out] = unpack<1>(p_arrays_out);
-          *pa_out = hmap::gpu::select_cavities(*pa_in, ir, node.val<bool>(A_CONCAVE));
+          *pa_out       = hmap::gpu::select_cavities(*pa_in,
+                                               ir,
+                                               node.val<bool>(A_CONCAVE),
+                                               normalize,
+                                               comm);
 
           if (node.val<bool>(A_POST_FILTER))
             hmap::laplace(*pa_out);
@@ -137,18 +147,24 @@ void compute_select_curvature_node(BaseNode &node)
   }
   else if (group == G_VALLEY)
   {
-    int ir = node.val_pixel_radius(A_RADIUS);
+    int        ir        = node.val_pixel_radius(A_RADIUS);
+    const bool normalize = node.val<bool>(A_NORMALIZE);
 
     hmap::for_each_tile(
         {p_in},
         {p_out},
-        [&node, ir](std::vector<const hmap::Array *> p_arrays_in,
-                    std::vector<hmap::Array *>       p_arrays_out,
-                    const hmap::TileRegion &)
+        [&](std::vector<const hmap::Array *> p_arrays_in,
+            std::vector<hmap::Array *>       p_arrays_out,
+            const hmap::TileRegion &,
+            hmap::ICommunicator &comm)
         {
           auto [pa_in]  = unpack<1>(p_arrays_in);
           auto [pa_out] = unpack<1>(p_arrays_out);
-          *pa_out = hmap::gpu::select_valley(*pa_in, ir, node.val<bool>(A_RIDGE_SELECT));
+          *pa_out       = hmap::gpu::select_valley(*pa_in,
+                                             ir,
+                                             node.val<bool>(A_RIDGE_SELECT),
+                                             normalize,
+                                             comm);
         },
         node.cfg().cm_gpu);
 
@@ -159,17 +175,19 @@ void compute_select_curvature_node(BaseNode &node)
   else if (group == G_BLOB_LOG)
   {
     int ir = hmap::convert_length_to_pixel(node.val<float>(A_RADIUS), p_out->shape.x);
+    const bool normalize = node.val<bool>(A_NORMALIZE);
 
     hmap::for_each_tile(
         {p_in},
         {p_out},
-        [&node, &ir](std::vector<const hmap::Array *> p_arrays_in,
-                     std::vector<hmap::Array *>       p_arrays_out,
-                     const hmap::TileRegion &)
+        [&](std::vector<const hmap::Array *> p_arrays_in,
+            std::vector<hmap::Array *>       p_arrays_out,
+            const hmap::TileRegion &,
+            hmap::ICommunicator &comm)
         {
           auto [pa_in]  = unpack<1>(p_arrays_in);
           auto [pa_out] = unpack<1>(p_arrays_out);
-          *pa_out       = hmap::select_blob_log(*pa_in, ir);
+          *pa_out       = hmap::select_blob_log(*pa_in, ir, normalize, comm);
         },
         node.cfg().cm_cpu);
 

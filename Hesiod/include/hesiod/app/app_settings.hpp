@@ -6,7 +6,7 @@
 
 #include "nlohmann/json.hpp"
 
-#include "hesiod/gui/node_palette_style.hpp"
+#include "hesiod/gui/theme/node_palette_palette.hpp"
 
 #define HSD_ICON(name)                                                                   \
   static_cast<hesiod::HesiodApplication *>(QCoreApplication::instance())                 \
@@ -97,6 +97,9 @@ struct AppSettings
     bool enable_tool_tips = true;
     bool enable_example_selector_at_startup = true;
 
+    // Theme name (e.g. "Dark", "Light", or any custom theme in ~/.config/hesiod/themes)
+    std::string theme_name = "Dark";
+
     // Node properties panel look. Both are names resolved at runtime, not
     // enums, so registering a new design or colourway does not mean editing
     // this struct.
@@ -136,7 +139,7 @@ struct AppSettings
   } interface;
 
   /// Look of the node palette sidebar. Only read when it is enabled.
-  NodePaletteStyle node_palette;
+  NodePalettePalette node_palette;
 
   struct NodeEditor
   {
@@ -190,12 +193,14 @@ struct AppSettings
     WindowGeometry geom_main;
     WindowGeometry geom_graph_manager;
     WindowGeometry geom_heightmapper;
+    WindowGeometry geom_node_inspector;
 
     int progress_bar_width = 200;
 
     bool show_graph_manager_widget = false;
     bool show_texture_downloader_widget = false;
     bool show_heightmapper_widget = false;
+    bool show_node_inspector = false;
   } window;
 };
 

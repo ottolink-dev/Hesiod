@@ -125,8 +125,6 @@ void compute_terrain_texture_node(BaseNode &node)
 
   // --- Params
 
-  const int nx = p_z->shape.x;
-
   const hmap::TerrainTextureParams p = {
       .grass         = rgb(node.val<glm::vec4>(A_GRASS)),
       .dry           = rgb(node.val<glm::vec4>(A_DRY)),
@@ -135,11 +133,11 @@ void compute_terrain_texture_node(BaseNode &node)
       .rock          = rgb(node.val<glm::vec4>(A_ROCK)),
       .ridge         = rgb(node.val<glm::vec4>(A_RIDGE)),
       .snow          = rgb(node.val<glm::vec4>(A_SNOW)),
-      .rock_talus    = node.val<float>(A_ROCK_SLOPE) / float(nx),
+      .rock_talus    = node.val_talus(A_ROCK_SLOPE),
       .rock_edge     = node.val<float>(A_ROCK_EDGE),
       .strata        = node.val<float>(A_STRATA),
       .streaks       = node.val<float>(A_STREAKS),
-      .streak_length = node.val_radius(A_STREAK_LENGTH, 0),
+      .streak_length = node.val_pixel_radius(A_STREAK_LENGTH, 0),
       .flow          = node.val<float>(A_FLOW),
       .flow_width    = node.val<float>(A_FLOW_WIDTH),
       .deposition    = node.val<float>(A_DEPOSITION),
@@ -150,7 +148,7 @@ void compute_terrain_texture_node(BaseNode &node)
       .color_noise   = node.val<float>(A_COLOR_NOISE),
       .detail        = node.val<float>(A_DETAIL),
       .cavity        = node.val<float>(A_CAVITY),
-      .ir_region     = node.val_radius(A_RADIUS, 1),
+      .ir_region     = node.val_pixel_radius(A_RADIUS, 1),
   };
 
   // --- Compute
@@ -177,7 +175,7 @@ void compute_terrain_texture_node(BaseNode &node)
         for (size_t ch = 0; ch < p_arrays_out.size() && ch < tex.channels.size(); ++ch)
           *p_arrays_out[ch] = std::move(tex.channels[ch]);
       },
-      node.cfg().cm_cpu);
+      node.cfg().cm_gpu);
 
   p_tex->sync_overlap_buffers();
 }

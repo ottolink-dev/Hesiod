@@ -4,6 +4,7 @@
 #include <cmath>
 
 #include "highmap/geometry/cloud.hpp"
+#include "highmap/math/constants.hpp"
 #include "highmap/opencl/gpu_opencl.hpp"
 #include "highmap/primitives.hpp"
 
@@ -284,9 +285,8 @@ void compute_cellular_noise_node(BaseNode &node)
     const auto seed        = node.val<int>(A_SEED);
     const auto k_smoothing = node.val<float>(A_K_SMOOTHING);
     const auto exp_sigma   = node.val<float>(A_EXP_SIGMA);
-    const auto angle_rad   = static_cast<float>(M_PI / 180.f) * node.val<float>(A_ANGLE);
-    const auto span_rad    = static_cast<float>(M_PI / 180.f) *
-                          node.val<float>(A_ANGLE_SPAN);
+    const auto angle_rad   = hmap::cte::deg_to_rad * node.val<float>(A_ANGLE);
+    const auto span_rad    = hmap::cte::deg_to_rad * node.val<float>(A_ANGLE_SPAN);
     const auto octaves     = node.val<int>(A_OCTAVES);
     const auto weight      = node.val<float>(A_WEIGHT);
     const auto persistence = node.val<float>(A_PERSISTENCE);
