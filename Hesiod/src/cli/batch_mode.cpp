@@ -6,6 +6,7 @@
 #include <QTimer>
 
 #include "hesiod/app/hesiod_application.hpp"
+#include "hesiod/app/bundle_runtime.hpp"
 #include "hesiod/cli/batch_mode.hpp"
 #include "hesiod/gui/project_ui.hpp"
 #include "hesiod/gui/widgets/graph_tabs_widget.hpp"
@@ -104,7 +105,7 @@ int parse_args(args::ArgumentParser &parser,
 
     if (batch)
     {
-      run_batch_mode(args::get(batch),
+      run_batch_mode(resolve_launch_path(args::get(batch)),
                      shape_arg ? args::get(shape_arg) : glm::ivec2(0, 0),
                      tiling_arg ? args::get(tiling_arg) : glm::ivec2(0, 0),
                      overlap_arg ? args::get(overlap_arg) : -1.f,
@@ -145,6 +146,7 @@ int parse_args(args::ArgumentParser &parser,
       startup_file = args::get(file_flag);
     else if (file_positional)
       startup_file = args::get(file_positional);
+    startup_file = resolve_launch_path(startup_file);
   }
   catch (const args::Help &help)
   {

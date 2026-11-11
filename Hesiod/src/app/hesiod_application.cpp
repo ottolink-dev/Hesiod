@@ -39,6 +39,7 @@
 #include "highmap/openmp.hpp"
 
 #include "hesiod/app/hesiod_application.hpp"
+#include "hesiod/app/bundle_runtime.hpp"
 #include "hesiod/app/ui_scale.hpp"
 #include "hesiod/cli/batch_mode.hpp"
 #include "hesiod/gui/project_ui.hpp"
@@ -72,7 +73,13 @@ namespace hesiod
 {
 
 HesiodApplication::HesiodApplication(int &argc, char **argv, StartupMode mode)
-    : QApplication(argc, argv)
+    : QApplication(argc, argv),
+      context([] {
+        // AppContext's member constructors load icons, so establish bundled
+        // resource paths before constructing the context, after Qt is ready.
+        initialize_bundle_runtime();
+        return AppContext{};
+      }())
 {
   Logger::log()->trace("HesiodApplication::HesiodApplication");
 

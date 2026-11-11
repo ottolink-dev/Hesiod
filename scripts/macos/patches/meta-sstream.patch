@@ -1,0 +1,20 @@
+diff --git a/Meta/include/meta/type/attribute_traits_std.inl b/Meta/include/meta/type/attribute_traits_std.inl
+index 701a485..470d686 100644
+--- a/Meta/include/meta/type/attribute_traits_std.inl
++++ b/Meta/include/meta/type/attribute_traits_std.inl
+@@ -8,6 +8,8 @@
+  * @copyright Copyright (c) 2026
+  */
+ #pragma once
++
++#include <sstream>
+ #include <string>
+ #include <vector>
+ 
+@@ -255,4 +257,4 @@ struct AttributeTraits<std::unordered_map<K, V>>
+   }
+ };
+ 
+-} // namespace meta
+\ No newline at end of file
++} // namespace meta

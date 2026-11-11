@@ -1,0 +1,13 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index aa58baf2c..0b2735ff6 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -111,7 +111,7 @@ find_package(GSL REQUIRED COMPONENTS gsl gslcblas)
+ find_package(assimp REQUIRED)
+ find_package(glm REQUIRED)
+ find_package(OpenMP REQUIRED)
+-find_package(OpenCV REQUIRED)
++find_package(OpenCV REQUIRED COMPONENTS core imgproc imgcodecs)
+ find_package(OpenCL REQUIRED)
+ find_package(OpenEXR REQUIRED)
+ find_package(TIFF REQUIRED)

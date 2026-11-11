@@ -1,0 +1,19 @@
+diff --git a/HighMap/src/gpu_opencl/kernels/common/_common_rand.cl b/HighMap/src/gpu_opencl/kernels/common/_common_rand.cl
+index 265a6bad0..ec75a1e66 100644
+--- a/HighMap/src/gpu_opencl/kernels/common/_common_rand.cl
++++ b/HighMap/src/gpu_opencl/kernels/common/_common_rand.cl
+@@ -25,6 +25,14 @@ uint hash21u(uint x, uint y)
+   return h;
+ }
+ 
++float hash13f(float3 p, float fseed)
++{
++  float pi;
++  return fract(sin(dot(p, (float3)(127.1f, 311.7f, 74.7f)) + fseed) *
++                   43758.5453123f,
++               &pi);
++}
++
+ float2 hash22f(float2 p, float fseed)
+ {
+   p = (float2)(dot(p, (float2)(127.1f, 311.7f)),

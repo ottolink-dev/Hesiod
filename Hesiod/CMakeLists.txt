@@ -53,6 +53,20 @@ endif()
 add_library(hesiod_core OBJECT ${HESIOD_SOURCES} ${HESIOD_GUI_INCLUDES})
 add_executable(${PROJECT_NAME} app/main.cpp)
 target_link_libraries(${PROJECT_NAME} PRIVATE hesiod_core)
+if(APPLE)
+  set_target_properties(${PROJECT_NAME} PROPERTIES
+    MACOSX_BUNDLE TRUE
+    OUTPUT_NAME Hesiod
+    MACOSX_BUNDLE_GUI_IDENTIFIER com.hesiodengine.Hesiod
+    MACOSX_BUNDLE_BUNDLE_NAME Hesiod
+    MACOSX_BUNDLE_BUNDLE_VERSION "${hesiod-root_VERSION}"
+    MACOSX_BUNDLE_SHORT_VERSION_STRING "${hesiod-root_VERSION}")
+  add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+      "${EXECUTABLE_OUTPUT_PATH}/data"
+      "$<TARGET_BUNDLE_CONTENT_DIR:${PROJECT_NAME}>/Resources/data"
+    VERBATIM)
+endif()
 
 # ------------------------------
 # Include directories

@@ -1,0 +1,13 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -121,7 +121,8 @@ find_package(zstd REQUIRED)
+ include_directories(${OpenCV_INCLUDE_DIRS})
+ 
+ # OpenMP
+-add_compile_options(${OpenMP_CXX_FLAGS})
++separate_arguments(HIGHMAP_OPENMP_FLAGS NATIVE_COMMAND "${OpenMP_CXX_FLAGS}")
++add_compile_options(${HIGHMAP_OPENMP_FLAGS})
+ 
+ # OpenCL
+ add_compile_definitions(CL_HPP_MINIMUM_OPENCL_VERSION=120

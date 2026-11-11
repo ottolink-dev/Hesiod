@@ -1,4 +1,4 @@
-"""Publish a complete weekly pair using the website Worker's R2 manifest schema."""
+"""Publish a complete weekly build set using the website Worker's R2 manifest schema."""
 import argparse
 import copy
 from datetime import datetime, timezone
@@ -15,6 +15,7 @@ import zipfile
 ARCHIVES = {
     "linux": ("hesiod-linux-x86_64.zip", "hesiod.AppImage"),
     "windows": ("hesiod-windows-x86_64.zip", "hesiod.exe"),
+    "macos": ("hesiod-macos-arm64.zip", "Hesiod.app/Contents/MacOS/Hesiod"),
 }
 
 
@@ -26,9 +27,14 @@ def validate_archives(directory, sha):
         path = directory / filename
         with zipfile.ZipFile(path) as archive:
             names = archive.namelist()
-            if executable not in names or not any(n.startswith("data/") for n in names):
+            resources = "Hesiod.app/Contents/Resources/" if platform == "macos" else ""
+            if executable not in names or not any(n.startswith(resources + "data/") for n in names):
                 raise ValueError(f"{filename}: executable or runtime data missing")
-            if archive.read("SOURCE.txt").decode("utf-8-sig").strip() != sha:
+            source = archive.read(resources + "SOURCE.txt").decode("utf-8-sig").strip()
+            # macOS keeps its full provenance report inside the signed bundle;
+            # its second line is the exact application revision.
+            revision = source.splitlines()[1:2] if platform == "macos" else [source]
+            if revision != [sha]:
                 raise ValueError(f"{filename}: source revision mismatch")
             if archive.testzip() is not None:
                 raise ValueError(f"{filename}: corrupt archive")
@@ -39,7 +45,7 @@ def validate_archives(directory, sha):
 
 
 def publish(client, bucket, directory, sha):
-    # Validate BOTH artifacts before touching remote storage.
+    # Validate ALL artifacts before touching remote storage.
     archives = validate_archives(directory, sha)
     try:
         response = client.get_object(Bucket=bucket, Key="manifest.json")
@@ -77,7 +83,7 @@ def publish(client, bucket, directory, sha):
             "version": f"dev-{now[:10]}-{sha[:12]}", "uploaded": now,
             "uploadedBy": "github-actions", "sha256": digest, "source": sha,
         }
-    # One conditional write switches both downloads. A concurrent admin update
+    # One conditional write switches all downloads. A concurrent admin update
     # fails this write instead of being overwritten. Do not automatically retry.
     client.put_object(Bucket=bucket, Key="manifest.json",
                       Body=json.dumps(manifest, indent=2).encode(),
@@ -93,7 +99,7 @@ def publish(client, bucket, directory, sha):
                 client.delete_object(Bucket=bucket, Key=old)
             except Exception as error:
                 warnings.warn(f"Published successfully; old object cleanup failed: {error}")
-    print(f"Published Linux and Windows weekly builds from {sha}")
+    print(f"Published Linux, Windows and macOS weekly builds from {sha}")
 
 
 def main():

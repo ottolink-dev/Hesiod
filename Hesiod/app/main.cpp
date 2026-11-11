@@ -7,6 +7,9 @@ typedef unsigned int uint;
 #include <new>
 
 #include <QCoreApplication>
+#ifdef Q_OS_MACOS
+#include <QSurfaceFormat>
+#endif
 
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/app/ui_scale.hpp"
@@ -23,6 +26,17 @@ typedef unsigned int uint;
 
 int main(int argc, char *argv[])
 {
+#ifdef Q_OS_MACOS
+  // macOS needs a core profile selected before QApplication creates any
+  // shared contexts. The renderer uses OpenGL 3.3, supported by a 4.1 context.
+  QSurfaceFormat format;
+  format.setRenderableType(QSurfaceFormat::OpenGL);
+  format.setVersion(4, 1);
+  format.setProfile(QSurfaceFormat::CoreProfile);
+  format.setDepthBufferSize(24);
+  format.setStencilBufferSize(8);
+  QSurfaceFormat::setDefaultFormat(format);
+#endif
   hesiod::Logger::log()->info("Welcome to Hesiod v{}.{}.{}!",
                               HESIOD_VERSION_MAJOR,
                               HESIOD_VERSION_MINOR,
