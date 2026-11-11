@@ -18,16 +18,21 @@ hmap::VirtualArray pre_process_mask(BaseNode                 &node,
                                     const hmap::VirtualArray *p_mask,
                                     const hmap::VirtualArray &h)
 {
-  const bool mask_clamp = node.val<bool>("mask_clamp");
-  const bool mask_normalize = node.val<bool>("mask_normalize");
+  const bool        mask_activate = node.val<bool>("mask_activate");
+  const bool        mask_clamp = node.val<bool>("mask_clamp");
+  const float       mask_gain = node.val<float>("mask_gain");
+  const bool        mask_inverse = node.val<bool>("mask_inverse");
+  const bool        mask_normalize = node.val<bool>("mask_normalize");
+  const float       mask_radius = node.val<float>("mask_radius");
+  const std::string mask_type = node.val<std::string>("mask_type");
 
-  // If an input mask exists and no post-adjustments (clamp/normalize) are requested,
+  // If an input mask exists and no adjustments (clamp/normalize/inverse) are requested,
   // return an empty array so the caller uses p_mask directly.
-  if (p_mask && !mask_clamp && !mask_normalize)
+  if (p_mask && !mask_clamp && !mask_normalize && !mask_inverse)
     return hmap::VirtualArray();
 
   // If no input mask and internal default mask is not activated, return empty array.
-  if (!p_mask && !node.val<bool>("mask_activate"))
+  if (!p_mask && !mask_activate)
     return hmap::VirtualArray();
 
   const GraphConfig &cfg = *node.get_config_ref();
@@ -46,8 +51,7 @@ hmap::VirtualArray pre_process_mask(BaseNode                 &node,
 
     // --- mask definition
 
-    const std::string mask_type = node.val<std::string>("mask_type");
-    const int         ir = (int)(node.val<float>("mask_radius") * mask_out.shape.x);
+    const int ir = (int)(mask_radius * mask_out.shape.x);
 
     if (mask_type == "Elevation")
     {
@@ -116,8 +120,6 @@ hmap::VirtualArray pre_process_mask(BaseNode                 &node,
 
     // --- apply gain to the mask
 
-    float mask_gain = node.val<float>("mask_gain");
-
     if (mask_gain != 1.f)
     {
       hmap::for_each_tile(
@@ -132,9 +134,6 @@ hmap::VirtualArray pre_process_mask(BaseNode                 &node,
           },
           cfg.cm_cpu);
     }
-
-    if (node.val<bool>("mask_inverse"))
-      mask_out.inverse(cfg.cm_cpu);
   }
 
   // --- Post-adjustments: normalize or clamp to [0, 1]
@@ -158,6 +157,9 @@ hmap::VirtualArray pre_process_mask(BaseNode                 &node,
         cfg.cm_cpu);
   }
 
+  if (mask_inverse)
+    mask_out.inverse(cfg.cm_cpu);
+
   return mask_out;
 }
 
@@ -171,10 +173,10 @@ void setup_pre_process_mask_attributes(BaseNode &node)
 
   add_bool(node, "mask_clamp", "Clamp to [0, 1]", false);
   add_bool(node, "mask_normalize", "Normalize", false);
+  add_bool(node, "mask_inverse", "Inverse Mask", false);
 
   add_bool(node, "mask_activate", "Activate Default Mask", false);
   add_choice(node, "mask_type", "Mask Type", choices);
-  add_bool(node, "mask_inverse", "Inverse Mask", false);
   add_float(node, "mask_radius", "Mask Radius", 0.01f, 0.f, 0.2f);
   add_float(node, "mask_gain", "Mask Gain", 1.f, 0.f, 10.f);
 }
