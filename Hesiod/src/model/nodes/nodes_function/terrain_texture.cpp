@@ -20,6 +20,7 @@ namespace hesiod
 // -----------------------------------------------------------------------------
 
 constexpr const char *P_ELEVATION  = "elevation";
+constexpr const char *P_SNOW       = "snow";
 constexpr const char *P_DEPOSITION = "deposition";
 constexpr const char *P_NOISE      = "noise";
 constexpr const char *P_TEXTURE    = "texture";
@@ -60,6 +61,7 @@ void setup_terrain_texture_node(BaseNode &node)
   // --- Ports
 
   node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_ELEVATION);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_SNOW);
   node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_DEPOSITION);
   node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_NOISE);
   node.add_port<hmap::VirtualTexture>(gnode::PortType::OUT, P_TEXTURE, CONFIG_TEX(node));
@@ -116,6 +118,7 @@ void compute_terrain_texture_node(BaseNode &node)
   // --- Inputs / Outputs
 
   const auto *p_z     = node.get_value_ref<hmap::VirtualArray>(P_ELEVATION);
+  const auto *p_snow  = node.get_value_ref<hmap::VirtualArray>(P_SNOW);
   const auto *p_dep   = node.get_value_ref<hmap::VirtualArray>(P_DEPOSITION);
   const auto *p_noise = node.get_value_ref<hmap::VirtualArray>(P_NOISE);
   auto       *p_tex   = node.get_value_ref<hmap::VirtualTexture>(P_TEXTURE);
@@ -153,23 +156,20 @@ void compute_terrain_texture_node(BaseNode &node)
 
   // --- Compute
 
-  glm::vec2 z_range = p_z->range(node.cfg().cm_cpu);
-
   hmap::for_each_tile(
-      {p_z, p_dep, p_noise},
+      {p_z, p_snow, p_dep, p_noise},
       p_tex->channels_ptr(),
       [&](std::vector<const hmap::Array *> p_arrays_in,
           std::vector<hmap::Array *>       p_arrays_out,
           const hmap::TileRegion          &region)
       {
-        auto [pa_z, pa_dep, pa_noise] = unpack<3>(p_arrays_in);
+        auto [pa_z, pa_snow, pa_dep, pa_noise] = unpack<4>(p_arrays_in);
 
         hmap::Texture tex = hmap::terrain_texture(*pa_z,
                                                   pa_dep,
+                                                  pa_snow,
                                                   p,
                                                   region.bbox,
-                                                  z_range.x,
-                                                  z_range.y,
                                                   pa_noise);
 
         for (size_t ch = 0; ch < p_arrays_out.size() && ch < tex.channels.size(); ++ch)

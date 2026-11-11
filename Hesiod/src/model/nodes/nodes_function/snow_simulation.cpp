@@ -58,7 +58,7 @@ void setup_snow_simulation_node(BaseNode &node)
   // attribute(s)
   // clang-format off
   node.set_current_category("Snow Setup");
-  add_float(node, A_SNOW_DEPTH, "Snow Amount", 0.1f, 0.001f, 0.5f, "{:.2e}", /* log */ true);
+  add_float(node, A_SNOW_DEPTH, "Snow Amount", 0.02f, 0.001f, 0.5f, "{:.2e}", /* log */ true);
   add_enum(node, A_DMAP_TYPE, "Predefined Depth Map", DefaultMapOptions::type_map(), "Uniform");
 
   node.set_current_category("Solver");
