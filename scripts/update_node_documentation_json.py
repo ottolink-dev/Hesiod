@@ -47,6 +47,10 @@ STD_PARAM = {
     "post_smoothing_radius":
     "Defines the radius for post-processing smoothing, determining the size of the neighborhood used to average local values and reduce high-frequency detail. A radius of 0 disables smoothing.",
     #
+    "mask_clamp":
+    "Clamps the mask values to the range [0, 1].",
+    "mask_normalize":
+    "Normalizes the mask values to the range [0, 1] using standard deviation clipping.",
     "mask_activate":
     "Enables or disables the internal mask. If the node's 'mask' input is connected, this setting is bypassed and the input mask is used instead.",
     "mask_gain":

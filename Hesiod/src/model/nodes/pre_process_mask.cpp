@@ -9,6 +9,7 @@
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/attributes.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
+#include "hesiod/model/nodes/post_process.hpp"
 
 namespace hesiod
 {
@@ -17,33 +18,133 @@ hmap::VirtualArray pre_process_mask(BaseNode                 &node,
                                     const hmap::VirtualArray *p_mask,
                                     const hmap::VirtualArray &h)
 {
-  // do not modify any existing input mask and return a dummy shared
-  // pointer that will not be used
-  if (p_mask || !node.val<bool>("mask_activate"))
+  const bool mask_clamp = node.val<bool>("mask_clamp");
+  const bool mask_normalize = node.val<bool>("mask_normalize");
+
+  // If an input mask exists and no post-adjustments (clamp/normalize) are requested,
+  // return an empty array so the caller uses p_mask directly.
+  if (p_mask && !mask_clamp && !mask_normalize)
+    return hmap::VirtualArray();
+
+  // If no input mask and internal default mask is not activated, return empty array.
+  if (!p_mask && !node.val<bool>("mask_activate"))
     return hmap::VirtualArray();
 
   const GraphConfig &cfg = *node.get_config_ref();
 
-  // create mask storage and assign to current mask pointer
   hmap::VirtualArray mask_out;
-  mask_out.copy_from(h, cfg.cm_cpu, false);
 
-  // --- mask definition
-
-  const std::string mask_type = node.val<std::string>("mask_type");
-  const int         ir = (int)(node.val<float>("mask_radius") * mask_out.shape.x);
-
-  if (mask_type == "Elevation")
+  if (p_mask)
   {
-    hmap::copy_data(h, mask_out, cfg.cm_cpu);
-    mask_out.remap(0.f, 1.f, cfg.cm_cpu);
+    mask_out.copy_from(*p_mask, cfg.cm_cpu, false);
+    hmap::copy_data(*p_mask, mask_out, cfg.cm_cpu);
   }
-  else if (mask_type == "Elevation mid-range")
+  else
   {
-    hmap::copy_data(h, mask_out, cfg.cm_cpu);
-    mask_out.remap(0.f, 1.f, cfg.cm_cpu);
+    // create mask storage and assign to current mask pointer
+    mask_out.copy_from(h, cfg.cm_cpu, false);
 
-    // mask <- h * (1 - h)
+    // --- mask definition
+
+    const std::string mask_type = node.val<std::string>("mask_type");
+    const int         ir = (int)(node.val<float>("mask_radius") * mask_out.shape.x);
+
+    if (mask_type == "Elevation")
+    {
+      hmap::copy_data(h, mask_out, cfg.cm_cpu);
+      mask_out.remap(0.f, 1.f, cfg.cm_cpu);
+    }
+    else if (mask_type == "Elevation mid-range")
+    {
+      hmap::copy_data(h, mask_out, cfg.cm_cpu);
+      mask_out.remap(0.f, 1.f, cfg.cm_cpu);
+
+      // mask <- h * (1 - h)
+      hmap::for_each_tile(
+          {},
+          {&mask_out},
+          [](std::vector<const hmap::Array *>,
+             std::vector<hmap::Array *> p_arrays_out,
+             const hmap::TileRegion &)
+          {
+            auto [pa_out] = unpack<1>(p_arrays_out);
+            *pa_out *= (1.f - *pa_out);
+          },
+          cfg.cm_cpu);
+    }
+    else if (mask_type == "Gradient norm")
+    {
+      hmap::for_each_tile(
+          {&h},
+          {&mask_out},
+          [](std::vector<const hmap::Array *> p_arrays_in,
+             std::vector<hmap::Array *>       p_arrays_out,
+             const hmap::TileRegion &)
+          {
+            auto [pa_in] = unpack<1>(p_arrays_in);
+            auto [pa_out] = unpack<1>(p_arrays_out);
+
+            *pa_out = hmap::gradient_norm(*pa_in);
+          },
+          cfg.cm_cpu);
+
+      mask_out.remap(0.f, 1.f, cfg.cm_cpu);
+    }
+    else
+    {
+      Logger::log()->error("pre_process_mask: unknown mask type: {}", mask_type);
+    }
+
+    // filter
+    if (ir > 0)
+    {
+      hmap::for_each_tile(
+          {},
+          {&mask_out},
+          [&ir](std::vector<const hmap::Array *>,
+                std::vector<hmap::Array *> p_arrays_out,
+                const hmap::TileRegion &)
+          {
+            auto [pa_out] = unpack<1>(p_arrays_out);
+            hmap::gpu::smooth_cpulse(*pa_out, ir);
+          },
+          cfg.cm_gpu);
+
+      mask_out.sync_overlap_buffers();
+      mask_out.remap(0.f, 1.f, cfg.cm_cpu);
+    }
+
+    // --- apply gain to the mask
+
+    float mask_gain = node.val<float>("mask_gain");
+
+    if (mask_gain != 1.f)
+    {
+      hmap::for_each_tile(
+          {},
+          {&mask_out},
+          [mask_gain](std::vector<const hmap::Array *>,
+                      std::vector<hmap::Array *> p_arrays_out,
+                      const hmap::TileRegion &)
+          {
+            auto [pa] = unpack<1>(p_arrays_out);
+            hmap::gain(*pa, mask_gain);
+          },
+          cfg.cm_cpu);
+    }
+
+    if (node.val<bool>("mask_inverse"))
+      mask_out.inverse(cfg.cm_cpu);
+  }
+
+  // --- Post-adjustments: normalize or clamp to [0, 1]
+
+  if (mask_normalize)
+  {
+    post_apply_normalize_and_clip(node, mask_out);
+  }
+  else if (mask_clamp)
+  {
     hmap::for_each_tile(
         {},
         {&mask_out},
@@ -52,73 +153,10 @@ hmap::VirtualArray pre_process_mask(BaseNode                 &node,
            const hmap::TileRegion &)
         {
           auto [pa_out] = unpack<1>(p_arrays_out);
-          *pa_out *= (1.f - *pa_out);
+          hmap::clamp(*pa_out, 0.f, 1.f);
         },
         cfg.cm_cpu);
   }
-  else if (mask_type == "Gradient norm")
-  {
-    hmap::for_each_tile(
-        {&h},
-        {&mask_out},
-        [](std::vector<const hmap::Array *> p_arrays_in,
-           std::vector<hmap::Array *>       p_arrays_out,
-           const hmap::TileRegion &)
-        {
-          auto [pa_in] = unpack<1>(p_arrays_in);
-          auto [pa_out] = unpack<1>(p_arrays_out);
-
-          *pa_out = hmap::gradient_norm(*pa_in);
-        },
-        cfg.cm_cpu);
-
-    mask_out.remap(0.f, 1.f, cfg.cm_cpu);
-  }
-  else
-  {
-    Logger::log()->error("pre_process_mask: unknown mask type: {}", mask_type);
-  }
-
-  // filter
-  if (ir > 0)
-  {
-    hmap::for_each_tile(
-        {},
-        {&mask_out},
-        [&ir](std::vector<const hmap::Array *>,
-              std::vector<hmap::Array *> p_arrays_out,
-              const hmap::TileRegion &)
-        {
-          auto [pa_out] = unpack<1>(p_arrays_out);
-          hmap::gpu::smooth_cpulse(*pa_out, ir);
-        },
-        cfg.cm_gpu);
-
-    mask_out.sync_overlap_buffers();
-    mask_out.remap(0.f, 1.f, cfg.cm_cpu);
-  }
-
-  // --- apply gain to the mask
-
-  float mask_gain = node.val<float>("mask_gain");
-
-  if (mask_gain != 1.f)
-  {
-    hmap::for_each_tile(
-        {},
-        {&mask_out},
-        [mask_gain](std::vector<const hmap::Array *>,
-                    std::vector<hmap::Array *> p_arrays_out,
-                    const hmap::TileRegion &)
-        {
-          auto [pa] = unpack<1>(p_arrays_out);
-          hmap::gain(*pa, mask_gain);
-        },
-        cfg.cm_cpu);
-  }
-
-  if (node.val<bool>("mask_inverse"))
-    mask_out.inverse(cfg.cm_cpu);
 
   return mask_out;
 }
@@ -129,7 +167,10 @@ void setup_pre_process_mask_attributes(BaseNode &node)
                                       "Elevation mid-range",
                                       "Gradient norm"};
 
-  node.set_current_category("Default Mask Definition");
+  node.set_current_category("Mask Preprocessing");
+
+  add_bool(node, "mask_clamp", "Clamp to [0, 1]", false);
+  add_bool(node, "mask_normalize", "Normalize", false);
 
   add_bool(node, "mask_activate", "Activate Default Mask", false);
   add_choice(node, "mask_type", "Mask Type", choices);

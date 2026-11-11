@@ -508,7 +508,8 @@ void NodeAttributesWidget::setup_layout()
                                 ? std::string{"Parameters"}
                                 : std::string{},
       .collapse_regex = std::regex(
-          "Post-Process.*|Default Noise|Default Mask Definition|Advanced")};
+          "Post-Process.*|Default Noise|Default Mask Definition|Mask "
+          "Preprocessing|Advanced")};
 
   this->meta_widget = meta::qt::render(p_node->get_meta_group(),
                                        options,
