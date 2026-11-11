@@ -12,6 +12,10 @@ Two tools cover this: the **built-in batch mode** bundled with the Hesiod binary
 **`hsd` toolkit** — a Python package in this repository that compiles compact JSON specs
 into valid `.hsd` files and drives the binary programmatically.
 
+Install a package first using the [installation guide](../getting_started/installation.md).
+In the examples below, `hesiod` means the executable or launcher for your
+installation; a downloaded ZIP does not add it to your shell's `PATH`.
+
 ---
 
 ## Opening a project from the command line
@@ -58,19 +62,30 @@ hesiod --batch=graph.hsd [--shape=W,H] [--tiling=X,Y] [--overlap=R] [--force-dis
 | `--batch=<file>` / `-b <file>` | Path to the `.hsd` graph to execute. Required to enter batch mode. |
 | `--shape=W,H` | Override the heightmap shape in pixels, e.g. `--shape=2048,2048`. |
 | `--tiling=X,Y` | Override tiling, e.g. `--tiling=4,4` to split into 16 tiles. |
-| `--overlap=R` | Override the tile overlap ratio (0–1), e.g. `--overlap=0.25`. |
+| `--overlap=R` | Override the tile overlap ratio (`0 <= R < 1`), e.g. `--overlap=0.25`. |
 | `--force-distributed` | Force multi-threaded distributed computation mode (`VA_DISTRIBUTED`) for both CPU and GPU compute modes. |
 | `--force-sequential` | Force single-threaded sequential computation mode (`VA_SEQUENTIAL`) for both CPU and GPU compute modes. |
 | `--min-memory` / `--low-memory` | Minimal memory footprint mode: activates on-disk LRU caching (`VA_DISK_LRU_MIN` keeping minimum active tiles in RAM) and forces sequential compute mode (`VA_SEQUENTIAL`). Tiles are processed one-by-one to minimize RAM usage at the cost of higher disk I/O. |
 
-**Output:** export happens **only if the graph defines an export path** (`export_param` —
-see [Export configuration](#export-configuration) below). When an export path is
-configured, the batch run writes:
+Pass `--shape`, `--tiling` and `--overlap` together when overriding the compute
+configuration. Supplying only some of them can reset the omitted values to
+batch defaults rather than preserving the saved graph settings.
 
-- `<path>.png` — 16-bit grayscale heightmap.
-- `<path>_preview.png` — TERRAIN colourmap + hillshade composite.
+**Output:** configure file output before saving the graph. There are two routes:
 
-If the graph has no export path set, the graph is computed but no files are written.
+- Export nodes such as `ExportHeightmap` and `ExportTexture` write their configured
+  files during graph computation when **Auto Export on Node Update**
+  (`auto_export`) is enabled.
+- The graph's `export_param` configuration exports a flattened heightmap after
+  computation. See [Export configuration](#export-configuration) below.
+
+For a flattened export path of `terrain.png`, the batch run writes:
+
+- `terrain.png` — 16-bit grayscale heightmap.
+- `terrain_preview.png` — TERRAIN colourmap + hillshade composite.
+
+Without either export route configured, computing the graph does not produce
+terrain files. The batch run also writes timing information to `batch.log`.
 
 **Other modes** (mutually exclusive with `--batch`):
 
@@ -84,17 +99,46 @@ If the graph has no export path set, the graph is computed but no files are writ
 To suppress the Qt display (required on servers without a display):
 
 ```bash
-QT_QPA_PLATFORM=offscreen hesiod --batch=graph.hsd --shape=1024,1024
+QT_QPA_PLATFORM=offscreen hesiod --batch=graph.hsd --shape=1024,1024 --tiling=1,1 --overlap=0
 ```
+
+This suppresses the GUI; it does not remove the need for Qt, application data or
+an OpenCL runtime for the nodes you use.
+
+### Running a downloaded package
+
+On Linux, run from the extracted folder containing both `hesiod.AppImage` and
+`data`. Use an absolute project path if the graph is stored elsewhere:
+
+```bash
+QT_QPA_PLATFORM=offscreen ./hesiod.AppImage --batch=/absolute/path/graph.hsd --shape=1024,1024 --tiling=1,1 --overlap=0
+```
+
+On Windows, open PowerShell in the extracted folder containing `hesiod.exe`:
+
+```powershell
+$env:QT_QPA_PLATFORM = 'offscreen'
+.\hesiod.exe --batch="C:\Projects\graph.hsd" --shape=1024,1024 --tiling=1,1 --overlap=0
+```
+
+For an experimental macOS app installed in Applications, invoke its executable
+directly to receive logs and an exit status in the terminal:
+
+```bash
+QT_QPA_PLATFORM=offscreen /Applications/Hesiod.app/Contents/MacOS/Hesiod --batch=/absolute/path/graph.hsd --shape=1024,1024 --tiling=1,1 --overlap=0
+```
+
+Use absolute input and export paths for portable scripts. In particular, the
+experimental macOS app uses a per-user runtime working directory.
 
 ### Running from the build directory
 
-The binary must be run from a directory that contains the `data/` folder (node docs,
-colour gradients, etc.):
+For an unpackaged Linux source build, CMake copies the `data/` folder (node docs,
+colour gradients, etc.) into `build/bin`. Run from that directory:
 
 ```bash
-cd /path/to/Hesiod
-QT_QPA_PLATFORM=offscreen build/bin/hesiod --batch=my_graph.hsd
+cd /path/to/Hesiod/build/bin
+QT_QPA_PLATFORM=offscreen ./hesiod --batch=/absolute/path/my_graph.hsd --shape=1024,1024 --tiling=1,1 --overlap=0
 ```
 
 ---
@@ -106,11 +150,11 @@ the `.hsd` file. It holds:
 
 | Field | Description |
 |---|---|
-| `export_path` | Output file path (without extension); the binary appends `.png` and `_preview.png`. |
+| `export_path` | Output file path, preferably ending in `.png`. If no extension is supplied, `.png` is added. The preview inserts `_preview` before the extension. |
 | `ids` | Which node/port outputs to export. |
 | `shape` | Exported PNG resolution, baked in at build time from the spec's `config.shape`. To change export dimensions, update `config.shape` in the spec and rebuild. |
-| `tiling` | Default tile grid. Overridden by `--tiling`. |
-| `overlap` | Default overlap ratio. Overridden by `--overlap`. |
+| `tiling` | Tile grid for the flattened export, separate from the compute grid overridden by `--tiling`. |
+| `overlap` | Overlap for the flattened export, separate from the compute overlap overridden by `--overlap`. |
 
 To configure these fields from the GUI, use the Bake & Export dialog
 (`Alt+E`, or **File → Bake & Export**). Full details on what the dialog controls and
@@ -122,7 +166,7 @@ the resulting export directory structure are in
 ## The `hsd` toolkit
 
 The `hsd` toolkit is a Python package (`scripts/hsd/`) that lets you author `.hsd` graphs
-programmatically — without the GUI and without manually editing the XML-like `.hsd` format.
+programmatically — without the GUI and without manually editing the JSON `.hsd` format.
 You describe a graph in a compact JSON **spec**, validate it, and either build a `.hsd` or
 build-and-run in one step.
 

@@ -248,3 +248,15 @@ Local publisher regression checks:
 ```bash
 python3 -m unittest discover -s tests/ci -v
 ```
+
+### Publishing an existing macOS development build
+
+Run **Publish macOS development build** from `main`, supplying the successful
+macOS build's run ID and full head commit SHA. This publishes the selected
+`hesiod-macos-arm64` artifact without rebuilding it. The workflow verifies the
+run, archive checksum, source provenance and dependency-audit report before
+updating only the website's macOS Dev download. Stable and Windows/Linux
+packages are preserved. It uses the existing `website` environment's R2
+credentials. PR test runs are accepted only from this repository, and their
+packaged merge commit must match the selected head. The same conditional
+manifest update protects against concurrent publication.

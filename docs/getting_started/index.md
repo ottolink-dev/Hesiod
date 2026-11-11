@@ -7,8 +7,10 @@ below, read [Core Concepts](../core_concepts/index.md) first; this page is the *
 
 ![The rendered 3D terrain you'll produce in this walkthrough: eroded relief with carved valleys and ridges.](../images/getting_started/gs-01-overview.png)
 
-Every step below is a real action in the app. The node names, ports, and parameters
-are exactly what you will see on screen.
+Install Hesiod using the [installation guide](installation.md), then follow the steps
+below. The screenshots show an older interface: the former `NoiseFbm` generator
+is now the **FBM** mode of `CoherentNoise`. Use the current node names given in
+the instructions.
 
 ## What you'll build
 
@@ -17,7 +19,7 @@ eroded heightmap feeds *two* outputs — a raw export and a coloured one.
 
 ```mermaid
 graph LR
-  A["NoiseFbm<br/>(base relief)"] -->|heightmap| B["HydraulicParticle<br/>(erosion)"]
+  A["CoherentNoise<br/>(base relief)"] -->|heightmap| B["HydraulicParticle<br/>(erosion)"]
   B -->|heightmap| C["ExportHeightmap<br/>(raw)"]
   B -->|heightmap| D["ColorizeGradient"]
   D -->|texture| E["ExportTexture<br/>(colour)"]
@@ -42,20 +44,20 @@ To add a node, open the node library and pick one, or right-click in the graph. 
 are grouped by category — the categories in parentheses below tell you where to find
 each one.
 
-## Step 1 — A base heightmap (`NoiseFbm`)
+## Step 1 — A base heightmap (`CoherentNoise`)
 
-Add a **`NoiseFbm`** node (category *Primitive/Coherent*). This is your starting
-relief: fractal noise that already looks vaguely landscape-like.
+Add a **`CoherentNoise`** node (category *Primitive/Coherent*). This is your starting
+relief. Select its **FBM** mode for fractal noise.
 
 The three knobs worth playing with first:
 
-- **`seed`** — change it to get a completely different landscape.
-- **`kw`** — the wavenumber, i.e. the base feature size. Lower is broader hills;
+- **Seed** (`seed`) — change it to get a completely different landscape.
+- **Spatial Frequency** (`kw`) — the wavenumber, i.e. the base feature size. Lower is broader hills;
   higher is busier terrain.
-- **`octaves`** — how many layers of detail are stacked on top. More octaves = more
+- **Octaves** (`octaves`) — how many layers of detail are stacked on top. More octaves = more
   fine detail.
 
-![The NoiseFbm node selected, showing its grayscale preview thumbnail and its settings panel with seed, kw and octaves.](../images/getting_started/gs-03-noise.png)
+![The older NoiseFbm node and its preview; use CoherentNoise in FBM mode in current builds.](../images/getting_started/gs-03-noise.png)
 
 *Why:* fractal noise gives natural-looking base relief to build on. On its own it is
 not yet terrain — that comes next.
@@ -72,7 +74,7 @@ not yet terrain — that comes next.
 ## Step 2 — Erode it (`HydraulicParticle`)
 
 Add a **`HydraulicParticle`** node (category *Erosion/Hydraulic*) and wire
-`NoiseFbm`'s **`output`** into the erosion node's **`input`**. Erosion is what makes
+`CoherentNoise`'s **`output`** into the erosion node's **`input`**. Erosion is what makes
 noise read as terrain: it carves valleys and channels and deposits sediment, so the
 relief stops looking like noise and starts looking like a place.
 
@@ -122,8 +124,8 @@ wire out of the same port to make the second connection.
 
 On each export node, set the file name in **`fname`**. `ExportHeightmap` also lets you
 choose a **`format`**; `ExportTexture` has a **`16 bit`** toggle for higher colour
-depth. Both have an **`auto_export`** toggle — leave it on and the file is rewritten
-every time the graph updates.
+depth. Both have an **Auto Export on Node Update** (`auto_export`) toggle, which is
+off by default. Turn it on to write the file whenever the graph updates.
 
 *Why:* you usually want both — the raw heightmap to import into your engine, and the
 coloured version as a quick visual reference.

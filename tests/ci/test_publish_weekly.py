@@ -26,6 +26,7 @@ class Store:
         self.deleted = []
         self.fail = fail
         self.switched = False
+        self.expected_uploads = len(publisher.ARCHIVES)
 
     def get_object(self, **kwargs):
         return {"Body": io.BytesIO(json.dumps(self.manifest).encode()), "ETag": '"v1"'}
@@ -43,7 +44,7 @@ class Store:
         return self.objects[Key]
 
     def put_object(self, **kwargs):
-        assert len(self.objects) == len(publisher.ARCHIVES)
+        assert len(self.objects) == self.expected_uploads
         assert kwargs["IfMatch"] == '"v1"'
         if self.fail == "conflict":
             raise RuntimeError("PreconditionFailed")
