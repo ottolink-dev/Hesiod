@@ -6,6 +6,7 @@
   src,
   version,
   cmake,
+  fetchFromGitHub,
   ninja,
   pkg-config,
   qt6,
@@ -23,12 +24,18 @@
   boost,
   eigen,
   libpng,
+  openexr,
+  libtiff,
+  zstd,
   zlib,
   opencl-headers,
   opencl-clhpp,
   ocl-icd,
 }:
 
+let
+  highmapSources = import ./highmap-sources.nix { inherit fetchFromGitHub; };
+in
 stdenv.mkDerivation (finalAttrs: {
   pname = "hesiod";
   inherit version src;
@@ -60,13 +67,26 @@ stdenv.mkDerivation (finalAttrs: {
     boost
     eigen
     libpng
+    openexr
+    libtiff
+    zstd
     zlib
     opencl-headers
     opencl-clhpp
     ocl-icd
   ];
 
+  # Some dependencies generate files inside their source directories. Give
+  # CMake writable copies, with every FetchContent source supplied by Nix.
+  preConfigure = lib.concatMapStringsSep "\n" (name: ''
+    mkdir -p .nix-deps
+    cp -R ${highmapSources.${name}} .nix-deps/${name}
+    chmod -R u+w .nix-deps/${name}
+    cmakeFlagsArray+=("-DFETCHCONTENT_SOURCE_DIR_${lib.toUpper name}=$PWD/.nix-deps/${name}")
+  '') (builtins.attrNames highmapSources);
+
   cmakeFlags = [
+    (lib.cmakeBool "FETCHCONTENT_FULLY_DISCONNECTED" true)
     (lib.cmakeBool "HESIOD_ENABLE_GENERATE_APP_IMAGE" false)
     # flake.nix excludes tests/ from the packaged source.
     (lib.cmakeBool "HESIOD_ENABLE_UI_TESTS" false)
