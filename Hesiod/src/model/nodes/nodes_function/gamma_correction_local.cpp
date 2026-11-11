@@ -47,7 +47,7 @@ void setup_gamma_correction_local_node(BaseNode &node)
   add_float(node, A_GAMMA, "Gamma Exponent", 2.f, 0.01f, 4.f);
   add_float(node, A_K, "Smoothing", 0.1f, 0.f, 0.5f);
 
-  // --- Attribute(s) order
+  // --- Attributes
 
   setup_pre_process_mask_attributes(node);
   setup_post_process_heightmap_attributes(node,
