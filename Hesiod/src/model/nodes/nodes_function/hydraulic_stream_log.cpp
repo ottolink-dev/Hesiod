@@ -134,15 +134,16 @@ void compute_hydraulic_stream_log_node(BaseNode &node)
 
   // --- Compute
 
-  float hmin = p_in->min(node.cfg().cm_cpu);
-  float hmax = p_in->max(node.cfg().cm_cpu);
+  const glm::vec2 range = p_in->range(node.cfg().cm_cpu);
 
-  if (hmax - hmin < 1.0e-6f)
+  if (range.y - range.x < 1.0e-6f)
   {
     Logger::log()->warn(
         "HydraulicStreamLog [{}]: input is flat/near-constant (value range ~ 0). "
         "Erosion is gradient-driven and will produce little or no change.",
         node.get_id());
+
+    hmap::copy_data(*p_in, *p_out, node.cfg().cm_cpu);
     return;
   }
 
