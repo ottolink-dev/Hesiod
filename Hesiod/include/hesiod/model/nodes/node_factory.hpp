@@ -48,6 +48,7 @@ DECLARE_NODE(toggle)
 #ifndef HESIOD_MINIMAL_NODE_SET
 DECLARE_NODE(abs)
 DECLARE_NODE(abs_smooth)
+DECLARE_NODE(aeolian_erosion)
 DECLARE_NODE(area_remove)
 DECLARE_NODE(badlands)
 DECLARE_NODE(band)

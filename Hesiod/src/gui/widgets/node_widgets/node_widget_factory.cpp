@@ -40,7 +40,8 @@ void apply_node_status_icons(const std::string      &node_type,
 
   // --- WIP
 
-  static const std::vector<std::string> wip_nodes = {"CoastalErosionDiffusion",
+  static const std::vector<std::string> wip_nodes = {"AeolianErosion",
+                                                     "CoastalErosionDiffusion",
                                                      "HydraulicProcedural",
                                                      "HydraulicSaleve",
                                                      "Island",
@@ -95,7 +96,9 @@ void apply_node_status_icons(const std::string      &node_type,
 
   // --- Expensive
 
-  static const std::vector<std::string> expensive_nodes = {"FlowSimulationViscous"};
+  static const std::vector<std::string> expensive_nodes = {"AeolianErosion",
+                                                           "ExportAsCubemap",
+                                                           "FlowSimulationViscous"};
 
   const bool is_expensive = contains<std::string>(expensive_nodes, node_type);
 

@@ -140,6 +140,7 @@ std::map<std::string, std::string> get_node_inventory()
   std::map<std::string, std::string> node_inventory = {
       {"Abs", "Math/Base"},
       {"AbsSmooth", "Math/Base"},
+      {"AeolianErosion", "WIP"}, // "Erosion"
       {"AreaRemove", "Terrain Features/Morphology"},
       {"Badlands", "Primitive/Geological"},
       {"Band", "Primitive/Function"},
@@ -449,6 +450,7 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
 #ifndef HESIOD_MINIMAL_NODE_SET
     SETUP_NODE(Abs, abs);
     SETUP_NODE(AbsSmooth, abs_smooth);
+    SETUP_NODE(AeolianErosion, aeolian_erosion);
     SETUP_NODE(AreaRemove, area_remove);
     SETUP_NODE(Badlands, badlands);
     SETUP_NODE(Band, band);

@@ -132,6 +132,215 @@
             }
         }
     },
+    "AeolianErosion": {
+        "category": "WIP",
+        "description": "Simulates wind-driven aeolian terrain erosion, sand transport, and dune dynamics on GPU.",
+        "label": "AeolianErosion",
+        "parameter_groups": [
+            {
+                "keys": [
+                    "steps",
+                    "seed",
+                    "sand_height",
+                    "wind_norm",
+                    "wind_angle",
+                    "matter_to_move"
+                ],
+                "name": "Simulation"
+            },
+            {
+                "keys": [
+                    "sand_repose_angle",
+                    "shadow_angle_min",
+                    "shadow_angle_max",
+                    "max_shadow_dist"
+                ],
+                "name": "Dune Dynamics"
+            },
+            {
+                "keys": [
+                    "abrasion_rate",
+                    "repose_rate",
+                    "sync_interval",
+                    "post_mix_method",
+                    "post_mix",
+                    "post_inverse",
+                    "post_gamma",
+                    "post_gain",
+                    "post_smoothing_radius",
+                    "post_remap",
+                    "post_saturate"
+                ],
+                "name": "Abrasion & Repose"
+            }
+        ],
+        "parameters": {
+            "abrasion_rate": {
+                "description": "Abrasion wear rate on exposed bedrock (0 to disable).",
+                "key": "abrasion_rate",
+                "label": "Abrasion Rate",
+                "type": "Float"
+            },
+            "matter_to_move": {
+                "description": "Volume/height of sand grain packet displaced per hop.",
+                "key": "matter_to_move",
+                "label": "Matter to Move",
+                "type": "Float"
+            },
+            "max_shadow_dist": {
+                "description": "Maximum raymarch distance for wind shadow detection (in grid cells).",
+                "key": "max_shadow_dist",
+                "label": "Max Shadow Distance",
+                "type": "Float"
+            },
+            "post_gain": {
+                "description": "Mid-centered gain transformation applied to the elevation values. This is a non-linear recurve operator centered around the mid elevation (typically 0.5). Increasing the gain pushes values toward the minimum and maximum elevations, creating flatter low/high regions with a steeper transition around the midpoint.",
+                "key": "post_gain",
+                "label": "Gain",
+                "type": "Float"
+            },
+            "post_gamma": {
+                "description": "Standard gamma correction applied to the elevation values. This is a monotonic power-law remapping that shifts emphasis toward low or high elevations, making the overall shape sharper or bulkier without changing its ordering.",
+                "key": "post_gamma",
+                "label": "Gamma",
+                "type": "Float"
+            },
+            "post_inverse": {
+                "description": "Inverts the output values after processing, flipping low and high values across the midrange.",
+                "key": "post_inverse",
+                "label": "Invert Output",
+                "type": "Bool"
+            },
+            "post_mix": {
+                "description": "Mixing factor for blending input and output values. A value of 0 uses only the input, 1 uses only the output, and intermediate values perform a linear interpolation.",
+                "key": "post_mix",
+                "label": "Mix Factor",
+                "type": "Float"
+            },
+            "post_mix_method": {
+                "description": "Method used to combine input and output values. Options include linear interpolation (default), min, max, smooth min, smooth max, add, and subtract.",
+                "key": "post_mix_method",
+                "label": "Mix Method",
+                "type": "Enumeration"
+            },
+            "post_remap": {
+                "description": "Linearly remaps the output values to a specified target range (default is [0, 1]).",
+                "key": "post_remap",
+                "label": "Remap Range",
+                "type": "Value range"
+            },
+            "post_saturate": {
+                "description": "Modifies the amplitude of elevations by first clamping them to a given interval and then scaling them so that the restricted interval matches the original input range. This enhances contrast in elevation variations while maintaining overall structure.",
+                "key": "post_saturate",
+                "label": "Saturation Range",
+                "type": "Value range"
+            },
+            "post_smoothing_radius": {
+                "description": "Defines the radius for post-processing smoothing, determining the size of the neighborhood used to average local values and reduce high-frequency detail. A radius of 0 disables smoothing.",
+                "key": "post_smoothing_radius",
+                "label": "Smoothing Radius",
+                "type": "Float"
+            },
+            "repose_rate": {
+                "description": "Rate of sediment redistribution during repose stabilization.",
+                "key": "repose_rate",
+                "label": "Repose Rate",
+                "type": "Float"
+            },
+            "sand_height": {
+                "description": "Sand layer thickness / multiplier for sand map.",
+                "key": "sand_height",
+                "label": "Sand Height",
+                "type": "Float"
+            },
+            "sand_repose_angle": {
+                "description": "Angle of repose for loose sediment (in degrees, typically ~33 deg).",
+                "key": "sand_repose_angle",
+                "label": "Repose Angle",
+                "type": "Angle"
+            },
+            "seed": {
+                "description": "Random seed number. The random seed is an offset to the randomized process. A different seed will produce a new result.",
+                "key": "seed",
+                "label": "Seed",
+                "type": "Random seed number"
+            },
+            "shadow_angle_max": {
+                "description": "Maximum wind shadow angle threshold (in degrees).",
+                "key": "shadow_angle_max",
+                "label": "Shadow Angle Max",
+                "type": "Angle"
+            },
+            "shadow_angle_min": {
+                "description": "Minimum wind shadow angle threshold (in degrees).",
+                "key": "shadow_angle_min",
+                "label": "Shadow Angle Min",
+                "type": "Angle"
+            },
+            "steps": {
+                "description": "Number of simulation iterations.",
+                "key": "steps",
+                "label": "Steps",
+                "type": "Integer"
+            },
+            "sync_interval": {
+                "description": "Number of simulation steps between boundary synchronizations.",
+                "key": "sync_interval",
+                "label": "Sync Interval",
+                "type": "Integer"
+            },
+            "wind_angle": {
+                "description": "Wind direction angle in degrees.",
+                "key": "wind_angle",
+                "label": "Wind Angle",
+                "type": "Angle"
+            },
+            "wind_norm": {
+                "description": "Wind intensity / magnitude.",
+                "key": "wind_norm",
+                "label": "Wind Intensity",
+                "type": "Float"
+            }
+        },
+        "ports": {
+            "abrasion_mask": {
+                "caption": "abrasion_mask",
+                "data_type": "VirtualArray",
+                "description": "Optional bedrock abrasion susceptibility mask.",
+                "type": "input"
+            },
+            "bedrock": {
+                "caption": "bedrock",
+                "data_type": "VirtualArray",
+                "description": "Bedrock elevation array.",
+                "type": "input"
+            },
+            "output": {
+                "caption": "output",
+                "data_type": "VirtualArray",
+                "description": "Output total elevation heightmap.",
+                "type": "output"
+            },
+            "sand_map": {
+                "caption": "sand_map",
+                "data_type": "VirtualArray",
+                "description": "Optional input sand distribution map (scaled by sand_height; defaults to uniform if unconnected).",
+                "type": "input"
+            },
+            "sediment": {
+                "caption": "sediment",
+                "data_type": "VirtualArray",
+                "description": "Output final sand thickness map.",
+                "type": "output"
+            },
+            "vegetation": {
+                "caption": "vegetation",
+                "data_type": "VirtualArray",
+                "description": "Optional vegetation density mask anchoring sand.",
+                "type": "input"
+            }
+        }
+    },
     "AreaRemove": {
         "category": "Terrain Features/Morphology",
         "description": "Removes connected regions whose area is below a threshold. The threshold is defined indirectly using a radius parameter, which is converted internally into an equivalent surface. The filter does not operate on a geometric radius directly, but on the area derived from it.",
@@ -7660,49 +7869,49 @@
                 "type": "Bool"
             },
             "post_gain": {
-                "description": "Mid-centered gain transformation applied to the elevation values.",
+                "description": "Mid-centered gain transformation applied to the elevation values. This is a non-linear recurve operator centered around the mid elevation (typically 0.5). Increasing the gain pushes values toward the minimum and maximum elevations, creating flatter low/high regions with a steeper transition around the midpoint.",
                 "key": "post_gain",
                 "label": "Gain",
                 "type": "Float"
             },
             "post_gamma": {
-                "description": "Standard gamma correction applied to the elevation values.",
+                "description": "Standard gamma correction applied to the elevation values. This is a monotonic power-law remapping that shifts emphasis toward low or high elevations, making the overall shape sharper or bulkier without changing its ordering.",
                 "key": "post_gamma",
                 "label": "Gamma",
                 "type": "Float"
             },
             "post_inverse": {
-                "description": "Inverts the output values after processing.",
+                "description": "Inverts the output values after processing, flipping low and high values across the midrange.",
                 "key": "post_inverse",
                 "label": "Invert Output",
                 "type": "Bool"
             },
             "post_mix": {
-                "description": "Mixing factor for blending input and output values.",
+                "description": "Mixing factor for blending input and output values. A value of 0 uses only the input, 1 uses only the output, and intermediate values perform a linear interpolation.",
                 "key": "post_mix",
                 "label": "Mix Factor",
                 "type": "Float"
             },
             "post_mix_method": {
-                "description": "Method used to combine input and output values.",
+                "description": "Method used to combine input and output values. Options include linear interpolation (default), min, max, smooth min, smooth max, add, and subtract.",
                 "key": "post_mix_method",
                 "label": "Mix Method",
                 "type": "Enumeration"
             },
             "post_remap": {
-                "description": "Linearly remaps the output values to a specified target range.",
+                "description": "Linearly remaps the output values to a specified target range (default is [0, 1]).",
                 "key": "post_remap",
                 "label": "Remap Range",
                 "type": "Value range"
             },
             "post_saturate": {
-                "description": "Modifies the amplitude of elevations.",
+                "description": "Modifies the amplitude of elevations by first clamping them to a given interval and then scaling them so that the restricted interval matches the original input range. This enhances contrast in elevation variations while maintaining overall structure.",
                 "key": "post_saturate",
                 "label": "Saturation Range",
                 "type": "Value range"
             },
             "post_smoothing_radius": {
-                "description": "Defines the radius for post-processing smoothing.",
+                "description": "Defines the radius for post-processing smoothing, determining the size of the neighborhood used to average local values and reduce high-frequency detail. A radius of 0 disables smoothing.",
                 "key": "post_smoothing_radius",
                 "label": "Smoothing Radius",
                 "type": "Float"
@@ -8528,7 +8737,7 @@
             "water_depth": {
                 "caption": "water_depth",
                 "data_type": "VirtualArray",
-                "description": "Water depth computed as the difference between input and output terrain.",
+                "description": "Output water depth map representing flooded areas.",
                 "type": "output"
             }
         }
@@ -8610,7 +8819,7 @@
                 "type": "Float"
             },
             "seed": {
-                "description": "Random seed for reproducible pruning.",
+                "description": "Random seed number. The random seed is an offset to the randomized process. A different seed will produce a new result.",
                 "key": "seed",
                 "label": "Seed",
                 "type": "Random seed number"
@@ -20858,7 +21067,7 @@
                 "type": "Float"
             },
             "seed": {
-                "description": "Random seed for reproducible pruning.",
+                "description": "Random seed number. The random seed is an offset to the randomized process. A different seed will produce a new result.",
                 "key": "seed",
                 "label": "Seed",
                 "type": "Random seed number"
@@ -20919,37 +21128,37 @@
                 "type": "Float"
             },
             "post_gain": {
-                "description": "Post-processing gain.",
+                "description": "Mid-centered gain transformation applied to the elevation values. This is a non-linear recurve operator centered around the mid elevation (typically 0.5). Increasing the gain pushes values toward the minimum and maximum elevations, creating flatter low/high regions with a steeper transition around the midpoint.",
                 "key": "post_gain",
                 "label": "Gain",
                 "type": "Float"
             },
             "post_gamma": {
-                "description": "Post-processing gamma correction.",
+                "description": "Standard gamma correction applied to the elevation values. This is a monotonic power-law remapping that shifts emphasis toward low or high elevations, making the overall shape sharper or bulkier without changing its ordering.",
                 "key": "post_gamma",
                 "label": "Gamma",
                 "type": "Float"
             },
             "post_inverse": {
-                "description": "Inverts output height values.",
+                "description": "Inverts the output values after processing, flipping low and high values across the midrange.",
                 "key": "post_inverse",
                 "label": "Invert Output",
                 "type": "Bool"
             },
             "post_remap": {
-                "description": "Remaps the output elevation range.",
+                "description": "Linearly remaps the output values to a specified target range (default is [0, 1]).",
                 "key": "post_remap",
                 "label": "Remap Range",
                 "type": "Value range"
             },
             "post_saturate": {
-                "description": "Saturates output values to range.",
+                "description": "Modifies the amplitude of elevations by first clamping them to a given interval and then scaling them so that the restricted interval matches the original input range. This enhances contrast in elevation variations while maintaining overall structure.",
                 "key": "post_saturate",
                 "label": "Saturation Range",
                 "type": "Value range"
             },
             "post_smoothing_radius": {
-                "description": "Smoothing radius applied to heightmap.",
+                "description": "Defines the radius for post-processing smoothing, determining the size of the neighborhood used to average local values and reduce high-frequency detail. A radius of 0 disables smoothing.",
                 "key": "post_smoothing_radius",
                 "label": "Smoothing Radius",
                 "type": "Float"
@@ -20961,7 +21170,7 @@
                 "type": "Enumeration"
             },
             "seed": {
-                "description": "Random seed for procedural rock shapes.",
+                "description": "Random seed number. The random seed is an offset to the randomized process. A different seed will produce a new result.",
                 "key": "seed",
                 "label": "Seed",
                 "type": "Random seed number"
