@@ -38,7 +38,7 @@ void setup_wave_dune_node(BaseNode &node)
 
   // attribute(s)
   add_float(node, A_KW, "kw", 2.f, 0.01f, FLT_MAX);
-  add_float(node, A_ANGLE, "angle", 0.f, -180.f, 180.f, "{:.1f}°");
+  add_angle(node, A_ANGLE);
   add_float(node, A_XTOP, "xtop", 0.7f, 0.f, 1.f);
   add_float(node, A_XBOTTOM, "xbottom", 0.9f, 0.f, 1.f);
   add_float(node, A_PHASE_SHIFT, "phase_shift", 0.f, -180.f, 180.f, "{:.1f}°");

@@ -43,7 +43,7 @@ void setup_wave_sine_node(BaseNode &node)
   // --- Attributes
 
   add_float(node, A_KW, "kw", 2.f, 0.01f, FLT_MAX);
-  add_float(node, A_ANGLE, "angle", 0.f, -180.f, 180.f, "{:.1f}°");
+  add_angle(node, A_ANGLE);
   add_float(node, A_PHASE_SHIFT, "phase_shift", 0.f, -180.f, 180.f, "{:.1f}°");
   add_xy(node, A_CENTER, "center");
 
