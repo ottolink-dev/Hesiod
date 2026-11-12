@@ -16,14 +16,15 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_INPUT      = "input";
-constexpr const char *P_BEDROCK    = "bedrock";
-constexpr const char *P_MOISTURE   = "moisture";
-constexpr const char *P_MASK       = "mask";
-constexpr const char *P_OUTPUT     = "output";
-constexpr const char *P_EROSION    = "erosion";
-constexpr const char *P_DEPOSITION = "deposition";
-constexpr const char *P_FLOW_MAP   = "flow_map";
+constexpr const char *P_INPUT       = "input";
+constexpr const char *P_BEDROCK     = "bedrock";
+constexpr const char *P_ERODIBILITY = "erodibility";
+constexpr const char *P_MOISTURE    = "moisture";
+constexpr const char *P_MASK        = "mask";
+constexpr const char *P_OUTPUT      = "output";
+constexpr const char *P_EROSION     = "erosion";
+constexpr const char *P_DEPOSITION  = "deposition";
+constexpr const char *P_FLOW_MAP    = "flow_map";
 
 constexpr const char *A_SEED                      = "seed";
 constexpr const char *A_LEVELS                    = "levels";
@@ -50,6 +51,7 @@ void setup_hydraulic_stream_log_node(BaseNode &node)
 
   node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_INPUT);
   node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_BEDROCK);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_ERODIBILITY);
   node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_MOISTURE);
   node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_MASK);
   node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_OUTPUT, CONFIG(node));
@@ -96,14 +98,15 @@ void compute_hydraulic_stream_log_node(BaseNode &node)
 
   // --- Inputs / Outputs
 
-  const auto *p_in         = node.get_value_ref<hmap::VirtualArray>(P_INPUT);
-  const auto *p_bedrock    = node.get_value_ref<hmap::VirtualArray>(P_BEDROCK);
-  const auto *p_moisture   = node.get_value_ref<hmap::VirtualArray>(P_MOISTURE);
-  const auto *p_mask       = node.get_value_ref<hmap::VirtualArray>(P_MASK);
-  auto       *p_out        = node.get_value_ref<hmap::VirtualArray>(P_OUTPUT);
-  auto       *p_erosion    = node.get_value_ref<hmap::VirtualArray>(P_EROSION);
-  auto       *p_deposition = node.get_value_ref<hmap::VirtualArray>(P_DEPOSITION);
-  auto       *p_flow_map   = node.get_value_ref<hmap::VirtualArray>(P_FLOW_MAP);
+  const auto *p_in          = node.get_value_ref<hmap::VirtualArray>(P_INPUT);
+  const auto *p_bedrock     = node.get_value_ref<hmap::VirtualArray>(P_BEDROCK);
+  const auto *p_erodibility = node.get_value_ref<hmap::VirtualArray>(P_ERODIBILITY);
+  const auto *p_moisture    = node.get_value_ref<hmap::VirtualArray>(P_MOISTURE);
+  const auto *p_mask        = node.get_value_ref<hmap::VirtualArray>(P_MASK);
+  auto       *p_out         = node.get_value_ref<hmap::VirtualArray>(P_OUTPUT);
+  auto       *p_erosion     = node.get_value_ref<hmap::VirtualArray>(P_EROSION);
+  auto       *p_deposition  = node.get_value_ref<hmap::VirtualArray>(P_DEPOSITION);
+  auto       *p_flow_map    = node.get_value_ref<hmap::VirtualArray>(P_FLOW_MAP);
 
   if (!p_in)
     return;
@@ -148,13 +151,14 @@ void compute_hydraulic_stream_log_node(BaseNode &node)
   }
 
   hmap::for_each_tile(
-      {p_in, p_mask, p_bedrock, p_moisture},
+      {p_in, p_mask, p_bedrock, p_erodibility, p_moisture},
       {p_out, p_erosion, p_deposition, p_flow_map},
       [&](std::vector<const hmap::Array *> p_arrays_in,
           std::vector<hmap::Array *>       p_arrays_out,
           const hmap::TileRegion &)
       {
-        auto [pa_in, pa_mask, pa_bedrock, pa_moisture]        = unpack<4>(p_arrays_in);
+        auto [pa_in, pa_mask, pa_bedrock, pa_erodibility, pa_moisture] = unpack<5>(
+            p_arrays_in);
         auto [pa_out, pa_erosion, pa_deposition, pa_flow_map] = unpack<4>(p_arrays_out);
 
         *pa_out = *pa_in;
@@ -171,6 +175,7 @@ void compute_hydraulic_stream_log_node(BaseNode &node)
                                                    gradient_ir,
                                                    saturation_ratio,
                                                    pa_bedrock,
+                                                   pa_erodibility,
                                                    pa_moisture,
                                                    pa_erosion,
                                                    pa_deposition,

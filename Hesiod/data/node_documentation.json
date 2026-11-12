@@ -11487,6 +11487,12 @@
                 "data_type": "VirtualArray",
                 "description": "Eroded heightmap.",
                 "type": "output"
+            },
+            "erodibility": {
+                "caption": "erodibility",
+                "data_type": "VirtualArray",
+                "description": "Optional spatial erodibility multiplier array.",
+                "type": "input"
             }
         }
     },
@@ -12346,6 +12352,12 @@
                 "data_type": "VirtualArray",
                 "description": "Final terrain after erosion, deposition, and post-processing.",
                 "type": "output"
+            },
+            "erodibility": {
+                "caption": "erodibility",
+                "data_type": "VirtualArray",
+                "description": "Optional spatial erodibility multiplier array.",
+                "type": "input"
             }
         }
     },

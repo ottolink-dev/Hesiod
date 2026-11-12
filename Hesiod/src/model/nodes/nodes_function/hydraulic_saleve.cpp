@@ -216,6 +216,7 @@ void compute_hydraulic_saleve_node(BaseNode &node)
                                           deposition_ir,
                                           /* saturation_ratio */ 1.f,
                                           /* p_bedrock */ nullptr,
+                                          /* p_erodibility */ nullptr,
                                           /* p_moisture_map */ nullptr,
                                           /* pa_erosion_map */ nullptr,
                                           /* pa_deposition_map */ nullptr,
