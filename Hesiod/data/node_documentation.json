@@ -144,7 +144,9 @@
                     "sand_height",
                     "wind_norm",
                     "wind_angle",
-                    "matter_to_move"
+                    "matter_to_move",
+                    "levels",
+                    "coarse_fraction"
                 ],
                 "name": "Simulation"
             },
@@ -161,7 +163,6 @@
                 "keys": [
                     "abrasion_rate",
                     "repose_rate",
-                    "sync_interval",
                     "post_mix_method",
                     "post_mix",
                     "post_inverse",
@@ -180,6 +181,18 @@
                 "key": "abrasion_rate",
                 "label": "Abrasion Rate",
                 "type": "Float"
+            },
+            "coarse_fraction": {
+                "description": "Fraction in [0, 1) of the steps spent on coarse levels (shared equally); the remainder is run at full resolution.",
+                "key": "coarse_fraction",
+                "label": "Coarse Fraction",
+                "type": "Float"
+            },
+            "levels": {
+                "description": "Number of resolution levels (1 = single-scale). Each level halves the resolution.",
+                "key": "levels",
+                "label": "Multiscale Levels",
+                "type": "Integer"
             },
             "matter_to_move": {
                 "description": "Volume/height of sand grain packet displaced per hop.",
@@ -283,12 +296,6 @@
                 "label": "Steps",
                 "type": "Integer"
             },
-            "sync_interval": {
-                "description": "Number of simulation steps between boundary synchronizations.",
-                "key": "sync_interval",
-                "label": "Sync Interval",
-                "type": "Integer"
-            },
             "wind_angle": {
                 "description": "Wind direction angle in degrees.",
                 "key": "wind_angle",
@@ -312,7 +319,13 @@
             "bedrock": {
                 "caption": "bedrock",
                 "data_type": "VirtualArray",
-                "description": "Bedrock elevation array.",
+                "description": "Output eroded bedrock elevation array.",
+                "type": "output"
+            },
+            "bedrock_in": {
+                "caption": "bedrock_in",
+                "data_type": "VirtualArray",
+                "description": "Input bedrock elevation array.",
                 "type": "input"
             },
             "output": {
