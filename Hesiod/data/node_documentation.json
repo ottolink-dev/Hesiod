@@ -7840,6 +7840,186 @@
             }
         }
     },
+    "FlattenAroundPoints": {
+        "category": "Geometry/Cloud",
+        "description": "Flattens a heightmap locally around a set of reference points from a Cloud, supporting both isotropic radial falloff and terrain-aware cost-distance propagation.",
+        "label": "FlattenAroundPoints",
+        "parameter_groups": [
+            {
+                "keys": [
+                    "radius",
+                    "strength",
+                    "radial_profile",
+                    "profile_param",
+                    "use_cloud_values",
+                    "array_sampling",
+                    "sampling_radius",
+                    "terrain_aware",
+                    "slope_weight",
+                    "uphill_weight",
+                    "max_height_above",
+                    "terrain_follow",
+                    "post_mix_method",
+                    "post_mix",
+                    "post_inverse",
+                    "post_gamma",
+                    "post_gain",
+                    "post_smoothing_radius",
+                    "post_remap",
+                    "post_saturate"
+                ],
+                "name": "main"
+            }
+        ],
+        "parameters": {
+            "array_sampling": {
+                "description": "Strategy used to sample each point reference elevation from the input heightmap (Point, Minimum, Maximum, or Mean within Sampling Radius).",
+                "key": "array_sampling",
+                "label": "Sampling Method",
+                "type": "Enumeration"
+            },
+            "max_height_above": {
+                "description": "Maximum elevation above the seed reference elevation that terrain-aware propagation can reach (negative values disable the height limit).",
+                "key": "max_height_above",
+                "label": "Max Height Above",
+                "type": "Float"
+            },
+            "post_gain": {
+                "description": "Mid-centered gain transformation applied to the elevation values. This is a non-linear recurve operator centered around the mid elevation (typically 0.5). Increasing the gain pushes values toward the minimum and maximum elevations, creating flatter low/high regions with a steeper transition around the midpoint.",
+                "key": "post_gain",
+                "label": "Gain",
+                "type": "Float"
+            },
+            "post_gamma": {
+                "description": "Standard gamma correction applied to the elevation values. This is a monotonic power-law remapping that shifts emphasis toward low or high elevations, making the overall shape sharper or bulkier without changing its ordering.",
+                "key": "post_gamma",
+                "label": "Gamma",
+                "type": "Float"
+            },
+            "post_inverse": {
+                "description": "Inverts the output values after processing, flipping low and high values across the midrange.",
+                "key": "post_inverse",
+                "label": "Invert Output",
+                "type": "Bool"
+            },
+            "post_mix": {
+                "description": "Mixing factor for blending input and output values. A value of 0 uses only the input, 1 uses only the output, and intermediate values perform a linear interpolation.",
+                "key": "post_mix",
+                "label": "Mix Factor",
+                "type": "Float"
+            },
+            "post_mix_method": {
+                "description": "Method used to combine input and output values. Options include linear interpolation (default), min, max, smooth min, smooth max, add, and subtract.",
+                "key": "post_mix_method",
+                "label": "Mix Method",
+                "type": "Enumeration"
+            },
+            "post_remap": {
+                "description": "Linearly remaps the output values to a specified target range (default is [0, 1]).",
+                "key": "post_remap",
+                "label": "Remap Range",
+                "type": "Value range"
+            },
+            "post_saturate": {
+                "description": "Modifies the amplitude of elevations by first clamping them to a given interval and then scaling them so that the restricted interval matches the original input range. This enhances contrast in elevation variations while maintaining overall structure.",
+                "key": "post_saturate",
+                "label": "Saturation Range",
+                "type": "Value range"
+            },
+            "post_smoothing_radius": {
+                "description": "Defines the radius for post-processing smoothing, determining the size of the neighborhood used to average local values and reduce high-frequency detail. A radius of 0 disables smoothing.",
+                "key": "post_smoothing_radius",
+                "label": "Smoothing Radius",
+                "type": "Float"
+            },
+            "profile_param": {
+                "description": "Shape sharpness parameter for the selected radial profile.",
+                "key": "profile_param",
+                "label": "Profile Sharpness",
+                "type": "Float"
+            },
+            "radial_profile": {
+                "description": "Radial profile function controlling the distance falloff from each point.",
+                "key": "radial_profile",
+                "label": "Profile Type",
+                "type": "Enumeration"
+            },
+            "radius": {
+                "description": "Maximum influence radius around each seed point, in normalized domain units.",
+                "key": "radius",
+                "label": "Radius",
+                "type": "Float"
+            },
+            "sampling_radius": {
+                "description": "Neighborhood radius (in normalized domain units) used when sampling reference elevations with Minimum, Maximum, or Mean.",
+                "key": "sampling_radius",
+                "label": "Sampling Radius",
+                "type": "Float"
+            },
+            "slope_weight": {
+                "description": "Penalty weight on local terrain slope during terrain-aware propagation (0 ignores slope).",
+                "key": "slope_weight",
+                "label": "Slope Weight",
+                "type": "Float"
+            },
+            "strength": {
+                "description": "Blending strength toward the flattened target elevation in [0, 1].",
+                "key": "strength",
+                "label": "Strength",
+                "type": "Float"
+            },
+            "terrain_aware": {
+                "description": "When enabled, uses Dijkstra cost-distance propagation so flattened areas follow valleys and flat terrain while avoiding steep slopes and higher ground.",
+                "key": "terrain_aware",
+                "label": "Terrain Aware",
+                "type": "Bool"
+            },
+            "terrain_follow": {
+                "description": "Fraction of large-scale smoothed terrain relief preserved in the flattened surface (0 produces an exact plateau, 1 preserves the full smoothed relief).",
+                "key": "terrain_follow",
+                "label": "Terrain Follow",
+                "type": "Float"
+            },
+            "uphill_weight": {
+                "description": "Penalty weight on climbing above the seed reference elevation during terrain-aware propagation (0 ignores uphill climb).",
+                "key": "uphill_weight",
+                "label": "Uphill Weight",
+                "type": "Float"
+            },
+            "use_cloud_values": {
+                "description": "When enabled, uses the existing point values stored in the input Cloud as reference elevations instead of sampling the input heightmap.",
+                "key": "use_cloud_values",
+                "label": "Use Cloud Values",
+                "type": "Bool"
+            }
+        },
+        "ports": {
+            "cloud": {
+                "caption": "cloud",
+                "data_type": "Cloud",
+                "description": "Input Cloud defining the 2D locations (and optionally reference elevations) of the flattening seeds.",
+                "type": "input"
+            },
+            "input": {
+                "caption": "input",
+                "data_type": "VirtualArray",
+                "description": "Input heightmap to flatten around reference points.",
+                "type": "input"
+            },
+            "mask": {
+                "caption": "mask",
+                "data_type": "VirtualArray",
+                "description": "Output blending weight mask in [0, 1] for the flattened regions.",
+                "type": "output"
+            },
+            "output": {
+                "caption": "output",
+                "data_type": "VirtualArray",
+                "description": "Flattened output heightmap.",
+                "type": "output"
+            }
+        }
+    },
     "Flip": {
         "category": "Operator/Transform",
         "description": "Flip a heightmap along the X and/or Y axis, or transpose it.",

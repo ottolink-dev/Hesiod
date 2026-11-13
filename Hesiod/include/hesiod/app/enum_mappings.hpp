@@ -9,6 +9,7 @@
 #include "highmap/curvature.hpp"
 #include "highmap/erosion.hpp"
 #include "highmap/filters.hpp"
+#include "highmap/geometry/cloud.hpp"
 #include "highmap/kernels.hpp"
 #include "highmap/local_metrics.hpp"
 #include "highmap/math.hpp"
@@ -25,6 +26,12 @@ namespace hesiod
 
 static struct EnumMappings
 {
+
+  const std::map<std::string, int> array_sampling_map = {
+      {"Point", static_cast<int>(hmap::ArraySampling::AS_POINT)},
+      {"Minimum", static_cast<int>(hmap::ArraySampling::AS_MIN)},
+      {"Maximum", static_cast<int>(hmap::ArraySampling::AS_MAX)},
+      {"Mean", static_cast<int>(hmap::ArraySampling::AS_MEAN)}};
 
   const std::map<std::string, int> mix_method_map = {
       {"Linear", hmap::MixMethod::MM_LINEAR},

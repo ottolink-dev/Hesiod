@@ -219,6 +219,7 @@ std::map<std::string, std::string> get_node_inventory()
       {"FillTalus", "Filter/Advanced Filters"},
       {"FindCutPath", "Geometry/Path"},
       {"FlatbedCarve", "Hydrology"},
+      {"FlattenAroundPoints", "Geometry/Cloud"},
       {"Flip", "Operator/Transform"},
       {"FloodingFromBoundaries", "Hydrology"},
       {"FloodingFromPoint", "Hydrology"},
@@ -524,6 +525,7 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
     SETUP_NODE(FillTalus, fill_talus);
     SETUP_NODE(FindCutPath, find_cut_path);
     SETUP_NODE(FlatbedCarve, flatbed_carve);
+    SETUP_NODE(FlattenAroundPoints, flatten_around_points);
     SETUP_NODE(Flip, flip);
     SETUP_NODE(FloodingFromBoundaries, flooding_from_boundaries);
     SETUP_NODE(FloodingFromPoint, flooding_from_point);

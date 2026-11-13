@@ -11,6 +11,7 @@
 #include <QTimer>
 #include <QtTest>
 
+#include "gnode/graph_worker.hpp"
 #include "gnodegui/style.hpp"
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/graph_editor.hpp"
@@ -19,7 +20,6 @@
 #include "hesiod/gui/widgets/graph/graph_node_widget.hpp"
 #include "hesiod/model/graph/graph_manager.hpp"
 #include "hesiod/model/graph/graph_node.hpp"
-#include "gnode/graph_worker.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/node_factory.hpp"
 #include "hesiod/model/utils.hpp"
@@ -160,8 +160,8 @@ private Q_SLOTS:
   void export_filename_replacements_work_without_a_gui_project()
   {
     QVERIFY(!HSD_CTX.project_model);
-    auto config = small_config();
-    BaseNode node("Abs", config);
+    auto       config = small_config();
+    BaseNode   node("Abs", config);
     const auto replacements = get_standard_replacements(node, "exports/heightmap.png");
     QCOMPARE(replacements.at("{PROJECT}"), std::string());
     QCOMPARE(replacements.at("{FILENAME}"), std::string("heightmap"));
@@ -549,10 +549,9 @@ private Q_SLOTS:
     QTest::addColumn<QString>("target_type");
     QTest::addColumn<QString>("output_port");
     QTest::addColumn<QString>("input_port");
-    QTest::newRow("current-port") << QString("Thru") << QString("output")
-                                 << QString("input");
-    QTest::newRow("legacy-port") << QString("Thru") << QString("out")
-                                << QString("in");
+    QTest::newRow("current-port")
+        << QString("Thru") << QString("output") << QString("input");
+    QTest::newRow("legacy-port") << QString("Thru") << QString("out") << QString("in");
     QTest::newRow("post-process-current-port")
         << QString("PostProcess") << QString("output") << QString("input");
     QTest::newRow("post-process-legacy-port")
@@ -765,7 +764,8 @@ private Q_SLOTS:
     int c1_row = -1;
     for (int r = 0; r < proxy->rowCount(); ++r)
     {
-      if (proxy->data(proxy->index(r, NodeInspectorModel::Column::COL_ID)).toString() == "c1")
+      if (proxy->data(proxy->index(r, NodeInspectorModel::Column::COL_ID)).toString() ==
+          "c1")
       {
         c1_row = r;
         break;
@@ -773,7 +773,8 @@ private Q_SLOTS:
     }
     QVERIFY(c1_row != -1);
 
-    QModelIndex comment_idx = proxy->index(c1_row, NodeInspectorModel::Column::COL_COMMENT);
+    QModelIndex comment_idx = proxy->index(c1_row,
+                                           NodeInspectorModel::Column::COL_COMMENT);
     QVERIFY(proxy->flags(comment_idx) & Qt::ItemIsEditable);
     QVERIFY(proxy->setData(comment_idx, "my note", Qt::EditRole));
     QCOMPARE(proxy->data(comment_idx, Qt::DisplayRole).toString(), "my note");
@@ -786,7 +787,7 @@ private Q_SLOTS:
 
   void test_flip_node_modes()
   {
-    Fixture f;
+    Fixture    f;
     const auto c = f.add("Constant");
     const auto flip_id = f.add("Flip");
     f.editor.connect({c, "output", flip_id, "input"});
@@ -801,7 +802,7 @@ private Q_SLOTS:
     auto *va_in = node_c->get_value_ref<hmap::VirtualArray>("output");
     QVERIFY(va_in != nullptr);
     const glm::ivec2 shape = f.config->shape;
-    hmap::Array in_arr(shape);
+    hmap::Array      in_arr(shape);
     for (int j = 0; j < shape.y; ++j)
       for (int i = 0; i < shape.x; ++i)
         in_arr(i, j) = static_cast<float>(i + shape.x * j);
@@ -855,6 +856,65 @@ private Q_SLOTS:
     for (int j = 0; j < shape.y; ++j)
       for (int i = 0; i < shape.x; ++i)
         QCOMPARE(out_arr(i, j), in_arr(j, i));
+  }
+
+  void test_flatten_around_points_node()
+  {
+    Fixture    f;
+    const auto c = f.add("Constant");
+    const auto cl = f.add("CloudRandom");
+    const auto fap_id = f.add("FlattenAroundPoints");
+    f.editor.connect({c, "output", fap_id, "input"});
+    f.editor.connect({cl, "cloud", fap_id, "cloud"});
+
+    auto *node_c = f.graph->get_node_ref_by_id<BaseNode>(c);
+    auto *node_cl = f.graph->get_node_ref_by_id<BaseNode>(cl);
+    auto *node_fap = f.graph->get_node_ref_by_id<BaseNode>(fap_id);
+    QVERIFY(node_c != nullptr);
+    QVERIFY(node_cl != nullptr);
+    QVERIFY(node_fap != nullptr);
+
+    auto *va_in = node_c->get_value_ref<hmap::VirtualArray>("output");
+    auto *p_cloud = node_cl->get_value_ref<hmap::Cloud>("cloud");
+    auto *va_out = node_fap->get_value_ref<hmap::VirtualArray>("output");
+    auto *va_mask = node_fap->get_value_ref<hmap::VirtualArray>("mask");
+    QVERIFY(va_in != nullptr);
+    QVERIFY(p_cloud != nullptr);
+    QVERIFY(va_out != nullptr);
+    QVERIFY(va_mask != nullptr);
+
+    const glm::ivec2 shape = f.config->shape;
+    hmap::Array      in_arr(shape);
+    for (int j = 0; j < shape.y; ++j)
+      for (int i = 0; i < shape.x; ++i)
+        in_arr(i, j) = static_cast<float>(i + j) / static_cast<float>(shape.x + shape.y);
+    va_in->from_array(in_arr, f.config->cm_cpu);
+
+    *p_cloud = hmap::Cloud(std::vector<float>{3.f / 7.f},
+                           std::vector<float>{3.f / 7.f},
+                           std::vector<float>{0.1f});
+
+    // 1. Terrain-aware mode using Cloud values
+    node_fap->set_value<bool>("terrain_aware", true);
+    node_fap->set_value<bool>("use_cloud_values", true);
+    node_fap->set_value<float>("terrain_follow", 0.f);
+    node_fap->set_value<float>("radius", 0.5f);
+    node_fap->set_value<float>("strength", 1.f);
+    compute_flatten_around_points_node(*node_fap);
+
+    hmap::Array out_arr = va_out->to_array(f.config->cm_cpu);
+    hmap::Array mask_arr = va_mask->to_array(f.config->cm_cpu);
+    QVERIFY(mask_arr.max() > 0.f);
+    QVERIFY(out_arr(3, 3) < in_arr(3, 3));
+
+    // 2. Isotropic mode
+    node_fap->set_value<bool>("terrain_aware", false);
+    compute_flatten_around_points_node(*node_fap);
+
+    out_arr = va_out->to_array(f.config->cm_cpu);
+    mask_arr = va_mask->to_array(f.config->cm_cpu);
+    QVERIFY(mask_arr.max() > 0.f);
+    QVERIFY(out_arr(3, 3) < in_arr(3, 3));
   }
 };
 
