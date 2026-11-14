@@ -122,6 +122,9 @@ protected:
   void request_deletion(const std::vector<std::string>          &ids,
                         const std::vector<gngui::LinkEndpoints> &links) override;
 
+  void dragEnterEvent(QDragEnterEvent *event) override;
+  void dragMoveEvent(QDragMoveEvent *event) override;
+  void dropEvent(QDropEvent *event) override;
   void mousePressEvent(QMouseEvent *event) override;
   void mouseReleaseEvent(QMouseEvent *event) override;
 
@@ -131,6 +134,11 @@ private:
   void create_viewport(bool inherit_preview);
   void backup_selected_ids();
   void reselect_backup_ids();
+  void handle_dropped_files(const std::vector<std::filesystem::path> &file_paths,
+                            QPointF                                   scene_pos);
+  bool import_hsd_file(const std::filesystem::path &path,
+                       QPointF                      scene_pos,
+                       const std::string           &preferred_graph_id = "");
 
   // --- Members ---
   std::weak_ptr<GraphNode>                     p_graph_node; // own by GraphManager

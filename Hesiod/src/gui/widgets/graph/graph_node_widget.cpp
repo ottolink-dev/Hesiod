@@ -1,20 +1,30 @@
 /* Copyright (c) 2025 Otto Link. Distributed under the terms of the GNU General
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
+#include <algorithm>
+#include <cctype>
 #include <exception>
 #include <optional>
 #include <type_traits>
 
 #include <QApplication>
+#include <QCursor>
+#include <QDragEnterEvent>
+#include <QDragMoveEvent>
+#include <QDropEvent>
 #include <QFileDialog>
 #include <QMenu>
+#include <QMimeData>
 #include <QPointer>
 #include <QPushButton>
 #include <QScreen>
 #include <QTimer>
 #include <QToolButton>
+#include <QUrl>
 #include <QVBoxLayout>
 #include <QWidgetAction>
+
+#include <opencv2/imgcodecs.hpp>
 
 #include "gnodegui/style.hpp"
 
@@ -61,6 +71,119 @@ template <typename F> auto perform_graph_edit(F &&edit) -> std::invoke_result_t<
     if constexpr (!std::is_void_v<std::invoke_result_t<F>>)
       return {};
   }
+}
+
+enum class DroppedFileKind
+{
+  Invalid,
+  HsdProject,
+  Heightmap,
+  Texture
+};
+
+std::string to_lower_extension(const std::filesystem::path &path)
+{
+  std::string ext = path.extension().string();
+  std::transform(ext.begin(),
+                 ext.end(),
+                 ext.begin(),
+                 [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+  return ext;
+}
+
+bool is_supported_image_extension(const std::string &ext)
+{
+  static const std::vector<std::string> k_exts = {".bmp",
+                                                  ".dib",
+                                                  ".jpeg",
+                                                  ".jpg",
+                                                  ".png",
+                                                  ".pbm",
+                                                  ".pgm",
+                                                  ".ppm",
+                                                  ".pxm",
+                                                  ".pnm",
+                                                  ".tiff",
+                                                  ".tif",
+                                                  ".hdr",
+                                                  ".pic",
+                                                  ".exr"};
+  return std::find(k_exts.begin(), k_exts.end(), ext) != k_exts.end();
+}
+
+bool is_grayscale_mat(const cv::Mat &mat)
+{
+  if (mat.channels() == 1)
+    return true;
+
+  if (mat.channels() != 3 && mat.channels() != 4)
+    return false;
+
+  std::vector<cv::Mat> ch;
+  cv::split(mat, ch);
+
+  if (cv::countNonZero(ch[0] != ch[1]) != 0 || cv::countNonZero(ch[0] != ch[2]) != 0)
+    return false;
+
+  if (mat.channels() == 4)
+  {
+    double min_a = 0.0;
+    double max_a = 0.0;
+    cv::minMaxLoc(ch[3], &min_a, &max_a);
+    if (min_a != max_a)
+      return false;
+  }
+
+  return true;
+}
+
+DroppedFileKind classify_dropped_file(const std::filesystem::path &path,
+                                      std::string                 &error_msg)
+{
+  std::error_code ec;
+  if (!std::filesystem::exists(path, ec) || !std::filesystem::is_regular_file(path, ec))
+  {
+    error_msg = "Dropped item is not a valid file: " + path.filename().string();
+    return DroppedFileKind::Invalid;
+  }
+
+  const std::string ext = to_lower_extension(path);
+  if (ext == ".hsd")
+    return DroppedFileKind::HsdProject;
+
+  if (!is_supported_image_extension(ext))
+  {
+    error_msg = "Unsupported file format: " + path.filename().string();
+    return DroppedFileKind::Invalid;
+  }
+
+  cv::Mat mat = cv::imread(path.string(), cv::IMREAD_UNCHANGED);
+  if (mat.empty() || mat.cols <= 0 || mat.rows <= 0)
+  {
+    error_msg = "Could not read image file: " + path.filename().string();
+    return DroppedFileKind::Invalid;
+  }
+
+  const int channels = mat.channels();
+  if (channels != 1 && channels != 3 && channels != 4)
+  {
+    error_msg = "Unsupported channel count (" + std::to_string(channels) +
+                ") in image: " + path.filename().string();
+    return DroppedFileKind::Invalid;
+  }
+
+  if (is_grayscale_mat(mat))
+    return DroppedFileKind::Heightmap;
+
+  // ImportTexture uses 8-bit IMREAD_COLOR and does not support .exr
+  if (ext == ".exr")
+  {
+    error_msg = "Colored EXR files are not supported by ImportTexture: " +
+                path.filename().string();
+    return DroppedFileKind::Invalid;
+  }
+
+  return DroppedFileKind::Texture;
 }
 } // namespace
 
@@ -558,85 +681,170 @@ void GraphNodeWidget::on_graph_import_request()
   this->set_enabled(true);
 
   if (!load_fname.isNull() && !load_fname.isEmpty())
+    this->import_hsd_file(std::filesystem::path(load_fname.toStdString()),
+                          QPointF(0.f, 0.f));
+}
+
+bool GraphNodeWidget::import_hsd_file(const std::filesystem::path &path,
+                                      QPointF                      scene_pos,
+                                      const std::string           &preferred_graph_id)
+{
+  Logger::log()->trace("GraphNodeWidget::import_hsd_file: {}", path.string());
+
+  nlohmann::json json;
+  try
   {
-    std::string    fname = load_fname.toStdString();
-    nlohmann::json json = json_from_file(fname);
-
-    // retrieve the number of graph
-    size_t n_graph = json["graph_manager"]["graph_nodes"].size();
-
-    std::vector<std::string> graph_id_list = {};
-    for (auto [key, _] : json["graph_manager"]["graph_nodes"].items())
-      graph_id_list.push_back(key);
-
-    if (n_graph < 1)
-    {
-      Logger::log()->warn("GraphNodeWidget::on_graph_import_request: no graph to import");
-      return;
-    }
-
-    std::string import_graph_id;
-
-    if (n_graph == 1)
-    {
-      import_graph_id = graph_id_list.back();
-    }
-    else
-    {
-      SelectStringDialog dialog(graph_id_list, "Select the graph layer to import:");
-
-      if (dialog.exec() != QDialog::Accepted)
-      {
-        Logger::log()->trace("GraphNodeWidget::on_graph_import_request: aborted");
-        return;
-      }
-
-      import_graph_id = dialog.selected_value();
-    }
-
-    Logger::log()->trace(
-        "GraphNodeWidget::on_graph_import_request: importing {} from file {}",
-        import_graph_id,
-        fname);
-
-    // build a json file that can be imported, see GraphNodeWidget::json_import
-    nlohmann::json json_imp;
-    json_imp = json["graph_tabs_widget"]["graph_node_widgets"][import_graph_id];
-
-    // add node settings
-    for (auto &json_node : json_imp["nodes"])
-    {
-      const std::string node_id = json_node["id"];
-
-      // retrieve in the model section the corresponding node and
-      // its parameters
-      for (auto &json_node_model :
-           json["graph_manager"]["graph_nodes"][import_graph_id]["nodes"])
-      {
-        if (json_node_model["id"] == node_id)
-          json_node["settings"] = json_node_model;
-      }
-    }
-
-    nlohmann::json json_mod = this->json_import(json_imp);
-
-    // set selection on copied nodes
-    this->deselect_all();
-
-    for (auto &json_node : json_mod["nodes"])
-    {
-      const std::string node_id = json_node["id"].get<std::string>();
-      QTimer::singleShot(0,
-                         this,
-                         [this, node_id]()
-                         {
-                           if (auto *node = this->get_graphics_node_by_id(node_id))
-                             node->setSelected(true);
-                         });
-    }
-
-    this->last_import_path = std::filesystem::path(fname).parent_path();
+    json = json_from_file(path.string());
   }
+  catch (const std::exception &error)
+  {
+    Logger::log()->warn("GraphNodeWidget::import_hsd_file: failed to read '{}': {}",
+                        path.string(),
+                        error.what());
+    if (!HSD_CTX.headless)
+      HSD_APP->notify("Could not read project file: " + path.filename().string());
+    return false;
+  }
+
+  if (!json.is_object() || !json.contains("graph_manager") ||
+      !json["graph_manager"].is_object() ||
+      !json["graph_manager"].contains("graph_nodes") ||
+      !json["graph_manager"]["graph_nodes"].is_object() ||
+      !json.contains("graph_tabs_widget") || !json["graph_tabs_widget"].is_object())
+  {
+    Logger::log()->warn(
+        "GraphNodeWidget::import_hsd_file: invalid .hsd structure in '{}'",
+        path.string());
+    if (!HSD_CTX.headless)
+      HSD_APP->notify("Invalid project file: " + path.filename().string());
+    return false;
+  }
+
+  const auto &graph_nodes_json = json["graph_manager"]["graph_nodes"];
+  if (graph_nodes_json.empty())
+  {
+    Logger::log()->warn("GraphNodeWidget::import_hsd_file: no graph to import");
+    if (!HSD_CTX.headless)
+      HSD_APP->notify("No graph found in file: " + path.filename().string());
+    return false;
+  }
+
+  std::vector<std::string> graph_id_list;
+  graph_id_list.reserve(graph_nodes_json.size());
+  for (auto [key, _] : graph_nodes_json.items())
+    graph_id_list.push_back(key);
+
+  std::string import_graph_id;
+  if (!preferred_graph_id.empty() && graph_nodes_json.contains(preferred_graph_id))
+  {
+    import_graph_id = preferred_graph_id;
+  }
+  else if (graph_id_list.size() == 1 || HSD_CTX.headless)
+  {
+    import_graph_id = graph_id_list.front();
+  }
+  else
+  {
+    SelectStringDialog dialog(graph_id_list, "Select the graph layer to import:");
+    if (dialog.exec() != QDialog::Accepted)
+    {
+      Logger::log()->trace("GraphNodeWidget::import_hsd_file: aborted");
+      return false;
+    }
+    import_graph_id = dialog.selected_value();
+  }
+
+  if (!json["graph_tabs_widget"].contains("graph_node_widgets") ||
+      !json["graph_tabs_widget"]["graph_node_widgets"].contains(import_graph_id))
+  {
+    Logger::log()->warn("GraphNodeWidget::import_hsd_file: missing widget data for '{}'",
+                        import_graph_id);
+    return false;
+  }
+
+  Logger::log()->trace("GraphNodeWidget::import_hsd_file: importing {} from file {}",
+                       import_graph_id,
+                       path.string());
+
+  nlohmann::json json_imp = json["graph_tabs_widget"]["graph_node_widgets"]
+                                [import_graph_id];
+
+  if (!json_imp.contains("nodes") || !json_imp["nodes"].is_array() ||
+      json_imp["nodes"].empty())
+  {
+    Logger::log()->warn("GraphNodeWidget::import_hsd_file: graph '{}' has no nodes",
+                        import_graph_id);
+    return false;
+  }
+
+  // attach model settings to each node
+  for (auto &json_node : json_imp["nodes"])
+  {
+    const std::string node_id = json_node["id"];
+    for (auto &json_node_model : graph_nodes_json[import_graph_id]["nodes"])
+    {
+      if (json_node_model["id"] == node_id)
+        json_node["settings"] = json_node_model;
+    }
+  }
+
+  // center imported subgraph around scene_pos if scene_pos is non-zero
+  if (!scene_pos.isNull())
+  {
+    double sum_x = 0.0;
+    double sum_y = 0.0;
+    size_t count = 0;
+
+    for (const auto &json_node : json_imp["nodes"])
+    {
+      if (json_node.contains("scene_position.x") &&
+          json_node.contains("scene_position.y"))
+      {
+        sum_x += json_node.value("scene_position.x", 0.0);
+        sum_y += json_node.value("scene_position.y", 0.0);
+        ++count;
+      }
+    }
+
+    if (count > 0)
+    {
+      const double cx = sum_x / static_cast<double>(count);
+      const double cy = sum_y / static_cast<double>(count);
+
+      for (auto &json_node : json_imp["nodes"])
+      {
+        if (json_node.contains("scene_position.x") &&
+            json_node.contains("scene_position.y"))
+        {
+          json_node["scene_position.x"] = json_node.value("scene_position.x", 0.0) - cx;
+          json_node["scene_position.y"] = json_node.value("scene_position.y", 0.0) - cy;
+        }
+      }
+    }
+  }
+
+  nlohmann::json json_mod = this->json_import(json_imp, scene_pos);
+
+  this->deselect_all();
+  for (auto &json_node : json_mod["nodes"])
+  {
+    const std::string node_id = json_node["id"].get<std::string>();
+    QTimer::singleShot(0,
+                       this,
+                       [this, node_id]()
+                       {
+                         if (auto *node = this->get_graphics_node_by_id(node_id))
+                           node->setSelected(true);
+                       });
+  }
+
+  if (!json_mod["nodes"].empty())
+  {
+    QTimer::singleShot(0, this, [this]() { this->update_graph_model(); });
+  }
+
+  this->last_import_path = path.parent_path();
+  return true;
 }
 
 void GraphNodeWidget::on_graph_new_request()
@@ -1315,6 +1523,164 @@ void GraphNodeWidget::mouseReleaseEvent(QMouseEvent *event)
     }
 
     this->node_press_positions.clear();
+  }
+}
+
+void GraphNodeWidget::dragEnterEvent(QDragEnterEvent *event)
+{
+  if (event->mimeData() && event->mimeData()->hasUrls())
+  {
+    for (const QUrl &url : event->mimeData()->urls())
+    {
+      if (url.isLocalFile())
+      {
+        event->acceptProposedAction();
+        return;
+      }
+    }
+  }
+
+  gngui::GraphViewer::dragEnterEvent(event);
+}
+
+void GraphNodeWidget::dragMoveEvent(QDragMoveEvent *event)
+{
+  if (event->mimeData() && event->mimeData()->hasUrls())
+  {
+    for (const QUrl &url : event->mimeData()->urls())
+    {
+      if (url.isLocalFile())
+      {
+        event->acceptProposedAction();
+        return;
+      }
+    }
+  }
+
+  gngui::GraphViewer::dragMoveEvent(event);
+}
+
+void GraphNodeWidget::dropEvent(QDropEvent *event)
+{
+  if (!event->mimeData() || !event->mimeData()->hasUrls())
+  {
+    gngui::GraphViewer::dropEvent(event);
+    return;
+  }
+
+  std::vector<std::filesystem::path> file_paths;
+  for (const QUrl &url : event->mimeData()->urls())
+  {
+    if (url.isLocalFile())
+      file_paths.emplace_back(url.toLocalFile().toStdString());
+  }
+
+  if (file_paths.empty())
+  {
+    event->ignore();
+    return;
+  }
+
+  const QPointF scene_pos = this->mapToScene(event->position().toPoint());
+  event->acceptProposedAction();
+  this->handle_dropped_files(file_paths, scene_pos);
+}
+
+void GraphNodeWidget::handle_dropped_files(
+    const std::vector<std::filesystem::path> &file_paths,
+    QPointF                                   scene_pos)
+{
+  Logger::log()->trace("GraphNodeWidget::handle_dropped_files: {} file(s) at ({}, {})",
+                       file_paths.size(),
+                       scene_pos.x(),
+                       scene_pos.y());
+
+  const QPointF            delta(40.0, 40.0);
+  QPointF                  current_pos = scene_pos;
+  std::vector<std::string> created_node_ids;
+
+  perform_graph_edit(
+      [&]()
+      {
+        GraphEditor::Batch batch(*this->editor);
+
+        for (const auto &path : file_paths)
+        {
+          std::string           error_msg;
+          const DroppedFileKind kind = classify_dropped_file(path, error_msg);
+
+          if (kind == DroppedFileKind::Invalid)
+          {
+            Logger::log()->warn("GraphNodeWidget::handle_dropped_files: {}", error_msg);
+            if (!HSD_CTX.headless)
+              HSD_APP->notify(error_msg);
+            continue;
+          }
+
+          if (kind == DroppedFileKind::HsdProject)
+          {
+            if (HSD_CTX.headless)
+            {
+              this->import_hsd_file(path, current_pos);
+              current_pos += delta;
+            }
+            else
+            {
+              CustomQMenu menu;
+              QAction    *import_action = menu.addAction("Import into current graph");
+              QAction    *load_action = menu.addAction("Open as project");
+              QAction    *chosen = menu.exec(QCursor::pos());
+
+              if (chosen == import_action)
+              {
+                this->import_hsd_file(path, current_pos);
+                current_pos += delta;
+              }
+              else if (chosen == load_action)
+              {
+                const std::string path_str = path.string();
+                QTimer::singleShot(0,
+                                   HSD_APP,
+                                   [path_str]()
+                                   { HSD_APP->load_project_model_and_ui(path_str); });
+                return;
+              }
+            }
+            continue;
+          }
+
+          const std::string node_type = (kind == DroppedFileKind::Heightmap)
+                                            ? "ImportHeightmap"
+                                            : "ImportTexture";
+
+          const std::string node_id = this->editor->add_node(
+              node_type,
+              current_pos,
+              [&](BaseNode &node)
+              { node.set_value<std::filesystem::path>("fname", path); });
+
+          if (!node_id.empty())
+          {
+            created_node_ids.push_back(node_id);
+            current_pos += delta;
+          }
+        }
+      });
+
+  if (!created_node_ids.empty())
+  {
+    this->deselect_all();
+    for (const std::string &node_id : created_node_ids)
+    {
+      this->on_node_reload_request(node_id);
+      QTimer::singleShot(0,
+                         this,
+                         [this, node_id]()
+                         {
+                           if (auto *node = this->get_graphics_node_by_id(node_id))
+                             node->setSelected(true);
+                         });
+    }
   }
 }
 
