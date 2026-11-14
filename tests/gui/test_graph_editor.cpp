@@ -1,15 +1,21 @@
 /* Copyright (c) 2026 Otto Link. Distributed under the terms of the GNU General
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
+#include <fstream>
 #include <set>
 #include <tuple>
 
+#include <QDropEvent>
 #include <QLineEdit>
 #include <QMenu>
+#include <QMimeData>
 #include <QSignalSpy>
 #include <QTemporaryDir>
 #include <QTimer>
+#include <QUrl>
 #include <QtTest>
+
+#include <opencv2/imgcodecs.hpp>
 
 #include "gnode/graph_worker.hpp"
 #include "gnodegui/style.hpp"
@@ -915,6 +921,137 @@ private Q_SLOTS:
     mask_arr = va_mask->to_array(f.config->cm_cpu);
     QVERIFY(mask_arr.max() > 0.f);
     QVERIFY(out_arr(3, 3) < in_arr(3, 3));
+  }
+
+  void test_file_drag_and_drop()
+  {
+    Fixture         f;
+    GraphNodeWidget widget(f.graph);
+    QTemporaryDir   tmp_dir;
+    QVERIFY(tmp_dir.isValid());
+
+    auto send_drop = [&](const QList<QUrl> &urls, const QPointF &widget_pos)
+    {
+      QMimeData mime;
+      mime.setUrls(urls);
+      QDragEnterEvent drag_enter(widget_pos.toPoint(),
+                                 Qt::CopyAction,
+                                 &mime,
+                                 Qt::LeftButton,
+                                 Qt::NoModifier);
+      QApplication::sendEvent(widget.viewport(), &drag_enter);
+      QDropEvent event(widget_pos,
+                       Qt::CopyAction,
+                       &mime,
+                       Qt::LeftButton,
+                       Qt::NoModifier);
+      QApplication::sendEvent(widget.viewport(), &event);
+    };
+
+    // 1. Grayscale 1-channel PNG -> ImportHeightmap
+    const std::filesystem::path gray_path =
+        std::filesystem::path(tmp_dir.path().toStdString()) / "gray.png";
+    cv::Mat gray_img(16, 16, CV_8UC1, cv::Scalar(128));
+    QVERIFY(cv::imwrite(gray_path.string(), gray_img));
+
+    send_drop({QUrl::fromLocalFile(QString::fromStdString(gray_path.string()))},
+              QPointF(50.0, 50.0));
+    QCOMPARE(f.graph->get_nodes().size(), size_t(1));
+    {
+      const std::string id = f.graph->get_nodes().begin()->first;
+      auto             *node = f.graph->get_node_ref_by_id<BaseNode>(id);
+      QVERIFY(node != nullptr);
+      QCOMPARE(node->get_label(), std::string("ImportHeightmap"));
+    }
+
+    // 2. RGB image with identical channels (R == G == B) -> ImportHeightmap
+    const std::filesystem::path rgb_gray_path =
+        std::filesystem::path(tmp_dir.path().toStdString()) / "rgb_gray.png";
+    cv::Mat rgb_gray_img(16, 16, CV_8UC3, cv::Scalar(64, 64, 64));
+    QVERIFY(cv::imwrite(rgb_gray_path.string(), rgb_gray_img));
+
+    send_drop({QUrl::fromLocalFile(QString::fromStdString(rgb_gray_path.string()))},
+              QPointF(100.0, 100.0));
+    QCOMPARE(f.graph->get_nodes().size(), size_t(2));
+    {
+      int hm_count = 0;
+      for (const auto &[id, _] : f.graph->get_nodes())
+      {
+        auto *n = f.graph->get_node_ref_by_id<BaseNode>(id);
+        if (n && n->get_label() == "ImportHeightmap")
+          ++hm_count;
+      }
+      QCOMPARE(hm_count, 2);
+    }
+
+    // 3. Colored RGB image (R != G) -> ImportTexture
+    const std::filesystem::path color_path =
+        std::filesystem::path(tmp_dir.path().toStdString()) / "color.png";
+    cv::Mat color_img(16, 16, CV_8UC3, cv::Scalar(10, 120, 220));
+    QVERIFY(cv::imwrite(color_path.string(), color_img));
+
+    send_drop({QUrl::fromLocalFile(QString::fromStdString(color_path.string()))},
+              QPointF(150.0, 150.0));
+    QCOMPARE(f.graph->get_nodes().size(), size_t(3));
+    {
+      int tex_count = 0;
+      for (const auto &[id, _] : f.graph->get_nodes())
+      {
+        auto *n = f.graph->get_node_ref_by_id<BaseNode>(id);
+        if (n && n->get_label() == "ImportTexture")
+          ++tex_count;
+      }
+      QCOMPARE(tex_count, 1);
+    }
+
+    // 4. Valid .hsd file drop -> imports nodes
+    const std::filesystem::path hsd_path =
+        std::filesystem::path(tmp_dir.path().toStdString()) / "sample.hsd";
+    {
+      nlohmann::json hsd_json;
+      hsd_json["graph_manager"]["graph_nodes"]["graph_0"]["nodes"] = {
+          {{"id", "n1"}, {"label", "Constant"}, {"value", 0.5}}};
+      hsd_json["graph_tabs_widget"]["graph_node_widgets"]["graph_0"]["nodes"] = {
+          {{"id", "n1"},
+           {"caption", "Constant"},
+           {"scene_position.x", 1000.0},
+           {"scene_position.y", 1000.0}}};
+      hsd_json["graph_tabs_widget"]["graph_node_widgets"]["graph_0"]["links"] =
+          nlohmann::json::array();
+      std::ofstream out(hsd_path);
+      out << hsd_json.dump(2);
+    }
+
+    send_drop({QUrl::fromLocalFile(QString::fromStdString(hsd_path.string()))},
+              QPointF(200.0, 200.0));
+    QCOMPARE(f.graph->get_nodes().size(), size_t(4));
+
+    // 5. Unsupported / corrupt / missing files -> gracefully ignored
+    const std::filesystem::path txt_path =
+        std::filesystem::path(tmp_dir.path().toStdString()) / "notes.txt";
+    {
+      std::ofstream out(txt_path);
+      out << "hello";
+    }
+    const std::filesystem::path corrupt_png =
+        std::filesystem::path(tmp_dir.path().toStdString()) / "corrupt.png";
+    {
+      std::ofstream out(corrupt_png);
+      out << "not a png";
+    }
+    const std::filesystem::path corrupt_hsd =
+        std::filesystem::path(tmp_dir.path().toStdString()) / "corrupt.hsd";
+    {
+      std::ofstream out(corrupt_hsd);
+      out << "{broken json";
+    }
+
+    send_drop({QUrl::fromLocalFile(QString::fromStdString(txt_path.string())),
+               QUrl::fromLocalFile(QString::fromStdString(corrupt_png.string())),
+               QUrl::fromLocalFile(QString::fromStdString(corrupt_hsd.string())),
+               QUrl::fromLocalFile(tmp_dir.path())},
+              QPointF(250.0, 250.0));
+    QCOMPARE(f.graph->get_nodes().size(), size_t(4));
   }
 };
 
