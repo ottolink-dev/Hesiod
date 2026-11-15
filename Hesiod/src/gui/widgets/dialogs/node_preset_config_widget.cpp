@@ -20,8 +20,8 @@
 #include "hesiod/gui/widgets/controls/control_tones.hpp"
 #include "hesiod/gui/widgets/dialogs/node_preset_config_widget.hpp"
 #include "hesiod/gui/widgets/utils/gui_utils.hpp"
-#include "hesiod/logger.hpp"
 #include "hesiod/model/constants/node_preset_manager.hpp"
+#include "logger/logger.hpp"
 
 namespace fs = std::filesystem;
 
@@ -30,7 +30,7 @@ namespace hesiod
 
 NodePresetConfigWidget::NodePresetConfigWidget(QWidget *parent) : QWidget(parent)
 {
-  Logger::log()->trace("NodePresetConfigWidget::NodePresetConfigWidget");
+  LOG_TRACE("NodePresetConfigWidget::NodePresetConfigWidget");
 
   auto *main_layout = new QVBoxLayout(this);
   main_layout->setContentsMargins(0, 0, 0, 0);
@@ -263,7 +263,7 @@ void NodePresetConfigWidget::on_toggle_raw_json()
 
 void NodePresetConfigWidget::refresh()
 {
-  Logger::log()->trace("NodePresetConfigWidget::refresh");
+  LOG_TRACE("NodePresetConfigWidget::refresh");
 
   const int prev_row = this->file_list->currentRow();
 

@@ -19,8 +19,9 @@ typedef unsigned int uint;
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/app/ui_scale.hpp"
 #include "hesiod/cli/batch_mode.hpp"
-#include "hesiod/logger.hpp"
 #include "hesiod/profiling.hpp"
+#include "logger/logger.hpp"
+#include "logger/scope.hpp"
 
 #if defined(DEBUG_BUILD)
 #define HSD_RMODE "Debug"
@@ -43,12 +44,16 @@ int main(int argc, char *argv[])
   format.setStencilBufferSize(8);
   QSurfaceFormat::setDefaultFormat(format);
 #endif
-  hesiod::Logger::log()->info("Welcome to Hesiod v{}.{}.{}!",
-                              HESIOD_VERSION_MAJOR,
-                              HESIOD_VERSION_MINOR,
-                              HESIOD_VERSION_PATCH);
+  logger::Logger::instance().set_level(spdlog::level::trace);
+  logger::Logger::instance().enable_file_logging("hesiod.log");
+  LOG_FUNCTION();
 
-  hesiod::Logger::log()->info("Release mode: {}", std::string(HSD_RMODE));
+  LOG_INFO("Welcome to Hesiod v{}.{}.{}!",
+           HESIOD_VERSION_MAJOR,
+           HESIOD_VERSION_MINOR,
+           HESIOD_VERSION_PATCH);
+
+  LOG_INFO("Release mode: {}", std::string(HSD_RMODE));
 
   // --- Start app
 
@@ -82,7 +87,7 @@ int main(int argc, char *argv[])
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
       if (!TracyIsConnected)
       {
-        hesiod::Logger::log()->error("No Tracy profiler connected within 30 seconds");
+        LOG_ERROR("No Tracy profiler connected within 30 seconds");
         return 1;
       }
     }
@@ -100,20 +105,20 @@ int main(int argc, char *argv[])
   }
   catch (const std::bad_alloc &)
   {
-    hesiod::Logger::log()->critical("Fatal: out of memory, Hesiod is shutting down");
+    LOG_CRITICAL("Fatal: out of memory, Hesiod is shutting down");
     return 1;
   }
   catch (const std::exception &e)
   {
-    hesiod::Logger::log()->critical("Fatal: unhandled exception, Hesiod is shutting "
-                                    "down: {}",
-                                    e.what());
+    LOG_CRITICAL("Fatal: unhandled exception, Hesiod is shutting "
+                 "down: {}",
+                 e.what());
     return 1;
   }
   catch (...)
   {
-    hesiod::Logger::log()->critical("Fatal: unhandled unknown exception, Hesiod is "
-                                    "shutting down");
+    LOG_CRITICAL("Fatal: unhandled unknown exception, Hesiod is "
+                 "shutting down");
     return 1;
   }
 }

@@ -3,6 +3,11 @@ project(external LANGUAGES CXX)
 # args
 include(args.cmake)
 
+# Logger
+set(LOGGER_BUILD_TESTS OFF)
+set(LOGGER_LOG_THREAD_ID ON)
+add_subdirectory(Logger)
+
 # GNode
 set(GNODE_ENABLE_DOCS OFF)
 set(GNODE_ENABLE_EXAMPLES OFF)

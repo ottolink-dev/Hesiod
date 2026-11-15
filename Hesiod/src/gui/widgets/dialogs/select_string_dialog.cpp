@@ -8,7 +8,7 @@
 #include <QVBoxLayout>
 
 #include "hesiod/gui/widgets/dialogs/select_string_dialog.hpp"
-#include "hesiod/logger.hpp"
+#include "logger/logger.hpp"
 
 namespace hesiod
 {
@@ -58,7 +58,7 @@ std::string SelectStringDialog::selected_value() const
 {
   if (!this->combo_box)
   {
-    Logger::log()->error("SelectStringDialog::selected_value: combo_box is nullptr");
+    LOG_ERROR("SelectStringDialog::selected_value: combo_box is nullptr");
     return {};
   }
 

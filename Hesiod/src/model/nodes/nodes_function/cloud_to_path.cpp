@@ -3,9 +3,9 @@
  * this software. */
 #include "hesiod/model/nodes/attributes.hpp"
 
-#include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
+#include "logger/logger.hpp"
 
 namespace hesiod
 {
@@ -21,7 +21,7 @@ constexpr const char *A_REORDER_NNS = "reorder_nns";
 
 void setup_cloud_to_path_node(BaseNode &node)
 {
-  Logger::log()->trace("setup node {}", node.get_label());
+  LOG_TRACE("setup node {}", node.get_label());
 
   // port(s)
   node.add_port<hmap::Cloud>(gnode::PortType::IN, P_CLOUD);
@@ -34,7 +34,7 @@ void setup_cloud_to_path_node(BaseNode &node)
 
 void compute_cloud_to_path_node(BaseNode &node)
 {
-  Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
+  LOG_TRACE("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
   hmap::Cloud *p_in  = node.get_value_ref<hmap::Cloud>(P_CLOUD);
   hmap::Path  *p_out = node.get_value_ref<hmap::Path>(P_PATH);

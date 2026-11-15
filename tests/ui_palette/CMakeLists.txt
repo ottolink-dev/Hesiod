@@ -15,7 +15,6 @@ add_executable(
   ${HESIOD_SRC}/src/app/ui_scale.cpp
   ${HESIOD_SRC}/src/gui/widgets/node_widgets/node_palette_sidebar.cpp
   ${HESIOD_SRC}/src/gui/widgets/dialogs/scrollable_dialog.cpp
-  ${HESIOD_SRC}/src/logger.cpp
   ${HESIOD_SRC}/include/hesiod/gui/widgets/node_widgets/node_palette_sidebar.hpp
   ${HESIOD_SRC}/include/hesiod/gui/widgets/dialogs/scrollable_dialog.hpp)
 
@@ -26,6 +25,8 @@ target_include_directories(${TARGET} PRIVATE ${HESIOD_SRC}/include)
 find_package(Qt6 REQUIRED COMPONENTS Test)
 
 target_link_libraries(${TARGET} PRIVATE Qt6::Core Qt6::Widgets Qt6::Test
-                                        spdlog::spdlog nlohmann_json::nlohmann_json)
+                                        Logger::Logger nlohmann_json::nlohmann_json)
+
+target_compile_definitions(${TARGET} PRIVATE LOGGER_MODULE_NAME="HesiodTest")
 
 target_compile_features(${TARGET} PRIVATE cxx_std_20)

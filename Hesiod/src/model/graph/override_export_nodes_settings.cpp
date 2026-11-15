@@ -5,8 +5,8 @@
 #include <random>
 
 #include "hesiod/gui/widgets/graph_config_widgets/bake_config_dialog.hpp"
-#include "hesiod/logger.hpp"
 #include "hesiod/model/utils.hpp"
+#include "logger/logger.hpp"
 
 namespace hesiod
 {
@@ -16,9 +16,9 @@ void override_export_nodes_settings(const std::string           &fname,
                                     unsigned int                 random_seeds_increment,
                                     const BakeConfig            &bake_settings)
 {
-  Logger::log()->trace("override_export_nodes_settings: fname = {}, export_path = {}",
-                       fname,
-                       export_path.string());
+  LOG_TRACE("override_export_nodes_settings: fname = {}, export_path = {}",
+            fname,
+            export_path.string());
 
   std::random_device rd;
 

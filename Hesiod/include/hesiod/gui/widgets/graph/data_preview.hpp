@@ -7,8 +7,8 @@
 #include <QLabel>
 #include <QMouseEvent>
 
-#include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
+#include "logger/logger.hpp"
 
 namespace hesiod
 {

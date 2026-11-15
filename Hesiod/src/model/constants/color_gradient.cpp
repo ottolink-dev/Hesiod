@@ -2,15 +2,15 @@
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
 #include "hesiod/model/constants/color_gradient.hpp"
-#include "hesiod/logger.hpp"
 #include "hesiod/model/utils.hpp"
+#include "logger/logger.hpp"
 
 namespace hesiod
 {
 
 ColorGradientManager::ColorGradientManager()
 {
-  Logger::log()->info("ColorGradientManager::ColorGradientManager: initializing...");
+  LOG_INFO("ColorGradientManager::ColorGradientManager: initializing...");
   this->update_data();
 }
 
@@ -40,7 +40,7 @@ std::vector<meta::Preset> ColorGradientManager::get_as_attr_presets() const
 
 void ColorGradientManager::update_data(bool append)
 {
-  Logger::log()->trace("ColorGradientManager::update_data");
+  LOG_TRACE("ColorGradientManager::update_data");
 
   if (!append)
     this->gradient_data.clear();
@@ -57,14 +57,13 @@ void ColorGradientManager::update_data(bool append)
         const std::string fname = entry.path().string();
         const std::string label = entry.path().filename().replace_extension().string();
 
-        Logger::log()->trace("ColorGradientManager::update_data: parsing {}", fname);
+        LOG_TRACE("ColorGradientManager::update_data: parsing {}", fname);
 
         nlohmann::json json = json_from_file(fname);
 
         if (json.empty())
         {
-          Logger::log()->error(
-              "ColorGradientManager::update_data: json parsing error, empty json");
+          LOG_ERROR("ColorGradientManager::update_data: json parsing error, empty json");
           return;
         }
 
@@ -75,8 +74,7 @@ void ColorGradientManager::update_data(bool append)
         {
           if (!grad_json.contains("position") || !grad_json.contains("color"))
           {
-            Logger::log()->error("ColorGradientManager::update_data: invalid stop in {}",
-                                 grad.name);
+            LOG_ERROR("ColorGradientManager::update_data: invalid stop in {}", grad.name);
             continue;
           }
 
@@ -85,8 +83,8 @@ void ColorGradientManager::update_data(bool append)
           const auto &color_array = grad_json["color"];
           if (!color_array.is_array() || color_array.size() < 4)
           {
-            Logger::log()->error("ColorGradientManager::update_data: invalid color in {}",
-                                 grad.name);
+            LOG_ERROR("ColorGradientManager::update_data: invalid color in {}",
+                      grad.name);
             continue;
           }
 
@@ -102,7 +100,7 @@ void ColorGradientManager::update_data(bool append)
   }
   catch (const std::filesystem::filesystem_error &e)
   {
-    Logger::log()->error("ColorGradientManager::update_data: folder error: {}", e.what());
+    LOG_ERROR("ColorGradientManager::update_data: folder error: {}", e.what());
     return;
   }
 }

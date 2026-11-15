@@ -3,16 +3,16 @@
  * this software. */
 #include <iostream>
 
-#include "hesiod/logger.hpp"
 #include "hesiod/model/graph/flatten_config.hpp"
 #include "hesiod/model/utils.hpp"
+#include "logger/logger.hpp"
 
 namespace hesiod
 {
 
 void FlattenConfig::dump()
 {
-  Logger::log()->trace("FlattenConfig::dump");
+  LOG_TRACE("FlattenConfig::dump");
   std::cout << this->json_to().dump(4) << "\n";
 }
 

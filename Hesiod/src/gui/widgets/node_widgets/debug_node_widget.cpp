@@ -6,8 +6,8 @@
 #include "hesiod/gui/widgets/graph/graph_node_widget.hpp"
 #include "hesiod/gui/widgets/node_widgets/node_widget.hpp"
 #include "hesiod/gui/widgets/utils/gui_utils.hpp"
-#include "hesiod/logger.hpp"
 #include "hesiod/model/utils.hpp"
+#include "logger/logger.hpp"
 #include <QGridLayout>
 #include <QLabel>
 #include <QPushButton>
@@ -21,7 +21,7 @@ DebugNodeWidget::DebugNodeWidget(std::weak_ptr<BaseNode>   model,
                                  QWidget                  *parent)
     : NodeWidget(model, p_gnw, msg, parent)
 {
-  Logger::log()->trace("DebugNodeWidget::DebugNodeWidget");
+  LOG_TRACE("DebugNodeWidget::DebugNodeWidget");
 
   this->label = new QLabel();
 

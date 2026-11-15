@@ -23,13 +23,14 @@
 
 #include "gnode/graph_worker.hpp"
 #include "hesiod/app/hesiod_application.hpp"
-#include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/attributes.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/legacy/legacy_converter.hpp"
 #include "hesiod/model/nodes/node_factory.hpp"
 #include "hesiod/model/utils.hpp"
 #include "hesiod/profiling.hpp"
+#include "logger/logger.hpp"
+#include "logger/scope.hpp"
 
 namespace hesiod
 {
@@ -57,7 +58,7 @@ std::string map_type_name(const std::string &typeid_name)
 BaseNode::BaseNode(const std::string &label, std::weak_ptr<GraphConfig> config)
     : gnode::Node(label), config(config)
 {
-  Logger::log()->trace("BaseNode::BaseNode, label: {}", label);
+  LOG_TRACE("BaseNode::BaseNode, label: {}", label);
 
   this->category = get_node_inventory().at(label);
   this->update_runtime_info(NodeRuntimeStep::NRS_INIT);
@@ -72,7 +73,7 @@ BaseNode::BaseNode(const std::string &label, std::weak_ptr<GraphConfig> config)
   }
   else
   {
-    Logger::log()->warn("Missing documentation for node: {}", label);
+    LOG_WARN("Missing documentation for node: {}", label);
     this->documentation = nlohmann::json::object();
   }
 }
@@ -83,9 +84,9 @@ const GraphConfig &BaseNode::cfg() const
 
   if (!ptr)
   {
-    Logger::log()->critical("BaseNode::get_category: Config ptr is nullptr, node: {}/{}",
-                            this->get_label(),
-                            this->get_id());
+    LOG_CRITICAL("BaseNode::get_category: Config ptr is nullptr, node: {}/{}",
+                 this->get_label(),
+                 this->get_id());
     throw std::runtime_error("Config ptr is nullptr.");
   }
 
@@ -94,6 +95,7 @@ const GraphConfig &BaseNode::cfg() const
 
 void BaseNode::compute()
 {
+  LOG_SCOPE(std::format("{} ({})", this->get_node_type(), this->get_id()));
   HSD_PROFILE_ZONE("BaseNode::compute");
   HSD_PROFILE_TEXT(std::format("{} id={}", this->get_node_type(), this->get_id()));
   if (this->compute_started)
@@ -123,28 +125,28 @@ void BaseNode::compute()
   catch (const std::bad_alloc &)
   {
     this->runtime_info.error_count++;
-    Logger::log()->critical("BaseNode::compute: out of memory computing node '{}' "
-                            "({}); abandoning this graph update - lower the "
-                            "resolution and try again",
-                            this->get_id(),
-                            this->get_node_type());
+    LOG_CRITICAL("BaseNode::compute: out of memory computing node '{}' "
+                 "({}); abandoning this graph update - lower the "
+                 "resolution and try again",
+                 this->get_id(),
+                 this->get_node_type());
     out_of_memory = true;
   }
   catch (const std::exception &e)
   {
     this->runtime_info.error_count++;
-    Logger::log()->critical("BaseNode::compute: node '{}' ({}) failed: {}",
-                            this->get_id(),
-                            this->get_node_type(),
-                            e.what());
+    LOG_CRITICAL("BaseNode::compute: node '{}' ({}) failed: {}",
+                 this->get_id(),
+                 this->get_node_type(),
+                 e.what());
   }
   catch (...)
   {
     this->runtime_info.error_count++;
-    Logger::log()->critical("BaseNode::compute: node '{}' ({}) failed with an "
-                            "unknown exception",
-                            this->get_id(),
-                            this->get_node_type());
+    LOG_CRITICAL("BaseNode::compute: node '{}' ({}) failed with an "
+                 "unknown exception",
+                 this->get_id(),
+                 this->get_node_type());
   }
 
   // its data can be read again, see begin_background_compute()
@@ -187,11 +189,11 @@ void BaseNode::begin_background_compute()
   }
   catch (const std::exception &e)
   {
-    Logger::log()->warn("BaseNode::begin_background_compute: node '{}' ({}) "
-                        "computes from its live settings: {}",
-                        this->get_id(),
-                        this->get_node_type(),
-                        e.what());
+    LOG_WARN("BaseNode::begin_background_compute: node '{}' ({}) "
+             "computes from its live settings: {}",
+             this->get_id(),
+             this->get_node_type(),
+             e.what());
   }
 }
 
@@ -280,9 +282,9 @@ std::shared_ptr<const GraphConfig> BaseNode::get_config_ref() const
 
   if (!ptr)
   {
-    Logger::log()->critical("BaseNode::get_category: Config ptr is nullptr, node: {}/{}",
-                            this->get_label(),
-                            this->get_id());
+    LOG_CRITICAL("BaseNode::get_category: Config ptr is nullptr, node: {}/{}",
+                 this->get_label(),
+                 this->get_id());
     throw std::runtime_error("Config ptr is nullptr.");
   }
 
@@ -347,9 +349,8 @@ std::string BaseNode::get_documentation_html() const
   }
   catch (const std::exception &e)
   {
-    Logger::log()->error(
-        "BaseNode::get_documentation_html: Error generating documentation HTML: {}",
-        e.what());
+    LOG_ERROR("BaseNode::get_documentation_html: Error generating documentation HTML: {}",
+              e.what());
     html = "<p>Error generating documentation</p>";
   }
 
@@ -403,7 +404,7 @@ std::string BaseNode::get_documentation_short() const
   }
   catch (const std::exception &e)
   {
-    Logger::log()->error(
+    LOG_ERROR(
         "BaseNode::get_documentation_short: Error generating documentation HTML: {}",
         e.what());
     str = "Error generating documentation";
@@ -466,9 +467,8 @@ std::string BaseNode::get_documentation_short_html() const
   }
   catch (const std::exception &e)
   {
-    Logger::log()->error(
-        "BaseNode::get_documentation_html: Error generating documentation HTML: {}",
-        e.what());
+    LOG_ERROR("BaseNode::get_documentation_html: Error generating documentation HTML: {}",
+              e.what());
     html = "<p>Error generating documentation</p>";
   }
 
@@ -554,7 +554,7 @@ std::shared_ptr<BaseNode> BaseNode::get_shared()
   }
   catch (...)
   {
-    Logger::log()->critical("BaseNode::get_shared: object is not managed by shared_ptr");
+    LOG_CRITICAL("BaseNode::get_shared: object is not managed by shared_ptr");
     return nullptr;
   }
 }
@@ -622,7 +622,7 @@ void BaseNode::json_from(nlohmann::json const &json)
   }
   catch (const nlohmann::json::exception &e)
   {
-    Logger::log()->error("BaseNode::json_from: JSON parsing error: {}", e.what());
+    LOG_ERROR("BaseNode::json_from: JSON parsing error: {}", e.what());
   }
 }
 
@@ -645,8 +645,7 @@ nlohmann::json BaseNode::json_to() const
   }
   catch (const std::exception &e)
   {
-    Logger::log()->error("BaseNode::json_to: Error serializing node to JSON: {}",
-                         e.what());
+    LOG_ERROR("BaseNode::json_to: Error serializing node to JSON: {}", e.what());
   }
   return json;
 }
@@ -736,7 +735,7 @@ nlohmann::json BaseNode::node_parameters_to_json() const
   }
   catch (const std::exception &e)
   {
-    Logger::log()->error(
+    LOG_ERROR(
         " BaseNode::node_parameters_to_json: Error generating node parameters JSON: {}",
         e.what());
   }
@@ -746,9 +745,9 @@ nlohmann::json BaseNode::node_parameters_to_json() const
 
 void BaseNode::propagate_config_change()
 {
-  Logger::log()->trace("BaseNode::propagate_config_change: node {}/{}",
-                       this->get_label(),
-                       this->get_id());
+  LOG_TRACE("BaseNode::propagate_config_change: node {}/{}",
+            this->get_label(),
+            this->get_id());
 
   const GraphConfig &cfg = *this->get_config_ref();
 
@@ -847,7 +846,7 @@ void BaseNode::set_id(const std::string &new_id) { gnode::Node::set_id(new_id); 
 
 void BaseNode::update_attributes_tool_tip()
 {
-  Logger::log()->trace("BaseNode::update_attributes_tool_tip");
+  LOG_TRACE("BaseNode::update_attributes_tool_tip");
 
   size_t width = 64;
 

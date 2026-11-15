@@ -21,9 +21,9 @@
 #include "hesiod/gui/widgets/dialogs/node_inspector_widget.hpp"
 #include "hesiod/gui/widgets/graph/graph_node_widget.hpp"
 #include "hesiod/gui/widgets/utils/gui_utils.hpp"
-#include "hesiod/logger.hpp"
 #include "hesiod/model/graph/graph_manager.hpp"
 #include "hesiod/model/graph/graph_node.hpp"
+#include "logger/logger.hpp"
 
 namespace hesiod
 {
@@ -256,7 +256,7 @@ NodeInspectorWidget::NodeInspectorWidget(std::weak_ptr<GraphManager> p_graph_man
                                          QWidget                    *parent)
     : QDialog(parent), p_graph_manager(p_graph_manager)
 {
-  Logger::log()->trace("NodeInspectorWidget::NodeInspectorWidget");
+  LOG_TRACE("NodeInspectorWidget::NodeInspectorWidget");
 
   this->setWindowTitle("Hesiod - Node Inspector");
   this->setWindowModality(Qt::NonModal);
@@ -271,7 +271,7 @@ NodeInspectorWidget::NodeInspectorWidget(std::weak_ptr<GraphManager> p_graph_man
 
 NodeInspectorWidget::~NodeInspectorWidget()
 {
-  Logger::log()->trace("NodeInspectorWidget::~NodeInspectorWidget");
+  LOG_TRACE("NodeInspectorWidget::~NodeInspectorWidget");
   this->save_window_state();
 }
 
@@ -346,7 +346,7 @@ void NodeInspectorWidget::on_filter_changed()
 
 void NodeInspectorWidget::refresh_content()
 {
-  Logger::log()->trace("NodeInspectorWidget::refresh_content");
+  LOG_TRACE("NodeInspectorWidget::refresh_content");
 
   auto p_gm = this->p_graph_manager.lock();
   if (!p_gm)

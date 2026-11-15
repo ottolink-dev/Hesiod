@@ -18,8 +18,8 @@
 #include "hesiod/gui/widgets/node_widgets/properties_panel_design.hpp"
 #include "hesiod/gui/widgets/node_widgets/properties_panel_header.hpp"
 #include "hesiod/gui/widgets/utils/gui_utils.hpp"
-#include "hesiod/logger.hpp"
 #include "hesiod/model/utils.hpp"
+#include "logger/logger.hpp"
 
 namespace hesiod
 {
@@ -28,7 +28,7 @@ NodeSettingsWidget::NodeSettingsWidget(QPointer<GraphNodeWidget> p_graph_node_wi
                                        QWidget                  *parent)
     : QWidget(parent), p_graph_node_widget(p_graph_node_widget)
 {
-  Logger::log()->trace("NodeSettingsWidget::NodeSettingsWidget");
+  LOG_TRACE("NodeSettingsWidget::NodeSettingsWidget");
 
   if (!this->p_graph_node_widget)
     return;
@@ -50,7 +50,7 @@ void NodeSettingsWidget::restyle_all()
 
 void NodeSettingsWidget::setup_connections()
 {
-  Logger::log()->trace("NodeSettingsWidget::setup_connections");
+  LOG_TRACE("NodeSettingsWidget::setup_connections");
 
   if (!this->p_graph_node_widget)
     return;
@@ -64,7 +64,7 @@ void NodeSettingsWidget::setup_connections()
 
 void NodeSettingsWidget::setup_layout()
 {
-  Logger::log()->trace("NodeSettingsWidget::setup_layout");
+  LOG_TRACE("NodeSettingsWidget::setup_layout");
 
   this->setStyleSheet("QTabBar::tab {"
                       "  min-height: 20px;"
@@ -151,7 +151,7 @@ void NodeSettingsWidget::setup_layout()
 
 void NodeSettingsWidget::update_content()
 {
-  Logger::log()->trace("NodeSettingsWidget::update_content");
+  LOG_TRACE("NodeSettingsWidget::update_content");
 
   if (!this->p_graph_node_widget)
     return;
@@ -283,7 +283,7 @@ void NodeSettingsWidget::update_content()
 
 void NodeSettingsWidget::sync_content()
 {
-  Logger::log()->trace("NodeSettingsWidget::sync_content");
+  LOG_TRACE("NodeSettingsWidget::sync_content");
 
   // Nothing built yet (e.g. no selection): do the initial build.
   if (this->attr_widgets.empty())

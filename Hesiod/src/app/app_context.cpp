@@ -11,16 +11,16 @@
 
 #include "gnode/graph_worker.hpp"
 #include "hesiod/app/app_context.hpp"
-#include "hesiod/logger.hpp"
 #include "hesiod/model/graph/graph_manager.hpp"
 #include "hesiod/model/utils.hpp"
+#include "logger/logger.hpp"
 
 namespace hesiod
 {
 
 void AppContext::initialize()
 {
-  Logger::log()->trace("AppContext::initialize");
+  LOG_TRACE("AppContext::initialize");
 
   this->load_settings();
   this->load_node_documentation();
@@ -43,7 +43,7 @@ void AppContext::initialize()
 
 void AppContext::load_node_documentation()
 {
-  Logger::log()->trace("AppContext::load_node_documentation");
+  LOG_TRACE("AppContext::load_node_documentation");
 
   const std::string doc_path = this->app_settings.global.node_documentation_path;
 
@@ -54,16 +54,16 @@ void AppContext::load_node_documentation()
 
     if (!file.is_open())
     {
-      Logger::log()->error("Could not open documentation file: {}", doc_path);
+      LOG_ERROR("Could not open documentation file: {}", doc_path);
       throw std::runtime_error("Documentation file not found");
     }
 
     file >> this->node_documentation;
-    Logger::log()->trace("JSON successfully loaded from {}", doc_path);
+    LOG_TRACE("JSON successfully loaded from {}", doc_path);
   }
   catch (const std::exception &e)
   {
-    Logger::log()->error("Error loading documentation: {}", e.what());
+    LOG_ERROR("Error loading documentation: {}", e.what());
     this->node_documentation = nlohmann::json::object();
   }
 }
@@ -74,12 +74,11 @@ const ErrorManager &AppContext::get_error_manager() const { return this->error_m
 
 int AppContext::load_project_model(const std::string &fname)
 {
-  Logger::log()->trace("AppContext::load_project_model: {}", fname);
+  LOG_TRACE("AppContext::load_project_model: {}", fname);
 
   if (!std::filesystem::exists(std::filesystem::path(fname)))
   {
-    Logger::log()->error("AppContext::load_project_model: file does not exist: {}",
-                         fname);
+    LOG_ERROR("AppContext::load_project_model: file does not exist: {}", fname);
     return 0;
   }
 
@@ -131,7 +130,7 @@ int AppContext::load_project_model(const std::string &fname)
 
 void AppContext::load_settings()
 {
-  Logger::log()->trace("AppContext::load_settings");
+  LOG_TRACE("AppContext::load_settings");
 
   std::string fname = get_config_file_path_auto("hesiod");
 
@@ -146,10 +145,10 @@ void AppContext::load_settings()
   }
   catch (const std::exception &e)
   {
-    Logger::log()->error("AppContext::load_settings: could not read the settings "
-                         "file, starting from defaults instead ({}): {}",
-                         fname,
-                         e.what());
+    LOG_ERROR("AppContext::load_settings: could not read the settings "
+              "file, starting from defaults instead ({}): {}",
+              fname,
+              e.what());
 
     this->reset_settings();
   }
@@ -157,7 +156,7 @@ void AppContext::load_settings()
 
 void AppContext::new_project()
 {
-  Logger::log()->trace("AppContext::new_project");
+  LOG_TRACE("AppContext::new_project");
   this->error_manager.clear();
   this->project_model = std::make_unique<ProjectModel>();
 
@@ -193,7 +192,7 @@ void AppContext::restore_state()
   }
   catch (const std::exception &e)
   {
-    Logger::log()->error("Failed to restore state: {}", e.what());
+    LOG_ERROR("Failed to restore state: {}", e.what());
     return;
   }
 }
@@ -202,7 +201,7 @@ void AppContext::save_state() const { this->saved_state = this->settings_json_to
 
 void AppContext::save_settings() const
 {
-  Logger::log()->trace("AppContext::save_settings");
+  LOG_TRACE("AppContext::save_settings");
 
   // put everything into a json and dump it
   nlohmann::json json = this->settings_json_to();
@@ -214,27 +213,26 @@ void AppContext::save_settings() const
 
 void AppContext::settings_json_from(nlohmann::json const &json)
 {
-  Logger::log()->trace("AppContext::settings_json_from");
+  LOG_TRACE("AppContext::settings_json_from");
 
   // --- settings
 
   if (json.contains("app_settings"))
     this->app_settings.json_from(json["app_settings"]);
   else
-    Logger::log()->error("AppContext::settings_json_from: could not parse app_settings");
+    LOG_ERROR("AppContext::settings_json_from: could not parse app_settings");
 
   if (json.contains("node_graph_palette"))
     this->node_graph_palette.json_from(json["node_graph_palette"]);
   else if (json.contains("style_settings"))
     this->node_graph_palette.json_from(json["style_settings"]);
   else
-    Logger::log()->error(
-        "AppContext::settings_json_from: could not parse node_graph_palette");
+    LOG_ERROR("AppContext::settings_json_from: could not parse node_graph_palette");
 }
 
 nlohmann::json AppContext::settings_json_to() const
 {
-  Logger::log()->trace("AppContext::settings_json_to");
+  LOG_TRACE("AppContext::settings_json_to");
 
   nlohmann::json json;
   json["app_settings"] = this->app_settings.json_to();

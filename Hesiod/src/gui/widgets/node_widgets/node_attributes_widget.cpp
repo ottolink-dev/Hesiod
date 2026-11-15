@@ -28,10 +28,10 @@
 #include "hesiod/gui/widgets/node_widgets/node_attributes_widget.hpp"
 #include "hesiod/gui/widgets/node_widgets/properties_panel_design.hpp"
 #include "hesiod/gui/widgets/node_widgets/properties_panel_header.hpp"
-#include "hesiod/logger.hpp"
 #include "hesiod/model/constants/node_preset_manager.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/legacy/legacy_converter.hpp"
+#include "logger/logger.hpp"
 
 namespace hesiod
 {
@@ -73,7 +73,7 @@ NodeAttributesWidget::NodeAttributesWidget(std::weak_ptr<GraphNode>  p_graph_nod
     : QWidget(parent), p_graph_node(p_graph_node), node_id(node_id),
       p_graph_node_widget(p_graph_node_widget), add_toolbar(add_toolbar)
 {
-  Logger::log()->trace("NodeAttributesWidget::NodeAttributesWidget: node {}", node_id);
+  LOG_TRACE("NodeAttributesWidget::NodeAttributesWidget: node {}", node_id);
 
   this->setAttribute(Qt::WA_DeleteOnClose);
 
@@ -82,7 +82,7 @@ NodeAttributesWidget::NodeAttributesWidget(std::weak_ptr<GraphNode>  p_graph_nod
 
 QWidget *NodeAttributesWidget::create_toolbar()
 {
-  Logger::log()->trace("NodeAttributesWidget::create_toolbar");
+  LOG_TRACE("NodeAttributesWidget::create_toolbar");
 
   QWidget     *toolbar = new QWidget(this);
   QHBoxLayout *layout = new QHBoxLayout(toolbar);
@@ -346,7 +346,7 @@ bool NodeAttributesWidget::is_meta_backed() const { return this->meta_widget != 
 
 void NodeAttributesWidget::setup_layout()
 {
-  Logger::log()->trace("NodeAttributesWidget::setup_layout");
+  LOG_TRACE("NodeAttributesWidget::setup_layout");
 
   auto gno = this->p_graph_node.lock();
   if (!gno)

@@ -11,7 +11,7 @@
 #include "highmap/virtual_array/virtual_texture.hpp"
 
 #include "hesiod/gui/widgets/viewers/viewer.hpp"
-#include "hesiod/logger.hpp"
+#include "logger/logger.hpp"
 
 namespace hesiod
 {

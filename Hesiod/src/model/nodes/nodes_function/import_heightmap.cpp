@@ -7,9 +7,9 @@
 
 #include "hesiod/model/nodes/attributes.hpp"
 
-#include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
+#include "logger/logger.hpp"
 
 namespace hesiod
 {
@@ -33,7 +33,7 @@ constexpr const char *A_ITERATIONS      = "iterations";
 
 void setup_import_heightmap_node(BaseNode &node)
 {
-  Logger::log()->trace("setup node {}", node.get_label());
+  LOG_TRACE("setup node {}", node.get_label());
 
   // --- Ports
 
@@ -67,7 +67,7 @@ void setup_import_heightmap_node(BaseNode &node)
 
 void compute_import_heightmap_node(BaseNode &node)
 {
-  Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
+  LOG_TRACE("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
   // --- Outputs
 
@@ -94,8 +94,8 @@ void compute_import_heightmap_node(BaseNode &node)
 
     if (!f.good())
     {
-      Logger::log()->error("compute_import_heightmap_node: could not load image file {}",
-                           fname.string());
+      LOG_ERROR("compute_import_heightmap_node: could not load image file {}",
+                fname.string());
       return;
     }
   }
@@ -106,7 +106,7 @@ void compute_import_heightmap_node(BaseNode &node)
 
   if (z.shape.x * z.shape.y == 0)
   {
-    Logger::log()->error("compute_import_heightmap_node: Failed to construct Array");
+    LOG_ERROR("compute_import_heightmap_node: Failed to construct Array");
     return;
   }
 

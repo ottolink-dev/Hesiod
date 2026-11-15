@@ -27,7 +27,7 @@
 #include "hesiod/gui/widgets/graph_config_widgets/graph_config_dialog.hpp"
 #include "hesiod/gui/widgets/node_widgets/properties_panel_design.hpp"
 #include "hesiod/gui/widgets/utils/gui_utils.hpp"
-#include "hesiod/logger.hpp"
+#include "logger/logger.hpp"
 
 namespace hesiod
 {
@@ -326,11 +326,11 @@ void GraphConfigDialog::accept()
   this->config.cm_gpu.mode = static_cast<hmap::ForEachMode>(
       this->compute->value<int>("gpu_mode"));
 
-  Logger::log()->trace("GraphConfigDialog::accept: shape {}x{}, tiling {}, overlap {}",
-                       this->config.shape.x,
-                       this->config.shape.y,
-                       tiling,
-                       this->config.overlap);
+  LOG_TRACE("GraphConfigDialog::accept: shape {}x{}, tiling {}, overlap {}",
+            this->config.shape.x,
+            this->config.shape.y,
+            tiling,
+            this->config.overlap);
 
   MessageDialog::accept();
 }

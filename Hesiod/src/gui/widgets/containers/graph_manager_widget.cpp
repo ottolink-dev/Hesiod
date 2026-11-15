@@ -18,11 +18,11 @@
 #include "hesiod/gui/widgets/graph/coord_frame_widget.hpp"
 #include "hesiod/gui/widgets/graph_config_widgets/flatten_config_dialog.hpp"
 #include "hesiod/gui/widgets/graph_config_widgets/graph_config_dialog.hpp"
-#include "hesiod/logger.hpp"
 #include "hesiod/model/graph/flatten_config.hpp"
 #include "hesiod/model/graph/graph_manager.hpp"
 #include "hesiod/model/graph/graph_node.hpp"
 #include "hesiod/model/utils.hpp"
+#include "logger/logger.hpp"
 
 #define MINIMUM_WIDTH 384
 
@@ -183,7 +183,7 @@ void GraphManagerWidget::add_list_item(const std::string &id)
 
 void GraphManagerWidget::clear()
 {
-  Logger::log()->trace("GraphManagerWidget::clear");
+  LOG_TRACE("GraphManagerWidget::clear");
 
   this->coord_frame_widget->clear();
   this->list_widget->clear();
@@ -236,7 +236,7 @@ nlohmann::json GraphManagerWidget::json_to() const
 
 void GraphManagerWidget::on_apply_changes()
 {
-  Logger::log()->trace("GraphManagerWidget::on_apply_changes");
+  LOG_TRACE("GraphManagerWidget::on_apply_changes");
 
   auto gm = this->p_graph_manager.lock();
   if (!gm)
@@ -247,7 +247,7 @@ void GraphManagerWidget::on_apply_changes()
   // retrieve coordinate frame parameters from the frames canvas
   for (auto &[id, graph] : gm->get_graph_nodes())
   {
-    Logger::log()->trace("id: {}", id);
+    LOG_TRACE("id: {}", id);
 
     QPointF origin_out;
     QPointF size_out;
@@ -275,7 +275,7 @@ void GraphManagerWidget::on_apply_changes()
 void GraphManagerWidget::on_export()
 {
   // TODO move to GraphManager
-  Logger::log()->trace("GraphManagerWidget::on_export");
+  LOG_TRACE("GraphManagerWidget::on_export");
 
   auto gm = this->p_graph_manager.lock();
   if (!gm)
@@ -310,12 +310,12 @@ void GraphManagerWidget::on_export()
 
       if (ret)
       {
-        Logger::log()->trace("adding layer: {}", tag);
+        LOG_TRACE("adding layer: {}", tag);
         export_ids.push_back({gw_widget->get_p_graph_node()->get_id(), node_id, port_id});
       }
       else
       {
-        Logger::log()->trace("skipping layer: {}", tag);
+        LOG_TRACE("skipping layer: {}", tag);
       }
     }
   }
@@ -337,7 +337,7 @@ void GraphManagerWidget::on_list_reordered(const QModelIndex &,
                                            const QModelIndex &,
                                            int)
 {
-  Logger::log()->trace("GraphManagerWidget::on_list_reordered");
+  LOG_TRACE("GraphManagerWidget::on_list_reordered");
 
   auto gm = this->p_graph_manager.lock();
   if (!gm)
@@ -487,7 +487,7 @@ void GraphManagerWidget::showEvent(QShowEvent *event)
 
 void GraphManagerWidget::show_context_menu(const QPoint &pos)
 {
-  Logger::log()->trace("GraphManagerWidget::show_context_menu");
+  LOG_TRACE("GraphManagerWidget::show_context_menu");
 
   auto gm = this->p_graph_manager.lock();
   if (!gm)
@@ -499,7 +499,7 @@ void GraphManagerWidget::show_context_menu(const QPoint &pos)
     return;
 
   std::string selected_id = item ? item->text().toStdString() : "";
-  Logger::log()->trace("selected_id: {}", selected_id);
+  LOG_TRACE("selected_id: {}", selected_id);
 
   QMenu    menu;
   QAction *new_action = menu.addAction("New");
@@ -569,7 +569,7 @@ void GraphManagerWidget::setup_reset_actions()
 
 void GraphManagerWidget::delete_graph(const std::string &graph_id)
 {
-  Logger::log()->trace("GraphManagerWidget::delete_graph: {}", graph_id);
+  LOG_TRACE("GraphManagerWidget::delete_graph: {}", graph_id);
 
   auto gm = this->p_graph_manager.lock();
   if (!gm)
@@ -590,7 +590,7 @@ void GraphManagerWidget::delete_graph(const std::string &graph_id)
 
 void GraphManagerWidget::update_combobox(const std::string &graph_id)
 {
-  Logger::log()->trace("GraphManagerWidget::update_combobox: {}", graph_id);
+  LOG_TRACE("GraphManagerWidget::update_combobox: {}", graph_id);
 
   // find corresponding item and update its combobox
   for (int i = 0; i < this->list_widget->count(); ++i)

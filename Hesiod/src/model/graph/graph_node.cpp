@@ -4,13 +4,14 @@
 #include "hesiod/model/graph/graph_node.hpp"
 #include "gnode/graph_worker.hpp"
 #include "hesiod/app/hesiod_application.hpp"
-#include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/broadcast_node.hpp"
 #include "hesiod/model/nodes/legacy/legacy_converter.hpp"
 #include "hesiod/model/nodes/node_factory.hpp"
 #include "hesiod/model/nodes/receive_node.hpp"
 #include "hesiod/model/utils.hpp"
+#include "logger/logger.hpp"
+#include "logger/scope.hpp"
 
 #include <iostream>
 
@@ -20,7 +21,7 @@ namespace hesiod
 GraphNode::GraphNode(const std::string &id, const std::shared_ptr<GraphConfig> &config)
     : gnode::Graph(id), hmap::CoordFrame(), config(config)
 {
-  Logger::log()->trace("GraphNode::GraphNode");
+  LOG_TRACE("GraphNode::GraphNode");
 
   // setup graph update callback
   auto lambda = [this](const std::string              &current_id,
@@ -53,7 +54,7 @@ GraphNode::GraphNode(const std::string &id, const std::shared_ptr<GraphConfig> &
 
 std::string GraphNode::add_node(const std::string &node_type, const std::string &id)
 {
-  Logger::log()->trace("GraphNode::add_node: node_type = {}, id = {}", node_type, id);
+  LOG_TRACE("GraphNode::add_node: node_type = {}, id = {}", node_type, id);
 
   std::shared_ptr<gnode::Node> node = node_factory(node_type, this->config);
 
@@ -65,7 +66,7 @@ std::string GraphNode::add_node(const std::string &node_type, const std::string 
 std::string GraphNode::add_node(const std::shared_ptr<gnode::Node> &node,
                                 const std::string                  &id)
 {
-  Logger::log()->trace("GraphNode::add_node: id = {}", id);
+  LOG_TRACE("GraphNode::add_node: id = {}", id);
 
   this->stop_update();
 
@@ -101,7 +102,7 @@ std::string GraphNode::add_node(const std::shared_ptr<gnode::Node> &node,
 
 void GraphNode::change_config_values(const GraphConfig &new_config)
 {
-  Logger::log()->trace("GraphNode::change_config_values");
+  LOG_TRACE("GraphNode::change_config_values");
 
   this->stop_update();
 
@@ -124,14 +125,14 @@ std::shared_ptr<GraphNode> GraphNode::get_shared()
   }
   catch (...)
   {
-    Logger::log()->critical("GraphNode::get_shared: object is not managed by shared_ptr");
+    LOG_CRITICAL("GraphNode::get_shared: object is not managed by shared_ptr");
     return nullptr;
   }
 }
 
 void GraphNode::json_from(nlohmann::json const &json, GraphConfig *p_input_config)
 {
-  Logger::log()->trace("GraphNode::json_from, graph {}", this->get_id());
+  LOG_TRACE("GraphNode::json_from, graph {}", this->get_id());
 
   nlohmann::json converted_json = convert_legacy_graph_json(json);
 
@@ -140,7 +141,7 @@ void GraphNode::json_from(nlohmann::json const &json, GraphConfig *p_input_confi
   {
     this->config = std::make_shared<GraphConfig>(*p_input_config);
 
-    Logger::log()->trace("GraphNode::json_from: GraphConfig override");
+    LOG_TRACE("GraphNode::json_from: GraphConfig override");
   }
   else
   {
@@ -150,7 +151,7 @@ void GraphNode::json_from(nlohmann::json const &json, GraphConfig *p_input_confi
     }
     else
     {
-      Logger::log()->error("Missing key \"model_config\" in json");
+      LOG_ERROR("Missing key \"model_config\" in json");
     }
   }
 
@@ -189,7 +190,7 @@ void GraphNode::json_from(nlohmann::json const &json, GraphConfig *p_input_confi
 
       json_safe_get(json_node, "label", node_type);
 
-      Logger::log()->trace("GraphNode::json_from, node type: {}", node_type);
+      LOG_TRACE("GraphNode::json_from, node type: {}", node_type);
 
       std::string node_id = "";
       json_safe_get(json_node, "id", node_id);
@@ -233,7 +234,7 @@ void GraphNode::json_from(nlohmann::json const &json, GraphConfig *p_input_confi
   }
   else
   {
-    Logger::log()->error("Missing key \"nodes\" in json");
+    LOG_ERROR("Missing key \"nodes\" in json");
   }
 
   // links
@@ -248,11 +249,11 @@ void GraphNode::json_from(nlohmann::json const &json, GraphConfig *p_input_confi
       json_safe_get(json_link, "node_id_to", node_id_to);
       json_safe_get(json_link, "port_id_to", port_id_to);
 
-      Logger::log()->trace("GraphNode::json_from, new link request: {}/{} => {}/{}",
-                           node_id_from,
-                           port_id_from,
-                           node_id_to,
-                           port_id_to);
+      LOG_TRACE("GraphNode::json_from, new link request: {}/{} => {}/{}",
+                node_id_from,
+                port_id_from,
+                node_id_to,
+                port_id_to);
 
       try
       {
@@ -285,13 +286,13 @@ void GraphNode::json_from(nlohmann::json const &json, GraphConfig *p_input_confi
   }
   else
   {
-    Logger::log()->error("Missing key \"links\" in json");
+    LOG_ERROR("Missing key \"links\" in json");
   }
 }
 
 nlohmann::json GraphNode::json_to() const
 {
-  Logger::log()->trace("GraphNode::json_to, graph {}", this->get_id());
+  LOG_TRACE("GraphNode::json_to, graph {}", this->get_id());
 
   nlohmann::json json;
   json["id"] = this->get_id();
@@ -336,7 +337,7 @@ nlohmann::json GraphNode::json_to() const
 
 void GraphNode::on_broadcast_node_updated(const std::string &tag)
 {
-  Logger::log()->trace("GraphNode::on_broadcast_node_updated: tag: {}", tag);
+  LOG_TRACE("GraphNode::on_broadcast_node_updated: tag: {}", tag);
 
   // loop over the nodes and update those with Receive type
   for (auto &[node_id, p_gnode] : this->nodes)
@@ -350,10 +351,9 @@ void GraphNode::on_broadcast_node_updated(const std::string &tag)
 
         if (!p_receive_node)
         {
-          Logger::log()->critical(
-              "GraphNode::on_broadcast_node_updated: could not properly recast "
-              "the node as a receiver. Tag {}",
-              tag);
+          LOG_CRITICAL("GraphNode::on_broadcast_node_updated: could not properly recast "
+                       "the node as a receiver. Tag {}",
+                       tag);
           throw std::runtime_error("could not properly recast the node as a receiver");
         }
         else
@@ -368,7 +368,7 @@ void GraphNode::on_broadcast_node_updated(const std::string &tag)
 
 void GraphNode::remove_node(const std::string &id)
 {
-  Logger::log()->trace("GraphNode::remove_node: id = {}", id);
+  LOG_TRACE("GraphNode::remove_node: id = {}", id);
 
   this->stop_update();
 
@@ -377,7 +377,7 @@ void GraphNode::remove_node(const std::string &id)
 
   if (!p_basenode)
   {
-    Logger::log()->error("GraphNode::remove_node: p_basenode is nullptr");
+    LOG_ERROR("GraphNode::remove_node: p_basenode is nullptr");
     return;
   }
 
@@ -387,7 +387,7 @@ void GraphNode::remove_node(const std::string &id)
   {
     std::string tag = this->get_node_ref_by_id<BroadcastNode>(id)->get_broadcast_tag();
 
-    Logger::log()->trace("GraphNode::remove_node: removing broadcast tag {}", tag);
+    LOG_TRACE("GraphNode::remove_node: removing broadcast tag {}", tag);
 
     if (this->remove_broadcast_tag)
       this->remove_broadcast_tag(tag);
@@ -417,7 +417,7 @@ std::string GraphNode::runtime_info_to_string(const char separator) const
 
 void GraphNode::reseed(bool backward)
 {
-  Logger::log()->trace("GraphNode::reseed: {}", this->get_id());
+  LOG_TRACE("GraphNode::reseed: {}", this->get_id());
 
   // loop over nodes and increment seed number if any
   for (auto &[key, p_node] : this->nodes)
@@ -431,21 +431,21 @@ void GraphNode::reseed(bool backward)
 
 void GraphNode::set_p_broadcast_params(BroadcastMap *new_p_broadcast_params)
 {
-  Logger::log()->trace("GraphNode::set_p_broadcast_params: ptr = {}",
-                       new_p_broadcast_params ? "OK" : "nullptr");
+  LOG_TRACE("GraphNode::set_p_broadcast_params: ptr = {}",
+            new_p_broadcast_params ? "OK" : "nullptr");
 
   this->p_broadcast_params = new_p_broadcast_params;
 }
 
 void GraphNode::setup_new_broadcast_node(BaseNode *p_node)
 {
-  Logger::log()->trace("GraphNode::setup_new_broadcast_node");
+  LOG_TRACE("GraphNode::setup_new_broadcast_node");
 
   BroadcastNode *p_broadcast_node = dynamic_cast<BroadcastNode *>(p_node);
 
   if (!p_broadcast_node)
   {
-    Logger::log()->error("GraphNode::setup_new_broadcast_node: Invalid node type");
+    LOG_ERROR("GraphNode::setup_new_broadcast_node: Invalid node type");
     return;
   }
 
@@ -455,7 +455,7 @@ void GraphNode::setup_new_broadcast_node(BaseNode *p_node)
   {
     // pass through, re-emit the signals by the graph
     // editor (to be handled by the graph manager above)
-    Logger::log()->trace("graph_node broadcasting, tag: {}", tag);
+    LOG_TRACE("graph_node broadcasting, tag: {}", tag);
 
     if (this->broadcast_node_updated)
       this->broadcast_node_updated(graph_id, tag);
@@ -476,13 +476,13 @@ void GraphNode::setup_new_broadcast_node(BaseNode *p_node)
 
 void GraphNode::setup_new_receive_node(BaseNode *p_node)
 {
-  Logger::log()->trace("GraphNode::setup_new_receive_node");
+  LOG_TRACE("GraphNode::setup_new_receive_node");
 
   ReceiveNode *p_receive_node = dynamic_cast<ReceiveNode *>(p_node);
 
   if (!p_receive_node)
   {
-    Logger::log()->error("GraphNode::setup_new_receive_node: Invalid node type");
+    LOG_ERROR("GraphNode::setup_new_receive_node: Invalid node type");
     return;
   }
 
@@ -498,7 +498,7 @@ void GraphNode::stop_update()
 
 void GraphNode::update()
 {
-  Logger::log()->trace("GraphNode::update");
+  LOG_FUNCTION();
 
   if (this->update_started)
     this->update_started();
@@ -514,14 +514,14 @@ void GraphNode::update()
 
 void GraphNode::update(const std::vector<std::string> &node_ids)
 {
-  Logger::log()->trace("GraphNode::update");
+  LOG_TRACE("GraphNode::update");
 
   // log
   {
     std::string node_ids_str = "";
     for (const auto &s : node_ids)
       node_ids_str += s + ", ";
-    Logger::log()->trace("GraphNode::update: node_ids: {}", node_ids_str);
+    LOG_TRACE("GraphNode::update: node_ids: {}", node_ids_str);
   }
 
   if (this->update_started)
@@ -538,7 +538,7 @@ void GraphNode::update(const std::vector<std::string> &node_ids)
 
 void GraphNode::update(const std::string &node_id)
 {
-  Logger::log()->trace("GraphNode::update: id = {}", node_id);
+  LOG_TRACE("GraphNode::update: id = {}", node_id);
   this->update(std::vector<std::string>{node_id});
 }
 

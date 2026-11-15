@@ -3,8 +3,8 @@
  * this software. */
 #include "meta/metadata/keys.hpp"
 
-#include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/receive_node.hpp"
+#include "logger/logger.hpp"
 
 namespace hesiod
 {
@@ -20,8 +20,7 @@ BroadcastMap *ReceiveNode::get_p_broadcast_params()
 {
   if (!this->p_broadcast_params)
   {
-    Logger::log()->warn(
-        "ReceiveNode::get_p_broadcast_params: p_broadcast_param is nullptr");
+    LOG_WARN("ReceiveNode::get_p_broadcast_params: p_broadcast_param is nullptr");
   }
 
   return this->p_broadcast_params;
@@ -54,8 +53,7 @@ void ReceiveNode::update_tag_list(const std::vector<std::string> &new_tags)
   // if the currently selected tag is not available anymore, set a dummy value
   std::string current_tag = this->val<std::string>("tag");
 
-  Logger::log()->trace("ReceiveNode::update_tag_list: current tag value: {}",
-                       current_tag);
+  LOG_TRACE("ReceiveNode::update_tag_list: current tag value: {}", current_tag);
 
   if (std::find(new_tags_mod.begin(), new_tags_mod.end(), current_tag) ==
       new_tags_mod.end())

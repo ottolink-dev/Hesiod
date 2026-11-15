@@ -6,10 +6,10 @@
 #include "highmap/opencl/gpu_opencl.hpp"
 #include "highmap/range.hpp"
 
-#include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/attributes.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
+#include "logger/logger.hpp"
 
 namespace hesiod
 {
@@ -96,7 +96,7 @@ hmap::VirtualArray pre_process_mask(BaseNode                 &node,
     }
     else
     {
-      Logger::log()->error("pre_process_mask: unknown mask type: {}", mask_type);
+      LOG_ERROR("pre_process_mask: unknown mask type: {}", mask_type);
     }
 
     // filter

@@ -9,9 +9,9 @@
 
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/widgets/node_widgets/node_library_widget.hpp"
-#include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/node_factory.hpp"
 #include "hesiod/model/utils.hpp"
+#include "logger/logger.hpp"
 
 #define HSD_CAT_BASE_ALPHA 0.5f
 #define HSD_CAT_DIM_ALPHA 0.3f
@@ -31,7 +31,7 @@ QColor helper_dim_color(const QColor &color, const QColor &bg, float amount)
 
 NodeLibraryWidget::NodeLibraryWidget(QWidget *parent) : QWidget(parent)
 {
-  Logger::log()->trace("NodeLibraryWidget::NodeLibraryWidget");
+  LOG_TRACE("NodeLibraryWidget::NodeLibraryWidget");
 
   this->search_bar = new QLineEdit(this);
   this->tree_widget = new LibraryTreeWidget(this);
@@ -46,7 +46,7 @@ NodeLibraryWidget::NodeLibraryWidget(QWidget *parent) : QWidget(parent)
 
 void NodeLibraryWidget::json_from(nlohmann::json const &json)
 {
-  Logger::log()->trace("NodeLibraryWidget::json_from");
+  LOG_TRACE("NodeLibraryWidget::json_from");
 
   std::function<void(QTreeWidgetItem *, const nlohmann::json &)> apply =
       [&](QTreeWidgetItem *item, const nlohmann::json &obj)
@@ -69,7 +69,7 @@ void NodeLibraryWidget::json_from(nlohmann::json const &json)
 
 nlohmann::json NodeLibraryWidget::json_to() const
 {
-  Logger::log()->trace("NodeLibraryWidget::json_to");
+  LOG_TRACE("NodeLibraryWidget::json_to");
 
   nlohmann::json json;
 
@@ -97,7 +97,7 @@ nlohmann::json NodeLibraryWidget::json_to() const
 
 void NodeLibraryWidget::setup_connections()
 {
-  Logger::log()->trace("NodeLibraryWidget::setup_connections");
+  LOG_TRACE("NodeLibraryWidget::setup_connections");
 
   // emit signal when the user clicks a leaf node (actual node type, not a category)
   this->connect(
@@ -133,7 +133,7 @@ void NodeLibraryWidget::setup_connections()
 
 void NodeLibraryWidget::setup_layout()
 {
-  Logger::log()->trace("NodeLibraryWidget::setup_layout");
+  LOG_TRACE("NodeLibraryWidget::setup_layout");
 
   // --- Search bar
 

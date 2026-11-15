@@ -4,15 +4,15 @@
 #include <sstream>
 
 #include "hesiod/app/hesiod_application.hpp"
-#include "hesiod/logger.hpp"
 #include "hesiod/model/graph/graph_config.hpp"
+#include "logger/logger.hpp"
 
 namespace hesiod
 {
 
 GraphConfig::GraphConfig()
 {
-  Logger::log()->trace("GraphConfig::GraphConfig");
+  LOG_TRACE("GraphConfig::GraphConfig");
 
   AppContext &ctx = HSD_CTX;
 
@@ -63,7 +63,7 @@ std::string GraphConfig::info_string() const
   return oss.str();
 }
 
-void GraphConfig::log_debug() const { Logger::log()->debug("\n{}", this->info_string()); }
+void GraphConfig::log_debug() const { LOG_DEBUG("\n{}", this->info_string()); }
 
 void GraphConfig::json_from(nlohmann::json const &json)
 {

@@ -5,9 +5,9 @@
 
 #include "hesiod/model/nodes/attributes.hpp"
 
-#include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
+#include "logger/logger.hpp"
 
 namespace hesiod
 {
@@ -44,7 +44,7 @@ constexpr const char *A_INERTIA             = "inertia";
 
 void setup_path_resample_node(BaseNode &node)
 {
-  Logger::log()->trace("setup node {}", node.get_label());
+  LOG_TRACE("setup node {}", node.get_label());
 
   // port(s)
   node.add_port<hmap::Path>(gnode::PortType::IN, P_IN);
@@ -101,7 +101,7 @@ void setup_path_resample_node(BaseNode &node)
 
 void compute_path_resample_node(BaseNode &node)
 {
-  Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
+  LOG_TRACE("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
   hmap::Path *p_in  = node.get_value_ref<hmap::Path>(P_IN);
   hmap::Path *p_out = node.get_value_ref<hmap::Path>(P_OUT);
@@ -113,7 +113,7 @@ void compute_path_resample_node(BaseNode &node)
                                         .current_container_name()
                                         .value_or(G_INTERPOLATE);
 
-  Logger::log()->trace("compute_path_resample_node: current_group {}", current_group);
+  LOG_TRACE("compute_path_resample_node: current_group {}", current_group);
 
   if (current_group == G_INTERPOLATE)
   {
@@ -157,8 +157,7 @@ void compute_path_resample_node(BaseNode &node)
     else if (method == "Linear")
       p_out->resample_interp(npoints, IM1D::LINEAR);
     else
-      Logger::log()->error("compute_path_resample_node: unknown interpolation method: {}",
-                           method);
+      LOG_ERROR("compute_path_resample_node: unknown interpolation method: {}", method);
   }
   else if (current_group == G_DECIMATE)
   {
@@ -175,8 +174,7 @@ void compute_path_resample_node(BaseNode &node)
   }
   else
   {
-    Logger::log()->error("compute_path_resample_node: group {} not implemented",
-                         current_group);
+    LOG_ERROR("compute_path_resample_node: group {} not implemented", current_group);
   }
 }
 

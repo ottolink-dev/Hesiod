@@ -10,7 +10,7 @@
 
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/widgets/containers/heightmapper_widget.hpp"
-#include "hesiod/logger.hpp"
+#include "logger/logger.hpp"
 
 static const QList<QPair<QString, QString>> source_urls = {
     {"Manticorp",
@@ -24,7 +24,7 @@ namespace hesiod
 
 HeightmapperWidget::HeightmapperWidget(QWidget *parent) : QWidget(parent)
 {
-  Logger::log()->trace("HeightmapperWidget::HeightmapperWidget");
+  LOG_TRACE("HeightmapperWidget::HeightmapperWidget");
 
   this->setWindowTitle(
       "Hesiod - Tangram Heightmapper (https://tangrams.github.io/heightmapper)");
@@ -72,7 +72,7 @@ HeightmapperWidget::HeightmapperWidget(QWidget *parent) : QWidget(parent)
 
 HeightmapperWidget::~HeightmapperWidget()
 {
-  Logger::log()->trace("HeightmapperWidget::~HeightmapperWidget");
+  LOG_TRACE("HeightmapperWidget::~HeightmapperWidget");
 
   // Delete the view (and with it its page) before the profile, which is what
   // QtWebEngine requires and what construction order already arranges. Doing it
@@ -95,7 +95,7 @@ void HeightmapperWidget::closeEvent(QCloseEvent *event)
 
 void HeightmapperWidget::setup_download_interception()
 {
-  Logger::log()->trace("HeightmapperWidget::setup_download_interception");
+  LOG_TRACE("HeightmapperWidget::setup_download_interception");
 
   // QWebEngineProfile::downloadRequested fires whenever the page
   // triggers a file download (e.g. the user clicks "Export" in
@@ -108,7 +108,7 @@ void HeightmapperWidget::setup_download_interception()
 
 void HeightmapperWidget::on_download_requested(QWebEngineDownloadRequest *download)
 {
-  Logger::log()->trace("HeightmapperWidget::on_download_requested");
+  LOG_TRACE("HeightmapperWidget::on_download_requested");
 
   // capture to memory instead of writing to disk.
   download->setSavePageFormat(QWebEngineDownloadRequest::UnknownSaveFormat);

@@ -20,8 +20,8 @@
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/widgets/graph/data_preview.hpp"
 #include "hesiod/gui/widgets/shell/menu_chrome.hpp"
-#include "hesiod/logger.hpp"
 #include "hesiod/profiling.hpp"
+#include "logger/logger.hpp"
 
 namespace hesiod
 {
@@ -33,9 +33,9 @@ DataPreview::DataPreview(std::weak_ptr<BaseNode> model, QWidget *parent)
   if (!p_model)
     throw std::invalid_argument("DataPreview::DataPreview: p_model_node is nullptr");
 
-  Logger::log()->trace("DataPreview::DataPreview, node {}({})",
-                       p_model->get_label(),
-                       p_model->get_id());
+  LOG_TRACE("DataPreview::DataPreview, node {}({})",
+            p_model->get_label(),
+            p_model->get_id());
 
   AppContext &ctx = HSD_CTX;
   auto        shape = glm::ivec2(ctx.app_settings.node_editor.preview_w,
@@ -96,7 +96,7 @@ void DataPreview::contextMenuEvent(QContextMenuEvent *event)
   auto p_model = this->model.lock();
   if (!p_model)
   {
-    Logger::log()->error("DataPreview::contextMenuEvent: p_model_node is nullptr");
+    LOG_ERROR("DataPreview::contextMenuEvent: p_model_node is nullptr");
     return;
   }
 
@@ -163,7 +163,7 @@ void DataPreview::update_preview()
   auto p_model = this->model.lock();
   if (!p_model)
   {
-    Logger::log()->error("DataPreview::update_preview: p_model_node is nullptr");
+    LOG_ERROR("DataPreview::update_preview: p_model_node is nullptr");
     return;
   }
 
@@ -192,7 +192,7 @@ void DataPreview::update_preview()
                   shape.x,
                   shape.y,
                   static_cast<int>(preview_type)));
-  Logger::log()->trace("DataPreview::update_preview, data_type: {}", data_type);
+  LOG_TRACE("DataPreview::update_preview, data_type: {}", data_type);
 
   QImage::Format       img_format = QImage::Format_Grayscale8;
   std::vector<uint8_t> img;
@@ -224,7 +224,7 @@ void DataPreview::update_preview()
           array = p_va->to_array(shape, p_model->cfg().cm_cpu);
         }
         else
-          Logger::log()->error("DataPreview::update_preview: VirtualArray nullptr");
+          LOG_ERROR("DataPreview::update_preview: VirtualArray nullptr");
       }
       else
       {
@@ -235,7 +235,7 @@ void DataPreview::update_preview()
           array = p_a->resample_to_shape_nearest(shape);
         }
         else
-          Logger::log()->error("DataPreview::update_preview: Array nullptr");
+          LOG_ERROR("DataPreview::update_preview: Array nullptr");
       }
 
       {
@@ -277,7 +277,7 @@ void DataPreview::update_preview()
         img_format = QImage::Format_RGBA8888;
       }
       else
-        Logger::log()->error("DataPreview::update_preview: VirtualTexture nullptr");
+        LOG_ERROR("DataPreview::update_preview: VirtualTexture nullptr");
     }
     // ---- Cloud ----
     else if (data_type == typeid(hmap::Cloud).name())
@@ -291,7 +291,7 @@ void DataPreview::update_preview()
         img_format = QImage::Format_RGB888;
       }
       else
-        Logger::log()->error("DataPreview::update_preview: Cloud nullptr or empty");
+        LOG_ERROR("DataPreview::update_preview: Cloud nullptr or empty");
     }
     // ---- Path ----
     else if (data_type == typeid(hmap::Path).name())
@@ -308,7 +308,7 @@ void DataPreview::update_preview()
         img_format = QImage::Format_RGB888;
       }
       else
-        Logger::log()->error("DataPreview::update_preview: Path nullptr or empty");
+        LOG_ERROR("DataPreview::update_preview: Path nullptr or empty");
     }
     // ---- Forest ----
     else if (data_type == typeid(hmap::Forest).name())
@@ -320,7 +320,7 @@ void DataPreview::update_preview()
         img_format = QImage::Format_RGB888;
       }
       else
-        Logger::log()->error("DataPreview::update_preview: Forest nullptr or empty");
+        LOG_ERROR("DataPreview::update_preview: Forest nullptr or empty");
     }
     // ---- RockField ----
     else if (data_type == typeid(hmap::RockField).name())
@@ -332,7 +332,7 @@ void DataPreview::update_preview()
         img_format = QImage::Format_RGB888;
       }
       else
-        Logger::log()->error("DataPreview::update_preview: RockField nullptr or empty");
+        LOG_ERROR("DataPreview::update_preview: RockField nullptr or empty");
     }
   }
 
@@ -350,8 +350,7 @@ void DataPreview::update_preview()
 
       if (img.size() != shape.x * shape.y * nchannels)
       {
-        Logger::log()->critical(
-            "DataPreview::update_preview: inconsistent image buffer size");
+        LOG_CRITICAL("DataPreview::update_preview: inconsistent image buffer size");
         throw std::runtime_error("DataPreview::update_preview: inconsistent buffer size");
       }
 

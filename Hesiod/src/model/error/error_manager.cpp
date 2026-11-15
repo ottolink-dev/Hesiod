@@ -3,8 +3,8 @@
  * this software. */
 #include <algorithm>
 
-#include "hesiod/logger.hpp"
 #include "hesiod/model/error/error_manager.hpp"
+#include "logger/logger.hpp"
 
 namespace hesiod
 {
@@ -34,7 +34,7 @@ bool ErrorManager::has_errors() const { return !this->errors.empty(); }
 
 void ErrorManager::push_error(const Error &error)
 {
-  Logger::log()->trace("ErrorManager::push_error: {}", error.get_message());
+  LOG_TRACE("ErrorManager::push_error: {}", error.get_message());
 
   this->errors.push_back(error);
 

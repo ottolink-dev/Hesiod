@@ -10,9 +10,9 @@
 #include "meta/metadata/keys.hpp"
 #include "meta_qt/widgets/points_canvas.hpp"
 
-#include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "highmap/virtual_array/virtual_array.hpp"
+#include "logger/logger.hpp"
 
 namespace hesiod
 {
@@ -21,8 +21,7 @@ void setup_background_image_for_cloud_attribute(BaseNode          &node,
                                                 const std::string &attribute_key,
                                                 const std::string &port_id)
 {
-  Logger::log()->trace("setup_background_image_for_cloud_attribute: node {}",
-                       node.get_label());
+  LOG_TRACE("setup_background_image_for_cloud_attribute: node {}", node.get_label());
 
   auto provider = [&node, port_id]() -> meta::Any
   {
@@ -56,9 +55,8 @@ void setup_background_image_for_cloud_attribute(BaseNode          &node,
   auto *p = c.find(attribute_key);
   if (!p)
   {
-    Logger::log()->error(
-        "setup_background_image_for_cloud_attribute: meta key '{}' not found",
-        attribute_key);
+    LOG_ERROR("setup_background_image_for_cloud_attribute: meta key '{}' not found",
+              attribute_key);
     return;
   }
   p->metadata().try_add(std::string(meta::keys::ui::data_provider),

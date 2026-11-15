@@ -3,10 +3,10 @@
  * this software. */
 #include "meta/metadata/keys.hpp"
 
-#include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/attributes.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
+#include "logger/logger.hpp"
 
 namespace hesiod
 {
@@ -19,7 +19,7 @@ constexpr const char *P_OUT        = "output";
 
 void setup_brush_node(BaseNode &node)
 {
-  Logger::log()->trace("setup node {}", node.get_label());
+  LOG_TRACE("setup node {}", node.get_label());
 
   // port(s)
   node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_BACKGROUND);
@@ -43,7 +43,7 @@ void setup_brush_node(BaseNode &node)
 
 void compute_brush_node(BaseNode &node)
 {
-  Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
+  LOG_TRACE("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
   hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
@@ -58,13 +58,12 @@ void compute_brush_node(BaseNode &node)
       arr.vector.size() !=
           static_cast<size_t>(arr.shape.x) * static_cast<size_t>(arr.shape.y))
   {
-    Logger::log()->error(
-        "Brush node [{}]: invalid heightmap data (shape {}x{}, {} values), "
-        "falling back to a zeroed heightmap",
-        node.get_id(),
-        arr.shape.x,
-        arr.shape.y,
-        arr.vector.size());
+    LOG_ERROR("Brush node [{}]: invalid heightmap data (shape {}x{}, {} values), "
+              "falling back to a zeroed heightmap",
+              node.get_id(),
+              arr.shape.x,
+              arr.shape.y,
+              arr.vector.size());
   }
   else
   {

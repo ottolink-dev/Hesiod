@@ -6,8 +6,8 @@
 #include "highmap/array.hpp"
 #include "highmap/operator.hpp"
 
-#include "hesiod/logger.hpp"
 #include "hesiod/profiling.hpp"
+#include "logger/logger.hpp"
 
 namespace hesiod
 {

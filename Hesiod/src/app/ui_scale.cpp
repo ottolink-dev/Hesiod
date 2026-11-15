@@ -28,7 +28,7 @@
 #include "nlohmann/json.hpp"
 
 #include "hesiod/app/ui_scale.hpp"
-#include "hesiod/logger.hpp"
+#include "logger/logger.hpp"
 
 namespace fs = std::filesystem;
 
@@ -163,12 +163,12 @@ double scale_from_config(const std::string &config_path)
   const double value = sanitize(entry.get<double>(), &clean);
 
   if (!clean)
-    Logger::log()->warn("ui_scale: persisted interface scale {} is out of the "
-                        "supported [{}, {}] range, using {}",
-                        entry.dump(),
-                        kMin,
-                        kMax,
-                        value);
+    LOG_WARN("ui_scale: persisted interface scale {} is out of the "
+             "supported [{}, {}] range, using {}",
+             entry.dump(),
+             kMin,
+             kMax,
+             value);
 
   return value;
 }
@@ -195,12 +195,12 @@ Resolution apply_scale(double configured)
     result.environment_override = true;
     result.effective = usable ? value : kDefault;
 
-    Logger::log()->info("ui_scale: QT_SCALE_FACTOR={} is set in the environment; the "
-                        "interface scale setting ({}) is not applied, the process "
-                        "runs at {}",
-                        env.toStdString(),
-                        result.configured,
-                        result.effective);
+    LOG_INFO("ui_scale: QT_SCALE_FACTOR={} is set in the environment; the "
+             "interface scale setting ({}) is not applied, the process "
+             "runs at {}",
+             env.toStdString(),
+             result.configured,
+             result.effective);
 
     g_session = result;
     return result;
@@ -238,8 +238,7 @@ Resolution apply_scale(double configured)
   factor.replace(',', '.');
   qputenv("QT_SCALE_FACTOR", factor);
 
-  Logger::log()->info("ui_scale: interface scale {} applied via QT_SCALE_FACTOR",
-                      result.effective);
+  LOG_INFO("ui_scale: interface scale {} applied via QT_SCALE_FACTOR", result.effective);
 
   return result;
 }
@@ -302,7 +301,7 @@ bool apply_live(double configured)
     window->requestUpdate();
   }
 
-  Logger::log()->info("ui_scale: interface scale {} applied live", value);
+  LOG_INFO("ui_scale: interface scale {} applied live", value);
   return true;
 #else
   return false;

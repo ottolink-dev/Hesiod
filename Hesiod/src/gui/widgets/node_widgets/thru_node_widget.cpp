@@ -9,9 +9,9 @@
 #include "hesiod/gui/widgets/graph/graph_node_widget.hpp"
 #include "hesiod/gui/widgets/node_widgets/node_widget.hpp"
 #include "hesiod/gui/widgets/utils/gui_utils.hpp"
-#include "hesiod/logger.hpp"
 #include "hesiod/model/graph/graph_node.hpp"
 #include "hesiod/model/utils.hpp"
+#include "logger/logger.hpp"
 
 namespace hesiod
 {
@@ -22,7 +22,7 @@ ThruNodeWidget::ThruNodeWidget(std::weak_ptr<BaseNode>   model,
                                QWidget                  *parent)
     : NodeWidget(model, p_gnw, msg, parent)
 {
-  Logger::log()->trace("ThruNodeWidget::ThruNodeWidget");
+  LOG_TRACE("ThruNodeWidget::ThruNodeWidget");
 
   auto m = this->model.lock();
   if (!m)

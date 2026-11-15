@@ -7,10 +7,10 @@
 
 #include "hesiod/gui/graph_editor.hpp"
 #include "hesiod/gui/widgets/graph/graph_node_widget.hpp"
-#include "hesiod/logger.hpp"
 #include "hesiod/model/graph/graph_node.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/utils.hpp"
+#include "logger/logger.hpp"
 
 namespace hesiod
 {

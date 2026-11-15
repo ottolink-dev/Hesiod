@@ -2,11 +2,11 @@
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
 #include "hesiod/cli/batch_mode.hpp"
-#include "hesiod/logger.hpp"
 #include "hesiod/model/graph/graph_config.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/node_factory.hpp"
 #include "hesiod/model/nodes/port_catalog.hpp"
+#include "logger/logger.hpp"
 
 #include <cctype>
 #include <set>
@@ -29,12 +29,12 @@ void expect_offerable(const PortCatalog &catalog,
   const bool got = catalog.is_offerable(node_type, data_type, wanted);
   if (got != expected)
   {
-    Logger::log()->error("check-port-links: {} [{}, want {}]: offerable={} expected={}",
-                         node_type,
-                         data_type,
-                         wanted == gnode::PortType::IN ? "IN" : "OUT",
-                         got,
-                         expected);
+    LOG_ERROR("check-port-links: {} [{}, want {}]: offerable={} expected={}",
+              node_type,
+              data_type,
+              wanted == gnode::PortType::IN ? "IN" : "OUT",
+              got,
+              expected);
     failures++;
   }
 }
@@ -50,7 +50,7 @@ void expect_selected(const std::string &node_type,
 
   if (!p_base)
   {
-    Logger::log()->error("check-port-links: could not build node '{}'", node_type);
+    LOG_ERROR("check-port-links: could not build node '{}'", node_type);
     failures++;
     return;
   }
@@ -60,13 +60,12 @@ void expect_selected(const std::string &node_type,
 
   if (got_str != expected_port)
   {
-    Logger::log()->error(
-        "check-port-links: {} [{}, want {}]: selected '{}' expected '{}'",
-        node_type,
-        data_type,
-        wanted == gnode::PortType::IN ? "IN" : "OUT",
-        got_str,
-        expected_port);
+    LOG_ERROR("check-port-links: {} [{}, want {}]: selected '{}' expected '{}'",
+              node_type,
+              data_type,
+              wanted == gnode::PortType::IN ? "IN" : "OUT",
+              got_str,
+              expected_port);
     failures++;
   }
 }
@@ -91,9 +90,9 @@ void sweep_all_node_types(const PortCatalog &catalog)
       for (const PortInfo &p : *infos)
         data_types.insert(p.data_type);
 
-  Logger::log()->info("check-port-links: sweeping {} node types x {} data types",
-                      hesiod::get_node_inventory().size(),
-                      data_types.size());
+  LOG_INFO("check-port-links: sweeping {} node types x {} data types",
+           hesiod::get_node_inventory().size(),
+           data_types.size());
 
   auto config = std::make_shared<hesiod::GraphConfig>();
 
@@ -104,7 +103,7 @@ void sweep_all_node_types(const PortCatalog &catalog)
 
     if (!p_base)
     {
-      Logger::log()->error("check-port-links: could not build node '{}'", node_type);
+      LOG_ERROR("check-port-links: could not build node '{}'", node_type);
       failures++;
       continue;
     }
@@ -120,14 +119,13 @@ void sweep_all_node_types(const PortCatalog &catalog)
         // Agreement: catalog and live node must say the same thing.
         if (offered != selected.has_value())
         {
-          Logger::log()->error(
-              "check-port-links: {} [{}, want {}]: catalog offered={} but live "
-              "node selected={} (documentation drift?)",
-              node_type,
-              data_type,
-              wanted == gnode::PortType::IN ? "IN" : "OUT",
-              offered,
-              selected.has_value());
+          LOG_ERROR("check-port-links: {} [{}, want {}]: catalog offered={} but live "
+                    "node selected={} (documentation drift?)",
+                    node_type,
+                    data_type,
+                    wanted == gnode::PortType::IN ? "IN" : "OUT",
+                    offered,
+                    selected.has_value());
           failures++;
           continue;
         }
@@ -138,10 +136,9 @@ void sweep_all_node_types(const PortCatalog &catalog)
           const int index = p_base->get_port_index(*selected);
           if (p_base->get_port_type(index) != wanted)
           {
-            Logger::log()->error(
-                "check-port-links: {}: selected port '{}' has the wrong direction",
-                node_type,
-                *selected);
+            LOG_ERROR("check-port-links: {}: selected port '{}' has the wrong direction",
+                      node_type,
+                      *selected);
             failures++;
           }
         }
@@ -178,13 +175,12 @@ void sweep_all_node_types(const PortCatalog &catalog)
 
         if (expected != selected)
         {
-          Logger::log()->error(
-              "check-port-links: {} [{}, want {}]: oracle expected='{}' got='{}'",
-              node_type,
-              data_type,
-              wanted == gnode::PortType::IN ? "IN" : "OUT",
-              expected ? *expected : std::string("<none>"),
-              selected ? *selected : std::string("<none>"));
+          LOG_ERROR("check-port-links: {} [{}, want {}]: oracle expected='{}' got='{}'",
+                    node_type,
+                    data_type,
+                    wanted == gnode::PortType::IN ? "IN" : "OUT",
+                    expected ? *expected : std::string("<none>"),
+                    selected ? *selected : std::string("<none>"));
           failures++;
         }
 
@@ -203,11 +199,11 @@ int run_check_port_links()
   failures = 0;
 
   const PortCatalog catalog = PortCatalog::from_documentation();
-  Logger::log()->info("check-port-links: catalog has {} node types", catalog.size());
+  LOG_INFO("check-port-links: catalog has {} node types", catalog.size());
 
   if (catalog.size() == 0)
   {
-    Logger::log()->error("check-port-links: catalog is empty");
+    LOG_ERROR("check-port-links: catalog is empty");
     return 1;
   }
 
@@ -253,11 +249,11 @@ int run_check_port_links()
 
   sweep_all_node_types(catalog);
 
-  Logger::log()->info("check-port-links: {} triples where the conventional-name rule "
-                      "changed the outcome",
-                      conventional_rule_changed_outcome);
+  LOG_INFO("check-port-links: {} triples where the conventional-name rule "
+           "changed the outcome",
+           conventional_rule_changed_outcome);
 
-  Logger::log()->info("check-port-links: {} failure(s)", failures);
+  LOG_INFO("check-port-links: {} failure(s)", failures);
   return failures ? 1 : 0;
 }
 

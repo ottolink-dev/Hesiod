@@ -63,11 +63,11 @@
 #include "hesiod/gui/widgets/utils/fractional_repaint_filter.hpp"
 #include "hesiod/gui/widgets/utils/gui_utils.hpp"
 #include "hesiod/gui/widgets/utils/tool_tip_blocker.hpp"
-#include "hesiod/logger.hpp"
 #include "hesiod/model/constants/color_gradient.hpp"
 #include "hesiod/model/graph/graph_manager.hpp"
 #include "hesiod/model/graph/graph_node.hpp"
 #include "hesiod/model/utils.hpp"
+#include "logger/logger.hpp"
 
 namespace fs = std::filesystem;
 
@@ -85,7 +85,7 @@ HesiodApplication::HesiodApplication(int &argc, char **argv, StartupMode mode)
                                       return AppContext{};
                                     }())
 {
-  Logger::log()->trace("HesiodApplication::HesiodApplication");
+  LOG_TRACE("HesiodApplication::HesiodApplication");
 
   // --- Initialization
 
@@ -114,7 +114,7 @@ HesiodApplication::HesiodApplication(int &argc, char **argv, StartupMode mode)
 
   // OpenCV info
   const std::string cv_log_fname = "opencv_build_information.log";
-  Logger::log()->trace(
+  LOG_TRACE(
       "HesiodApplication::HesiodApplication: OpenCV build information dumped in: {}",
       cv_log_fname);
   string_to_file(hmap::get_opencv_build_information(), cv_log_fname);
@@ -192,10 +192,10 @@ HesiodApplication::HesiodApplication(int &argc, char **argv, StartupMode mode)
       }
       else
       {
-        Logger::log()->warn("HesiodApplication::HesiodApplication: project file "
-                            "requested on the command line does not exist, falling back "
-                            "to normal startup: {}",
-                            startup_file);
+        LOG_WARN("HesiodApplication::HesiodApplication: project file "
+                 "requested on the command line does not exist, falling back "
+                 "to normal startup: {}",
+                 startup_file);
       }
     }
 
@@ -245,7 +245,7 @@ HesiodApplication::~HesiodApplication() = default;
 
 void HesiodApplication::rebuild_recent_files_menu()
 {
-  Logger::log()->trace("HesiodApplication::rebuild_recent_files_menu");
+  LOG_TRACE("HesiodApplication::rebuild_recent_files_menu");
 
   this->recent_files_menu->clear();
 
@@ -279,7 +279,7 @@ void HesiodApplication::rebuild_recent_files_menu()
 
 void HesiodApplication::add_recent_file(const std::string &fname)
 {
-  Logger::log()->trace("HesiodApplication::add_recent_file: {}", fname);
+  LOG_TRACE("HesiodApplication::add_recent_file: {}", fname);
 
   auto &global = this->context.app_settings.global;
 
@@ -295,7 +295,7 @@ void HesiodApplication::add_recent_file(const std::string &fname)
 
 void HesiodApplication::cleanup()
 {
-  Logger::log()->trace("HesiodApplication::cleanup");
+  LOG_TRACE("HesiodApplication::cleanup");
 
   // the event loop is pumped below while the model and UI are inconsistent
   AutosaveSuspender suspend_autosave(this->autosave.get());
@@ -425,7 +425,7 @@ int HesiodApplication::get_exit_code() const { return this->headless_exit_code; 
 void HesiodApplication::load_project_model_and_ui(const std::string &fname,
                                                   bool               keep_name)
 {
-  Logger::log()->trace("HesiodApplication::load_project_model_and_ui: fname [{}]", fname);
+  LOG_TRACE("HesiodApplication::load_project_model_and_ui: fname [{}]", fname);
 
   // the event loop is pumped below while the model and UI are inconsistent
   AutosaveSuspender suspend_autosave(this->autosave.get());
@@ -451,9 +451,9 @@ void HesiodApplication::load_project_model_and_ui(const std::string &fname,
   if (blank_startup)
   {
     if (!actual_fname.empty())
-      Logger::log()->warn("HesiodApplication::load_project_model_and_ui: project "
-                          "file does not exist, starting with a blank project: {}",
-                          actual_fname);
+      LOG_WARN("HesiodApplication::load_project_model_and_ui: project "
+               "file does not exist, starting with a blank project: {}",
+               actual_fname);
 
     // no startup file: blank project with a single empty graph, ready to use
     this->context.new_project();
@@ -492,8 +492,7 @@ void HesiodApplication::load_project_model_and_ui(const std::string &fname,
 
       if (dialog.exec() == QDialog::Rejected)
       {
-        Logger::log()->info("User cancelled loading project after warnings: {}",
-                            actual_fname);
+        LOG_INFO("User cancelled loading project after warnings: {}", actual_fname);
         this->load_project_model_and_ui("", false);
         return;
       }
@@ -620,14 +619,14 @@ void HesiodApplication::load_project_model_and_ui(const std::string &fname,
 
 void HesiodApplication::notify(const std::string &msg, int timeout)
 {
-  Logger::log()->trace("HesiodApplication::notify: {}", msg);
+  LOG_TRACE("HesiodApplication::notify: {}", msg);
   if (this->main_window)
     this->main_window->notify(msg, timeout);
 }
 
 void HesiodApplication::on_application_settings_action()
 {
-  Logger::log()->trace("HesiodApplication::on_application_settings_action");
+  LOG_TRACE("HesiodApplication::on_application_settings_action");
 
   // the dialog scrolls each section itself and caps its size to the screen
   AppSettingsWindow dialog(this->main_window);
@@ -636,7 +635,7 @@ void HesiodApplication::on_application_settings_action()
 
 void HesiodApplication::on_export_batch()
 {
-  Logger::log()->trace("HesiodApplication::on_export_batch");
+  LOG_TRACE("HesiodApplication::on_export_batch");
 
   // --- retrieve export parameters from user
 
@@ -667,9 +666,9 @@ void HesiodApplication::on_export_batch()
   // the variant loop pumps the event loop while it touches the model
   AutosaveSuspender suspend_autosave(this->autosave.get());
 
-  Logger::log()->trace("HesiodApplication::on_export_batch: size = {}, nvariants = {}",
-                       bake_settings.resolution,
-                       bake_settings.nvariants);
+  LOG_TRACE("HesiodApplication::on_export_batch: size = {}, nvariants = {}",
+            bake_settings.resolution,
+            bake_settings.nvariants);
 
   // --- setup export repertory
 
@@ -699,15 +698,13 @@ void HesiodApplication::on_export_batch()
     if (k > 0)
       export_path /= "variants_" + std::to_string(k);
 
-    Logger::log()->info("HesiodApplication::on_export_batch: export path: {}",
-                        export_path.string());
+    LOG_INFO("HesiodApplication::on_export_batch: export path: {}", export_path.string());
 
     // create it
     if (!fs::exists(export_path))
     {
-      Logger::log()->trace(
-          "HesiodApplication::on_export_batch: creating export repertory {}",
-          export_path.string());
+      LOG_TRACE("HesiodApplication::on_export_batch: creating export repertory {}",
+                export_path.string());
       fs::create_directories(export_path);
     }
 
@@ -768,12 +765,12 @@ void HesiodApplication::on_export_batch()
       bake_config.set_shape(bake_shape);
       bake_config.set_tiling(bake_tiling);
 
-      Logger::log()->trace("HesiodApplication::on_export_batch: bake_shape: ({}, {}), "
-                           "bake_tiling: ({}, {})",
-                           bake_shape.x,
-                           bake_shape.y,
-                           bake_tiling.x,
-                           bake_tiling.y);
+      LOG_TRACE("HesiodApplication::on_export_batch: bake_shape: ({}, {}), "
+                "bake_tiling: ({}, {})",
+                bake_shape.x,
+                bake_shape.y,
+                bake_tiling.x,
+                bake_tiling.y);
 
       // populate the scheduled list in topological update order for progress display
       std::vector<NodeExportStatus> scheduled_nodes;
@@ -876,8 +873,7 @@ void HesiodApplication::on_export_batch()
                        [&]()
                        {
                          QByteArray err_bytes = worker_process.readAllStandardError();
-                         Logger::log()->warn("Hesiod worker stderr: {}",
-                                             err_bytes.toStdString());
+                         LOG_WARN("Hesiod worker stderr: {}", err_bytes.toStdString());
                        });
 
       auto cancel_connection = QObject::connect(
@@ -887,8 +883,8 @@ void HesiodApplication::on_export_batch()
           {
             if (worker_process.state() != QProcess::NotRunning)
             {
-              Logger::log()->info("Killing bake worker process on "
-                                  "user request");
+              LOG_INFO("Killing bake worker process on "
+                       "user request");
               worker_process.kill();
             }
           });
@@ -914,7 +910,7 @@ void HesiodApplication::on_export_batch()
       // check if user canceled
       if (progress.is_canceled())
       {
-        Logger::log()->info("Bake process canceled by user.");
+        LOG_INFO("Bake process canceled by user.");
         if (!current_node_computing.empty())
           progress.on_node_finished(current_node_computing, false);
 
@@ -928,8 +924,8 @@ void HesiodApplication::on_export_batch()
       if (worker_process.exitStatus() == QProcess::CrashExit ||
           worker_process.exitCode() != 0)
       {
-        Logger::log()->error("Worker process crashed or exited with error code {}.",
-                             worker_process.exitCode());
+        LOG_ERROR("Worker process crashed or exited with error code {}.",
+                  worker_process.exitCode());
         if (!current_node_computing.empty())
           progress.on_node_finished(current_node_computing, false);
 
@@ -949,7 +945,7 @@ void HesiodApplication::on_export_batch()
 
 void HesiodApplication::on_load()
 {
-  Logger::log()->trace("HesiodApplication::on_load");
+  LOG_TRACE("HesiodApplication::on_load");
 
   if (!this->confirm_discard_unsaved_changes("Load"))
     return;
@@ -970,7 +966,7 @@ void HesiodApplication::on_load()
 
 void HesiodApplication::on_open_recent(const std::string &fname)
 {
-  Logger::log()->trace("HesiodApplication::on_open_recent: {}", fname);
+  LOG_TRACE("HesiodApplication::on_open_recent: {}", fname);
 
   if (!fs::exists(fname))
   {
@@ -994,7 +990,7 @@ void HesiodApplication::on_open_recent(const std::string &fname)
 
 bool HesiodApplication::offer_recovery()
 {
-  Logger::log()->trace("HesiodApplication::offer_recovery");
+  LOG_TRACE("HesiodApplication::offer_recovery");
 
   if (!this->autosave)
     return false;
@@ -1021,10 +1017,10 @@ bool HesiodApplication::offer_recovery()
         fs::remove(entry.snapshot, ec);
 
         if (ec)
-          Logger::log()->warn("HesiodApplication::offer_recovery: could not remove {}: "
-                              "{}",
-                              entry.snapshot.string(),
-                              ec.message());
+          LOG_WARN("HesiodApplication::offer_recovery: could not remove {}: "
+                   "{}",
+                   entry.snapshot.string(),
+                   ec.message());
 
         // a stray temp file from an interrupted write goes with it
         fs::remove(fs::path(entry.snapshot.string() + ".tmp"), ec);
@@ -1068,12 +1064,12 @@ bool HesiodApplication::offer_recovery()
       fs::remove(entry.snapshot, ec);
 
       if (ec)
-        Logger::log()->warn("HesiodApplication::offer_recovery: could not remove {}: {}",
-                            entry.snapshot.string(),
-                            ec.message());
+        LOG_WARN("HesiodApplication::offer_recovery: could not remove {}: {}",
+                 entry.snapshot.string(),
+                 ec.message());
       else
-        Logger::log()->info("HesiodApplication::offer_recovery: discarded {}",
-                            entry.snapshot.string());
+        LOG_INFO("HesiodApplication::offer_recovery: discarded {}",
+                 entry.snapshot.string());
 
       // a stray temp file from an interrupted write goes with it
       fs::remove(fs::path(entry.snapshot.string() + ".tmp"), ec);
@@ -1095,11 +1091,11 @@ bool HesiodApplication::offer_recovery()
         fs::rename(entry.snapshot, parked, ec);
 
         if (ec)
-          Logger::log()->warn("HesiodApplication::offer_recovery: could not park {} as "
-                              "{}: {}",
-                              entry.snapshot.string(),
-                              parked.string(),
-                              ec.message());
+          LOG_WARN("HesiodApplication::offer_recovery: could not park {} as "
+                   "{}: {}",
+                   entry.snapshot.string(),
+                   parked.string(),
+                   ec.message());
       }
 
       continue;
@@ -1114,7 +1110,7 @@ bool HesiodApplication::offer_recovery()
 
 bool HesiodApplication::restore_snapshot(const AutosaveManager::Entry &entry)
 {
-  Logger::log()->info("HesiodApplication::restore_snapshot: {}", entry.snapshot.string());
+  LOG_INFO("HesiodApplication::restore_snapshot: {}", entry.snapshot.string());
 
   try
   {
@@ -1122,9 +1118,9 @@ bool HesiodApplication::restore_snapshot(const AutosaveManager::Entry &entry)
   }
   catch (const std::exception &e)
   {
-    Logger::log()->error("HesiodApplication::restore_snapshot: could not load {}: {}",
-                         entry.snapshot.string(),
-                         e.what());
+    LOG_ERROR("HesiodApplication::restore_snapshot: could not load {}: {}",
+              entry.snapshot.string(),
+              e.what());
     QMessageBox::warning(
         this->main_window,
         "Recover unsaved work",
@@ -1152,7 +1148,7 @@ bool HesiodApplication::restore_snapshot(const AutosaveManager::Entry &entry)
 
 void HesiodApplication::on_load_ready_made()
 {
-  Logger::log()->trace("HesiodApplication::on_load_ready_made");
+  LOG_TRACE("HesiodApplication::on_load_ready_made");
 
   if (!this->confirm_discard_unsaved_changes("Open Ready-made Example"))
     return;
@@ -1189,7 +1185,7 @@ void HesiodApplication::on_load_ready_made()
 
 void HesiodApplication::on_new()
 {
-  Logger::log()->trace("HesiodApplication::on_new");
+  LOG_TRACE("HesiodApplication::on_new");
 
   if (!this->confirm_discard_unsaved_changes("New"))
     return;
@@ -1230,7 +1226,7 @@ void HesiodApplication::on_project_name_changed()
 
 void HesiodApplication::on_rename_project()
 {
-  Logger::log()->trace("HesiodApplication::on_rename_project");
+  LOG_TRACE("HesiodApplication::on_rename_project");
 
   if (!this->main_window || !this->context.project_model)
     return;
@@ -1433,7 +1429,7 @@ void HesiodApplication::on_project_settings()
 
 void HesiodApplication::on_quit()
 {
-  Logger::log()->trace("HesiodApplication::on_quit");
+  LOG_TRACE("HesiodApplication::on_quit");
 
   // QApplication::quit() first closes every top-level window (Qt >= 6.1), so
   // the unsaved-changes prompt and the geometry/settings save both run once in
@@ -1443,7 +1439,7 @@ void HesiodApplication::on_quit()
 
 void HesiodApplication::on_save()
 {
-  Logger::log()->trace("HesiodApplication::on_save");
+  LOG_TRACE("HesiodApplication::on_save");
 
   fs::path path = this->context.project_model->get_path();
 
@@ -1461,7 +1457,7 @@ void HesiodApplication::on_save()
 
 void HesiodApplication::on_save_as()
 {
-  Logger::log()->trace("HesiodApplication::on_save_as");
+  LOG_TRACE("HesiodApplication::on_save_as");
 
   fs::path path = this->context.project_model->get_path();
 
@@ -1487,8 +1483,7 @@ void HesiodApplication::on_save_as()
     fs::path clean_path = fs::path(new_fname.toStdString());
     clean_path = ensure_extension(clean_path, ".hsd");
 
-    Logger::log()->trace("HesiodApplication::on_save_as: clean_path: {}",
-                         clean_path.string());
+    LOG_TRACE("HesiodApplication::on_save_as: clean_path: {}", clean_path.string());
 
     if (this->save_project_model_and_ui(clean_path.string()))
     {
@@ -1500,11 +1495,11 @@ void HesiodApplication::on_save_as()
 
 void HesiodApplication::on_save_copy()
 {
-  Logger::log()->trace("HesiodApplication::on_save_copy");
+  LOG_TRACE("HesiodApplication::on_save_copy");
 
   fs::path path = this->context.project_model->get_path();
 
-  Logger::log()->trace("{}", path.string());
+  LOG_TRACE("{}", path.string());
 
   if (path.empty())
     this->on_save_as();
@@ -1544,7 +1539,7 @@ nlohmann::json HesiodApplication::project_file_json() const
 
 void HesiodApplication::save_backup(const std::string &fname)
 {
-  Logger::log()->trace("HesiodApplication::save_backup: {}", fname);
+  LOG_TRACE("HesiodApplication::save_backup: {}", fname);
 
   // if the file exists, create a backup
   const std::string fname_ext = ensure_extension(fname, ".hsd").string();
@@ -1557,22 +1552,21 @@ void HesiodApplication::save_backup(const std::string &fname)
     try
     {
       fs::copy_file(original_path, backup_path, fs::copy_options::overwrite_existing);
-      Logger::log()->trace("HesiodApplication::save_backup: backup created: {}",
-                           backup_path.string());
+      LOG_TRACE("HesiodApplication::save_backup: backup created: {}",
+                backup_path.string());
     }
     catch (const std::exception &e)
     {
-      Logger::log()->error(
-          "HesiodApplication::save_backup: failed to create backup for {}: {}",
-          fname_ext,
-          e.what());
+      LOG_ERROR("HesiodApplication::save_backup: failed to create backup for {}: {}",
+                fname_ext,
+                e.what());
     }
   }
 }
 
 bool HesiodApplication::save_project_model_and_ui(const std::string &fname)
 {
-  Logger::log()->trace("HesiodApplication::save_project_model_and_ui: {}", fname);
+  LOG_TRACE("HesiodApplication::save_project_model_and_ui: {}", fname);
 
   this->notify(std::format("Saving changes..."));
 
@@ -1594,19 +1588,19 @@ bool HesiodApplication::save_project_model_and_ui(const std::string &fname)
       fs::path backup_path = temp_dir / file_path.filename();
       fs::copy_file(file_path, backup_path, fs::copy_options::overwrite_existing);
 
-      Logger::log()->trace("HesiodApplication::save_project_model_and_ui: backup of "
-                           "existing file saved to temporary folder: {}",
-                           backup_path.string());
+      LOG_TRACE("HesiodApplication::save_project_model_and_ui: backup of "
+                "existing file saved to temporary folder: {}",
+                backup_path.string());
 
       // now delete the existing file
       fs::remove(file_path);
     }
     catch (const std::exception &e)
     {
-      Logger::log()->error("HesiodApplication::save_project_model_and_ui: Error handling "
-                           "existing file '{}': {}",
-                           fname,
-                           e.what());
+      LOG_ERROR("HesiodApplication::save_project_model_and_ui: Error handling "
+                "existing file '{}': {}",
+                fname,
+                e.what());
     }
   }
 
@@ -1615,9 +1609,9 @@ bool HesiodApplication::save_project_model_and_ui(const std::string &fname)
                     fname,
                     /* merge_with_existing_content */ true))
   {
-    Logger::log()->error("HesiodApplication::save_project_model_and_ui: could not write "
-                         "{}",
-                         fname);
+    LOG_ERROR("HesiodApplication::save_project_model_and_ui: could not write "
+              "{}",
+              fname);
 
     // the project stays dirty and keeps its recovery snapshot
     if (this->main_window)
@@ -1642,7 +1636,7 @@ bool HesiodApplication::save_project_model_and_ui(const std::string &fname)
 
 void HesiodApplication::setup_menu_bar()
 {
-  Logger::log()->trace("HesiodApplication::setup_menu_bar");
+  LOG_TRACE("HesiodApplication::setup_menu_bar");
 
   // --- leftmost Help
 
@@ -2128,7 +2122,7 @@ void HesiodApplication::setup_menu_bar()
 
 void HesiodApplication::show()
 {
-  Logger::log()->trace("HesiodApplication::show");
+  LOG_TRACE("HesiodApplication::show");
   this->main_window->show();
 
   // the zoom-to-content deferred while deserializing the project fires before
@@ -2152,7 +2146,7 @@ void HesiodApplication::show_about()
 
 void HesiodApplication::show_quick_help()
 {
-  Logger::log()->trace("HesiodApplication::show_quick_help");
+  LOG_TRACE("HesiodApplication::show_quick_help");
 
   std::string html_source = "";
 

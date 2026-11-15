@@ -20,15 +20,15 @@
 #include "hesiod/gui/widgets/node_widgets/properties_panel_design.hpp"
 #include "hesiod/gui/widgets/shell/window_chrome.hpp"
 #include "hesiod/gui/widgets/utils/gui_utils.hpp"
-#include "hesiod/logger.hpp"
 #include "hesiod/model/utils.hpp"
+#include "logger/logger.hpp"
 
 namespace hesiod
 {
 
 void apply_global_style(QApplication &app)
 {
-  Logger::log()->trace("apply_global_style");
+  LOG_TRACE("apply_global_style");
 
   AppContext &ctx = HSD_CTX;
 
@@ -155,7 +155,7 @@ void apply_global_style(QApplication &app)
 
 void apply_graph_style()
 {
-  Logger::log()->trace("apply_graph_style");
+  LOG_TRACE("apply_graph_style");
 
   AppContext   &ctx = HSD_CTX;
   gngui::Style *p_style = gngui::Style::get_style().get();

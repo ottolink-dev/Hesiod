@@ -8,11 +8,11 @@
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/model/nodes/attributes.hpp"
 
-#include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/node_factory.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 #include "hesiod/model/utils.hpp"
+#include "logger/logger.hpp"
 
 namespace hesiod
 {
@@ -35,7 +35,7 @@ constexpr const char *A_ZMIN        = "zmin";
 
 void setup_export_points_to_ply_node(BaseNode &node)
 {
-  Logger::log()->trace("setup node {}", node.get_label());
+  LOG_TRACE("setup node {}", node.get_label());
 
   // port(s)
   node.add_port<std::vector<float>>(gnode::PortType::IN, "x");
@@ -65,7 +65,7 @@ void setup_export_points_to_ply_node(BaseNode &node)
 
 void compute_export_points_to_ply_node(BaseNode &node)
 {
-  Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
+  LOG_TRACE("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
   auto p_x = node.get_value_ref<std::vector<float>>("x");
   auto p_y = node.get_value_ref<std::vector<float>>("y");
@@ -77,10 +77,9 @@ void compute_export_points_to_ply_node(BaseNode &node)
   const bool auto_export = node.val<bool>(A_AUTO_EXPORT);
   if (!auto_export)
   {
-    Logger::log()->trace(
-        "compute_export_points_to_ply_node: [{}]/[{}]: auto export is disabled",
-        node.get_node_type(),
-        node.get_id());
+    LOG_TRACE("compute_export_points_to_ply_node: [{}]/[{}]: auto export is disabled",
+              node.get_node_type(),
+              node.get_id());
     return;
   }
 
@@ -96,10 +95,10 @@ void compute_export_points_to_ply_node(BaseNode &node)
                                                            pattern,
                                                            replacements);
 
-  Logger::log()->trace("compute_export_points_to_ply_node: [{}]/[{}]: export path = {}",
-                       node.get_node_type(),
-                       node.get_id(),
-                       export_path.string());
+  LOG_TRACE("compute_export_points_to_ply_node: [{}]/[{}]: export path = {}",
+            node.get_node_type(),
+            node.get_id(),
+            export_path.string());
 
   // --- create custom fields
 

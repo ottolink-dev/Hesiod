@@ -8,7 +8,7 @@
 
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/widgets/node_widgets/properties_panel_design.hpp"
-#include "hesiod/logger.hpp"
+#include "logger/logger.hpp"
 
 namespace hesiod
 {
@@ -33,12 +33,11 @@ const PropertiesPanelDesign &properties_panel_design()
 
   if (!meta::qt::DesignRegistry::instance().has_design(current.design))
   {
-    Logger::log()->warn(
-        "properties_panel_design: '{}' is not a registered design, falling "
-        "back to '{}'. Check interface.properties_panel_design in "
-        "hesiod.json.",
-        current.design,
-        meta::qt::stock::kDesignName);
+    LOG_WARN("properties_panel_design: '{}' is not a registered design, falling "
+             "back to '{}'. Check interface.properties_panel_design in "
+             "hesiod.json.",
+             current.design,
+             meta::qt::stock::kDesignName);
 
     current.design = meta::qt::stock::kDesignName;
   }

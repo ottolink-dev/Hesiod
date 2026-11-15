@@ -3,8 +3,8 @@
  * this software. */
 #include "meta/metadata/keys.hpp"
 
-#include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/broadcast_node.hpp"
+#include "logger/logger.hpp"
 
 namespace hesiod
 {

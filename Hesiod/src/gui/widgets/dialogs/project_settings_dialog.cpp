@@ -8,7 +8,7 @@
 
 #include "hesiod/gui/widgets/dialogs/project_settings_dialog.hpp"
 #include "hesiod/gui/widgets/utils/gui_utils.hpp"
-#include "hesiod/logger.hpp"
+#include "logger/logger.hpp"
 
 namespace hesiod
 {
@@ -17,7 +17,7 @@ ProjectSettingsDialog::ProjectSettingsDialog(ProjectModel *p_project_model,
                                              QWidget      *parent)
     : QDialog(parent), p_project_model(p_project_model)
 {
-  Logger::log()->trace("ProjectSettingsDialog::ProjectSettingsDialog");
+  LOG_TRACE("ProjectSettingsDialog::ProjectSettingsDialog");
 
   if (!this->p_project_model)
     return;

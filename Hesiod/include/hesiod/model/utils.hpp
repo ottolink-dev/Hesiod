@@ -13,7 +13,7 @@
 #include "nlohmann/json.hpp"
 #include "nlohmann/json_fwd.hpp"
 
-#include "hesiod/logger.hpp"
+#include "logger/logger.hpp"
 
 namespace hesiod
 {
@@ -102,7 +102,7 @@ inline void json_safe_get(const nlohmann::json &j, const std::string &key, T &va
   }
   else
   {
-    Logger::log()->error("Required json key \"{}\" not found.", key);
+    LOG_ERROR("Required json key \"{}\" not found.", key);
   }
 }
 
@@ -114,11 +114,11 @@ inline void json_safe_get(const nlohmann::json &j, const std::string &key, QColo
     if (QColor::isValidColor(str))
       value = QColor(str);
     else
-      Logger::log()->error("Invalid QColor for key \"{}\"", key);
+      LOG_ERROR("Invalid QColor for key \"{}\"", key);
   }
   else
   {
-    Logger::log()->error("Required json key \"{}\" not found.", key);
+    LOG_ERROR("Required json key \"{}\" not found.", key);
   }
 }
 

@@ -8,10 +8,10 @@
 #include "highmap/colorize.hpp"
 
 #include "hesiod/gui/widgets/containers/graph_manager_widget.hpp"
-#include "hesiod/logger.hpp"
 #include "hesiod/model/graph/broadcast_param.hpp"
 #include "hesiod/model/graph/graph_node.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
+#include "logger/logger.hpp"
 
 namespace hesiod
 {
@@ -19,7 +19,7 @@ namespace hesiod
 GraphQListWidget::GraphQListWidget(std::weak_ptr<GraphNode> p_graph_node, QWidget *parent)
     : QWidget(parent), p_graph_node(p_graph_node)
 {
-  Logger::log()->trace("GraphQListWidget::GraphQListWidget");
+  LOG_TRACE("GraphQListWidget::GraphQListWidget");
 
   auto gno = this->p_graph_node.lock();
   if (!gno)
@@ -68,8 +68,8 @@ nlohmann::json GraphQListWidget::json_to() const
 
 void GraphQListWidget::on_combobox_changed()
 {
-  Logger::log()->trace("GraphQListWidget::on_combobox_changed: current tag: {}",
-                       this->current_bg_tag);
+  LOG_TRACE("GraphQListWidget::on_combobox_changed: current tag: {}",
+            this->current_bg_tag);
 
   auto gno = this->p_graph_node.lock();
   if (!gno)
@@ -88,9 +88,9 @@ void GraphQListWidget::on_combobox_changed()
     return;
   }
 
-  Logger::log()->trace("GraphQListWidget::on_combobox_changed: node_id={}, port_id={}",
-                       node_id,
-                       port_id);
+  LOG_TRACE("GraphQListWidget::on_combobox_changed: node_id={}, port_id={}",
+            node_id,
+            port_id);
 
   // TODO allow other data types (see data_preview)
 
@@ -136,7 +136,7 @@ void GraphQListWidget::update_combobox()
   this->combobox->clear();
   this->combobox->addItem("NONE");
 
-  Logger::log()->trace("GraphQListWidget::update_combobox, tag: {}", tag_bckp);
+  LOG_TRACE("GraphQListWidget::update_combobox, tag: {}", tag_bckp);
 
   // list of possible data available to show on the canvas as Pixmap
   bool is_current_tag_in_combo = false;

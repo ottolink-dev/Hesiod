@@ -11,12 +11,13 @@
 
 #include "gnode/graph_worker.hpp"
 #include "hesiod/app/hesiod_application.hpp"
-#include "hesiod/logger.hpp"
 #include "hesiod/model/graph/graph_config.hpp"
 #include "hesiod/model/graph/graph_manager.hpp"
 #include "hesiod/model/graph/graph_node.hpp"
 #include "hesiod/model/utils.hpp"
 #include "hesiod/profiling.hpp"
+#include "logger/logger.hpp"
+#include "logger/scope.hpp"
 
 namespace hesiod
 {
@@ -24,7 +25,7 @@ namespace hesiod
 GraphManager::GraphManager(const std::string &id)
     : id(id), worker(std::make_unique<gnode::GraphWorker>())
 {
-  Logger::log()->trace("GraphManager::GraphManager: id: {}", id);
+  LOG_TRACE("GraphManager::GraphManager: id: {}", id);
 
   this->worker->failed = [this](std::exception_ptr error)
   { this->on_update_failed(error); };
@@ -44,7 +45,7 @@ GraphManager::~GraphManager() = default;
 std::string GraphManager::add_graph_node(const std::shared_ptr<GraphNode> &p_graph_node,
                                          const std::string                &graph_id)
 {
-  Logger::log()->trace("GraphManager::add_graph_node: {}", graph_id);
+  LOG_TRACE("GraphManager::add_graph_node: {}", graph_id);
 
   std::string new_graph_id = graph_id;
 
@@ -91,7 +92,7 @@ std::string GraphManager::add_graph_node(const std::shared_ptr<GraphNode> &p_gra
 
 void GraphManager::clear()
 {
-  Logger::log()->trace("GraphManager::clear");
+  LOG_TRACE("GraphManager::clear");
 
   this->worker->cancel();
 
@@ -107,7 +108,7 @@ void GraphManager::clear()
 void GraphManager::export_flatten()
 {
   HSD_PROFILE_ZONE("GraphManager::export_flatten");
-  Logger::log()->trace("GraphManager::export_flatten");
+  LOG_TRACE("GraphManager::export_flatten");
 
   // Finish any pending background work first
   this->worker->finish();
@@ -212,17 +213,17 @@ void GraphManager::export_flatten()
 
   if (out_path.empty())
   {
-    Logger::log()->error("GraphManager::export_flatten: export path is empty, "
-                         "nothing was written");
+    LOG_ERROR("GraphManager::export_flatten: export path is empty, "
+              "nothing was written");
     return;
   }
 
   if (out_path.extension().empty())
   {
     out_path.replace_extension(".png");
-    Logger::log()->warn("GraphManager::export_flatten: export path had no "
-                        "extension, defaulting to {}",
-                        out_path.string());
+    LOG_WARN("GraphManager::export_flatten: export path had no "
+             "extension, defaulting to {}",
+             out_path.string());
   }
 
   // catch any writer error (unsupported extension, unwritable path, ...) so a
@@ -239,10 +240,10 @@ void GraphManager::export_flatten()
   }
   catch (const std::exception &e)
   {
-    Logger::log()->error("GraphManager::export_flatten: failed to write export "
-                         "image '{}': {}",
-                         out_path.string(),
-                         e.what());
+    LOG_ERROR("GraphManager::export_flatten: failed to write export "
+              "image '{}': {}",
+              out_path.string(),
+              e.what());
   }
 }
 
@@ -264,8 +265,7 @@ int GraphManager::get_graph_order_index(const std::string &graph_id)
 {
   if (this->is_graph_id_available(graph_id))
   {
-    Logger::log()->critical("GraphManager::get_graph_order_index, graph ID not known: {}",
-                            graph_id);
+    LOG_CRITICAL("GraphManager::get_graph_order_index, graph ID not known: {}", graph_id);
     throw std::runtime_error("Graph ID not known: " + graph_id);
   }
 
@@ -294,8 +294,7 @@ std::shared_ptr<GraphManager> GraphManager::get_shared()
   }
   catch (...)
   {
-    Logger::log()->critical(
-        "GraphManager::get_shared: object is not managed by shared_ptr");
+    LOG_CRITICAL("GraphManager::get_shared: object is not managed by shared_ptr");
     return nullptr;
   }
 }
@@ -326,7 +325,7 @@ void GraphManager::json_from(nlohmann::json const &json)
 
 void GraphManager::json_from(nlohmann::json const &json, GraphConfig *p_config)
 {
-  Logger::log()->trace("GraphManager::json_from");
+  LOG_TRACE("GraphManager::json_from");
 
   // clean-up current state
   this->clear();
@@ -342,7 +341,7 @@ void GraphManager::json_from(nlohmann::json const &json, GraphConfig *p_config)
 
     for (auto &graph_id : gid_order)
     {
-      Logger::log()->trace("graph graph_id: {}", graph_id);
+      LOG_TRACE("graph graph_id: {}", graph_id);
 
       // dummy default config that will be overriden after by the
       // GraphNode instances during their 'json_from' deserialization
@@ -394,7 +393,7 @@ void GraphManager::json_from(nlohmann::json const &json, GraphConfig *p_config)
 
 nlohmann::json GraphManager::json_to() const
 {
-  Logger::log()->trace("GraphManager::json_to");
+  LOG_TRACE("GraphManager::json_to");
 
   nlohmann::json json;
 
@@ -416,7 +415,7 @@ nlohmann::json GraphManager::json_to() const
 
 void GraphManager::load_from_file(const std::string &fname, GraphConfig *p_config)
 {
-  Logger::log()->trace("GraphManager::load_from_file: fname {}", fname);
+  LOG_TRACE("GraphManager::load_from_file: fname {}", fname);
 
   nlohmann::json json = json_from_file(fname);
   this->json_from(json["graph_manager"], p_config);
@@ -428,7 +427,7 @@ void GraphManager::load_from_file(const std::string &fname, GraphConfig *p_confi
 void GraphManager::on_broadcast_node_updated(const std::string &graph_id,
                                              const std::string &tag)
 {
-  Logger::log()->trace("GraphManager::on_broadcast_node_updated: broadcasting {}", tag);
+  LOG_TRACE("GraphManager::on_broadcast_node_updated: broadcasting {}", tag);
 
   // a Broadcast updated in the background reports from the update thread
   if (gnode::GraphWorker::in_worker_thread())
@@ -448,7 +447,7 @@ void GraphManager::on_new_broadcast_tag(const std::string        &tag,
                                         const hmap::CoordFrame   *t_source,
                                         const hmap::VirtualArray *h_source)
 {
-  Logger::log()->trace("GraphManager::on_new_broadcast_tag: tag {}", tag);
+  LOG_TRACE("GraphManager::on_new_broadcast_tag: tag {}", tag);
 
   this->broadcast_params[tag] = BroadcastParam(t_source, h_source);
 
@@ -458,7 +457,7 @@ void GraphManager::on_new_broadcast_tag(const std::string        &tag,
 
 void GraphManager::on_remove_broadcast_tag(const std::string &tag)
 {
-  Logger::log()->trace("GraphManager::on_remove_broadcast_tag: tag {}", tag);
+  LOG_TRACE("GraphManager::on_remove_broadcast_tag: tag {}", tag);
 
   this->broadcast_params.erase(tag);
 
@@ -474,7 +473,7 @@ void GraphManager::on_update_progress(const std::string & /* node_id */, float p
 
 void GraphManager::remove_graph_node(const std::string &graph_id)
 {
-  Logger::log()->trace("GraphManager::remove_graph_node: graph_id {}", graph_id);
+  LOG_TRACE("GraphManager::remove_graph_node: graph_id {}", graph_id);
 
   if (this->is_graph_id_available(graph_id))
     return;
@@ -490,7 +489,7 @@ void GraphManager::remove_graph_node(const std::string &graph_id)
 
 void GraphManager::reseed(bool backward)
 {
-  Logger::log()->trace("GraphManager::reseed");
+  LOG_TRACE("GraphManager::reseed");
 
   for (auto &[_, graph] : this->graph_nodes)
     if (graph)
@@ -521,7 +520,7 @@ std::string GraphManager::runtime_info_to_string(const char separator) const
 
 void GraphManager::save_to_file(const std::string &fname) const
 {
-  Logger::log()->trace("GraphManager::save_to_file: fname {}", fname);
+  LOG_TRACE("GraphManager::save_to_file: fname {}", fname);
 
   // fill-in json with graph data
   nlohmann::json json;
@@ -543,9 +542,9 @@ void GraphManager::set_id(const std::string &new_id) { this->id = new_id; }
 
 void GraphManager::update()
 {
+  LOG_FUNCTION();
   HSD_PROFILE_ZONE("GraphManager::update");
   HSD_PROFILE_TEXT(this->id);
-  Logger::log()->trace("GraphManager::update()");
 
   // BaseNode::compute contains per-node failures; what reaches here is a
   // condition that makes continuing pointless (memory exhaustion above all).
@@ -584,7 +583,7 @@ void GraphManager::on_update_failed(std::exception_ptr error)
     failure = "The graph update was abandoned after an unknown error.";
   }
 
-  Logger::log()->critical("GraphManager::update: {}", failure);
+  LOG_CRITICAL("GraphManager::update: {}", failure);
 
   // clear the progress bar, which would otherwise sit at whatever percentage
   // the update died on

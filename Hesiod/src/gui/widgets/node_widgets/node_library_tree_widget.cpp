@@ -7,7 +7,7 @@
 #include <QMouseEvent>
 
 #include "hesiod/gui/widgets/node_widgets/node_library_widget.hpp"
-#include "hesiod/logger.hpp"
+#include "logger/logger.hpp"
 
 namespace hesiod
 {

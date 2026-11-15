@@ -7,9 +7,9 @@
 
 #include "hesiod/model/nodes/attributes.hpp"
 
-#include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
+#include "logger/logger.hpp"
 
 namespace hesiod
 {
@@ -30,7 +30,7 @@ constexpr const char *A_USE_DISTRIBUTED_COMPUTATION = "use_distributed_computati
 
 void setup_flooding_lake_system_node(BaseNode &node)
 {
-  Logger::log()->trace("setup node {}", node.get_label());
+  LOG_TRACE("setup node {}", node.get_label());
 
   // --- Ports
 
@@ -53,7 +53,7 @@ void setup_flooding_lake_system_node(BaseNode &node)
 
 void compute_flooding_lake_system_node(BaseNode &node)
 {
-  Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
+  LOG_TRACE("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
   auto *p_in  = node.get_value_ref<hmap::VirtualArray>(P_ELEVATION);
   auto *p_out = node.get_value_ref<hmap::VirtualArray>(P_WATER_DEPTH);

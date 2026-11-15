@@ -3,10 +3,10 @@
  * this software. */
 #include "highmap/virtual_array/virtual_texture.hpp"
 
-#include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/attributes.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
+#include "logger/logger.hpp"
 
 namespace hesiod
 {
@@ -27,7 +27,7 @@ constexpr const char *A_ALPHA = "alpha";
 
 void setup_colorize_solid_node(BaseNode &node)
 {
-  Logger::log()->trace("setup node {}", node.get_label());
+  LOG_TRACE("setup node {}", node.get_label());
 
   // --- Ports
 
@@ -46,7 +46,7 @@ void setup_colorize_solid_node(BaseNode &node)
 
 void compute_colorize_solid_node(BaseNode &node)
 {
-  Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
+  LOG_TRACE("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
   // --- Inputs / Outputs
 

@@ -4,8 +4,8 @@
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/widgets/graph/graph_node_widget.hpp"
 #include "hesiod/gui/widgets/node_widgets/node_widget.hpp"
-#include "hesiod/logger.hpp"
 #include "hesiod/model/utils.hpp"
+#include "logger/logger.hpp"
 
 namespace hesiod
 {

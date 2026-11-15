@@ -5,10 +5,10 @@
 #include "highmap/primitives.hpp"
 
 #include "hesiod/app/enum_mappings.hpp"
-#include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/attributes.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
+#include "logger/logger.hpp"
 
 namespace hesiod
 {
@@ -53,7 +53,7 @@ constexpr const char *G_SWISS    = "Swiss";
 
 void setup_coherent_noise_node(BaseNode &node)
 {
-  Logger::log()->trace("setup node {}", node.get_label());
+  LOG_TRACE("setup node {}", node.get_label());
 
   // --- Ports
 
@@ -245,7 +245,7 @@ void setup_coherent_noise_node(BaseNode &node)
 
 void compute_coherent_noise_node(BaseNode &node)
 {
-  Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
+  LOG_TRACE("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
   // --- Inputs / Outputs
 
@@ -262,13 +262,13 @@ void compute_coherent_noise_node(BaseNode &node)
 
   if (!current_group_name)
   {
-    Logger::log()->error("compute_coherent_noise_node: no group selected");
+    LOG_ERROR("compute_coherent_noise_node: no group selected");
     return;
   }
 
   const std::string current_group = *current_group_name;
 
-  Logger::log()->trace("compute_coherent_noise_node: current_group {}", current_group);
+  LOG_TRACE("compute_coherent_noise_node: current_group {}", current_group);
 
   // --- Common parameters
 
@@ -517,8 +517,7 @@ void compute_coherent_noise_node(BaseNode &node)
   }
   else
   {
-    Logger::log()->error("compute_coherent_noise_node: group {} not implemented",
-                         current_group);
+    LOG_ERROR("compute_coherent_noise_node: group {} not implemented", current_group);
   }
 
   // --- Post-process (common to all groups)

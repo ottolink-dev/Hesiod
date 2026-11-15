@@ -10,10 +10,10 @@
 #include "meta/metadata/keys.hpp"
 
 #include "hesiod/app/enum_mappings.hpp"
-#include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/attributes.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
+#include "logger/logger.hpp"
 
 namespace hesiod
 {
@@ -22,9 +22,7 @@ void post_apply_enveloppe(BaseNode                 &node,
                           hmap::VirtualArray       &h,
                           const hmap::VirtualArray *p_env)
 {
-  Logger::log()->trace("post_apply_enveloppe: [{}]/[{}]",
-                       node.get_node_type(),
-                       node.get_id());
+  LOG_TRACE("post_apply_enveloppe: [{}]/[{}]", node.get_node_type(), node.get_id());
 
   if (!p_env)
     return;
@@ -54,9 +52,9 @@ void post_apply_normalize_and_clip(BaseNode           &node,
                                    bool                smooth_transition,
                                    bool                range_01)
 {
-  Logger::log()->trace("post_apply_normalize_and_clip: [{}]/[{}]",
-                       node.get_node_type(),
-                       node.get_id());
+  LOG_TRACE("post_apply_normalize_and_clip: [{}]/[{}]",
+            node.get_node_type(),
+            node.get_id());
 
   hmap::for_each_tile(
       {},
@@ -104,9 +102,7 @@ void post_process_heightmap(BaseNode                 &node,
                             hmap::VirtualArray       &h,
                             const hmap::VirtualArray *p_in)
 {
-  Logger::log()->trace("post_process_heightmap: [{}]/[{}]",
-                       node.get_node_type(),
-                       node.get_id());
+  LOG_TRACE("post_process_heightmap: [{}]/[{}]", node.get_node_type(), node.get_id());
 
   // mix
   if (p_in)
@@ -242,9 +238,9 @@ void post_process_heightmap(BaseNode                 &node,
 void setup_post_process_heightmap_attributes(BaseNode                   &node,
                                              PostProcessHeightmapOptions options)
 {
-  Logger::log()->trace("setup_post_process_heightmap_attributes: [{}]/[{}]",
-                       node.get_node_type(),
-                       node.get_id());
+  LOG_TRACE("setup_post_process_heightmap_attributes: [{}]/[{}]",
+            node.get_node_type(),
+            node.get_id());
 
   node.set_current_category("Post-Processing");
 

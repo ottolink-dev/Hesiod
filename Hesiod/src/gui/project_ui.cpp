@@ -11,22 +11,22 @@
 #include "hesiod/gui/widgets/containers/graph_tabs_widget.hpp"
 #include "hesiod/gui/widgets/containers/heightmapper_widget.hpp"
 #include "hesiod/gui/widgets/dialogs/node_inspector_widget.hpp"
-#include "hesiod/logger.hpp"
 #include "hesiod/model/project_model.hpp"
 #include "hesiod/model/utils.hpp"
+#include "logger/logger.hpp"
 
 namespace hesiod
 {
 
 ProjectUI::ProjectUI(QWidget *parent) : QWidget(parent)
 {
-  Logger::log()->trace("Project::Project");
+  LOG_TRACE("Project::Project");
   this->setAttribute(Qt::WA_DeleteOnClose);
 }
 
 ProjectUI::~ProjectUI()
 {
-  Logger::log()->trace("ProjectUI::~ProjectUI");
+  LOG_TRACE("ProjectUI::~ProjectUI");
 
   // The texture downloader and the heightmapper are top-level windows created
   // without a parent and held in non-owning QPointers, so nothing else ever
@@ -47,7 +47,7 @@ ProjectUI::~ProjectUI()
 
 void ProjectUI::cleanup()
 {
-  Logger::log()->trace("ProjectUI::cleanup");
+  LOG_TRACE("ProjectUI::cleanup");
 
   // Destroy the graph-bearing widgets SYNCHRONOUSLY (not deleteLater). Their
   // node / settings-panel sub-widgets hold meta::EventConnection subscriptions
@@ -108,11 +108,11 @@ QWidget *ProjectUI::get_widget()
 
 void ProjectUI::load_ui_state(const std::string &fname)
 {
-  Logger::log()->trace("ProjectUI::load: {}", fname);
+  LOG_TRACE("ProjectUI::load: {}", fname);
 
   if (!std::filesystem::exists(std::filesystem::path(fname)))
   {
-    Logger::log()->error("ProjectUI::load: file does not exist: {}", fname);
+    LOG_ERROR("ProjectUI::load: file does not exist: {}", fname);
     return;
   }
 
@@ -120,7 +120,7 @@ void ProjectUI::load_ui_state(const std::string &fname)
 
   if (!json.contains("graph_manager_widget") || !json.contains("graph_tabs_widget"))
   {
-    Logger::log()->error("Project::json_from: could not parse json");
+    LOG_ERROR("Project::json_from: could not parse json");
     return;
   }
 
@@ -130,16 +130,16 @@ void ProjectUI::load_ui_state(const std::string &fname)
 
 void ProjectUI::initialize(ProjectModel *project)
 {
-  Logger::log()->trace("ProjectUI::initialize");
+  LOG_TRACE("ProjectUI::initialize");
 
   // safeguards...
   if (!project)
-    Logger::log()->error("ProjectUI::initialize: project ptr is NULL");
+    LOG_ERROR("ProjectUI::initialize: project ptr is NULL");
 
   GraphManager *p_graph_manager = project->get_graph_manager_ref();
 
   if (!p_graph_manager)
-    Logger::log()->error("ProjectUI::initialize: project graph_manager ptr is NULL");
+    LOG_ERROR("ProjectUI::initialize: project graph_manager ptr is NULL");
 
   // initialize UI components (only tabs assign to the current parent
   // widget, so that the graph manager and the texture downloader will
@@ -193,7 +193,7 @@ nlohmann::json ProjectUI::ui_state_json_to() const
 
 void ProjectUI::setup_connections()
 {
-  Logger::log()->trace("Project::setup_connections");
+  LOG_TRACE("Project::setup_connections");
 
   // GraphManagerWidget -> GraphTabsWidget
   this->connect(this->graph_manager_widget,

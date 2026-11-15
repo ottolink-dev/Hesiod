@@ -8,9 +8,9 @@
 #include "hesiod/app/enum_mappings.hpp"
 #include "hesiod/model/nodes/attributes.hpp"
 
-#include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
+#include "logger/logger.hpp"
 
 namespace hesiod
 {
@@ -29,7 +29,7 @@ constexpr const char *A_MIX_METHOD         = "mix_method";
 
 void setup_mix_texture_node(BaseNode &node)
 {
-  Logger::log()->trace("setup node {}", node.get_label());
+  LOG_TRACE("setup node {}", node.get_label());
 
   // port(s)
   node.add_port<hmap::VirtualTexture>(gnode::PortType::IN, P_TEXTURE1);
@@ -45,7 +45,7 @@ void setup_mix_texture_node(BaseNode &node)
 
 void compute_mix_texture_node(BaseNode &node)
 {
-  Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
+  LOG_TRACE("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
   hmap::VirtualTexture *p_in1 = node.get_value_ref<hmap::VirtualTexture>(P_TEXTURE1);
   hmap::VirtualTexture *p_in2 = node.get_value_ref<hmap::VirtualTexture>(P_TEXTURE2);

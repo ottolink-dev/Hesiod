@@ -12,9 +12,9 @@
 
 #include "hesiod/model/nodes/attributes.hpp"
 
-#include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
+#include "logger/logger.hpp"
 
 namespace hesiod
 {
@@ -93,7 +93,7 @@ static void setup_common_particle_attributes(BaseNode &node)
 
 void setup_hydraulic_particle_node(BaseNode &node)
 {
-  Logger::log()->trace("setup node {}", node.get_label());
+  LOG_TRACE("setup node {}", node.get_label());
 
   // port(s)
   node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_INPUT);
@@ -136,7 +136,7 @@ void setup_hydraulic_particle_node(BaseNode &node)
 
 void compute_hydraulic_particle_node(BaseNode &node)
 {
-  Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
+  LOG_TRACE("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
   const auto *p_in          = node.get_value_ref<hmap::VirtualArray>(P_INPUT);
   const auto *p_bedrock     = node.get_value_ref<hmap::VirtualArray>(P_BEDROCK);
@@ -192,13 +192,12 @@ void compute_hydraulic_particle_node(BaseNode &node)
   // rather than silently returning the input untouched.
   if (hmax - hmin < 1.0e-6f)
   {
-    Logger::log()->warn(
-        "HydraulicParticle [{}]: input is flat/near-constant (value range ~ "
-        "0). "
-        "Erosion is gradient-driven and will produce little or no change. "
-        "Erode full-domain relief first, then multiply by the land mask; "
-        "or enable ridge forcing.",
-        node.get_id());
+    LOG_WARN("HydraulicParticle [{}]: input is flat/near-constant (value range ~ "
+             "0). "
+             "Erosion is gradient-driven and will produce little or no change. "
+             "Erode full-domain relief first, then multiply by the land mask; "
+             "or enable ridge forcing.",
+             node.get_id());
     return;
   }
 

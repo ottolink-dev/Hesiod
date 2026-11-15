@@ -15,8 +15,8 @@
 
 #include "hesiod/app/app_context.hpp"
 #include "hesiod/app/autosave_manager.hpp"
-#include "hesiod/logger.hpp"
 #include "hesiod/model/utils.hpp"
+#include "logger/logger.hpp"
 
 namespace fs = std::filesystem;
 
@@ -44,7 +44,7 @@ fs::path normalised_absolute(const fs::path &p)
 AutosaveManager::AutosaveManager(fs::path directory, QObject *parent)
     : QObject(parent), directory(std::move(directory))
 {
-  Logger::log()->trace("AutosaveManager::AutosaveManager: {}", this->directory.string());
+  LOG_TRACE("AutosaveManager::AutosaveManager: {}", this->directory.string());
 
   this->set_project_path(fs::path());
 
@@ -148,11 +148,10 @@ void AutosaveManager::set_project_path(const fs::path &path)
   {
     fs::rename(this->snapshot_path, new_snapshot, ec);
     if (ec)
-      Logger::log()->warn(
-          "AutosaveManager::set_project_path: could not move {} to {}: {}",
-          this->snapshot_path.string(),
-          new_snapshot.string(),
-          ec.message());
+      LOG_WARN("AutosaveManager::set_project_path: could not move {} to {}: {}",
+               this->snapshot_path.string(),
+               new_snapshot.string(),
+               ec.message());
   }
 
   this->snapshot_path = new_snapshot;
@@ -196,7 +195,7 @@ bool AutosaveManager::write_snapshot()
 {
   if (!this->provider)
   {
-    Logger::log()->warn("AutosaveManager::write_snapshot: no project JSON provider");
+    LOG_WARN("AutosaveManager::write_snapshot: no project JSON provider");
     return false;
   }
 
@@ -211,9 +210,9 @@ bool AutosaveManager::write_snapshot()
   }
   catch (const std::exception &e)
   {
-    Logger::log()->warn("AutosaveManager::write_snapshot: could not serialize the "
-                        "project: {}",
-                        e.what());
+    LOG_WARN("AutosaveManager::write_snapshot: could not serialize the "
+             "project: {}",
+             e.what());
     return false;
   }
 
@@ -221,9 +220,9 @@ bool AutosaveManager::write_snapshot()
   fs::create_directories(this->directory, ec);
   if (ec)
   {
-    Logger::log()->warn("AutosaveManager::write_snapshot: could not create {}: {}",
-                        this->directory.string(),
-                        ec.message());
+    LOG_WARN("AutosaveManager::write_snapshot: could not create {}: {}",
+             this->directory.string(),
+             ec.message());
     return false;
   }
 
@@ -235,9 +234,9 @@ bool AutosaveManager::write_snapshot()
     std::ofstream out(tmp, std::ios::binary | std::ios::trunc);
     if (!out.is_open())
     {
-      Logger::log()->warn("AutosaveManager::write_snapshot: could not open {} for "
-                          "writing",
-                          tmp.string());
+      LOG_WARN("AutosaveManager::write_snapshot: could not open {} for "
+               "writing",
+               tmp.string());
       return false;
     }
 
@@ -246,8 +245,7 @@ bool AutosaveManager::write_snapshot()
 
     if (!out.good())
     {
-      Logger::log()->warn("AutosaveManager::write_snapshot: write to {} failed",
-                          tmp.string());
+      LOG_WARN("AutosaveManager::write_snapshot: write to {} failed", tmp.string());
       out.close();
       fs::remove(tmp, ec);
       return false;
@@ -257,16 +255,15 @@ bool AutosaveManager::write_snapshot()
   fs::rename(tmp, this->snapshot_path, ec);
   if (ec)
   {
-    Logger::log()->warn("AutosaveManager::write_snapshot: could not move {} to {}: {}",
-                        tmp.string(),
-                        this->snapshot_path.string(),
-                        ec.message());
+    LOG_WARN("AutosaveManager::write_snapshot: could not move {} to {}: {}",
+             tmp.string(),
+             this->snapshot_path.string(),
+             ec.message());
     fs::remove(tmp, ec);
     return false;
   }
 
-  Logger::log()->trace("AutosaveManager::write_snapshot: {}",
-                       this->snapshot_path.string());
+  LOG_TRACE("AutosaveManager::write_snapshot: {}", this->snapshot_path.string());
 
   Q_EMIT this->snapshot_written(QString::fromStdString(this->snapshot_path.string()));
   return true;
@@ -280,11 +277,11 @@ void AutosaveManager::discard()
   {
     fs::remove(this->snapshot_path, ec);
     if (ec)
-      Logger::log()->warn("AutosaveManager::discard: could not remove {}: {}",
-                          this->snapshot_path.string(),
-                          ec.message());
+      LOG_WARN("AutosaveManager::discard: could not remove {}: {}",
+               this->snapshot_path.string(),
+               ec.message());
     else
-      Logger::log()->trace("AutosaveManager::discard: {}", this->snapshot_path.string());
+      LOG_TRACE("AutosaveManager::discard: {}", this->snapshot_path.string());
   }
 
   // a stray temp file from an interrupted write is never worth keeping
@@ -310,12 +307,12 @@ void AutosaveManager::adopt(const fs::path &snapshot)
   fs::rename(from, to, ec);
 
   if (ec)
-    Logger::log()->warn("AutosaveManager::adopt: could not move {} to {}: {}",
-                        from.string(),
-                        to.string(),
-                        ec.message());
+    LOG_WARN("AutosaveManager::adopt: could not move {} to {}: {}",
+             from.string(),
+             to.string(),
+             ec.message());
   else
-    Logger::log()->trace("AutosaveManager::adopt: {} -> {}", from.string(), to.string());
+    LOG_TRACE("AutosaveManager::adopt: {} -> {}", from.string(), to.string());
 }
 
 // --- Recovery
@@ -360,9 +357,9 @@ std::vector<AutosaveManager::Entry> AutosaveManager::scan() const
       }
       catch (const std::exception &e)
       {
-        Logger::log()->warn("AutosaveManager::scan: unreadable recovery file {}: {}",
-                            path.string(),
-                            e.what());
+        LOG_WARN("AutosaveManager::scan: unreadable recovery file {}: {}",
+                 path.string(),
+                 e.what());
         entry.readable = false;
       }
 
@@ -371,9 +368,9 @@ std::vector<AutosaveManager::Entry> AutosaveManager::scan() const
   }
   catch (const std::exception &e)
   {
-    Logger::log()->warn("AutosaveManager::scan: could not list {}: {}",
-                        this->directory.string(),
-                        e.what());
+    LOG_WARN("AutosaveManager::scan: could not list {}: {}",
+             this->directory.string(),
+             e.what());
   }
 
   // timestamps are "%Y-%m-%d_%H-%M-%S", so string order is time order;

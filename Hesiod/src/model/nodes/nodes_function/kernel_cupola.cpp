@@ -5,9 +5,9 @@
 
 #include "hesiod/model/nodes/attributes.hpp"
 
-#include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
+#include "logger/logger.hpp"
 
 namespace hesiod
 {
@@ -23,7 +23,7 @@ constexpr const char *A_RADIUS    = "radius";
 
 void setup_kernel_cupola_node(BaseNode &node)
 {
-  Logger::log()->trace("setup node {}", node.get_label());
+  LOG_TRACE("setup node {}", node.get_label());
 
   // port(s)
   node.add_port<hmap::Array>(gnode::PortType::OUT, P_KERNEL, node.cfg().shape);
@@ -36,7 +36,7 @@ void setup_kernel_cupola_node(BaseNode &node)
 
 void compute_kernel_cupola_node(BaseNode &node)
 {
-  Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
+  LOG_TRACE("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
   hmap::Array *p_out = node.get_value_ref<hmap::Array>(P_KERNEL);
 

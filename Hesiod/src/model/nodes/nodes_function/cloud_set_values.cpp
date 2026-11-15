@@ -3,9 +3,9 @@
  * this software. */
 #include "hesiod/model/nodes/attributes.hpp"
 
-#include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
+#include "logger/logger.hpp"
 
 namespace hesiod
 {
@@ -33,7 +33,7 @@ constexpr const char *G_FROM_MIN_DISTANCE = "From Min Distance";
 
 void setup_cloud_set_values_node(BaseNode &node)
 {
-  Logger::log()->trace("setup node {}", node.get_label());
+  LOG_TRACE("setup node {}", node.get_label());
 
   // port(s)
   node.add_port<hmap::Cloud>(gnode::PortType::IN, P_CLOUD);
@@ -65,7 +65,7 @@ void setup_cloud_set_values_node(BaseNode &node)
 
 void compute_cloud_set_values_node(BaseNode &node)
 {
-  Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
+  LOG_TRACE("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
   hmap::Cloud        *p_cloud = node.get_value_ref<hmap::Cloud>(P_CLOUD);
   hmap::Cloud        *p_out   = node.get_value_ref<hmap::Cloud>(P_OUT);
@@ -78,7 +78,7 @@ void compute_cloud_set_values_node(BaseNode &node)
                                         .current_container_name()
                                         .value_or(G_FROM_HEIGHTMAP);
 
-  Logger::log()->trace("compute_cloud_set_values_node: current_group {}", current_group);
+  LOG_TRACE("compute_cloud_set_values_node: current_group {}", current_group);
 
   if (current_group == G_FROM_HEIGHTMAP)
   {
@@ -111,8 +111,7 @@ void compute_cloud_set_values_node(BaseNode &node)
   }
   else
   {
-    Logger::log()->error("compute_cloud_set_values_node: group {} not implemented",
-                         current_group);
+    LOG_ERROR("compute_cloud_set_values_node: group {} not implemented", current_group);
   }
 }
 

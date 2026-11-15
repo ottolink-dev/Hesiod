@@ -6,7 +6,7 @@
 #include <fstream>
 
 #include "hesiod/gui/theme/theme_registry.hpp"
-#include "hesiod/logger.hpp"
+#include "logger/logger.hpp"
 
 namespace fs = std::filesystem;
 
@@ -82,16 +82,16 @@ void ThemeRegistry::scan_themes()
               theme_opt->name = entry.path().stem().string();
 
             this->register_theme(*theme_opt);
-            Logger::log()->info("ThemeRegistry: loaded theme '{}' from {}",
-                                theme_opt->name,
-                                entry.path().string());
+            LOG_INFO("ThemeRegistry: loaded theme '{}' from {}",
+                     theme_opt->name,
+                     entry.path().string());
           }
         }
         catch (const std::exception &ex)
         {
-          Logger::log()->warn("ThemeRegistry: failed parsing theme from {}: {}",
-                              entry.path().string(),
-                              ex.what());
+          LOG_WARN("ThemeRegistry: failed parsing theme from {}: {}",
+                   entry.path().string(),
+                   ex.what());
         }
       }
     }

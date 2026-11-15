@@ -13,14 +13,14 @@
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/widgets/dialogs/about_dialog.hpp"
 #include "hesiod/gui/widgets/utils/gui_utils.hpp"
-#include "hesiod/logger.hpp"
+#include "logger/logger.hpp"
 
 namespace hesiod
 {
 
 AboutDialog::AboutDialog()
 {
-  Logger::log()->trace("AboutDialog::AboutDialog");
+  LOG_TRACE("AboutDialog::AboutDialog");
 
   this->resize(512, 512);
 

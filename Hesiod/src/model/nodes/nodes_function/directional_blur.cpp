@@ -7,9 +7,9 @@
 
 #include "hesiod/model/nodes/attributes.hpp"
 
-#include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
+#include "logger/logger.hpp"
 
 // -----------------------------------------------------------------------------
 // Ports & Attributes
@@ -37,7 +37,7 @@ namespace hesiod
 
 void setup_directional_blur_node(BaseNode &node)
 {
-  Logger::log()->trace("setup node {}", node.get_label());
+  LOG_TRACE("setup node {}", node.get_label());
 
   // port(s)
   node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_IN);
@@ -61,7 +61,7 @@ void setup_directional_blur_node(BaseNode &node)
 
 void compute_directional_blur_node(BaseNode &node)
 {
-  Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
+  LOG_TRACE("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
   // --- Inputs / Outputs
 

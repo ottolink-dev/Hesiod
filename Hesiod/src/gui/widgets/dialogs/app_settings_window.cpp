@@ -54,7 +54,7 @@
 #include "hesiod/gui/widgets/utils/gui_utils.hpp"
 #include "hesiod/gui/widgets/viewers/viewer_3d.hpp"
 #include "hesiod/gui/widgets/viewers/viewport_controls.hpp"
-#include "hesiod/logger.hpp"
+#include "logger/logger.hpp"
 
 // accessor for one field of AppSettings, usable on the live settings and on a
 // default-constructed copy alike
@@ -162,7 +162,7 @@ std::shared_ptr<AppSettingsWindow::Binding> make_binding(
 
 AppSettingsWindow::AppSettingsWindow(QWidget *parent) : QDialog(parent)
 {
-  Logger::log()->trace("AppSettingsWindow::AppSettingsWindow");
+  LOG_TRACE("AppSettingsWindow::AppSettingsWindow");
 
   this->setObjectName("hsdSettings");
   this->setWindowTitle("Settings");

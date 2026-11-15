@@ -7,7 +7,7 @@
 
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/widgets/graph/coord_frame_widget.hpp"
-#include "hesiod/logger.hpp"
+#include "logger/logger.hpp"
 
 namespace hesiod
 {
@@ -171,7 +171,7 @@ void FrameItem::set_angle(float new_angle)
 
 void FrameItem::set_background_image(QImage new_image)
 {
-  Logger::log()->trace("FrameItem::set_background_image: frame {}", this->id);
+  LOG_TRACE("FrameItem::set_background_image: frame {}", this->id);
 
   if (new_image.isNull() || new_image.bits() == nullptr)
   {

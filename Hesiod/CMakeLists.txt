@@ -94,7 +94,7 @@ target_link_libraries(
          hesiod_qt_logging
          hesiod_git_version
          args
-         spdlog::spdlog
+         Logger::Logger
          nlohmann_json::nlohmann_json
          highmap
          gnode
@@ -109,6 +109,8 @@ target_link_libraries(
          qterrain-renderer
          qtexture_downloader
          ZLIB::ZLIB)
+
+target_compile_definitions(hesiod_core PRIVATE LOGGER_MODULE_NAME="Hesiod")
 
 # custom window chrome (frameless main window with native snap / resize)
 if(WIN32)
@@ -157,7 +159,8 @@ if(HESIOD_ENABLE_PCH)
     <map>
     <unordered_map>
     <iostream>
-    <spdlog/spdlog.h>
+    "logger/logger.hpp"
+    "logger/scope.hpp"
     <nlohmann/json.hpp>
     <QString>
     <QWidget>

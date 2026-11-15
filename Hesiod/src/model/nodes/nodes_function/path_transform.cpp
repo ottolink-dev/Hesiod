@@ -5,9 +5,9 @@
 
 #include "hesiod/model/nodes/attributes.hpp"
 
-#include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
+#include "logger/logger.hpp"
 
 namespace hesiod
 {
@@ -36,7 +36,7 @@ constexpr const char *A_RESAMPLE_DELTA    = "resample_delta";
 
 void setup_path_transform_node(BaseNode &node)
 {
-  Logger::log()->trace("setup node {}", node.get_label());
+  LOG_TRACE("setup node {}", node.get_label());
 
   // port(s)
   node.add_port<hmap::Path>(gnode::PortType::IN, P_IN);
@@ -71,7 +71,7 @@ void setup_path_transform_node(BaseNode &node)
 
 void compute_path_transform_node(BaseNode &node)
 {
-  Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
+  LOG_TRACE("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
   hmap::Path *p_in = node.get_value_ref<hmap::Path>(P_IN);
 
@@ -83,7 +83,7 @@ void compute_path_transform_node(BaseNode &node)
   const std::string
       current_group = node.get_meta_group().current_container_name().value_or(G_SCALE);
 
-  Logger::log()->trace("compute_path_transform_node: current_group {}", current_group);
+  LOG_TRACE("compute_path_transform_node: current_group {}", current_group);
 
   if (current_group == G_SCALE)
   {
@@ -112,8 +112,7 @@ void compute_path_transform_node(BaseNode &node)
   }
   else
   {
-    Logger::log()->error("compute_path_transform_node: group {} not implemented",
-                         current_group);
+    LOG_ERROR("compute_path_transform_node: group {} not implemented", current_group);
   }
 }
 

@@ -16,7 +16,7 @@
 #include "hesiod/gui/theme/style_sheet.hpp"
 #include "hesiod/gui/widgets/dialogs/error_dialog.hpp"
 #include "hesiod/gui/widgets/utils/gui_utils.hpp"
-#include "hesiod/logger.hpp"
+#include "logger/logger.hpp"
 
 namespace hesiod
 {
@@ -89,7 +89,7 @@ ErrorDialog::ErrorDialog(const QString &title,
 
 void ErrorDialog::setup_ui(const std::vector<Item> &items, bool show_cancel_button)
 {
-  Logger::log()->trace("ErrorDialog::setup_ui");
+  LOG_TRACE("ErrorDialog::setup_ui");
 
   const auto &colors = HSD_CTX.app_settings.colors;
 

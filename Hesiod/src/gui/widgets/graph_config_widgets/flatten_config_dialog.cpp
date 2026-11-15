@@ -12,7 +12,7 @@
 #include "hesiod/gui/widgets/graph_config_widgets/shape_selector_widget.hpp"
 #include "hesiod/gui/widgets/graph_config_widgets/tiling_selector_widget.hpp"
 #include "hesiod/gui/widgets/utils/gui_utils.hpp"
-#include "hesiod/logger.hpp"
+#include "logger/logger.hpp"
 
 namespace hesiod
 {
@@ -20,7 +20,7 @@ namespace hesiod
 FlattenConfigDialog::FlattenConfigDialog(FlattenConfig &export_param, QWidget *parent)
     : QDialog(parent), export_param(export_param)
 {
-  Logger::log()->trace("FlattenConfigDialog::FlattenConfigDialog");
+  LOG_TRACE("FlattenConfigDialog::FlattenConfigDialog");
 
   this->setWindowTitle("Hesiod - Graph flatten configuration");
 

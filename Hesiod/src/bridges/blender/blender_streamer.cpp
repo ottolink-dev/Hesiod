@@ -5,7 +5,7 @@
 #include <zlib.h>
 
 #include "hesiod/bridges/blender/blender_streamer.hpp"
-#include "hesiod/logger.hpp"
+#include "logger/logger.hpp"
 
 namespace hesiod
 {
@@ -14,7 +14,7 @@ std::uint16_t BlenderStreamer::get_port() const { return this->current_port; }
 
 void BlenderStreamer::start(std::uint16_t port)
 {
-  Logger::log()->trace("BlenderStreamer::start: port {}", port);
+  LOG_TRACE("BlenderStreamer::start: port {}", port);
 
   if (this->started && port == this->current_port)
     return;

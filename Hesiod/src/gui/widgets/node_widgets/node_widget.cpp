@@ -8,7 +8,7 @@
 #include "hesiod/gui/widgets/graph/graph_node_widget.hpp"
 #include "hesiod/gui/widgets/node_widgets/node_widget.hpp"
 #include "hesiod/gui/widgets/utils/gui_utils.hpp"
-#include "hesiod/logger.hpp"
+#include "logger/logger.hpp"
 
 namespace hesiod
 {
@@ -19,7 +19,7 @@ NodeWidget::NodeWidget(std::weak_ptr<BaseNode>   model,
                        QWidget                  *parent)
     : QWidget(parent), model(model), p_gnw(p_gnw), msg(msg)
 {
-  Logger::log()->trace("NodeWidget::NodeWidget");
+  LOG_TRACE("NodeWidget::NodeWidget");
 
   this->setup_layout();
   this->setup_connections();

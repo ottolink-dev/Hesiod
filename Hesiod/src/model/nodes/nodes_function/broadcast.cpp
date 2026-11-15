@@ -1,18 +1,18 @@
 /* Copyright (c) 2023 Otto Link. Distributed under the terms of the GNU General
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
-#include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/attributes.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/broadcast_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
+#include "logger/logger.hpp"
 
 namespace hesiod
 {
 
 void setup_broadcast_node(BaseNode &node)
 {
-  Logger::log()->trace("setup node {}", node.get_label());
+  LOG_TRACE("setup node {}", node.get_label());
 
   // port(s)
   node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "input");
@@ -25,7 +25,7 @@ void setup_broadcast_node(BaseNode &node)
 
 void compute_broadcast_node(BaseNode &node)
 {
-  Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
+  LOG_TRACE("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
   auto *p_in   = node.get_value_ref<hmap::VirtualArray>("input");
   auto *p_thru = node.get_value_ref<hmap::VirtualArray>("thru");
@@ -39,7 +39,7 @@ void compute_broadcast_node(BaseNode &node)
 
   if (!p_broadcast_node)
   {
-    Logger::log()->error("compute_receive_node: Failed to cast to BroadcastNode");
+    LOG_ERROR("compute_receive_node: Failed to cast to BroadcastNode");
     return;
   }
 
@@ -47,11 +47,11 @@ void compute_broadcast_node(BaseNode &node)
   std::string graph_id      = node.get_graph_id();
   std::string node_id       = node.get_id();
 
-  Logger::log()->trace("compute_broadcast_node: broadcasting graph: {}, node: {}",
-                       graph_id,
-                       node_id);
+  LOG_TRACE("compute_broadcast_node: broadcasting graph: {}, node: {}",
+            graph_id,
+            node_id);
 
-  Logger::log()->trace("broadcast_tag: {}", broadcast_tag);
+  LOG_TRACE("broadcast_tag: {}", broadcast_tag);
 
   // this goes to the graph editor
   if (p_broadcast_node->broadcast_node_updated)

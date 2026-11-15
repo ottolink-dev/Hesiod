@@ -26,7 +26,7 @@
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/widgets/dialogs/batch_export_progress_dialog.hpp"
 #include "hesiod/gui/widgets/utils/gui_utils.hpp"
-#include "hesiod/logger.hpp"
+#include "logger/logger.hpp"
 
 namespace hesiod
 {
@@ -274,7 +274,7 @@ BatchExportProgressDialog::BatchExportProgressDialog(QWidget *parent)
                     "Each variant is computed at full resolution, then written by the "
                     "export nodes.")
 {
-  Logger::log()->trace("BatchExportProgressDialog::BatchExportProgressDialog");
+  LOG_TRACE("BatchExportProgressDialog::BatchExportProgressDialog");
 
   this->setWindowTitle("Hesiod - Bake and Export");
   this->setWindowModality(Qt::ApplicationModal);

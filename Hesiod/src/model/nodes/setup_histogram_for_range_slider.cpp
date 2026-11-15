@@ -8,8 +8,8 @@
 #include "meta/metadata/keys.hpp"
 #include "meta_qt/widgets/range_bar.hpp"
 
-#include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
+#include "logger/logger.hpp"
 
 namespace hesiod
 {
@@ -18,7 +18,7 @@ void setup_histogram_for_range_attribute(BaseNode          &node,
                                          const std::string &attribute_key,
                                          const std::string &port_id)
 {
-  Logger::log()->trace("setup_histogram_for_range_slider: node {}", node.get_label());
+  LOG_TRACE("setup_histogram_for_range_slider: node {}", node.get_label());
 
   auto provider = [&node, port_id]() -> meta::Any
   {
@@ -50,8 +50,8 @@ void setup_histogram_for_range_attribute(BaseNode          &node,
   auto *p = c.find(attribute_key);
   if (!p)
   {
-    Logger::log()->error("setup_histogram_for_range_attribute: meta key '{}' not found",
-                         attribute_key);
+    LOG_ERROR("setup_histogram_for_range_attribute: meta key '{}' not found",
+              attribute_key);
     return;
   }
   p->metadata().try_add(std::string(meta::keys::ui::data_provider),

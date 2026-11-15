@@ -9,10 +9,10 @@
 #include "highmap/primitives.hpp"
 
 #include "hesiod/app/enum_mappings.hpp"
-#include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/attributes.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
+#include "logger/logger.hpp"
 
 namespace hesiod
 {
@@ -59,7 +59,7 @@ constexpr const char *G_VORONOISE = "Voronoise";
 
 void setup_cellular_noise_node(BaseNode &node)
 {
-  Logger::log()->trace("setup node {}", node.get_label());
+  LOG_TRACE("setup node {}", node.get_label());
 
   // --- Ports
   node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_DX);
@@ -175,7 +175,7 @@ void setup_cellular_noise_node(BaseNode &node)
 
 void compute_cellular_noise_node(BaseNode &node)
 {
-  Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
+  LOG_TRACE("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
   hmap::VirtualArray *p_dx    = node.get_value_ref<hmap::VirtualArray>(P_DX);
   hmap::VirtualArray *p_dy    = node.get_value_ref<hmap::VirtualArray>(P_DY);
@@ -187,7 +187,7 @@ void compute_cellular_noise_node(BaseNode &node)
   const std::string
       current_group = node.get_meta_group().current_container_name().value_or(G_GRID);
 
-  Logger::log()->trace("compute_cellular_noise_node: current_group {}", current_group);
+  LOG_TRACE("compute_cellular_noise_node: current_group {}", current_group);
 
   if (current_group == G_GRID)
   {

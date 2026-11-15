@@ -4,10 +4,10 @@
 #include "highmap/erosion.hpp"
 #include "highmap/opencl/gpu_opencl.hpp"
 
-#include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/attributes.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
+#include "logger/logger.hpp"
 
 namespace hesiod
 {
@@ -45,7 +45,7 @@ constexpr const char *A_DEPOSITION_SCALE_RATIO    = "deposition_scale_ratio";
 
 void setup_hydraulic_stream_log_node(BaseNode &node)
 {
-  Logger::log()->trace("setup node {}", node.get_label());
+  LOG_TRACE("setup node {}", node.get_label());
 
   // --- Ports
 
@@ -94,7 +94,7 @@ void setup_hydraulic_stream_log_node(BaseNode &node)
 
 void compute_hydraulic_stream_log_node(BaseNode &node)
 {
-  Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
+  LOG_TRACE("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
   // --- Inputs / Outputs
 
@@ -141,10 +141,9 @@ void compute_hydraulic_stream_log_node(BaseNode &node)
 
   if (range.y - range.x < 1.0e-6f)
   {
-    Logger::log()->warn(
-        "HydraulicStreamLog [{}]: input is flat/near-constant (value range ~ 0). "
-        "Erosion is gradient-driven and will produce little or no change.",
-        node.get_id());
+    LOG_WARN("HydraulicStreamLog [{}]: input is flat/near-constant (value range ~ 0). "
+             "Erosion is gradient-driven and will produce little or no change.",
+             node.get_id());
 
     hmap::copy_data(*p_in, *p_out, node.cfg().cm_cpu);
     return;

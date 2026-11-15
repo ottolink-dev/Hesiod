@@ -13,8 +13,8 @@
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/widgets/containers/main_window.hpp"
 #include "hesiod/gui/widgets/shell/window_chrome.hpp"
-#include "hesiod/logger.hpp"
 #include "hesiod/model/graph/graph_manager.hpp"
+#include "logger/logger.hpp"
 
 // last: windows.h leaks macros (interface, min, max...) that clash with the
 // project headers above
@@ -34,7 +34,7 @@ namespace hesiod
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
-  Logger::log()->trace("MainWindow::MainWindow");
+  LOG_TRACE("MainWindow::MainWindow");
 
   this->setObjectName("hsdMainWindow");
 
@@ -58,7 +58,7 @@ void MainWindow::changeEvent(QEvent *event)
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-  Logger::log()->trace("MainWindow::closeEvent");
+  LOG_TRACE("MainWindow::closeEvent");
 
   if (!HSD_APP->confirm_discard_unsaved_changes("Quit"))
   {
@@ -309,7 +309,7 @@ void MainWindow::setup_status_bar()
 
 void MainWindow::restore_geometry()
 {
-  Logger::log()->trace("MainWindow::restore_geometry");
+  LOG_TRACE("MainWindow::restore_geometry");
 
   AppContext &ctx = HSD_CTX;
 
@@ -348,7 +348,7 @@ void MainWindow::restore_geometry()
 
 void MainWindow::save_geometry() const
 {
-  Logger::log()->trace("MainWindow::save_geometry");
+  LOG_TRACE("MainWindow::save_geometry");
 
   AppContext &ctx = HSD_CTX;
 
@@ -361,15 +361,15 @@ void MainWindow::save_geometry() const
 
 void MainWindow::setup_connections_with_project()
 {
-  Logger::log()->trace("MainWindow::setup_connections_with_project");
+  LOG_TRACE("MainWindow::setup_connections_with_project");
 
   AppContext &ctx = HSD_CTX;
 
   // make sure project is ready
   if (!ctx.project_model->get_graph_manager_ref())
   {
-    Logger::log()->error("MainWindow::setup_connections_with_project: graph_manager "
-                         "model ref is dangling ptr");
+    LOG_ERROR("MainWindow::setup_connections_with_project: graph_manager "
+              "model ref is dangling ptr");
     return;
   }
 

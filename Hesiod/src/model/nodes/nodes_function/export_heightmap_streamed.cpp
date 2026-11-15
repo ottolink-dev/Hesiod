@@ -5,11 +5,11 @@
 #include "highmap/transform.hpp"
 
 #include "hesiod/app/hesiod_application.hpp"
-#include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/attributes.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/node_factory.hpp"
 #include "hesiod/model/utils.hpp"
+#include "logger/logger.hpp"
 
 namespace hesiod
 {
@@ -31,7 +31,7 @@ constexpr const char *A_AUTO_EXPORT = "auto_export";
 
 void setup_export_heightmap_streamed_node(BaseNode &node)
 {
-  Logger::log()->trace("setup node {}", node.get_label());
+  LOG_TRACE("setup node {}", node.get_label());
 
   // --- Ports
 
@@ -59,7 +59,7 @@ void setup_export_heightmap_streamed_node(BaseNode &node)
 
 void compute_export_heightmap_streamed_node(BaseNode &node)
 {
-  Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
+  LOG_TRACE("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
   // --- Inputs
 
@@ -77,7 +77,7 @@ void compute_export_heightmap_streamed_node(BaseNode &node)
 
   if (!auto_export)
   {
-    Logger::log()->trace(
+    LOG_TRACE(
         "compute_export_heightmap_streamed_node: [{}]/[{}]: auto export is disabled",
         node.get_node_type(),
         node.get_id());
@@ -106,11 +106,10 @@ void compute_export_heightmap_streamed_node(BaseNode &node)
                                                            pattern,
                                                            replacements);
 
-  Logger::log()->trace(
-      "compute_export_heightmap_streamed_node: [{}]/[{}]: export path = {}",
-      node.get_node_type(),
-      node.get_id(),
-      export_path.string());
+  LOG_TRACE("compute_export_heightmap_streamed_node: [{}]/[{}]: export path = {}",
+            node.get_node_type(),
+            node.get_id(),
+            export_path.string());
 
   // --- Stream export using export_virtual_array
 
@@ -124,9 +123,8 @@ void compute_export_heightmap_streamed_node(BaseNode &node)
       config);
   if (!writer || !writer->open(export_path.string(), config))
   {
-    Logger::log()->error(
-        "compute_export_heightmap_streamed_node: failed to open writer for {}",
-        export_path.string());
+    LOG_ERROR("compute_export_heightmap_streamed_node: failed to open writer for {}",
+              export_path.string());
     return;
   }
 

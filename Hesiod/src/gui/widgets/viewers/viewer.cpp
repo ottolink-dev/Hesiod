@@ -19,9 +19,9 @@
 #include "hesiod/gui/widgets/utils/gui_utils.hpp"
 #include "hesiod/gui/widgets/viewers/viewer.hpp"
 #include "hesiod/gui/widgets/viewers/viewer_3d.hpp"
-#include "hesiod/logger.hpp"
 #include "hesiod/model/graph/graph_node.hpp"
 #include "hesiod/profiling.hpp"
+#include "logger/logger.hpp"
 
 namespace hesiod
 {
@@ -33,7 +33,7 @@ Viewer::Viewer(QPointer<GraphNodeWidget> p_graph_node_widget_,
     : QWidget(parent), p_graph_node_widget(p_graph_node_widget_),
       viewer_type(viewer_type_), label(label_)
 {
-  Logger::log()->trace("Viewer::Viewer");
+  LOG_TRACE("Viewer::Viewer");
 
   AppContext &ctx = HSD_CTX;
 
@@ -61,9 +61,8 @@ void Viewer::closeEvent(QCloseEvent *event)
 
 ViewerNodeParam Viewer::get_default_view_param() const
 {
-  Logger::log()->critical(
-      "Viewer::get_default_view_param: using abstract class method, this "
-      "should not be happening");
+  LOG_CRITICAL("Viewer::get_default_view_param: using abstract class method, this "
+               "should not be happening");
   return ViewerNodeParam();
 }
 
@@ -75,7 +74,7 @@ bool Viewer::get_param_visibility_state(const std::string & /* param_name */) co
 
 void Viewer::json_from(nlohmann::json const &json)
 {
-  Logger::log()->trace("Viewer::json_from");
+  LOG_TRACE("Viewer::json_from");
 
   // widget geometry
   int x = json["x"];
@@ -107,7 +106,7 @@ void Viewer::json_from(nlohmann::json const &json)
 
 nlohmann::json Viewer::json_to() const
 {
-  Logger::log()->trace("Viewer::json_to");
+  LOG_TRACE("Viewer::json_to");
 
   nlohmann::json json;
 
@@ -132,7 +131,7 @@ nlohmann::json Viewer::json_to() const
 
 void Viewer::on_node_deleted(const std::string &new_id)
 {
-  Logger::log()->trace("Viewer::on_node_deleted {}", new_id);
+  LOG_TRACE("Viewer::on_node_deleted {}", new_id);
 
   if (new_id == this->current_node_id)
     this->clear();
@@ -140,7 +139,7 @@ void Viewer::on_node_deleted(const std::string &new_id)
 
 void Viewer::on_node_deselected(const std::string &new_id)
 {
-  Logger::log()->trace("Viewer::on_node_deselected {}", new_id);
+  LOG_TRACE("Viewer::on_node_deselected {}", new_id);
 
   // prevent any setup change if the current node is pinned
   if (this->is_node_pinned)
@@ -173,7 +172,7 @@ void Viewer::toggle_lock_on(const std::string &node_id)
 
 void Viewer::on_node_pinned_changed()
 {
-  Logger::log()->trace("Viewer::on_node_pinned_changed");
+  LOG_TRACE("Viewer::on_node_pinned_changed");
 
   if (!this->p_graph_node_widget)
     return;
@@ -218,7 +217,7 @@ void Viewer::on_node_pinned_changed()
 
 void Viewer::on_node_selected(const std::string &new_id)
 {
-  Logger::log()->trace("Viewer::on_node_selected {}", new_id);
+  LOG_TRACE("Viewer::on_node_selected {}", new_id);
 
   if (!this->p_graph_node_widget)
     return;
@@ -277,7 +276,7 @@ void Viewer::set_current_node_id(const std::string &new_id)
   HSD_PROFILE_ZONE("Viewer::set_current_node_id");
   HSD_PROFILE_TEXT(
       std::format("viewer={:p} node={}", static_cast<const void *>(this), new_id));
-  Logger::log()->trace("Viewer::set_current_node_id: {}", new_id);
+  LOG_TRACE("Viewer::set_current_node_id: {}", new_id);
 
   // store current view state
   if (this->current_node_id != "")
@@ -329,7 +328,7 @@ void Viewer::set_current_node_id(const std::string &new_id)
 
 void Viewer::setup_connections()
 {
-  Logger::log()->trace("Viewer::setup_connections");
+  LOG_TRACE("Viewer::setup_connections");
 
   if (!this->p_graph_node_widget)
     return;
@@ -391,7 +390,7 @@ void Viewer::setup_connections()
 
 void Viewer::setup_layout()
 {
-  Logger::log()->trace("Viewer::setup_layout");
+  LOG_TRACE("Viewer::setup_layout");
 
   // create and assign new layout
   QGridLayout *layout = new QGridLayout(this);
@@ -502,7 +501,7 @@ void Viewer::hideEvent(QHideEvent *event)
 
 void Viewer::update_param_visibility_icons()
 {
-  Logger::log()->trace("Viewer::update_param_visibility_icons");
+  LOG_TRACE("Viewer::update_param_visibility_icons");
 
   for (auto &[name, btn] : visibility_icons_map)
     btn->setChecked(this->get_param_visibility_state(name));
@@ -510,9 +509,8 @@ void Viewer::update_param_visibility_icons()
 
 void Viewer::update_renderer()
 {
-  Logger::log()->critical(
-      "Viewer::update_renderer: using abstract class method, this should not "
-      "be happening");
+  LOG_CRITICAL("Viewer::update_renderer: using abstract class method, this should not "
+               "be happening");
 }
 
 void Viewer::update_widgets()
@@ -521,7 +519,7 @@ void Viewer::update_widgets()
   HSD_PROFILE_TEXT(std::format("viewer={:p} node={}",
                                static_cast<const void *>(this),
                                this->current_node_id));
-  Logger::log()->trace("Viewer::update_widgets");
+  LOG_TRACE("Viewer::update_widgets");
 
   // --- update pinned node button
 

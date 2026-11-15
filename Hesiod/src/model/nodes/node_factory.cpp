@@ -5,9 +5,9 @@
 #include <fstream>
 #include <stdexcept>
 
-#include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/node_factory.hpp"
 #include "hesiod/model/utils.hpp"
+#include "logger/logger.hpp"
 
 #include "hesiod/gui/widgets/utils/gui_utils.hpp"
 
@@ -37,7 +37,7 @@ constexpr unsigned int str2int(const char *str, int h = 0)
 
 void dump_node_inventory(const std::string &fname)
 {
-  Logger::log()->trace("dump_node_inventory");
+  LOG_TRACE("dump_node_inventory");
 
   std::map<std::string, std::string> ni = hesiod::get_node_inventory();
 
@@ -93,7 +93,7 @@ void dump_node_inventory(const std::string &fname)
 void dump_node_documentation_stub(const std::string         &fname,
                                   std::weak_ptr<GraphConfig> config)
 {
-  Logger::log()->trace("dump_node_documentation_stub");
+  LOG_TRACE("dump_node_documentation_stub");
 
   std::map<std::string, std::string> ni = hesiod::get_node_inventory();
 
@@ -113,7 +113,7 @@ void dump_node_documentation_stub(const std::string         &fname,
 
 void dump_node_settings_screenshots()
 {
-  Logger::log()->trace("dump_node_settings_screenshots");
+  LOG_TRACE("dump_node_settings_screenshots");
 
   // use default, not important
   auto config = std::make_shared<hesiod::GraphConfig>();

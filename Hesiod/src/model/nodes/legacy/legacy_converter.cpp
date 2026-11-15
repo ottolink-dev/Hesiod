@@ -11,8 +11,8 @@
 #include "meta/metadata/keys.hpp"
 
 #include "hesiod/app/hesiod_application.hpp"
-#include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/legacy/legacy_converter.hpp"
+#include "logger/logger.hpp"
 
 namespace hesiod
 {
@@ -808,7 +808,7 @@ nlohmann::json convert_legacy_attribute_json(const meta::AbstractAttribute *attr
       }
       catch (const std::exception &e)
       {
-        Logger::log()->warn("Legacy converter: Cloud conversion failed: {}", e.what());
+        LOG_WARN("Legacy converter: Cloud conversion failed: {}", e.what());
       }
     }
   }
@@ -823,7 +823,7 @@ nlohmann::json convert_legacy_attribute_json(const meta::AbstractAttribute *attr
       }
       catch (const std::exception &e)
       {
-        Logger::log()->warn("Legacy converter: Vec2 conversion failed: {}", e.what());
+        LOG_WARN("Legacy converter: Vec2 conversion failed: {}", e.what());
       }
     }
     else if (!j.contains("value") && j.contains("x") && j.contains("y"))
@@ -845,7 +845,7 @@ nlohmann::json convert_legacy_attribute_json(const meta::AbstractAttribute *attr
       }
       catch (const std::exception &e)
       {
-        Logger::log()->warn("Legacy converter: Vec4 conversion failed: {}", e.what());
+        LOG_WARN("Legacy converter: Vec4 conversion failed: {}", e.what());
       }
     }
   }
@@ -885,13 +885,12 @@ nlohmann::json convert_legacy_attribute_json(const meta::AbstractAttribute *attr
 
         if (size_issue)
         {
-          Logger::log()->warn(
-              "Legacy converter: Array size mismatch or malformed vector (shape: "
-              "{}x{}={}, vector size: {}). Padding/truncating with zeros.",
-              shape_x,
-              shape_y,
-              expected_size,
-              vec.size());
+          LOG_WARN("Legacy converter: Array size mismatch or malformed vector (shape: "
+                   "{}x{}={}, vector size: {}). Padding/truncating with zeros.",
+                   shape_x,
+                   shape_y,
+                   expected_size,
+                   vec.size());
           vec.resize(expected_size, 0.0f);
         }
 
@@ -909,7 +908,7 @@ nlohmann::json convert_legacy_attribute_json(const meta::AbstractAttribute *attr
       }
       catch (const std::exception &e)
       {
-        Logger::log()->warn("Legacy converter: Array conversion failed: {}", e.what());
+        LOG_WARN("Legacy converter: Array conversion failed: {}", e.what());
       }
     }
   }
@@ -926,8 +925,7 @@ nlohmann::json convert_legacy_attribute_json(const meta::AbstractAttribute *attr
       }
       catch (const std::exception &e)
       {
-        Logger::log()->warn("Legacy converter: ColorGradient conversion failed: {}",
-                            e.what());
+        LOG_WARN("Legacy converter: ColorGradient conversion failed: {}", e.what());
       }
     }
   }

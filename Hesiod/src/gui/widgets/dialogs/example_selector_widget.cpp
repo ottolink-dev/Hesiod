@@ -39,7 +39,7 @@
 #include "hesiod/gui/widgets/dialogs/example_selector_dialog.hpp"
 #include "hesiod/gui/widgets/node_widgets/properties_panel_design.hpp"
 #include "hesiod/gui/widgets/shell/window_chrome.hpp"
-#include "hesiod/logger.hpp"
+#include "logger/logger.hpp"
 #include "meta_qt/ui/theme.hpp"
 
 namespace hesiod
@@ -482,7 +482,7 @@ ExampleSelectorDialog::ExampleSelectorDialog(const QString &examples_path,
                                              QWidget       *parent)
     : QDialog(parent), examples_path(examples_path)
 {
-  Logger::log()->trace("ExampleSelectorDialog::ExampleSelectorDialog");
+  LOG_TRACE("ExampleSelectorDialog::ExampleSelectorDialog");
 
   this->setObjectName("exampleSelector");
   this->setWindowTitle("Hesiod Project Browser");

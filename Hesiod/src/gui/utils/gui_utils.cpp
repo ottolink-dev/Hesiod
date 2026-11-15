@@ -17,8 +17,8 @@
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/widgets/node_widgets/node_palette_sidebar.hpp"
 #include "hesiod/gui/widgets/utils/gui_utils.hpp"
-#include "hesiod/logger.hpp"
 #include "hesiod/model/utils.hpp"
+#include "logger/logger.hpp"
 
 namespace hesiod
 {
@@ -40,7 +40,7 @@ QColor panel_border_color()
 
 void apply_animation_settings(bool enabled)
 {
-  Logger::log()->trace("apply_animation_settings: {}", enabled);
+  LOG_TRACE("apply_animation_settings: {}", enabled);
 
   // menus are animated by MenuAnimator (menu_chrome.hpp); Qt's own menu
   // effects animate a grabbed screenshot of the menu and would run on top of it

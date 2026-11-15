@@ -2,15 +2,15 @@
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
 #include "hesiod/gui/theme/node_graph_color_palette.hpp"
-#include "hesiod/logger.hpp"
 #include "hesiod/model/utils.hpp"
+#include "logger/logger.hpp"
 
 namespace hesiod
 {
 
 void NodeGraphColorPalette::json_from(nlohmann::json const &json)
 {
-  Logger::log()->trace("NodeGraphColorPalette::json_from");
+  LOG_TRACE("NodeGraphColorPalette::json_from");
 
   if (json.contains("data_color_map"))
   {
@@ -27,7 +27,7 @@ void NodeGraphColorPalette::json_from(nlohmann::json const &json)
 
 nlohmann::json NodeGraphColorPalette::json_to() const
 {
-  Logger::log()->trace("NodeGraphColorPalette::json_to");
+  LOG_TRACE("NodeGraphColorPalette::json_to");
 
   nlohmann::json json;
 

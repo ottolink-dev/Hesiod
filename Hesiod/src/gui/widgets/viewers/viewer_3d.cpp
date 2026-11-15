@@ -26,9 +26,9 @@
 #include "hesiod/gui/widgets/viewers/render_helpers.hpp"
 #include "hesiod/gui/widgets/viewers/viewer_3d.hpp"
 #include "hesiod/gui/widgets/viewers/viewport_controls.hpp"
-#include "hesiod/logger.hpp"
 #include "hesiod/model/graph/graph_node.hpp"
 #include "hesiod/profiling.hpp"
+#include "logger/logger.hpp"
 
 namespace hesiod
 {
@@ -110,7 +110,7 @@ bool helper_try_set_from_port(const BaseNode       &node,
 Viewer3D::Viewer3D(QPointer<GraphNodeWidget> p_graph_node_widget_, QWidget *parent)
     : Viewer(p_graph_node_widget_, ViewerType::VIEWER3D, "3D Renderer", parent)
 {
-  Logger::log()->trace("Viewer3D::Viewer3D");
+  LOG_TRACE("Viewer3D::Viewer3D");
 
   this->view_param = this->get_default_view_param();
   this->setup_layout();
@@ -203,7 +203,7 @@ bool Viewer3D::get_param_visibility_state(const std::string &param_name) const
 
 void Viewer3D::json_from(nlohmann::json const &json)
 {
-  Logger::log()->trace("Viewer3D::json_from");
+  LOG_TRACE("Viewer3D::json_from");
 
   Viewer::json_from(json);
   if (p_renderer)
@@ -225,7 +225,7 @@ void Viewer3D::json_from(nlohmann::json const &json)
 
 nlohmann::json Viewer3D::json_to() const
 {
-  Logger::log()->trace("Viewer3D::json_to");
+  LOG_TRACE("Viewer3D::json_to");
 
   nlohmann::json json = Viewer::json_to();
   if (p_renderer)
@@ -300,12 +300,12 @@ void Viewer3D::set_render_type(int new_type)
 void Viewer3D::set_skybox(const std::filesystem::path path)
 {
   HSD_PROFILE_ZONE("Viewer3D::set_skybox");
-  Logger::log()->trace("Viewer3D::set_skybox, path={}", path.string());
+  LOG_TRACE("Viewer3D::set_skybox, path={}", path.string());
 
   if (!std::filesystem::exists(path))
   {
-    Logger::log()->warn("Viewer3D::set_skybox: skybox image filepath does not exist: {}",
-                        path.string());
+    LOG_WARN("Viewer3D::set_skybox: skybox image filepath does not exist: {}",
+             path.string());
     return;
   }
 
@@ -319,15 +319,15 @@ void Viewer3D::set_skybox(const std::filesystem::path path)
   }
   catch (const std::exception &e)
   {
-    Logger::log()->warn("Viewer3D::set_skybox: could not load skybox image {}: {}",
-                        path.string(),
-                        e.what());
+    LOG_WARN("Viewer3D::set_skybox: could not load skybox image {}: {}",
+             path.string(),
+             e.what());
   }
 }
 
 void Viewer3D::setup_connections()
 {
-  Logger::log()->trace("Viewer3D::setup_connections");
+  LOG_TRACE("Viewer3D::setup_connections");
 
   Viewer::setup_connections();
 
@@ -340,7 +340,7 @@ void Viewer3D::setup_connections()
 
 void Viewer3D::setup_layout()
 {
-  Logger::log()->trace("Viewer3D::setup_layout");
+  LOG_TRACE("Viewer3D::setup_layout");
 
   Viewer::setup_layout();
 
@@ -450,14 +450,13 @@ void Viewer3D::update_style()
 void Viewer3D::update_renderer()
 {
   HSD_PROFILE_ZONE("Viewer3D::update_renderer");
-  Logger::log()->trace("Viewer3D::update_renderer");
+  LOG_TRACE("Viewer3D::update_renderer");
 
   // --- early exit cases
 
   if (!this->p_renderer)
   {
-    Logger::log()->error(
-        "Viewer3D::update_renderer: renderer reference is a dangling ptr");
+    LOG_ERROR("Viewer3D::update_renderer: renderer reference is a dangling ptr");
     return;
   }
 

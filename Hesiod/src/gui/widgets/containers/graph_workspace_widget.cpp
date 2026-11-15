@@ -22,9 +22,9 @@
 #include "hesiod/gui/widgets/node_widgets/node_settings_widget.hpp"
 #include "hesiod/gui/widgets/utils/gui_utils.hpp"
 #include "hesiod/gui/widgets/viewers/viewer_3d.hpp"
-#include "hesiod/logger.hpp"
 #include "hesiod/model/graph/graph_node.hpp"
 #include "hesiod/model/nodes/node_factory.hpp"
+#include "logger/logger.hpp"
 
 namespace hesiod
 {
@@ -33,7 +33,7 @@ GraphWorkspaceWidget::GraphWorkspaceWidget(std::weak_ptr<GraphNode> p_graph_node
                                            QWidget                 *parent)
     : QWidget(parent), p_graph_node(p_graph_node)
 {
-  Logger::log()->trace("GraphWorkspaceWidget::GraphWorkspaceWidget");
+  LOG_TRACE("GraphWorkspaceWidget::GraphWorkspaceWidget");
 
   this->undo_stack = new QUndoStack(this);
 
@@ -145,7 +145,7 @@ void GraphWorkspaceWidget::set_node_library_visible(bool new_state)
 
 void GraphWorkspaceWidget::setup_connections()
 {
-  Logger::log()->trace("GraphWorkspaceWidget::setup_connections");
+  LOG_TRACE("GraphWorkspaceWidget::setup_connections");
 
   if (!this->graph_node_widget)
     return;
@@ -155,7 +155,7 @@ void GraphWorkspaceWidget::setup_connections()
 
 void GraphWorkspaceWidget::setup_layout()
 {
-  Logger::log()->trace("GraphWorkspaceWidget::setup_layout");
+  LOG_TRACE("GraphWorkspaceWidget::setup_layout");
 
   auto gno = this->p_graph_node.lock();
   if (!gno)

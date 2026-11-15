@@ -19,3 +19,6 @@
 [submodule "external/Meta"]
 	path = external/Meta
 	url = https://github.com/ottolink-dev/Meta.git
+[submodule "external/Logger"]
+	path = external/Logger
+	url = https://github.com/otto-link/Logger.git

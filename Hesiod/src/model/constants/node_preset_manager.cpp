@@ -9,8 +9,8 @@
 #include <QDir>
 #include <QStandardPaths>
 
-#include "hesiod/logger.hpp"
 #include "hesiod/model/constants/node_preset_manager.hpp"
+#include "logger/logger.hpp"
 
 namespace fs = std::filesystem;
 
@@ -41,7 +41,7 @@ NodePresetManager &NodePresetManager::get_instance()
 
 NodePresetManager::NodePresetManager()
 {
-  Logger::log()->info("NodePresetManager::NodePresetManager: initializing...");
+  LOG_INFO("NodePresetManager::NodePresetManager: initializing...");
   this->rescan_files();
 }
 
@@ -54,9 +54,7 @@ void NodePresetManager::clear()
 void NodePresetManager::delete_user_preset(const std::string &node_type,
                                            const std::string &preset_name)
 {
-  Logger::log()->trace("NodePresetManager::delete_user_preset: {}::{}",
-                       node_type,
-                       preset_name);
+  LOG_TRACE("NodePresetManager::delete_user_preset: {}::{}", node_type, preset_name);
 
   // Search through all writable (non-bundled) preset files that contain this preset
   for (const auto &file_info : this->preset_files)
@@ -96,10 +94,9 @@ void NodePresetManager::delete_user_preset(const std::string &node_type,
     }
     catch (const std::exception &e)
     {
-      Logger::log()->error(
-          "NodePresetManager::delete_user_preset: error removing from {}: {}",
-          file_info.file_path,
-          e.what());
+      LOG_ERROR("NodePresetManager::delete_user_preset: error removing from {}: {}",
+                file_info.file_path,
+                e.what());
     }
   }
 
@@ -110,16 +107,14 @@ bool NodePresetManager::export_preset(const std::string &node_type,
                                       const std::string &preset_name,
                                       const std::string &file_path) const
 {
-  Logger::log()->trace("NodePresetManager::export_preset: {}::{}",
-                       node_type,
-                       preset_name);
+  LOG_TRACE("NodePresetManager::export_preset: {}::{}", node_type, preset_name);
 
   auto it = this->snapshot_managers.find(node_type);
   if (it == this->snapshot_managers.end() || !it->second.has(preset_name))
   {
-    Logger::log()->error("NodePresetManager::export_preset: preset '{}/{}' not found",
-                         node_type,
-                         preset_name);
+    LOG_ERROR("NodePresetManager::export_preset: preset '{}/{}' not found",
+              node_type,
+              preset_name);
     return false;
   }
 
@@ -133,7 +128,7 @@ bool NodePresetManager::export_preset(const std::string &node_type,
     std::ofstream out(file_path);
     if (!out.is_open())
     {
-      Logger::log()->error("NodePresetManager::export_preset: cannot open {}", file_path);
+      LOG_ERROR("NodePresetManager::export_preset: cannot open {}", file_path);
       return false;
     }
 
@@ -142,7 +137,7 @@ bool NodePresetManager::export_preset(const std::string &node_type,
   }
   catch (const std::exception &e)
   {
-    Logger::log()->error("NodePresetManager::export_preset: exception {}", e.what());
+    LOG_ERROR("NodePresetManager::export_preset: exception {}", e.what());
     return false;
   }
 }
@@ -175,12 +170,12 @@ std::string NodePresetManager::get_user_preset_file_path() const
 
 bool NodePresetManager::import_preset_file(const std::string &file_path)
 {
-  Logger::log()->trace("NodePresetManager::import_preset_file: {}", file_path);
+  LOG_TRACE("NodePresetManager::import_preset_file: {}", file_path);
 
   if (!fs::exists(file_path))
   {
-    Logger::log()->error("NodePresetManager::import_preset_file: file does not exist: {}",
-                         file_path);
+    LOG_ERROR("NodePresetManager::import_preset_file: file does not exist: {}",
+              file_path);
     return false;
   }
 
@@ -195,8 +190,7 @@ bool NodePresetManager::import_preset_file(const std::string &file_path)
     fs::copy_file(src_path, dst_path, fs::copy_options::overwrite_existing, ec);
     if (ec)
     {
-      Logger::log()->error("NodePresetManager::import_preset_file: copy error: {}",
-                           ec.message());
+      LOG_ERROR("NodePresetManager::import_preset_file: copy error: {}", ec.message());
       return false;
     }
   }
@@ -212,8 +206,8 @@ void NodePresetManager::load_preset_file(PresetFileInfo &file_info)
   std::ifstream file(file_info.file_path);
   if (!file.is_open())
   {
-    Logger::log()->error("NodePresetManager::load_preset_file: could not open {}",
-                         file_info.file_path);
+    LOG_ERROR("NodePresetManager::load_preset_file: could not open {}",
+              file_info.file_path);
     return;
   }
 
@@ -261,15 +255,15 @@ void NodePresetManager::load_preset_file(PresetFileInfo &file_info)
   }
   catch (const std::exception &e)
   {
-    Logger::log()->error("NodePresetManager::load_preset_file: failed to parse {}: {}",
-                         file_info.file_path,
-                         e.what());
+    LOG_ERROR("NodePresetManager::load_preset_file: failed to parse {}: {}",
+              file_info.file_path,
+              e.what());
   }
 }
 
 void NodePresetManager::reload_presets()
 {
-  Logger::log()->trace("NodePresetManager::reload_presets");
+  LOG_TRACE("NodePresetManager::reload_presets");
 
   for (auto &[_, sm] : this->snapshot_managers)
     sm.clear();
@@ -283,7 +277,7 @@ void NodePresetManager::reload_presets()
 
 void NodePresetManager::rescan_files()
 {
-  Logger::log()->trace("NodePresetManager::rescan_files");
+  LOG_TRACE("NodePresetManager::rescan_files");
 
   // Keep track of previously enabled states
   std::map<std::string, bool> prev_enabled;
@@ -354,9 +348,7 @@ void NodePresetManager::rescan_files()
 void NodePresetManager::save_user_preset(const std::string &node_type,
                                          const std::string &preset_name)
 {
-  Logger::log()->trace("NodePresetManager::save_user_preset: {}::{}",
-                       node_type,
-                       preset_name);
+  LOG_TRACE("NodePresetManager::save_user_preset: {}::{}", node_type, preset_name);
 
   auto it = this->snapshot_managers.find(node_type);
   if (it == this->snapshot_managers.end() || !it->second.has(preset_name))
@@ -375,9 +367,8 @@ void NodePresetManager::save_user_preset(const std::string &node_type,
     }
     catch (const std::exception &e)
     {
-      Logger::log()->warn(
-          "NodePresetManager::save_user_preset: reading existing file: {}",
-          e.what());
+      LOG_WARN("NodePresetManager::save_user_preset: reading existing file: {}",
+               e.what());
     }
   }
 
@@ -394,8 +385,7 @@ void NodePresetManager::save_user_preset(const std::string &node_type,
   }
   catch (const std::exception &e)
   {
-    Logger::log()->error("NodePresetManager::save_user_preset: write failed: {}",
-                         e.what());
+    LOG_ERROR("NodePresetManager::save_user_preset: write failed: {}", e.what());
   }
 
   this->rescan_files();

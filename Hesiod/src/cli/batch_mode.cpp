@@ -12,12 +12,12 @@
 #include "hesiod/gui/project_ui.hpp"
 #include "hesiod/gui/widgets/containers/graph_tabs_widget.hpp"
 #include "hesiod/gui/widgets/utils/gui_utils.hpp"
-#include "hesiod/logger.hpp"
 #include "hesiod/model/graph/graph_manager.hpp"
 #include "hesiod/model/graph/graph_node.hpp"
 #include "hesiod/model/nodes/node_factory.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 #include "hesiod/model/utils.hpp"
+#include "logger/logger.hpp"
 
 namespace hesiod::cli
 {
@@ -175,15 +175,15 @@ void run_batch_mode(const std::string                  &filename,
                     std::function<void(GraphManager &)> setup_callbacks,
                     bool                                ipc)
 {
-  Logger::log()->info("executing Hesiod in batch mode");
-  Logger::log()->trace("file: {}", filename);
-  Logger::log()->trace("cli shape: {{{}, {}}}", shape.x, shape.y);
-  Logger::log()->trace("cli tiling: {{{}, {}}}", tiling.x, tiling.y);
-  Logger::log()->trace("cli overlap: {}", overlap);
-  Logger::log()->trace("cli force_distributed: {}", force_distributed);
-  Logger::log()->trace("cli force_sequential: {}", force_sequential);
-  Logger::log()->trace("cli min_memory: {}", min_memory);
-  Logger::log()->trace("cli ipc: {}", ipc);
+  LOG_INFO("executing Hesiod in batch mode");
+  LOG_TRACE("file: {}", filename);
+  LOG_TRACE("cli shape: {{{}, {}}}", shape.x, shape.y);
+  LOG_TRACE("cli tiling: {{{}, {}}}", tiling.x, tiling.y);
+  LOG_TRACE("cli overlap: {}", overlap);
+  LOG_TRACE("cli force_distributed: {}", force_distributed);
+  LOG_TRACE("cli force_sequential: {}", force_sequential);
+  LOG_TRACE("cli min_memory: {}", min_memory);
+  LOG_TRACE("cli ipc: {}", ipc);
 
   // define actual computation configuration based on CLI inputs. If
   // nothing is provided, use the configs from the input file but if
@@ -213,22 +213,20 @@ void run_batch_mode(const std::string                  &filename,
     config.storage_mode = hmap::StorageMode::VA_DISK_LRU_STREAM;
     config.cm_cpu.mode = hmap::ForEachMode::VA_SEQUENTIAL;
     config.cm_gpu.mode = hmap::ForEachMode::VA_SEQUENTIAL;
-    Logger::log()->info("minimal memory mode enabled (storage mode: VA_DISK_LRU_STREAM, "
-                        "compute mode: VA_SEQUENTIAL)");
+    LOG_INFO("minimal memory mode enabled (storage mode: VA_DISK_LRU_STREAM, "
+             "compute mode: VA_SEQUENTIAL)");
   }
   else if (force_distributed)
   {
     config.cm_cpu.mode = hmap::ForEachMode::VA_DISTRIBUTED;
     config.cm_gpu.mode = hmap::ForEachMode::VA_DISTRIBUTED;
-    Logger::log()->info(
-        "forcing distributed computation for all compute modes (CPU and GPU)");
+    LOG_INFO("forcing distributed computation for all compute modes (CPU and GPU)");
   }
   else if (force_sequential)
   {
     config.cm_cpu.mode = hmap::ForEachMode::VA_SEQUENTIAL;
     config.cm_gpu.mode = hmap::ForEachMode::VA_SEQUENTIAL;
-    Logger::log()->info(
-        "forcing sequential computation for all compute modes (CPU and GPU)");
+    LOG_INFO("forcing sequential computation for all compute modes (CPU and GPU)");
   }
 
   if (shape.x || shape.y || tiling.x || tiling.y || overlap >= 0.f)
@@ -244,10 +242,10 @@ void run_batch_mode(const std::string                  &filename,
     config.set_tiling(new_tiling);
     config.set_overlap(new_overlap);
 
-    Logger::log()->info("graph configurations will be overriden:");
-    Logger::log()->info("compute shape: {{{}, {}}}", config.shape.x, config.shape.y);
-    Logger::log()->info("compute tiling: {{{}, {}}}", config.tiling.x, config.tiling.y);
-    Logger::log()->info("compute overlap: {}", config.overlap);
+    LOG_INFO("graph configurations will be overriden:");
+    LOG_INFO("compute shape: {{{}, {}}}", config.shape.x, config.shape.y);
+    LOG_INFO("compute tiling: {{{}, {}}}", config.tiling.x, config.tiling.y);
+    LOG_INFO("compute overlap: {}", config.overlap);
   }
 
   GraphManager graph_manager;
@@ -312,7 +310,7 @@ void run_batch_mode(const std::string                  &filename,
 
 void run_node_inventory()
 {
-  Logger::log()->info("executing Hesiod in node inventory mode");
+  LOG_INFO("executing Hesiod in node inventory mode");
   hesiod::dump_node_inventory("node_inventory");
 
   auto config = std::make_shared<hesiod::GraphConfig>();
@@ -323,7 +321,7 @@ void run_node_inventory()
 
 void run_snapshot_generation()
 {
-  Logger::log()->info("executing Hesiod in snapshot generation mode");
+  LOG_INFO("executing Hesiod in snapshot generation mode");
 
   std::map<std::string, std::string> inventory = get_node_inventory();
 
@@ -353,7 +351,7 @@ void run_snapshot_generation()
 
     if (std::filesystem::exists(fname))
     {
-      Logger::log()->trace("- default file exists: {}", fname);
+      LOG_TRACE("- default file exists: {}", fname);
 
       // a single broken example (e.g. a stale port name in the .hsd) must not
       // abort the whole batch: log and skip it
@@ -396,9 +394,7 @@ void run_snapshot_generation()
       }
       catch (const std::exception &e)
       {
-        Logger::log()->error("snapshot generation failed for '{}', skipping: {}",
-                             fname,
-                             e.what());
+        LOG_ERROR("snapshot generation failed for '{}', skipping: {}", fname, e.what());
       }
     }
   }

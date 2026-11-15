@@ -3,22 +3,23 @@
  * this software. */
 #include "hesiod/model/project_model.hpp"
 #include "gnode/graph_worker.hpp"
-#include "hesiod/logger.hpp"
 #include "hesiod/model/graph/graph_manager.hpp"
 #include "hesiod/model/utils.hpp"
+#include "logger/logger.hpp"
+#include "logger/scope.hpp"
 
 namespace hesiod
 {
 
 ProjectModel::ProjectModel()
 {
-  Logger::log()->trace("ProjectModel::ProjectModel");
+  LOG_TRACE("ProjectModel::ProjectModel");
   this->initialize();
 }
 
 void ProjectModel::cleanup()
 {
-  Logger::log()->trace("ProjectModel::cleanup");
+  LOG_FUNCTION();
 
   this->graph_manager.reset();
   this->graph_manager = std::make_unique<GraphManager>();
@@ -43,13 +44,13 @@ std::filesystem::path ProjectModel::get_path() const { return this->path; }
 
 void ProjectModel::initialize()
 {
-  Logger::log()->trace("ProjectModel::initialize");
+  LOG_TRACE("ProjectModel::initialize");
   this->graph_manager = std::make_unique<GraphManager>();
 }
 
 void ProjectModel::json_from(nlohmann::json const &json)
 {
-  Logger::log()->trace("ProjectModel::json_from");
+  LOG_TRACE("ProjectModel::json_from");
 
   json_safe_get(json, "comment", this->comment);
 
@@ -57,7 +58,7 @@ void ProjectModel::json_from(nlohmann::json const &json)
   if (json.contains("bake_config"))
     this->bake_config.json_from(json["bake_config"]);
   else
-    Logger::log()->error("ProjectModel::json_from: could not parse bake_config json");
+    LOG_ERROR("ProjectModel::json_from: could not parse bake_config json");
 
   // graphs
   if (json.contains("graph_manager"))
@@ -66,13 +67,13 @@ void ProjectModel::json_from(nlohmann::json const &json)
   }
   else
   {
-    Logger::log()->error("ProjectModel::json_from: could not parse graph_manager json");
+    LOG_ERROR("ProjectModel::json_from: could not parse graph_manager json");
   }
 }
 
 nlohmann::json ProjectModel::json_to() const
 {
-  Logger::log()->trace("ProjectModel::json_to");
+  LOG_TRACE("ProjectModel::json_to");
 
   nlohmann::json json;
   json["comment"] = this->comment;

@@ -20,10 +20,10 @@
 #include "hesiod/gui/widgets/shell/menu_chrome.hpp"
 #include "hesiod/gui/widgets/utils/gui_utils.hpp"
 #include "hesiod/gui/widgets/viewers/viewer_3d.hpp"
-#include "hesiod/logger.hpp"
 #include "hesiod/model/graph/graph_manager.hpp"
 #include "hesiod/model/graph/graph_node.hpp"
 #include "hesiod/model/nodes/receive_node.hpp"
+#include "logger/logger.hpp"
 
 namespace hesiod
 {
@@ -32,7 +32,7 @@ GraphTabsWidget::GraphTabsWidget(std::weak_ptr<GraphManager> p_graph_manager,
                                  QWidget                    *parent)
     : QWidget(parent), p_graph_manager(p_graph_manager)
 {
-  Logger::log()->trace("GraphTabsWidget::GraphTabsWidget");
+  LOG_TRACE("GraphTabsWidget::GraphTabsWidget");
 
   // styles (GNodeGUI)
   apply_graph_style();
@@ -65,7 +65,7 @@ GraphTabsWidget::GraphTabsWidget(std::weak_ptr<GraphManager> p_graph_manager,
 
 void GraphTabsWidget::clear()
 {
-  Logger::log()->trace("GraphTabsWidget::clear");
+  LOG_TRACE("GraphTabsWidget::clear");
 
   // clear tabs
   while (this->tab_widget->count() > 0)
@@ -103,7 +103,7 @@ GraphWorkspaceWidget *GraphTabsWidget::get_workspace_widget(
 void GraphTabsWidget::on_heightmap_download_ready(
     const HeightmapperWidget::DownloadInfo &info)
 {
-  Logger::log()->trace("GraphTabsWidget::on_heightmap_download_ready");
+  LOG_TRACE("GraphTabsWidget::on_heightmap_download_ready");
 
   QImage img = QImage::fromData(info.data, "PNG");
   img = img.convertToFormat(QImage::Format_Grayscale16);
@@ -114,12 +114,12 @@ void GraphTabsWidget::on_heightmap_download_ready(
   if (gww && gww->get_graph_node_widget())
     gww->get_graph_node_widget()->add_import_heightmap_node(img);
   else
-    Logger::log()->error("GraphTabsWidget::on_heightmap_download_ready: dangling ptr");
+    LOG_ERROR("GraphTabsWidget::on_heightmap_download_ready: dangling ptr");
 }
 
 void GraphTabsWidget::on_textures_request(const std::vector<std::string> &texture_paths)
 {
-  Logger::log()->trace("GraphTabsWidget::on_textures_request");
+  LOG_TRACE("GraphTabsWidget::on_textures_request");
 
   if (texture_paths.empty())
     return;
@@ -130,7 +130,7 @@ void GraphTabsWidget::on_textures_request(const std::vector<std::string> &textur
   if (gww && gww->get_graph_node_widget())
     gww->get_graph_node_widget()->add_import_texture_nodes(texture_paths);
   else
-    Logger::log()->error("GraphTabsWidget::on_textures_request: dangling ptr");
+    LOG_ERROR("GraphTabsWidget::on_textures_request: dangling ptr");
 }
 
 void GraphTabsWidget::json_from(nlohmann::json const &json)
@@ -156,7 +156,7 @@ nlohmann::json GraphTabsWidget::json_to() const
 
 void GraphTabsWidget::on_copy_buffer_has_changed(const nlohmann::json &new_json)
 {
-  Logger::log()->trace("GraphTabsWidget::on_copy_buffer_has_changed");
+  LOG_TRACE("GraphTabsWidget::on_copy_buffer_has_changed");
 
   // redispatch the copy buffer to all the graphs
   for (auto &[_, gww] : this->graph_workspace_widget_map)
@@ -173,7 +173,7 @@ void GraphTabsWidget::on_has_been_cleared(const std::string &graph_id)
 void GraphTabsWidget::on_new_node_created(const std::string &graph_id,
                                           const std::string &id)
 {
-  Logger::log()->trace("GraphTabsWidget::on_new_node_created");
+  LOG_TRACE("GraphTabsWidget::on_new_node_created");
 
   auto gm = this->p_graph_manager.lock();
   if (!gm)
@@ -183,8 +183,7 @@ void GraphTabsWidget::on_new_node_created(const std::string &graph_id,
   auto it_graph = gm->get_graph_nodes().find(graph_id);
   if (it_graph == gm->get_graph_nodes().end())
   {
-    Logger::log()->critical("GraphTabsWidget::on_new_node_created: graph {} not found",
-                            graph_id);
+    LOG_CRITICAL("GraphTabsWidget::on_new_node_created: graph {} not found", graph_id);
     return;
   }
 
@@ -199,7 +198,7 @@ void GraphTabsWidget::on_new_node_created(const std::string &graph_id,
   }
   else
   {
-    Logger::log()->critical(
+    LOG_CRITICAL(
         "GraphTabsWidget::on_new_node_created: the node just created is nullptr");
   }
 }
@@ -262,7 +261,7 @@ void GraphTabsWidget::set_selected_tab(const std::string &graph_id)
 
 void GraphTabsWidget::setup_connections()
 {
-  Logger::log()->trace("GraphTabsWidget::setup_connections");
+  LOG_TRACE("GraphTabsWidget::setup_connections");
 
   auto gm = this->p_graph_manager.lock();
   if (!gm)
@@ -286,7 +285,7 @@ QSize GraphTabsWidget::sizeHint() const { return QSize(1024, 1024); }
 
 void GraphTabsWidget::update_receive_nodes_tag_list()
 {
-  Logger::log()->trace("GraphTabsWidget::update_receive_nodes_tag_list");
+  LOG_TRACE("GraphTabsWidget::update_receive_nodes_tag_list");
 
   auto gm = this->p_graph_manager.lock();
   if (!gm)
@@ -310,7 +309,7 @@ void GraphTabsWidget::update_receive_nodes_tag_list()
 
 void GraphTabsWidget::update_tab_widget()
 {
-  Logger::log()->trace("GraphTabsWidget::update_tab_widget");
+  LOG_TRACE("GraphTabsWidget::update_tab_widget");
 
   if (!this->tab_widget)
     return;
@@ -357,13 +356,11 @@ void GraphTabsWidget::update_tab_widget()
     if (this->graph_workspace_widget_map.contains(id))
       continue; // widget already exists
 
-    Logger::log()->trace("creating GraphWorkspaceWidget for {}", id);
+    LOG_TRACE("creating GraphWorkspaceWidget for {}", id);
     GraphNode *p_graph_node = gm->get_graph_ref_by_id(id);
     if (!p_graph_node)
     {
-      Logger::log()->error(
-          "GraphTabsWidget::update_tab_widget: graph '{}' not found, skipping",
-          id);
+      LOG_ERROR("GraphTabsWidget::update_tab_widget: graph '{}' not found, skipping", id);
       continue;
     }
 

@@ -18,22 +18,22 @@
 #include "hesiod/app/app_settings.hpp"
 #include "hesiod/app/ui_scale.hpp"
 #include "hesiod/gui/theme/theme.hpp"
-#include "hesiod/logger.hpp"
 #include "hesiod/model/utils.hpp"
+#include "logger/logger.hpp"
 
 namespace hesiod
 {
 
 AppSettings::Icons::Icons()
 {
-  Logger::log()->trace("AppSettings::Icons::Icons");
+  LOG_TRACE("AppSettings::Icons::Icons");
 
   // populate icons
   std::string path = "data/icons";
   QDir        dir(path.c_str());
   if (!dir.exists())
   {
-    Logger::log()->error("AppSettings::Icons::Icons: directory does not exist: {}", path);
+    LOG_ERROR("AppSettings::Icons::Icons: directory does not exist: {}", path);
     return;
   }
 
@@ -56,8 +56,7 @@ AppSettings::Icons::Icons()
 
 void AppSettings::Icons::apply_text_color(const QColor &color)
 {
-  Logger::log()->trace("AppSettings::Icons::apply_text_color: {}",
-                       color.name().toStdString());
+  LOG_TRACE("AppSettings::Icons::apply_text_color: {}", color.name().toStdString());
 
   // The icon SVGs bake in the dark-theme foreground (#F4F4F5). Swap it for
   // the active text color so the icons follow the palette; other colors
@@ -91,7 +90,7 @@ QIcon AppSettings::Icons::get(const std::string &name) const
 {
   if (!this->icons_map.contains(name))
   {
-    Logger::log()->error("AppSettings::Icons::get: unknown icon: {}", name);
+    LOG_ERROR("AppSettings::Icons::get: unknown icon: {}", name);
     return QIcon();
   }
   else
@@ -102,7 +101,7 @@ QIcon AppSettings::Icons::get(const std::string &name) const
 
 void AppSettings::json_from(nlohmann::json const &json)
 {
-  Logger::log()->trace("AppSettings::json_from");
+  LOG_TRACE("AppSettings::json_from");
 
   json_safe_get(json,
                 "model.allow_broadcast_receive_within_same_graph",
@@ -167,19 +166,19 @@ void AppSettings::json_from(nlohmann::json const &json)
         interface.ui_scale = ui_scale::sanitize(entry.get<double>(), &clean);
 
         if (!clean)
-          Logger::log()->warn("AppSettings: interface.ui_scale {} is outside the "
-                              "supported [{}, {}] range, using {}",
-                              entry.dump(),
-                              ui_scale::kMin,
-                              ui_scale::kMax,
-                              interface.ui_scale);
+          LOG_WARN("AppSettings: interface.ui_scale {} is outside the "
+                   "supported [{}, {}] range, using {}",
+                   entry.dump(),
+                   ui_scale::kMin,
+                   ui_scale::kMax,
+                   interface.ui_scale);
       }
       else
       {
-        Logger::log()->error("AppSettings: interface.ui_scale is not a number ({}), "
-                             "using {}",
-                             entry.type_name(),
-                             ui_scale::kDefault);
+        LOG_ERROR("AppSettings: interface.ui_scale is not a number ({}), "
+                  "using {}",
+                  entry.type_name(),
+                  ui_scale::kDefault);
       }
     }
   }
@@ -229,7 +228,7 @@ void AppSettings::json_from(nlohmann::json const &json)
           if (clwrapper::DeviceManager::get_instance().set_device(device_id))
             clwrapper::KernelManager::get_instance().build_program();
           else
-            Logger::log()->error("OpenCL device selection failed");
+            LOG_ERROR("OpenCL device selection failed");
         }
       }
     }
@@ -306,7 +305,7 @@ void AppSettings::json_from(nlohmann::json const &json)
 
 nlohmann::json AppSettings::json_to() const
 {
-  Logger::log()->trace("AppSettings::json_to");
+  LOG_TRACE("AppSettings::json_to");
 
   nlohmann::json json;
 

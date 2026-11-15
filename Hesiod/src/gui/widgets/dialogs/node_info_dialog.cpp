@@ -15,10 +15,10 @@
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/widgets/dialogs/node_info_dialog.hpp"
 #include "hesiod/gui/widgets/utils/gui_utils.hpp"
-#include "hesiod/logger.hpp"
 #include "hesiod/model/graph/graph_node.hpp"
 #include "hesiod/model/nodes/data_info.hpp"
 #include "hesiod/model/utils.hpp"
+#include "logger/logger.hpp"
 
 namespace hesiod
 {
@@ -28,12 +28,11 @@ NodeInfoDialog::NodeInfoDialog(QPointer<GraphNodeWidget> p_graph_node_widget,
                                QWidget                  *parent)
     : QDialog(parent), p_graph_node_widget(p_graph_node_widget), node_id(node_id)
 {
-  Logger::log()->trace("NodeInfoDialog::NodeInfoDialog");
+  LOG_TRACE("NodeInfoDialog::NodeInfoDialog");
 
   if (!this->p_graph_node_widget)
   {
-    Logger::log()->error(
-        "NodeInfoDialog::NodeInfoDialog: p_graph_node_widget is nullptr");
+    LOG_ERROR("NodeInfoDialog::NodeInfoDialog: p_graph_node_widget is nullptr");
     return;
   }
 
@@ -78,7 +77,7 @@ void NodeInfoDialog::on_comment_text_changed()
 
 void NodeInfoDialog::setup_connections()
 {
-  Logger::log()->trace("NodeInfoDialog::setup_connections");
+  LOG_TRACE("NodeInfoDialog::setup_connections");
 
   if (!this->p_graph_node_widget)
     return;
@@ -141,7 +140,7 @@ void NodeInfoDialog::setup_connections()
 
 void NodeInfoDialog::setup_layout()
 {
-  Logger::log()->trace("NodeInfoDialog::setup_layout");
+  LOG_TRACE("NodeInfoDialog::setup_layout");
 
   // --- safeguards
 
@@ -223,7 +222,7 @@ void NodeInfoDialog::setup_layout()
 
 void NodeInfoDialog::update_content()
 {
-  Logger::log()->trace("NodeInfoDialog::update_content");
+  LOG_TRACE("NodeInfoDialog::update_content");
   this->update_ports_content();
   this->update_info_content();
   this->update();
@@ -231,7 +230,7 @@ void NodeInfoDialog::update_content()
 
 void NodeInfoDialog::update_info_content()
 {
-  Logger::log()->trace("NodeInfoDialog::update_info_content");
+  LOG_TRACE("NodeInfoDialog::update_info_content");
 
   auto ptrs = this->get_node_pointers();
   if (!ptrs.node || !ptrs.gfx || !this->editor)
@@ -286,7 +285,7 @@ void NodeInfoDialog::update_info_content()
 
 void NodeInfoDialog::update_ports_content()
 {
-  Logger::log()->trace("NodeInfoDialog::update_ports_content");
+  LOG_TRACE("NodeInfoDialog::update_ports_content");
 
   auto ptrs = this->get_node_pointers();
   if (!ptrs.node || !ptrs.gfx || !this->editor)

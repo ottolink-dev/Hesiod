@@ -10,7 +10,7 @@
 #include <QPixmap>
 #include <QWidget>
 
-#include "hesiod/logger.hpp"
+#include "logger/logger.hpp"
 
 namespace hesiod
 {
@@ -20,7 +20,7 @@ void render_widget_screenshot(QWidget              *widget,
                               const QSize          &size,
                               std::function<void()> post_render_callback)
 {
-  Logger::log()->trace("render_widget_screenshot: fname {}", fname);
+  LOG_TRACE("render_widget_screenshot: fname {}", fname);
 
   // If a target size is provided, fix the widget to that size
   if (size.isValid())

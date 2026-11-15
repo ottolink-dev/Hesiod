@@ -5,9 +5,9 @@
 
 #include "hesiod/model/nodes/attributes.hpp"
 
-#include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
+#include "logger/logger.hpp"
 
 namespace hesiod
 {
@@ -76,7 +76,7 @@ constexpr const char *A_EXACT_FLOOD        = "exact_flood";
 
 void setup_hydraulic_mise_node(BaseNode &node)
 {
-  Logger::log()->trace("setup node {}", node.get_label());
+  LOG_TRACE("setup node {}", node.get_label());
 
   // port(s)
   node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_INPUT);
@@ -147,7 +147,7 @@ void setup_hydraulic_mise_node(BaseNode &node)
 
 void compute_hydraulic_mise_node(BaseNode &node)
 {
-  Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
+  LOG_TRACE("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
   const auto *p_in          = node.get_value_ref<hmap::VirtualArray>(P_INPUT);
   const auto *p_bedrock     = node.get_value_ref<hmap::VirtualArray>(P_BEDROCK);
@@ -215,10 +215,9 @@ void compute_hydraulic_mise_node(BaseNode &node)
 
   if (hmax - hmin < 1.0e-6f)
   {
-    Logger::log()->warn(
-        "HydraulicMise [{}]: input is flat/near-constant (value range ~ 0). "
-        "Erosion is gradient-driven and will produce little or no change.",
-        node.get_id());
+    LOG_WARN("HydraulicMise [{}]: input is flat/near-constant (value range ~ 0). "
+             "Erosion is gradient-driven and will produce little or no change.",
+             node.get_id());
     return;
   }
 

@@ -5,9 +5,9 @@
 #include <QMouseEvent>
 
 #include "hesiod/gui/widgets/graph/coord_frame_widget.hpp"
-#include "hesiod/logger.hpp"
 #include "hesiod/model/graph/graph_manager.hpp"
 #include "hesiod/model/graph/graph_node.hpp"
+#include "logger/logger.hpp"
 
 #define MAX_SIZE 40000
 
@@ -18,7 +18,7 @@ CoordFrameWidget::CoordFrameWidget(std::weak_ptr<GraphManager> p_graph_manager,
                                    QWidget                    *parent)
     : QGraphicsView(parent), p_graph_manager(p_graph_manager)
 {
-  Logger::log()->trace("CoordFrameWidget::CoordFrameWidget");
+  LOG_TRACE("CoordFrameWidget::CoordFrameWidget");
 
   auto gm = this->p_graph_manager.lock();
   if (!gm)
@@ -57,7 +57,7 @@ void CoordFrameWidget::add_frame(const std::string &id)
   auto it = graphs.find(id);
   if (it == graphs.end())
   {
-    Logger::log()->error("CoordFrameWidget::add_frame:: Graph ID not found: {}", id);
+    LOG_ERROR("CoordFrameWidget::add_frame:: Graph ID not found: {}", id);
     return;
   }
 
@@ -139,7 +139,7 @@ void CoordFrameWidget::remove_frame(const std::string &id)
 
 void CoordFrameWidget::reset()
 {
-  Logger::log()->trace("CoordFrameWidget::reset");
+  LOG_TRACE("CoordFrameWidget::reset");
 
   auto gm = this->p_graph_manager.lock();
   if (!gm)
@@ -158,7 +158,7 @@ void CoordFrameWidget::reset()
   // re-populate scene
   for (auto &id : gm->get_graph_order())
   {
-    Logger::log()->trace("CoordFrameWidget::CoordFrameWidget: adding graph: {}", id);
+    LOG_TRACE("CoordFrameWidget::CoordFrameWidget: adding graph: {}", id);
     this->add_frame(id);
   }
 }

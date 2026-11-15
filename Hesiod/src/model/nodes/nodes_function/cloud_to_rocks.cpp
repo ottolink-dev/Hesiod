@@ -4,10 +4,10 @@
 #include "highmap/geometry/cloud.hpp"
 #include "highmap/rocks/rock_field.hpp"
 
-#include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/attributes.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
+#include "logger/logger.hpp"
 
 namespace hesiod
 {
@@ -24,7 +24,7 @@ constexpr const char *A_DEFAULT_RADIUS = "default_radius";
 
 void setup_cloud_to_rocks_node(BaseNode &node)
 {
-  Logger::log()->trace("setup node {}", node.get_label());
+  LOG_TRACE("setup node {}", node.get_label());
 
   // --- Ports
 
@@ -39,7 +39,7 @@ void setup_cloud_to_rocks_node(BaseNode &node)
 
 void compute_cloud_to_rocks_node(BaseNode &node)
 {
-  Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
+  LOG_TRACE("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
   hmap::Cloud     *p_in  = node.get_value_ref<hmap::Cloud>(P_CLOUD);
   hmap::RockField *p_out = node.get_value_ref<hmap::RockField>(P_ROCK_FIELD);

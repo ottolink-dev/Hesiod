@@ -11,9 +11,9 @@
 #include "nlohmann/json.hpp"
 
 #include "hesiod/app/hesiod_application.hpp"
-#include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/utils.hpp"
+#include "logger/logger.hpp"
 
 namespace fs = std::filesystem;
 
@@ -167,11 +167,11 @@ nlohmann::json json_from_file(const std::string &fname)
   {
     file >> json;
     file.close();
-    Logger::log()->trace("json_from_file: JSON successfully loaded from {}", fname);
+    LOG_TRACE("json_from_file: JSON successfully loaded from {}", fname);
   }
   else
   {
-    Logger::log()->error("json_from_file: Could not open file {} to load JSON", fname);
+    LOG_ERROR("json_from_file: Could not open file {} to load JSON", fname);
   }
 
   return json;
@@ -198,16 +198,14 @@ bool json_to_file(const nlohmann::json &json,
         existing.merge_patch(json);
         final_json = existing;
 
-        Logger::log()->trace("json_to_file: merged JSON with existing content in {}",
-                             fname);
+        LOG_TRACE("json_to_file: merged JSON with existing content in {}", fname);
       }
       catch (const std::exception &e)
       {
-        Logger::log()->warn(
-            "json_to_file: Could not parse existing JSON in {} ({}). Overwriting "
-            "instead.",
-            fname,
-            e.what());
+        LOG_WARN("json_to_file: Could not parse existing JSON in {} ({}). Overwriting "
+                 "instead.",
+                 fname,
+                 e.what());
       }
     }
   }
@@ -215,7 +213,7 @@ bool json_to_file(const nlohmann::json &json,
   std::ofstream outfile(fname);
   if (!outfile.is_open())
   {
-    Logger::log()->error("json_to_file: Could not open file {} to save JSON", fname);
+    LOG_ERROR("json_to_file: Could not open file {} to save JSON", fname);
     return false;
   }
 
@@ -224,11 +222,11 @@ bool json_to_file(const nlohmann::json &json,
 
   if (!outfile.good())
   {
-    Logger::log()->error("json_to_file: Could not write JSON to {}", fname);
+    LOG_ERROR("json_to_file: Could not write JSON to {}", fname);
     return false;
   }
 
-  Logger::log()->trace("json_to_file: JSON successfully written to {}", fname);
+  LOG_TRACE("json_to_file: JSON successfully written to {}", fname);
   return true;
 }
 
@@ -258,9 +256,9 @@ fs::path make_unique_filename(
     const fs::path output_path = output_directory / filename;
 
     if (fs::exists(output_path))
-      Logger::log()->warn("Output file already exists: {}. "
-                          "Filename pattern does not contain INC placeholder.",
-                          output_path.string());
+      LOG_WARN("Output file already exists: {}. "
+               "Filename pattern does not contain INC placeholder.",
+               output_path.string());
 
     return output_path;
   }
@@ -393,7 +391,7 @@ unsigned int to_uint_safe(const std::string &str)
   }
   catch (const std::exception &e)
   {
-    Logger::log()->error("Conversion error: {}", e.what());
+    LOG_ERROR("Conversion error: {}", e.what());
     return 0; // or throw / handle differently
   }
 }

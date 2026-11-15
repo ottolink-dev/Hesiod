@@ -10,9 +10,9 @@
 
 #include "hesiod/model/nodes/attributes.hpp"
 
-#include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
+#include "logger/logger.hpp"
 
 namespace hesiod
 {
@@ -28,7 +28,7 @@ constexpr const char *A_KEEP_ASPECT_RATIO = "keep_aspect_ratio";
 
 void setup_import_texture_node(BaseNode &node)
 {
-  Logger::log()->trace("setup node {}", node.get_label());
+  LOG_TRACE("setup node {}", node.get_label());
 
   // port(s)
   node.add_port<hmap::VirtualTexture>(gnode::PortType::OUT, P_TEXTURE, CONFIG_TEX(node));
@@ -47,7 +47,7 @@ void setup_import_texture_node(BaseNode &node)
 
 void compute_import_texture_node(BaseNode &node)
 {
-  Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
+  LOG_TRACE("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
   hmap::VirtualTexture *p_tex = node.get_value_ref<hmap::VirtualTexture>(P_TEXTURE);
 
@@ -62,7 +62,7 @@ void compute_import_texture_node(BaseNode &node)
 
     if (tensor4.shape.x * tensor4.shape.y == 0)
     {
-      Logger::log()->error("compute_import_texture_node: Failed to construct Texture");
+      LOG_ERROR("compute_import_texture_node: Failed to construct Texture");
       return;
     }
 
