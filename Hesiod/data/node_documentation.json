@@ -3677,6 +3677,9 @@
                     "persistence",
                     "lacunarity",
                     "periodic",
+                    "angle",
+                    "stretch",
+                    "stretch_decay",
                     "post_inverse",
                     "post_gamma",
                     "post_gain",
@@ -3696,6 +3699,9 @@
                     "persistence",
                     "lacunarity",
                     "k_smoothing",
+                    "angle",
+                    "stretch",
+                    "stretch_decay",
                     "post_inverse",
                     "post_gamma",
                     "post_gain",
@@ -3715,6 +3721,9 @@
                     "persistence",
                     "lacunarity",
                     "gradient_scale",
+                    "angle",
+                    "stretch",
+                    "stretch_decay",
                     "post_inverse",
                     "post_gamma",
                     "post_gain",
@@ -3737,6 +3746,9 @@
                     "damp0",
                     "warp_scale",
                     "damp_scale",
+                    "angle",
+                    "stretch",
+                    "stretch_decay",
                     "post_inverse",
                     "post_gamma",
                     "post_gain",
@@ -3755,6 +3767,9 @@
                     "persistence",
                     "lacunarity",
                     "mu",
+                    "angle",
+                    "stretch",
+                    "stretch_decay",
                     "post_inverse",
                     "post_gamma",
                     "post_gain",
@@ -3773,6 +3788,9 @@
                     "weight",
                     "persistence",
                     "lacunarity",
+                    "angle",
+                    "stretch",
+                    "stretch_decay",
                     "post_inverse",
                     "post_gamma",
                     "post_gain",
@@ -3792,6 +3810,9 @@
                     "persistence",
                     "lacunarity",
                     "warp_scale",
+                    "angle",
+                    "stretch",
+                    "stretch_decay",
                     "post_inverse",
                     "post_gamma",
                     "post_gain",
@@ -3803,6 +3824,12 @@
             }
         ],
         "parameters": {
+            "angle": {
+                "description": "Direction angle (in degrees) along which the noise stretching is applied.",
+                "key": "angle",
+                "label": "Angle",
+                "type": "Float"
+            },
             "damp0": {
                 "description": "Initial damping scale applied at the first octave (Jordan variant); controls how strongly early octaves attenuate subsequent detail.",
                 "key": "damp0",
@@ -3813,6 +3840,18 @@
                 "description": "Damping scale factor applied across successive octaves (Jordan variant).",
                 "key": "damp_scale",
                 "label": "damp_scale",
+                "type": "Float"
+            },
+            "stretch": {
+                "description": "Directional stretching factor applied along the specified angle. A value of 1 means no stretching. Note: enabling stretching (stretch != 1) breaks the periodicity option.",
+                "key": "stretch",
+                "label": "Stretch",
+                "type": "Float"
+            },
+            "stretch_decay": {
+                "description": "Progressive decay of the stretching factor across successive octaves (0 = no decay, 1 = full decay after the first octave).",
+                "key": "stretch_decay",
+                "label": "Stretch Decay",
                 "type": "Float"
             },
             "gradient_scale": {

@@ -38,6 +38,9 @@ constexpr const char *A_DAMP0          = "damp0";
 constexpr const char *A_WARP_SCALE     = "warp_scale";
 constexpr const char *A_DAMP_SCALE     = "damp_scale";
 constexpr const char *A_MU             = "mu";
+constexpr const char *A_ANGLE          = "angle";
+constexpr const char *A_STRETCH        = "stretch";
+constexpr const char *A_STRETCH_DECAY  = "stretch_decay";
 
 constexpr const char *G_FBM      = "FBM";
 constexpr const char *G_RIDGED   = "Ridged";
@@ -63,6 +66,29 @@ void setup_coherent_noise_node(BaseNode &node)
   node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_ENV);
   node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_OUT, CONFIG(node));
 
+  auto add_fbm_attributes = [&]()
+  {
+    node.set_current_category("FBM Layers");
+
+    // clang-format off
+    add_int(node, A_OCTAVES, "Octaves", 8, 0, 32);
+    add_float(node, A_WEIGHT, "Weight", 0.7f, 0.f, 1.f);
+    add_float(node, A_PERSISTENCE, "Persistence", 0.5f, 0.f, 1.f);
+    add_float(node, A_LACUNARITY, "Lacunarity", 2.f, 0.01f, 4.f);
+    // clang-format on
+  };
+
+  auto add_stretching_attributes = [&]()
+  {
+    node.set_current_category("Stretching");
+
+    // clang-format off
+    add_angle(node, A_ANGLE);
+    add_float(node, A_STRETCH, "Stretch Factor", 1.f, 1.f, 10.f);
+    add_float(node, A_STRETCH_DECAY, "Stretch Decay", 0.5f, 0.f, 1.f);
+    // clang-format on
+  };
+
   {
     node.set_current_group(G_FBM);
 
@@ -72,15 +98,12 @@ void setup_coherent_noise_node(BaseNode &node)
     add_enum(node, A_NOISE_TYPE, "Type", enum_mappings.noise_type_map_fbm);
     add_wavenumber(node, A_KW, "Spatial Frequency");
     add_seed(node, A_SEED, "Seed");
-
-    node.set_current_category("FBM Layers");
-
-    add_int(node, A_OCTAVES, "Octaves", 8, 0, 32);
-    add_float(node, A_WEIGHT, "Weight", 0.7f, 0.f, 1.f);
-    add_float(node, A_PERSISTENCE, "Persistence", 0.5f, 0.f, 1.f);
-    add_float(node, A_LACUNARITY, "Lacunarity", 2.f, 0.01f, 4.f);
-    add_bool(node, A_PERIODIC, "Periodic (tileable)", false);
     // clang-format on
+
+    add_fbm_attributes();
+    add_bool(node, A_PERIODIC, "Periodic (tileable)", false);
+
+    add_stretching_attributes();
 
     setup_post_process_heightmap_attributes(
         node,
@@ -96,15 +119,12 @@ void setup_coherent_noise_node(BaseNode &node)
     add_enum(node, A_NOISE_TYPE, "Type", enum_mappings.noise_type_map_fbm);
     add_wavenumber(node, A_KW, "Spatial Frequency");
     add_seed(node, A_SEED, "Seed");
-
-    node.set_current_category("FBM Layers");
-
-    add_int(node, A_OCTAVES, "Octaves", 8, 0, 32);
-    add_float(node, A_WEIGHT, "Weight", 0.7f, 0.f, 1.f);
-    add_float(node, A_PERSISTENCE, "Persistence", 0.5f, 0.f, 1.f);
-    add_float(node, A_LACUNARITY, "Lacunarity", 2.f, 0.01f, 4.f);
-    add_float(node, A_K_SMOOTHING, "k_smoothing", 0.2f, 0.f, 1.f);
     // clang-format on
+
+    add_fbm_attributes();
+    add_float(node, A_K_SMOOTHING, "k_smoothing", 0.2f, 0.f, 1.f);
+
+    add_stretching_attributes();
 
     setup_post_process_heightmap_attributes(
         node,
@@ -120,15 +140,12 @@ void setup_coherent_noise_node(BaseNode &node)
     add_enum(node, A_NOISE_TYPE, "Type", enum_mappings.noise_type_map_fbm);
     add_wavenumber(node, A_KW, "Spatial Frequency");
     add_seed(node, A_SEED, "Seed");
-
-    node.set_current_category("FBM Layers");
-
-    add_int(node, A_OCTAVES, "Octaves", 8, 0, 32);
-    add_float(node, A_WEIGHT, "Weight", 0.7f, 0.f, 1.f);
-    add_float(node, A_PERSISTENCE, "Persistence", 0.5f, 0.f, 1.f);
-    add_float(node, A_LACUNARITY, "Lacunarity", 2.f, 0.01f, 4.f);
-    add_float(node, A_GRADIENT_SCALE, "gradient_scale", 0.05f, 0.01f, 0.1f);
     // clang-format on
+
+    add_fbm_attributes();
+    add_float(node, A_GRADIENT_SCALE, "gradient_scale", 0.05f, 0.01f, 0.1f);
+
+    add_stretching_attributes();
 
     setup_post_process_heightmap_attributes(
         node,
@@ -144,13 +161,9 @@ void setup_coherent_noise_node(BaseNode &node)
     add_enum(node, A_NOISE_TYPE, "Type", enum_mappings.noise_type_map_fbm);
     add_wavenumber(node, A_KW, "Spatial Frequency");
     add_seed(node, A_SEED, "Seed");
+    // clang-format on
 
-    node.set_current_category("FBM Layers");
-
-    add_int(node, A_OCTAVES, "Octaves", 8, 0, 32);
-    add_float(node, A_WEIGHT, "Weight", 0.7f, 0.f, 1.f);
-    add_float(node, A_PERSISTENCE, "Persistence", 0.5f, 0.f, 1.f);
-    add_float(node, A_LACUNARITY, "Lacunarity", 2.f, 0.01f, 4.f);
+    add_fbm_attributes();
 
     node.set_current_category("Warp");
 
@@ -158,7 +171,10 @@ void setup_coherent_noise_node(BaseNode &node)
     add_float(node, A_DAMP0, "damp0", 1.f, 0.f, 1.f);
     add_float(node, A_WARP_SCALE, "warp_scale", 0.2f, 0.f, 1.f);
     add_float(node, A_DAMP_SCALE, "damp_scale", 1.f, 0.f, 1.f);
+
     // clang-format on
+
+    add_stretching_attributes();
 
     setup_post_process_heightmap_attributes(
         node,
@@ -173,15 +189,12 @@ void setup_coherent_noise_node(BaseNode &node)
 
     add_wavenumber(node, A_KW, "Spatial Frequency");
     add_seed(node, A_SEED, "Seed");
-
-    node.set_current_category("FBM Layers");
-
-    add_int(node, A_OCTAVES, "Octaves", 8, 0, 32);
-    add_float(node, A_WEIGHT, "Weight", 0.7f, 0.f, 1.f);
-    add_float(node, A_PERSISTENCE, "Persistence", 0.5f, 0.f, 1.f);
-    add_float(node, A_LACUNARITY, "Lacunarity", 2.f, 0.01f, 4.f);
-    add_float(node, A_MU, "mu", 1.02f, 1.f, 1.2f);
     // clang-format on
+
+    add_fbm_attributes();
+    add_float(node, A_MU, "mu", 1.02f, 1.f, 1.2f);
+
+    add_stretching_attributes();
 
     setup_post_process_heightmap_attributes(
         node,
@@ -197,14 +210,11 @@ void setup_coherent_noise_node(BaseNode &node)
     add_enum(node, A_NOISE_TYPE, "Type", enum_mappings.noise_type_map_fbm);
     add_wavenumber(node, A_KW, "Spatial Frequency");
     add_seed(node, A_SEED, "Seed");
-
-    node.set_current_category("FBM Layers");
-
-    add_int(node, A_OCTAVES, "Octaves", 8, 0, 32);
-    add_float(node, A_WEIGHT, "Weight", 0.7f, 0.f, 1.f);
-    add_float(node, A_PERSISTENCE, "Persistence", 0.5f, 0.f, 1.f);
-    add_float(node, A_LACUNARITY, "Lacunarity", 2.f, 0.01f, 4.f);
     // clang-format on
+
+    add_fbm_attributes();
+
+    add_stretching_attributes();
 
     setup_post_process_heightmap_attributes(
         node,
@@ -220,15 +230,12 @@ void setup_coherent_noise_node(BaseNode &node)
     add_enum(node, A_NOISE_TYPE, "Type", enum_mappings.noise_type_map_fbm);
     add_wavenumber(node, A_KW, "Spatial Frequency");
     add_seed(node, A_SEED, "Seed");
-
-    node.set_current_category("FBM Layers");
-
-    add_int(node, A_OCTAVES, "Octaves", 8, 0, 32);
-    add_float(node, A_WEIGHT, "Weight", 0.7f, 0.f, 1.f);
-    add_float(node, A_PERSISTENCE, "Persistence", 0.5f, 0.f, 1.f);
-    add_float(node, A_LACUNARITY, "Lacunarity", 2.f, 0.01f, 4.f);
-    add_float(node, A_WARP_SCALE, "warp_scale", 0.1f, 0.f, 0.5f);
     // clang-format on
+
+    add_fbm_attributes();
+    add_float(node, A_WARP_SCALE, "warp_scale", 0.1f, 0.f, 0.5f);
+
+    add_stretching_attributes();
 
     setup_post_process_heightmap_attributes(
         node,
@@ -272,12 +279,15 @@ void compute_coherent_noise_node(BaseNode &node)
 
   // --- Common parameters
 
-  const auto kw          = node.val_wavenumber(A_KW);
-  const auto seed        = node.val<int>(A_SEED);
-  const auto octaves     = node.val<int>(A_OCTAVES);
-  const auto weight      = node.val<float>(A_WEIGHT);
-  const auto persistence = node.val<float>(A_PERSISTENCE);
-  const auto lacunarity  = node.val<float>(A_LACUNARITY);
+  const auto kw            = node.val_wavenumber(A_KW);
+  const auto seed          = node.val<int>(A_SEED);
+  const auto octaves       = node.val<int>(A_OCTAVES);
+  const auto weight        = node.val<float>(A_WEIGHT);
+  const auto persistence   = node.val<float>(A_PERSISTENCE);
+  const auto lacunarity    = node.val<float>(A_LACUNARITY);
+  const auto angle         = node.val<float>(A_ANGLE);
+  const auto stretch       = node.val<float>(A_STRETCH);
+  const auto stretch_decay = node.val<float>(A_STRETCH_DECAY);
 
   // --- Compute
 
@@ -323,7 +333,10 @@ void compute_coherent_noise_node(BaseNode &node)
                                          pa_dx,
                                          pa_dy,
                                          region.bbox,
-                                         period);
+                                         period,
+                                         angle,
+                                         stretch,
+                                         stretch_decay);
         },
         node.cfg().cm_gpu);
   }
@@ -354,7 +367,10 @@ void compute_coherent_noise_node(BaseNode &node)
                                        pa_ctrl,
                                        pa_dx,
                                        pa_dy,
-                                       region.bbox);
+                                       region.bbox,
+                                       angle,
+                                       stretch,
+                                       stretch_decay);
         },
         node.cfg().cm_cpu);
   }
@@ -385,7 +401,10 @@ void compute_coherent_noise_node(BaseNode &node)
                                    pa_ctrl,
                                    pa_dx,
                                    pa_dy,
-                                   region.bbox);
+                                   region.bbox,
+                                   angle,
+                                   stretch,
+                                   stretch_decay);
         },
         node.cfg().cm_cpu);
   }
@@ -422,7 +441,10 @@ void compute_coherent_noise_node(BaseNode &node)
                                        pa_ctrl,
                                        pa_dx,
                                        pa_dy,
-                                       region.bbox);
+                                       region.bbox,
+                                       angle,
+                                       stretch,
+                                       stretch_decay);
         },
         node.cfg().cm_cpu);
   }
@@ -451,7 +473,10 @@ void compute_coherent_noise_node(BaseNode &node)
                                          pa_ctrl,
                                          pa_dx,
                                          pa_dy,
-                                         region.bbox);
+                                         region.bbox,
+                                         angle,
+                                         stretch,
+                                         stretch_decay);
         },
         node.cfg().cm_cpu);
   }
@@ -480,7 +505,10 @@ void compute_coherent_noise_node(BaseNode &node)
                                          pa_ctrl,
                                          pa_dx,
                                          pa_dy,
-                                         region.bbox);
+                                         region.bbox,
+                                         angle,
+                                         stretch,
+                                         stretch_decay);
         },
         node.cfg().cm_cpu);
   }
@@ -511,7 +539,10 @@ void compute_coherent_noise_node(BaseNode &node)
                                       pa_ctrl,
                                       pa_dx,
                                       pa_dy,
-                                      region.bbox);
+                                      region.bbox,
+                                      angle,
+                                      stretch,
+                                      stretch_decay);
         },
         node.cfg().cm_cpu);
   }
