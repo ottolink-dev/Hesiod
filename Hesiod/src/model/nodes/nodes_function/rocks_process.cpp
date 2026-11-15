@@ -21,11 +21,13 @@ constexpr const char *P_INPUT        = "input";
 constexpr const char *P_OUTPUT       = "output";
 constexpr const char *P_ELEVATION    = "elevation";
 constexpr const char *P_DENSITY_MASK = "density_mask";
+constexpr const char *P_DENSITY      = "density";
 
 constexpr const char *A_SCALE_RADIUS             = "scale_radius";
 constexpr const char *A_PRUNE_COLLISIONS         = "prune_collisions";
 constexpr const char *A_PRUNE_DENSITY            = "prune_density";
 constexpr const char *A_REINFORCE_CLASS_CLUSTERS = "reinforce_class_clusters";
+constexpr const char *A_COMPUTE_DENSITY          = "compute_density";
 constexpr const char *A_SEED                     = "seed";
 
 void setup_rocks_process_node(BaseNode &node)
@@ -38,6 +40,7 @@ void setup_rocks_process_node(BaseNode &node)
   node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_ELEVATION);
   node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_DENSITY_MASK);
   node.add_port<hmap::RockField>(gnode::PortType::OUT, P_OUTPUT);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_DENSITY, CONFIG(node));
 
   // --- Attributes
 
@@ -45,6 +48,7 @@ void setup_rocks_process_node(BaseNode &node)
   add_bool(node, A_PRUNE_COLLISIONS, "Prune Collisions", false);
   add_float(node, A_PRUNE_DENSITY, "Prune Density", 1.0f, 0.0f, 1.0f);
   add_int(node, A_REINFORCE_CLASS_CLUSTERS, "Reinforce Class Clusters", 0, 0, 16);
+  add_bool(node, A_COMPUTE_DENSITY, "Compute Density", false);
   add_seed(node, A_SEED, "Seed");
 }
 
@@ -58,9 +62,13 @@ void compute_rocks_process_node(BaseNode &node)
   auto *p_out_rocks    = node.get_value_ref<hmap::RockField>(P_OUTPUT);
   auto *p_elevation    = node.get_value_ref<hmap::VirtualArray>(P_ELEVATION);
   auto *p_density_mask = node.get_value_ref<hmap::VirtualArray>(P_DENSITY_MASK);
+  auto *p_out_density  = node.get_value_ref<hmap::VirtualArray>(P_DENSITY);
 
   if (!p_in_rocks || p_in_rocks->empty())
+  {
+    p_out_density->fill(0.0f, node.cfg().cm_cpu);
     return;
+  }
 
   *p_out_rocks = *p_in_rocks;
 
@@ -70,6 +78,7 @@ void compute_rocks_process_node(BaseNode &node)
   const auto prune_collisions         = node.val<bool>(A_PRUNE_COLLISIONS);
   const auto prune_density_ratio      = node.val<float>(A_PRUNE_DENSITY);
   const auto reinforce_class_clusters = node.val<int>(A_REINFORCE_CLASS_CLUSTERS);
+  const auto compute_density          = node.val<bool>(A_COMPUTE_DENSITY);
   const auto base_seed                = static_cast<uint32_t>(node.val<int>(A_SEED));
 
   // --- Set elevation from heightmap (optional input)
@@ -148,6 +157,30 @@ void compute_rocks_process_node(BaseNode &node)
   if (reinforce_class_clusters > 0 && !p_out_rocks->empty())
   {
     p_out_rocks->reinforce_class_clusters(static_cast<size_t>(reinforce_class_clusters));
+  }
+
+  // --- Density estimator
+
+  if (compute_density && !p_out_rocks->empty())
+  {
+    hmap::for_each_tile(
+        *p_out_density,
+        [&](hmap::Array            &density,
+            const hmap::TileRegion &region,
+            hmap::ICommunicator    &comm)
+        {
+          density = p_out_rocks->to_density_map(density.shape,
+                                                0.0f,
+                                                std::nullopt,
+                                                false,
+                                                region,
+                                                comm);
+        },
+        node.cfg().cm_cpu);
+  }
+  else
+  {
+    p_out_density->fill(0.0f, node.cfg().cm_cpu);
   }
 }
 
