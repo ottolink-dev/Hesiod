@@ -144,15 +144,15 @@ jobs:
           if-no-files-found: error
           retention-days: 14
 
-  build-macos:
-    needs: source
-    uses: ./.github/workflows/macos-build.yml
-    with:
-      source-ref: ${{ needs.source.outputs.sha }}
-      artifact-name: weekly-macos
+  # build-macos:
+  #   needs: source
+  #   uses: ./.github/workflows/macos-build.yml
+  #   with:
+  #     source-ref: ${{ needs.source.outputs.sha }}
+  #     artifact-name: weekly-macos
 
   publish:
-    needs: [source, build, build-macos]
+    needs: [source, build]
     if: >-
       github.repository == 'ottolink-dev/Hesiod' &&
       (github.event_name == 'schedule' || inputs.publish)
