@@ -53,7 +53,7 @@ jobs:
       - name: Test the dependency audit
         run: python3 -m unittest discover -s tests/ci -p 'test_macos*.py' -v
       - name: Verify executable architecture
-        run: lipo -verify_arch arm64 build/macos/bin/Hesiod.app/Contents/MacOS/Hesiod
+        run: lipo build/macos/bin/Hesiod.app/Contents/MacOS/Hesiod -verify_arch arm64
       - name: Package standalone app (ad-hoc signed, not notarized)
         run: python3 scripts/macos/package_app.py --output output/macos-package
       - name: Audit all bundled libraries and signatures
