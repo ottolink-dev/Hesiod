@@ -79,6 +79,8 @@ void apply_node_status_icons(const std::string      &node_type,
       "MakePeriodic",          // TODO
       "MakePeriodicStitching", // TODO
       "Mudslide",              // TODO
+      "NodeIn",                // TODO
+      "NodeOut",               // TODO
       "Preview",
       "QuiltingBlend",          // TODO
       "QuiltingExpand",         // TODO
