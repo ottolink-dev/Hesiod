@@ -33,7 +33,7 @@ public:
   std::shared_ptr<GraphNode> get_shared();
 
   // --- Serialization ---
-  void json_from(nlohmann::json const &json, GraphConfig *p_input_config = nullptr);
+  void json_from(nlohmann::json const &json, const GraphConfig *p_input_config = nullptr);
   nlohmann::json json_to() const;
 
   // --- Config. ---

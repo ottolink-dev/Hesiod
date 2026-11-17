@@ -129,7 +129,7 @@ std::shared_ptr<GraphNode> GraphNode::get_shared()
   }
 }
 
-void GraphNode::json_from(nlohmann::json const &json, GraphConfig *p_input_config)
+void GraphNode::json_from(nlohmann::json const &json, const GraphConfig *p_input_config)
 {
   Logger::log()->trace("GraphNode::json_from, graph {}", this->get_id());
 
