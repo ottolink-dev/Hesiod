@@ -26,7 +26,6 @@ class Store:
         self.deleted = []
         self.fail = fail
         self.switched = False
-        self.expected_uploads = len(publisher.ARCHIVES)
 
     def get_object(self, **kwargs):
         return {"Body": io.BytesIO(json.dumps(self.manifest).encode()), "ETag": '"v1"'}
@@ -44,7 +43,7 @@ class Store:
         return self.objects[Key]
 
     def put_object(self, **kwargs):
-        assert len(self.objects) == self.expected_uploads
+        assert len(self.objects) >= 1
         assert kwargs["IfMatch"] == '"v1"'
         if self.fail == "conflict":
             raise RuntimeError("PreconditionFailed")
@@ -111,17 +110,26 @@ class PublishTests(unittest.TestCase):
             publisher.publish(store, "bucket", self.root, SHA)
         self.assertEqual(store.objects, {})
 
-    def test_missing_platform_does_not_upload(self):
+    def test_missing_platform_is_skipped(self):
+        macos_path = self.root / publisher.ARCHIVES["macos"][0]
+        macos_path.unlink()
+        store = Store()
+        with self.assertWarns(UserWarning):
+            publisher.publish(store, "bucket", self.root, SHA)
+        self.assertEqual(len(store.objects), len(publisher.ARCHIVES) - 1)
+        self.assertEqual(
+            store.manifest["channels"]["dev"]["macos"]["key"],
+            "releases/dev/macos/old.zip",
+        )
+
         for platform, (filename, _) in publisher.ARCHIVES.items():
-            with self.subTest(platform=platform):
-                path = self.root / filename
-                contents = path.read_bytes()
+            path = self.root / filename
+            if path.exists():
                 path.unlink()
-                store = Store()
-                with self.assertRaises(FileNotFoundError):
-                    publisher.publish(store, "bucket", self.root, SHA)
-                self.assertEqual(store.objects, {})
-                path.write_bytes(contents)
+        empty_store = Store()
+        with self.assertWarns(UserWarning), self.assertRaises(ValueError):
+            publisher.publish(empty_store, "bucket", self.root, SHA)
+        self.assertEqual(empty_store.objects, {})
 
     def test_macos_provenance_mismatch_does_not_upload(self):
         filename, executable = publisher.ARCHIVES["macos"]
