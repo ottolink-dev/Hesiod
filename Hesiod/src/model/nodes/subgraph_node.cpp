@@ -309,7 +309,12 @@ void SubGraphNode::json_from(nlohmann::json const &json)
     if (!this->subgraph)
       this->subgraph = std::make_shared<GraphNode>("subgraph",
                                                    std::make_shared<GraphConfig>());
-    this->subgraph->json_from(json["subgraph"]);
+
+    GraphConfig *p_override = nullptr;
+    if (this->val<bool>("inherit_config"))
+      p_override = const_cast<GraphConfig *>(this->get_config_ref().get());
+
+    this->subgraph->json_from(json["subgraph"], p_override);
   }
 
   if (json.contains("subgraph_ui") && json["subgraph_ui"].is_object())

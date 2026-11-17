@@ -26,10 +26,19 @@ void override_export_nodes_settings(const std::string           &fname,
   nlohmann::json json = json_from_file(fname);
 
   // modify
-  for (auto &[key, value] : json["graph_manager"]["graph_nodes"].items())
+  auto process_nodes = [&](auto &self, nlohmann::json &nodes_json) -> void
   {
-    for (auto &j : value["nodes"])
+    if (!nodes_json.is_array())
+      return;
+
+    for (auto &j : nodes_json)
     {
+      if (j.contains("subgraph") && j["subgraph"].is_object() &&
+          j["subgraph"].contains("nodes"))
+      {
+        self(self, j["subgraph"]["nodes"]);
+      }
+
       const std::string node_label = j.value("label", "");
       const std::string node_id = j.value("id", "");
 
@@ -145,7 +154,10 @@ void override_export_nodes_settings(const std::string           &fname,
       // also check top-level node for legacy format
       process_container(j);
     }
-  }
+  };
+
+  for (auto &[key, value] : json["graph_manager"]["graph_nodes"].items())
+    process_nodes(process_nodes, value["nodes"]);
 
   // write back
   json_to_file(json, fname);
