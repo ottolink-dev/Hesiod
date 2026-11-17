@@ -1335,6 +1335,17 @@ void GraphNodeWidget::setup_connections()
                 &GraphNodeWidget::on_node_right_clicked);
 
   this->connect(this,
+                &gngui::GraphViewer::node_double_clicked,
+                this,
+                [this](const std::string &node_id)
+                {
+                  if (auto gno = this->p_graph_node.lock())
+                    if (auto *p_node = gno->get_node_ref_by_id<BaseNode>(node_id))
+                      if (p_node->get_node_type() == "SubGraph")
+                        Q_EMIT this->open_subgraph_requested(node_id);
+                });
+
+  this->connect(this,
                 &gngui::GraphViewer::nodes_copy_request,
                 this,
                 &GraphNodeWidget::on_nodes_copy_request);
