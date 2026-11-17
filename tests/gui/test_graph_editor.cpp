@@ -27,6 +27,7 @@
 #include "hesiod/model/graph/graph_manager.hpp"
 #include "hesiod/model/graph/graph_node.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
+#include "hesiod/model/nodes/subgraph_node.hpp"
 #include "hesiod/model/nodes/node_factory.hpp"
 #include "hesiod/model/utils.hpp"
 
@@ -1052,6 +1053,80 @@ private Q_SLOTS:
                QUrl::fromLocalFile(tmp_dir.path())},
               QPointF(250.0, 250.0));
     QCOMPARE(f.graph->get_nodes().size(), size_t(4));
+  }
+
+  void subgraph_dynamic_ports_and_heterogeneity()
+  {
+    Fixture f;
+    f.graph->get_config_ref()->set_shape({256, 256});
+
+    const auto src_id = f.editor.add_node("Constant", QPointF(0.0, 0.0));
+    const auto sg_id = f.editor.add_node("SubGraph", QPointF(200.0, 0.0));
+    const auto dst_id = f.editor.add_node("Abs", QPointF(400.0, 0.0));
+
+    auto *sg = f.graph->get_node_ref_by_id<hesiod::SubGraphNode>(sg_id);
+    QVERIFY(sg != nullptr);
+    if (auto *gn = f.view.get_graphics_node_by_id(sg_id))
+    {
+      auto *proxy = gn->get_proxy_ref();
+      sg->ports_updated = [proxy]() { Q_EMIT proxy->ports_changed(); };
+    }
+    sg->set_value<bool>("inherit_config", false);
+    sg->get_subgraph()->get_config_ref()->set_shape({128, 128});
+
+    const auto in1_id = sg->get_subgraph()->add_node("NodeIn");
+    const auto in2_id = sg->get_subgraph()->add_node("NodeIn");
+    const auto out_id = sg->get_subgraph()->add_node("NodeOut");
+    sg->get_subgraph()->get_node_ref_by_id<hesiod::BaseNode>(in1_id)->set_value<std::string>(
+        "slot_name",
+        "a");
+    sg->get_subgraph()->get_node_ref_by_id<hesiod::BaseNode>(in2_id)->set_value<std::string>(
+        "slot_name",
+        "b");
+    sg->get_subgraph()->get_node_ref_by_id<hesiod::BaseNode>(out_id)->set_value<std::string>(
+        "slot_name",
+        "output");
+    sg->get_subgraph()->new_link(in1_id, "value", out_id, "value");
+    sg->auto_bind_ports();
+
+    QVERIFY(sg->has_port("a"));
+    QVERIFY(sg->has_port("b"));
+    QVERIFY(sg->has_port("output"));
+
+    QVERIFY(f.editor.connect({src_id, "output", sg_id, "a"}));
+    QVERIFY(f.editor.connect({src_id, "output", sg_id, "b"}));
+    QVERIFY(f.editor.connect({sg_id, "output", dst_id, "input"}));
+    QVERIFY(consistent(*f.graph, f.view));
+    QCOMPARE(f.graph->get_links().size(), size_t(3));
+
+    // Deleting NodeIn("a") must remove port "a", destroy its parent link, and
+    // preserve the shifted links for "b" and "out"
+    sg->get_subgraph()->remove_node(in1_id);
+    sg->auto_bind_ports();
+
+    QVERIFY(!sg->has_port("a"));
+    QVERIFY(sg->has_port("b"));
+    QVERIFY(sg->has_port("output"));
+    QCOMPARE(f.graph->get_links().size(), size_t(2));
+    QVERIFY(consistent(*f.graph, f.view));
+
+    f.graph->update();
+    auto *dst_out =
+        f.graph->get_node_ref_by_id(dst_id)->get_value_ref<hmap::VirtualArray>("output");
+    QVERIFY(dst_out != nullptr);
+    QCOMPARE(dst_out->shape, glm::ivec2(256, 256));
+
+    // Serialization round-trip
+    const nlohmann::json saved = f.graph->json_to();
+    auto                 reloaded = std::make_shared<hesiod::GraphNode>(
+        "reloaded",
+        std::make_shared<hesiod::GraphConfig>());
+    reloaded->json_from(saved);
+    auto *reloaded_sg = reloaded->get_node_ref_by_id<hesiod::SubGraphNode>(sg_id);
+    QVERIFY(reloaded_sg != nullptr);
+    QVERIFY(reloaded_sg->has_port("b"));
+    QVERIFY(reloaded_sg->has_port("output"));
+    QCOMPARE(reloaded->get_links().size(), size_t(2));
   }
 };
 

@@ -7,6 +7,8 @@
 #include "hesiod/gui/widgets/node_widgets/node_palette_sidebar.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 
+class QHBoxLayout;
+class QStackedWidget;
 class QToolButton;
 class QUndoStack;
 
@@ -17,6 +19,7 @@ class GraphNode; // forward
 class GraphNodeWidget;
 class GraphTabStrip;
 class NodeSettingsWidget;
+class SubGraphNode;
 class Viewer3D;
 
 // =====================================
@@ -45,14 +48,29 @@ signals:
   void node_library_toggle_requested();
 
 private:
+  struct SubGraphLevel
+  {
+    GraphNodeWidget            *gnw = nullptr;
+    std::weak_ptr<SubGraphNode> owner_sg;
+    std::string                 sg_node_id;
+    std::string                 label;
+  };
+
+  void navigate_to_level(size_t level_index);
+  void open_subgraph(const std::string &node_id);
+  void rebuild_breadcrumbs();
   void setup_connections();
   void setup_layout();
 
-  std::weak_ptr<GraphNode> p_graph_node;
-  QUndoStack              *undo_stack = nullptr;
-  GraphNodeWidget         *graph_node_widget = nullptr;
-  GraphTabStrip           *tab_strip = nullptr; // graph tabs on the editor's top edge
-  NodeSettingsWidget      *node_settings_widget = nullptr;
+  std::weak_ptr<GraphNode>   p_graph_node;
+  QUndoStack                *undo_stack = nullptr;
+  GraphNodeWidget           *graph_node_widget = nullptr;
+  QStackedWidget            *graph_stack = nullptr;
+  QWidget                   *breadcrumb_bar = nullptr;
+  QHBoxLayout               *breadcrumb_layout = nullptr;
+  std::vector<SubGraphLevel> nav_stack;
+  GraphTabStrip             *tab_strip = nullptr; // graph tabs on the editor's top edge
+  NodeSettingsWidget        *node_settings_widget = nullptr;
 
   // exactly one of these is built, chosen by
   // interface.enable_node_palette_sidebar; the other stays null

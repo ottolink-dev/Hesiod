@@ -48,6 +48,22 @@ void NodeSettingsWidget::restyle_all()
       w->update_content();
 }
 
+void NodeSettingsWidget::set_graph_node_widget(QPointer<GraphNodeWidget> p_gnw)
+{
+  if (this->p_graph_node_widget == p_gnw)
+    return;
+
+  if (this->p_graph_node_widget)
+    this->disconnect(this->p_graph_node_widget, nullptr, this, nullptr);
+
+  this->p_graph_node_widget = p_gnw;
+  this->last_selected_ids.clear();
+  this->pinned_node_ids.clear();
+
+  this->setup_connections();
+  this->update_content();
+}
+
 void NodeSettingsWidget::setup_connections()
 {
   Logger::log()->trace("NodeSettingsWidget::setup_connections");

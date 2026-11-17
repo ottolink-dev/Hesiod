@@ -50,6 +50,7 @@
 #include "hesiod/model/nodes/legacy/legacy_converter.hpp"
 #include "hesiod/model/nodes/node_factory.hpp"
 #include "hesiod/model/nodes/port_catalog.hpp"
+#include "hesiod/model/nodes/subgraph_node.hpp"
 #include "hesiod/model/utils.hpp"
 
 namespace hesiod
@@ -901,6 +902,14 @@ void GraphNodeWidget::on_new_graphics_node_request(const std::string &node_id,
     return;
   }
   auto *p_proxy = new HesiodNodeProxy(p_node->get_shared(), this);
+  if (auto *p_sg = dynamic_cast<SubGraphNode *>(p_node))
+  {
+    p_sg->ports_updated = [safe_proxy = QPointer(p_proxy)]()
+    {
+      if (safe_proxy)
+        Q_EMIT safe_proxy->ports_changed();
+    };
+  }
   auto *widget = node_widget_factory(p_node->get_label(), p_node->get_shared(), this);
 
   this->add_node(p_proxy, scene_pos, node_id);

@@ -46,7 +46,7 @@ public:
   // --- Configuration ---
   const GraphConfig                 &cfg() const;
   std::shared_ptr<const GraphConfig> get_config_ref() const;
-  void                               propagate_config_change();
+  virtual void                       propagate_config_change();
 
   // the shape of the graph when its data was last computed, 0 if never
   glm::ivec2 get_computed_shape() const { return this->computed_shape; }

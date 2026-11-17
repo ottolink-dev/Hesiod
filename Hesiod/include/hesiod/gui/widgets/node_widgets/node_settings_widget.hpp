@@ -23,6 +23,7 @@ public:
   NodeSettingsWidget(QPointer<GraphNodeWidget> p_graph_node_widget,
                      QWidget                  *parent = nullptr);
 
+  void set_graph_node_widget(QPointer<GraphNodeWidget> p_gnw);
   void update_content();
 
   static void restyle_all();

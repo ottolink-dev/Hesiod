@@ -167,6 +167,13 @@ void DataPreview::update_preview()
     return;
   }
 
+  if (this->preview_port_index < 0 || this->preview_port_index >= p_model->get_nports())
+  {
+    this->preview_pixmap = QPixmap();
+    this->update();
+    return;
+  }
+
   void             *blind_ptr = p_model->get_value_ref_void(preview_port_index);
   const std::string data_type = p_model->get_data_type(preview_port_index);
 

@@ -4,10 +4,15 @@
 #include <algorithm>
 
 #include <QGridLayout>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QPushButton>
 #include <QSplitter>
+#include <QStackedWidget>
 #include <QTimer>
 #include <QToolButton>
 #include <QUndoStack>
+#include <QVBoxLayout>
 
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/widgets/containers/graph_workspace_widget.hpp"
@@ -25,6 +30,7 @@
 #include "hesiod/logger.hpp"
 #include "hesiod/model/graph/graph_node.hpp"
 #include "hesiod/model/nodes/node_factory.hpp"
+#include "hesiod/model/nodes/subgraph_node.hpp"
 
 namespace hesiod
 {
@@ -238,6 +244,24 @@ void GraphWorkspaceWidget::setup_layout()
   this->graph_node_widget->setMinimumWidth(50); // let the graph pane shrink so the
                                                 // settings pane can be dragged wider
 
+  this->graph_stack = new QStackedWidget();
+  this->graph_stack->addWidget(this->graph_node_widget);
+  this->nav_stack.push_back(
+      {this->graph_node_widget, {}, "", gno->get_id().empty() ? "Root" : gno->get_id()});
+
+  this->breadcrumb_bar = new QWidget();
+  this->breadcrumb_layout = new QHBoxLayout(this->breadcrumb_bar);
+  this->breadcrumb_layout->setContentsMargins(8, 4, 8, 4);
+  this->breadcrumb_layout->setSpacing(4);
+  this->breadcrumb_bar->setVisible(false);
+
+  auto *editor_container = new QWidget();
+  auto *editor_layout = new QVBoxLayout(editor_container);
+  editor_layout->setContentsMargins(0, 0, 0, 0);
+  editor_layout->setSpacing(0);
+  editor_layout->addWidget(this->breadcrumb_bar);
+  editor_layout->addWidget(this->graph_stack, 1);
+
   // skip the 3D viewer (OpenGL) in headless CLI modes (e.g. --snapshot).
   if (!HSD_CTX.headless)
   {
@@ -250,7 +274,7 @@ void GraphWorkspaceWidget::setup_layout()
   // the graph fills its card, with the project's graphs as tabs on its left
   // edge (GraphTabsWidget keeps every workspace's strip in step)
   this->tab_strip = new GraphTabStrip(Qt::Vertical);
-  QWidget *graph_card = wrap(this->graph_node_widget);
+  QWidget *graph_card = wrap(editor_container);
   auto    *tabbed_card = new TabbedCard(graph_card, this->tab_strip);
   v_splitter->addWidget(tabbed_card);
 
@@ -404,6 +428,175 @@ void GraphWorkspaceWidget::setup_layout()
                   &QToolButton::clicked,
                   this,
                   [this]() { Q_EMIT this->node_library_toggle_requested(); });
+
+  this->connect(this->graph_node_widget,
+                &GraphNodeWidget::open_subgraph_requested,
+                this,
+                &GraphWorkspaceWidget::open_subgraph);
+}
+
+void GraphWorkspaceWidget::open_subgraph(const std::string &node_id)
+{
+  if (this->nav_stack.empty())
+    return;
+
+  GraphNodeWidget *parent_gnw = this->nav_stack.back().gnw;
+  if (!parent_gnw)
+    return;
+
+  GraphNode *parent_gno = parent_gnw->get_p_graph_node();
+  if (!parent_gno)
+    return;
+
+  auto *p_sg = parent_gno->get_node_ref_by_id<SubGraphNode>(node_id);
+  if (!p_sg || !p_sg->get_subgraph_shared())
+    return;
+
+  auto *child_gnw = new GraphNodeWidget(p_sg->get_subgraph_shared());
+  child_gnw->setMinimumWidth(50);
+  if (this->viewer)
+    child_gnw->set_preview_viewer(this->viewer);
+
+  if (!p_sg->get_pending_subgraph_ui_json().is_null() &&
+      !p_sg->get_pending_subgraph_ui_json().empty())
+  {
+    child_gnw->json_from(p_sg->get_pending_subgraph_ui_json());
+  }
+
+  std::weak_ptr<SubGraphNode> weak_sg = std::dynamic_pointer_cast<SubGraphNode>(
+      p_sg->get_shared());
+
+  p_sg->subgraph_ui_provider = [child_gnw]() { return child_gnw->json_to(); };
+
+  auto sync_and_update_parent = [weak_sg, parent_gnw, node_id]()
+  {
+    if (auto sg = weak_sg.lock())
+    {
+      sg->auto_bind_ports();
+      if (parent_gnw)
+        parent_gnw->update_graph_model(node_id);
+    }
+  };
+
+  this->connect(child_gnw,
+                &GraphNodeWidget::new_node_created,
+                this,
+                [sync_and_update_parent](const std::string &, const std::string &)
+                { sync_and_update_parent(); });
+  this->connect(child_gnw,
+                &GraphNodeWidget::node_deleted,
+                this,
+                [sync_and_update_parent](const std::string &, const std::string &)
+                { sync_and_update_parent(); });
+  this->connect(child_gnw, &GraphNodeWidget::graph_edited, this, sync_and_update_parent);
+  this->connect(child_gnw,
+                &GraphNodeWidget::update_finished,
+                this,
+                sync_and_update_parent);
+  this->connect(child_gnw,
+                &GraphNodeWidget::open_subgraph_requested,
+                this,
+                &GraphWorkspaceWidget::open_subgraph);
+  this->connect(child_gnw,
+                &GraphNodeWidget::config_changed,
+                this,
+                [weak_sg, parent_gnw, child_gnw]()
+                {
+                  if (auto sg = weak_sg.lock())
+                  {
+                    if (!sg->is_syncing_config() && sg->val<bool>("inherit_config") &&
+                        parent_gnw && child_gnw && sg->get_subgraph())
+                    {
+                      parent_gnw->apply_new_config(*sg->get_subgraph()->get_config_ref());
+                    }
+                  }
+                });
+
+  this->graph_stack->addWidget(child_gnw);
+  this->graph_stack->setCurrentWidget(child_gnw);
+  this->nav_stack.push_back({child_gnw, weak_sg, node_id, "SubGraph (" + node_id + ")"});
+  if (this->node_settings_widget)
+    this->node_settings_widget->set_graph_node_widget(child_gnw);
+  this->rebuild_breadcrumbs();
+}
+
+void GraphWorkspaceWidget::navigate_to_level(size_t level_index)
+{
+  if (level_index >= this->nav_stack.size())
+    return;
+
+  while (this->nav_stack.size() > level_index + 1)
+  {
+    SubGraphLevel top = this->nav_stack.back();
+    this->nav_stack.pop_back();
+
+    if (auto sg = top.owner_sg.lock())
+    {
+      if (top.gnw)
+        sg->set_pending_subgraph_ui_json(top.gnw->json_to());
+      sg->subgraph_ui_provider = nullptr;
+
+      if (auto *sub = sg->get_subgraph())
+      {
+        sub->update_finished = [weak_sg = top.owner_sg]()
+        {
+          if (auto s = weak_sg.lock())
+            if (auto *parent_gno = dynamic_cast<GraphNode *>(s->get_p_graph()))
+              parent_gno->update(s->get_id());
+        };
+      }
+    }
+
+    if (top.gnw)
+    {
+      this->graph_stack->removeWidget(top.gnw);
+      top.gnw->deleteLater();
+    }
+  }
+
+  if (!this->nav_stack.empty() && this->nav_stack.back().gnw)
+  {
+    this->graph_stack->setCurrentWidget(this->nav_stack.back().gnw);
+    if (this->node_settings_widget)
+      this->node_settings_widget->set_graph_node_widget(this->nav_stack.back().gnw);
+  }
+
+  this->rebuild_breadcrumbs();
+}
+
+void GraphWorkspaceWidget::rebuild_breadcrumbs()
+{
+  if (!this->breadcrumb_layout || !this->breadcrumb_bar)
+    return;
+
+  clear_layout(this->breadcrumb_layout);
+
+  const bool show = this->nav_stack.size() > 1;
+  this->breadcrumb_bar->setVisible(show);
+  if (!show)
+    return;
+
+  for (size_t i = 0; i < this->nav_stack.size(); ++i)
+  {
+    if (i > 0)
+    {
+      auto *sep = new QLabel("›", this->breadcrumb_bar);
+      this->breadcrumb_layout->addWidget(sep);
+    }
+
+    auto *btn = new QPushButton(QString::fromStdString(this->nav_stack[i].label),
+                                this->breadcrumb_bar);
+    btn->setFlat(true);
+    btn->setCursor(Qt::PointingHandCursor);
+    btn->setEnabled(i + 1 < this->nav_stack.size());
+    this->connect(btn,
+                  &QPushButton::clicked,
+                  this,
+                  [this, i]() { this->navigate_to_level(i); });
+    this->breadcrumb_layout->addWidget(btn);
+  }
+
+  this->breadcrumb_layout->addStretch();
 }
 
 } // namespace hesiod

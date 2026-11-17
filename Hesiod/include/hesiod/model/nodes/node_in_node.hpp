@@ -1,0 +1,32 @@
+/* Copyright (c) 2026 Otto Link. Distributed under the terms of the GNU General Public
+   License. The full license is in the file LICENSE, distributed with this software. */
+#pragma once
+#include "gnode/subgraph.hpp"
+
+#include "hesiod/model/nodes/base_node.hpp"
+
+namespace hesiod
+{
+
+// =====================================
+// NodeInNode
+// =====================================
+class NodeInNode : public BaseNode, public gnode::ISubGraphInputNode
+{
+public:
+  NodeInNode(const std::string &label, std::weak_ptr<GraphConfig> config);
+
+  std::string get_slot_name() const override;
+  std::string get_data_type_name() const;
+  void        rebuild_port();
+
+  void register_on_parent(gnode::Node       *parent_node,
+                          const std::string &port_label) const override;
+
+  void pull_from_parent(gnode::Node *parent_node, const std::string &port_label) override;
+};
+
+void setup_node_in_node(BaseNode &node);
+void compute_node_in_node(BaseNode &node);
+
+} // namespace hesiod

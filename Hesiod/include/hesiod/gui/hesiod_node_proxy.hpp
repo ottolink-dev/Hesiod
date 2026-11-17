@@ -14,17 +14,18 @@ class HesiodNodeProxy : public gngui::NodeProxy
 public:
   HesiodNodeProxy(std::weak_ptr<BaseNode> model, QObject *owner);
 
-  std::string     get_id() const override;
-  void            set_id(const std::string &id) override;
-  std::string     get_caption() const override;
-  std::string     get_category() const override;
-  std::string     get_comment() const override;
-  std::string     get_tool_tip_text() const override;
-  int             get_nports() const override;
-  std::string     get_port_caption(int index) const override;
-  gngui::PortType get_port_type(int index) const override;
-  std::string     get_data_type(int index) const override;
-  void           *get_data_ref(int index) const override;
+  std::string                                  get_id() const override;
+  void                                         set_id(const std::string &id) override;
+  std::string                                  get_caption() const override;
+  std::string                                  get_category() const override;
+  std::string                                  get_comment() const override;
+  std::string                                  get_tool_tip_text() const override;
+  int                                          get_nports() const override;
+  std::string                                  get_port_caption(int index) const override;
+  gngui::PortType                              get_port_type(int index) const override;
+  std::string                                  get_data_type(int index) const override;
+  void                                        *get_data_ref(int index) const override;
+  std::unordered_map<std::string, std::string> consume_port_renames() override;
 
 private:
   std::weak_ptr<BaseNode> model;

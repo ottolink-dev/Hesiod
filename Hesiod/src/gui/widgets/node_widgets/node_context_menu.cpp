@@ -49,6 +49,12 @@ void GraphNodeWidget::show_node_context_menu(const std::string &node_id,
   const bool locked = this->preview_viewer && this->preview_viewer->is_locked_on(node_id);
 
   HsdMenu  menu(QString::fromStdString(node_type), this);
+  QAction *edit_subgraph = nullptr;
+  if (node_type == "SubGraph")
+  {
+    edit_subgraph = menu.addAction(HSD_ICON("account_tree"), "Edit Subgraph…");
+    menu.addSeparator();
+  }
   QAction *settings = menu.addAction(HSD_ICON("tune"), "Settings…");
   menu.addSeparator();
   QAction *refresh = menu.addAction(HSD_ICON("refresh"), "Refresh");
@@ -90,7 +96,9 @@ void GraphNodeWidget::show_node_context_menu(const std::string &node_id,
     positions = {this->get_graphics_node_by_id(node_id)->pos()};
   }
 
-  if (chosen == settings)
+  if (chosen == edit_subgraph && edit_subgraph != nullptr)
+    Q_EMIT this->open_subgraph_requested(node_id);
+  else if (chosen == settings)
     this->show_node_settings_popup(node_id, global_pos);
   else if (chosen == refresh)
     this->update_graph_model(node_id);

@@ -6,6 +6,7 @@
 #include <utility>
 
 #include "hesiod/model/nodes/base_node.hpp"
+#include "hesiod/model/nodes/subgraph_node.hpp"
 
 namespace hesiod
 {
@@ -90,5 +91,13 @@ void *HesiodNodeProxy::get_data_ref(int index) const
   if (auto node = model.lock())
     return node->get_value_ref_void(index);
   return nullptr;
+}
+
+std::unordered_map<std::string, std::string> HesiodNodeProxy::consume_port_renames()
+{
+  if (auto node = model.lock())
+    if (auto *sg = dynamic_cast<SubGraphNode *>(node.get()))
+      return sg->consume_port_renames();
+  return {};
 }
 } // namespace hesiod
