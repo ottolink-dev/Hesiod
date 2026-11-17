@@ -93,6 +93,16 @@ std::string NodeOutNode::get_data_type_name() const
 
 void NodeOutNode::rebuild_port()
 {
+  if (gnode::Graph *g = this->get_p_graph())
+  {
+    std::vector<gnode::Link> to_remove;
+    for (const auto &l : g->get_links())
+      if (l.to == this->get_id())
+        to_remove.push_back(l);
+    for (const auto &l : to_remove)
+      g->remove_link(l.from, l.port_from, l.to, l.port_to);
+  }
+
   if (this->has_port("value"))
     this->remove_port("value");
 
@@ -244,9 +254,18 @@ void setup_node_out_node(BaseNode &node)
     node.add_port<hmap::VirtualArray>(gnode::PortType::IN, "value");
 }
 
-void compute_node_out_node(BaseNode & /* node */)
+void compute_node_out_node(BaseNode &node)
 {
-  // Data is pushed to parent SubGraphNode by SubGraphNode::compute_subgraph()
+  if (auto *p_out = dynamic_cast<NodeOutNode *>(&node))
+  {
+    if (p_out->get_nports() == 0 ||
+        map_type_name(p_out->get_data_type(0)) != p_out->get_data_type_name())
+    {
+      p_out->rebuild_port();
+      if (p_out->ports_updated)
+        p_out->ports_updated();
+    }
+  }
 }
 
 } // namespace hesiod

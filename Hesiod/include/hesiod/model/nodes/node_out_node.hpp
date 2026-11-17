@@ -1,6 +1,8 @@
 /* Copyright (c) 2026 Otto Link. Distributed under the terms of the GNU General Public
    License. The full license is in the file LICENSE, distributed with this software. */
 #pragma once
+#include <functional>
+
 #include "gnode/subgraph.hpp"
 
 #include "hesiod/model/nodes/base_node.hpp"
@@ -24,6 +26,8 @@ public:
                           const std::string &port_label) const override;
 
   void push_to_parent(gnode::Node *parent_node, const std::string &port_label) override;
+
+  std::function<void()> ports_updated;
 };
 
 void setup_node_out_node(BaseNode &node);

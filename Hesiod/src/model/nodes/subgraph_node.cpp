@@ -144,6 +144,24 @@ void SubGraphNode::auto_bind_ports()
         if (!old_name.empty() && old_name != slot_name)
           renames[old_name] = slot_name;
 
+        if (this->has_port(slot_name) && this->get_data_type(this->get_port_index(
+                                             slot_name)) != as_node->get_data_type(0))
+        {
+          this->remove_port(slot_name);
+          std::erase_if(this->inputs,
+                        [&slot_name](const InputBinding &b)
+                        { return b.name == slot_name; });
+        }
+
+        if (this->has_port(slot_name) && this->get_data_type(this->get_port_index(
+                                             slot_name)) != as_node->get_data_type(0))
+        {
+          this->remove_port(slot_name);
+          std::erase_if(this->outputs,
+                        [&slot_name](const OutputBinding &b)
+                        { return b.name == slot_name; });
+        }
+
         if (!this->has_port(slot_name))
         {
           input_node->register_on_parent(this, slot_name);
@@ -164,6 +182,24 @@ void SubGraphNode::auto_bind_ports()
         const std::string old_name = find_old_output_name(output_node.get());
         if (!old_name.empty() && old_name != slot_name)
           renames[old_name] = slot_name;
+
+        if (this->has_port(slot_name) && this->get_data_type(this->get_port_index(
+                                             slot_name)) != as_node->get_data_type(0))
+        {
+          this->remove_port(slot_name);
+          std::erase_if(this->inputs,
+                        [&slot_name](const InputBinding &b)
+                        { return b.name == slot_name; });
+        }
+
+        if (this->has_port(slot_name) && this->get_data_type(this->get_port_index(
+                                             slot_name)) != as_node->get_data_type(0))
+        {
+          this->remove_port(slot_name);
+          std::erase_if(this->outputs,
+                        [&slot_name](const OutputBinding &b)
+                        { return b.name == slot_name; });
+        }
 
         if (!this->has_port(slot_name))
         {
