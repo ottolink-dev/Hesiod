@@ -21,6 +21,7 @@ public:
   std::string get_slot_name() const override;
   std::string get_data_type_name() const;
   void        rebuild_port();
+  void        json_from(nlohmann::json const &json) override;
 
   void register_on_parent(gnode::Node       *parent_node,
                           const std::string &port_label) const override;

@@ -91,6 +91,12 @@ std::string NodeInNode::get_data_type_name() const
   return this->val<std::string>("data_type");
 }
 
+void NodeInNode::json_from(nlohmann::json const &json)
+{
+  BaseNode::json_from(json);
+  this->rebuild_port();
+}
+
 void NodeInNode::rebuild_port()
 {
   if (gnode::Graph *g = this->get_p_graph())
