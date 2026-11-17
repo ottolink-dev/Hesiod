@@ -30,6 +30,7 @@ public:
   void                       set_subgraph(std::shared_ptr<GraphNode> new_subgraph);
 
   void auto_bind_ports();
+  void bind_subgraph_callbacks();
   void compute_subgraph();
   void propagate_config_change() override;
   bool is_syncing_config() const { return this->syncing_config; }
@@ -49,8 +50,7 @@ public:
     this->pending_subgraph_ui_json = json;
   }
 
-  std::function<void()>           ports_updated;
-  std::function<nlohmann::json()> subgraph_ui_provider;
+  std::function<void()> ports_updated;
 
   std::unordered_map<std::string, std::string> consume_port_renames()
   {

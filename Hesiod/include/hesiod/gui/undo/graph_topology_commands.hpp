@@ -7,6 +7,7 @@
 #include <vector>
 
 #include <QPointF>
+#include <QPointer>
 #include <QUndoCommand>
 #include <nlohmann/json.hpp>
 
@@ -35,12 +36,12 @@ public:
   std::string get_created_node_id() const { return this->created_id; }
 
 private:
-  GraphNodeWidget *widget = nullptr;
-  std::string      node_type;
-  QPointF          position;
-  std::string      created_id;
-  nlohmann::json   saved_state;
-  bool             is_first_redo = true;
+  QPointer<GraphNodeWidget> widget;
+  std::string               node_type;
+  QPointF                   position;
+  std::string               created_id;
+  nlohmann::json            saved_state;
+  bool                      is_first_redo = true;
 };
 
 // =====================================
@@ -58,7 +59,7 @@ public:
   void redo() override;
 
 private:
-  GraphNodeWidget                  *widget = nullptr;
+  QPointer<GraphNodeWidget>         widget;
   std::vector<std::string>          node_ids;
   std::vector<gngui::LinkEndpoints> links;
 
@@ -88,7 +89,7 @@ public:
   void redo() override;
 
 private:
-  GraphNodeWidget                  *widget = nullptr;
+  QPointer<GraphNodeWidget>         widget;
   gngui::LinkEndpoints              link;
   std::vector<gngui::LinkEndpoints> replaced_links;
   bool                              is_first_redo = true;
@@ -112,11 +113,11 @@ public:
   bool mergeWith(const QUndoCommand *other) override;
 
 private:
-  GraphNodeWidget         *widget = nullptr;
-  std::vector<std::string> node_ids;
-  std::vector<QPointF>     old_positions;
-  std::vector<QPointF>     new_positions;
-  bool                     is_first_redo = true;
+  QPointer<GraphNodeWidget> widget;
+  std::vector<std::string>  node_ids;
+  std::vector<QPointF>      old_positions;
+  std::vector<QPointF>      new_positions;
+  bool                      is_first_redo = true;
 };
 
 } // namespace hesiod

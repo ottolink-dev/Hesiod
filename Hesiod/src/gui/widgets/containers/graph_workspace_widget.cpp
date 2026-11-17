@@ -465,16 +465,22 @@ void GraphWorkspaceWidget::open_subgraph(const std::string &node_id)
 
   std::weak_ptr<SubGraphNode> weak_sg = std::dynamic_pointer_cast<SubGraphNode>(
       p_sg->get_shared());
+  QPointer<GraphNodeWidget> safe_parent(parent_gnw);
+  QPointer<GraphNodeWidget> safe_child(child_gnw);
 
-  p_sg->subgraph_ui_provider = [child_gnw]() { return child_gnw->json_to(); };
-
-  auto sync_and_update_parent = [weak_sg, parent_gnw, node_id]()
+  auto sync_and_update_parent = [weak_sg, safe_parent, safe_child, node_id]()
   {
     if (auto sg = weak_sg.lock())
     {
+      if (safe_child)
+      {
+        nlohmann::json ui = safe_child->json_to();
+        ui.erase("viewers");
+        sg->set_pending_subgraph_ui_json(ui);
+      }
       sg->auto_bind_ports();
-      if (parent_gnw)
-        parent_gnw->update_graph_model(node_id);
+      if (safe_parent)
+        safe_parent->update_graph_model(node_id);
     }
   };
 
@@ -500,14 +506,15 @@ void GraphWorkspaceWidget::open_subgraph(const std::string &node_id)
   this->connect(child_gnw,
                 &GraphNodeWidget::config_changed,
                 this,
-                [weak_sg, parent_gnw, child_gnw]()
+                [weak_sg, safe_parent, safe_child]()
                 {
                   if (auto sg = weak_sg.lock())
                   {
                     if (!sg->is_syncing_config() && sg->val<bool>("inherit_config") &&
-                        parent_gnw && child_gnw && sg->get_subgraph())
+                        safe_parent && safe_child && sg->get_subgraph())
                     {
-                      parent_gnw->apply_new_config(*sg->get_subgraph()->get_config_ref());
+                      safe_parent->apply_new_config(
+                          *sg->get_subgraph()->get_config_ref());
                     }
                   }
                 });
@@ -533,18 +540,14 @@ void GraphWorkspaceWidget::navigate_to_level(size_t level_index)
     if (auto sg = top.owner_sg.lock())
     {
       if (top.gnw)
-        sg->set_pending_subgraph_ui_json(top.gnw->json_to());
-      sg->subgraph_ui_provider = nullptr;
-
-      if (auto *sub = sg->get_subgraph())
       {
-        sub->update_finished = [weak_sg = top.owner_sg]()
-        {
-          if (auto s = weak_sg.lock())
-            if (auto *parent_gno = dynamic_cast<GraphNode *>(s->get_p_graph()))
-              parent_gno->update(s->get_id());
-        };
+        nlohmann::json ui = top.gnw->json_to();
+        ui.erase("viewers");
+        sg->set_pending_subgraph_ui_json(ui);
       }
+
+      if (sg->get_subgraph())
+        sg->bind_subgraph_callbacks();
     }
 
     if (top.gnw)

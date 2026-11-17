@@ -16855,6 +16855,58 @@
             }
         }
     },
+    "NodeIn": {
+        "category": "Boundary",
+        "description": "Exposes an input boundary port for a SubGraph, forwarding data from the parent graph into the subgraph.",
+        "label": "NodeIn",
+        "parameter_groups": [],
+        "parameters": {
+            "data_type": {
+                "description": "Data type of the boundary port.",
+                "label": "Data Type",
+                "type": "ChoiceAttribute"
+            },
+            "slot_name": {
+                "description": "Name of the corresponding input port on the parent SubGraph node.",
+                "label": "Port Name",
+                "type": "StringAttribute"
+            }
+        },
+        "ports": {
+            "value": {
+                "caption": "value",
+                "data_type": "VirtualArray",
+                "description": "Value received from the parent SubGraph input port.",
+                "type": "output"
+            }
+        }
+    },
+    "NodeOut": {
+        "category": "Boundary",
+        "description": "Exposes an output boundary port for a SubGraph, forwarding data from the subgraph back to the parent graph.",
+        "label": "NodeOut",
+        "parameter_groups": [],
+        "parameters": {
+            "data_type": {
+                "description": "Data type of the boundary port.",
+                "label": "Data Type",
+                "type": "ChoiceAttribute"
+            },
+            "slot_name": {
+                "description": "Name of the corresponding output port on the parent SubGraph node.",
+                "label": "Port Name",
+                "type": "StringAttribute"
+            }
+        },
+        "ports": {
+            "value": {
+                "caption": "value",
+                "data_type": "VirtualArray",
+                "description": "Value sent to the parent SubGraph output port.",
+                "type": "input"
+            }
+        }
+    },
     "NormalMapToHeightmap": {
         "category": "WIP",
         "description": "Reconstructs an elevation heightmap from an input normal map using Poisson surface integration.",
@@ -25353,6 +25405,14 @@
                 "type": "output"
             }
         }
+    },
+    "SubGraph": {
+        "category": "Routing",
+        "description": "Encapsulates a nested graph with its own resolution configuration and dynamically bound NodeIn/NodeOut boundary ports.",
+        "label": "SubGraph",
+        "parameter_groups": [],
+        "parameters": {},
+        "ports": {}
     },
     "TextureAdvectionParticle": {
         "category": "Texture",

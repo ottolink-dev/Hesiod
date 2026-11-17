@@ -19,11 +19,7 @@ SubGraphNode::SubGraphNode(const std::string &label, std::weak_ptr<GraphConfig> 
     *child_cfg = *parent_cfg;
 
   this->subgraph = std::make_shared<GraphNode>("subgraph", child_cfg);
-  this->subgraph->update_finished = [this]()
-  {
-    if (auto *parent_gno = dynamic_cast<GraphNode *>(this->get_p_graph()))
-      parent_gno->update(this->get_id());
-  };
+  this->bind_subgraph_callbacks();
 }
 
 GraphNode *SubGraphNode::get_subgraph() const { return this->subgraph.get(); }
@@ -33,19 +29,24 @@ std::shared_ptr<GraphNode> SubGraphNode::get_subgraph_shared() const
   return this->subgraph;
 }
 
+void SubGraphNode::bind_subgraph_callbacks()
+{
+  if (!this->subgraph)
+    return;
+
+  this->subgraph->update_finished = [this]()
+  {
+    if (auto *parent_gno = dynamic_cast<GraphNode *>(this->get_p_graph()))
+      parent_gno->update(this->get_id());
+  };
+}
+
 void SubGraphNode::set_subgraph(std::shared_ptr<GraphNode> new_subgraph)
 {
   this->inputs.clear();
   this->outputs.clear();
   this->subgraph = std::move(new_subgraph);
-  if (this->subgraph)
-  {
-    this->subgraph->update_finished = [this]()
-    {
-      if (auto *parent_gno = dynamic_cast<GraphNode *>(this->get_p_graph()))
-        parent_gno->update(this->get_id());
-    };
-  }
+  this->bind_subgraph_callbacks();
   this->auto_bind_ports();
 }
 
@@ -153,15 +154,6 @@ void SubGraphNode::auto_bind_ports()
                         { return b.name == slot_name; });
         }
 
-        if (this->has_port(slot_name) && this->get_data_type(this->get_port_index(
-                                             slot_name)) != as_node->get_data_type(0))
-        {
-          this->remove_port(slot_name);
-          std::erase_if(this->outputs,
-                        [&slot_name](const OutputBinding &b)
-                        { return b.name == slot_name; });
-        }
-
         if (!this->has_port(slot_name))
         {
           input_node->register_on_parent(this, slot_name);
@@ -189,15 +181,6 @@ void SubGraphNode::auto_bind_ports()
           this->remove_port(slot_name);
           std::erase_if(this->inputs,
                         [&slot_name](const InputBinding &b)
-                        { return b.name == slot_name; });
-        }
-
-        if (this->has_port(slot_name) && this->get_data_type(this->get_port_index(
-                                             slot_name)) != as_node->get_data_type(0))
-        {
-          this->remove_port(slot_name);
-          std::erase_if(this->outputs,
-                        [&slot_name](const OutputBinding &b)
                         { return b.name == slot_name; });
         }
 
@@ -366,14 +349,8 @@ nlohmann::json SubGraphNode::json_to() const
   if (this->subgraph)
     json["subgraph"] = this->subgraph->json_to();
 
-  if (this->subgraph_ui_provider)
-  {
-    nlohmann::json ui_json = this->subgraph_ui_provider();
-    if (!ui_json.is_null() && !ui_json.empty())
-      json["subgraph_ui"] = ui_json;
-  }
-  else if (!this->pending_subgraph_ui_json.is_null() &&
-           !this->pending_subgraph_ui_json.empty())
+  if (!this->pending_subgraph_ui_json.is_null() &&
+      !this->pending_subgraph_ui_json.empty())
   {
     json["subgraph_ui"] = this->pending_subgraph_ui_json;
   }

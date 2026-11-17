@@ -57,6 +57,7 @@ public:
   // An update then returns at once, after update_started: the nodes are computed
   // afterwards, and update_finished comes once the graph is up to date.
   void set_p_worker(gnode::GraphWorker *new_p_worker) { this->p_worker = new_p_worker; }
+  void set_p_owner_graph(GraphNode *new_p_owner) { this->p_owner_graph = new_p_owner; }
   void stop_update(); // before modifying the graph, see GraphWorker::stop()
 
   // --- Inter-graph Broadcasting ---
@@ -100,7 +101,8 @@ private:
   std::shared_ptr<GraphConfig> config;
   BroadcastMap                *p_broadcast_params = nullptr; // own by GraphManager
   gnode::EventConnection       graph_progress_conn;
-  gnode::GraphWorker          *p_worker = nullptr; // own by GraphManager
+  gnode::GraphWorker          *p_worker = nullptr;      // own by GraphManager
+  GraphNode                   *p_owner_graph = nullptr; // parent GraphNode if subgraph
 };
 
 } // namespace hesiod

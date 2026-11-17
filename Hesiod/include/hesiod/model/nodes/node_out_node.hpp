@@ -20,6 +20,7 @@ public:
 
   std::string get_slot_name() const override;
   std::string get_data_type_name() const;
+  void        on_settings_changed() override;
   void        rebuild_port();
   void        json_from(nlohmann::json const &json) override;
 

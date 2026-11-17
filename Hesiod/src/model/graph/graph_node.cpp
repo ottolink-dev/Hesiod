@@ -10,6 +10,7 @@
 #include "hesiod/model/nodes/legacy/legacy_converter.hpp"
 #include "hesiod/model/nodes/node_factory.hpp"
 #include "hesiod/model/nodes/receive_node.hpp"
+#include "hesiod/model/nodes/subgraph_node.hpp"
 #include "hesiod/model/utils.hpp"
 
 #include <iostream>
@@ -95,6 +96,10 @@ std::string GraphNode::add_node(const std::shared_ptr<gnode::Node> &node,
 
   if (node_type == "Receive")
     this->setup_new_receive_node(p_basenode);
+
+  if (auto *p_sg = dynamic_cast<SubGraphNode *>(p_basenode))
+    if (auto *sub = p_sg->get_subgraph())
+      sub->set_p_owner_graph(this);
 
   return node_id;
 }
@@ -494,6 +499,8 @@ void GraphNode::stop_update()
 {
   if (this->p_worker)
     this->p_worker->stop();
+  else if (this->p_owner_graph)
+    this->p_owner_graph->stop_update();
 }
 
 void GraphNode::update()

@@ -1127,6 +1127,42 @@ private Q_SLOTS:
     QVERIFY(reloaded_sg->has_port("b"));
     QVERIFY(reloaded_sg->has_port("output"));
     QCOMPARE(reloaded->get_links().size(), size_t(2));
+
+    // Renaming NodeIn("b") -> "b_renamed" must preserve its parent link
+    sg->get_subgraph()->get_node_ref_by_id<hesiod::BaseNode>(in2_id)->set_value<std::string>(
+        "slot_name",
+        "b_renamed");
+    sg->auto_bind_ports();
+    QVERIFY(!sg->has_port("b"));
+    QVERIFY(sg->has_port("b_renamed"));
+    QCOMPARE(f.graph->get_links().size(), size_t(2));
+    QVERIFY(consistent(*f.graph, f.view));
+
+    // Changing NodeOut("output") data_type must drop its incompatible parent link
+    auto *out_node = sg->get_subgraph()->get_node_ref_by_id<hesiod::BaseNode>(out_id);
+    out_node->set_value<std::string>("data_type", "Cloud");
+    out_node->on_settings_changed();
+    sg->auto_bind_ports();
+    QVERIFY(sg->has_port("output"));
+    QCOMPARE(f.graph->get_links().size(), size_t(1));
+    QVERIFY(consistent(*f.graph, f.view));
+
+    // Nested SubGraph inside SubGraph
+    const auto inner_sg_id = sg->get_subgraph()->add_node("SubGraph");
+    auto      *inner_sg =
+        sg->get_subgraph()->get_node_ref_by_id<hesiod::SubGraphNode>(inner_sg_id);
+    QVERIFY(inner_sg != nullptr);
+    const auto inner_in_id = inner_sg->get_subgraph()->add_node("NodeIn");
+    const auto inner_out_id = inner_sg->get_subgraph()->add_node("NodeOut");
+    inner_sg->get_subgraph()
+        ->get_node_ref_by_id<hesiod::BaseNode>(inner_in_id)
+        ->set_value<std::string>("slot_name", "nested_in");
+    inner_sg->get_subgraph()
+        ->get_node_ref_by_id<hesiod::BaseNode>(inner_out_id)
+        ->set_value<std::string>("slot_name", "nested_out");
+    inner_sg->auto_bind_ports();
+    QVERIFY(inner_sg->has_port("nested_in"));
+    QVERIFY(inner_sg->has_port("nested_out"));
   }
 };
 
