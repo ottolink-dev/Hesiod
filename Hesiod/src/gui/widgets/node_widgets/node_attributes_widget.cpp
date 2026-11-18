@@ -26,6 +26,7 @@
 #include "hesiod/gui/undo/undo_manager.hpp"
 #include "hesiod/gui/widgets/dialogs/documentation_popup.hpp"
 #include "hesiod/gui/widgets/node_widgets/node_attributes_widget.hpp"
+#include "hesiod/gui/widgets/node_widgets/post_process_dock.hpp"
 #include "hesiod/gui/widgets/node_widgets/properties_panel_design.hpp"
 #include "hesiod/gui/widgets/node_widgets/properties_panel_header.hpp"
 #include "hesiod/logger.hpp"
@@ -339,6 +340,10 @@ void NodeAttributesWidget::sync_from_model()
   if (this->meta_widget)
     this->meta_widget->on_sync_widget_from_model();
 
+  // after the container switch above, so the chain is rebuilt for the right one
+  if (this->post_dock)
+    this->post_dock->sync_from_model();
+
   this->is_switching_container_programmatically = false;
 }
 
@@ -511,6 +516,22 @@ void NodeAttributesWidget::setup_layout()
           "Post-Process.*|Default Noise|Default Mask Definition|Mask "
           "Preprocessing|Advanced")};
 
+  // The shared post-processing attributes are not rows in the list: they are
+  // the output chain after the sections, see PostProcessDock. Declining
+  // them here keeps them out of the sections without touching their metadata,
+  // which the node documentation still reads the category from.
+  const bool has_output_chain = PostProcessDock::is_needed(*p_node);
+
+  if (has_output_chain)
+    options.row_renderer = [design = panel.design, row_ctx](
+                               meta::AbstractAttribute *p_attr) -> meta::qt::MetaWidget *
+    {
+      if (!p_attr || is_post_effect_attribute(p_attr->name()))
+        return nullptr;
+
+      return meta::qt::render_row(p_attr, design, row_ctx);
+    };
+
   this->meta_widget = meta::qt::render(p_node->get_meta_group(),
                                        options,
                                        this,
@@ -518,6 +539,14 @@ void NodeAttributesWidget::setup_layout()
 
   if (this->meta_widget && this->meta_widget->layout())
     this->meta_widget->layout()->setAlignment(Qt::AlignTop);
+
+  // ...which leaves the section they were alone in with nothing to show. A
+  // node's own attributes filed under the same name keep theirs.
+  if (has_output_chain)
+    for (auto *section :
+         this->meta_widget->findChildren<meta::qt::CollapsibleSection *>())
+      if (section->content_layout && section->content_layout->count() == 0)
+        section->hide();
 
   for (auto *stacked : this->meta_widget->findChildren<QStackedWidget *>())
   {
@@ -528,6 +557,25 @@ void NodeAttributesWidget::setup_layout()
         if (page->layout())
           page->layout()->setAlignment(Qt::AlignTop);
       }
+    }
+
+    // A stack is as tall as its tallest page. That goes unnoticed while the
+    // stack is the last thing in the panel, and leaves a hole above the output
+    // chain now that something follows it. Only the page on show gets a say.
+    if (has_output_chain)
+    {
+      const auto fit_to_current_page = [stacked]()
+      {
+        for (int i = 0; i < stacked->count(); ++i)
+          if (auto *page = stacked->widget(i))
+            page->setSizePolicy(page->sizePolicy().horizontalPolicy(),
+                                i == stacked->currentIndex() ? QSizePolicy::Preferred
+                                                             : QSizePolicy::Ignored);
+        stacked->updateGeometry();
+      };
+
+      fit_to_current_page();
+      this->connect(stacked, &QStackedWidget::currentChanged, this, fit_to_current_page);
     }
   }
 
@@ -621,6 +669,34 @@ void NodeAttributesWidget::setup_layout()
                 this,
                 recompute);
 
+  // --- output chain
+
+  if (has_output_chain)
+  {
+    // by value rather than through `this`, so the chain finds its node on its
+    // own wherever it ends up in the panel
+    this->post_dock = new PostProcessDock(
+        [graph = this->p_graph_node, id = this->node_id]() -> BaseNode *
+        {
+          auto gno = graph.lock();
+          return gno ? gno->get_node_ref_by_id<BaseNode>(id) : nullptr;
+        },
+        panel.design,
+        row_ctx,
+        panel.has_own_chrome,
+        this);
+
+    this->connect(this->post_dock, &PostProcessDock::edit_started, this, on_edit_started);
+
+    this->connect(this->post_dock, &PostProcessDock::edit_ended, this, on_edit_ended);
+
+    this->connect(this->post_dock,
+                  live_update ? &PostProcessDock::value_changed
+                              : &PostProcessDock::edit_ended,
+                  this,
+                  recompute);
+  }
+
   if (auto *group_widget = dynamic_cast<meta::qt::ContainerGroupWidget *>(
           this->meta_widget))
   {
@@ -655,6 +731,10 @@ void NodeAttributesWidget::setup_layout()
                     const std::string old_container = this->current_container_name;
                     this->current_container_name = new_container;
 
+                    // each container has its own chain
+                    if (this->post_dock)
+                      this->post_dock->sync_from_model();
+
                     if (old_container != new_container && !old_container.empty())
                     {
                       if (QUndoStack *stack = UndoManager::instance().get_stack())
@@ -677,6 +757,9 @@ void NodeAttributesWidget::setup_layout()
       { QMetaObject::invokeMethod(this, "sync_from_model", Qt::QueuedConnection); });
 
   main_layout->addWidget(this->meta_widget);
+
+  if (this->post_dock)
+    main_layout->addWidget(this->post_dock);
 }
 
 } // namespace hesiod

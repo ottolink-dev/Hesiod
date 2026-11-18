@@ -13,6 +13,7 @@ namespace hesiod
 
 class BaseNode; // forward decl.
 class GraphNodeWidget;
+class PostProcessDock;
 
 // =====================================
 // NodeAttributesWidget
@@ -48,6 +49,8 @@ private:
   bool                  is_in_edit = false;
   std::string           current_container_name;
   bool                  is_switching_container_programmatically = false;
+
+  QPointer<PostProcessDock> post_dock; // nullptr on a node with no output chain
 };
 
 } // namespace hesiod
