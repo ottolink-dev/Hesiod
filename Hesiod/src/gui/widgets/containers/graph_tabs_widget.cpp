@@ -56,7 +56,17 @@ GraphTabsWidget::GraphTabsWidget(std::weak_ptr<GraphManager> p_graph_manager,
   this->connect(this->tab_widget,
                 &QTabWidget::currentChanged,
                 this,
-                [this](int) { this->sync_tab_strips(); });
+                [this](int index)
+                {
+                  this->sync_tab_strips();
+
+                  const std::string gid = this->tab_widget->tabText(index).toStdString();
+                  if (auto *gww = this->get_workspace_widget(gid))
+                    if (auto *viewer = gww->get_viewer())
+                      QMetaObject::invokeMethod(viewer,
+                                                "update_renderer",
+                                                Qt::QueuedConnection);
+                });
   this->update_tab_widget();
 
   this->setup_connections(); // "permanent" ones
