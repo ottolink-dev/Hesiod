@@ -9,6 +9,7 @@
 #include <QAction>
 #include <QComboBox>
 #include <QList>
+#include <QPointer>
 #include <QPushButton>
 #include <QSplitter>
 #include <QWidget>
@@ -139,13 +140,13 @@ private:
   void setup_reset_actions();
 
   // --- Members ---
-  std::weak_ptr<GraphManager>                      p_graph_manager;
-  gngui::GraphViewer                              *graph_viewer = nullptr;
-  CoordFrameWidget                                *coord_frame_widget = nullptr;
-  QPushButton                                     *apply_button = nullptr;
-  std::map<std::string, GraphPreviewLayerWidget *> preview_widgets;
-  bool                                             is_dirty = false;
-  QList<QAction *>                                 reset_actions;
+  std::weak_ptr<GraphManager>                              p_graph_manager;
+  gngui::GraphViewer                                      *graph_viewer = nullptr;
+  CoordFrameWidget                                        *coord_frame_widget = nullptr;
+  QPushButton                                             *apply_button = nullptr;
+  std::map<std::string, QPointer<GraphPreviewLayerWidget>> preview_widgets;
+  bool                                                     is_dirty = false;
+  QList<QAction *>                                         reset_actions;
 };
 
 } // namespace hesiod

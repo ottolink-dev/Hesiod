@@ -375,19 +375,52 @@ void GraphNode::pull_inputs_from_parent()
       }
     }
 
+    Logger::log()->trace("GraphNode::pull_inputs_from_parent: {} port={} src_frame={}",
+                         this->get_id(),
+                         port_name,
+                         src_frame ? "ok" : "null");
+
     visit_boundary_type(
         in_node->get_data_type_name(),
         [this, &port_name, &in_node, src_cfg, src_frame, dst_frame]<typename T>()
         {
+          if (!this->has_port<T>(port_name) || !in_node->has_port<T>("value"))
+            return;
           auto *p_src = this->get_value_ref<T>(port_name);
           auto *p_dst = in_node->get_value_ref<T>("value");
           if (p_dst)
+          {
             transfer_boundary_value(p_src,
                                     *src_cfg,
                                     src_frame,
                                     *p_dst,
                                     *this->config,
                                     dst_frame);
+            if constexpr (std::is_same_v<T, hmap::VirtualArray>)
+            {
+              Logger::log()->trace(
+                  "pull_inputs_from_parent[VA]: {} port={} p_src={} ({}, {}), "
+                  "src_frame=({},{}; {},{}; {}), dst_frame=({},{}; {},{}; {}), "
+                  "p_dst=({}, {})",
+                  this->get_id(),
+                  port_name,
+                  p_src ? "ok" : "null",
+                  p_src ? p_src->min(src_cfg->cm_cpu) : 0.f,
+                  p_src ? p_src->max(src_cfg->cm_cpu) : 0.f,
+                  src_frame ? src_frame->get_origin().x : 0.f,
+                  src_frame ? src_frame->get_origin().y : 0.f,
+                  src_frame ? src_frame->get_size().x : 0.f,
+                  src_frame ? src_frame->get_size().y : 0.f,
+                  src_frame ? src_frame->get_rotation_angle() : 0.f,
+                  dst_frame ? dst_frame->get_origin().x : 0.f,
+                  dst_frame ? dst_frame->get_origin().y : 0.f,
+                  dst_frame ? dst_frame->get_size().x : 0.f,
+                  dst_frame ? dst_frame->get_size().y : 0.f,
+                  dst_frame ? dst_frame->get_rotation_angle() : 0.f,
+                  p_dst->min(this->config->cm_cpu),
+                  p_dst->max(this->config->cm_cpu));
+            }
+          }
         });
 
     in_node->is_dirty = true;
@@ -396,24 +429,53 @@ void GraphNode::pull_inputs_from_parent()
 
 void GraphNode::push_outputs_to_parent()
 {
+  Logger::log()->trace("GraphNode::push_outputs_to_parent: {} ({} outputs)",
+                       this->get_id(),
+                       this->outputs.size());
+
   for (auto &[port_name, out_node] : this->outputs)
   {
     if (!out_node)
       continue;
 
-    visit_boundary_type(out_node->get_data_type_name(),
-                        [this, &port_name, &out_node]<typename T>()
-                        {
-                          auto *p_src = out_node->get_value_ref<T>("value");
-                          auto *p_dst = this->get_value_ref<T>(port_name);
-                          if (p_dst)
-                            transfer_boundary_value(p_src,
-                                                    *this->config,
-                                                    nullptr,
-                                                    *p_dst,
-                                                    *this->config,
-                                                    nullptr);
-                        });
+    visit_boundary_type(
+        out_node->get_data_type_name(),
+        [this, &port_name, &out_node]<typename T>()
+        {
+          if (!this->has_port<T>(port_name) || !out_node->has_port<T>("value"))
+          {
+            Logger::log()->warn("push_outputs_to_parent: type mismatch port={} dtype={} "
+                                "has_graph_port={} has_node_port={}",
+                                port_name,
+                                out_node->get_data_type_name(),
+                                this->has_port<T>(port_name),
+                                out_node->has_port<T>("value"));
+            return;
+          }
+          auto *p_src = out_node->get_value_ref<T>("value");
+          auto *p_dst = this->get_value_ref<T>(port_name);
+          if (p_dst)
+          {
+            transfer_boundary_value(p_src,
+                                    *this->config,
+                                    nullptr,
+                                    *p_dst,
+                                    *this->config,
+                                    nullptr);
+            if constexpr (std::is_same_v<T, hmap::VirtualArray>)
+            {
+              Logger::log()->trace("push_outputs_to_parent[VA]: {} port={} p_src={} "
+                                   "({}, {}), p_dst=({}, {})",
+                                   this->get_id(),
+                                   port_name,
+                                   p_src ? "ok" : "null",
+                                   p_src ? p_src->min(this->config->cm_cpu) : 0.f,
+                                   p_src ? p_src->max(this->config->cm_cpu) : 0.f,
+                                   p_dst->min(this->config->cm_cpu),
+                                   p_dst->max(this->config->cm_cpu));
+            }
+          }
+        });
   }
 }
 

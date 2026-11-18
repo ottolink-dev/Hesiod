@@ -577,12 +577,20 @@ private Q_SLOTS:
     // Inside overlap (x < 0.5 in g2 -> x >= 0.5 in g1) should be non-zero or valid
     QVERIFY(!va2->empty());
 
-    // Serialization round-trip
+    // Serialization round-trip & reload data flow check
     nlohmann::json j = manager->json_to();
     auto           manager2 = std::make_shared<GraphManager>("graphs2");
     manager2->json_from(j);
     QCOMPARE(manager2->get_graph_nodes().size(), size_t(2));
     QCOMPARE(manager2->get_links().size(), size_t(1));
+
+    manager2->update();
+    auto *g2_reloaded = manager2->get_graph_ref_by_id("g2");
+    QVERIFY(g2_reloaded != nullptr);
+    auto *va2_reloaded = g2_reloaded->get_value_ref<hmap::VirtualArray>("output_0");
+    QVERIFY(va2_reloaded != nullptr);
+    QVERIFY(!va2_reloaded->empty());
+    QCOMPARE(va2_reloaded->max(cfg2->cm_cpu), va2->max(cfg2->cm_cpu));
   }
 
   void computation_failure_does_not_leave_edits_blocked()

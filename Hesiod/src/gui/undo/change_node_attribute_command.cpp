@@ -124,6 +124,7 @@ void ChangeNodeAttributeCommand::apply(const std::string    &target_container_na
   }
 
   p_node->post_update_event.notify(*p_node);
+  p_node->on_settings_changed();
   gno->update(this->node_id);
 }
 
@@ -174,6 +175,7 @@ void ChangeNodeGroupStateCommand::apply(const nlohmann::json &group_state)
   }
 
   p_node->post_update_event.notify(*p_node);
+  p_node->on_settings_changed();
   gno->update(this->node_id);
 }
 

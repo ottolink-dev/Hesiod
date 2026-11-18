@@ -125,7 +125,7 @@ gngui::PortType GraphNodeProxy::get_port_type(int index) const
 std::string GraphNodeProxy::get_data_type(int index) const
 {
   if (auto g = model.lock())
-    return map_type_name(g->gnode::Node::get_data_type(index));
+    return g->gnode::Node::get_data_type(index);
   return {};
 }
 
@@ -459,7 +459,7 @@ void GraphManagerWidget::add_graph_item(const std::string &id, QPointF scene_pos
   auto *proxy = new GraphNodeProxy(gno->get_shared(), this);
   this->graph_viewer->add_node(proxy, scene_pos, id);
 
-  auto *preview_widget = new GraphPreviewLayerWidget(gno->get_shared(), this);
+  auto *preview_widget = new GraphPreviewLayerWidget(gno->get_shared(), nullptr);
   this->preview_widgets[id] = preview_widget;
 
   if (auto *gn = this->graph_viewer->get_graphics_node_by_id(id))
@@ -513,8 +513,6 @@ void GraphManagerWidget::hideEvent(QHideEvent *event)
 
 void GraphManagerWidget::json_from(nlohmann::json const &json)
 {
-  this->reset();
-
   if (json.contains("graph_viewer"))
   {
     // Restore node positions without clearing model-created nodes

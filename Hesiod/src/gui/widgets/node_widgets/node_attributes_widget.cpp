@@ -613,6 +613,8 @@ void NodeAttributesWidget::setup_layout()
                   auto gno = this->p_graph_node.lock();
                   if (!gno)
                     return;
+                  if (auto *p_node = gno->get_node_ref_by_id<BaseNode>(this->node_id))
+                    p_node->on_settings_changed();
                   gno->update(this->node_id);
                 });
 
