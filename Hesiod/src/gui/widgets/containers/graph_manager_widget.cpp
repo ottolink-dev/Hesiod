@@ -556,6 +556,27 @@ void GraphManagerWidget::json_from(nlohmann::json const &json)
       if (pw && json["frames"].contains(id))
         pw->json_from(json["frames"][id]);
   }
+
+  if (json.contains("window") && json["window"].is_object())
+  {
+    const auto &jw = json["window"];
+    int         x = jw.value("x", this->x());
+    int         y = jw.value("y", this->y());
+    int         w = jw.value("w", this->width());
+    int         h = jw.value("h", this->height());
+    if (w > 0 && h > 0)
+    {
+      this->setGeometry(x, y, w, h);
+      HSD_CTX.app_settings.window.geom_graph_manager = {x, y, w, h};
+    }
+
+    if (jw.contains("visible") && jw["visible"].is_boolean())
+    {
+      const bool vis = jw["visible"].get<bool>();
+      HSD_CTX.app_settings.window.show_graph_manager_widget = vis;
+      this->setVisible(vis);
+    }
+  }
 }
 
 nlohmann::json GraphManagerWidget::json_to() const
@@ -566,6 +587,13 @@ nlohmann::json GraphManagerWidget::json_to() const
   for (const auto &[id, pw] : this->preview_widgets)
     if (pw)
       json["frames"][id] = pw->json_to();
+
+  const QRect g = this->geometry();
+  json["window"] = {{"visible", this->isVisible()},
+                    {"x", g.x()},
+                    {"y", g.y()},
+                    {"w", g.width()},
+                    {"h", g.height()}};
 
   return json;
 }

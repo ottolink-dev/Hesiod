@@ -524,10 +524,10 @@ void HesiodApplication::load_project_model_and_ui(const std::string &fname,
     this->main_window->setCentralWidget(this->project_ui->get_widget());
 
   // reset other visibility state
-#if HSD_ENABLE_GRAPH_MANAGER
+  if (blank_startup)
+    this->context.app_settings.window.show_graph_manager_widget = false;
   this->project_ui->get_graph_manager_widget_ref()->setVisible(
       this->context.app_settings.window.show_graph_manager_widget);
-#endif
 
 #if HSD_ENABLE_TEXTURE_DOWNLOADER
   if (this->context.app_settings.interface.enable_texture_downloader)
@@ -1832,11 +1832,9 @@ void HesiodApplication::setup_menu_bar()
 
   QMenu *view_menu = add_menu(this->main_window->menu_bar(), "&View");
 
-#if HSD_ENABLE_GRAPH_MANAGER
   auto *show_layout_manager = new QAction("Graph Layout Manager", this);
   show_layout_manager->setIcon(HSD_ICON("menu_graph_manager"));
   view_menu->addAction(show_layout_manager);
-#endif
 
 #if HSD_ENABLE_TEXTURE_DOWNLOADER
   // texture dld
@@ -1867,10 +1865,8 @@ void HesiodApplication::setup_menu_bar()
                 &QMenu::aboutToShow,
                 this,
                 [this
-#if HSD_ENABLE_GRAPH_MANAGER
                  ,
                  show_layout_manager
-#endif
 #if HSD_ENABLE_TEXTURE_DOWNLOADER
                  ,
                  show_texture_downloader
@@ -1897,11 +1893,9 @@ void HesiodApplication::setup_menu_bar()
                     }
                     action->setIcon(icon);
                   };
-#if HSD_ENABLE_GRAPH_MANAGER
                   set_icon(show_layout_manager,
                            "menu_graph_manager",
                            this->project_ui->get_graph_manager_widget_ref());
-#endif
 #if HSD_ENABLE_TEXTURE_DOWNLOADER
                   set_icon(show_texture_downloader,
                            "menu_texture_downloader",
@@ -2042,7 +2036,6 @@ void HesiodApplication::setup_menu_bar()
                 this,
                 &HesiodApplication::on_toggle_node_library_pan);
 
-#if HSD_ENABLE_GRAPH_MANAGER
   this->connect(
       show_layout_manager,
       &QAction::triggered,
@@ -2054,7 +2047,6 @@ void HesiodApplication::setup_menu_bar()
         this->project_ui->get_graph_manager_widget_ref()->setVisible(!state);
         show_layout_manager->setChecked(!state);
       });
-#endif
 
 #if HSD_ENABLE_TEXTURE_DOWNLOADER
   if (this->context.app_settings.interface.enable_texture_downloader)
