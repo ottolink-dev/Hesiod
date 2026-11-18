@@ -53,20 +53,19 @@ GraphTabsWidget::GraphTabsWidget(std::weak_ptr<GraphManager> p_graph_manager,
   // workspace, kept in step by sync_tab_strips); the widget only switches pages
   this->tab_widget->tabBar()->hide();
   this->main_layout->addWidget(this->tab_widget);
-  this->connect(this->tab_widget,
-                &QTabWidget::currentChanged,
-                this,
-                [this](int index)
-                {
-                  this->sync_tab_strips();
+  this->connect(
+      this->tab_widget,
+      &QTabWidget::currentChanged,
+      this,
+      [this](int index)
+      {
+        this->sync_tab_strips();
 
-                  const std::string gid = this->tab_widget->tabText(index).toStdString();
-                  if (auto *gww = this->get_workspace_widget(gid))
-                    if (auto *viewer = gww->get_viewer())
-                      QMetaObject::invokeMethod(viewer,
-                                                "update_renderer",
-                                                Qt::QueuedConnection);
-                });
+        const std::string gid = this->tab_widget->tabText(index).toStdString();
+        if (auto *gww = this->get_workspace_widget(gid))
+          if (auto *viewer = gww->get_viewer())
+            QMetaObject::invokeMethod(viewer, "update_renderer", Qt::QueuedConnection);
+      });
   this->update_tab_widget();
 
   this->setup_connections(); // "permanent" ones

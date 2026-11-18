@@ -190,8 +190,8 @@ void FrameItem::paint(QPainter                       *painter,
   painter->drawRect(base_rect);
 
   // screen-invariant handle geometry
-  const qreal h_px = 12.0 * inv_lod;
-  const qreal stem_px = 22.0 * inv_lod;
+  const qreal   h_px = 12.0 * inv_lod;
+  const qreal   stem_px = 22.0 * inv_lod;
   const QPointF top_mid(0.5 * base_rect.width(), base_rect.height());
   const QPointF rot_center(top_mid.x(), top_mid.y() + stem_px);
 

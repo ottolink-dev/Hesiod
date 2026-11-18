@@ -87,6 +87,10 @@ void GraphConfig::json_from(nlohmann::json const &json)
     this->cm_single_array.trim_storage = cache;
   }
 
+  if (json.contains("sync_aspect_ratio_with_coordframe"))
+    this->sync_aspect_ratio_with_coordframe = json["sync_aspect_ratio_with_coordframe"]
+                                                  .get<bool>();
+
   this->update_parameters();
 }
 
@@ -101,6 +105,7 @@ nlohmann::json GraphConfig::json_to() const
   json["cpu_mode"] = static_cast<int>(this->cm_cpu.mode);
   json["gpu_mode"] = static_cast<int>(this->cm_gpu.mode);
   json["cache_on_disk"] = this->cm_cpu.trim_storage;
+  json["sync_aspect_ratio_with_coordframe"] = this->sync_aspect_ratio_with_coordframe;
   return json;
 }
 

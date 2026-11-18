@@ -592,6 +592,24 @@ void GraphManagerWidget::on_apply_changes()
       graph->set_origin(glm::vec2(origin_out.x(), origin_out.y()));
       graph->set_size(glm::vec2(size_out.x(), size_out.y()));
       graph->set_rotation_angle(angle_out);
+
+      auto *cfg = graph->get_config_ref();
+      if (cfg && cfg->sync_aspect_ratio_with_coordframe && size_out.x() > 0.0 &&
+          size_out.y() > 0.0)
+      {
+        const int   long_edge = std::max(cfg->shape.x, cfg->shape.y);
+        const float ar = static_cast<float>(size_out.x() / size_out.y());
+        auto        snap = [](int v) { return std::max(16, (v / 16) * 16); };
+        glm::ivec2  new_shape = (ar >= 1.f)
+                                    ? glm::ivec2(long_edge, snap(int(long_edge / ar)))
+                                    : glm::ivec2(snap(int(long_edge * ar)), long_edge);
+        if (new_shape != cfg->shape)
+        {
+          GraphConfig new_cfg = *cfg;
+          new_cfg.set_shape(new_shape);
+          graph->change_config_values(new_cfg);
+        }
+      }
     }
   }
 

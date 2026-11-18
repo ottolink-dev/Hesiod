@@ -29,8 +29,8 @@ public:
   QRectF       boundingRect() const override;
   QPainterPath shape() const override;
   void         paint(QPainter                       *painter,
-               const QStyleOptionGraphicsItem *option,
-               QWidget                        *widget = nullptr) override;
+                     const QStyleOptionGraphicsItem *option,
+                     QWidget                        *widget = nullptr) override;
 
   // --- Accessors ---
   std::string get_id() const { return id; }

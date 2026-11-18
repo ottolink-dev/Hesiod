@@ -45,6 +45,8 @@ struct GraphConfig
 
   hmap::StorageMode storage_mode = hmap::StorageMode::VA_DISK_LRU_FULL;
 
+  bool sync_aspect_ratio_with_coordframe = true;
+
   // computed from tiling and overlap
   glm::ivec2 tile_shape;
   int        halo;
