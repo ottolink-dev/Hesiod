@@ -539,11 +539,10 @@ void GraphManagerWidget::json_from(nlohmann::json const &json)
         const std::string id = jn.value("id", "");
         if (auto *gn = this->graph_viewer->get_graphics_node_by_id(id))
         {
-          if (jn.contains("scene_position") && jn["scene_position"].is_array() &&
-              jn["scene_position"].size() >= 2)
+          if (jn.contains("scene_position.x") && jn.contains("scene_position.y"))
           {
-            gn->setPos(jn["scene_position"][0].get<double>(),
-                       jn["scene_position"][1].get<double>());
+            gn->setPos(jn["scene_position.x"].get<double>(),
+                       jn["scene_position.y"].get<double>());
           }
         }
       }
