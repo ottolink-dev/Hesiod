@@ -115,6 +115,10 @@ void GraphNode::setup_boundary_node(BaseNode *p_node)
 
 void GraphNode::auto_bind_ports()
 {
+  Logger::log()->trace("GraphNode::auto_bind_ports: {} (nodes={})",
+                       this->get_id(),
+                       this->nodes.size());
+
   // 1. Snapshot incident links in parent GraphManager by port label
   struct LinkSnapshot
   {
@@ -218,8 +222,22 @@ void GraphNode::auto_bind_ports()
           visit_boundary_type(input_node->get_data_type_name(),
                               [this, &slot_name]<typename T>()
                               { this->add_port<T>(gnode::PortType::IN, slot_name); });
-          this->inputs.push_back({slot_name, input_node});
         }
+
+        auto it = std::find_if(this->inputs.begin(),
+                               this->inputs.end(),
+                               [&slot_name](const InputBinding &b)
+                               { return b.name == slot_name; });
+        if (it != this->inputs.end())
+          it->node = input_node;
+        else
+          this->inputs.push_back({slot_name, input_node});
+
+        Logger::log()->trace("auto_bind_ports: {} bound IN '{}' -> {} ({})",
+                             this->get_id(),
+                             slot_name,
+                             input_node->get_id(),
+                             input_node->get_data_type_name());
       }
     }
     else if (auto output_node = std::dynamic_pointer_cast<NodeOutNode>(node_ptr))
@@ -346,6 +364,10 @@ std::unordered_map<std::string, std::string> GraphNode::consume_port_renames()
 
 void GraphNode::pull_inputs_from_parent()
 {
+  Logger::log()->trace("GraphNode::pull_inputs_from_parent: {} ({} inputs)",
+                       this->get_id(),
+                       this->inputs.size());
+
   gnode::Graph *parent_graph = this->get_p_graph();
   const auto   *dst_frame = static_cast<const hmap::CoordFrame *>(this);
 
@@ -375,17 +397,32 @@ void GraphNode::pull_inputs_from_parent()
       }
     }
 
-    Logger::log()->trace("GraphNode::pull_inputs_from_parent: {} port={} src_frame={}",
-                         this->get_id(),
-                         port_name,
-                         src_frame ? "ok" : "null");
+    Logger::log()->trace(
+        "GraphNode::pull_inputs_from_parent: {} port={} dtype={} src_frame={}",
+        this->get_id(),
+        port_name,
+        in_node->get_data_type_name(),
+        src_frame ? "ok" : "null");
 
     visit_boundary_type(
         in_node->get_data_type_name(),
         [this, &port_name, &in_node, src_cfg, src_frame, dst_frame]<typename T>()
         {
           if (!this->has_port<T>(port_name) || !in_node->has_port<T>("value"))
+          {
+            Logger::log()->trace(
+                "pull_inputs_from_parent: {} port={} skipped (has_this={}, has_in={}, "
+                "has_any={}, this_dtype={})",
+                this->get_id(),
+                port_name,
+                this->has_port<T>(port_name),
+                in_node->has_port<T>("value"),
+                this->has_port(port_name),
+                this->has_port(port_name)
+                    ? this->get_data_type(this->get_port_index(port_name))
+                    : "none");
             return;
+          }
           auto *p_src = this->get_value_ref<T>(port_name);
           auto *p_dst = in_node->get_value_ref<T>("value");
           auto *p_mask = in_node->has_port<hmap::VirtualArray>("mask")
