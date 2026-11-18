@@ -26,9 +26,11 @@ public:
   explicit FrameItem(const std::string &id, QPointF origin, QPointF size, float angle);
 
   // --- Qt paint override ---
-  void paint(QPainter                       *painter,
-             const QStyleOptionGraphicsItem *option,
-             QWidget                        *widget = nullptr) override;
+  QRectF       boundingRect() const override;
+  QPainterPath shape() const override;
+  void         paint(QPainter                       *painter,
+               const QStyleOptionGraphicsItem *option,
+               QWidget                        *widget = nullptr) override;
 
   // --- Accessors ---
   std::string get_id() const { return id; }
@@ -119,6 +121,7 @@ signals:
   void has_changed();
 
 protected:
+  void drawBackground(QPainter *painter, const QRectF &rect) override;
   void mousePressEvent(QMouseEvent *event) override;
   void mouseReleaseEvent(QMouseEvent *event) override;
   void wheelEvent(QWheelEvent *event) override;
