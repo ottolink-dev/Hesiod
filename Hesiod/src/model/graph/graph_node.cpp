@@ -515,6 +515,7 @@ void GraphNode::change_config_values(const GraphConfig &new_config)
     if (BaseNode *p_basenode = dynamic_cast<BaseNode *>(p_node.get()))
       p_basenode->propagate_config_change();
 
+  this->pull_inputs_from_parent();
   this->update();
 }
 
