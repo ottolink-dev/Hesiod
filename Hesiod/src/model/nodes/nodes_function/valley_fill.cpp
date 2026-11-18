@@ -5,12 +5,10 @@
 #include "highmap/opencl/gpu_opencl.hpp"
 #include "highmap/primitives.hpp"
 
-#include "highmap/dbg/timer.hpp"
-
 #include "hesiod/model/nodes/attributes.hpp"
-
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
+
 #include "logger/logger.hpp"
 
 namespace hesiod

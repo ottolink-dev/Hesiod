@@ -1,11 +1,11 @@
 /* Copyright (c) 2026 Otto Link. Distributed under the terms of the GNU General
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
-#include "highmap/rocks/rock_simulation.hpp"
-#include "highmap/rocks/rock_distribution.hpp"
-#include "highmap/rocks/rock_field.hpp"
+#include "highmap/world/rocks/rock_simulation.hpp"
 #include "highmap/scatter/scatter_field.hpp"
 #include "highmap/virtual_array/virtual_array.hpp"
+#include "highmap/world/rocks/rock_distribution.hpp"
+#include "highmap/world/rocks/rock_field.hpp"
 
 #include "hesiod/app/enum_mappings.hpp"
 #include "hesiod/model/nodes/attributes.hpp"

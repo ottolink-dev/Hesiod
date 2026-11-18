@@ -324,8 +324,7 @@ void ToolRail::paintEvent(QPaintEvent *)
   p.setRenderHint(QPainter::Antialiasing);
 
   const QRectF box = QRectF(this->rect()).adjusted(0.5, 0.5, -0.5, -0.5);
-  const qreal  radius = std::min(qreal(radius_px()),
-                                std::min(box.width(), box.height()) / 2.0);
+  const qreal  radius = std::min(radius_px(), std::min(box.width(), box.height()) / 2.0);
   QPainterPath shape;
   shape.addRoundedRect(box, radius, radius);
 

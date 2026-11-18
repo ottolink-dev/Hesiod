@@ -34,9 +34,12 @@ meta::Attribute<float> &add_angle(BaseNode          &node,
                                   float              default_val,
                                   float              vmin,
                                   float              vmax,
-                                  const std::string &value_format)
+                                  const std::string &value_format,
+                                  float              step)
 {
-  return add_float(node, key, label, default_val, vmin, vmax, value_format);
+  auto &a = add_float(node, key, label, default_val, vmin, vmax, value_format);
+  a.metadata().try_add(meta::keys::constraints::step, step);
+  return a;
 }
 
 meta::Attribute<meta::Array> &add_array(BaseNode          &node,

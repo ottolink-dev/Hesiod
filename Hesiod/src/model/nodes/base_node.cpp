@@ -12,11 +12,11 @@
 
 #include "gnode/graph.hpp"
 
-#include "highmap/flora/forest.hpp"
 #include "highmap/geometry/cloud.hpp"
 #include "highmap/geometry/path.hpp"
-#include "highmap/rocks/rock_field.hpp"
 #include "highmap/virtual_array/virtual_array.hpp"
+#include "highmap/world/flora/forest.hpp"
+#include "highmap/world/rocks/rock_field.hpp"
 
 #include "meta/ext/array/array.hpp"
 #include "meta/metadata/keys.hpp"

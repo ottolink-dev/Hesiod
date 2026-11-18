@@ -35,7 +35,8 @@ meta::Attribute<float> &add_angle(BaseNode          &node,
                                   float              default_val = 0.f,
                                   float              vmin = -180.f,
                                   float              vmax = 180.f,
-                                  const std::string &value_format = "{:.1f}°");
+                                  const std::string &value_format = "{:.1f}°",
+                                  float              step = 1.f);
 
 meta::Attribute<meta::Array> &add_array(BaseNode          &node,
                                         const std::string &key,

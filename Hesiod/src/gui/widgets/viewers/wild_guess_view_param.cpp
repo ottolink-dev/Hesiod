@@ -4,11 +4,11 @@
 #include <algorithm>
 #include <typeinfo>
 
-#include "highmap/flora/forest.hpp"
 #include "highmap/geometry/cloud.hpp"
 #include "highmap/geometry/path.hpp"
-#include "highmap/rocks/rock_field.hpp"
 #include "highmap/virtual_array/virtual_texture.hpp"
+#include "highmap/world/flora/forest.hpp"
+#include "highmap/world/rocks/rock_field.hpp"
 
 #include "hesiod/gui/widgets/viewers/viewer.hpp"
 #include "logger/logger.hpp"

@@ -1,8 +1,8 @@
 /* Copyright (c) 2026 Otto Link. Distributed under the terms of the GNU General
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
-#include "highmap/flora/forest.hpp"
 #include "highmap/geometry/cloud.hpp"
+#include "highmap/world/flora/forest.hpp"
 
 #include "hesiod/model/nodes/attributes.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
