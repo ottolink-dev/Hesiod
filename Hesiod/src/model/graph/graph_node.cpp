@@ -103,6 +103,8 @@ std::string GraphNode::add_node(const std::shared_ptr<gnode::Node> &node,
 
 void GraphNode::setup_boundary_node(BaseNode *p_node)
 {
+  Logger::log()->trace("GraphNode::setup_boundary_node: id = {}", this->get_id());
+
   if (auto *p_in = dynamic_cast<NodeInNode *>(p_node))
   {
     p_in->boundary_changed = [this]() { this->auto_bind_ports(); };
@@ -535,6 +537,9 @@ void GraphNode::compute()
 
 void GraphNode::handle_inner_update_finished()
 {
+  Logger::log()->trace("GraphNode::handle_inner_update_finished: id = {}",
+                       this->get_id());
+
   this->push_outputs_to_parent();
 
   if (this->graph_update_finished)
@@ -823,6 +828,8 @@ void GraphNode::reseed(bool backward)
 
 void GraphNode::stop_update()
 {
+  Logger::log()->trace("GraphNode::stop_update");
+
   if (this->p_worker)
     this->p_worker->stop();
 }
