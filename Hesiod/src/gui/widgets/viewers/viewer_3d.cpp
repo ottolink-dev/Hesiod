@@ -7,12 +7,12 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 
-#include "highmap/flora/forest.hpp"
 #include "highmap/geometry/cloud.hpp"
 #include "highmap/geometry/path.hpp"
 #include "highmap/morphology.hpp"
 #include "highmap/range.hpp"
-#include "highmap/rocks/rock_field.hpp"
+#include "highmap/world/flora/forest.hpp"
+#include "highmap/world/rocks/rock_field.hpp"
 
 #include "qtr/keys.hpp"
 #include "qtr/primitives.hpp"

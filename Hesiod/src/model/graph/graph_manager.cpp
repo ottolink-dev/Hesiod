@@ -8,6 +8,7 @@
 
 #include "highmap/coord_frame.hpp"
 #include "highmap/interpolate/interpolate_array.hpp"
+#include "highmap/interpolate/interpolate_terrain.hpp"
 
 #include "gnode/graph_worker.hpp"
 #include "hesiod/app/hesiod_application.hpp"
@@ -200,11 +201,7 @@ void GraphManager::export_flatten()
   float            rotation_angle = 0.f;
   hmap::CoordFrame frame_export(origin, size, rotation_angle);
 
-  hmap::flatten_heightmap(h_sources,
-                          h_export,
-                          t_sources,
-                          frame_export,
-                          export_cfg.cm_cpu);
+  hmap::flatten_terrain(h_sources, h_export, t_sources, frame_export, export_cfg.cm_cpu);
 
   // guard the output path: OpenCV's imwrite throws (and, uncaught, aborts the
   // whole application) if the path is empty or has no extension it recognises

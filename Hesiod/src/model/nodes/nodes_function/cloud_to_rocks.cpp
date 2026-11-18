@@ -2,7 +2,7 @@
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
 #include "highmap/geometry/cloud.hpp"
-#include "highmap/rocks/rock_field.hpp"
+#include "highmap/world/rocks/rock_field.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/attributes.hpp"

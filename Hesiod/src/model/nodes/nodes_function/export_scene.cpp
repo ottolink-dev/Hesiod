@@ -2,13 +2,13 @@
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
 #include "highmap/export.hpp"
-#include "highmap/flora/forest.hpp"
 #include "highmap/geometry/cloud.hpp"
 #include "highmap/geometry/path.hpp"
-#include "highmap/rocks/rock_field.hpp"
 #include "highmap/texture.hpp"
 #include "highmap/transform.hpp"
 #include "highmap/virtual_array/virtual_texture.hpp"
+#include "highmap/world/flora/forest.hpp"
+#include "highmap/world/rocks/rock_field.hpp"
 
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/logger.hpp"

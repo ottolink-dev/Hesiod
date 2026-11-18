@@ -1,7 +1,7 @@
 /* Copyright (c) 2023 Otto Link. Distributed under the terms of the GNU General
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
-#include "highmap/interpolate/interpolate_array.hpp"
+#include "highmap/interpolate/interpolate_terrain.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/attributes.hpp"
@@ -69,7 +69,7 @@ void compute_receive_node(BaseNode &node)
 
     if (t_source && p_va && t_target)
     {
-      hmap::interpolate_heightmap(*p_va, *p_out, *t_source, *t_target, node.cfg().cm_cpu);
+      hmap::interpolate_terrain(*p_va, *p_out, *t_source, *t_target, node.cfg().cm_cpu);
     }
     else
     {
