@@ -52,6 +52,11 @@ def validate_archives(directory, sha):
 def publish(client, bucket, directory, sha):
     # Validate ALL artifacts before touching remote storage.
     archives = validate_archives(directory, sha)
+    publish_artifacts(client, bucket, archives, sha)
+
+
+def publish_artifacts(client, bucket, archives, sha):
+    """Publish pre-validated archives, preserving every other platform/channel."""
     try:
         response = client.get_object(Bucket=bucket, Key="manifest.json")
     except Exception as error:
