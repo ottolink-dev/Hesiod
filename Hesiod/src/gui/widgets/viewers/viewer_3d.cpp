@@ -452,6 +452,9 @@ void Viewer3D::update_renderer()
   HSD_PROFILE_ZONE("Viewer3D::update_renderer");
   Logger::log()->trace("Viewer3D::update_renderer");
 
+  if (!this->isVisible())
+    return;
+
   // --- early exit cases
 
   if (!this->p_renderer)

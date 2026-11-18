@@ -53,6 +53,8 @@ void NodeInNode::rebuild_port()
 
   if (this->has_port("value"))
     this->remove_port("value");
+  if (this->has_port("mask"))
+    this->remove_port("mask");
 
   visit_boundary_type(
       this->get_data_type_name(),
@@ -67,6 +69,8 @@ void NodeInNode::rebuild_port()
         else
           this->add_port<T>(gnode::PortType::OUT, "value");
       });
+
+  this->add_port<hmap::VirtualArray>(gnode::PortType::OUT, "mask", CONFIG((*this)));
 }
 
 void NodeInNode::on_settings_changed()
