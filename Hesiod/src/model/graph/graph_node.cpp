@@ -388,6 +388,9 @@ void GraphNode::pull_inputs_from_parent()
             return;
           auto *p_src = this->get_value_ref<T>(port_name);
           auto *p_dst = in_node->get_value_ref<T>("value");
+          auto *p_mask = in_node->has_port<hmap::VirtualArray>("mask")
+                             ? in_node->get_value_ref<hmap::VirtualArray>("mask")
+                             : nullptr;
           if (p_dst)
           {
             transfer_boundary_value(p_src,
@@ -395,7 +398,8 @@ void GraphNode::pull_inputs_from_parent()
                                     src_frame,
                                     *p_dst,
                                     *this->config,
-                                    dst_frame);
+                                    dst_frame,
+                                    p_mask);
             if constexpr (std::is_same_v<T, hmap::VirtualArray>)
             {
               Logger::log()->trace(
@@ -422,54 +426,6 @@ void GraphNode::pull_inputs_from_parent()
             }
           }
         });
-
-    if (in_node->has_port<hmap::VirtualArray>("mask"))
-    {
-      if (auto *p_mask = in_node->get_value_ref<hmap::VirtualArray>("mask"))
-      {
-        if (!src_frame || !dst_frame || !dst_frame->intersects(*src_frame))
-        {
-          p_mask->fill(0.f, this->config->cm_cpu);
-        }
-        else
-        {
-          const hmap::AffineTransform2D tf = dst_frame->compute_relative_transform(
-              *src_frame);
-          const float inv_nx = (p_mask->shape.x > 1)
-                                   ? (1.f / static_cast<float>(p_mask->shape.x - 1))
-                                   : 0.f;
-          const float inv_ny = (p_mask->shape.y > 1)
-                                   ? (1.f / static_cast<float>(p_mask->shape.y - 1))
-                                   : 0.f;
-
-          hmap::for_each_tile(
-              *p_mask,
-              [&](hmap::Array &tile, const hmap::TileRegion &region)
-              {
-                const glm::ivec2 ij0 = region.global_offset();
-                const float      dus = tf.ax * inv_nx;
-                const float      dvs = tf.ay * inv_nx;
-
-                for (int j = 0; j < region.shape.y; ++j)
-                {
-                  const float rx0 = static_cast<float>(ij0.x) * inv_nx;
-                  const float ry = static_cast<float>(ij0.y + j) * inv_ny;
-                  float       us = tf.ax * rx0 + tf.bx * ry + tf.cx;
-                  float       vs = tf.ay * rx0 + tf.by * ry + tf.cy;
-
-                  for (int i = 0; i < region.shape.x; ++i)
-                  {
-                    tile(i, j) = src_frame->is_unit_point_within(us, vs) ? 1.f : 0.f;
-                    us += dus;
-                    vs += dvs;
-                  }
-                }
-              },
-              this->config->cm_cpu);
-          p_mask->sync_overlap_buffers();
-        }
-      }
-    }
 
     in_node->is_dirty = true;
   }

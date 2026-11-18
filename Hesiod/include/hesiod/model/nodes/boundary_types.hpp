@@ -39,18 +39,30 @@ inline void transfer_virtual_array(const hmap::VirtualArray *src,
                                    const hmap::CoordFrame   *src_frame,
                                    hmap::VirtualArray       &dst,
                                    const GraphConfig        &dst_cfg,
-                                   const hmap::CoordFrame   *dst_frame)
+                                   const hmap::CoordFrame   *dst_frame,
+                                   hmap::VirtualArray       *p_mask = nullptr)
 {
   if (!src || src->empty())
   {
     dst.fill(0.f, dst_cfg.cm_cpu);
+    if (p_mask)
+      p_mask->fill(0.f, dst_cfg.cm_cpu);
     return;
   }
 
   if (src_frame && dst_frame)
   {
-    hmap::interpolate_terrain(*src, dst, *src_frame, *dst_frame, dst_cfg.cm_cpu);
+    hmap::interpolate_terrain(*src,
+                              dst,
+                              *src_frame,
+                              *dst_frame,
+                              dst_cfg.cm_cpu,
+                              true,
+                              0.f,
+                              p_mask);
     dst.sync_overlap_buffers();
+    if (p_mask)
+      p_mask->sync_overlap_buffers();
     return;
   }
 
@@ -72,7 +84,8 @@ inline void transfer_virtual_texture(const hmap::VirtualTexture *src,
                                      const hmap::CoordFrame     *src_frame,
                                      hmap::VirtualTexture       &dst,
                                      const GraphConfig          &dst_cfg,
-                                     const hmap::CoordFrame     *dst_frame)
+                                     const hmap::CoordFrame     *dst_frame,
+                                     hmap::VirtualArray         *p_mask = nullptr)
 {
   if (!src || src->channels() <= 0)
   {
@@ -88,7 +101,8 @@ inline void transfer_virtual_texture(const hmap::VirtualTexture *src,
                            src_frame,
                            dst.channel(c),
                            dst_cfg,
-                           dst_frame);
+                           dst_frame,
+                           c == 0 ? p_mask : nullptr);
 }
 
 template <typename T>
@@ -97,7 +111,8 @@ inline void transfer_boundary_value(const T * /*src*/,
                                     const hmap::CoordFrame * /*src_frame*/,
                                     T & /*dst*/,
                                     const GraphConfig & /*dst_cfg*/,
-                                    const hmap::CoordFrame * /*dst_frame*/)
+                                    const hmap::CoordFrame * /*dst_frame*/,
+                                    hmap::VirtualArray * /*p_mask*/ = nullptr)
 {
   // intentionally empty for non-VA/VT types
 }
@@ -108,9 +123,10 @@ inline void transfer_boundary_value<hmap::VirtualArray>(const hmap::VirtualArray
                                                         const hmap::CoordFrame *src_frame,
                                                         hmap::VirtualArray     &dst,
                                                         const GraphConfig      &dst_cfg,
-                                                        const hmap::CoordFrame *dst_frame)
+                                                        const hmap::CoordFrame *dst_frame,
+                                                        hmap::VirtualArray     *p_mask)
 {
-  transfer_virtual_array(src, src_cfg, src_frame, dst, dst_cfg, dst_frame);
+  transfer_virtual_array(src, src_cfg, src_frame, dst, dst_cfg, dst_frame, p_mask);
 }
 
 template <>
@@ -120,9 +136,10 @@ inline void transfer_boundary_value<hmap::VirtualTexture>(
     const hmap::CoordFrame     *src_frame,
     hmap::VirtualTexture       &dst,
     const GraphConfig          &dst_cfg,
-    const hmap::CoordFrame     *dst_frame)
+    const hmap::CoordFrame     *dst_frame,
+    hmap::VirtualArray         *p_mask)
 {
-  transfer_virtual_texture(src, src_cfg, src_frame, dst, dst_cfg, dst_frame);
+  transfer_virtual_texture(src, src_cfg, src_frame, dst, dst_cfg, dst_frame, p_mask);
 }
 
 template <typename Fn> inline void visit_boundary_type(const std::string &dtype, Fn &&fn)
