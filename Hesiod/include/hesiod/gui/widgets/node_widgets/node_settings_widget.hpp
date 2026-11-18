@@ -35,6 +35,7 @@ private:
   // --- Members ---
   QPointer<GraphNodeWidget> p_graph_node_widget; // own by GraphManagerWidget
   QScrollArea              *scroll = nullptr;
+  QScrollArea              *chain_area = nullptr; // foot of the pane, see update_content
   QVBoxLayout              *attr_layout = nullptr;
   std::vector<std::string>  pinned_node_ids;
   std::vector<std::string>  last_selected_ids; // kept so the pane does not blank

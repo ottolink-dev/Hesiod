@@ -35,6 +35,15 @@ public:
   /// Build the node actions for either the attributes view or its panel header.
   QWidget *create_toolbar();
 
+  /** @brief Hand the node's output chain over to the caller, or nullptr.
+   *
+   * The chain is built at the end of this widget. A panel showing one node can
+   * take it out and attach it to its own bottom edge instead, where it stays
+   * put while the attributes scroll. It keeps reporting its edits here; the
+   * caller owns it from then on and has to delete it along with this widget.
+   */
+  PostProcessDock *release_post_dock();
+
 private:
   void setup_layout();
 
@@ -50,7 +59,9 @@ private:
   std::string           current_container_name;
   bool                  is_switching_container_programmatically = false;
 
-  QPointer<PostProcessDock> post_dock; // nullptr on a node with no output chain
+  // nullptr on a node with no output chain; guarded because a panel that took
+  // it over with release_post_dock() deletes it on its own schedule
+  QPointer<PostProcessDock> post_dock;
 };
 
 } // namespace hesiod

@@ -349,6 +349,18 @@ void NodeAttributesWidget::sync_from_model()
 
 bool NodeAttributesWidget::is_meta_backed() const { return this->meta_widget != nullptr; }
 
+PostProcessDock *NodeAttributesWidget::release_post_dock()
+{
+  if (!this->post_dock)
+    return nullptr;
+
+  if (this->layout())
+    this->layout()->removeWidget(this->post_dock);
+
+  this->post_dock->setParent(nullptr);
+  return this->post_dock;
+}
+
 void NodeAttributesWidget::setup_layout()
 {
   Logger::log()->trace("NodeAttributesWidget::setup_layout");
