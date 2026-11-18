@@ -66,7 +66,7 @@ def audit(app):
         if binary.parent.name == 'MacOS':
             entrypoints.setdefault(binary.parent, []).append(binary)
     for binary in files:
-        subprocess.run(['lipo', '-verify_arch', 'arm64', str(binary)], check=True)
+        subprocess.run(['lipo', str(binary), '-verify_arch', 'arm64'], check=True)
         dependencies, rpaths, minimums = details[binary]
         versions.extend(minimums)
         for path in rpaths:
