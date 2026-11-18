@@ -1864,8 +1864,7 @@ void HesiodApplication::setup_menu_bar()
   this->connect(view_menu,
                 &QMenu::aboutToShow,
                 this,
-                [this
-                 ,
+                [this,
                  show_layout_manager
 #if HSD_ENABLE_TEXTURE_DOWNLOADER
                  ,

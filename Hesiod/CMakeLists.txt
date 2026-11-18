@@ -128,7 +128,6 @@ else()
       "Hesiod: Qt6::GuiPrivate not found, interface scale applies on restart")
 endif()
 
-
 if(HESIOD_ENABLE_TEXTURE_DOWNLOADER)
   target_compile_definitions(hesiod_core PUBLIC HSD_ENABLE_TEXTURE_DOWNLOADER=1)
 endif()

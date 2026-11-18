@@ -80,7 +80,6 @@ message(
 message(STATUS "│ HESIOD_PROFILE_BUILD:               ${HESIOD_PROFILE_BUILD}")
 message(STATUS "│ HESIOD_ENABLE_PCH:                  ${HESIOD_ENABLE_PCH}")
 message(
-
   STATUS
     "│ HESIOD_ENABLE_TEXTURE_DOWNLOADER:   ${HESIOD_ENABLE_TEXTURE_DOWNLOADER}")
 message(
