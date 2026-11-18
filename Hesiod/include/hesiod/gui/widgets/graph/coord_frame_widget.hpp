@@ -51,6 +51,7 @@ public:
   // --- Interaction state setters ---
   void set_is_resized(bool resized);
   void set_is_rotated(bool rotated);
+  void set_snap_enabled(bool enabled) { this->snap_enabled = enabled; }
 
   // --- Layout/Geometry update ---
   void update_item_geometry();
@@ -87,6 +88,7 @@ private:
   bool is_hovered = false;
   bool is_rotated = false;
   bool is_resized = false;
+  bool snap_enabled = true;
 
   // --- Handles ---
   QRectF rotation_rect;
@@ -114,6 +116,7 @@ public:
 
 public slots:
   void on_zoom_to_content();
+  void set_snap_enabled(bool enabled);
   void update_frames_z_depth();
   void reset();
 
@@ -129,6 +132,7 @@ protected:
 private:
   std::weak_ptr<GraphManager>        p_graph_manager;
   std::map<std::string, FrameItem *> frames;
+  bool                               snap_enabled = true;
 };
 
 } // namespace hesiod

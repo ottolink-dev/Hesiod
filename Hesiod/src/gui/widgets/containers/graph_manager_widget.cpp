@@ -334,12 +334,16 @@ GraphManagerWidget::GraphManagerWidget(std::weak_ptr<GraphManager> p_graph_manag
   auto *new_button = new QPushButton(tr("New Graph"), this);
   auto *layout_button = new QPushButton(tr("Auto Layout"), this);
   auto *zoom_button = new QPushButton(tr("Zoom"), this);
+  auto *snap_button = new QPushButton(tr("Snap Grid"), this);
+  snap_button->setCheckable(true);
+  snap_button->setChecked(true);
   this->apply_button = new QPushButton(tr("Apply"), this);
   this->apply_button->setStyleSheet("QPushButton:enabled {background-color: red;}");
 
   btn_layout->addWidget(new_button);
   btn_layout->addWidget(layout_button);
   btn_layout->addWidget(zoom_button);
+  btn_layout->addWidget(snap_button);
   btn_layout->addStretch(1);
   btn_layout->addWidget(this->apply_button);
   main_layout->addLayout(btn_layout);
@@ -447,6 +451,11 @@ GraphManagerWidget::GraphManagerWidget(std::weak_ptr<GraphManager> p_graph_manag
                 &QPushButton::pressed,
                 this->coord_frame_widget,
                 &CoordFrameWidget::on_zoom_to_content);
+
+  this->connect(snap_button,
+                &QPushButton::toggled,
+                this->coord_frame_widget,
+                &CoordFrameWidget::set_snap_enabled);
 
   this->set_is_dirty(false);
   this->restore_window_state();

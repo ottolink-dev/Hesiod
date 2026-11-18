@@ -71,6 +71,7 @@ void CoordFrameWidget::add_frame(const std::string &id)
                                        angle);
   this->scene()->addItem(new_frame);
   new_frame->set_z_depth(gm->get_graph_order_index(id));
+  new_frame->set_snap_enabled(this->snap_enabled);
 
   // keep track of frame item ptr
   this->frames[id] = new_frame;
@@ -192,6 +193,14 @@ void CoordFrameWidget::reset()
     Logger::log()->trace("CoordFrameWidget::CoordFrameWidget: adding graph: {}", id);
     this->add_frame(id);
   }
+}
+
+void CoordFrameWidget::set_snap_enabled(bool enabled)
+{
+  this->snap_enabled = enabled;
+  for (auto &[_, frame] : this->frames)
+    if (frame)
+      frame->set_snap_enabled(enabled);
 }
 
 void CoordFrameWidget::update_frames_z_depth()

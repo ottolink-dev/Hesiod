@@ -73,7 +73,7 @@ QVariant FrameItem::itemChange(GraphicsItemChange change, const QVariant &value)
   if (change == QGraphicsItem::ItemPositionChange)
   {
     QPointF new_pos = value.toPointF();
-    if (!(QApplication::keyboardModifiers() & Qt::AltModifier))
+    if (this->snap_enabled && !(QApplication::keyboardModifiers() & Qt::AltModifier))
     {
       const qreal snap = 0.25 * COORD_SCALE;
       new_pos.setX(std::round(new_pos.x() / snap) * snap);
@@ -104,7 +104,7 @@ void FrameItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     float delta = (pos_angle - ref_angle) * hmap::cte::rad_to_deg;
 
     float new_angle = this->angle + delta;
-    if (!(event->modifiers() & Qt::AltModifier))
+    if (this->snap_enabled && !(event->modifiers() & Qt::AltModifier))
       new_angle = std::round(new_angle / 5.f) * 5.f;
 
     this->set_angle(new_angle);
@@ -121,7 +121,7 @@ void FrameItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     }
 
     // prevent negative sizes and snap to 0.25 unless Alt is held
-    if (!(event->modifiers() & Qt::AltModifier))
+    if (this->snap_enabled && !(event->modifiers() & Qt::AltModifier))
     {
       new_size.setX(std::round(new_size.x() / 0.25) * 0.25);
       new_size.setY(std::round(new_size.y() / 0.25) * 0.25);
