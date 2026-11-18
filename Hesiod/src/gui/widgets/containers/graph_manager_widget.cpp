@@ -22,6 +22,8 @@
 
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/widgets/containers/graph_manager_widget.hpp"
+#include "hesiod/gui/widgets/containers/panel_frame.hpp"
+#include "hesiod/gui/widgets/controls/grip_splitter.hpp"
 #include "hesiod/gui/widgets/dialogs/string_input_dialog.hpp"
 #include "hesiod/gui/widgets/graph/coord_frame_widget.hpp"
 #include "hesiod/gui/widgets/graph_config_widgets/graph_config_dialog.hpp"
@@ -307,17 +309,21 @@ GraphManagerWidget::GraphManagerWidget(std::weak_ptr<GraphManager> p_graph_manag
     return;
 
   this->setWindowTitle(tr("Hesiod - Graph Layout Manager"));
+  this->setObjectName("hsdBase");
+  this->setAttribute(Qt::WA_StyledBackground);
 
   auto *main_layout = new QVBoxLayout(this);
+  main_layout->setContentsMargins(6, 6, 6, 6);
+  main_layout->setSpacing(6);
 
   // --- Split pane: Left = Global Graph Editor, Right = World Editor (CoordFrameWidget)
-  auto *splitter = new QSplitter(Qt::Horizontal, this);
+  auto *splitter = new GripSplitter(Qt::Horizontal, this);
 
   this->graph_viewer = new gngui::GraphViewer("global_graph", this);
-  splitter->addWidget(this->graph_viewer);
+  splitter->addWidget(new PanelFrame(this->graph_viewer));
 
   this->coord_frame_widget = new CoordFrameWidget(gm, this);
-  splitter->addWidget(this->coord_frame_widget);
+  splitter->addWidget(new PanelFrame(this->coord_frame_widget));
 
   splitter->setStretchFactor(0, 1);
   splitter->setStretchFactor(1, 1);
