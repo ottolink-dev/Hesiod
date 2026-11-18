@@ -518,22 +518,71 @@ private Q_SLOTS:
     QVERIFY(consistent(*f.graph, f.view));
   }
 
-  void clear_removes_model_nodes_and_broadcast_registration()
+  void clear_removes_model_nodes_and_boundary_ports()
   {
     auto    manager = std::make_shared<GraphManager>("graphs");
     Fixture f;
     manager->add_graph_node(f.graph, "test");
-    f.add("Broadcast");
-    f.add("Receive");
-    QCOMPARE(manager->get_broadcast_params().size(), size_t(1));
+    f.add("NodeIn");
+    f.add("NodeOut");
+    QCOMPARE(f.graph->get_nports(), 2);
     f.reset_counts();
     f.editor.clear();
     QVERIFY(f.graph->get_nodes().empty());
-    QVERIFY(manager->get_broadcast_params().empty());
+    QCOMPARE(f.graph->get_nports(), 0);
     QCOMPARE(f.deleted.size(), size_t(2));
     QCOMPARE(f.updates, 0);
     QVERIFY(f.notifications_consistent);
     QVERIFY(consistent(*f.graph, f.view));
+  }
+
+  void graph_manager_links_and_coord_frame_interpolation()
+  {
+    auto manager = std::make_shared<GraphManager>("graphs");
+    auto cfg1 = std::make_shared<GraphConfig>();
+    cfg1->set_shape({32, 32});
+    auto cfg2 = std::make_shared<GraphConfig>();
+    cfg2->set_shape({32, 32});
+
+    auto g1 = std::make_shared<GraphNode>("g1", cfg1);
+    auto g2 = std::make_shared<GraphNode>("g2", cfg2);
+    manager->add_graph_node(g1, "g1");
+    manager->add_graph_node(g2, "g2");
+
+    const std::string c1 = g1->add_node("Constant");
+    const std::string out1 = g1->add_node("NodeOut");
+    g1->new_link(c1, "output", out1, "value");
+
+    const std::string in2 = g2->add_node("NodeIn");
+    const std::string out2 = g2->add_node("NodeOut");
+    g2->new_link(in2, "value", out2, "value");
+
+    QCOMPARE(g1->get_nports(), 1);
+    QCOMPARE(g2->get_nports(), 2);
+
+    QVERIFY(manager->new_link("g1", "output_0", "g2", "input_0"));
+    auto order = manager->get_graph_order();
+    QCOMPARE(order.size(), size_t(2));
+    QCOMPARE(order[0], std::string("g1"));
+    QCOMPARE(order[1], std::string("g2"));
+
+    // Offset g2's CoordFrame so it partially overlaps g1
+    g2->set_origin(glm::vec2(0.5f, 0.f));
+    g2->set_size(glm::vec2(1.f, 1.f));
+
+    manager->update();
+
+    auto *va2 = g2->get_value_ref<hmap::VirtualArray>("output_0");
+    QVERIFY(va2 != nullptr);
+    // Inside overlap (x < 0.5 in g2 -> x >= 0.5 in g1) should be non-zero or valid
+    QVERIFY(!va2->empty());
+
+    // Serialization round-trip
+    nlohmann::json j = manager->json_to();
+    auto           manager2 = std::make_shared<GraphManager>("graphs2");
+    manager2->json_from(j);
+    QCOMPARE(manager2->get_graph_nodes().size(), size_t(2));
+    QCOMPARE(manager2->get_links().size(), size_t(1));
   }
 
   void computation_failure_does_not_leave_edits_blocked()

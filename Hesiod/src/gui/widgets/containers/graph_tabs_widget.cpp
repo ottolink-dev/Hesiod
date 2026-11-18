@@ -23,7 +23,6 @@
 #include "hesiod/logger.hpp"
 #include "hesiod/model/graph/graph_manager.hpp"
 #include "hesiod/model/graph/graph_node.hpp"
-#include "hesiod/model/nodes/receive_node.hpp"
 
 namespace hesiod
 {
@@ -191,9 +190,6 @@ void GraphTabsWidget::on_new_node_created(const std::string &graph_id,
   BaseNode *p_node = it_graph->second->get_node_ref_by_id<BaseNode>(id);
   if (p_node)
   {
-    if (p_node->get_node_type() == "Receive")
-      this->update_receive_nodes_tag_list();
-
     Q_EMIT this->new_node_created(graph_id, id);
     Q_EMIT this->has_changed();
   }
@@ -263,50 +259,9 @@ void GraphTabsWidget::set_selected_tab(const std::string &graph_id)
 void GraphTabsWidget::setup_connections()
 {
   Logger::log()->trace("GraphTabsWidget::setup_connections");
-
-  auto gm = this->p_graph_manager.lock();
-  if (!gm)
-    return;
-
-  // connections / model
-  gm->new_broadcast_tag = [safe_this = QPointer(this)](const std::string &)
-  {
-    if (safe_this)
-      safe_this->update_receive_nodes_tag_list();
-  };
-
-  gm->remove_broadcast_tag = [safe_this = QPointer(this)](const std::string &)
-  {
-    if (safe_this)
-      safe_this->update_receive_nodes_tag_list();
-  };
 }
 
 QSize GraphTabsWidget::sizeHint() const { return QSize(1024, 1024); }
-
-void GraphTabsWidget::update_receive_nodes_tag_list()
-{
-  Logger::log()->trace("GraphTabsWidget::update_receive_nodes_tag_list");
-
-  auto gm = this->p_graph_manager.lock();
-  if (!gm)
-    return;
-
-  // update the tag list for all the Receive nodes of the graphs
-  for (auto &[gid, graph] : gm->get_graph_nodes())
-    for (auto &[nid, node] : graph->get_nodes())
-      if (node->get_label() == "Receive")
-      {
-        ReceiveNode *p_rnode = graph->get_node_ref_by_id<ReceiveNode>(nid);
-
-        std::vector<std::string> tags = {};
-        for (auto &[tag, _] : gm->get_broadcast_params())
-          tags.push_back(tag);
-
-        if (p_rnode)
-          p_rnode->update_tag_list(tags);
-      }
-}
 
 void GraphTabsWidget::update_tab_widget()
 {

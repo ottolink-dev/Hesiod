@@ -5,30 +5,299 @@
 
 #include <QGridLayout>
 #include <QGuiApplication>
-#include <QMenu>
+#include <QHBoxLayout>
+#include <QLabel>
 #include <QPushButton>
 #include <QScreen>
-#include <QSettings>
 #include <QSignalBlocker>
+#include <QSplitter>
+#include <QVBoxLayout>
+
+#include "highmap/colorize.hpp"
+#include "highmap/virtual_array/virtual_array.hpp"
+#include "highmap/virtual_array/virtual_texture.hpp"
 
 #include "gnode/graph_worker.hpp"
+#include "gnodegui/graphics_node.hpp"
+
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/widgets/containers/graph_manager_widget.hpp"
 #include "hesiod/gui/widgets/dialogs/string_input_dialog.hpp"
 #include "hesiod/gui/widgets/graph/coord_frame_widget.hpp"
-#include "hesiod/gui/widgets/graph_config_widgets/flatten_config_dialog.hpp"
 #include "hesiod/gui/widgets/graph_config_widgets/graph_config_dialog.hpp"
 #include "hesiod/logger.hpp"
-#include "hesiod/model/graph/flatten_config.hpp"
 #include "hesiod/model/graph/graph_manager.hpp"
 #include "hesiod/model/graph/graph_node.hpp"
+#include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/utils.hpp"
-
-#define MINIMUM_WIDTH 384
 
 namespace hesiod
 {
 
+namespace
+{
+
+bool parse_preview_tag(const std::string &tag,
+                       std::string       &node_label,
+                       std::string       &node_id,
+                       std::string       &port_id)
+{
+  std::vector<std::string> parts = split_string(tag, '/');
+  if (parts.size() != 3)
+    return false;
+  node_label = parts[0];
+  node_id = parts[1];
+  port_id = parts[2];
+  return true;
+}
+
+} // namespace
+
+// =====================================
+// GraphNodeProxy
+// =====================================
+GraphNodeProxy::GraphNodeProxy(std::weak_ptr<GraphNode> model, QObject *owner)
+    : model(std::move(model))
+{
+  setParent(owner);
+  if (auto g = this->model.lock())
+  {
+    g->ports_updated = [safe_this = QPointer(this)]()
+    {
+      if (safe_this)
+        Q_EMIT safe_this->ports_changed();
+    };
+  }
+}
+
+std::string GraphNodeProxy::get_id() const
+{
+  if (auto g = model.lock())
+    return g->get_id();
+  return {};
+}
+
+void GraphNodeProxy::set_id(const std::string &id)
+{
+  if (auto g = model.lock())
+    g->set_id(id);
+}
+
+std::string GraphNodeProxy::get_caption() const
+{
+  if (auto g = model.lock())
+    return g->get_id();
+  return {};
+}
+
+std::string GraphNodeProxy::get_category() const { return "Terrain"; }
+
+std::string GraphNodeProxy::get_comment() const { return {}; }
+
+std::string GraphNodeProxy::get_tool_tip_text() const
+{
+  if (auto g = model.lock())
+    return "Terrain Graph: " + g->get_id();
+  return {};
+}
+
+int GraphNodeProxy::get_nports() const
+{
+  if (auto g = model.lock())
+    return g->get_nports();
+  return 0;
+}
+
+std::string GraphNodeProxy::get_port_caption(int index) const
+{
+  if (auto g = model.lock())
+    return g->get_port_label(index);
+  return {};
+}
+
+gngui::PortType GraphNodeProxy::get_port_type(int index) const
+{
+  if (auto g = model.lock())
+    return static_cast<gngui::PortType>(g->get_port_type(g->get_port_label(index)));
+  return gngui::PortType::IN;
+}
+
+std::string GraphNodeProxy::get_data_type(int index) const
+{
+  if (auto g = model.lock())
+    return map_type_name(g->gnode::Node::get_data_type(index));
+  return {};
+}
+
+void *GraphNodeProxy::get_data_ref(int index) const
+{
+  if (auto g = model.lock())
+    return g->get_value_ref_void(index);
+  return nullptr;
+}
+
+std::unordered_map<std::string, std::string> GraphNodeProxy::consume_port_renames()
+{
+  if (auto g = model.lock())
+    return g->consume_port_renames();
+  return {};
+}
+
+// =====================================
+// GraphPreviewLayerWidget
+// =====================================
+GraphPreviewLayerWidget::GraphPreviewLayerWidget(std::weak_ptr<GraphNode> p_graph_node,
+                                                 QWidget                 *parent)
+    : QWidget(parent), p_graph_node(p_graph_node)
+{
+  auto *layout = new QHBoxLayout(this);
+  layout->setContentsMargins(4, 2, 4, 2);
+  layout->setSpacing(4);
+
+  auto *label = new QLabel(tr("Layer:"), this);
+  layout->addWidget(label);
+
+  this->combobox = new QComboBox(this);
+  this->combobox->setMinimumWidth(140);
+  layout->addWidget(this->combobox, 1);
+
+  this->update_combobox();
+
+  this->connect(this->combobox,
+                QOverload<int>::of(&QComboBox::currentIndexChanged),
+                this,
+                &GraphPreviewLayerWidget::on_combobox_changed);
+}
+
+std::string GraphPreviewLayerWidget::get_current_bg_tag() const
+{
+  return this->current_bg_tag;
+}
+
+GraphNode *GraphPreviewLayerWidget::get_p_graph_node()
+{
+  auto gno = this->p_graph_node.lock();
+  return gno ? gno.get() : nullptr;
+}
+
+void GraphPreviewLayerWidget::json_from(nlohmann::json const &json)
+{
+  if (json.is_object())
+  {
+    json_safe_get(json, "current_bg_tag", this->current_bg_tag);
+    this->combobox->setCurrentText(this->current_bg_tag.c_str());
+    this->on_combobox_changed();
+  }
+}
+
+nlohmann::json GraphPreviewLayerWidget::json_to() const
+{
+  nlohmann::json json;
+  json["current_bg_tag"] = this->current_bg_tag;
+  return json;
+}
+
+void GraphPreviewLayerWidget::on_combobox_changed()
+{
+  auto gno = this->p_graph_node.lock();
+  if (!gno)
+    return;
+
+  this->current_bg_tag = this->combobox->currentText().toStdString();
+
+  std::string node_label, node_id, port_id;
+  if (!parse_preview_tag(this->current_bg_tag, node_label, node_id, port_id))
+  {
+    Q_EMIT this->bg_image_updated(gno->get_id(), QImage());
+    Q_EMIT this->has_changed();
+    return;
+  }
+
+  BaseNode *p_node = gno->get_node_ref_by_id<BaseNode>(node_id);
+  if (!p_node)
+    return;
+
+  QImage               image;
+  std::vector<uint8_t> img;
+  glm::ivec2           shape_img(256, 256);
+
+  if (p_node->has_port<hmap::VirtualArray>(port_id))
+  {
+    if (auto *p_h = p_node->get_value_ref<hmap::VirtualArray>(port_id))
+    {
+      hmap::Array array = p_h->to_array(shape_img, p_node->cfg().cm_cpu);
+      img = hmap::colorize(array, array.min(), array.max(), hmap::Cmap::TURBO, true)
+                .to_img_8bit();
+      image = QImage(img.data(), shape_img.x, shape_img.y, QImage::Format_RGB888).copy();
+    }
+  }
+  else if (p_node->has_port<hmap::VirtualTexture>(port_id))
+  {
+    if (auto *p_tex = p_node->get_value_ref<hmap::VirtualTexture>(port_id))
+    {
+      if (p_tex->channels() >= 3)
+      {
+        hmap::Array r = p_tex->channel(0).to_array(shape_img, p_node->cfg().cm_cpu);
+        hmap::Array g = p_tex->channel(1).to_array(shape_img, p_node->cfg().cm_cpu);
+        hmap::Array b = p_tex->channel(2).to_array(shape_img, p_node->cfg().cm_cpu);
+        image = QImage(shape_img.x, shape_img.y, QImage::Format_RGB888);
+        for (int j = 0; j < shape_img.y; ++j)
+          for (int i = 0; i < shape_img.x; ++i)
+          {
+            const int cr = std::clamp(static_cast<int>(r(i, j) * 255.f), 0, 255);
+            const int cg = std::clamp(static_cast<int>(g(i, j) * 255.f), 0, 255);
+            const int cb = std::clamp(static_cast<int>(b(i, j) * 255.f), 0, 255);
+            image.setPixel(i, j, qRgb(cr, cg, cb));
+          }
+      }
+    }
+  }
+
+  Q_EMIT this->bg_image_updated(gno->get_id(), image);
+  Q_EMIT this->has_changed();
+}
+
+void GraphPreviewLayerWidget::update_combobox()
+{
+  auto gno = this->p_graph_node.lock();
+  if (!gno)
+    return;
+
+  const std::string tag_bckp = this->current_bg_tag;
+
+  const QSignalBlocker blocker(this->combobox);
+  this->combobox->clear();
+  this->combobox->addItem("NONE");
+
+  bool is_current_tag_in_combo = false;
+
+  for (const auto &[id, node] : gno->get_nodes())
+  {
+    for (const auto &port : node->get_ports())
+    {
+      const std::string dtype = port->get_data_type();
+      if (dtype == typeid(hmap::VirtualArray).name() ||
+          dtype == typeid(hmap::VirtualTexture).name())
+      {
+        const std::string tag = node->get_label() + "/" + node->get_id() + "/" +
+                                port->get_label();
+        this->combobox->addItem(tag.c_str());
+
+        if (tag_bckp == tag)
+          is_current_tag_in_combo = true;
+      }
+    }
+  }
+
+  if (is_current_tag_in_combo)
+    this->combobox->setCurrentText(tag_bckp.c_str());
+
+  this->on_combobox_changed();
+}
+
+// =====================================
+// GraphManagerWidget
+// =====================================
 GraphManagerWidget::GraphManagerWidget(std::weak_ptr<GraphManager> p_graph_manager,
                                        QWidget                    *parent)
     : QWidget(parent), p_graph_manager(p_graph_manager)
@@ -39,73 +308,102 @@ GraphManagerWidget::GraphManagerWidget(std::weak_ptr<GraphManager> p_graph_manag
 
   this->setWindowTitle(tr("Hesiod - Graph Layout Manager"));
 
-  // --- build widget layout
-  int row = 0;
+  auto *main_layout = new QVBoxLayout(this);
 
-  QGridLayout *layout = new QGridLayout(this);
+  // --- Split pane: Left = Global Graph Editor, Right = World Editor (CoordFrameWidget)
+  auto *splitter = new QSplitter(Qt::Horizontal, this);
 
-  // left pan
+  this->graph_viewer = new gngui::GraphViewer("global_graph", this);
+  splitter->addWidget(this->graph_viewer);
+
   this->coord_frame_widget = new CoordFrameWidget(gm, this);
-  layout->addWidget(this->coord_frame_widget, row, 0, 2, 1);
+  splitter->addWidget(this->coord_frame_widget);
 
-  // right pan
-  this->list_widget = new QListWidget(this);
+  splitter->setStretchFactor(0, 1);
+  splitter->setStretchFactor(1, 1);
+  main_layout->addWidget(splitter, 1);
 
-  AppContext &ctx = HSD_CTX;
-
-  std::string
-      style_sheet = "QListWidget::item { border: 1px solid COLOR; color: transparent; }";
-  replace_all(style_sheet, "COLOR", ctx.app_settings.colors.border.name().toStdString());
-  this->list_widget->setStyleSheet(style_sheet.c_str());
-
-  this->list_widget->setViewMode(QListView::ListMode);
-  this->list_widget->setDragDropMode(QAbstractItemView::InternalMove);
-  this->list_widget->setContextMenuPolicy(Qt::CustomContextMenu);
-  this->setup_reset_actions();
-  this->list_widget->setMinimumSize(MINIMUM_WIDTH, this->list_widget->height());
-
-  // populate with graph editor names
-  for (auto &id : gm->get_graph_order())
-    this->add_list_item(id);
-
-  layout->addWidget(this->list_widget, row++, 1, 1, 4);
-
-  // buttons
-  QPushButton *new_button = new QPushButton("New");
-  layout->addWidget(new_button, row, 1);
-
-  QPushButton *zoom_button = new QPushButton("Zoom");
-  layout->addWidget(zoom_button, row, 2);
-
-  QPushButton *export_button = new QPushButton("Flatten/export");
-  layout->addWidget(export_button, row, 3);
-
-  this->apply_button = new QPushButton("Apply");
+  // --- Bottom action bar
+  auto *btn_layout = new QHBoxLayout();
+  auto *new_button = new QPushButton(tr("New Graph"), this);
+  auto *layout_button = new QPushButton(tr("Auto Layout"), this);
+  auto *zoom_button = new QPushButton(tr("Zoom"), this);
+  this->apply_button = new QPushButton(tr("Apply"), this);
   this->apply_button->setStyleSheet("QPushButton:enabled {background-color: red;}");
-  layout->addWidget(apply_button, row, 4);
 
-  row++;
+  btn_layout->addWidget(new_button);
+  btn_layout->addWidget(layout_button);
+  btn_layout->addWidget(zoom_button);
+  btn_layout->addStretch(1);
+  btn_layout->addWidget(this->apply_button);
+  main_layout->addLayout(btn_layout);
 
-  this->setLayout(layout);
+  this->setup_reset_actions();
 
-  // --- connections
+  // Populate initial graphs
+  this->reset();
 
-  this->connect(this->list_widget,
-                &QListWidget::customContextMenuRequested,
+  // --- Connections: GraphViewer (Left Pane)
+  this->connect(this->graph_viewer,
+                &gngui::GraphViewer::connection_finished,
                 this,
-                &GraphManagerWidget::show_context_menu);
+                [this](const std::string &id_out,
+                       const std::string &port_id_out,
+                       const std::string &to_in,
+                       const std::string &port_id_in)
+                {
+                  auto gm = this->p_graph_manager.lock();
+                  if (!gm)
+                    return;
 
-  this->connect(this->list_widget->model(),
-                &QAbstractItemModel::rowsMoved,
+                  if (id_out == to_in || gm->is_reachable(to_in, id_out))
+                  {
+                    Logger::log()->warn("GraphManagerWidget: rejected cyclic link");
+                    return;
+                  }
+
+                  if (gm->new_link(id_out, port_id_out, to_in, port_id_in))
+                  {
+                    this->coord_frame_widget->update_frames_z_depth();
+                    gm->update(to_in);
+                    Q_EMIT this->has_changed();
+                  }
+                });
+
+  this->connect(this->graph_viewer,
+                &gngui::GraphViewer::connection_deleted,
                 this,
-                &GraphManagerWidget::on_list_reordered);
+                [this](const std::string &id_out,
+                       const std::string &port_id_out,
+                       const std::string &to_in,
+                       const std::string &port_id_in,
+                       bool /* link_will_be_replaced */)
+                {
+                  auto gm = this->p_graph_manager.lock();
+                  if (!gm)
+                    return;
 
-  this->connect(this->list_widget,
-                &QListWidget::itemDoubleClicked,
+                  if (gm->remove_link(id_out, port_id_out, to_in, port_id_in))
+                  {
+                    this->coord_frame_widget->update_frames_z_depth();
+                    gm->update(to_in);
+                    Q_EMIT this->has_changed();
+                  }
+                });
+
+  this->connect(this->graph_viewer,
+                &gngui::GraphViewer::node_double_clicked,
                 this,
-                &GraphManagerWidget::on_item_double_clicked);
+                [this](const std::string &graph_id)
+                { Q_EMIT this->selected_graph_changed(graph_id); });
 
-  this->connect(apply_button,
+  this->connect(this->graph_viewer,
+                &gngui::GraphViewer::node_deleted,
+                this,
+                [this](const std::string &graph_id) { this->delete_graph(graph_id); });
+
+  // --- Connections: Buttons & CoordFrameWidget (Right Pane)
+  this->connect(this->apply_button,
                 &QPushButton::pressed,
                 this,
                 &GraphManagerWidget::on_apply_changes);
@@ -115,12 +413,25 @@ GraphManagerWidget::GraphManagerWidget(std::weak_ptr<GraphManager> p_graph_manag
                 this,
                 &GraphManagerWidget::on_new_graph_request);
 
-  this->connect(export_button,
+  this->connect(layout_button,
                 &QPushButton::pressed,
                 this,
-                &GraphManagerWidget::on_export);
+                [this]()
+                {
+                  auto gm = this->p_graph_manager.lock();
+                  if (!gm)
+                    return;
 
-  // frames canvas
+                  auto pts = gm->compute_graph_layout_sugiyama();
+                  auto order = gm->get_graph_order();
+                  for (size_t i = 0; i < std::min(pts.size(), order.size()); ++i)
+                  {
+                    if (auto *gn = this->graph_viewer->get_graphics_node_by_id(order[i]))
+                      gn->setPos(pts[i].x * 300.f, pts[i].y * 200.f);
+                  }
+                  this->graph_viewer->zoom_to_content();
+                });
+
   this->connect(this->coord_frame_widget,
                 &CoordFrameWidget::has_changed,
                 this,
@@ -131,53 +442,50 @@ GraphManagerWidget::GraphManagerWidget(std::weak_ptr<GraphManager> p_graph_manag
                 this->coord_frame_widget,
                 &CoordFrameWidget::on_zoom_to_content);
 
-  // clean state
   this->set_is_dirty(false);
-
-  // restore window geometry
   this->restore_window_state();
 }
 
-void GraphManagerWidget::add_list_item(const std::string &id)
+void GraphManagerWidget::add_graph_item(const std::string &id, QPointF scene_pos)
 {
   auto gm = this->p_graph_manager.lock();
   if (!gm)
     return;
 
-  // create the list item
-  auto *item = new QListWidgetItem();
-  item->setText(id.c_str());
+  auto *gno = gm->get_graph_ref_by_id(id);
+  if (!gno)
+    return;
 
-  // create the custom widget to embed inside the item
-  GraphQListWidget *widget = new GraphQListWidget(gm->get_graph_nodes().at(id));
+  auto *proxy = new GraphNodeProxy(gno->get_shared(), this);
+  this->graph_viewer->add_node(proxy, scene_pos, id);
 
-  item->setSizeHint(widget->sizeHint());
+  auto *preview_widget = new GraphPreviewLayerWidget(gno->get_shared(), this);
+  this->preview_widgets[id] = preview_widget;
 
-  // add the item and set the widget
-  this->list_widget->addItem(item);
-  this->list_widget->setItemWidget(item, widget);
+  if (auto *gn = this->graph_viewer->get_graphics_node_by_id(id))
+    gn->set_widget(preview_widget);
 
-  // connections
-  this->connect(
-      widget,
-      &GraphQListWidget::bg_image_updated,
-      this,
-      [this](const std::string &id, QImage image)
-      { this->coord_frame_widget->get_frame_ref(id)->set_background_image(image); });
+  this->connect(preview_widget,
+                &GraphPreviewLayerWidget::bg_image_updated,
+                this,
+                [this](const std::string &gid, QImage image)
+                {
+                  if (auto *frame = this->coord_frame_widget->get_frame_ref(gid))
+                    frame->set_background_image(image);
+                });
 
-  this->connect(widget,
-                &GraphQListWidget::has_changed,
+  this->connect(preview_widget,
+                &GraphPreviewLayerWidget::has_changed,
                 this,
                 [this]() { Q_EMIT this->has_changed(); });
 
   this->connect(this,
                 &GraphManagerWidget::update_finished,
-                widget,
-                [this, widget]()
+                preview_widget,
+                [this, preview_widget]()
                 {
-                  // its image is refreshed, the project has not changed for all that
                   const QSignalBlocker blocker(this);
-                  widget->on_combobox_changed();
+                  preview_widget->on_combobox_changed();
                 });
 }
 
@@ -185,8 +493,9 @@ void GraphManagerWidget::clear()
 {
   Logger::log()->trace("GraphManagerWidget::clear");
 
+  this->preview_widgets.clear();
+  this->graph_viewer->clear();
   this->coord_frame_widget->clear();
-  this->list_widget->clear();
 }
 
 void GraphManagerWidget::closeEvent(QCloseEvent *event)
@@ -206,30 +515,44 @@ void GraphManagerWidget::json_from(nlohmann::json const &json)
 {
   this->reset();
 
-  for (int i = 0; i < this->list_widget->count(); ++i)
+  if (json.contains("graph_viewer"))
   {
-    QListWidgetItem *item = this->list_widget->item(i);
-    std::string      id = item->text().toStdString();
-    QWidget         *widget = this->list_widget->itemWidget(item);
+    // Restore node positions without clearing model-created nodes
+    const auto &gv_json = json["graph_viewer"];
+    if (gv_json.contains("nodes") && gv_json["nodes"].is_array())
+    {
+      for (const auto &jn : gv_json["nodes"])
+      {
+        const std::string id = jn.value("id", "");
+        if (auto *gn = this->graph_viewer->get_graphics_node_by_id(id))
+        {
+          if (jn.contains("scene_position") && jn["scene_position"].is_array() &&
+              jn["scene_position"].size() >= 2)
+          {
+            gn->setPos(jn["scene_position"][0].get<double>(),
+                       jn["scene_position"][1].get<double>());
+          }
+        }
+      }
+    }
+  }
 
-    if (auto gw_widget = dynamic_cast<GraphQListWidget *>(widget))
-      gw_widget->json_from(json["frames"][id]);
+  if (json.contains("frames") && json["frames"].is_object())
+  {
+    for (auto &[id, pw] : this->preview_widgets)
+      if (pw && json["frames"].contains(id))
+        pw->json_from(json["frames"][id]);
   }
 }
 
 nlohmann::json GraphManagerWidget::json_to() const
 {
   nlohmann::json json;
+  json["graph_viewer"] = this->graph_viewer->json_to();
 
-  for (int i = 0; i < this->list_widget->count(); ++i)
-  {
-    QListWidgetItem *item = this->list_widget->item(i);
-    std::string      id = item->text().toStdString();
-    QWidget         *widget = this->list_widget->itemWidget(item);
-
-    if (auto gw_widget = dynamic_cast<GraphQListWidget *>(widget))
-      json["frames"][id] = gw_widget->json_to();
-  }
+  for (const auto &[id, pw] : this->preview_widgets)
+    if (pw)
+      json["frames"][id] = pw->json_to();
 
   return json;
 }
@@ -242,121 +565,27 @@ void GraphManagerWidget::on_apply_changes()
   if (!gm)
     return;
 
-  gm->get_worker().stop(); // Receive nodes read the frames
+  gm->get_worker().stop();
 
-  // retrieve coordinate frame parameters from the frames canvas
   for (auto &[id, graph] : gm->get_graph_nodes())
   {
-    Logger::log()->trace("id: {}", id);
-
     QPointF origin_out;
     QPointF size_out;
-    float   angle_out;
+    float   angle_out = 0.f;
 
-    this->coord_frame_widget->get_frame_ref(id)->get_frame_parameter(origin_out,
-                                                                     size_out,
-                                                                     angle_out);
-
-    graph->set_origin(glm::vec2(origin_out.x(), origin_out.y()));
-    graph->set_size(glm::vec2(size_out.x(), size_out.y()));
-    graph->set_rotation_angle(angle_out);
-  }
-
-  // update the graph from bottom to top
-  for (auto &id : gm->get_graph_order())
-    gm->get_graph_ref_by_id(id)->update();
-
-  // clean state
-  this->set_is_dirty(false);
-
-  Q_EMIT this->has_changed();
-}
-
-void GraphManagerWidget::on_export()
-{
-  // TODO move to GraphManager
-  Logger::log()->trace("GraphManagerWidget::on_export");
-
-  auto gm = this->p_graph_manager.lock();
-  if (!gm)
-    return;
-
-  // define the export parameters using the GUI
-  FlattenConfig export_param = gm->get_export_param();
-
-  if (export_param.export_path.empty())
-    export_param.export_path = "export.png";
-
-  FlattenConfigDialog param_editor(export_param);
-  int                 ret = param_editor.exec();
-
-  if (!ret)
-    return;
-
-  // retrieve export ids from the current tags in the GUI
-  std::vector<std::tuple<std::string, std::string, std::string>> export_ids = {};
-
-  for (int i = 0; i < this->list_widget->count(); ++i)
-  {
-    QListWidgetItem *item = this->list_widget->item(i);
-    QWidget         *widget = this->list_widget->itemWidget(item);
-    if (auto gw_widget = dynamic_cast<GraphQListWidget *>(widget))
+    if (auto *frame = this->coord_frame_widget->get_frame_ref(id))
     {
-      std::string tag = gw_widget->get_current_bg_tag();
-
-      // retrieve node ID from tag
-      std::string node_type, node_id, port_id;
-      bool        ret = get_ids_from_broadcast_tag(tag, node_type, node_id, port_id);
-
-      if (ret)
-      {
-        Logger::log()->trace("adding layer: {}", tag);
-        export_ids.push_back({gw_widget->get_p_graph_node()->get_id(), node_id, port_id});
-      }
-      else
-      {
-        Logger::log()->trace("skipping layer: {}", tag);
-      }
+      frame->get_frame_parameter(origin_out, size_out, angle_out);
+      graph->set_origin(glm::vec2(origin_out.x(), origin_out.y()));
+      graph->set_size(glm::vec2(size_out.x(), size_out.y()));
+      graph->set_rotation_angle(angle_out);
     }
   }
 
-  export_param.ids = export_ids;
+  gm->update();
 
-  gm->set_export_param(export_param);
-  gm->export_flatten();
-}
-
-void GraphManagerWidget::on_item_double_clicked(QListWidgetItem *item)
-{
-  Q_EMIT this->selected_graph_changed(item->text().toStdString());
-}
-
-void GraphManagerWidget::on_list_reordered(const QModelIndex &,
-                                           int,
-                                           int,
-                                           const QModelIndex &,
-                                           int)
-{
-  Logger::log()->trace("GraphManagerWidget::on_list_reordered");
-
-  auto gm = this->p_graph_manager.lock();
-  if (!gm)
-    return;
-
-  // retrieve new graph order
-  std::vector<std::string> new_graph_order = {};
-
-  for (int i = 0; i < this->list_widget->count(); ++i)
-    new_graph_order.push_back(this->list_widget->item(i)->text().toStdString());
-
-  // update storage
-  gm->set_graph_order(new_graph_order);
-
-  // update frames canvas
-  this->coord_frame_widget->update_frames_z_depth();
-  this->set_is_dirty(true);
-
-  Q_EMIT this->list_reordered();
+  this->set_is_dirty(false);
+  Q_EMIT this->has_changed();
 }
 
 void GraphManagerWidget::on_new_graph_request()
@@ -365,10 +594,8 @@ void GraphManagerWidget::on_new_graph_request()
   if (!gm)
     return;
 
-  // get ID from user
   std::vector<std::string> invalid_graph_ids = gm->get_graph_order();
 
-  // a free name to start from: graph, graph_2, graph_3...
   QString suggestion = "graph";
   for (int k = 2; std::ranges::find(invalid_graph_ids, suggestion.toStdString()) !=
                   invalid_graph_ids.end();
@@ -383,44 +610,30 @@ void GraphManagerWidget::on_new_graph_request()
                               this);
   std::string       new_graph_id;
 
-  {
-    int ret = id_dialog.exec();
-    if (!ret)
-      return;
-    else
-      new_graph_id = id_dialog.get_text_std_string();
-  }
+  if (!id_dialog.exec())
+    return;
+  new_graph_id = id_dialog.get_text_std_string();
 
-  // get config from user
   auto              config = std::make_shared<hesiod::GraphConfig>();
   GraphConfigDialog config_editor(*config, this);
+  if (!config_editor.exec())
+    return;
 
-  {
-    int ret = config_editor.exec();
-    if (!ret)
-      return;
-  }
-
-  // create new graph
   auto graph = std::make_shared<hesiod::GraphNode>(new_graph_id, config);
   gm->add_graph_node(graph, new_graph_id);
 
-  // add to list widget
-  this->add_list_item(new_graph_id);
-
-  // add to frames canvas
   this->coord_frame_widget->add_frame(new_graph_id);
+  this->add_graph_item(
+      new_graph_id,
+      QPointF(static_cast<qreal>(invalid_graph_ids.size()) * 280.0, 0.0));
 
   Q_EMIT this->new_graph_added();
 }
 
 void GraphManagerWidget::on_reseed(bool backward)
 {
-  auto gm = this->p_graph_manager.lock();
-  if (!gm)
-    return;
-
-  gm->reseed(backward);
+  if (auto gm = this->p_graph_manager.lock())
+    gm->reseed(backward);
 }
 
 void GraphManagerWidget::reset()
@@ -429,12 +642,25 @@ void GraphManagerWidget::reset()
   if (!gm)
     return;
 
-  this->list_widget->clear();
-
-  for (auto &id : gm->get_graph_order())
-    this->add_list_item(id);
-
+  this->clear();
   this->coord_frame_widget->reset();
+
+  const auto order = gm->get_graph_order();
+  for (size_t i = 0; i < order.size(); ++i)
+    this->add_graph_item(order[i], QPointF(static_cast<qreal>(i) * 280.0, 0.0));
+
+  for (const auto &link : gm->get_links())
+  {
+    auto *p_from = gm->get_node(link.from);
+    auto *p_to = gm->get_node(link.to);
+    if (p_from && p_to)
+    {
+      this->graph_viewer->add_link(link.from,
+                                   p_from->get_port_label(link.port_from),
+                                   link.to,
+                                   p_to->get_port_label(link.port_to));
+    }
+  }
 }
 
 void GraphManagerWidget::restore_window_state()
@@ -442,7 +668,6 @@ void GraphManagerWidget::restore_window_state()
   AppContext &ctx = HSD_CTX;
   const auto &geom = ctx.app_settings.window.geom_graph_manager;
 
-  // default to center of the main screen
   if (geom.x <= 0 && geom.y <= 0)
   {
     QScreen *screen = QGuiApplication::primaryScreen();
@@ -464,8 +689,7 @@ void GraphManagerWidget::restore_window_state()
 void GraphManagerWidget::save_window_state() const
 {
   AppContext &ctx = HSD_CTX;
-
-  QRect geom = this->geometry();
+  QRect       geom = this->geometry();
   ctx.app_settings.window.geom_graph_manager.x = geom.x();
   ctx.app_settings.window.geom_graph_manager.y = geom.y();
   ctx.app_settings.window.geom_graph_manager.w = geom.width();
@@ -475,7 +699,8 @@ void GraphManagerWidget::save_window_state() const
 void GraphManagerWidget::set_is_dirty(bool new_is_dirty)
 {
   this->is_dirty = new_is_dirty;
-  this->apply_button->setEnabled(this->is_dirty);
+  if (this->apply_button)
+    this->apply_button->setEnabled(this->is_dirty);
   this->update();
 }
 
@@ -485,56 +710,8 @@ void GraphManagerWidget::showEvent(QShowEvent *event)
   this->restore_window_state();
 }
 
-void GraphManagerWidget::show_context_menu(const QPoint &pos)
-{
-  Logger::log()->trace("GraphManagerWidget::show_context_menu");
-
-  auto gm = this->p_graph_manager.lock();
-  if (!gm)
-    return;
-
-  QListWidgetItem *item = this->list_widget->itemAt(pos);
-
-  if (!item)
-    return;
-
-  std::string selected_id = item ? item->text().toStdString() : "";
-  Logger::log()->trace("selected_id: {}", selected_id);
-
-  QMenu    menu;
-  QAction *new_action = menu.addAction("New");
-  QAction *set_focus_action = menu.addAction("Show in graph editor");
-  menu.addSeparator();
-  QMenu *reset_menu = menu.addMenu("Reset transform");
-  reset_menu->addActions(this->reset_actions);
-  menu.addSeparator();
-  QAction *delete_action = menu.addAction("Delete");
-
-  // the reset actions work on the current item
-  this->list_widget->setCurrentItem(item);
-
-  QPoint   global_pos = this->list_widget->mapToGlobal(pos);
-  QAction *selected_action = menu.exec(global_pos);
-
-  if (selected_action == delete_action)
-  {
-    this->delete_graph(selected_id);
-  }
-  else if (selected_action == set_focus_action)
-  {
-    Q_EMIT this->selected_graph_changed(item->text().toStdString());
-  }
-  else if (selected_action == new_action)
-  {
-    this->on_new_graph_request();
-  }
-}
-
 void GraphManagerWidget::setup_reset_actions()
 {
-  // location, rotation and scale of the current graph's frame back to the
-  // defaults (origin, no rotation, unit size), from the context menu or with
-  // Alt+L / Alt+R / Alt+S while this window has focus
   const std::vector<std::pair<QString, QString>> labels = {{"Location", "Alt+L"},
                                                            {"Rotation", "Alt+R"},
                                                            {"Scale", "Alt+S"}};
@@ -551,12 +728,15 @@ void GraphManagerWidget::setup_reset_actions()
                   this,
                   [this, k]()
                   {
-                    QListWidgetItem *item = this->list_widget->currentItem();
-                    if (!item)
+                    const auto selected = this->graph_viewer->get_selected_node_ids();
+                    if (selected.empty())
                       return;
 
                     FrameItem *frame = this->coord_frame_widget->get_frame_ref(
-                        item->text().toStdString());
+                        selected.front());
+                    if (!frame)
+                      return;
+
                     if (k == 0)
                       frame->set_origin(QPointF(0.f, 0.f));
                     else if (k == 1)
@@ -575,13 +755,8 @@ void GraphManagerWidget::delete_graph(const std::string &graph_id)
   if (!gm)
     return;
 
-  for (int i = 0; i < this->list_widget->count(); ++i)
-    if (this->list_widget->item(i)->text().toStdString() == graph_id)
-    {
-      delete this->list_widget->takeItem(i);
-      break;
-    }
-
+  this->preview_widgets.erase(graph_id);
+  this->graph_viewer->erase_node(graph_id);
   gm->remove_graph_node(graph_id);
   this->coord_frame_widget->remove_frame(graph_id);
 
@@ -592,18 +767,9 @@ void GraphManagerWidget::update_combobox(const std::string &graph_id)
 {
   Logger::log()->trace("GraphManagerWidget::update_combobox: {}", graph_id);
 
-  // find corresponding item and update its combobox
-  for (int i = 0; i < this->list_widget->count(); ++i)
-  {
-    std::string item_id = this->list_widget->item(i)->text().toStdString();
-    if (item_id == graph_id)
-    {
-      QListWidgetItem *item = this->list_widget->item(i);
-      QWidget         *widget = this->list_widget->itemWidget(item);
-      if (auto gw_widget = dynamic_cast<GraphQListWidget *>(widget))
-        gw_widget->update_combobox();
-    }
-  }
+  auto it = this->preview_widgets.find(graph_id);
+  if (it != this->preview_widgets.end() && it->second)
+    it->second->update_combobox();
 }
 
 } // namespace hesiod
