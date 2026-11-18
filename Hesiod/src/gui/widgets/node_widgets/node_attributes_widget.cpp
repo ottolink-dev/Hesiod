@@ -561,60 +561,65 @@ void NodeAttributesWidget::setup_layout()
     return {name, &p_current->get_meta_group().current()};
   };
 
+  // Named so that everything in this widget that edits the node records its
+  // edits for undo and triggers the recompute in the same way.
+  const auto on_edit_started = [this, get_container_info]()
+  {
+    auto [name, container] = get_container_info();
+    if (container)
+    {
+      this->state_before_edit = container->json_to(meta::SerializationMode::state);
+      this->is_in_edit = true;
+    }
+  };
+
+  const auto on_edit_ended = [this, get_container_info]()
+  {
+    auto [name, container] = get_container_info();
+    if (container && this->is_in_edit)
+    {
+      nlohmann::json new_state = container->json_to(meta::SerializationMode::state);
+      if (new_state != this->state_before_edit)
+      {
+        if (QUndoStack *stack = UndoManager::instance().get_stack())
+        {
+          stack->push(new ChangeNodeAttributeCommand(this->p_graph_node,
+                                                     this->node_id,
+                                                     name,
+                                                     this->state_before_edit,
+                                                     new_state));
+        }
+      }
+    }
+    this->is_in_edit = false;
+  };
+
+  const auto recompute = [this]()
+  {
+    auto gno = this->p_graph_node.lock();
+    if (!gno)
+      return;
+    gno->update(this->node_id);
+  };
+
+  // Recompute on value_changed or edit_ended depending on app settings.
+  const bool live_update = HSD_CTX.app_settings.node_editor.live_update;
+
   this->connect(this->meta_widget,
                 &meta::qt::MetaWidget::edit_started,
                 this,
-                [this, get_container_info]()
-                {
-                  auto [name, container] = get_container_info();
-                  if (container)
-                  {
-                    this->state_before_edit = container->json_to(
-                        meta::SerializationMode::state);
-                    this->is_in_edit = true;
-                  }
-                });
-
-  this->connect(
-      this->meta_widget,
-      &meta::qt::MetaWidget::edit_ended,
-      this,
-      [this, get_container_info]()
-      {
-        auto [name, container] = get_container_info();
-        if (container && this->is_in_edit)
-        {
-          nlohmann::json new_state = container->json_to(meta::SerializationMode::state);
-          if (new_state != this->state_before_edit)
-          {
-            if (QUndoStack *stack = UndoManager::instance().get_stack())
-            {
-              stack->push(new ChangeNodeAttributeCommand(this->p_graph_node,
-                                                         this->node_id,
-                                                         name,
-                                                         this->state_before_edit,
-                                                         new_state));
-            }
-          }
-        }
-        this->is_in_edit = false;
-      });
-
-  // Recompute on value_changed or edit_ended depending on app settings.
-  auto signal = HSD_CTX.app_settings.node_editor.live_update
-                    ? &meta::qt::MetaWidget::value_changed
-                    : &meta::qt::MetaWidget::edit_ended;
+                on_edit_started);
 
   this->connect(this->meta_widget,
-                signal,
+                &meta::qt::MetaWidget::edit_ended,
                 this,
-                [this]()
-                {
-                  auto gno = this->p_graph_node.lock();
-                  if (!gno)
-                    return;
-                  gno->update(this->node_id);
-                });
+                on_edit_ended);
+
+  this->connect(this->meta_widget,
+                live_update ? &meta::qt::MetaWidget::value_changed
+                            : &meta::qt::MetaWidget::edit_ended,
+                this,
+                recompute);
 
   if (auto *group_widget = dynamic_cast<meta::qt::ContainerGroupWidget *>(
           this->meta_widget))

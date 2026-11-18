@@ -24,6 +24,49 @@
 namespace hesiod
 {
 
+namespace
+{
+
+QString panel_scrollbar_stylesheet(const meta::qt::Theme &theme)
+{
+  // The space of the bar is always there; with nothing to scroll, Qt would
+  // still draw a handle over the whole height, which reads as content that is
+  // cut off.
+  return meta::qt::industrial::scrollbar_stylesheet(theme) +
+         "QScrollBar[idle=\"true\"]::handle:vertical,"
+         "QScrollBar[idle=\"true\"]::handle:vertical:hover { "
+         "background: transparent; }";
+}
+
+/** @brief Reserve the vertical scrollbar permanently.
+ *
+ * An as-needed bar appearing on expand narrows the viewport and reflows every
+ * row, so padding jumps sideways for reasons unrelated to what was clicked.
+ * Costs a few pixels and removes a whole class of confusion.
+ */
+void reserve_scrollbar(QScrollArea *area, const meta::qt::Theme &theme)
+{
+  area->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+  area->setStyleSheet(panel_scrollbar_stylesheet(theme));
+
+  QScrollBar *bar = area->verticalScrollBar();
+  bar->setProperty("idle", true); // empty until there is something in it
+
+  QObject::connect(bar,
+                   &QScrollBar::rangeChanged,
+                   bar,
+                   [bar](int, int max)
+                   {
+                     if (bar->property("idle").toBool() == (max == 0))
+                       return;
+                     bar->setProperty("idle", max == 0);
+                     bar->style()->unpolish(bar);
+                     bar->style()->polish(bar);
+                   });
+}
+
+} // namespace
+
 NodeSettingsWidget::NodeSettingsWidget(QPointer<GraphNodeWidget> p_graph_node_widget,
                                        QWidget                  *parent)
     : QWidget(parent), p_graph_node_widget(p_graph_node_widget)
@@ -111,34 +154,7 @@ void NodeSettingsWidget::setup_layout()
     this->scroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 
     if (panel.has_own_chrome)
-    {
-      // Reserve the vertical scrollbar permanently. An as-needed bar appearing
-      // on expand narrows the viewport and reflows every row, so padding jumps
-      // sideways for reasons unrelated to what was clicked. Costs a few pixels
-      // and removes a whole class of confusion.
-      this->scroll->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
-
-      // ...but only its space: with nothing to scroll, Qt would still draw a
-      // handle over the whole height, which reads as content that is cut off
-      this->scroll->setStyleSheet(
-          meta::qt::industrial::scrollbar_stylesheet(*panel.theme) +
-          "QScrollBar[idle=\"true\"]::handle:vertical,"
-          "QScrollBar[idle=\"true\"]::handle:vertical:hover { "
-          "background: transparent; }");
-      QScrollBar *bar = this->scroll->verticalScrollBar();
-      bar->setProperty("idle", true); // empty until the first node is shown
-      this->connect(bar,
-                    &QScrollBar::rangeChanged,
-                    bar,
-                    [bar](int, int max)
-                    {
-                      if (bar->property("idle").toBool() == (max == 0))
-                        return;
-                      bar->setProperty("idle", max == 0);
-                      bar->style()->unpolish(bar);
-                      bar->style()->polish(bar);
-                    });
-    }
+      reserve_scrollbar(this->scroll, *panel.theme);
 
     this->scroll->setWidget(container);
     this->scroll->setWidgetResizable(true);
@@ -159,10 +175,7 @@ void NodeSettingsWidget::update_content()
   const PropertiesPanelDesign &panel = properties_panel_design();
   if (this->scroll && panel.has_own_chrome)
   {
-    this->scroll->setStyleSheet(meta::qt::industrial::scrollbar_stylesheet(*panel.theme) +
-                                "QScrollBar[idle=\"true\"]::handle:vertical,"
-                                "QScrollBar[idle=\"true\"]::handle:vertical:hover { "
-                                "background: transparent; }");
+    this->scroll->setStyleSheet(panel_scrollbar_stylesheet(*panel.theme));
   }
 
   clear_layout(this->attr_layout);
