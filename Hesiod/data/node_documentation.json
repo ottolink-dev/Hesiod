@@ -1323,41 +1323,6 @@
             }
         }
     },
-    "Broadcast": {
-        "category": "Routing",
-        "description": "Makes the input heightmap available to other graph nodes using a shared tag.",
-        "label": "Broadcast",
-        "parameter_groups": [
-            {
-                "keys": [
-                    "tag"
-                ],
-                "name": "main"
-            }
-        ],
-        "parameters": {
-            "tag": {
-                "description": "Identifier used to reference this heightmap in other graph nodes.",
-                "key": "tag",
-                "label": "tag",
-                "type": "String"
-            }
-        },
-        "ports": {
-            "input": {
-                "caption": "input",
-                "data_type": "VirtualArray",
-                "description": "Heightmap data to be shared with other graph nodes.",
-                "type": "input"
-            },
-            "thru": {
-                "caption": "thru",
-                "data_type": "VirtualArray",
-                "description": "Pass-through of the input heightmap, unchanged.",
-                "type": "output"
-            }
-        }
-    },
     "Brush": {
         "category": "Primitive/Authoring",
         "description": "A manual brush tool for directly painting heightmaps, allowing interactive terrain editing.",
@@ -12559,7 +12524,7 @@
     },
     "HydraulicStreamLog": {
         "category": "Erosion/Hydraulic",
-        "description": "HydraulicStreamLog is a multiscale hydraulic erosion operator using a flow-stream formulation and an infinite flow-direction algorithm (D∞). Erosion intensity is driven by flow accumulation, terrain gradient, moisture, and optional bedrock limits. Multi-resolution scheduling carves broad macro-valleys with optional domain warping at coarse levels before fine-detail channel incision.",
+        "description": "HydraulicStreamLog is a multiscale hydraulic erosion operator using a flow-stream formulation and an infinite flow-direction algorithm (D\u221e). Erosion intensity is driven by flow accumulation, terrain gradient, moisture, and optional bedrock limits. Multi-resolution scheduling carves broad macro-valleys with optional domain warping at coarse levels before fine-detail channel incision.",
         "label": "HydraulicStreamLog",
         "parameter_groups": [
             {
@@ -13381,7 +13346,7 @@
             "land_mask": {
                 "caption": "land_mask",
                 "data_type": "VirtualArray",
-                "description": "Binary mask defining the island’s footprint; nonzero pixels are considered land. Consider using the node IslandLandMask to generate this mask.",
+                "description": "Binary mask defining the island\u2019s footprint; nonzero pixels are considered land. Consider using the node IslandLandMask to generate this mask.",
                 "type": "input"
             },
             "output": {
@@ -16726,7 +16691,7 @@
                 "type": "Float"
             },
             "noise_inflate": {
-                "description": "Controls how noise affects the step profile. ‘Inflate’ pushes elevations outward, while ‘Deflate’ pulls them inward.",
+                "description": "Controls how noise affects the step profile. \u2018Inflate\u2019 pushes elevations outward, while \u2018Deflate\u2019 pulls them inward.",
                 "key": "noise_inflate",
                 "label": "",
                 "type": "Bool"
@@ -19904,35 +19869,6 @@
                 "caption": "output",
                 "data_type": "VirtualArray",
                 "description": "Filtered heightmap.",
-                "type": "output"
-            }
-        }
-    },
-    "Receive": {
-        "category": "Routing",
-        "description": "Retrieves a heightmap broadcasted by another node using the specified tag.",
-        "label": "Receive",
-        "parameter_groups": [
-            {
-                "keys": [
-                    "tag"
-                ],
-                "name": "main"
-            }
-        ],
-        "parameters": {
-            "tag": {
-                "description": "Tag identifying the broadcasted heightmap to receive.",
-                "key": "tag",
-                "label": "tag",
-                "type": "Choice"
-            }
-        },
-        "ports": {
-            "output": {
-                "caption": "output",
-                "data_type": "VirtualArray",
-                "description": "The heightmap retrieved from the broadcast source.",
                 "type": "output"
             }
         }
@@ -26660,7 +26596,7 @@
             "output": {
                 "caption": "output",
                 "data_type": "VirtualArray",
-                "description": "Resulting heightmap that combines the target’s base shape with the source’s high-frequency details.",
+                "description": "Resulting heightmap that combines the target\u2019s base shape with the source\u2019s high-frequency details.",
                 "type": "output"
             },
             "source": {
