@@ -144,16 +144,21 @@ jobs:
           if-no-files-found: error
           retention-days: 14
 
-  # build-macos:
-  #   needs: source
-  #   uses: ./.github/workflows/macos-build.yml
-  #   with:
-  #     source-ref: ${{ needs.source.outputs.sha }}
-  #     artifact-name: weekly-macos
+  build-macos:
+    needs: source
+    uses: ./.github/workflows/macos-build.yml
+    with:
+      source-ref: ${{ needs.source.outputs.sha }}
+      artifact-name: weekly-macos
 
   publish:
-    needs: [source, build]
+    # macOS is best-effort: a failed build or an unavailable arm64 runner must
+    # not hold back Linux and Windows. publish_weekly.py skips missing archives.
+    needs: [source, build, build-macos]
     if: >-
+      !cancelled() &&
+      needs.source.result == 'success' &&
+      needs.build.result == 'success' &&
       github.repository == 'ottolink-dev/Hesiod' &&
       (github.event_name == 'schedule' || inputs.publish)
     runs-on: ubuntu-24.04
