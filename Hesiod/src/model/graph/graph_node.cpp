@@ -498,7 +498,7 @@ void GraphNode::stop_update()
 
 void GraphNode::update()
 {
-  LOG_FUNCTION();
+  LOG_CONTEXT(ctx, "GraphNode::update");
 
   if (this->update_started)
     this->update_started();
@@ -514,6 +514,7 @@ void GraphNode::update()
 
 void GraphNode::update(const std::vector<std::string> &node_ids)
 {
+  LOG_CONTEXT(ctx, "GraphNode::update");
   LOG_TRACE("GraphNode::update");
 
   // log

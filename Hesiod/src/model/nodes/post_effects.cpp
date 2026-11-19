@@ -10,8 +10,8 @@
 #include "meta/metadata/keys.hpp"
 
 #include "hesiod/app/enum_mappings.hpp"
-#include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/post_effects.hpp"
+#include "logger/logger.hpp"
 
 namespace hesiod
 {
@@ -51,7 +51,7 @@ void set_attribute(meta::AttributeContainer &container, const char *key, const T
     if (auto *p_typed = p_attr->try_cast<meta::Attribute<T>>())
       p_typed->set_value(value);
     else
-      Logger::log()->error("set_attribute: type mismatch for key '{}'", key);
+      LOG_ERROR("set_attribute: type mismatch for key '{}'", key);
   }
 }
 
@@ -75,7 +75,7 @@ void set_range_active(meta::AttributeContainer &container, const char *key, bool
   auto *p_range = p_attr->try_cast<meta::Attribute<glm::vec2>>();
   if (!p_range)
   {
-    Logger::log()->error("set_range_active: type mismatch for key '{}'", key);
+    LOG_ERROR("set_range_active: type mismatch for key '{}'", key);
     return;
   }
 
@@ -185,7 +185,7 @@ const PostEffectInfo &post_effect_info(PostEffect effect)
     if (info.effect == effect)
       return info;
 
-  Logger::log()->error("post_effect_info: unknown PostEffect {}", int(effect));
+  LOG_ERROR("post_effect_info: unknown PostEffect {}", int(effect));
   return post_effect_catalog().front();
 }
 
@@ -256,7 +256,7 @@ bool is_post_effect_active(const meta::AttributeContainer &container, PostEffect
     return is_range_active(container, post_keys::SATURATE);
 
   default:
-    Logger::log()->error("is_post_effect_active: unknown PostEffect {}", int(effect));
+    LOG_ERROR("is_post_effect_active: unknown PostEffect {}", int(effect));
     return false;
   }
 
@@ -270,7 +270,7 @@ void set_post_effect_active(meta::AttributeContainer &container,
   if (!has_post_effect(container, effect))
     return;
 
-  Logger::log()->trace("set_post_effect_active: effect={}, active={}",
+  LOG_TRACE("set_post_effect_active: effect={}, active={}",
                        post_effect_info(effect).name,
                        active);
 
@@ -308,7 +308,7 @@ void set_post_effect_active(meta::AttributeContainer &container,
     break;
 
   default:
-    Logger::log()->error("set_post_effect_active: unknown PostEffect {}", int(effect));
+    LOG_ERROR("set_post_effect_active: unknown PostEffect {}", int(effect));
     break;
   }
 }

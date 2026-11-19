@@ -12,6 +12,7 @@
 #include <utility>
 
 #include "gnode/node.hpp"
+#include "logger/logger.hpp"
 
 #include "meta/core/container_group.hpp"
 
@@ -217,6 +218,7 @@ private:
   std::unique_ptr<meta::ContainerGroup> meta_group;        // attribute storage
   std::unique_ptr<meta::ContainerGroup> frozen_meta_group; // see begin_background_compute
   std::atomic<bool>                     computing = false; // in the background
+  logger::ContextId                     async_log_context_id = 0;
   glm::ivec2                            computed_shape = {0, 0};
   std::string                           current_category = "Main Parameters";
 

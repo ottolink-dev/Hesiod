@@ -95,6 +95,9 @@ const GraphConfig &BaseNode::cfg() const
 
 void BaseNode::compute()
 {
+  LOG_CONTEXT_ATTACH(this->async_log_context_id);
+  this->async_log_context_id = 0;
+
   LOG_SCOPE(std::format("{} ({})", this->get_node_type(), this->get_id()));
   HSD_PROFILE_ZONE("BaseNode::compute");
   HSD_PROFILE_TEXT(std::format("{} id={}", this->get_node_type(), this->get_id()));
@@ -165,9 +168,17 @@ void BaseNode::compute()
     throw std::bad_alloc();
 }
 
-void BaseNode::on_pre_async_compute() { this->begin_background_compute(); }
+void BaseNode::on_pre_async_compute()
+{
+  this->async_log_context_id = ::logger::Logger::current_context();
+  this->begin_background_compute();
+}
 
-void BaseNode::on_async_compute_cancelled() { this->cancel_background_compute(); }
+void BaseNode::on_async_compute_cancelled()
+{
+  this->async_log_context_id = 0;
+  this->cancel_background_compute();
+}
 
 void BaseNode::begin_background_compute()
 {
