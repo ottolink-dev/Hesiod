@@ -122,6 +122,31 @@ void set_range_active(meta::AttributeContainer &container, const char *key, bool
   p_range->set_value(range);
 }
 
+struct FloatEffectSpec
+{
+  const char *key;
+  float       neutral;
+};
+
+const FloatEffectSpec *float_effect_spec(PostEffect effect)
+{
+  static constexpr FloatEffectSpec gamma{post_keys::GAMMA, 1.f};
+  static constexpr FloatEffectSpec gain{post_keys::GAIN, 1.f};
+  static constexpr FloatEffectSpec smoothing{post_keys::SMOOTHING_RADIUS, 0.f};
+
+  switch (effect)
+  {
+  case PostEffect::GAMMA:
+    return &gamma;
+  case PostEffect::GAIN:
+    return &gain;
+  case PostEffect::SMOOTHING:
+    return &smoothing;
+  default:
+    return nullptr;
+  }
+}
+
 } // namespace
 
 const std::vector<PostEffectInfo> &post_effect_catalog()
@@ -191,6 +216,10 @@ bool is_post_effect_active(const meta::AttributeContainer &container, PostEffect
     return p_value && *p_value != neutral;
   };
 
+  if (const FloatEffectSpec *p_spec = float_effect_spec(effect))
+    return off_neutral(p_spec->key, p_spec->neutral) ||
+           stage_flag(container, p_spec->key);
+
   switch (effect)
   {
   case PostEffect::MIX:
@@ -206,21 +235,14 @@ bool is_post_effect_active(const meta::AttributeContainer &container, PostEffect
     return p_value && *p_value;
   }
 
-  case PostEffect::GAMMA:
-    return off_neutral(post_keys::GAMMA, 1.f) || stage_flag(container, post_keys::GAMMA);
-
-  case PostEffect::GAIN:
-    return off_neutral(post_keys::GAIN, 1.f) || stage_flag(container, post_keys::GAIN);
-
-  case PostEffect::SMOOTHING:
-    return off_neutral(post_keys::SMOOTHING_RADIUS, 0.f) ||
-           stage_flag(container, post_keys::SMOOTHING_RADIUS);
-
   case PostEffect::REMAP:
     return is_range_active(container, post_keys::REMAP);
 
   case PostEffect::SATURATE:
     return is_range_active(container, post_keys::SATURATE);
+
+  default:
+    return false;
   }
 
   return false;
@@ -235,6 +257,14 @@ void set_post_effect_active(meta::AttributeContainer &container,
 
   // Flags before values throughout: a value write notifies the panel, which
   // then asks whether the effect is active.
+  if (const FloatEffectSpec *p_spec = float_effect_spec(effect))
+  {
+    set_stage_flag(container, p_spec->key, active);
+    if (!active)
+      set_attribute<float>(container, p_spec->key, p_spec->neutral);
+    return;
+  }
+
   switch (effect)
   {
   case PostEffect::MIX:
@@ -250,30 +280,15 @@ void set_post_effect_active(meta::AttributeContainer &container,
     set_attribute<bool>(container, post_keys::INVERSE, active);
     break;
 
-  case PostEffect::GAMMA:
-    set_stage_flag(container, post_keys::GAMMA, active);
-    if (!active)
-      set_attribute<float>(container, post_keys::GAMMA, 1.f);
-    break;
-
-  case PostEffect::GAIN:
-    set_stage_flag(container, post_keys::GAIN, active);
-    if (!active)
-      set_attribute<float>(container, post_keys::GAIN, 1.f);
-    break;
-
-  case PostEffect::SMOOTHING:
-    set_stage_flag(container, post_keys::SMOOTHING_RADIUS, active);
-    if (!active)
-      set_attribute<float>(container, post_keys::SMOOTHING_RADIUS, 0.f);
-    break;
-
   case PostEffect::REMAP:
     set_range_active(container, post_keys::REMAP, active);
     break;
 
   case PostEffect::SATURATE:
     set_range_active(container, post_keys::SATURATE, active);
+    break;
+
+  default:
     break;
   }
 }
