@@ -105,6 +105,58 @@ inline void transfer_virtual_texture(const hmap::VirtualTexture *src,
                            c == 0 ? p_mask : nullptr);
 }
 
+template <typename CloudT>
+inline void transfer_cloud_like(const CloudT           *src,
+                                const hmap::CoordFrame *src_frame,
+                                CloudT                 &dst,
+                                const hmap::CoordFrame *dst_frame)
+{
+  if (!src)
+  {
+    dst = CloudT();
+    return;
+  }
+
+  dst = *src;
+
+  if (src_frame && dst_frame)
+  {
+    const hmap::AffineTransform2D tf = src_frame->compute_relative_transform(*dst_frame);
+    for (auto &p : dst)
+    {
+      const glm::vec2 uv = tf.apply(p.x, p.y);
+      p.x = uv.x;
+      p.y = uv.y;
+    }
+  }
+}
+
+template <typename ScatterT>
+inline void transfer_scatter_like(const ScatterT         *src,
+                                  const hmap::CoordFrame *src_frame,
+                                  ScatterT               &dst,
+                                  const hmap::CoordFrame *dst_frame)
+{
+  if (!src)
+  {
+    dst = ScatterT();
+    return;
+  }
+
+  dst = *src;
+
+  if (src_frame && dst_frame)
+  {
+    const hmap::AffineTransform2D tf = src_frame->compute_relative_transform(*dst_frame);
+    for (auto &item : dst)
+    {
+      const glm::vec2 uv = tf.apply(item.position.x, item.position.y);
+      item.position.x = uv.x;
+      item.position.y = uv.y;
+    }
+  }
+}
+
 template <typename T>
 inline void transfer_boundary_value(const T * /*src*/,
                                     const GraphConfig & /*src_cfg*/,
@@ -140,6 +192,66 @@ inline void transfer_boundary_value<hmap::VirtualTexture>(
     hmap::VirtualArray         *p_mask)
 {
   transfer_virtual_texture(src, src_cfg, src_frame, dst, dst_cfg, dst_frame, p_mask);
+}
+
+template <>
+inline void transfer_boundary_value<hmap::Array>(const hmap::Array *src,
+                                                 const GraphConfig & /*src_cfg*/,
+                                                 const hmap::CoordFrame * /*src_frame*/,
+                                                 hmap::Array &dst,
+                                                 const GraphConfig & /*dst_cfg*/,
+                                                 const hmap::CoordFrame * /*dst_frame*/,
+                                                 hmap::VirtualArray * /*p_mask*/)
+{
+  dst = src ? *src : hmap::Array();
+}
+
+template <>
+inline void transfer_boundary_value<hmap::Cloud>(const hmap::Cloud *src,
+                                                 const GraphConfig & /*src_cfg*/,
+                                                 const hmap::CoordFrame *src_frame,
+                                                 hmap::Cloud            &dst,
+                                                 const GraphConfig & /*dst_cfg*/,
+                                                 const hmap::CoordFrame *dst_frame,
+                                                 hmap::VirtualArray * /*p_mask*/)
+{
+  transfer_cloud_like(src, src_frame, dst, dst_frame);
+}
+
+template <>
+inline void transfer_boundary_value<hmap::Path>(const hmap::Path *src,
+                                                const GraphConfig & /*src_cfg*/,
+                                                const hmap::CoordFrame *src_frame,
+                                                hmap::Path             &dst,
+                                                const GraphConfig & /*dst_cfg*/,
+                                                const hmap::CoordFrame *dst_frame,
+                                                hmap::VirtualArray * /*p_mask*/)
+{
+  transfer_cloud_like(src, src_frame, dst, dst_frame);
+}
+
+template <>
+inline void transfer_boundary_value<hmap::Forest>(const hmap::Forest *src,
+                                                  const GraphConfig & /*src_cfg*/,
+                                                  const hmap::CoordFrame *src_frame,
+                                                  hmap::Forest           &dst,
+                                                  const GraphConfig & /*dst_cfg*/,
+                                                  const hmap::CoordFrame *dst_frame,
+                                                  hmap::VirtualArray * /*p_mask*/)
+{
+  transfer_scatter_like(src, src_frame, dst, dst_frame);
+}
+
+template <>
+inline void transfer_boundary_value<hmap::RockField>(const hmap::RockField *src,
+                                                     const GraphConfig & /*src_cfg*/,
+                                                     const hmap::CoordFrame *src_frame,
+                                                     hmap::RockField        &dst,
+                                                     const GraphConfig & /*dst_cfg*/,
+                                                     const hmap::CoordFrame *dst_frame,
+                                                     hmap::VirtualArray * /*p_mask*/)
+{
+  transfer_scatter_like(src, src_frame, dst, dst_frame);
 }
 
 template <typename Fn> inline void visit_boundary_type(const std::string &dtype, Fn &&fn)
