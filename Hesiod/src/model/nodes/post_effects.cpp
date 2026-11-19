@@ -28,16 +28,18 @@ bool stage_flag(const meta::AttributeContainer &container, const char *key)
   return p_flag && *p_flag;
 }
 
-void set_stage_flag(meta::AttributeContainer &container, const char *key, bool value)
+void set_active_flag(meta::AttributeContainer &state, bool value)
 {
-  meta::AbstractAttribute *p_attr = container.find(key);
-  if (!p_attr)
-    return;
-
-  if (bool *p_flag = p_attr->state().try_value<bool>(meta::keys::state::active))
+  if (bool *p_flag = state.try_value<bool>(meta::keys::state::active))
     *p_flag = value;
   else
-    p_attr->state().try_add(meta::keys::state::active, bool(value));
+    state.try_add(meta::keys::state::active, bool(value));
+}
+
+void set_stage_flag(meta::AttributeContainer &container, const char *key, bool value)
+{
+  if (meta::AbstractAttribute *p_attr = container.find(key))
+    set_active_flag(p_attr->state(), value);
 }
 
 template <typename T>
@@ -79,10 +81,7 @@ void set_range_active(meta::AttributeContainer &container, const char *key, bool
 
   // The flag goes first: writing the value notifies whoever shows the range,
   // and they read the flag to decide how.
-  if (bool *p_flag = state.try_value<bool>(meta::keys::state::active))
-    *p_flag = active;
-  else
-    state.try_add(meta::keys::state::active, bool(active));
+  set_active_flag(state, active);
 
   if (!active)
   {
