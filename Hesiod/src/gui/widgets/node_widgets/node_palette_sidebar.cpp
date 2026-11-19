@@ -91,7 +91,7 @@ void draw_glyph(QPainter &painter, const QRectF &box, const QColor &color, int s
   const QPointF c = box.center();
   const double  r = box.width() * 0.5;
 
-  switch (shape % 8)
+  switch (shape)
   {
   case 0: // hexagon
   {
@@ -162,6 +162,29 @@ void draw_glyph(QPainter &painter, const QRectF &box, const QColor &color, int s
                           r * 0.16,
                           r * 0.16);
     break;
+  case 8: // rock
+  {
+    QPolygonF rock;
+    rock << QPointF(box.left() + box.width() * 0.15, box.bottom() - box.height() * 0.10)
+         << QPointF(box.left() + box.width() * 0.05, box.top() + box.height() * 0.55)
+         << QPointF(box.left() + box.width() * 0.35, box.top() + box.height() * 0.15)
+         << QPointF(box.left() + box.width() * 0.75, box.top() + box.height() * 0.22)
+         << QPointF(box.right() - box.width() * 0.05, box.top() + box.height() * 0.62)
+         << QPointF(box.right() - box.width() * 0.18, box.bottom() - box.height() * 0.10);
+    painter.drawPolygon(rock);
+
+    // facet lines
+    painter.drawLine(
+        QPointF(box.left() + box.width() * 0.35, box.top() + box.height() * 0.15),
+        QPointF(box.left() + box.width() * 0.48, box.top() + box.height() * 0.55));
+    painter.drawLine(
+        QPointF(box.left() + box.width() * 0.48, box.top() + box.height() * 0.55),
+        QPointF(box.right() - box.width() * 0.05, box.top() + box.height() * 0.62));
+    painter.drawLine(
+        QPointF(box.left() + box.width() * 0.48, box.top() + box.height() * 0.55),
+        QPointF(box.left() + box.width() * 0.32, box.bottom() - box.height() * 0.10));
+    break;
+  }
   default: // node / connector
     painter.drawLine(QPointF(box.left(), c.y()), QPointF(box.right(), c.y()));
     painter.drawEllipse(QPointF(box.left() + r * 0.3, c.y()), r * 0.28, r * 0.28);
@@ -223,6 +246,9 @@ void clamp_to_screen(QMenu *menu, const QRect &available)
 
 int glyph_shape_for(const QString &category)
 {
+  if (category == QStringLiteral("Rock"))
+    return 8;
+
   uint hash = 2166136261u;
   for (const QChar c : category)
     hash = (hash ^ static_cast<uint>(c.unicode())) * 16777619u;
