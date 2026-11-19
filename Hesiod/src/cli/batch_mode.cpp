@@ -231,7 +231,10 @@ void run_batch_mode(const std::string                  &filename,
         "forcing sequential computation for all compute modes (CPU and GPU)");
   }
 
-  if (shape.x || shape.y || tiling.x || tiling.y || overlap >= 0.f)
+  const bool override_config = (shape.x || shape.y || tiling.x || tiling.y ||
+                                overlap >= 0.f);
+
+  if (override_config)
   {
     glm::ivec2 new_shape = (shape.x && shape.y) ? shape : glm::ivec2(1024, 1024);
     glm::ivec2 new_tiling = (tiling.x && tiling.y) ? tiling : glm::ivec2(1, 1);
@@ -254,14 +257,27 @@ void run_batch_mode(const std::string                  &filename,
 
   // load graph structure without running update yet
   nlohmann::json json = json_from_file(filename);
-  graph_manager.json_from(json["graph_manager"], &config);
+  graph_manager.json_from(json["graph_manager"], override_config ? &config : nullptr);
 
-  // force distributed computation in batch mode
+  // apply batch compute/storage settings and force distributed computation
   for (const auto &graph_id : graph_manager.get_graph_order())
   {
     GraphNode *p_graph = graph_manager.get_graph_ref_by_id(graph_id);
     if (!p_graph)
       continue;
+
+    if (!override_config)
+    {
+      if (GraphConfig *p_cfg = p_graph->get_config_ref())
+      {
+        p_cfg->storage_mode = config.storage_mode;
+        p_cfg->cm_cpu.trim_storage = config.cm_cpu.trim_storage;
+        p_cfg->cm_gpu.trim_storage = config.cm_gpu.trim_storage;
+        p_cfg->cm_single_array.trim_storage = config.cm_single_array.trim_storage;
+        p_cfg->cm_cpu.mode = config.cm_cpu.mode;
+        p_cfg->cm_gpu.mode = config.cm_gpu.mode;
+      }
+    }
 
     for (const auto &[node_id, p_node] : p_graph->get_nodes())
     {
@@ -288,11 +304,16 @@ void run_batch_mode(const std::string                  &filename,
       if (!p_graph)
         continue;
 
-      p_graph->compute_started = [](const std::string &node_id)
-      { std::cout << "HSD_IPC:NODE_STARTED:" << node_id << std::endl; };
+      p_graph->compute_started = [graph_id](const std::string &node_id)
+      {
+        std::cout << "HSD_IPC:NODE_STARTED:" << graph_id << "/" << node_id << std::endl;
+      };
 
-      p_graph->compute_finished = [](const std::string &node_id)
-      { std::cout << "HSD_IPC:NODE_FINISHED:" << node_id << ":1" << std::endl; };
+      p_graph->compute_finished = [graph_id](const std::string &node_id)
+      {
+        std::cout << "HSD_IPC:NODE_FINISHED:" << graph_id << "/" << node_id << ":1"
+                  << std::endl;
+      };
     }
   }
 
