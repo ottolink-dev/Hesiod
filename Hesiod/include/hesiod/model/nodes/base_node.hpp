@@ -66,8 +66,9 @@ public:
   std::string get_node_type() const;
 
   // --- Compute ---
-  void compute() override;
-  void set_compute_fct(std::function<void(BaseNode &node)> new_compute_fct);
+  void         compute() override;
+  virtual void on_settings_changed() {}
+  void         set_compute_fct(std::function<void(BaseNode &node)> new_compute_fct);
 
   // Called on the caller/GUI thread right before an async pass computes on
   // worker threads (see gnode::GraphWorker): it computes from a snapshot of its

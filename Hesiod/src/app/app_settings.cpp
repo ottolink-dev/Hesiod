@@ -104,10 +104,6 @@ void AppSettings::json_from(nlohmann::json const &json)
 {
   Logger::log()->trace("AppSettings::json_from");
 
-  json_safe_get(json,
-                "model.allow_broadcast_receive_within_same_graph",
-                model.allow_broadcast_receive_within_same_graph);
-
   json_safe_get(json, "global.omp_num_threads", global.omp_num_threads);
   json_safe_get(json, "global.icon_path", global.icon_path);
   json_safe_get(json,
@@ -309,9 +305,6 @@ nlohmann::json AppSettings::json_to() const
   Logger::log()->trace("AppSettings::json_to");
 
   nlohmann::json json;
-
-  json["model.allow_broadcast_receive_within_same_graph"] =
-      model.allow_broadcast_receive_within_same_graph;
 
   json["global.omp_num_threads"] = global.omp_num_threads;
   json["global.icon_path"] = global.icon_path;

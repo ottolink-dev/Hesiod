@@ -29,7 +29,6 @@ struct AppSettings
 
   struct Model
   {
-    bool allow_broadcast_receive_within_same_graph = true;
   } model;
 
   struct Colors

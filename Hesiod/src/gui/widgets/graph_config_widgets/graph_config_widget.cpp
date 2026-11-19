@@ -140,6 +140,12 @@ GraphConfigDialog::GraphConfigDialog(GraphConfig &config, QWidget *parent)
     tag(meta::presets::enum_choice(c, "height", "Custom Height", side_items(s.y), s.y),
         "Domain",
         "Height in pixels, used with the Custom aspect only");
+    tag(meta::presets::toggle_button(c,
+                                     "sync_aspect_ratio_with_coordframe",
+                                     "Sync Aspect Ratio with CoordFrame",
+                                     config.sync_aspect_ratio_with_coordframe),
+        "Domain",
+        "Automatically adjust resolution aspect ratio to match the CoordFrame size");
   }
 
   // --- computation
@@ -325,6 +331,8 @@ void GraphConfigDialog::accept()
       this->compute->value<int>("cpu_mode"));
   this->config.cm_gpu.mode = static_cast<hmap::ForEachMode>(
       this->compute->value<int>("gpu_mode"));
+  this->config.sync_aspect_ratio_with_coordframe = this->domain->value<bool>(
+      "sync_aspect_ratio_with_coordframe");
 
   Logger::log()->trace("GraphConfigDialog::accept: shape {}x{}, tiling {}, overlap {}",
                        this->config.shape.x,

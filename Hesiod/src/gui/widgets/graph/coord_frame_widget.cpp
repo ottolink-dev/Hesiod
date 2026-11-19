@@ -71,6 +71,7 @@ void CoordFrameWidget::add_frame(const std::string &id)
                                        angle);
   this->scene()->addItem(new_frame);
   new_frame->set_z_depth(gm->get_graph_order_index(id));
+  new_frame->set_snap_enabled(this->snap_enabled);
 
   // keep track of frame item ptr
   this->frames[id] = new_frame;
@@ -91,6 +92,37 @@ void CoordFrameWidget::clear()
 
   for (auto &id : id_list)
     this->remove_frame(id);
+}
+
+void CoordFrameWidget::drawBackground(QPainter *painter, const QRectF &rect)
+{
+  QGraphicsView::drawBackground(painter, rect);
+
+  const qreal minor_step = 0.25 * COORD_SCALE;
+  const qreal major_step = 1.0 * COORD_SCALE;
+
+  const qreal left = std::floor(rect.left() / minor_step) * minor_step;
+  const qreal right = std::ceil(rect.right() / minor_step) * minor_step;
+  const qreal top = std::floor(rect.top() / minor_step) * minor_step;
+  const qreal bottom = std::ceil(rect.bottom() / minor_step) * minor_step;
+
+  QPen minor_pen(QColor(255, 255, 255, 18), 0.0);
+  QPen major_pen(QColor(255, 255, 255, 42), 0.0);
+
+  painter->setPen(minor_pen);
+  for (qreal x = left; x <= right; x += minor_step)
+    painter->drawLine(QPointF(x, top), QPointF(x, bottom));
+  for (qreal y = top; y <= bottom; y += minor_step)
+    painter->drawLine(QPointF(left, y), QPointF(right, y));
+
+  const qreal mleft = std::floor(rect.left() / major_step) * major_step;
+  const qreal mtop = std::floor(rect.top() / major_step) * major_step;
+
+  painter->setPen(major_pen);
+  for (qreal x = mleft; x <= right; x += major_step)
+    painter->drawLine(QPointF(x, top), QPointF(x, bottom));
+  for (qreal y = mtop; y <= bottom; y += major_step)
+    painter->drawLine(QPointF(left, y), QPointF(right, y));
 }
 
 void CoordFrameWidget::mousePressEvent(QMouseEvent *event)
@@ -161,6 +193,14 @@ void CoordFrameWidget::reset()
     Logger::log()->trace("CoordFrameWidget::CoordFrameWidget: adding graph: {}", id);
     this->add_frame(id);
   }
+}
+
+void CoordFrameWidget::set_snap_enabled(bool enabled)
+{
+  this->snap_enabled = enabled;
+  for (auto &[_, frame] : this->frames)
+    if (frame)
+      frame->set_snap_enabled(enabled);
 }
 
 void CoordFrameWidget::update_frames_z_depth()

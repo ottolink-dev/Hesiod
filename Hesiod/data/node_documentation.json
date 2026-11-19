@@ -1323,41 +1323,6 @@
             }
         }
     },
-    "Broadcast": {
-        "category": "Routing",
-        "description": "Makes the input heightmap available to other graph nodes using a shared tag.",
-        "label": "Broadcast",
-        "parameter_groups": [
-            {
-                "keys": [
-                    "tag"
-                ],
-                "name": "main"
-            }
-        ],
-        "parameters": {
-            "tag": {
-                "description": "Identifier used to reference this heightmap in other graph nodes.",
-                "key": "tag",
-                "label": "tag",
-                "type": "String"
-            }
-        },
-        "ports": {
-            "input": {
-                "caption": "input",
-                "data_type": "VirtualArray",
-                "description": "Heightmap data to be shared with other graph nodes.",
-                "type": "input"
-            },
-            "thru": {
-                "caption": "thru",
-                "data_type": "VirtualArray",
-                "description": "Pass-through of the input heightmap, unchanged.",
-                "type": "output"
-            }
-        }
-    },
     "Brush": {
         "category": "Primitive/Authoring",
         "description": "A manual brush tool for directly painting heightmaps, allowing interactive terrain editing.",
@@ -19904,35 +19869,6 @@
                 "caption": "output",
                 "data_type": "VirtualArray",
                 "description": "Filtered heightmap.",
-                "type": "output"
-            }
-        }
-    },
-    "Receive": {
-        "category": "Routing",
-        "description": "Retrieves a heightmap broadcasted by another node using the specified tag.",
-        "label": "Receive",
-        "parameter_groups": [
-            {
-                "keys": [
-                    "tag"
-                ],
-                "name": "main"
-            }
-        ],
-        "parameters": {
-            "tag": {
-                "description": "Tag identifying the broadcasted heightmap to receive.",
-                "key": "tag",
-                "label": "tag",
-                "type": "Choice"
-            }
-        },
-        "ports": {
-            "output": {
-                "caption": "output",
-                "data_type": "VirtualArray",
-                "description": "The heightmap retrieved from the broadcast source.",
                 "type": "output"
             }
         }
