@@ -10,6 +10,7 @@
 #include "meta/metadata/keys.hpp"
 
 #include "hesiod/app/enum_mappings.hpp"
+#include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/post_effects.hpp"
 
 namespace hesiod
@@ -175,7 +176,8 @@ const PostEffectInfo &post_effect_info(PostEffect effect)
     if (info.effect == effect)
       return info;
 
-  return post_effect_catalog().front(); // unreachable: every effect is listed
+  Logger::log()->error("post_effect_info: unknown PostEffect {}", int(effect));
+  return post_effect_catalog().front();
 }
 
 bool is_post_effect_attribute(const std::string &key)
@@ -257,6 +259,10 @@ void set_post_effect_active(meta::AttributeContainer &container,
 {
   if (!has_post_effect(container, effect))
     return;
+
+  Logger::log()->trace("set_post_effect_active: effect={}, active={}",
+                       post_effect_info(effect).name,
+                       active);
 
   // Flags before values throughout: a value write notifies the panel, which
   // then asks whether the effect is active.
