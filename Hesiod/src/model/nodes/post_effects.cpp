@@ -47,8 +47,12 @@ template <typename T>
 void set_attribute(meta::AttributeContainer &container, const char *key, const T &value)
 {
   if (meta::AbstractAttribute *p_attr = container.find(key))
+  {
     if (auto *p_typed = p_attr->try_cast<meta::Attribute<T>>())
       p_typed->set_value(value);
+    else
+      Logger::log()->error("set_attribute: type mismatch for key '{}'", key);
+  }
 }
 
 bool is_range_active(const meta::AttributeContainer &container, const char *key)
@@ -65,13 +69,18 @@ bool is_range_active(const meta::AttributeContainer &container, const char *key)
 void set_range_active(meta::AttributeContainer &container, const char *key, bool active)
 {
   meta::AbstractAttribute *p_attr = container.find(key);
-  auto *p_range = p_attr ? p_attr->try_cast<meta::Attribute<glm::vec2>>() : nullptr;
-
-  if (!p_range)
+  if (!p_attr)
     return;
 
+  auto *p_range = p_attr->try_cast<meta::Attribute<glm::vec2>>();
+  if (!p_range)
+  {
+    Logger::log()->error("set_range_active: type mismatch for key '{}'", key);
+    return;
+  }
+
   meta::AttributeContainer &state = p_range->state();
-  const bool *p_flag = state.try_value<bool>(meta::keys::state::active);
+  const bool               *p_flag = state.try_value<bool>(meta::keys::state::active);
   if (p_flag && *p_flag == active)
     return;
 
@@ -247,6 +256,7 @@ bool is_post_effect_active(const meta::AttributeContainer &container, PostEffect
     return is_range_active(container, post_keys::SATURATE);
 
   default:
+    Logger::log()->error("is_post_effect_active: unknown PostEffect {}", int(effect));
     return false;
   }
 
@@ -298,6 +308,7 @@ void set_post_effect_active(meta::AttributeContainer &container,
     break;
 
   default:
+    Logger::log()->error("set_post_effect_active: unknown PostEffect {}", int(effect));
     break;
   }
 }
