@@ -201,11 +201,54 @@ nlohmann::json GraphPreviewLayerWidget::json_to() const
 
 void GraphPreviewLayerWidget::on_combobox_changed()
 {
+  Logger::log()->trace("GraphPreviewLayerWidget::on_combobox_changed");
+
+  this->current_bg_tag = this->combobox->currentText().toStdString();
+  Q_EMIT this->preview_selection_changed();
+}
+
+bool GraphPreviewLayerWidget::get_elevation_range(float &vmin, float &vmax) const
+{
+  auto gno = this->p_graph_node.lock();
+  if (!gno)
+    return false;
+
+  std::string node_label, node_id, port_id;
+  if (!parse_preview_tag(this->current_bg_tag, node_label, node_id, port_id))
+    return false;
+
+  BaseNode *p_node = gno->get_node_ref_by_id<BaseNode>(node_id);
+  if (!p_node || !p_node->has_port<hmap::VirtualArray>(port_id))
+    return false;
+
+  auto *p_h = p_node->get_value_ref<hmap::VirtualArray>(port_id);
+  if (!p_h)
+    return false;
+
+  glm::ivec2  shape_img(256, 256);
+  hmap::Array array = p_h->to_array(shape_img, p_node->cfg().cm_cpu);
+  vmin = array.min();
+  vmax = array.max();
+
+  Logger::log()->trace("GraphPreviewLayerWidget::get_elevation_range: graph={}, "
+                       "vmin={}, vmax={}",
+                       gno->get_id(),
+                       vmin,
+                       vmax);
+  return true;
+}
+
+void GraphPreviewLayerWidget::update_bg_image(float vmin, float vmax)
+{
   auto gno = this->p_graph_node.lock();
   if (!gno)
     return;
 
-  this->current_bg_tag = this->combobox->currentText().toStdString();
+  Logger::log()->trace("GraphPreviewLayerWidget::update_bg_image: graph={}, "
+                       "vmin={}, vmax={}",
+                       gno->get_id(),
+                       vmin,
+                       vmax);
 
   std::string node_label, node_id, port_id;
   if (!parse_preview_tag(this->current_bg_tag, node_label, node_id, port_id))
@@ -221,6 +264,7 @@ void GraphPreviewLayerWidget::on_combobox_changed()
 
   QImage               image;
   std::vector<uint8_t> img;
+  QImage::Format       img_format = QImage::Format_RGB888;
   glm::ivec2           shape_img(256, 256);
 
   if (p_node->has_port<hmap::VirtualArray>(port_id))
@@ -228,9 +272,21 @@ void GraphPreviewLayerWidget::on_combobox_changed()
     if (auto *p_h = p_node->get_value_ref<hmap::VirtualArray>(port_id))
     {
       hmap::Array array = p_h->to_array(shape_img, p_node->cfg().cm_cpu);
-      img = hmap::colorize(array, array.min(), array.max(), hmap::Cmap::TURBO, true)
+      img = hmap::colorize(array, vmin, vmax, hmap::Cmap::NIPY_SPECTRAL, true)
                 .to_img_8bit();
-      image = QImage(img.data(), shape_img.x, shape_img.y, QImage::Format_RGB888).copy();
+    }
+  }
+  else if (p_node->has_port<hmap::Array>(port_id))
+  {
+    if (auto *p_a = p_node->get_value_ref<hmap::Array>(port_id))
+    {
+      hmap::Array array = p_a->resample_to_shape_nearest(shape_img);
+      img = hmap::colorize(array,
+                           array.min(),
+                           array.max(),
+                           hmap::Cmap::NIPY_SPECTRAL,
+                           true)
+                .to_img_8bit();
     }
   }
   else if (p_node->has_port<hmap::VirtualTexture>(port_id))
@@ -239,21 +295,41 @@ void GraphPreviewLayerWidget::on_combobox_changed()
     {
       if (p_tex->channels() >= 3)
       {
-        hmap::Array r = p_tex->channel(0).to_array(shape_img, p_node->cfg().cm_cpu);
-        hmap::Array g = p_tex->channel(1).to_array(shape_img, p_node->cfg().cm_cpu);
-        hmap::Array b = p_tex->channel(2).to_array(shape_img, p_node->cfg().cm_cpu);
-        image = QImage(shape_img.x, shape_img.y, QImage::Format_RGB888);
-        for (int j = 0; j < shape_img.y; ++j)
-          for (int i = 0; i < shape_img.x; ++i)
-          {
-            const int cr = std::clamp(static_cast<int>(r(i, j) * 255.f), 0, 255);
-            const int cg = std::clamp(static_cast<int>(g(i, j) * 255.f), 0, 255);
-            const int cb = std::clamp(static_cast<int>(b(i, j) * 255.f), 0, 255);
-            image.setPixel(i, j, qRgb(cr, cg, cb));
-          }
+        img = p_tex->to_img_8bit(shape_img, p_node->cfg().cm_cpu);
+        img_format = QImage::Format_RGBA8888;
       }
     }
   }
+  else if (p_node->has_port<hmap::Cloud>(port_id))
+  {
+    if (auto *p_cloud = p_node->get_value_ref<hmap::Cloud>(port_id))
+    {
+      if (p_cloud->size() > 0)
+      {
+        hmap::Array array(shape_img);
+        p_cloud->to_array(array);
+        img = hmap::colorize(array, 0.f, 1.f, hmap::Cmap::MAGMA, false).to_img_8bit();
+      }
+    }
+  }
+  else if (p_node->has_port<hmap::Path>(port_id))
+  {
+    if (auto *p_path = p_node->get_value_ref<hmap::Path>(port_id))
+    {
+      if (p_path->size() > 0)
+      {
+        hmap::Array array(shape_img);
+        glm::vec4   bbox(0.f, 1.f, 0.f, 1.f);
+        hmap::Path  path = *p_path;
+        path.remap_values(0.1f, 1.f);
+        path.to_array(array, bbox);
+        img = hmap::colorize(array, 0.f, 1.f, hmap::Cmap::MAGMA, false).to_img_8bit();
+      }
+    }
+  }
+
+  if (!img.empty())
+    image = QImage(img.data(), shape_img.x, shape_img.y, img_format).copy();
 
   Q_EMIT this->bg_image_updated(gno->get_id(), image);
   Q_EMIT this->has_changed();
@@ -494,13 +570,18 @@ void GraphManagerWidget::add_graph_item(const std::string &id, QPointF scene_pos
                 this,
                 [this]() { Q_EMIT this->has_changed(); });
 
+  this->connect(preview_widget,
+                &GraphPreviewLayerWidget::preview_selection_changed,
+                this,
+                [this]() { this->update_all_bg_images(); });
+
   this->connect(this,
                 &GraphManagerWidget::update_finished,
                 preview_widget,
-                [this, preview_widget]()
+                [this]()
                 {
                   const QSignalBlocker blocker(this);
-                  preview_widget->on_combobox_changed();
+                  this->update_all_bg_images();
                 });
 }
 
@@ -819,6 +900,37 @@ void GraphManagerWidget::delete_graph(const std::string &graph_id)
   this->coord_frame_widget->remove_frame(graph_id);
 
   Q_EMIT this->graph_removed();
+}
+
+void GraphManagerWidget::update_all_bg_images()
+{
+  Logger::log()->trace("GraphManagerWidget::update_all_bg_images");
+
+  float global_min = std::numeric_limits<float>::max();
+  float global_max = std::numeric_limits<float>::lowest();
+
+  for (const auto &[id, pw] : this->preview_widgets)
+  {
+    if (!pw)
+      continue;
+
+    float vmin = 0.f;
+    float vmax = 0.f;
+    if (pw->get_elevation_range(vmin, vmax))
+    {
+      global_min = std::min(global_min, vmin);
+      global_max = std::max(global_max, vmax);
+    }
+  }
+
+  Logger::log()->trace("GraphManagerWidget::update_all_bg_images: global_min={}, "
+                       "global_max={}",
+                       global_min,
+                       global_max);
+
+  for (const auto &[id, pw] : this->preview_widgets)
+    if (pw)
+      pw->update_bg_image(global_min, global_max);
 }
 
 void GraphManagerWidget::update_combobox(const std::string &graph_id)

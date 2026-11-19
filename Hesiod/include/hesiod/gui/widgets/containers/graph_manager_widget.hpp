@@ -64,14 +64,17 @@ public:
                           QWidget                 *parent = nullptr);
 
   std::string get_current_bg_tag() const;
+  bool        get_elevation_range(float &vmin, float &vmax) const;
   GraphNode  *get_p_graph_node();
 
   void           json_from(nlohmann::json const &json);
   nlohmann::json json_to() const;
+  void           update_bg_image(float vmin, float vmax);
 
 signals:
   void bg_image_updated(const std::string &graph_id, const QImage &image);
   void has_changed();
+  void preview_selection_changed();
 
 public slots:
   void on_combobox_changed();
@@ -138,6 +141,7 @@ private slots:
 private:
   void add_graph_item(const std::string &id, QPointF scene_pos = QPointF(0.f, 0.f));
   void setup_reset_actions();
+  void update_all_bg_images();
 
   // --- Members ---
   std::weak_ptr<GraphManager>                              p_graph_manager;
