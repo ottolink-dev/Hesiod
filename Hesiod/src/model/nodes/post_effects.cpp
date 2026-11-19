@@ -66,10 +66,13 @@ void set_range_active(meta::AttributeContainer &container, const char *key, bool
   meta::AbstractAttribute *p_attr = container.find(key);
   auto *p_range = p_attr ? p_attr->try_cast<meta::Attribute<glm::vec2>>() : nullptr;
 
-  if (!p_range || is_range_active(container, key) == active)
+  if (!p_range)
     return;
 
   meta::AttributeContainer &state = p_range->state();
+  const bool *p_flag = state.try_value<bool>(meta::keys::state::active);
+  if (p_flag && *p_flag == active)
+    return;
 
   const auto remember = [&state](const glm::vec2 &range)
   {
@@ -83,20 +86,21 @@ void set_range_active(meta::AttributeContainer &container, const char *key, bool
   // and they read the flag to decide how.
   set_active_flag(state, active);
 
-  if (!active)
-  {
-    // what the range editor leaves behind when it is switched off
-    remember(p_range->value());
-    p_range->set_value(glm::vec2(-1.f, 0.f));
-    return;
-  }
-
   float vmin = -1.f;
   float vmax = 2.f;
   if (const float *p = p_range->metadata().try_value<float>(meta::keys::constraints::min))
     vmin = *p;
   if (const float *p = p_range->metadata().try_value<float>(meta::keys::constraints::max))
     vmax = *p;
+
+  if (!active)
+  {
+    // what the range editor leaves behind when it is switched off
+    remember(p_range->value());
+    p_range->set_value(
+        glm::vec2(std::clamp(-1.f, vmin, vmax), std::clamp(0.f, vmin, vmax)));
+    return;
+  }
 
   const auto usable = [vmin, vmax](const glm::vec2 &range)
   {
