@@ -142,6 +142,42 @@ private Q_SLOTS:
     QVERIFY(painting(*loaded).value().vector == a.vector);
   }
 
+  void canvas_setup_persists_across_widget_rebuild()
+  {
+    auto  config = config_at({512, 512});
+    auto  node = brush(config);
+    auto &attr = painting(*node);
+
+    {
+      std::unique_ptr<meta::qt::MetaWidget> widget(meta::qt::render(&attr));
+      auto *canvas = widget->findChild<meta::qt::ArrayCanvas *>();
+      QVERIFY(canvas);
+      canvas->set_brush_radius(24);
+      canvas->set_brush_strength(0.45f);
+      canvas->set_show_bg_image(false);
+      Q_EMIT canvas->setup_changed();
+    }
+
+    {
+      std::unique_ptr<meta::qt::MetaWidget> rebuilt(meta::qt::render(&attr));
+      auto *canvas = rebuilt->findChild<meta::qt::ArrayCanvas *>();
+      QVERIFY(canvas);
+      QCOMPARE(canvas->get_brush_radius(), 24);
+      QVERIFY(std::abs(canvas->get_brush_strength() - 0.45f) < 1.e-5f);
+      QCOMPARE(canvas->get_show_bg_image(), false);
+    }
+
+    auto loaded = brush(config);
+    loaded->json_from(nlohmann::json::parse(node->json_to().dump()));
+    std::unique_ptr<meta::qt::MetaWidget> loaded_widget(
+        meta::qt::render(&painting(*loaded)));
+    auto *loaded_canvas = loaded_widget->findChild<meta::qt::ArrayCanvas *>();
+    QVERIFY(loaded_canvas);
+    QCOMPARE(loaded_canvas->get_brush_radius(), 24);
+    QVERIFY(std::abs(loaded_canvas->get_brush_strength() - 0.45f) < 1.e-5f);
+    QCOMPARE(loaded_canvas->get_show_bg_image(), false);
+  }
+
   void compute_resamples_without_modifying_the_painting_data()
   {
     QTest::addColumn<int>("width");
