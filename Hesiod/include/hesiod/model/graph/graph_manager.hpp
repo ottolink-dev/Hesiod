@@ -1,13 +1,17 @@
 /* Copyright (c) 2023 Otto Link. Distributed under the terms of the GNU General Public
    License. The full license is in the file LICENSE, distributed with this software. */
 #pragma once
+#include <deque>
+#include <filesystem>
+#include <functional>
+#include <map>
+#include <memory>
+#include <string>
+#include <vector>
+
 #include "nlohmann/json.hpp"
 
-#include "hesiod/model/graph/broadcast_param.hpp"
-#include "hesiod/model/graph/flatten_config.hpp"
-
-#include <filesystem> // must be here,
-                      // https://bugreports.qt.io/browse/QTBUG-73263
+#include "gnode/graph.hpp"
 
 namespace gnode
 {
@@ -25,39 +29,34 @@ class GraphConfig;
 // =====================================
 using GraphNodeMap = std::map<std::string, std::shared_ptr<GraphNode>>;
 
-class GraphManager : public std::enable_shared_from_this<GraphManager>
+class GraphManager : public gnode::Graph
 {
 public:
   explicit GraphManager(const std::string &id = "");
-  ~GraphManager();
+  ~GraphManager() override;
 
   std::shared_ptr<GraphManager> get_shared();
   void                          clear();
 
   // --- Accessors ---
-  const BroadcastMap             &get_broadcast_params();
-  FlattenConfig                   get_export_param() const;
-  const GraphNodeMap             &get_graph_nodes();
-  const std::vector<std::string> &get_graph_order();
-  int                             get_graph_order_index(const std::string &graph_id);
-  GraphNode                      *get_graph_ref_by_id(const std::string &graph_id);
-  std::string                     get_id() const;
-  gnode::GraphWorker             &get_worker(); // updates the graphs in the background
-
-  void set_export_param(const FlattenConfig &new_export_param);
-  void set_graph_order(const std::vector<std::string> &new_graph_order);
-  void set_id(const std::string &new_id);
+  GraphNodeMap             get_graph_nodes() const;
+  std::vector<std::string> get_graph_order() const;
+  int                      get_graph_order_index(const std::string &graph_id) const;
+  GraphNode               *get_graph_ref_by_id(const std::string &graph_id) const;
+  gnode::GraphWorker      &get_worker();
 
   // --- GraphNode management ---
   std::string add_graph_node(const std::shared_ptr<GraphNode> &p_graph_node,
                              const std::string                &graph_id = "");
-  void        export_flatten();
-  bool is_graph_above(const std::string &graph_id, const std::string &ref_graph_id);
-  bool is_graph_id_available(const std::string &graph_id);
-  void remove_graph_node(const std::string &graph_id);
-  void reseed(bool backward);
+  bool        is_graph_id_available(const std::string &graph_id) const;
+  void        remove_graph_node(const std::string &graph_id);
+  void        reseed(bool backward);
   std::string runtime_info_to_string(const char separator = ',') const;
-  void        update();
+
+  // --- Global Graph Update ---
+  void update() override;
+  void update(const std::string &graph_id) override;
+  void update(const std::vector<std::string> &graph_ids) override;
 
   // --- Serialization ---
   void           json_from(nlohmann::json const &json, GraphConfig *p_config);
@@ -67,34 +66,18 @@ public:
   void save_to_file(const std::string &fname) const;
 
   // --- Callbacks ---
-  std::function<void(const std::string &tag)> new_broadcast_tag;
-  std::function<void(const std::string &tag)> remove_broadcast_tag;
   std::function<void(float progress)>         update_progress;
-
-  // reports a graph update that was abandoned because it threw, so the GUI can
-  // tell the user instead of the failure being visible only in the log
-  std::function<void(const std::string &message)> update_failed;
-
-  // true while an update stopped with Esc leaves the graphs partly up to date,
-  // false once they are taken care of again (see GraphWorker::hold)
-  std::function<void(bool held)> update_held;
+  std::function<void(const std::string &msg)> update_failed;
+  std::function<void(bool held)>              update_held;
 
 private:
-  // --- Intergraph interactions ---
-  void on_broadcast_node_updated(const std::string &graph_id, const std::string &tag);
-  void on_new_broadcast_tag(const std::string        &tag,
-                            const hmap::CoordFrame   *t_source,
-                            const hmap::VirtualArray *h_source);
-  void on_remove_broadcast_tag(const std::string &tag);
+  void on_graph_node_output_updated(const std::string &graph_id);
   void on_update_progress(const std::string &node_id, float progress);
   void on_update_failed(std::exception_ptr error);
+  void advance_global_queue();
 
-  std::string              id;
-  GraphNodeMap             graph_nodes;
-  int                      id_count = 0;
-  std::vector<std::string> graph_order;
-  BroadcastMap             broadcast_params;
-  FlattenConfig            export_param;
+  std::deque<std::string> pending_global_queue;
+  std::string             active_global_graph_id;
 
   // last: it has to stop before the graphs go
   std::unique_ptr<gnode::GraphWorker> worker;

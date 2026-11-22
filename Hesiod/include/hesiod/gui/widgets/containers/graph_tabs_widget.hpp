@@ -75,7 +75,6 @@ public slots:
   void on_textures_request(const std::vector<std::string> &texture_paths);
 
   void set_selected_tab(const std::string &graph_id);
-  void update_receive_nodes_tag_list();
   void update_tab_widget();
   void sync_tab_strips(); // every workspace's tab strip shows the current tabs
   void show_tab_menu(int index, const QPoint &global_pos); // right click on a tab

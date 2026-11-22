@@ -31,7 +31,7 @@ def inventory(root=ROOT):
     factory = uncomment((root / 'Hesiod/src/model/nodes/node_factory.cpp').read_text())
     categories = dict(re.findall(r'\{"(\w+)",\s*"([^"]+)"\}', factory))
     registrations = dict(re.findall(r'\bSETUP_NODE\((\w+),\s*(\w+)\);', factory))
-    registrations.update(Broadcast='broadcast', Receive='receive')
+
     sources = {}
     for path in (root / 'Hesiod/src/model/nodes/nodes_function').glob('*.cpp'):
         source = uncomment(path.read_text())

@@ -1323,41 +1323,6 @@
             }
         }
     },
-    "Broadcast": {
-        "category": "Routing",
-        "description": "Makes the input heightmap available to other graph nodes using a shared tag.",
-        "label": "Broadcast",
-        "parameter_groups": [
-            {
-                "keys": [
-                    "tag"
-                ],
-                "name": "main"
-            }
-        ],
-        "parameters": {
-            "tag": {
-                "description": "Identifier used to reference this heightmap in other graph nodes.",
-                "key": "tag",
-                "label": "tag",
-                "type": "String"
-            }
-        },
-        "ports": {
-            "input": {
-                "caption": "input",
-                "data_type": "VirtualArray",
-                "description": "Heightmap data to be shared with other graph nodes.",
-                "type": "input"
-            },
-            "thru": {
-                "caption": "thru",
-                "data_type": "VirtualArray",
-                "description": "Pass-through of the input heightmap, unchanged.",
-                "type": "output"
-            }
-        }
-    },
     "Brush": {
         "category": "Primitive/Authoring",
         "description": "A manual brush tool for directly painting heightmaps, allowing interactive terrain editing.",
@@ -5102,6 +5067,256 @@
                 "key": "radius",
                 "label": "Crater Radius",
                 "type": "Float"
+            },
+            "terrace_exp": {
+                "description": "Profile sharpness exponent of the concentric crater wall terraces.",
+                "key": "terrace_exp",
+                "label": "Terrace Sharpness",
+                "type": "Float"
+            },
+            "terrace_extent": {
+                "description": "Radial width of the terraced zone inside the crater rim.",
+                "key": "terrace_extent",
+                "label": "Terrace Extent",
+                "type": "Float"
+            },
+            "terrace_persistence": {
+                "description": "Amplitude persistence ratio between successive concentric terraces.",
+                "key": "terrace_persistence",
+                "label": "Terrace Persistence",
+                "type": "Float"
+            }
+        },
+        "ports": {
+            "crater_mask": {
+                "caption": "crater_mask",
+                "data_type": "VirtualArray",
+                "description": "No description",
+                "type": "output"
+            },
+            "envelope": {
+                "caption": "envelope",
+                "data_type": "VirtualArray",
+                "description": "Heightmap used as a post-process amplitude multiplier for the generated noise.",
+                "type": "input"
+            },
+            "noise": {
+                "caption": "noise",
+                "data_type": "VirtualArray",
+                "description": "No description",
+                "type": "input"
+            },
+            "output": {
+                "caption": "output",
+                "data_type": "VirtualArray",
+                "description": "Crater heightmap.",
+                "type": "output"
+            }
+        }
+    },
+    "CraterField": {
+        "category": "Primitive/Geological",
+        "description": "Generates a field of randomly distributed procedural impact craters with configurable radii, rims, asymmetry, central peaks, and inner terraces.",
+        "label": "CraterField",
+        "parameter_groups": [
+            {
+                "keys": [
+                    "seed",
+                    "n_craters",
+                    "r_min",
+                    "r_max",
+                    "angle",
+                    "elevation_offset",
+                    "inner_depth",
+                    "inner_exp",
+                    "lip_height",
+                    "lip_extent",
+                    "lip_exp",
+                    "asym_ratio",
+                    "central_peak_height",
+                    "central_peak_extent",
+                    "n_terraces",
+                    "terrace_extent",
+                    "terrace_exp",
+                    "terrace_persistence",
+                    "dn_add_default_noise",
+                    "dn_noise_type",
+                    "dn_seed",
+                    "dn_noise_amp",
+                    "dn_kw",
+                    "dn_smoothness",
+                    "post_inverse",
+                    "post_gamma",
+                    "post_gain",
+                    "post_smoothing_radius",
+                    "post_remap",
+                    "post_saturate"
+                ],
+                "name": "main"
+            }
+        ],
+        "parameters": {
+            "angle": {
+                "description": "Expressed in degrees.",
+                "key": "angle",
+                "label": "Rotation Angle",
+                "type": "Float"
+            },
+            "asym_ratio": {
+                "description": "Asymmetry ratio skewing the crater shape along its primary axis.",
+                "key": "asym_ratio",
+                "label": "Asymmetry Ratio",
+                "type": "Float"
+            },
+            "central_peak_extent": {
+                "description": "Radial extent of the central rebound uplift peak within the crater basin.",
+                "key": "central_peak_extent",
+                "label": "Central Peak Extent",
+                "type": "Float"
+            },
+            "central_peak_height": {
+                "description": "Maximum elevation height of the crater central rebound peak.",
+                "key": "central_peak_height",
+                "label": "Central Peak Height",
+                "type": "Float"
+            },
+            "dn_add_default_noise": {
+                "description": "Enables or disables the built-in drainage noise. If an external noise input is provided, it overrides this default noise.",
+                "key": "dn_add_default_noise",
+                "label": "Activate",
+                "type": "Bool"
+            },
+            "dn_kw": {
+                "description": "Base spatial frequencies in the X and Y directions.",
+                "key": "dn_kw",
+                "label": "Spatial Frequency",
+                "type": "Float"
+            },
+            "dn_noise_amp": {
+                "description": "Noise amplitude.",
+                "key": "dn_noise_amp",
+                "label": "Amplitude",
+                "type": "Float"
+            },
+            "dn_noise_type": {
+                "description": "Noise type.",
+                "key": "dn_noise_type",
+                "label": "Type",
+                "type": "Enumeration"
+            },
+            "dn_seed": {
+                "description": "Random seed number. The random seed is an offset to the randomized process. A different seed will produce a new result.",
+                "key": "dn_seed",
+                "label": "Seed",
+                "type": "Random seed number"
+            },
+            "dn_smoothness": {
+                "description": "Controls the resulting smoothness of the fractal layering process.",
+                "key": "dn_smoothness",
+                "label": "Smoothness",
+                "type": "Float"
+            },
+            "elevation_offset": {
+                "description": "Vertical elevation offset applied to the crater floor.",
+                "key": "elevation_offset",
+                "label": "Elevation Offset",
+                "type": "Float"
+            },
+            "inner_depth": {
+                "description": "Depth of the interior bowl basin relative to the surrounding rim.",
+                "key": "inner_depth",
+                "label": "Inner Basin Depth",
+                "type": "Float"
+            },
+            "inner_exp": {
+                "description": "Falloff exponent shaping the interior crater cavity walls.",
+                "key": "inner_exp",
+                "label": "Inner Basin Falloff",
+                "type": "Float"
+            },
+            "lip_exp": {
+                "description": "Falloff exponent shaping the exterior rim ejecta blanket.",
+                "key": "lip_exp",
+                "label": "Rim Falloff",
+                "type": "Float"
+            },
+            "lip_extent": {
+                "description": "Radial width of the raised structural crater rim.",
+                "key": "lip_extent",
+                "label": "Rim Width",
+                "type": "Float"
+            },
+            "lip_height": {
+                "description": "Maximum elevation height of the raised crater rim lip.",
+                "key": "lip_height",
+                "label": "Rim Height",
+                "type": "Float"
+            },
+            "n_craters": {
+                "description": "Number of impact craters to generate in the field.",
+                "key": "n_craters",
+                "label": "Crater Count",
+                "type": "Integer"
+            },
+            "n_terraces": {
+                "description": "Number of concentric slump terraces inside the crater rim walls.",
+                "key": "n_terraces",
+                "label": "Terrace Count",
+                "type": "Integer"
+            },
+            "post_gain": {
+                "description": "Mid-centered gain transformation applied to the elevation values. This is a non-linear recurve operator centered around the mid elevation (typically 0.5). Increasing the gain pushes values toward the minimum and maximum elevations, creating flatter low/high regions with a steeper transition around the midpoint.",
+                "key": "post_gain",
+                "label": "Gain",
+                "type": "Float"
+            },
+            "post_gamma": {
+                "description": "Standard gamma correction applied to the elevation values. This is a monotonic power-law remapping that shifts emphasis toward low or high elevations, making the overall shape sharper or bulkier without changing its ordering.",
+                "key": "post_gamma",
+                "label": "Gamma",
+                "type": "Float"
+            },
+            "post_inverse": {
+                "description": "Inverts the output values after processing, flipping low and high values across the midrange.",
+                "key": "post_inverse",
+                "label": "Invert Output",
+                "type": "Bool"
+            },
+            "post_remap": {
+                "description": "Linearly remaps the output values to a specified target range (default is [0, 1]).",
+                "key": "post_remap",
+                "label": "Remap Range",
+                "type": "Value range"
+            },
+            "post_saturate": {
+                "description": "Modifies the amplitude of elevations by first clamping them to a given interval and then scaling them so that the restricted interval matches the original input range. This enhances contrast in elevation variations while maintaining overall structure.",
+                "key": "post_saturate",
+                "label": "Saturation Range",
+                "type": "Value range"
+            },
+            "post_smoothing_radius": {
+                "description": "Defines the radius for post-processing smoothing, determining the size of the neighborhood used to average local values and reduce high-frequency detail. A radius of 0 disables smoothing.",
+                "key": "post_smoothing_radius",
+                "label": "Smoothing Radius",
+                "type": "Float"
+            },
+            "r_max": {
+                "description": "Maximum crater radius.",
+                "key": "r_max",
+                "label": "Max Radius",
+                "type": "Float"
+            },
+            "r_min": {
+                "description": "Minimum crater radius.",
+                "key": "r_min",
+                "label": "Min Radius",
+                "type": "Float"
+            },
+            "seed": {
+                "description": "Random seed number. The random seed is an offset to the randomized process. A different seed will produce a new result.",
+                "key": "seed",
+                "label": "Seed",
+                "type": "Random seed number"
             },
             "terrace_exp": {
                 "description": "Profile sharpness exponent of the concentric crater wall terraces.",
@@ -19904,35 +20119,6 @@
                 "caption": "output",
                 "data_type": "VirtualArray",
                 "description": "Filtered heightmap.",
-                "type": "output"
-            }
-        }
-    },
-    "Receive": {
-        "category": "Routing",
-        "description": "Retrieves a heightmap broadcasted by another node using the specified tag.",
-        "label": "Receive",
-        "parameter_groups": [
-            {
-                "keys": [
-                    "tag"
-                ],
-                "name": "main"
-            }
-        ],
-        "parameters": {
-            "tag": {
-                "description": "Tag identifying the broadcasted heightmap to receive.",
-                "key": "tag",
-                "label": "tag",
-                "type": "Choice"
-            }
-        },
-        "ports": {
-            "output": {
-                "caption": "output",
-                "data_type": "VirtualArray",
-                "description": "The heightmap retrieved from the broadcast source.",
                 "type": "output"
             }
         }

@@ -49,6 +49,8 @@
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/legacy/legacy_converter.hpp"
 #include "hesiod/model/nodes/node_factory.hpp"
+#include "hesiod/model/nodes/node_in_node.hpp"
+#include "hesiod/model/nodes/node_out_node.hpp"
 #include "hesiod/model/nodes/port_catalog.hpp"
 #include "hesiod/model/utils.hpp"
 
@@ -901,6 +903,22 @@ void GraphNodeWidget::on_new_graphics_node_request(const std::string &node_id,
     return;
   }
   auto *p_proxy = new HesiodNodeProxy(p_node->get_shared(), this);
+  if (auto *p_in = dynamic_cast<NodeInNode *>(p_node))
+  {
+    p_in->ports_updated = [safe_proxy = QPointer(p_proxy)]()
+    {
+      if (safe_proxy)
+        Q_EMIT safe_proxy->ports_changed();
+    };
+  }
+  else if (auto *p_out = dynamic_cast<NodeOutNode *>(p_node))
+  {
+    p_out->ports_updated = [safe_proxy = QPointer(p_proxy)]()
+    {
+      if (safe_proxy)
+        Q_EMIT safe_proxy->ports_changed();
+    };
+  }
   auto *widget = node_widget_factory(p_node->get_label(), p_node->get_shared(), this);
 
   this->add_node(p_proxy, scene_pos, node_id);
@@ -1430,7 +1448,7 @@ void GraphNodeWidget::setup_connections()
       Q_EMIT safe_this->update_started();
   };
 
-  gno->update_finished = [safe_this = QPointer(this)]()
+  gno->graph_update_finished = [safe_this = QPointer(this)]()
   {
     if (safe_this)
       Q_EMIT safe_this->update_finished();

@@ -26,9 +26,11 @@ public:
   explicit FrameItem(const std::string &id, QPointF origin, QPointF size, float angle);
 
   // --- Qt paint override ---
-  void paint(QPainter                       *painter,
-             const QStyleOptionGraphicsItem *option,
-             QWidget                        *widget = nullptr) override;
+  QRectF       boundingRect() const override;
+  QPainterPath shape() const override;
+  void         paint(QPainter                       *painter,
+                     const QStyleOptionGraphicsItem *option,
+                     QWidget                        *widget = nullptr) override;
 
   // --- Accessors ---
   std::string get_id() const { return id; }
@@ -49,6 +51,7 @@ public:
   // --- Interaction state setters ---
   void set_is_resized(bool resized);
   void set_is_rotated(bool rotated);
+  void set_snap_enabled(bool enabled) { this->snap_enabled = enabled; }
 
   // --- Layout/Geometry update ---
   void update_item_geometry();
@@ -85,6 +88,7 @@ private:
   bool is_hovered = false;
   bool is_rotated = false;
   bool is_resized = false;
+  bool snap_enabled = true;
 
   // --- Handles ---
   QRectF rotation_rect;
@@ -112,6 +116,7 @@ public:
 
 public slots:
   void on_zoom_to_content();
+  void set_snap_enabled(bool enabled);
   void update_frames_z_depth();
   void reset();
 
@@ -119,6 +124,7 @@ signals:
   void has_changed();
 
 protected:
+  void drawBackground(QPainter *painter, const QRectF &rect) override;
   void mousePressEvent(QMouseEvent *event) override;
   void mouseReleaseEvent(QMouseEvent *event) override;
   void wheelEvent(QWheelEvent *event) override;
@@ -126,6 +132,7 @@ protected:
 private:
   std::weak_ptr<GraphManager>        p_graph_manager;
   std::map<std::string, FrameItem *> frames;
+  bool                               snap_enabled = true;
 };
 
 } // namespace hesiod

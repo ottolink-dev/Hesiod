@@ -28,6 +28,32 @@ void override_export_nodes_settings(const std::string           &fname,
   // modify
   for (auto &[key, value] : json["graph_manager"]["graph_nodes"].items())
   {
+    // scale each graph's model_config to the bake resolution
+    if (value.contains("model_config") && value["model_config"].is_object())
+    {
+      auto &mc = value["model_config"];
+
+      const int shape_x = std::max(1, mc.value("shape.x", 1024));
+      const int shape_y = std::max(1, mc.value("shape.y", 1024));
+
+      const float scale = static_cast<float>(bake_settings.resolution) / shape_x;
+      const int   bake_shape_x = std::max(1, static_cast<int>(scale * shape_x));
+      const int   bake_shape_y = std::max(1, static_cast<int>(scale * shape_y));
+
+      mc["shape.x"] = bake_shape_x;
+      mc["shape.y"] = bake_shape_y;
+
+      if (bake_settings.max_tile_resolution > 0)
+      {
+        mc["tiling.x"] = std::max(1,
+                                  (bake_shape_x + bake_settings.max_tile_resolution - 1) /
+                                      bake_settings.max_tile_resolution);
+        mc["tiling.y"] = std::max(1,
+                                  (bake_shape_y + bake_settings.max_tile_resolution - 1) /
+                                      bake_settings.max_tile_resolution);
+      }
+    }
+
     for (auto &j : value["nodes"])
     {
       const std::string node_label = j.value("label", "");

@@ -1,16 +1,14 @@
 /* Copyright (c) 2023 Otto Link. Distributed under the terms of the GNU General
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
+#include <algorithm>
 #include <new>
 #include <string>
 
 #include "nlohmann/json.hpp"
 
-#include "highmap/coord_frame.hpp"
-#include "highmap/interpolate/interpolate_array.hpp"
-#include "highmap/interpolate/interpolate_terrain.hpp"
-
 #include "gnode/graph_worker.hpp"
+
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/graph/graph_config.hpp"
@@ -23,271 +21,32 @@ namespace hesiod
 {
 
 GraphManager::GraphManager(const std::string &id)
-    : id(id), worker(std::make_unique<gnode::GraphWorker>())
+    : gnode::Graph(id), worker(std::make_unique<gnode::GraphWorker>())
 {
   Logger::log()->trace("GraphManager::GraphManager: id: {}", id);
 
   this->worker->failed = [this](std::exception_ptr error)
   { this->on_update_failed(error); };
+
   this->worker->held_changed = [this](bool held)
   {
     if (this->update_held)
       this->update_held(held);
 
-    for (auto &[_, graph] : this->graph_nodes)
-      if (graph->update_held)
-        graph->update_held(held);
+    for (auto &[_, p_node] : this->nodes)
+      if (auto *graph = dynamic_cast<GraphNode *>(p_node.get()))
+        if (graph->update_held)
+          graph->update_held(held);
   };
 }
 
 GraphManager::~GraphManager() = default;
 
-std::string GraphManager::add_graph_node(const std::shared_ptr<GraphNode> &p_graph_node,
-                                         const std::string                &graph_id)
-{
-  Logger::log()->trace("GraphManager::add_graph_node: {}", graph_id);
-
-  std::string new_graph_id = graph_id;
-
-  // use node pointer as ID if none is provided
-  if (graph_id.empty())
-    new_graph_id = std::to_string(this->id_count++);
-
-  // check if the ID is available
-  if (!this->is_graph_id_available(new_graph_id))
-    throw std::runtime_error("Graph ID already used: " + new_graph_id);
-
-  // add the graph to the map and store the ID within the graph (in case of)
-  this->graph_nodes[new_graph_id] = p_graph_node;
-  this->graph_order.push_back(new_graph_id);
-
-  // setup new graph node
-  {
-    p_graph_node->set_id(new_graph_id);
-    p_graph_node->set_p_worker(this->worker.get());
-
-    // store a reference to the global storage of broadcasting data
-    p_graph_node->set_p_broadcast_params(&broadcast_params);
-
-    // connections for broadcasting data between graph_nodes
-    p_graph_node->broadcast_node_updated =
-        [this](const std::string &graph_id, const std::string &tag)
-    { this->on_broadcast_node_updated(graph_id, tag); };
-
-    p_graph_node->new_broadcast_tag = [this](const std::string        &tag,
-                                             const hmap::CoordFrame   *t_source,
-                                             const hmap::VirtualArray *h_source)
-    { this->on_new_broadcast_tag(tag, t_source, h_source); };
-
-    p_graph_node->remove_broadcast_tag = [this](const std::string &tag)
-    { this->on_remove_broadcast_tag(tag); };
-
-    // gather update progress signals
-    p_graph_node->update_progress = [this](const std::string &node_id, float progress)
-    { this->on_update_progress(node_id, progress); };
-  }
-
-  return new_graph_id;
-}
-
-void GraphManager::clear()
-{
-  Logger::log()->trace("GraphManager::clear");
-
-  this->worker->cancel();
-
-  for (auto &[_, graph] : this->graph_nodes)
-    graph->clear();
-
-  this->id_count = 0;
-  this->graph_nodes.clear();
-  this->graph_order.clear();
-  this->broadcast_params.clear();
-}
-
-void GraphManager::export_flatten()
-{
-  HSD_PROFILE_ZONE("GraphManager::export_flatten");
-  Logger::log()->trace("GraphManager::export_flatten");
-
-  // Finish any pending background work first
-  this->worker->finish();
-
-  // Switch to sequential mode for export: synchronously update all graphs
-  // so that inter-graph broadcasts and receives compute deterministically.
-  for (const auto &gid : this->graph_order)
-  {
-    if (auto *graph = this->get_graph_ref_by_id(gid))
-      graph->set_p_worker(nullptr);
-  }
-
-  try
-  {
-    for (const auto &gid : this->graph_order)
-    {
-      if (auto *graph = this->get_graph_ref_by_id(gid))
-        graph->update();
-    }
-  }
-  catch (...)
-  {
-    for (const auto &gid : this->graph_order)
-    {
-      if (auto *graph = this->get_graph_ref_by_id(gid))
-        graph->set_p_worker(this->worker.get());
-    }
-    this->on_update_failed(std::current_exception());
-    return;
-  }
-
-  for (const auto &gid : this->graph_order)
-  {
-    if (auto *graph = this->get_graph_ref_by_id(gid))
-      graph->set_p_worker(this->worker.get());
-  }
-
-  // create config
-  auto export_cfg = GraphConfig();
-  export_cfg.set_shape(export_param.shape);
-  export_cfg.set_tiling(export_param.tiling);
-  export_cfg.set_overlap(export_param.overlap);
-
-  // target heightmap
-  hmap::VirtualArray h_export(export_cfg.shape,
-                              export_cfg.tile_shape,
-                              export_cfg.halo,
-                              export_cfg.storage_mode);
-
-  // compute global bounding box
-  glm::vec4 bbox_global(std::numeric_limits<float>::max(),
-                        std::numeric_limits<float>::lowest(),
-                        std::numeric_limits<float>::max(),
-                        std::numeric_limits<float>::lowest());
-
-  for (auto &graph_id : this->get_graph_order())
-  {
-    glm::vec4 bbox = this->get_graph_nodes().at(graph_id)->compute_bounding_box();
-
-    bbox_global = glm::vec4(std::min(bbox_global.x, bbox.x),
-                            std::max(bbox_global.y, bbox.y),
-                            std::min(bbox_global.z, bbox.z),
-                            std::max(bbox_global.w, bbox.w));
-  }
-
-  // retrieve for each graph the selected tag and the corresponding data
-  std::vector<const hmap::VirtualArray *> h_sources;
-  std::vector<const hmap::CoordFrame *>   t_sources;
-
-  for (auto ids : this->export_param.ids)
-  {
-    std::string graph_id = std::get<0>(ids);
-    std::string node_id = std::get<1>(ids);
-    std::string port_id = std::get<2>(ids);
-
-    hmap::VirtualArray *p_h = this->graph_nodes.at(graph_id)
-                                  ->get_node_ref_by_id(node_id)
-                                  ->get_value_ref<hmap::VirtualArray>(port_id);
-
-    hmap::CoordFrame *p_t = dynamic_cast<hmap::CoordFrame *>(
-        this->graph_nodes.at(graph_id).get());
-
-    h_sources.push_back(p_h);
-    t_sources.push_back(p_t);
-  }
-
-  // bbox_global is (min_x, max_x, min_y, max_y); origin is the lower corner
-  glm::vec2        origin(bbox_global.x, bbox_global.z);
-  glm::vec2        size(bbox_global.y - bbox_global.x, bbox_global.w - bbox_global.z);
-  float            rotation_angle = 0.f;
-  hmap::CoordFrame frame_export(origin, size, rotation_angle);
-
-  hmap::flatten_terrain(h_sources, h_export, t_sources, frame_export, export_cfg.cm_cpu);
-
-  // guard the output path: OpenCV's imwrite throws (and, uncaught, aborts the
-  // whole application) if the path is empty or has no extension it recognises
-  std::filesystem::path out_path = export_param.export_path;
-
-  if (out_path.empty())
-  {
-    Logger::log()->error("GraphManager::export_flatten: export path is empty, "
-                         "nothing was written");
-    return;
-  }
-
-  if (out_path.extension().empty())
-  {
-    out_path.replace_extension(".png");
-    Logger::log()->warn("GraphManager::export_flatten: export path had no "
-                        "extension, defaulting to {}",
-                        out_path.string());
-  }
-
-  // catch any writer error (unsupported extension, unwritable path, ...) so a
-  // failed export reports an error instead of crashing the app
-  try
-  {
-    // raw heightmap
-    h_export.to_array(export_cfg.cm_cpu).to_png_grayscale(out_path.string(), CV_16U);
-
-    // with hillshading
-    const std::filesystem::path fname_hs = insert_before_extension(out_path, "_preview");
-    h_export.to_array(export_cfg.cm_cpu)
-        .to_png(fname_hs.string(), hmap::Cmap::TERRAIN, true);
-  }
-  catch (const std::exception &e)
-  {
-    Logger::log()->error("GraphManager::export_flatten: failed to write export "
-                         "image '{}': {}",
-                         out_path.string(),
-                         e.what());
-  }
-}
-
-const BroadcastMap &GraphManager::get_broadcast_params()
-{
-  return this->broadcast_params;
-}
-
-FlattenConfig GraphManager::get_export_param() const { return this->export_param; }
-
-const GraphNodeMap &GraphManager::get_graph_nodes() { return this->graph_nodes; }
-
-const std::vector<std::string> &GraphManager::get_graph_order()
-{
-  return this->graph_order;
-}
-
-int GraphManager::get_graph_order_index(const std::string &graph_id)
-{
-  if (this->is_graph_id_available(graph_id))
-  {
-    Logger::log()->critical("GraphManager::get_graph_order_index, graph ID not known: {}",
-                            graph_id);
-    throw std::runtime_error("Graph ID not known: " + graph_id);
-  }
-
-  auto itr = std::find(this->graph_order.begin(), this->graph_order.end(), graph_id);
-  return (int)std::distance(this->graph_order.begin(), itr);
-}
-
-GraphNode *GraphManager::get_graph_ref_by_id(const std::string &graph_id)
-{
-  auto it = graph_nodes.find(graph_id);
-  if (it == graph_nodes.end())
-    return nullptr;
-  else
-    return it->second.get();
-}
-
-std::string GraphManager::get_id() const { return this->id; }
-
-gnode::GraphWorker &GraphManager::get_worker() { return *this->worker; }
-
 std::shared_ptr<GraphManager> GraphManager::get_shared()
 {
   try
   {
-    return shared_from_this();
+    return std::dynamic_pointer_cast<GraphManager>(gnode::Graph::shared_from_this());
   }
   catch (...)
   {
@@ -297,176 +56,84 @@ std::shared_ptr<GraphManager> GraphManager::get_shared()
   }
 }
 
-bool GraphManager::is_graph_above(const std::string &graph_id,
-                                  const std::string &ref_graph_id)
+std::string GraphManager::add_graph_node(const std::shared_ptr<GraphNode> &p_graph_node,
+                                         const std::string                &graph_id)
 {
-  for (auto &gid : this->graph_order)
+  Logger::log()->trace("GraphManager::add_graph_node: {}", graph_id);
+
+  std::string new_graph_id = gnode::Graph::add_node(p_graph_node, graph_id);
+  p_graph_node->set_id(new_graph_id);
+  p_graph_node->set_p_worker(this->worker.get());
+
+  p_graph_node->update_progress = [this](const std::string &node_id, float progress)
+  { this->on_update_progress(node_id, progress); };
+
+  p_graph_node->global_output_updated = [this](const std::string &gid)
+  { this->on_graph_node_output_updated(gid); };
+
+  return new_graph_id;
+}
+
+void GraphManager::clear()
+{
+  Logger::log()->trace("GraphManager::clear");
+
+  this->worker->cancel();
+  this->pending_global_queue.clear();
+  this->active_global_graph_id.clear();
+
+  for (auto &[_, p_node] : this->nodes)
+    if (auto *graph = dynamic_cast<GraphNode *>(p_node.get()))
+      graph->gnode::Graph::clear();
+
+  gnode::Graph::clear();
+}
+
+GraphNodeMap GraphManager::get_graph_nodes() const
+{
+  GraphNodeMap result;
+  for (const auto &[gid, p_node] : this->nodes)
   {
-    if (gid == graph_id)
-      return HSD_CTX.app_settings.model.allow_broadcast_receive_within_same_graph;
-    else if (gid == ref_graph_id)
-      return true;
+    if (auto gno = std::dynamic_pointer_cast<GraphNode>(p_node))
+      result[gid] = std::move(gno);
+  }
+  return result;
+}
+
+std::vector<std::string> GraphManager::get_graph_order() const
+{
+  std::vector<std::string> all_ids;
+  all_ids.reserve(this->nodes.size());
+  for (const auto &[gid, _] : this->nodes)
+    all_ids.push_back(gid);
+
+  return this->topological_sort(all_ids);
+}
+
+int GraphManager::get_graph_order_index(const std::string &graph_id) const
+{
+  if (this->is_graph_id_available(graph_id))
+  {
+    Logger::log()->critical("GraphManager::get_graph_order_index, graph ID not known: {}",
+                            graph_id);
+    throw std::runtime_error("Graph ID not known: " + graph_id);
   }
 
-  return false;
+  auto order = this->get_graph_order();
+  auto itr = std::find(order.begin(), order.end(), graph_id);
+  return static_cast<int>(std::distance(order.begin(), itr));
 }
 
-bool GraphManager::is_graph_id_available(const std::string &graph_id)
+GraphNode *GraphManager::get_graph_ref_by_id(const std::string &graph_id) const
 {
-  return !this->graph_nodes.contains(graph_id);
+  return dynamic_cast<GraphNode *>(this->get_node(graph_id));
 }
 
-void GraphManager::json_from(nlohmann::json const &json)
+gnode::GraphWorker &GraphManager::get_worker() { return *this->worker; }
+
+bool GraphManager::is_graph_id_available(const std::string &graph_id) const
 {
-  this->json_from(json, nullptr);
-}
-
-void GraphManager::json_from(nlohmann::json const &json, GraphConfig *p_config)
-{
-  Logger::log()->trace("GraphManager::json_from");
-
-  // clean-up current state
-  this->clear();
-
-  // keep deserializing
-  json_safe_get(json, "id_count", this->id_count);
-  this->export_param.json_from(json["export_param"]);
-
-  // graph order
-  if (json.contains("graph_order"))
-  {
-    std::vector<std::string> gid_order = json["graph_order"];
-
-    for (auto &graph_id : gid_order)
-    {
-      Logger::log()->trace("graph graph_id: {}", graph_id);
-
-      // dummy default config that will be overriden after by the
-      // GraphNode instances during their 'json_from' deserialization
-      auto config = std::make_shared<hesiod::GraphConfig>();
-      auto graph = std::make_shared<hesiod::GraphNode>("", config);
-
-      // in this order (add, then deserialize), add the graph node to
-      // the graph manager and then deserialize the graph node because
-      // the Receive nodes, if any, need a reference to the
-      // broadcast_params of the GraphManager, which is provided to the
-      // graph node when added...
-      try
-      {
-        this->add_graph_node(graph, graph_id);
-
-        if (json.contains("graph_nodes") && json["graph_nodes"].contains(graph_id))
-        {
-          graph->json_from(json["graph_nodes"][graph_id], p_config);
-        }
-        else
-        {
-          HSD_CTX.get_error_manager().push_error(
-              ErrorCategory::Deserialization,
-              std::format("Graph '{}': Missing key \"graph_nodes\" or \"{}\"",
-                          graph_id,
-                          graph_id));
-        }
-      }
-      catch (const std::exception &e)
-      {
-        HSD_CTX.get_error_manager().push_error(
-            ErrorCategory::Deserialization,
-            std::format("Failed to add graph '{}': {}", graph_id, e.what()));
-      }
-      catch (...)
-      {
-        HSD_CTX.get_error_manager().push_error(
-            ErrorCategory::Deserialization,
-            std::format("Failed to add graph '{}': unknown error", graph_id));
-      }
-    }
-  }
-  else
-  {
-    HSD_CTX.get_error_manager().push_error(ErrorCategory::Deserialization,
-                                           "Missing key \"graph_order\" in json");
-  }
-}
-
-nlohmann::json GraphManager::json_to() const
-{
-  Logger::log()->trace("GraphManager::json_to");
-
-  nlohmann::json json;
-
-  // NB - broadcast_params is not serialized since it is regenerated
-  // when re-creating the graph nodes
-  json["id_count"] = this->id_count;
-  json["graph_order"] = this->graph_order;
-  json["export_param"] = this->export_param.json_to();
-
-  // graphs
-  nlohmann::json json_graphs;
-  for (auto &[graph_id, graph] : this->graph_nodes)
-    json_graphs[graph_id] = graph->json_to();
-
-  json["graph_nodes"] = json_graphs;
-
-  return json;
-}
-
-void GraphManager::load_from_file(const std::string &fname, GraphConfig *p_config)
-{
-  Logger::log()->trace("GraphManager::load_from_file: fname {}", fname);
-
-  nlohmann::json json = json_from_file(fname);
-  this->json_from(json["graph_manager"], p_config);
-
-  // update graphs
-  this->update();
-}
-
-void GraphManager::on_broadcast_node_updated(const std::string &graph_id,
-                                             const std::string &tag)
-{
-  Logger::log()->trace("GraphManager::on_broadcast_node_updated: broadcasting {}", tag);
-
-  // a Broadcast updated in the background reports from the update thread
-  if (gnode::GraphWorker::in_worker_thread())
-    return this->worker->post([this, graph_id, tag]()
-                              { this->on_broadcast_node_updated(graph_id, tag); });
-
-  for (auto &[gid, graph] : this->graph_nodes)
-  {
-    // prevent any broadcast from a top layer to a sublayer, this
-    // could lead to endless loop in case of cross-broadcast
-    if (this->is_graph_above(gid, graph_id))
-      graph->on_broadcast_node_updated(tag);
-  }
-}
-
-void GraphManager::on_new_broadcast_tag(const std::string        &tag,
-                                        const hmap::CoordFrame   *t_source,
-                                        const hmap::VirtualArray *h_source)
-{
-  Logger::log()->trace("GraphManager::on_new_broadcast_tag: tag {}", tag);
-
-  this->broadcast_params[tag] = BroadcastParam(t_source, h_source);
-
-  if (this->new_broadcast_tag)
-    this->new_broadcast_tag(tag);
-}
-
-void GraphManager::on_remove_broadcast_tag(const std::string &tag)
-{
-  Logger::log()->trace("GraphManager::on_remove_broadcast_tag: tag {}", tag);
-
-  this->broadcast_params.erase(tag);
-
-  if (this->remove_broadcast_tag)
-    this->remove_broadcast_tag(tag);
-}
-
-void GraphManager::on_update_progress(const std::string & /* node_id */, float progress)
-{
-  if (this->update_progress)
-    this->update_progress(progress);
+  return !this->nodes.contains(graph_id);
 }
 
 void GraphManager::remove_graph_node(const std::string &graph_id)
@@ -476,21 +143,22 @@ void GraphManager::remove_graph_node(const std::string &graph_id)
   if (this->is_graph_id_available(graph_id))
     return;
 
-  this->worker->cancel(this->get_graph_ref_by_id(graph_id));
+  if (auto *graph = this->get_graph_ref_by_id(graph_id))
+    this->worker->cancel(static_cast<gnode::Graph *>(graph));
 
-  this->graph_order.erase(
-      std::remove(this->graph_order.begin(), this->graph_order.end(), graph_id),
-      this->graph_order.end());
+  std::erase(this->pending_global_queue, graph_id);
+  if (this->active_global_graph_id == graph_id)
+    this->active_global_graph_id.clear();
 
-  this->graph_nodes.erase(graph_id);
+  gnode::Graph::remove_node(graph_id);
 }
 
 void GraphManager::reseed(bool backward)
 {
   Logger::log()->trace("GraphManager::reseed");
 
-  for (auto &[_, graph] : this->graph_nodes)
-    if (graph)
+  for (auto &[_, p_node] : this->nodes)
+    if (auto *graph = dynamic_cast<GraphNode *>(p_node.get()))
       graph->reseed(backward);
 }
 
@@ -498,13 +166,13 @@ std::string GraphManager::runtime_info_to_string(const char separator) const
 {
   std::string result;
 
-  for (const auto &graph_id : this->graph_order)
+  for (const auto &graph_id : this->get_graph_order())
   {
-    auto it = this->graph_nodes.find(graph_id);
-    if (it == this->graph_nodes.end() || !it->second)
+    auto *graph = this->get_graph_ref_by_id(graph_id);
+    if (!graph)
       continue;
 
-    std::string graph_info = it->second->runtime_info_to_string(separator);
+    std::string graph_info = graph->runtime_info_to_string(separator);
     if (!graph_info.empty())
     {
       if (!result.empty())
@@ -516,47 +184,128 @@ std::string GraphManager::runtime_info_to_string(const char separator) const
   return result;
 }
 
-void GraphManager::save_to_file(const std::string &fname) const
+void GraphManager::advance_global_queue()
 {
-  Logger::log()->trace("GraphManager::save_to_file: fname {}", fname);
+  while (!this->pending_global_queue.empty())
+  {
+    std::string next_id = this->pending_global_queue.front();
+    this->pending_global_queue.pop_front();
 
-  // fill-in json with graph data
-  nlohmann::json json;
-  json["graph_manager"] = this->json_to();
-  json_to_file(json, fname);
+    if (auto *graph = this->get_graph_ref_by_id(next_id))
+    {
+      this->active_global_graph_id = next_id;
+      graph->pull_inputs_from_parent();
+      graph->update();
+      return;
+    }
+  }
+
+  this->active_global_graph_id.clear();
 }
 
-void GraphManager::set_export_param(const FlattenConfig &new_export_param)
+void GraphManager::on_graph_node_output_updated(const std::string &graph_id)
 {
-  this->export_param = new_export_param;
-}
+  if (!this->active_global_graph_id.empty())
+  {
+    if (this->active_global_graph_id == graph_id)
+      this->advance_global_queue();
+    return;
+  }
 
-void GraphManager::set_graph_order(const std::vector<std::string> &new_graph_order)
-{
-  this->graph_order = new_graph_order;
-}
+  // A single GraphNode was edited directly in its tab: propagate to downstream
+  // GraphNodes in topological order.
+  auto downstream = this->get_connectivity_downstream(graph_id);
+  if (downstream.empty())
+    return;
 
-void GraphManager::set_id(const std::string &new_id) { this->id = new_id; }
+  std::vector<std::string> to_update = this->get_nodes_to_update(downstream);
+  if (to_update.empty())
+    return;
+
+  for (const auto &gid : to_update)
+    this->pending_global_queue.push_back(gid);
+
+  this->advance_global_queue();
+}
 
 void GraphManager::update()
 {
   HSD_PROFILE_ZONE("GraphManager::update");
-  HSD_PROFILE_TEXT(this->id);
   Logger::log()->trace("GraphManager::update()");
 
-  // BaseNode::compute contains per-node failures; what reaches here is a
-  // condition that makes continuing pointless (memory exhaustion above all).
-  // Abandon the update and report it - never let it escape into the event loop,
-  // where it would terminate the application.
-  try
+  std::vector<std::string> order = this->get_graph_order();
+  if (order.empty())
+    return;
+
+  if (!gnode::GraphWorker::enabled())
   {
-    for (auto &graph_id : this->graph_order)
-      this->graph_nodes.at(graph_id)->update();
+    try
+    {
+      for (const auto &gid : order)
+        if (auto *graph = this->get_graph_ref_by_id(gid))
+        {
+          graph->pull_inputs_from_parent();
+          graph->gnode::Graph::update();
+          graph->push_outputs_to_parent();
+        }
+    }
+    catch (...)
+    {
+      this->on_update_failed(std::current_exception());
+    }
+    return;
   }
-  catch (...)
+
+  this->pending_global_queue.clear();
+  for (const auto &gid : order)
+    this->pending_global_queue.push_back(gid);
+
+  this->advance_global_queue();
+}
+
+void GraphManager::update(const std::string &graph_id)
+{
+  this->update(std::vector<std::string>{graph_id});
+}
+
+void GraphManager::update(const std::vector<std::string> &graph_ids)
+{
+  HSD_PROFILE_ZONE("GraphManager::update(graph_ids)");
+
+  std::vector<std::string> order = this->get_nodes_to_update(graph_ids);
+  if (order.empty())
+    return;
+
+  if (!gnode::GraphWorker::enabled())
   {
-    this->on_update_failed(std::current_exception());
+    try
+    {
+      for (const auto &gid : order)
+        if (auto *graph = this->get_graph_ref_by_id(gid))
+        {
+          graph->pull_inputs_from_parent();
+          graph->gnode::Graph::update();
+          graph->push_outputs_to_parent();
+        }
+    }
+    catch (...)
+    {
+      this->on_update_failed(std::current_exception());
+    }
+    return;
   }
+
+  this->pending_global_queue.clear();
+  for (const auto &gid : order)
+    this->pending_global_queue.push_back(gid);
+
+  this->advance_global_queue();
+}
+
+void GraphManager::on_update_progress(const std::string & /* node_id */, float progress)
+{
+  if (this->update_progress)
+    this->update_progress(progress);
 }
 
 void GraphManager::on_update_failed(std::exception_ptr error)
@@ -583,18 +332,163 @@ void GraphManager::on_update_failed(std::exception_ptr error)
 
   Logger::log()->critical("GraphManager::update: {}", failure);
 
-  // clear the progress bar, which would otherwise sit at whatever percentage
-  // the update died on
+  this->pending_global_queue.clear();
+  this->active_global_graph_id.clear();
+
   if (this->update_progress)
     this->update_progress(100.f);
 
-  // what was queued is dropped too: the update of every graph is over
-  for (auto &[_, graph] : this->graph_nodes)
-    if (graph->update_finished)
-      graph->update_finished();
+  for (auto &[_, p_node] : this->nodes)
+    if (auto *graph = dynamic_cast<GraphNode *>(p_node.get()))
+      if (graph->graph_update_finished)
+        graph->graph_update_finished();
 
   if (this->update_failed)
     this->update_failed(failure);
+}
+
+void GraphManager::json_from(nlohmann::json const &json)
+{
+  this->json_from(json, nullptr);
+}
+
+void GraphManager::json_from(nlohmann::json const &json, GraphConfig *p_config)
+{
+  Logger::log()->trace("GraphManager::json_from");
+
+  this->clear();
+
+  uint id_count_val = 0;
+  json_safe_get(json, "id_count", id_count_val);
+  this->set_id_count(id_count_val);
+
+  std::vector<std::string> graph_ids;
+  if (json.contains("graph_order") && json["graph_order"].is_array())
+  {
+    graph_ids = json["graph_order"].get<std::vector<std::string>>();
+  }
+  else if (json.contains("graph_nodes") && json["graph_nodes"].is_object())
+  {
+    for (const auto &[gid, _] : json["graph_nodes"].items())
+      graph_ids.push_back(gid);
+  }
+
+  for (const auto &graph_id : graph_ids)
+  {
+    auto config = std::make_shared<hesiod::GraphConfig>();
+    auto graph = std::make_shared<hesiod::GraphNode>(graph_id, config);
+
+    try
+    {
+      this->add_graph_node(graph, graph_id);
+
+      if (json.contains("graph_nodes") && json["graph_nodes"].contains(graph_id))
+      {
+        graph->json_from(json["graph_nodes"][graph_id], p_config);
+      }
+      else
+      {
+        HSD_CTX.get_error_manager().push_error(
+            ErrorCategory::Deserialization,
+            std::format("Graph '{}': Missing key \"graph_nodes\" or \"{}\"",
+                        graph_id,
+                        graph_id));
+      }
+    }
+    catch (const std::exception &e)
+    {
+      HSD_CTX.get_error_manager().push_error(
+          ErrorCategory::Deserialization,
+          std::format("Failed to add graph '{}': {}", graph_id, e.what()));
+    }
+    catch (...)
+    {
+      HSD_CTX.get_error_manager().push_error(
+          ErrorCategory::Deserialization,
+          std::format("Failed to add graph '{}': unknown error", graph_id));
+    }
+  }
+
+  if (json.contains("links") && json["links"].is_array())
+  {
+    for (const auto &json_link : json["links"])
+    {
+      std::string node_id_from = "", port_id_from = "", node_id_to = "", port_id_to = "";
+      json_safe_get(json_link, "node_id_from", node_id_from);
+      json_safe_get(json_link, "port_id_from", port_id_from);
+      json_safe_get(json_link, "node_id_to", node_id_to);
+      json_safe_get(json_link, "port_id_to", port_id_to);
+
+      try
+      {
+        this->new_link(node_id_from, port_id_from, node_id_to, port_id_to);
+      }
+      catch (const std::exception &e)
+      {
+        HSD_CTX.get_error_manager().push_error(
+            ErrorCategory::LinkCreation,
+            std::format("GraphManager: Failed to create link {}/{} => {}/{}: {}",
+                        node_id_from,
+                        port_id_from,
+                        node_id_to,
+                        port_id_to,
+                        e.what()));
+      }
+    }
+  }
+}
+
+nlohmann::json GraphManager::json_to() const
+{
+  Logger::log()->trace("GraphManager::json_to");
+
+  nlohmann::json json;
+  json["id_count"] = this->get_id_count();
+  json["graph_order"] = this->get_graph_order();
+
+  nlohmann::json json_graphs = nlohmann::json::object();
+  for (const auto &[graph_id, p_node] : this->nodes)
+    if (auto *graph = dynamic_cast<GraphNode *>(p_node.get()))
+      json_graphs[graph_id] = graph->json_to();
+
+  json["graph_nodes"] = json_graphs;
+
+  nlohmann::json json_links = nlohmann::json::array();
+  for (const auto &link : this->links)
+  {
+    gnode::Node *p_from = this->get_node(link.from);
+    gnode::Node *p_to = this->get_node(link.to);
+    if (!p_from || !p_to)
+      continue;
+
+    nlohmann::json json_link;
+    json_link["node_id_from"] = link.from;
+    json_link["node_id_to"] = link.to;
+    json_link["port_id_from"] = p_from->get_port_label(link.port_from);
+    json_link["port_id_to"] = p_to->get_port_label(link.port_to);
+    json_links.push_back(json_link);
+  }
+  json["links"] = json_links;
+
+  return json;
+}
+
+void GraphManager::load_from_file(const std::string &fname, GraphConfig *p_config)
+{
+  Logger::log()->trace("GraphManager::load_from_file: fname {}", fname);
+
+  nlohmann::json json = json_from_file(fname);
+  this->json_from(json["graph_manager"], p_config);
+  this->update();
+}
+
+void GraphManager::save_to_file(const std::string &fname) const
+{
+  Logger::log()->trace("GraphManager::save_to_file: fname {}", fname);
+
+  nlohmann::json json;
+  json["graph_manager"] = this->json_to();
+  json_to_file(json, fname);
 }
 
 } // namespace hesiod

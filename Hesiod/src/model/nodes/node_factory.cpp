@@ -12,8 +12,8 @@
 #include "hesiod/gui/widgets/utils/gui_utils.hpp"
 
 // specific nodes
-#include "hesiod/model/nodes/broadcast_node.hpp"
-#include "hesiod/model/nodes/receive_node.hpp"
+#include "hesiod/model/nodes/node_in_node.hpp"
+#include "hesiod/model/nodes/node_out_node.hpp"
 
 // setup node, create ports, attributes, define compute function,
 // define attributes tooltips...
@@ -150,7 +150,8 @@ std::map<std::string, std::string> get_node_inventory()
       {"BlenderBridge", "Bridges"},
       {"BlendPoissonBf", "Operator/Blend"},
       {"Brush", "Primitive/Authoring"},
-      {"Broadcast", "Routing"},
+      {"NodeIn", "Routing"},
+      {"NodeOut", "Routing"},
       {"Bump", "Primitive/Function"},
       {"Caldera", "WIP"}, // "Primitive/Geological"},
       {"Clamp", "Filter/Range"},
@@ -191,6 +192,7 @@ std::map<std::string, std::string> get_node_inventory()
       {"ConvolveSVD", "Math/Convolution"},
       {"Cos", "Math/Base"},
       {"Crater", "Primitive/Geological"},
+      {"CraterField", "Primitive/Geological"},
       {"Curvatures", "Terrain Features"},
       {"Debug", "Debug"},
       {"Dendry", "WIP"},
@@ -322,7 +324,7 @@ std::map<std::string, std::string> get_node_inventory()
       {"QuiltingShuffle", "Operator/Resynthesis"},
       {"RadialDisplacementToXy", "Math"},
       {"RecastCliff", "Filter/Recast"},
-      {"Receive", "Routing"},
+
       {"Recurve", "Filter/Recurve"},
       {"RecurveKura", "Filter/Recurve"},
       {"RelativeDistanceFromSkeleton", "Terrain Features/Morphology"},
@@ -412,19 +414,19 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
 {
   // --- specialized nodes
 
-  if (node_type == "Broadcast")
+  if (node_type == "NodeIn")
   {
-    auto sptr = std::make_shared<hesiod::BroadcastNode>(node_type, config);
-    setup_broadcast_node(*sptr);
-    sptr->set_compute_fct(&compute_broadcast_node);
+    auto sptr = std::make_shared<hesiod::NodeInNode>(node_type, config);
+    setup_node_in_node(*sptr);
+    sptr->set_compute_fct(&compute_node_in_node);
     sptr->finalize_attributes();
     return sptr;
   }
-  else if (node_type == "Receive")
+  else if (node_type == "NodeOut")
   {
-    auto sptr = std::make_shared<hesiod::ReceiveNode>(node_type, config);
-    setup_receive_node(*sptr);
-    sptr->set_compute_fct(&compute_receive_node);
+    auto sptr = std::make_shared<hesiod::NodeOutNode>(node_type, config);
+    setup_node_out_node(*sptr);
+    sptr->set_compute_fct(&compute_node_out_node);
     sptr->finalize_attributes();
     return sptr;
   }
@@ -499,6 +501,7 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
     SETUP_NODE(Cos, cos);
     SETUP_NODE(ConvolveSVD, convolve_svd);
     SETUP_NODE(Crater, crater);
+    SETUP_NODE(CraterField, crater_field);
     SETUP_NODE(Curvatures, curvatures);
     SETUP_NODE(Dendry, dendry);
     SETUP_NODE(DepositionFillHoles, deposition_fill_holes);

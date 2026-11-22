@@ -1,7 +1,11 @@
 /* Copyright (c) 2025 Otto Link. Distributed under the terms of the GNU General
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
+#include <QApplication>
+#include <QGraphicsScene>
 #include <QGraphicsSceneMouseEvent>
+#include <QGraphicsView>
+#include <QStyleOptionGraphicsItem>
 
 #include "highmap/math/constants.hpp"
 
@@ -68,8 +72,16 @@ QVariant FrameItem::itemChange(GraphicsItemChange change, const QVariant &value)
 {
   if (change == QGraphicsItem::ItemPositionChange)
   {
-    this->origin = value.toPointF() / COORD_SCALE;
+    QPointF new_pos = value.toPointF();
+    if (this->snap_enabled && !(QApplication::keyboardModifiers() & Qt::AltModifier))
+    {
+      const qreal snap = 0.25 * COORD_SCALE;
+      new_pos.setX(std::round(new_pos.x() / snap) * snap);
+      new_pos.setY(std::round(new_pos.y() / snap) * snap);
+    }
+    this->origin = new_pos / COORD_SCALE;
     Q_EMIT this->has_changed(this->id);
+    return new_pos;
   }
 
   return QGraphicsRectItem::itemChange(change, value);
@@ -82,35 +94,57 @@ void FrameItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 
   if (this->is_rotated && left_button)
   {
-    // adjust the angle to center the rectangle on the mouse cursor
-    const QPointF center = this->rotation_rect.center();
+    const QPointF pivot(0.5 * COORD_SCALE * this->size.x(),
+                        0.5 * COORD_SCALE * this->size.y());
+    const QPointF top_mid(0.5 * COORD_SCALE * this->size.x(),
+                          COORD_SCALE * this->size.y());
 
-    float pos_angle = std::atan2(pos.y(), pos.x());
-    float center_angle = std::atan2(center.y(), center.x());
-    float delta = (pos_angle - center_angle) * hmap::cte::rad_to_deg;
+    float pos_angle = std::atan2(pos.y() - pivot.y(), pos.x() - pivot.x());
+    float ref_angle = std::atan2(top_mid.y() - pivot.y(), top_mid.x() - pivot.x());
+    float delta = (pos_angle - ref_angle) * hmap::cte::rad_to_deg;
 
-    this->set_angle(this->angle + delta);
+    float new_angle = this->angle + delta;
+    if (this->snap_enabled && !(event->modifiers() & Qt::AltModifier))
+      new_angle = std::round(new_angle / 5.f) * 5.f;
+
+    this->set_angle(new_angle);
   }
   else if (this->is_resized && left_button)
   {
-    QPointF delta = pos - this->resize_rect.center();
+    QPointF new_size = pos / COORD_SCALE;
 
     // 1:1 aspect ratio scaling if Shift
     if (event->modifiers() & Qt::ShiftModifier)
     {
-      const float dmax = std::max(delta.x(), delta.y());
-      delta = QPointF(dmax, dmax);
+      const qreal dmax = std::max(new_size.x(), new_size.y());
+      new_size = QPointF(dmax, dmax);
     }
 
-    // prevent negative sizes
-    QPointF new_size = this->size + delta / COORD_SCALE;
-    new_size = QPointF(std::max(0.f, static_cast<float>(new_size.x())),
-                       std::max(0.f, static_cast<float>(new_size.y())));
+    // prevent negative sizes and snap to 0.25 unless Alt is held
+    if (this->snap_enabled && !(event->modifiers() & Qt::AltModifier))
+    {
+      new_size.setX(std::round(new_size.x() / 0.25) * 0.25);
+      new_size.setY(std::round(new_size.y() / 0.25) * 0.25);
+    }
+    new_size = QPointF(std::max(0.1, new_size.x()), std::max(0.1, new_size.y()));
 
     this->set_size(new_size);
   }
 
   QGraphicsRectItem::mouseMoveEvent(event);
+}
+
+QRectF FrameItem::boundingRect() const
+{
+  return this->rect().united(this->rotation_rect).adjusted(-4.0, -4.0, 4.0, 4.0);
+}
+
+QPainterPath FrameItem::shape() const
+{
+  QPainterPath path;
+  path.addRect(this->rect());
+  path.addRect(this->rotation_rect);
+  return path;
 }
 
 void FrameItem::paint(QPainter                       *painter,
@@ -145,22 +179,49 @@ void FrameItem::paint(QPainter                       *painter,
     painter->drawRect(base_rect);
   }
 
+  const qreal lod = std::max(
+      1e-4,
+      QStyleOptionGraphicsItem::levelOfDetailFromTransform(painter->worldTransform()));
+  const qreal inv_lod = 1.0 / lod;
+
   // contour
   painter->setBrush(Qt::NoBrush);
-  painter->setPen(QPen(is_hovered ? color_hovered : color_border, 1.f));
+  painter->setPen(QPen(is_hovered ? color_hovered : color_border, 1.5 * inv_lod));
   painter->drawRect(base_rect);
 
-  // corners
-  painter->drawRect(this->rotation_rect);
+  // screen-invariant handle geometry
+  const qreal   h_px = 12.0 * inv_lod;
+  const qreal   stem_px = 22.0 * inv_lod;
+  const QPointF top_mid(0.5 * base_rect.width(), base_rect.height());
+  const QPointF rot_center(top_mid.x(), top_mid.y() + stem_px);
+
+  this->rotation_rect = QRectF(rot_center.x() - 0.5 * h_px,
+                               rot_center.y() - 0.5 * h_px,
+                               h_px,
+                               h_px);
+  this->resize_rect = QRectF(base_rect.width() - h_px,
+                             base_rect.height() - h_px,
+                             h_px,
+                             h_px);
+
+  // rotation stem + circular knob
+  painter->setPen(QPen(is_rotated ? color_hovered : color_border, 1.5 * inv_lod));
+  painter->drawLine(top_mid, rot_center);
+  painter->setBrush(is_rotated ? color_hovered : QColor(80, 160, 255, 220));
+  painter->drawEllipse(this->rotation_rect);
+
+  // resize corner grip
+  painter->setPen(QPen(is_resized ? color_hovered : color_border, 1.5 * inv_lod));
+  painter->setBrush(is_resized ? color_hovered : QColor(255, 170, 60, 220));
   painter->drawRect(this->resize_rect);
 
-  // text
-  painter->scale(1.f, -1.f);
-  QRect inv_rect(0.f,
-                 -this->rect().height(),
-                 this->rect().width(),
-                 this->rect().height());
-  painter->drawText(inv_rect, Qt::AlignLeft | Qt::AlignBottom, this->id.c_str());
+  // screen-invariant label
+  painter->save();
+  painter->translate(4.0 * inv_lod, base_rect.height() - 4.0 * inv_lod);
+  painter->scale(inv_lod, -inv_lod);
+  painter->setPen(color_hovered);
+  painter->drawText(QPointF(0.0, 12.0), QString::fromStdString(this->id));
+  painter->restore();
 }
 
 void FrameItem::set_angle(float new_angle)
