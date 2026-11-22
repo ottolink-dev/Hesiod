@@ -60,9 +60,9 @@ void setup_crater_field_node(BaseNode &node)
   // clang-format off
   node.set_current_category("Main Parameters");
   add_seed(node, A_SEED, "Seed");
-  add_int(node, A_N_CRATERS, "Crater Count", 20, 1, 256);
-  add_float(node, A_R_MIN, "Min Radius", 0.02f, 0.001f, 1.f);
-  add_float(node, A_R_MAX, "Max Radius", 0.2f, 0.001f, 1.f);
+  add_int(node, A_N_CRATERS, "Crater Count", 100, 1, FLT_MAX);
+  add_float(node, A_R_MIN, "Min Radius", 0.01f, 0.001f, 1.f);
+  add_float(node, A_R_MAX, "Max Radius", 0.05f, 0.001f, 1.f);
   add_bool(node, A_SCALE_ELEVATION_WITH_RADIUS, "Scale Elevation With Radius", true);
   add_float(node, A_ANGLE, "Rotation Angle", 30.f, -180.f, 180.f, "{:.1f}°");
   add_float(node, A_ELEVATION_OFFSET, "Elevation Offset", 0.f, -1.f, 1.f);
@@ -73,11 +73,11 @@ void setup_crater_field_node(BaseNode &node)
   add_float(node, A_LIP_HEIGHT, "Rim Height", 0.1f, 0.f, 1.f);
   add_float(node, A_LIP_EXTENT, "Rim Width", 0.25f, 0.f, 2.f);
   add_float(node, A_LIP_EXP, "Rim Falloff", 2.f, 0.01f, 4.f);
-  add_float(node, A_ASYM_RATIO, "Asymmetry Ratio", 0.8f, 0.f, 4.f);
+  add_float(node, A_ASYM_RATIO, "Asymmetry Ratio", 0.1f, 0.f, 1.f);
 
   node.set_current_category("Central Peak");
-  add_float(node, A_CENTRAL_PEAK_HEIGHT, "Central Peak Height", 0.05f, 0.f, 1.f);
-  add_float(node, A_CENTRAL_PEAK_EXTENT, "Central Peak Extent", 0.4f, 0.f, 1.f);
+  add_float(node, A_CENTRAL_PEAK_HEIGHT, "Central Peak Height", 0.f, 0.f, 1.f);
+  add_float(node, A_CENTRAL_PEAK_EXTENT, "Central Peak Extent", 0.f, 0.f, 1.f);
 
   node.set_current_category("Terraces");
   add_int(node, A_N_TERRACES, "Terrace Count", 0, 0, 16);
