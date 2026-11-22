@@ -74,22 +74,6 @@ QColor mix_colors(const QColor &a, const QColor &b, qreal t)
                           a.alphaF() + (b.alphaF() - a.alphaF()) * t);
 }
 
-/** @brief `ink`, moved off `surface` until it can be read against it.
- *
- * The scope traces in the accent, and the accent follows the host palette. A
- * dark highlight on the dark well it is drawn in would leave the curve there
- * but invisible, so step it towards the far end until the two separate.
- */
-QColor readable_on(QColor ink, const QColor &surface)
-{
-  const bool dark_surface = surface.lightness() < 128;
-
-  for (int i = 0; i < 6 && std::abs(ink.lightness() - surface.lightness()) < 96; ++i)
-    ink = dark_surface ? ink.lighter(125) : ink.darker(125);
-
-  return ink;
-}
-
 // --- glyphs
 
 /** @brief What a glyph is drawn from.
@@ -478,6 +462,11 @@ private:
  * Shows what the stage is currently doing to the signal, and doubles as its
  * remove button: under the pointer the trace gives way to a cross. A separate
  * button for that would cost the slider next to it a fifth of its rail.
+ *
+ * Drawn as a value field is, in the same grays: the surface and outline of the
+ * number at the other end of the row, with the icon ink for the trace. A dark
+ * well with an accent trace made a column of these the heaviest thing in the
+ * panel.
  */
 class StageScope final : public QAbstractButton
 {
@@ -545,9 +534,8 @@ protected:
     const QRectF well = QRectF(this->rect()).adjusted(0.5, 0.5, -0.5, -0.5);
 
     painter.setPen(
-        QPen(mix_colors(this->theme.rail_well_border, this->theme.field_border_hover, t),
-             1));
-    painter.setBrush(this->isDown() ? this->theme.field_editing : this->theme.rail_well);
+        QPen(mix_colors(this->theme.field_border, this->theme.field_border_hover, t), 1));
+    painter.setBrush(this->isDown() ? this->theme.field_editing : this->theme.field);
     painter.drawRoundedRect(well, 6, 6);
 
     // the trace and the cross trade places rather than swap
@@ -558,7 +546,7 @@ protected:
                   QRectF(this->rect()).adjusted(5, 5, -5, -5),
                   this->effect,
                   this->glyph,
-                  readable_on(this->theme.accent, this->theme.rail_well));
+                  this->theme.ink_icon);
     }
 
     if (t > 0.0)
@@ -1099,8 +1087,7 @@ protected:
         painter.drawLine(QPointF(centre.x(), 0), centre - QPointF(0, 6));
 
         painter.setPen(Qt::NoPen);
-        painter.setBrush(
-            with_alpha(readable_on(this->theme.accent, this->theme.section_surface), t));
+        painter.setBrush(with_alpha(this->theme.accent, t));
         painter.drawEllipse(centre, 2.0 + 1.5 * t, 2.0 + 1.5 * t);
       }
 
