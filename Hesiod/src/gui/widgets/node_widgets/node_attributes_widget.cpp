@@ -158,21 +158,7 @@ QWidget *NodeAttributesWidget::create_toolbar()
   overflow_menu->addAction(doc_act);
 
   if (panel.has_own_chrome)
-  {
-    const auto &theme = *panel.theme;
-    overflow_menu->setWindowFlag(Qt::NoDropShadowWindowHint);
-    overflow_menu->setFont(meta::qt::ui_font(12));
-    overflow_menu->setStyleSheet(
-        QString("QMenu { background: %1; color: %2; border: 1px solid %3;"
-                " border-radius: 8px; padding: 6px; }"
-                "QMenu::item { padding: 7px 18px 7px 10px; border-radius: 4px; }"
-                "QMenu::item:selected { background: %4; }"
-                "QMenu::separator { height: 1px; background: %3; margin: 5px 8px; }")
-            .arg(theme.bar.name(),
-                 theme.ink_primary.name(),
-                 theme.field_border.name(),
-                 theme.section_header_hover.name()));
-  }
+    style_panel_menu(*overflow_menu, *panel.theme);
 
   overflow_btn->setMenu(overflow_menu);
   layout->addWidget(overflow_btn);

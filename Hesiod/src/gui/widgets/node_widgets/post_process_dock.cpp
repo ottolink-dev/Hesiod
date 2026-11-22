@@ -33,6 +33,8 @@
 #include "meta_qt/widgets/range_bar.hpp"
 
 #include "hesiod/gui/widgets/node_widgets/post_process_dock.hpp"
+#include "hesiod/gui/widgets/node_widgets/properties_panel_design.hpp"
+#include "hesiod/gui/widgets/utils/gui_utils.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 
@@ -57,22 +59,6 @@ constexpr int RANGE_HEIGHT = 52;
 
 /// Dynamic property a stage row sets to say where its first line is centred.
 constexpr char HEAD_CENTRE_PROPERTY[] = "stage_head_centre";
-
-QColor with_alpha(QColor color, qreal alpha)
-{
-  color.setAlphaF(alpha);
-  return color;
-}
-
-/// `a` at 0, `b` at 1, straight through RGB in between.
-QColor mix_colors(const QColor &a, const QColor &b, qreal t)
-{
-  t = std::clamp(t, 0.0, 1.0);
-  return QColor::fromRgbF(a.redF() + (b.redF() - a.redF()) * t,
-                          a.greenF() + (b.greenF() - a.greenF()) * t,
-                          a.blueF() + (b.blueF() - a.blueF()) * t,
-                          a.alphaF() + (b.alphaF() - a.alphaF()) * t);
-}
 
 // --- glyphs
 
@@ -314,22 +300,6 @@ void paint_glyph(QPainter          &painter,
   }
 
   painter.restore();
-}
-
-void style_menu(QMenu &menu, const Theme &theme)
-{
-  menu.setWindowFlag(Qt::NoDropShadowWindowHint);
-  menu.setFont(meta::qt::ui_font(12));
-  menu.setStyleSheet(
-      QString("QMenu { background: %1; color: %2; border: 1px solid %3;"
-              " border-radius: 8px; padding: 6px; }"
-              "QMenu::item { padding: 7px 18px 7px 10px; border-radius: 4px; }"
-              "QMenu::item:selected { background: %4; }"
-              "QMenu::separator { height: 1px; background: %3; margin: 5px 8px; }")
-          .arg(theme.bar.name(),
-               theme.ink_primary.name(),
-               theme.field_border.name(),
-               theme.section_header_hover.name()));
 }
 
 // =====================================
@@ -917,7 +887,7 @@ protected:
       return;
 
     QMenu menu(this);
-    style_menu(menu, this->theme);
+    style_panel_menu(menu, this->theme);
     this->fill_menu(menu);
 
     if (!menu.isEmpty())
