@@ -142,9 +142,21 @@ private Q_SLOTS:
     QVERIFY(painting(*loaded).value().vector == a.vector);
   }
 
+  void compute_resamples_without_modifying_the_painting_data()
+  {
+    QTest::addColumn<int>("width");
+    QTest::addColumn<int>("height");
+    QTest::newRow("downsample-rectangular") << 32 << 16;
+    QTest::newRow("upsample-rectangular") << 1024 << 768;
+    QTest::newRow("upsample-4k") << 4096 << 4096;
+  }
+
   void compute_resamples_without_modifying_the_painting()
   {
-    auto  config = config_at({32, 16});
+    QFETCH(int, width);
+    QFETCH(int, height);
+
+    auto  config = config_at({width, height});
     auto  node = brush(config);
     auto &a = painting(*node).value();
     node->set_state("post_remap", meta::keys::state::active, false);
@@ -153,8 +165,8 @@ private Q_SLOTS:
     compute_brush_node(*node);
     const auto output = node->get_value_ref<hmap::VirtualArray>("output")->to_array(
         config->cm_cpu);
-    QCOMPARE(output.shape.x, 32);
-    QCOMPARE(output.shape.y, 16);
+    QCOMPARE(output.shape.x, width);
+    QCOMPARE(output.shape.y, height);
     QVERIFY(std::all_of(output.vector.begin(),
                         output.vector.end(),
                         [](float v) { return std::abs(v - 0.375f) < 1.e-5f; }));
@@ -167,7 +179,8 @@ private Q_SLOTS:
     compute_brush_node(*node);
     const auto fallback = node->get_value_ref<hmap::VirtualArray>("output")->to_array(
         config->cm_cpu);
-    QCOMPARE(fallback.shape.x, 32);
+    QCOMPARE(fallback.shape.x, width);
+    QCOMPARE(fallback.shape.y, height);
     QVERIFY(std::all_of(fallback.vector.begin(),
                         fallback.vector.end(),
                         [](float v) { return v == 0.f; }));
