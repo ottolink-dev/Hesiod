@@ -558,6 +558,17 @@ void HesiodApplication::load_project_model_and_ui(const std::string &fname,
                 &GraphManagerWidget::has_changed,
                 [this]() { this->context.project_model->on_has_changed(); });
 
+  this->connect(this->project_ui->get_graph_manager_widget_ref(),
+                &GraphManagerWidget::selected_graph_changed,
+                [this](const std::string & /* graph_id */)
+                {
+                  if (this->main_window)
+                  {
+                    this->main_window->raise();
+                    this->main_window->activateWindow();
+                  }
+                });
+
   this->connect(this->project_ui->get_graph_tabs_widget_ref(),
                 &GraphTabsWidget::has_changed,
                 [this]() { this->context.project_model->on_has_changed(); });
