@@ -102,7 +102,17 @@ jobs:
           New-Item -ItemType Directory -Force $env:VCPKG_DEFAULT_BINARY_CACHE | Out-Null
           & ./vcpkg/bootstrap-vcpkg.bat -disableMetrics
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
-          & ./vcpkg/vcpkg.exe install --triplet x64-windows --x-manifest-root="$env:GITHUB_WORKSPACE/automation/scripts/ci" --x-install-root="$env:GITHUB_WORKSPACE/vcpkg_installed"
+          $overlayRoot = "$env:GITHUB_WORKSPACE/vcpkg-overlays"
+          New-Item -ItemType Directory -Force "$overlayRoot/kubazip" | Out-Null
+          Copy-Item -Recurse -Force "./vcpkg/ports/kubazip/*" "$overlayRoot/kubazip/"
+          $kubazipPort = "$overlayRoot/kubazip/portfile.cmake"
+          (Get-Content $kubazipPort -Raw).Replace(
+            "dd516f2e6765e49c00063bd72b49d97bc6f1254921045269b534a801e41e0728171cbf09a73713b236f40c4cf30b5473e74579b82962004b79166b38ad6a3e0d",
+            "6aead2b203533011b6c93cacfa58531722d284f68f63bdf2f52e8b8de004a44fe6ffc609b598c761fa7da12ca198aeceaa7206272cd1de28e0a034db4a5d0ed7"
+          ) | Set-Content $kubazipPort -NoNewline
+          & ./vcpkg/vcpkg.exe install kubazip:x64-windows --overlay-ports="$overlayRoot" --x-install-root="$env:GITHUB_WORKSPACE/vcpkg_installed"
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          & ./vcpkg/vcpkg.exe install --triplet x64-windows --x-manifest-root="$env:GITHUB_WORKSPACE/automation/scripts/ci" --x-install-root="$env:GITHUB_WORKSPACE/vcpkg_installed" --overlay-ports="$overlayRoot"
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
       - name: Save Windows dependency cache
         if: runner.os == 'Windows' && steps.vcpkg-cache.outputs.cache-hit != 'true'
