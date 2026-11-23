@@ -103,6 +103,7 @@ jobs:
           & ./vcpkg/bootstrap-vcpkg.bat -disableMetrics
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
           $overlayRoot = "$env:GITHUB_WORKSPACE/vcpkg-overlays"
+          $env:VCPKG_OVERLAY_PORTS = $overlayRoot
           New-Item -ItemType Directory -Force "$overlayRoot/kubazip" | Out-Null
           Copy-Item -Recurse -Force "./vcpkg/ports/kubazip/*" "$overlayRoot/kubazip/"
           $kubazipPort = "$overlayRoot/kubazip/portfile.cmake"
