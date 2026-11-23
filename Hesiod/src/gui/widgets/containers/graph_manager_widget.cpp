@@ -488,6 +488,24 @@ GraphManagerWidget::GraphManagerWidget(std::weak_ptr<GraphManager> p_graph_manag
                 this,
                 [this](const std::string &graph_id) { this->delete_graph(graph_id); });
 
+  this->connect(this->graph_viewer,
+                &gngui::GraphViewer::node_selected,
+                this,
+                [this](const std::string &graph_id)
+                { this->coord_frame_widget->select_frame(graph_id); });
+
+  this->connect(this->graph_viewer,
+                &gngui::GraphViewer::node_hovered,
+                this,
+                [this](const std::string &graph_id)
+                { this->coord_frame_widget->set_hovered_frame(graph_id, true); });
+
+  this->connect(this->graph_viewer,
+                &gngui::GraphViewer::node_unhovered,
+                this,
+                [this](const std::string &graph_id)
+                { this->coord_frame_widget->set_hovered_frame(graph_id, false); });
+
   // --- Connections: Buttons & CoordFrameWidget (Right Pane)
   this->connect(this->apply_button,
                 &QPushButton::pressed,

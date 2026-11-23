@@ -2,6 +2,7 @@
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
 #include <QGraphicsRectItem>
+#include <QMenu>
 #include <QMouseEvent>
 
 #include "hesiod/gui/widgets/graph/coord_frame_widget.hpp"
@@ -125,8 +126,99 @@ void CoordFrameWidget::drawBackground(QPainter *painter, const QRectF &rect)
     painter->drawLine(QPointF(left, y), QPointF(right, y));
 }
 
+void CoordFrameWidget::select_frame(const std::string &id)
+{
+  if (!this->scene())
+    return;
+
+  this->scene()->clearSelection();
+  if (auto it = this->frames.find(id); it != this->frames.end() && it->second)
+  {
+    if (!it->second->is_locked())
+      it->second->setSelected(true);
+  }
+}
+
+void CoordFrameWidget::set_hovered_frame(const std::string &id, bool hovered)
+{
+  if (auto it = this->frames.find(id); it != this->frames.end() && it->second)
+    it->second->set_is_hovered(hovered);
+}
+
+void CoordFrameWidget::contextMenuEvent(QContextMenuEvent *event)
+{
+  if (!this->scene())
+    return;
+
+  const QPointF            scene_pos = this->mapToScene(event->pos());
+  std::vector<FrameItem *> hits;
+  for (auto *item : this->scene()->items(scene_pos))
+    if (auto *frame = dynamic_cast<FrameItem *>(item))
+      hits.push_back(frame);
+
+  if (hits.empty())
+    return;
+
+  QMenu menu(this);
+  for (auto *frame : hits)
+  {
+    const std::string fid = frame->get_id();
+    QAction          *act = menu.addAction(
+        QString("Select: %1%2")
+            .arg(QString::fromStdString(fid), frame->is_locked() ? " (Locked)" : ""));
+    act->setEnabled(!frame->is_locked());
+    this->connect(act,
+                  &QAction::triggered,
+                  this,
+                  [this, fid]() { this->select_frame(fid); });
+  }
+
+  menu.addSeparator();
+
+  for (auto *frame : hits)
+  {
+    const std::string fid = frame->get_id();
+    const bool        locked = frame->is_locked();
+    QAction          *act = menu.addAction(
+        QString("%1: %2").arg(locked ? "Unlock" : "Lock", QString::fromStdString(fid)));
+    this->connect(act,
+                  &QAction::triggered,
+                  this,
+                  [frame, locked]() { frame->set_locked(!locked); });
+  }
+
+  menu.exec(event->globalPos());
+}
+
 void CoordFrameWidget::mousePressEvent(QMouseEvent *event)
 {
+  if (event->button() == Qt::LeftButton && (event->modifiers() & Qt::AltModifier) &&
+      this->scene())
+  {
+    const QPointF            scene_pos = this->mapToScene(event->pos());
+    std::vector<FrameItem *> hits;
+    for (auto *item : this->scene()->items(scene_pos))
+      if (auto *frame = dynamic_cast<FrameItem *>(item); frame && !frame->is_locked())
+        hits.push_back(frame);
+
+    if (hits.size() > 1)
+    {
+      size_t next_idx = 0;
+      for (size_t i = 0; i < hits.size(); ++i)
+      {
+        if (hits[i]->isSelected())
+        {
+          next_idx = (i + 1) % hits.size();
+          break;
+        }
+      }
+      this->scene()->clearSelection();
+      hits[next_idx]->setSelected(true);
+      event->accept();
+      return;
+    }
+  }
+
   if (event->button() == Qt::LeftButton)
     this->setDragMode(QGraphicsView::ScrollHandDrag);
 
