@@ -26,6 +26,7 @@ namespace hesiod
 class BaseNode; // forward
 class NodeInNode;
 class NodeOutNode;
+class TerrainMergeNode;
 
 // =====================================
 // GraphNode
@@ -97,8 +98,10 @@ public:
 private:
   struct InputBinding
   {
-    std::string                 name;
-    std::shared_ptr<NodeInNode> node;
+    std::string                       name;
+    std::shared_ptr<NodeInNode>       node;
+    std::shared_ptr<TerrainMergeNode> merge_node;
+    int                               merge_slot = -1;
   };
 
   struct OutputBinding

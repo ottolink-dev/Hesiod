@@ -8,7 +8,7 @@
 #include "nlohmann/json.hpp"
 
 #include "hesiod/model/graph/bake_config.hpp"
-#include "hesiod/model/graph/graph_manager.hpp"
+#include "hesiod/model/graph_manager/graph_manager.hpp"
 
 namespace hesiod
 {

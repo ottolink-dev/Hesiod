@@ -65,8 +65,8 @@
 #include "hesiod/gui/widgets/utils/tool_tip_blocker.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/constants/color_gradient.hpp"
-#include "hesiod/model/graph/graph_manager.hpp"
 #include "hesiod/model/graph/graph_node.hpp"
+#include "hesiod/model/graph_manager/graph_manager.hpp"
 #include "hesiod/model/utils.hpp"
 
 namespace fs = std::filesystem;

@@ -14,7 +14,7 @@
 #include "hesiod/gui/widgets/containers/main_window.hpp"
 #include "hesiod/gui/widgets/shell/window_chrome.hpp"
 #include "hesiod/logger.hpp"
-#include "hesiod/model/graph/graph_manager.hpp"
+#include "hesiod/model/graph_manager/graph_manager.hpp"
 
 // last: windows.h leaks macros (interface, min, max...) that clash with the
 // project headers above

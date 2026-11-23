@@ -42,7 +42,7 @@ void apply_node_status_icons(const std::string      &node_type,
 
   static const std::vector<std::string> wip_nodes = {"AeolianErosion",
                                                      "CoastalErosionDiffusion",
-						     "CraterField",
+                                                     "CraterField",
                                                      "HydraulicProcedural",
                                                      "HydraulicSaleve",
                                                      "Island",
