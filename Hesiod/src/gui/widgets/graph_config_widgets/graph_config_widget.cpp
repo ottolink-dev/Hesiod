@@ -202,7 +202,7 @@ GraphConfigDialog::GraphConfigDialog(GraphConfig &config, QWidget *parent)
   meta::qt::ContainerRenderOptions options;
   options.design = properties_panel_design().design;
   options.row_context = ctx;
-  options.category_policy = meta::qt::CategoryPolicy::CP_MERGED;
+  options.category_policy = meta::qt::CategoryPolicy::Merged;
   options.root_category_name = std::string{};
 
   const QString note_css = QString("color: %1; font-size: 11px; background: transparent;"

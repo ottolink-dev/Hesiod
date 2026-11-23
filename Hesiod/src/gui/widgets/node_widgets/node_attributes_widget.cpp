@@ -496,7 +496,7 @@ void NodeAttributesWidget::setup_layout()
   auto options = meta::qt::ContainerRenderOptions{
       .design = panel.design,
       .row_context = row_ctx,
-      .category_policy = meta::qt::CategoryPolicy::CP_MERGED,
+      .category_policy = meta::qt::CategoryPolicy::Merged,
       // Uncategorised attributes would otherwise sit bare under the toolbar
       // with no card behind them, which on a node with a single parameter looks
       // like an unfinished panel rather than a small one.
