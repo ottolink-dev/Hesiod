@@ -64,10 +64,12 @@ void setup_terrain_merge_node(BaseNode &node)
            {{"Add", static_cast<int>(hmap::TerrainBlendMode::TBM_ADD)},
             {"Average", static_cast<int>(hmap::TerrainBlendMode::TBM_AVERAGE)},
             {"Distance", static_cast<int>(hmap::TerrainBlendMode::TBM_DISTANCE)},
+            {"Height", static_cast<int>(hmap::TerrainBlendMode::TBM_HEIGHT)},
             {"Max", static_cast<int>(hmap::TerrainBlendMode::TBM_MAX)},
             {"Max Smooth", static_cast<int>(hmap::TerrainBlendMode::TBM_MAX_SMOOTH)},
             {"Min", static_cast<int>(hmap::TerrainBlendMode::TBM_MIN)},
             {"Min Smooth", static_cast<int>(hmap::TerrainBlendMode::TBM_MIN_SMOOTH)},
+            {"Slope", static_cast<int>(hmap::TerrainBlendMode::TBM_SLOPE)},
             {"Subtract", static_cast<int>(hmap::TerrainBlendMode::TBM_SUBTRACT)}},
            "Distance");
   add_float(node, "blend_param", "Blending Parameter", 0.2f, 0.f, 1.f);

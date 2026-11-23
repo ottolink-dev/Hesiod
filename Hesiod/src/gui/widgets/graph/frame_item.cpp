@@ -94,9 +94,9 @@ QVariant FrameItem::itemChange(GraphicsItemChange change, const QVariant &value)
 void FrameItem::set_is_hovered(bool hovered)
 {
   this->is_hovered = hovered;
-  this->setZValue(hovered
-                      ? 10001.0
-                      : (this->isSelected() ? 10000.0 : static_cast<qreal>(this->z_depth)));
+  this->setZValue(
+      hovered ? 10001.0
+              : (this->isSelected() ? 10000.0 : static_cast<qreal>(this->z_depth)));
   this->update();
 }
 
