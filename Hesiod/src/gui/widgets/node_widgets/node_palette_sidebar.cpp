@@ -185,6 +185,25 @@ void draw_glyph(QPainter &painter, const QRectF &box, const QColor &color, int s
         QPointF(box.left() + box.width() * 0.32, box.bottom() - box.height() * 0.10));
     break;
   }
+  case 9: // graph io (bidirectional arrows)
+  {
+    const double y_top = box.top() + box.height() * 0.32;
+    const double y_bot = box.top() + box.height() * 0.68;
+    const double x_l = box.left() + box.width() * 0.12;
+    const double x_r = box.right() - box.width() * 0.12;
+    const double ah = box.height() * 0.16;
+
+    // top arrow pointing right (->)
+    painter.drawLine(QPointF(x_l, y_top), QPointF(x_r, y_top));
+    painter.drawLine(QPointF(x_r - ah, y_top - ah), QPointF(x_r, y_top));
+    painter.drawLine(QPointF(x_r - ah, y_top + ah), QPointF(x_r, y_top));
+
+    // bottom arrow pointing left (<-)
+    painter.drawLine(QPointF(x_l, y_bot), QPointF(x_r, y_bot));
+    painter.drawLine(QPointF(x_l + ah, y_bot - ah), QPointF(x_l, y_bot));
+    painter.drawLine(QPointF(x_l + ah, y_bot + ah), QPointF(x_l, y_bot));
+    break;
+  }
   default: // node / connector
     painter.drawLine(QPointF(box.left(), c.y()), QPointF(box.right(), c.y()));
     painter.drawEllipse(QPointF(box.left() + r * 0.3, c.y()), r * 0.28, r * 0.28);
@@ -248,6 +267,8 @@ int glyph_shape_for(const QString &category)
 {
   if (category == QStringLiteral("Rock"))
     return 8;
+  if (category == QStringLiteral("Graph IO"))
+    return 9;
 
   uint hash = 2166136261u;
   for (const QChar c : category)
