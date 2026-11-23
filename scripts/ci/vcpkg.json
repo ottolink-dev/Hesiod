@@ -1,7 +1,7 @@
 {
   "name": "hesiod-ci",
   "version-string": "0.6.0",
-  "builtin-baseline": "ef7dbf94b9198bc58f45951adcf1f041fcbc5ea0",
+  "builtin-baseline": "7d2bab768f86e068ce3f63c53afb420d384caf4f",
   "dependencies": [
     "openexr",
     "tiff",
