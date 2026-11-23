@@ -2069,6 +2069,25 @@ void HesiodApplication::setup_menu_bar()
                 this,
                 [this]()
                 { this->project_ui->get_graph_manager_widget_ref()->on_reseed(true); });
+
+  // --- share standard shortcuts with the Graph Manager window
+
+  if (GraphManagerWidget *gmw = this->project_ui->get_graph_manager_widget_ref())
+  {
+    gmw->addActions({new_action,
+                     load_action,
+                     save,
+                     save_as,
+                     save_copy,
+                     export_batch,
+                     settings_action,
+                     quit,
+                     undo_action,
+                     redo_action,
+                     rename_action,
+                     reseed,
+                     reseed_back});
+  }
 }
 
 void HesiodApplication::show()
