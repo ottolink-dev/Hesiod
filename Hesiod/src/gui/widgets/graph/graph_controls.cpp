@@ -10,7 +10,7 @@
 #include "hesiod/gui/widgets/graph/graph_node_widget.hpp"
 #include "hesiod/gui/widgets/rail/snap_guide.hpp"
 #include "hesiod/gui/widgets/rail/tool_rail.hpp"
-#include "hesiod/model/graph/graph_manager.hpp"
+#include "hesiod/model/graph_manager/graph_manager.hpp"
 
 namespace hesiod
 {

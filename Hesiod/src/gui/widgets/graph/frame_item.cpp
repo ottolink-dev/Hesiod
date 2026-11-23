@@ -83,8 +83,33 @@ QVariant FrameItem::itemChange(GraphicsItemChange change, const QVariant &value)
     Q_EMIT this->has_changed(this->id);
     return new_pos;
   }
+  else if (change == QGraphicsItem::ItemSelectedHasChanged)
+  {
+    this->setZValue(value.toBool() ? 10000.0 : static_cast<qreal>(this->z_depth));
+  }
 
   return QGraphicsRectItem::itemChange(change, value);
+}
+
+void FrameItem::set_is_hovered(bool hovered)
+{
+  this->is_hovered = hovered;
+  this->setZValue(hovered
+                      ? 10001.0
+                      : (this->isSelected() ? 10000.0 : static_cast<qreal>(this->z_depth)));
+  this->update();
+}
+
+void FrameItem::set_locked(bool new_locked)
+{
+  this->locked = new_locked;
+  this->setFlag(QGraphicsItem::ItemIsMovable, !new_locked);
+  this->setFlag(QGraphicsItem::ItemIsSelectable, !new_locked);
+  this->setAcceptedMouseButtons(new_locked ? Qt::NoButton : Qt::AllButtons);
+  this->setAcceptHoverEvents(!new_locked);
+  if (new_locked)
+    this->setSelected(false);
+  this->update();
 }
 
 void FrameItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
@@ -186,7 +211,8 @@ void FrameItem::paint(QPainter                       *painter,
 
   // contour
   painter->setBrush(Qt::NoBrush);
-  painter->setPen(QPen(is_hovered ? color_hovered : color_border, 1.5 * inv_lod));
+  painter->setPen(QPen(is_hovered ? QColor(220, 220, 220, 255) : color_border,
+                       (is_hovered ? 2.0 : 1.5) * inv_lod));
   painter->drawRect(base_rect);
 
   // screen-invariant handle geometry

@@ -51,7 +51,10 @@ public:
   // --- Interaction state setters ---
   void set_is_resized(bool resized);
   void set_is_rotated(bool rotated);
+  void set_is_hovered(bool hovered);
   void set_snap_enabled(bool enabled) { this->snap_enabled = enabled; }
+  bool is_locked() const { return this->locked; }
+  void set_locked(bool new_locked);
 
   // --- Layout/Geometry update ---
   void update_item_geometry();
@@ -89,6 +92,7 @@ private:
   bool is_rotated = false;
   bool is_resized = false;
   bool snap_enabled = true;
+  bool locked = false;
 
   // --- Handles ---
   QRectF rotation_rect;
@@ -116,6 +120,8 @@ public:
 
 public slots:
   void on_zoom_to_content();
+  void select_frame(const std::string &id);
+  void set_hovered_frame(const std::string &id, bool hovered);
   void set_snap_enabled(bool enabled);
   void update_frames_z_depth();
   void reset();
@@ -124,6 +130,7 @@ signals:
   void has_changed();
 
 protected:
+  void contextMenuEvent(QContextMenuEvent *event) override;
   void drawBackground(QPainter *painter, const QRectF &rect) override;
   void mousePressEvent(QMouseEvent *event) override;
   void mouseReleaseEvent(QMouseEvent *event) override;
