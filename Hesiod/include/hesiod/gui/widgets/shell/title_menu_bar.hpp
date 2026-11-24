@@ -20,9 +20,12 @@ public:
   explicit TitleMenuBar(QWidget *parent = nullptr);
 
 protected:
+  bool event(QEvent *event) override;
   void paintEvent(QPaintEvent *event) override;
 
 private:
+  void follow_active(); // points the fade at Qt's active entry
+
   HotTrack hot; // which entry is lit, with the fade of the one just left
 };
 

@@ -4,6 +4,7 @@
 #include <algorithm>
 
 #include <QAction>
+#include <QActionEvent>
 #include <QMenu>
 #include <QPainter>
 #include <QStyle>
@@ -19,15 +20,43 @@ namespace hesiod
 
 TitleMenuBar::TitleMenuBar(QWidget *parent) : QMenuBar(parent), hot(this) {}
 
+// Which entry is lit is Qt's business (pointer, keyboard, open menu); the fade
+// only follows it. QMenuBar has no signal for its active entry going back to
+// none, so it is read after each event the bar handles: the pointer and keys
+// reach the bar as events, also while one of its menus is open. A menu closing
+// clears the entry after its aboutToHide, hence the queued call for that case.
+bool TitleMenuBar::event(QEvent *event)
+{
+  const bool handled = QMenuBar::event(event);
+
+  if (event->type() == QEvent::ActionAdded)
+  {
+    QAction *action = static_cast<QActionEvent *>(event)->action();
+    if (QMenu *menu = action ? action->menu() : nullptr)
+      QObject::connect(menu,
+                       &QMenu::aboutToHide,
+                       this,
+                       &TitleMenuBar::follow_active,
+                       Qt::ConnectionType(Qt::QueuedConnection | Qt::UniqueConnection));
+  }
+
+  if (event->type() != QEvent::Paint)
+    this->follow_active();
+
+  return handled;
+}
+
+void TitleMenuBar::follow_active()
+{
+  QAction *active = this->activeAction();
+  this->hot.set(active ? static_cast<int>(this->actions().indexOf(active)) : -1);
+}
+
 void TitleMenuBar::paintEvent(QPaintEvent *)
 {
   const auto            &colors = HSD_CTX.app_settings.colors;
   const QList<QAction *> entries = this->actions();
-
-  // which entry is lit is Qt's business (pointer, keyboard, open menu); the
-  // fade only follows it
-  QAction *active = this->activeAction();
-  this->hot.set(active ? static_cast<int>(entries.indexOf(active)) : -1);
+  QAction               *active = this->activeAction();
 
   QPainter p(this);
   p.setRenderHint(QPainter::Antialiasing);

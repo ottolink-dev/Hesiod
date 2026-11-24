@@ -12,6 +12,7 @@
 #include <QMouseEvent>
 #include <QPainter>
 #include <QPainterPath>
+#include <QPointer>
 
 #include "meta_qt/ui/theme.hpp"
 
@@ -226,7 +227,16 @@ void TitleChip::mousePressEvent(QMouseEvent *event)
   this->press_t.to(1.0, motion::press_in, motion::enter());
   this->animate_open(true);
   this->repaint();
-  this->on_clicked(this->mapToGlobal(QPoint(this->width() / 2, this->height() + 4)));
+
+  // The menu runs its own event loop, so anything can happen to the chip
+  // before it returns. The callback is called through a copy, and the chip is
+  // not touched again if it was destroyed meanwhile.
+  const QPointer<TitleChip>                 guard(this);
+  const std::function<void(const QPoint &)> clicked = this->on_clicked;
+  clicked(this->mapToGlobal(QPoint(this->width() / 2, this->height() + 4)));
+  if (!guard)
+    return;
+
   this->pressed = false;
   this->press_t.to(0.0, motion::press_out, motion::enter());
   this->animate_open(false);
