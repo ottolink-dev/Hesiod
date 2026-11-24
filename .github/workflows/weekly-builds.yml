@@ -75,7 +75,7 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
-          sudo apt-get install -y ninja-build libglfw3-dev libglew-dev libopengl-dev freeglut3-dev libglm-dev libfuse2t64 opencl-headers opencl-clhpp-headers ocl-icd-opencl-dev pocl-opencl-icd libassimp-dev libopencv-dev libxkbcommon-dev libspdlog-dev libfftw3-dev libgsl-dev nlohmann-json3-dev zlib1g-dev libopenexr-dev libtiff-dev libzstd-dev libxcb-cursor0 libegl1 zip
+          sudo apt-get install -y ninja-build libglfw3-dev libglew-dev libopengl-dev freeglut3-dev libglm-dev libfuse2t64 opencl-headers opencl-clhpp-headers ocl-icd-opencl-dev pocl-opencl-icd libassimp-dev libopencv-dev libxkbcommon-dev libspdlog-dev libfftw3-dev libgsl-dev nlohmann-json3-dev zlib1g-dev libopenexr-dev libtiff-dev libzstd-dev libxcb-cursor0 libegl1 zip libc++-dev libc++abi-dev
       - name: MSVC environment
         if: runner.os == 'Windows'
         uses: ilammy/msvc-dev-cmd@v1

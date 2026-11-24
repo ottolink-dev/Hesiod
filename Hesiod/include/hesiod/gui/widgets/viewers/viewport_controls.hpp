@@ -13,9 +13,9 @@
 
 #include "hesiod/gui/widgets/rail/rail_owner.hpp"
 
-namespace qtr
+namespace oros::ui
 {
-class RenderWidget;
+class ViewportWidget;
 }
 
 namespace hesiod
@@ -58,13 +58,11 @@ class ViewportPanel;
 class ViewportControls : public QObject, public rail::RailOwner
 {
 public:
-  ViewportControls(qtr::RenderWidget        *renderer,
+  ViewportControls(oros::ui::ViewportWidget *renderer,
+                   QWidget                  *rail_host,
                    QPointer<GraphNodeWidget> graph,
                    QObject                  *parent = nullptr);
   ~ViewportControls() override;
-
-  /// 0: 2D viewer, 1: 3D renderer. Rebuilds the rail for that mode.
-  void set_render_type(int type);
 
   nlohmann::json json_to() const;
   void           json_from(const nlohmann::json &json);
@@ -96,13 +94,13 @@ private:
   void reset_all();
   void notify_layout_changed() override;
 
-  QPointer<qtr::RenderWidget>                      renderer;
+  QPointer<oros::ui::ViewportWidget>               renderer;
+  QPointer<QWidget>                                rail_host;
   QPointer<GraphNodeWidget>                        graph;
   viewport::ViewportRail                          *rail = nullptr;
   rail::SnapGuide                                 *guide = nullptr;
   std::map<int, QPointer<viewport::ViewportPanel>> panels;
   int                                              open_tool = -1;
-  int                                              render_type = 1;
 };
 
 } // namespace hesiod

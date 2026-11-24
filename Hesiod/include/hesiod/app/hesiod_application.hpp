@@ -74,11 +74,6 @@ public:
   ProjectUI        *get_project_ui_ref();
   AutosaveManager  *get_autosave_manager_ref(); // null in headless/test modes
 
-  // 2D viewer or 3D renderer (qtr::RenderType) for every graph viewer; the
-  // switch itself is on each viewport's toolbar
-  void set_viewer_render_type(int new_type);
-  int  get_viewer_render_type() const { return this->viewer_render_type; }
-
 private slots:
   // --- User actions
   void on_application_settings_action();
@@ -131,10 +126,6 @@ private:
   // name given to a project that has no file yet: shown in the title bar and
   // proposed as the file name by the first Save As
   std::string pending_project_name;
-
-  // viewer mode (qtr::RenderType), applied to every graph viewer, including
-  // those of projects opened later
-  int viewer_render_type = 1;
 
   bool headless = false;
   int  headless_exit_code = 0;

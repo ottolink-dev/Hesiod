@@ -38,9 +38,11 @@ set(META_ENABLE_QT_UI ON)
 set(META_ENABLE_FTXUI_UI OFF)
 add_subdirectory(Meta)
 
-# QTerrainRenderer
-set(QTR_ENABLE_TRACY ${HESIOD_ENABLE_TRACY})
-add_subdirectory(QTerrainRenderer)
+# Oros
+set(OROS_BUILD_TESTS OFF)
+set(OROS_BUILD_UNITTESTS OFF)
+set(OROS_BUILD_UI_TESTS OFF)
+add_subdirectory(Oros)
 
 # QTextureDownloader
 add_subdirectory(QTextureDownloader)

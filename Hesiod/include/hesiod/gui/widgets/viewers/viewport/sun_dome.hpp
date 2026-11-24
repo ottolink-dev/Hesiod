@@ -124,9 +124,8 @@ private:
     const qreal   az = (this->azimuth ? this->azimuth->value() : 0.f) * kPi / 180.0;
     const qreal   el = (this->elevation ? this->elevation->value() : 45.f) * kPi / 180.0;
     const qreal   r = std::cos(el) * R;
-    // renderer: x = cos(el) sin(az), z = cos(el) cos(az); z points at the
-    // viewer, which is down on this top view
-    return c + QPointF(std::sin(az) * r, std::cos(az) * r);
+    // Oros Z-up: +X = cos(az) (East), +Y = sin(az) (North = screen up = -y)
+    return c + QPointF(std::cos(az) * r, -std::sin(az) * r);
   }
 
   void drag_to(const QPointF &pos)
@@ -135,7 +134,7 @@ private:
     const QPointF d = (pos - c) / this->radius();
     const qreal   r = std::min(1.0, std::hypot(d.x(), d.y()));
     const qreal   el = std::acos(r) * 180.0 / kPi;
-    const qreal   az = std::atan2(d.x(), d.y()) * 180.0 / kPi;
+    const qreal   az = std::atan2(-d.y(), d.x()) * 180.0 / kPi;
 
     if (this->azimuth && r > 1e-3)
       this->azimuth->set_value(float(az));

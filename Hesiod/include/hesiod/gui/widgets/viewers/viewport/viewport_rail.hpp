@@ -21,21 +21,14 @@ public:
 
   void set_resolution_text(const QString &text);
 
-  // 0: 2D, 1: 3D; the switch's highlight slides across
-  void set_view_mode(int type, bool animate);
-
 protected:
-  void paint_under_tools(QPainter &p, const QPointF &origin) override;
-  bool paint_cell(QPainter &p, const Item &item, const QRectF &cell, bool hover) override;
   void paint_tool(QPainter     &p,
                   const Item   &item,
                   const QRectF &cell,
                   const QColor &ink) override;
 
 private:
-  QString            resolution_text = "1K";
-  qreal              view_t = 1.0; // 2D/3D switch highlight: 0 on 2D, 1 on 3D
-  QVariantAnimation *view_anim = nullptr;
+  QString resolution_text = "1K";
 };
 
 } // namespace hesiod::viewport

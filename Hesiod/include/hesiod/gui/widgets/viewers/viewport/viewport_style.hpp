@@ -27,8 +27,6 @@ using namespace hesiod::rail;
 // --- tools (rail entries); values are persisted nowhere, order is free
 enum Tool : int
 {
-  ToolView2D, // the 2D / 3D switch: two cells sharing one sliding highlight
-  ToolView3D,
   ToolResolution,
   ToolLighting,
   ToolCamera,
@@ -36,8 +34,6 @@ enum Tool : int
   ToolMaterial,
   ToolWater,
   ToolSky,
-  ToolLighting2D,
-  ToolColormap2D,
   ToolPreview, // which node outputs the view shows (hosts the viewer's own rows)
   ToolMore
 };

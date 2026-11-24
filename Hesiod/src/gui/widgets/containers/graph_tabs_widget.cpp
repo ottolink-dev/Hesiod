@@ -246,15 +246,6 @@ void GraphTabsWidget::set_show_viewer(bool new_state)
   }
 }
 
-void GraphTabsWidget::set_viewer_render_type(int new_type)
-{
-  this->viewer_render_type = new_type;
-
-  for (auto &[id, gww] : this->graph_workspace_widget_map)
-    if (gww && gww->get_viewer())
-      gww->get_viewer()->set_render_type(new_type);
-}
-
 void GraphTabsWidget::set_selected_tab(const std::string &graph_id)
 {
   for (int i = 0; i < this->tab_widget->count(); ++i)
@@ -335,10 +326,6 @@ void GraphTabsWidget::update_tab_widget()
     GraphWorkspaceWidget *workspace_widget = new GraphWorkspaceWidget(
         p_graph_node->get_shared());
     this->graph_workspace_widget_map[id] = workspace_widget;
-
-    // a graph added later opens in the viewer mode already chosen
-    if (workspace_widget->get_viewer())
-      workspace_widget->get_viewer()->set_render_type(this->viewer_render_type);
 
     // Connect signals
     auto *gnw = workspace_widget->get_graph_node_widget();

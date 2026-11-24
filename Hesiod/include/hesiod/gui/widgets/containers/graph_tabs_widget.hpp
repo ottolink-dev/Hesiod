@@ -30,8 +30,6 @@ public:
   void clear();
   void set_show_node_settings_widget(bool new_state);
   void set_show_viewer(bool new_state);
-  // 0: 2D viewer, 1: 3D renderer (qtr::RenderType); also used for new graphs
-  void set_viewer_render_type(int new_type);
   void set_show_node_library_pan(bool new_state);
 
   // --- Serialization ---
@@ -89,7 +87,6 @@ private:
   std::map<std::string, QPointer<GraphWorkspaceWidget>> graph_workspace_widget_map;
   bool                                                  show_node_settings_widget;
   bool                                                  show_viewer;
-  int                                                   viewer_render_type = 1;
   QHBoxLayout                                          *main_layout;
 };
 

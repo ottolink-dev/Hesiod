@@ -20,7 +20,6 @@ void paint_icon(QPainter &p, int tool, const QRectF &r, const QColor &ink)
   switch (tool)
   {
   case ToolLighting:
-  case ToolLighting2D:
     name = "vp_sun";
     break;
   case ToolCamera:
@@ -41,10 +40,6 @@ void paint_icon(QPainter &p, int tool, const QRectF &r, const QColor &ink)
   case ToolSky:
     name = "vp_cloud";
     break;
-  case ToolColormap2D:
-    // the gradient is the point of this one: not recoloured
-    paint_svg(p, "vp_colormap", r.center(), size, ink, false);
-    return;
   case ToolMore:
     name = "vp_tune";
     break;
@@ -64,7 +59,6 @@ QString tool_title(int tool)
   switch (tool)
   {
   case ToolLighting:
-  case ToolLighting2D:
     return "Lighting";
   case ToolCamera:
     return "Camera";
@@ -78,8 +72,6 @@ QString tool_title(int tool)
     return "Preview";
   case ToolSky:
     return "Sky & Atmosphere";
-  case ToolColormap2D:
-    return "Colormap";
   default:
     return QString();
   }

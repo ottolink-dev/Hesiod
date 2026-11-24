@@ -93,9 +93,11 @@ class ViewportPanel final : public QWidget
 {
 public:
   ViewportPanel(const QString &title, std::unique_ptr<PanelModel> model, QWidget *parent)
-      : QWidget(parent), model(std::move(model))
+      : QWidget(parent, Qt::Popup | Qt::FramelessWindowHint | Qt::NoDropShadowWindowHint),
+        model(std::move(model))
   {
     this->setObjectName("hsdViewportPanel");
+    this->setAttribute(Qt::WA_TranslucentBackground);
     this->setAttribute(Qt::WA_NoSystemBackground);
     this->setFixedWidth(kWidth);
     this->hide();
@@ -235,34 +237,34 @@ public:
     if (this->model)
       this->model->sync_from_renderer();
 
-    const QRect vr = this->parentWidget()->rect().adjusted(kMargin,
-                                                           kMargin,
-                                                           -kMargin,
-                                                           -kMargin);
-    const int   gap = 8;
+    QWidget     *ref = this->parentWidget();
+    const QRect  local_vr = ref->rect().adjusted(kMargin, kMargin, -kMargin, -kMargin);
+    const QPoint origin = ref->mapToGlobal(QPoint(0, 0));
+    const QRect  vr = local_vr.translated(origin);
+    const QRect  g_rail = rail.translated(origin);
+    const QRect  g_item = item.translated(origin);
+    const int    gap = 8;
 
-    // The panel keeps to the side of the rail, never over it: over it, a
-    // second click on the tool would land on the panel instead of closing it.
     QRect area = vr;
     switch (edge)
     {
     case Edge::Right:
-      area.setRight(rail.left() - gap - 1);
+      area.setRight(g_rail.left() - gap - 1);
       break;
     case Edge::Left:
-      area.setLeft(rail.right() + gap + 1);
+      area.setLeft(g_rail.right() + gap + 1);
       break;
     case Edge::Top:
-      area.setTop(rail.bottom() + gap + 1);
+      area.setTop(g_rail.bottom() + gap + 1);
       break;
     case Edge::Bottom:
-      area.setBottom(rail.top() - gap - 1);
+      area.setBottom(g_rail.top() - gap - 1);
       break;
     }
 
     this->fit_area = area;
     this->fit_edge = edge;
-    this->fit_item = item;
+    this->fit_item = g_item;
 
     this->slide_from = edge == Edge::Right  ? QPoint(12, 0)
                        : edge == Edge::Left ? QPoint(-12, 0)
@@ -369,6 +371,14 @@ protected:
   void mouseReleaseEvent(QMouseEvent *event) override { event->accept(); }
   void mouseMoveEvent(QMouseEvent *event) override { event->accept(); }
   void mouseDoubleClickEvent(QMouseEvent *event) override { event->accept(); }
+
+  void hideEvent(QHideEvent *event) override
+  {
+    QWidget::hideEvent(event);
+    this->follow->stop();
+    if (!this->closing && this->on_close)
+      this->on_close();
+  }
 
   void keyPressEvent(QKeyEvent *event) override
   {

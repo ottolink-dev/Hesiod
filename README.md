@@ -207,10 +207,10 @@ flowchart TD
         OpenCL["OpenCL"]
         FastNoiseLite["FastNoiseLite"]
   end
-    Hesiod["Hesiod"] --> HighMap & GNode & GNodeGUI & Meta["Meta"] & QTerrainRenderer["QTerrainRenderer"] & QTextureDownloader["QTextureDownloader"]
+    Hesiod["Hesiod"] --> HighMap & GNode & GNodeGUI & Meta["Meta"] & Oros["Oros"] & QTextureDownloader["QTextureDownloader"]
     HighMap --> CLWrapper & PointSampler & FastNoiseLite
     CLWrapper --> CLErrorLookup & OpenCL
-    QTerrainRenderer --> OpenGL["OpenGL"] & ImGui["ImGui"]
+    Oros --> Filament["Filament"]
      OpenCL:::non_hesiod
      FastNoiseLite:::non_hesiod
      OpenGL:::non_hesiod

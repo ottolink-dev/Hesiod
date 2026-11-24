@@ -9,7 +9,7 @@
 
 #include "nlohmann/json.hpp"
 
-#include "qtr/render_widget.hpp"
+#include "oros/ui/viewport_widget.hpp"
 
 #include "hesiod/gui/widgets/viewers/viewer.hpp"
 
@@ -38,10 +38,6 @@ public:
   void copy_render_settings_from(const Viewer3D &source);
   void clear() override;
   bool get_param_visibility_state(const std::string &param_name) const override;
-  // 0: 2D viewer, 1: 3D renderer (qtr::RenderType)
-  void set_render_type(int new_type);
-  int  get_render_type() const; // 0: 2D viewer, 1: 3D renderer
-  void set_skybox(const std::filesystem::path path);
   void setup_layout() override;
   void setup_connections() override;
   void update_style();
@@ -59,9 +55,11 @@ private:
   void            update_renderer() override;
   void            sync_pin_label(); // the Preview panel's pin row
 
-  ViewerType         viewer_type;
-  qtr::RenderWidget *p_renderer = nullptr;
-  ViewportControls  *controls = nullptr; // rail + settings panels over the view
+  ViewerType                  viewer_type;
+  oros::ui::ViewportWidget   *p_renderer = nullptr;
+  QWidget                    *p_rail_host = nullptr;
+  ViewportControls           *controls = nullptr;
+  std::map<std::string, bool> param_visibility_state;
 };
 
 } // namespace hesiod

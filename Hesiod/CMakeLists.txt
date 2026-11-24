@@ -106,7 +106,7 @@ target_link_libraries(
          Qt6::Widgets
          Qt6::OpenGLWidgets
          Qt6::WebEngineWidgets
-         qterrain-renderer
+         Oros::Oros
          qtexture_downloader
          ZLIB::ZLIB)
 

@@ -610,12 +610,6 @@ void HesiodApplication::load_project_model_and_ui(const std::string &fname,
   // title bar showing nothing (or the previous project) until the first save
   this->on_project_name_changed();
 
-  // the new graph viewers start in the default mode; keep the current one.
-  // A project that saved its own mode wins: its viewers restore it (deferred,
-  // in Viewer3D::json_from) through set_viewer_render_type, which also updates
-  // viewer_render_type, so this line never puts a stale mode back.
-  this->set_viewer_render_type(this->viewer_render_type);
-
   if (!blank_startup)
     this->context.project_model->get_graph_manager_ref()->update();
 
@@ -1292,14 +1286,6 @@ void HesiodApplication::on_reveal_project()
   QDesktopServices::openUrl(
       QUrl::fromLocalFile(QString::fromStdString(path.parent_path().string())));
 #endif
-}
-
-void HesiodApplication::set_viewer_render_type(int new_type)
-{
-  this->viewer_render_type = new_type;
-
-  if (this->project_ui && this->project_ui->get_graph_tabs_widget_ref())
-    this->project_ui->get_graph_tabs_widget_ref()->set_viewer_render_type(new_type);
 }
 
 void HesiodApplication::setup_title_bar()

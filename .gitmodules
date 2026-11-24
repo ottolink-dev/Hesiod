@@ -10,12 +10,12 @@
 [submodule "external/GNode"]
 	path = external/GNode
 	url = https://github.com/ottolink-dev/GNode.git
-[submodule "external/QTerrainRenderer"]
-	path = external/QTerrainRenderer
-	url = https://github.com/ottolink-dev/QTerrainRenderer.git
 [submodule "external/QTextureDownloader"]
 	path = external/QTextureDownloader
 	url = https://github.com/ottolink-dev/QTextureDownloader.git
 [submodule "external/Meta"]
 	path = external/Meta
 	url = https://github.com/ottolink-dev/Meta.git
+[submodule "external/Oros"]
+	path = external/Oros
+	url = https://github.com/otto-link/Oros.git

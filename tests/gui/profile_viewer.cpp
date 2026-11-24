@@ -77,7 +77,7 @@ int main(int argc, char **argv)
   viewer.show();
   if (!QTest::qWaitForWindowExposed(&viewer, 10000))
     return 3;
-  auto *renderer = viewer.findChild<qtr::RenderWidget *>();
+  auto *renderer = viewer.findChild<oros::ui::ViewportWidget *>();
   if (!renderer || !renderer->isValid())
     return 4; // Do not report an offscreen/failed OpenGL workload as measured.
   DataPreview preview(node->get_shared());
@@ -138,7 +138,7 @@ int main(int argc, char **argv)
     secondary.show();
     if (!QTest::qWaitForWindowExposed(&secondary, 10000))
       return 6;
-    auto *other = secondary.findChild<qtr::RenderWidget *>();
+    auto *other = secondary.findChild<oros::ui::ViewportWidget *>();
     if (!other || !other->isValid())
       return 6;
     secondary.set_current_node_id(id);
