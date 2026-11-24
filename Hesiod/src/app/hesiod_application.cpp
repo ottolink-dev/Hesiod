@@ -1411,6 +1411,8 @@ void HesiodApplication::on_save()
     {
       this->context.project_model->set_path(path);
       this->add_recent_file(path.string());
+      if (this->main_window)
+        this->main_window->get_title_bar()->flash_saved();
     }
   }
 }
@@ -1450,6 +1452,8 @@ void HesiodApplication::on_save_as()
     {
       this->context.project_model->set_path(clean_path.string());
       this->add_recent_file(clean_path.string());
+      if (this->main_window)
+        this->main_window->get_title_bar()->flash_saved();
     }
   }
 }
