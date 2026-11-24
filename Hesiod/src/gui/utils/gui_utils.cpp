@@ -15,6 +15,7 @@
 #include <QApplication>
 
 #include "hesiod/app/hesiod_application.hpp"
+#include "hesiod/gui/motion/motion.hpp"
 #include "hesiod/gui/widgets/node_widgets/node_palette_sidebar.hpp"
 #include "hesiod/gui/widgets/utils/gui_utils.hpp"
 #include "hesiod/logger.hpp"
@@ -52,6 +53,10 @@ void apply_animation_settings(bool enabled)
                                     Qt::UI_FadeTooltip,
                                     Qt::UI_AnimateToolBox})
     QApplication::setEffectEnabled(effect, enabled);
+
+  // the shared animation clock (motion.hpp): with motion off, everything
+  // that is driven by it lands on its end state at once
+  motion::set_enabled(enabled);
 
   // reach the sidebars that already exist: a motion setting that only applies
   // to widgets created later looks like it did nothing
