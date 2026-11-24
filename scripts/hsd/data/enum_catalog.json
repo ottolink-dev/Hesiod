@@ -1,5 +1,11 @@
 {
   "maps": {
+    "array_sampling_map": {
+      "Maximum": 2,
+      "Mean": 3,
+      "Minimum": 1,
+      "Point": 0
+    },
     "blending_method_map": {
       "add": 0,
       "exclusion": 1,
@@ -333,6 +339,11 @@
       "start": "domain_boundary_map"
     },
     "FlatbedCarve": {
+      "radial_profile": "radial_profile_map"
+    },
+    "FlattenAroundPoints": {
+      "array_sampling": "array_sampling_map",
+      "post_mix_method": "blending_method_map",
       "radial_profile": "radial_profile_map"
     },
     "FlowFixingMST": {

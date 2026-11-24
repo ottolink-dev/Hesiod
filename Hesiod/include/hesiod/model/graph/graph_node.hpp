@@ -2,27 +2,36 @@
    License. The full license is in the file LICENSE, distributed with this software. */
 #pragma once
 #include <functional>
+#include <memory>
+#include <string>
+#include <unordered_map>
+#include <vector>
 
 #include "nlohmann/json.hpp"
 
 #include "gnode/graph.hpp"
+#include "gnode/node.hpp"
 #include "highmap/coord_frame.hpp"
 
-#include "hesiod/model/graph/broadcast_param.hpp"
 #include "hesiod/model/graph/graph_config.hpp"
+
+namespace gnode
+{
+class GraphWorker;
+}
 
 namespace hesiod
 {
 
 class BaseNode; // forward
-class GraphWorker;
+class NodeInNode;
+class NodeOutNode;
+class TerrainMergeNode;
 
 // =====================================
 // GraphNode
 // =====================================
-class GraphNode : public gnode::Graph,
-                  public hmap::CoordFrame,
-                  public std::enable_shared_from_this<GraphNode>
+class GraphNode : public gnode::Graph, public gnode::Node, public hmap::CoordFrame
 {
 public:
   GraphNode() = delete;
@@ -30,20 +39,22 @@ public:
 
   std::shared_ptr<GraphNode> get_shared();
 
+  // --- Identity (disambiguate gnode::Graph and gnode::Node) ---
+  std::string get_id() const { return gnode::Graph::get_id(); }
+  void        set_id(const std::string &new_id);
+
   // --- Serialization ---
   void json_from(nlohmann::json const &json, GraphConfig *p_input_config = nullptr);
   nlohmann::json json_to() const;
 
-  // --- Config. ---
+  // --- Config ---
   GraphConfig *get_config_ref();
   void         change_config_values(const GraphConfig &new_config);
 
-  // --- Node Factory (create nodes from their type) ---
-  // Construction does not compute: callers update after setting parameters and
-  // connections, so compound edits never evaluate a partially constructed graph.
-  std::string add_node(const std::string &node_type);
+  // --- Node Factory ---
+  std::string add_node(const std::string &node_type, const std::string &id = "");
 
-  // --- GNode::Graph override ---
+  // --- gnode::Graph overrides ---
   std::string  add_node(const std::shared_ptr<gnode::Node> &p_node,
                         const std::string                  &id = "") override;
   virtual void remove_node(const std::string &id) override;
@@ -51,49 +62,64 @@ public:
   void         update(const std::vector<std::string> &node_ids) override;
   void         update(const std::string &node_id) override;
 
+  // --- gnode::Node override (global graph execution) ---
+  void compute() override;
+
+  // --- Dynamic Boundary Ports (NodeIn / NodeOut) ---
+  void auto_bind_ports();
+  void pull_inputs_from_parent();
+  void push_outputs_to_parent();
+
+  std::unordered_map<std::string, std::string> consume_port_renames();
+
   // --- Background Update (GraphWorker of the GraphManager, if any) ---
-  // An update then returns at once, after update_started: the nodes are computed
-  // afterwards, and update_finished comes once the graph is up to date.
-  void set_p_worker(GraphWorker *new_p_worker) { this->p_worker = new_p_worker; }
-  void stop_update(); // before modifying the graph, see GraphWorker::stop()
+  void set_p_worker(gnode::GraphWorker *new_p_worker) { this->p_worker = new_p_worker; }
+  void stop_update();
 
-  // --- Inter-graph Broadcasting ---
-  BroadcastMap *get_p_broadcast_params() { return this->p_broadcast_params; }
-  void          set_p_broadcast_params(BroadcastMap *new_p_broadcast_params);
-  void          on_broadcast_node_updated(const std::string &tag);
-
-  // --- Others... ---
+  // --- Others ---
   void        reseed(bool backward);
   std::string runtime_info_to_string(const char separator = ',') const;
 
-  // --- Compute Callbacks
+  // --- Compute Callbacks ---
   std::function<void(const std::string &node_id)> compute_started;
   std::function<void(const std::string &node_id)> compute_finished;
 
-  // --- Update Callbacks
+  // --- Update Callbacks ---
   std::function<void()>                                           update_started;
-  std::function<void()>                                           update_finished;
+  std::function<void()>                                           graph_update_finished;
   std::function<void(const std::string &node_id, float progress)> update_progress;
+  std::function<void(const std::vector<std::string> &pass, int done)> update_steps;
+  std::function<void(bool held)>                                      update_held;
 
-  // --- Broadcast Callbacks
-  std::function<void(const std::string &graph_id, const std::string &tag)>
-                                              broadcast_node_updated;
-  std::function<void(const std::string &tag)> remove_broadcast_tag;
-  std::function<void(const std::string        &tag,
-                     const hmap::CoordFrame   *t_source,
-                     const hmap::VirtualArray *h_source)>
-      new_broadcast_tag;
+  // --- Global Graph Callbacks ---
+  std::function<void()>                    ports_updated;
+  std::function<void(const std::string &)> global_output_updated;
 
 private:
-  // --- Helpers ---
-  void setup_new_broadcast_node(BaseNode *p_node);
-  void setup_new_receive_node(BaseNode *p_node);
+  struct InputBinding
+  {
+    std::string                       name;
+    std::shared_ptr<NodeInNode>       node;
+    std::shared_ptr<TerrainMergeNode> merge_node;
+    int                               merge_slot = -1;
+  };
+
+  struct OutputBinding
+  {
+    std::string                  name;
+    std::shared_ptr<NodeOutNode> node;
+  };
+
+  void setup_boundary_node(BaseNode *p_node);
+  void handle_inner_update_finished();
 
   // --- Members ---
   std::shared_ptr<GraphConfig> config;
-  BroadcastMap                *p_broadcast_params = nullptr; // own by GraphManager
   gnode::EventConnection       graph_progress_conn;
-  GraphWorker                 *p_worker = nullptr; // own by GraphManager
+  gnode::GraphWorker          *p_worker = nullptr; // owned by GraphManager
+  std::vector<InputBinding>    inputs;
+  std::vector<OutputBinding>   outputs;
+  std::unordered_map<std::string, std::string> pending_port_renames;
 };
 
 } // namespace hesiod

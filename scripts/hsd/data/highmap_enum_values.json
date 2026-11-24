@@ -1,5 +1,6 @@
 {
   "_provenance": "Integer values of HighMap C++ enums, captured authoritatively from the HighMap source (static_cast<int> of each enumerator). Regenerate from HighMap when enum definitions change. Combined with Hesiod/include/hesiod/app/enum_mappings.hpp (choice->symbol) and the Hesiod-local enums in base_node.hpp to resolve enum parameter strings to the integers Hesiod serializes.",
+  "ArraySampling": {"AS_POINT": 0, "AS_MIN": 1, "AS_MAX": 2, "AS_MEAN": 3},
   "DomainBoundary": {"BOUNDARY_LEFT": 0, "BOUNDARY_RIGHT": 1, "BOUNDARY_TOP": 2, "BOUNDARY_BOTTOM": 3},
   "ClampMode": {"POSITIVE_ONLY": 0, "NEGATIVE_ONLY": 1, "BOTH": 2, "NONE": 3},
   "Cmap": {"BONE": 0, "GRAY": 1, "HOT": 2, "INFERNO": 3, "JET": 4, "MAGMA": 5, "NIPY_SPECTRAL": 6, "SEISMIC": 7, "TERRAIN": 8, "TURBO": 9, "VIRIDIS": 10, "WHITE_UNIFORM": 11},

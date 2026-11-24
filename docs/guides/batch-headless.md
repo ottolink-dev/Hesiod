@@ -65,7 +65,7 @@ hesiod --batch=graph.hsd [--shape=W,H] [--tiling=X,Y] [--overlap=R] [--force-dis
 | `--overlap=R` | Override the tile overlap ratio (`0 <= R < 1`), e.g. `--overlap=0.25`. |
 | `--force-distributed` | Force multi-threaded distributed computation mode (`VA_DISTRIBUTED`) for both CPU and GPU compute modes. |
 | `--force-sequential` | Force single-threaded sequential computation mode (`VA_SEQUENTIAL`) for both CPU and GPU compute modes. |
-| `--min-memory` / `--low-memory` | Minimal memory footprint mode: activates on-disk LRU caching (`VA_DISK_LRU_MIN` keeping minimum active tiles in RAM) and forces sequential compute mode (`VA_SEQUENTIAL`). Tiles are processed one-by-one to minimize RAM usage at the cost of higher disk I/O. |
+| `--min-memory` / `--low-memory` | Minimal memory footprint mode: activates on-disk LRU caching (`VA_DISK_LRU_STREAM` keeping minimum active tiles in RAM) and forces sequential compute mode (`VA_SEQUENTIAL`). Tiles are processed one-by-one to minimize RAM usage at the cost of higher disk I/O. |
 
 Pass `--shape`, `--tiling` and `--overlap` together when overriding the compute
 configuration. Supplying only some of them can reset the omitted values to

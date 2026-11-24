@@ -1,7 +1,10 @@
 /* Copyright (c) 2025 Otto Link. Distributed under the terms of the GNU General
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
+#include <format>
+
 #include <algorithm>
+#include <utility>
 
 #include <QGridLayout>
 #include <QLabel>
@@ -11,13 +14,14 @@
 #include <QVBoxLayout>
 
 #include "hesiod/app/hesiod_application.hpp"
-#include "hesiod/gui/widgets/graph_node_widget.hpp"
-#include "hesiod/gui/widgets/gui_utils.hpp"
-#include "hesiod/gui/widgets/icon_check_box.hpp"
+#include "hesiod/gui/widgets/controls/icon_check_box.hpp"
+#include "hesiod/gui/widgets/graph/graph_node_widget.hpp"
+#include "hesiod/gui/widgets/utils/gui_utils.hpp"
 #include "hesiod/gui/widgets/viewers/viewer.hpp"
 #include "hesiod/gui/widgets/viewers/viewer_3d.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/graph/graph_node.hpp"
+#include "hesiod/profiling.hpp"
 
 namespace hesiod
 {
@@ -142,8 +146,9 @@ void Viewer::on_node_deselected(const std::string &new_id)
   if (this->is_node_pinned)
     return;
 
-  // clear everything
-  this->clear();
+  // cleared, unless a node gets selected meanwhile
+  if (!std::exchange(this->selection_to_follow, std::string()))
+    QTimer::singleShot(0, this, [this]() { this->follow_selection(); });
 }
 
 bool Viewer::is_locked_on(const std::string &node_id) const
@@ -227,7 +232,21 @@ void Viewer::on_node_selected(const std::string &new_id)
   if (this->p_graph_node_widget->get_is_selecting_with_rubber_band())
     return;
 
-  this->set_current_node_id(new_id);
+  if (!std::exchange(this->selection_to_follow, new_id))
+    QTimer::singleShot(0, this, [this]() { this->follow_selection(); });
+}
+
+void Viewer::follow_selection()
+{
+  // the deselection and selection of one click make a single update
+  const auto target = std::exchange(this->selection_to_follow, std::nullopt);
+  if (!target || this->is_node_pinned || *target == this->current_node_id)
+    return;
+
+  if (target->empty())
+    this->clear();
+  else
+    this->set_current_node_id(*target);
 }
 
 void Viewer::on_visibility_change(bool new_state)
@@ -255,6 +274,9 @@ BaseNode *Viewer::safe_get_node()
 
 void Viewer::set_current_node_id(const std::string &new_id)
 {
+  HSD_PROFILE_ZONE("Viewer::set_current_node_id");
+  HSD_PROFILE_TEXT(
+      std::format("viewer={:p} node={}", static_cast<const void *>(this), new_id));
   Logger::log()->trace("Viewer::set_current_node_id: {}", new_id);
 
   // store current view state
@@ -277,17 +299,22 @@ void Viewer::set_current_node_id(const std::string &new_id)
     {
       this->view_param = this->view_param_map.at(new_id);
     }
-    else if (this->current_node_id != "")
+    else if (BaseNode *p_node = this->safe_get_node())
     {
-      // wild guess a default view setup...
-      wild_guess_view_param(this->view_param, viewer_type, *this->safe_get_node());
+      // wild guess a default view setup... (none for a node gone meanwhile)
+      wild_guess_view_param(this->view_param, viewer_type, *p_node);
     }
 
     if (BaseNode *p_node = this->safe_get_node())
     {
       this->post_update_conn = p_node->post_update_event.subscribe(
           [this](gnode::Node &)
-          { QMetaObject::invokeMethod(this, "update_renderer", Qt::QueuedConnection); });
+          {
+            HSD_PROFILE_ZONE("Viewer::queue_renderer_update");
+            // This callback can run on the graph worker: do not read GUI state.
+            HSD_PROFILE_TEXT(std::format("viewer={:p}", static_cast<const void *>(this)));
+            QMetaObject::invokeMethod(this, "update_renderer", Qt::QueuedConnection);
+          });
     }
   }
 
@@ -490,6 +517,10 @@ void Viewer::update_renderer()
 
 void Viewer::update_widgets()
 {
+  HSD_PROFILE_ZONE("Viewer::update_widgets");
+  HSD_PROFILE_TEXT(std::format("viewer={:p} node={}",
+                               static_cast<const void *>(this),
+                               this->current_node_id));
   Logger::log()->trace("Viewer::update_widgets");
 
   // --- update pinned node button

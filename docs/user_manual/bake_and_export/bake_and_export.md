@@ -19,7 +19,7 @@ The Bake and Export dialog provides several configuration options:
 
 #### Large Graphs & Memory Optimization
 
-- **Low memory mode**: Enforces minimal RAM usage during baking (`VA_DISK_LRU_MIN` storage mode and `VA_SEQUENTIAL` compute mode for CPU and GPU). This streams tile data to disk and computes tiles sequentially, preventing out-of-memory issues when rendering very large graphs or high resolutions at the cost of slower bake times.
+- **Low memory mode**: Enforces minimal RAM usage during baking (`VA_DISK_LRU_STREAM` storage mode and `VA_SEQUENTIAL` compute mode for CPU and GPU). This streams tile data to disk and computes tiles sequentially, preventing out-of-memory issues when rendering very large graphs or high resolutions at the cost of slower bake times.
 - **Max tile shape**: Specifies the maximum tile dimension (e.g. 512, 1024, 2048) used to dynamically compute the domain tiling grid for the global target resolution. Defaults to the current graph's resolution.
 
 !!! note "Work in Progress"

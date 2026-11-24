@@ -23,9 +23,9 @@ constexpr const char *P_IN   = "input";
 constexpr const char *A_SEED                  = "seed";
 constexpr const char *A_START                 = "start";
 constexpr const char *A_END                   = "end";
-constexpr const char *A_OFFSET_RATIO          = "offset_ratio";
-constexpr const char *A_STEPS                 = "steps";
+constexpr const char *A_CONTROL_POINTS_COUNT  = "control_points_count";
 constexpr const char *A_FAVOR_BOUNDARY_CENTER = "favor_boundary_center";
+constexpr const char *A_FAVOR_CENTER          = "favor_center";
 constexpr const char *A_FAVOR_LOWER_ELEVATION = "favor_lower_elevation";
 constexpr const char *A_FAVOR_SINKS           = "favor_sinks";
 constexpr const char *A_SMOOTH_PATH           = "smooth_path";
@@ -45,14 +45,19 @@ void setup_find_cut_path_node(BaseNode &node)
 
   // attribute(s)
   // clang-format off
+  node.set_current_category("Boundary");
   add_enum(node, A_START, "Start Boundary", enum_mappings.domain_boundary_map, "West");
   add_enum(node, A_END, "End Boundary", enum_mappings.domain_boundary_map, "East");
-  add_float(node, A_OFFSET_RATIO, "Midpoint Radius", 0.2f, 0.f, 1.f);
-  add_int(node, A_STEPS, "Search Steps", 16, 0, 32);
-  add_seed(node, A_SEED, "Seed");
   add_bool(node, A_FAVOR_BOUNDARY_CENTER, "Favor Boundary Center", true);
   add_bool(node, A_FAVOR_LOWER_ELEVATION, "Favor Lower Elevation", true);
   add_bool(node, A_FAVOR_SINKS, "Favor Sinks (Local Minima)", true);
+
+  node.set_current_category("Shortest Path");
+  add_seed(node, A_SEED, "Seed");
+  add_int(node, A_CONTROL_POINTS_COUNT, "Control Points Count", 4096, 100, 30000);
+  add_bool(node, A_FAVOR_CENTER, "Favor Domain Center", true);
+
+  node.set_current_category("Smoothing");
   add_bool(node, A_SMOOTH_PATH, "Enable Path Smoothing", false);
   add_int(node, A_SMOOTH_SAMPLING, "Samples", 32, 2, INT_MAX);
   // clang-format on
@@ -77,10 +82,10 @@ void compute_find_cut_path_node(BaseNode &node)
   // clang-format off
   const auto start                 = node.val_enum<hmap::DomainBoundary>(A_START);
   const auto end                   = node.val_enum<hmap::DomainBoundary>(A_END);
-  const auto seed                  = node.val<int>(A_SEED);
-  const auto offset_ratio          = node.val<float>(A_OFFSET_RATIO);
-  const auto steps                 = node.val<int>(A_STEPS);
+  const auto seed                  = static_cast<std::uint32_t>(node.val<int>(A_SEED));
+  const auto control_points_count  = static_cast<size_t>(node.val<int>(A_CONTROL_POINTS_COUNT));
   const auto favor_boundary_center = node.val<bool>(A_FAVOR_BOUNDARY_CENTER);
+  const auto favor_center          = node.val<bool>(A_FAVOR_CENTER);
   const auto favor_lower_elevation = node.val<bool>(A_FAVOR_LOWER_ELEVATION);
   const auto favor_sinks           = node.val<bool>(A_FAVOR_SINKS);
   const auto smooth_path           = node.val<bool>(A_SMOOTH_PATH);
@@ -89,108 +94,34 @@ void compute_find_cut_path_node(BaseNode &node)
 
   // --- Compute
 
-  hmap::for_each_tile(
-      {p_in},
-      {},
-      [&](std::vector<const hmap::Array *> p_arrays_in,
-          std::vector<hmap::Array *>,
-          const hmap::TileRegion &)
-      {
-        auto [pa_in] = unpack<1>(p_arrays_in);
+  *p_path = hmap::va::find_cut_path_dijkstra(node.cfg().cm_cpu,
+                                             *p_in,
+                                             start,
+                                             end,
+                                             seed,
+                                             control_points_count,
+                                             favor_boundary_center,
+                                             favor_lower_elevation,
+                                             favor_sinks,
+                                             favor_center);
 
-        *p_path = hmap::find_cut_path_midpoint(*pa_in,
-                                               start,
-                                               end,
-                                               seed,
-                                               offset_ratio,
-                                               steps,
-                                               favor_boundary_center,
-                                               favor_lower_elevation,
-                                               favor_sinks);
-        if (smooth_path)
+  if (smooth_path)
+  {
+    *p_path = hmap::decimate_vw(*p_path, smooth_sampling);
+    *p_path = hmap::bspline(*p_path);
+
+    hmap::for_each_tile(
+        {p_in},
+        {},
+        [&](std::vector<const hmap::Array *> p_arrays_in,
+            std::vector<hmap::Array *>,
+            const hmap::TileRegion &region)
         {
-          *p_path = hmap::decimate_vw(*p_path, smooth_sampling);
-          *p_path = hmap::bspline(*p_path);
-          p_path->set_values_from_array(*pa_in);
-        }
-      },
-      node.cfg().cm_single_array); // forced, not tileable
+          auto [pa_in] = unpack<1>(p_arrays_in);
+          p_path->set_values_from_array(*pa_in, region.bbox);
+        },
+        node.cfg().cm_cpu);
+  }
 }
-
-// void compute_find_cut_path_node(BaseNode &node)
-// {
-//   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(),
-//   node.get_id());
-
-//   auto *p_in = node.get_value_ref<hmap::VirtualArray>(P_IN);
-//   auto *p_path = node.get_value_ref<hmap::Path>(P_PATH);
-
-//   if (!p_in)
-//     return;
-
-//   // --- Params lambda
-
-//   const auto params = [&node]()
-//   {
-//     struct P
-//     {
-//       hmap::DomainBoundary start;
-//       hmap::DomainBoundary end;
-//       uint                 seed;
-//       float                offset_ratio;
-//       int                  steps;
-//       bool                 favor_boundary_center;
-//       bool                 favor_lower_elevation;
-//       bool                 favor_sinks;
-//       bool                 smooth_path;
-//       int                  smooth_sampling;
-//     };
-
-//     // clang-format off
-//     return P{
-//       .start = node.val_enum<hmap::DomainBoundary>(A_START),
-//       .end = node.val_enum<hmap::DomainBoundary>(A_END),
-//       .seed = node.val<int>(A_SEED),
-//       .offset_ratio = node.val<float>(A_OFFSET_RATIO),
-//       .steps = node.val<int>(A_STEPS),
-//       .favor_boundary_center =
-//       node.val<bool>(A_FAVOR_BOUNDARY_CENTER),
-//       .favor_lower_elevation =
-//       node.val<bool>(A_FAVOR_LOWER_ELEVATION), .favor_sinks =
-//       node.val<bool>(A_FAVOR_SINKS), .smooth_path =
-//       node.val<bool>(A_SMOOTH_PATH), .smooth_sampling =
-//       node.val<int>(A_SMOOTH_SAMPLING)
-//     };
-//     // clang-format on
-//   }();
-
-//   // --- Compute
-
-//   hmap::for_each_tile(
-//       {p_in},
-//       [&node, p_path, &params](std::vector<hmap::Array *> p_arrays,
-//                                const hmap::TileRegion &)
-//       {
-//         auto [pa_in] = unpack<1>(p_arrays);
-
-//         *p_path = hmap::find_cut_path_midpoint(*pa_in,
-//                                                params.start,
-//                                                params.end,
-//                                                params.seed,
-//                                                params.offset_ratio,
-//                                                params.steps,
-//                                                params.favor_boundary_center,
-//                                                params.favor_lower_elevation,
-//                                                params.favor_sinks);
-
-//         if (params.smooth_path)
-//         {
-//           *p_path = hmap::decimate_vw(*p_path, params.smooth_sampling);
-//           *p_path = hmap::bspline(*p_path);
-//           p_path->set_values_from_array(*pa_in);
-//         }
-//       },
-//       node.cfg().cm_single_array); // forced, not tileable
-// }
 
 } // namespace hesiod

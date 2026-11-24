@@ -5,6 +5,11 @@ typedef unsigned int uint;
 
 #include <exception>
 #include <new>
+#ifdef HESIOD_ENABLE_TRACY
+#include <chrono>
+#include <cstdlib>
+#include <thread>
+#endif
 
 #include <QCoreApplication>
 #ifdef Q_OS_MACOS
@@ -15,6 +20,7 @@ typedef unsigned int uint;
 #include "hesiod/app/ui_scale.hpp"
 #include "hesiod/cli/batch_mode.hpp"
 #include "hesiod/logger.hpp"
+#include "hesiod/profiling.hpp"
 
 #if defined(DEBUG_BUILD)
 #define HSD_RMODE "Debug"
@@ -66,7 +72,23 @@ int main(int argc, char *argv[])
   // calling abort(), which produces a bare fast-fail with no explanation.
   try
   {
-    hesiod::HesiodApplication app(argc, argv);
+#ifdef HESIOD_ENABLE_TRACY
+    // Batch jobs may finish before Tracy connects. Opt in to a bounded wait.
+    if (const char *wait = std::getenv("HESIOD_TRACY_WAIT");
+        wait && std::string_view(wait) == "1")
+    {
+      const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(30);
+      while (!TracyIsConnected && std::chrono::steady_clock::now() < deadline)
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+      if (!TracyIsConnected)
+      {
+        hesiod::Logger::log()->error("No Tracy profiler connected within 30 seconds");
+        return 1;
+      }
+    }
+#endif
+    [[maybe_unused]] hesiod::ProfileMemorySampler memory_sampler;
+    hesiod::HesiodApplication                     app(argc, argv);
 
     if (!app.is_headless())
     {

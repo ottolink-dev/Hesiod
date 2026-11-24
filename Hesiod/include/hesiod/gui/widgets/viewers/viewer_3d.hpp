@@ -34,6 +34,8 @@ public:
   void           json_from(nlohmann::json const &json) override;
   nlohmann::json json_to() const override;
 
+  // Copy rendering preferences without changing node selection or window layout.
+  void copy_render_settings_from(const Viewer3D &source);
   void clear() override;
   bool get_param_visibility_state(const std::string &param_name) const override;
   // 0: 2D viewer, 1: 3D renderer (qtr::RenderType)
@@ -42,6 +44,9 @@ public:
   void set_skybox(const std::filesystem::path path);
   void setup_layout() override;
   void setup_connections() override;
+  void update_style();
+
+  static void restyle_all();
 
 public slots:
   void on_view_param_visibility_changed(const std::string &param_name, bool new_state);

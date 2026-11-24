@@ -4,10 +4,11 @@
 #include <algorithm>
 #include <typeinfo>
 
-#include "highmap/flora/forest.hpp"
 #include "highmap/geometry/cloud.hpp"
 #include "highmap/geometry/path.hpp"
 #include "highmap/virtual_array/virtual_texture.hpp"
+#include "highmap/world/flora/forest.hpp"
+#include "highmap/world/rocks/rock_field.hpp"
 
 #include "hesiod/gui/widgets/viewers/viewer.hpp"
 #include "hesiod/logger.hpp"
@@ -140,6 +141,15 @@ void wild_guess_view_param(ViewerNodeParam &view_param,
       value = helper_get_preferred_port_label(node, typeid(hmap::Forest), {"forest"});
       if (value.empty())
         value = helper_get_preferred_port_inout(node, typeid(hmap::Forest), {});
+    }
+
+    if (key == "rocks")
+    {
+      value = helper_get_preferred_port_label(node,
+                                              typeid(hmap::RockField),
+                                              {"rock_field", "rocks"});
+      if (value.empty())
+        value = helper_get_preferred_port_inout(node, typeid(hmap::RockField), {});
     }
   }
 }

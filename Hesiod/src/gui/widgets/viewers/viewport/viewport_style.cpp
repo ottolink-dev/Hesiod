@@ -1,83 +1,17 @@
 /* Copyright (c) 2025 Otto Link. Distributed under the terms of the GNU General
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
-#include <QIcon>
-#include <QPixmap>
 
 #include "meta_qt/ui/theme.hpp"
 
 #include "hesiod/app/hesiod_application.hpp"
-#include "hesiod/gui/widgets/gui_utils.hpp"
-#include "hesiod/gui/widgets/properties_panel_design.hpp"
+#include "hesiod/gui/theme/theme.hpp"
+#include "hesiod/gui/widgets/node_widgets/properties_panel_design.hpp"
+#include "hesiod/gui/widgets/utils/gui_utils.hpp"
 #include "hesiod/gui/widgets/viewers/viewport/viewport_style.hpp"
 
 namespace hesiod::viewport
 {
-
-QColor surface_color()
-{
-  const auto &c = HSD_CTX.app_settings.colors;
-  return mix_colors(c.bg_deep, c.bg_primary, 0.80);
-}
-
-QColor border_color()
-{
-  return panel_border_color(); // the card border, shared
-}
-
-bool animations_on() { return HSD_CTX.app_settings.interface.enable_ui_animations; }
-
-int anim_ms(int ms) { return animations_on() ? ms : 0; }
-
-qreal rail_scale()
-{
-  return std::clamp(HSD_CTX.app_settings.viewer.toolbar_scale, 50, 200) / 100.0;
-}
-
-qreal scaled(int base) { return std::round(base * rail_scale()); }
-
-qreal cell_px() { return scaled(kCell); }
-qreal pad_px() { return scaled(kPad); }
-qreal thick_px() { return scaled(kThick); }
-qreal square_px() { return scaled(kSquare); }
-qreal sep_px() { return scaled(kSep); }
-qreal radius_px() { return scaled(kRadius); }
-
-namespace
-{
-
-// A data/icons SVG, `size` px square centred on `c`, recoloured to `ink`
-// (alpha included). Icons with colours of their own are drawn as they are,
-// only faded by the ink's alpha.
-void paint_svg(QPainter      &p,
-               const char    *name,
-               const QPointF &c,
-               qreal          size,
-               const QColor  &ink,
-               bool           tint = true)
-{
-  const qreal dpr = p.device() ? p.device()->devicePixelRatioF() : 1.0;
-  const int   side = int(std::ceil(size));
-  QPixmap     pixmap = HSD_ICON(name).pixmap(QSize(side, side), dpr);
-  if (pixmap.isNull())
-    return;
-
-  p.save();
-  if (tint)
-  {
-    QPainter recolor(&pixmap);
-    recolor.setCompositionMode(QPainter::CompositionMode_SourceIn);
-    recolor.fillRect(pixmap.rect(), ink);
-  }
-  else
-    p.setOpacity(p.opacity() * ink.alphaF());
-  p.drawPixmap(QRectF(c.x() - side / 2.0, c.y() - side / 2.0, side, side),
-               pixmap,
-               QRectF(pixmap.rect()));
-  p.restore();
-}
-
-} // namespace
 
 void paint_icon(QPainter &p, int tool, const QRectF &r, const QColor &ink)
 {
@@ -120,11 +54,6 @@ void paint_icon(QPainter &p, int tool, const QRectF &r, const QColor &ink)
   paint_svg(p, name, r.center(), size, ink);
 }
 
-void paint_gear(QPainter &p, const QPointF &c, qreal size, const QColor &ink)
-{
-  paint_svg(p, "settings", c, size, ink);
-}
-
 void paint_reset(QPainter &p, const QPointF &c, qreal size, const QColor &ink)
 {
   paint_svg(p, "settings_backup_restore", c, size, ink);
@@ -160,27 +89,30 @@ QString tool_title(int tool)
 // node settings do
 const meta::qt::Theme &viewport_theme()
 {
-  static const meta::qt::Theme theme = []()
-  {
-    meta::qt::Theme t = *properties_panel_design().theme;
-    t.group_accents = {{"Sun", QColor("#cfa143")},
-                       {"Light", QColor("#c06478")},
-                       {"Camera", QColor("#7d9cc0")},
-                       {"Navigation", QColor("#3aa899")},
-                       {"Layers", QColor("#7aa86a")},
-                       {"Debug", QColor("#9a9a9a")},
-                       {"Albedo", QColor("#d98a5e")},
-                       {"Normal Map", QColor("#a08bb8")},
-                       {"Water", QColor("#4a9ecc")},
-                       {"Foam", QColor("#8fb8cf")},
-                       {"Waves", QColor("#3aa899")},
-                       {"Sky", QColor("#7d9cc0")},
-                       {"Fog", QColor("#9a9a9a")},
-                       {"Scattering", QColor("#a08bb8")},
-                       {"Display", QColor("#3aa899")},
-                       {"Background", QColor("#9a9a9a")}};
-    return t;
-  }();
+  static meta::qt::Theme theme;
+  theme = *properties_panel_design().theme;
+
+  const std::vector<std::string> group_names = {"Sun",
+                                                "Light",
+                                                "Camera",
+                                                "Navigation",
+                                                "Layers",
+                                                "Debug",
+                                                "Albedo",
+                                                "Normal Map",
+                                                "Water",
+                                                "Foam",
+                                                "Waves",
+                                                "Sky",
+                                                "Fog",
+                                                "Scattering",
+                                                "Display",
+                                                "Background"};
+
+  theme.group_accents.clear();
+  for (const auto &name : group_names)
+    theme.group_accents[name] = ThemeDefinition::derive_group_accent(name);
+
   return theme;
 }
 

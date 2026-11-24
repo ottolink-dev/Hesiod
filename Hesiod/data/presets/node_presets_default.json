@@ -1,0 +1,1171 @@
+{
+    "format_version": 1,
+    "title": "Default Node Presets",
+    "author": "Hesiod",
+    "comment": "Default bundled presets for standard nodes.",
+    "presets": {
+        "TerrainTexture": {
+            "Alpine": {
+                "containers": {
+                    "main": {
+                        "cavity": {
+                            "value": 0.6000000238418579
+                        },
+                        "color_noise": {
+                            "value": 1.0
+                        },
+                        "deposition_amount": {
+                            "value": 0.5
+                        },
+                        "detail": {
+                            "value": 2.0
+                        },
+                        "dry_grass": {
+                            "value": {
+                                "w": 1.0,
+                                "x": 0.52,
+                                "y": 0.49,
+                                "z": 0.36
+                            }
+                        },
+                        "flow": {
+                            "value": 0.20000000298023224
+                        },
+                        "flow_width": {
+                            "value": 0.5
+                        },
+                        "grass": {
+                            "value": {
+                                "w": 1.0,
+                                "x": 0.28,
+                                "y": 0.36,
+                                "z": 0.22
+                            }
+                        },
+                        "noise_scale": {
+                            "value": 0.20000000298023224
+                        },
+                        "radius": {
+                            "value": 0.05000000074505806
+                        },
+                        "ridge": {
+                            "value": {
+                                "w": 1.0,
+                                "x": 0.62,
+                                "y": 0.62,
+                                "z": 0.62
+                            }
+                        },
+                        "rock": {
+                            "value": {
+                                "w": 1.0,
+                                "x": 0.42,
+                                "y": 0.41,
+                                "z": 0.4
+                            }
+                        },
+                        "rock_edge": {
+                            "value": 0.15000000596046448
+                        },
+                        "rock_slope": {
+                            "value": 3.0
+                        },
+                        "sediment": {
+                            "value": {
+                                "w": 1.0,
+                                "x": 0.68,
+                                "y": 0.65,
+                                "z": 0.58
+                            }
+                        },
+                        "seed": {
+                            "value": 0
+                        },
+                        "snow": {
+                            "value": {
+                                "w": 1.0,
+                                "x": 0.95,
+                                "y": 0.96,
+                                "z": 0.98
+                            }
+                        },
+                        "snow_amount": {
+                            "value": 1.0
+                        },
+                        "snow_line": {
+                            "value": 0.8500000238418579
+                        },
+                        "soil": {
+                            "value": {
+                                "w": 1.0,
+                                "x": 0.45,
+                                "y": 0.38,
+                                "z": 0.3
+                            }
+                        },
+                        "state": {
+                            "Materials.is_expanded": {
+                                "type": "bool",
+                                "value": true
+                            },
+                            "Rock & Ridges.is_expanded": {
+                                "type": "bool",
+                                "value": true
+                            },
+                            "Variation.is_expanded": {
+                                "type": "bool",
+                                "value": true
+                            },
+                            "Water & Snow.is_expanded": {
+                                "type": "bool",
+                                "value": true
+                            }
+                        },
+                        "strata": {
+                            "value": 0.3499999940395355
+                        },
+                        "streak_length": {
+                            "value": 0.05999999865889549
+                        },
+                        "streaks": {
+                            "value": 0.800000011920929
+                        }
+                    }
+                },
+                "current": "main"
+            },
+            "Everest": {
+                "containers": {
+                    "main": {
+                        "cavity": {
+                            "value": 0.6000000238418579
+                        },
+                        "color_noise": {
+                            "value": 1.0
+                        },
+                        "deposition_amount": {
+                            "value": 0.5
+                        },
+                        "detail": {
+                            "value": 2.0
+                        },
+                        "dry_grass": {
+                            "value": {
+                                "w": 1.0,
+                                "x": 0.45,
+                                "y": 0.42,
+                                "z": 0.38
+                            }
+                        },
+                        "flow": {
+                            "value": 0.20000000298023224
+                        },
+                        "flow_width": {
+                            "value": 0.5
+                        },
+                        "grass": {
+                            "value": {
+                                "w": 1.0,
+                                "x": 0.35,
+                                "y": 0.34,
+                                "z": 0.3
+                            }
+                        },
+                        "noise_scale": {
+                            "value": 0.20000000298023224
+                        },
+                        "radius": {
+                            "value": 0.05000000074505806
+                        },
+                        "ridge": {
+                            "value": {
+                                "w": 1.0,
+                                "x": 0.5,
+                                "y": 0.49,
+                                "z": 0.52
+                            }
+                        },
+                        "rock": {
+                            "value": {
+                                "w": 1.0,
+                                "x": 0.28,
+                                "y": 0.27,
+                                "z": 0.28
+                            }
+                        },
+                        "rock_edge": {
+                            "value": 0.15000000596046448
+                        },
+                        "rock_slope": {
+                            "value": 3.0
+                        },
+                        "sediment": {
+                            "value": {
+                                "w": 1.0,
+                                "x": 0.6,
+                                "y": 0.58,
+                                "z": 0.55
+                            }
+                        },
+                        "seed": {
+                            "value": 0
+                        },
+                        "snow": {
+                            "value": {
+                                "w": 1.0,
+                                "x": 0.96,
+                                "y": 0.97,
+                                "z": 1.0
+                            }
+                        },
+                        "snow_amount": {
+                            "value": 1.0
+                        },
+                        "snow_line": {
+                            "value": 0.8500000238418579
+                        },
+                        "soil": {
+                            "value": {
+                                "w": 1.0,
+                                "x": 0.36,
+                                "y": 0.33,
+                                "z": 0.29
+                            }
+                        },
+                        "state": {
+                            "Materials.is_expanded": {
+                                "type": "bool",
+                                "value": true
+                            },
+                            "Rock & Ridges.is_expanded": {
+                                "type": "bool",
+                                "value": true
+                            },
+                            "Variation.is_expanded": {
+                                "type": "bool",
+                                "value": true
+                            },
+                            "Water & Snow.is_expanded": {
+                                "type": "bool",
+                                "value": true
+                            }
+                        },
+                        "strata": {
+                            "value": 0.3499999940395355
+                        },
+                        "streak_length": {
+                            "value": 0.05999999865889549
+                        },
+                        "streaks": {
+                            "value": 0.800000011920929
+                        }
+                    }
+                },
+                "current": "main"
+            },
+            "Grassland": {
+                "containers": {
+                    "main": {
+                        "cavity": {
+                            "value": 0.6000000238418579
+                        },
+                        "color_noise": {
+                            "value": 1.0
+                        },
+                        "deposition_amount": {
+                            "value": 0.5
+                        },
+                        "detail": {
+                            "value": 2.0
+                        },
+                        "dry_grass": {
+                            "value": {
+                                "w": 1.0,
+                                "x": 0.58,
+                                "y": 0.6,
+                                "z": 0.28
+                            }
+                        },
+                        "flow": {
+                            "value": 0.20000000298023224
+                        },
+                        "flow_width": {
+                            "value": 0.5
+                        },
+                        "grass": {
+                            "value": {
+                                "w": 1.0,
+                                "x": 0.26,
+                                "y": 0.48,
+                                "z": 0.18
+                            }
+                        },
+                        "noise_scale": {
+                            "value": 0.20000000298023224
+                        },
+                        "radius": {
+                            "value": 0.05000000074505806
+                        },
+                        "ridge": {
+                            "value": {
+                                "w": 1.0,
+                                "x": 0.65,
+                                "y": 0.6,
+                                "z": 0.5
+                            }
+                        },
+                        "rock": {
+                            "value": {
+                                "w": 1.0,
+                                "x": 0.5,
+                                "y": 0.46,
+                                "z": 0.38
+                            }
+                        },
+                        "rock_edge": {
+                            "value": 0.15000000596046448
+                        },
+                        "rock_slope": {
+                            "value": 3.0
+                        },
+                        "sediment": {
+                            "value": {
+                                "w": 1.0,
+                                "x": 0.66,
+                                "y": 0.58,
+                                "z": 0.42
+                            }
+                        },
+                        "seed": {
+                            "value": 0
+                        },
+                        "snow": {
+                            "value": {
+                                "w": 1.0,
+                                "x": 0.94,
+                                "y": 0.95,
+                                "z": 0.97
+                            }
+                        },
+                        "snow_amount": {
+                            "value": 1.0
+                        },
+                        "snow_line": {
+                            "value": 0.8500000238418579
+                        },
+                        "soil": {
+                            "value": {
+                                "w": 1.0,
+                                "x": 0.48,
+                                "y": 0.38,
+                                "z": 0.26
+                            }
+                        },
+                        "state": {
+                            "Materials.is_expanded": {
+                                "type": "bool",
+                                "value": true
+                            },
+                            "Rock & Ridges.is_expanded": {
+                                "type": "bool",
+                                "value": true
+                            },
+                            "Variation.is_expanded": {
+                                "type": "bool",
+                                "value": true
+                            },
+                            "Water & Snow.is_expanded": {
+                                "type": "bool",
+                                "value": true
+                            }
+                        },
+                        "strata": {
+                            "value": 0.3499999940395355
+                        },
+                        "streak_length": {
+                            "value": 0.05999999865889549
+                        },
+                        "streaks": {
+                            "value": 0.800000011920929
+                        }
+                    }
+                },
+                "current": "main"
+            },
+            "Iceland Black Gray": {
+                "containers": {
+                    "main": {
+                        "cavity": {
+                            "value": 0.6000000238418579
+                        },
+                        "color_noise": {
+                            "value": 1.0
+                        },
+                        "deposition_amount": {
+                            "value": 0.5
+                        },
+                        "detail": {
+                            "value": 2.0
+                        },
+                        "dry_grass": {
+                            "value": {
+                                "w": 1.0,
+                                "x": 0.28,
+                                "y": 0.27,
+                                "z": 0.26
+                            }
+                        },
+                        "flow": {
+                            "value": 0.20000000298023224
+                        },
+                        "flow_width": {
+                            "value": 0.5
+                        },
+                        "grass": {
+                            "value": {
+                                "w": 1.0,
+                                "x": 0.18,
+                                "y": 0.18,
+                                "z": 0.18
+                            }
+                        },
+                        "noise_scale": {
+                            "value": 0.20000000298023224
+                        },
+                        "radius": {
+                            "value": 0.05000000074505806
+                        },
+                        "ridge": {
+                            "value": {
+                                "w": 1.0,
+                                "x": 0.42,
+                                "y": 0.42,
+                                "z": 0.43
+                            }
+                        },
+                        "rock": {
+                            "value": {
+                                "w": 1.0,
+                                "x": 0.1,
+                                "y": 0.1,
+                                "z": 0.11
+                            }
+                        },
+                        "rock_edge": {
+                            "value": 0.15000000596046448
+                        },
+                        "rock_slope": {
+                            "value": 3.0
+                        },
+                        "sediment": {
+                            "value": {
+                                "w": 1.0,
+                                "x": 0.35,
+                                "y": 0.34,
+                                "z": 0.33
+                            }
+                        },
+                        "seed": {
+                            "value": 0
+                        },
+                        "snow": {
+                            "value": {
+                                "w": 1.0,
+                                "x": 0.92,
+                                "y": 0.94,
+                                "z": 0.97
+                            }
+                        },
+                        "snow_amount": {
+                            "value": 1.0
+                        },
+                        "snow_line": {
+                            "value": 0.8500000238418579
+                        },
+                        "soil": {
+                            "value": {
+                                "w": 1.0,
+                                "x": 0.14,
+                                "y": 0.13,
+                                "z": 0.13
+                            }
+                        },
+                        "state": {
+                            "Materials.is_expanded": {
+                                "type": "bool",
+                                "value": true
+                            },
+                            "Rock & Ridges.is_expanded": {
+                                "type": "bool",
+                                "value": true
+                            },
+                            "Variation.is_expanded": {
+                                "type": "bool",
+                                "value": true
+                            },
+                            "Water & Snow.is_expanded": {
+                                "type": "bool",
+                                "value": true
+                            }
+                        },
+                        "strata": {
+                            "value": 0.3499999940395355
+                        },
+                        "streak_length": {
+                            "value": 0.05999999865889549
+                        },
+                        "streaks": {
+                            "value": 0.800000011920929
+                        }
+                    }
+                },
+                "current": "main"
+            },
+            "Iceland Black Green": {
+                "containers": {
+                    "main": {
+                        "cavity": {
+                            "value": 0.6000000238418579
+                        },
+                        "color_noise": {
+                            "value": 1.0
+                        },
+                        "deposition_amount": {
+                            "value": 0.5
+                        },
+                        "detail": {
+                            "value": 2.0
+                        },
+                        "dry_grass": {
+                            "value": {
+                                "w": 1.0,
+                                "x": 0.34,
+                                "y": 0.42,
+                                "z": 0.18
+                            }
+                        },
+                        "flow": {
+                            "value": 0.20000000298023224
+                        },
+                        "flow_width": {
+                            "value": 0.5
+                        },
+                        "grass": {
+                            "value": {
+                                "w": 1.0,
+                                "x": 0.22,
+                                "y": 0.46,
+                                "z": 0.15
+                            }
+                        },
+                        "noise_scale": {
+                            "value": 0.20000000298023224
+                        },
+                        "radius": {
+                            "value": 0.05000000074505806
+                        },
+                        "ridge": {
+                            "value": {
+                                "w": 1.0,
+                                "x": 0.3,
+                                "y": 0.3,
+                                "z": 0.32
+                            }
+                        },
+                        "rock": {
+                            "value": {
+                                "w": 1.0,
+                                "x": 0.11,
+                                "y": 0.11,
+                                "z": 0.12
+                            }
+                        },
+                        "rock_edge": {
+                            "value": 0.15000000596046448
+                        },
+                        "rock_slope": {
+                            "value": 3.0
+                        },
+                        "sediment": {
+                            "value": {
+                                "w": 1.0,
+                                "x": 0.24,
+                                "y": 0.24,
+                                "z": 0.22
+                            }
+                        },
+                        "seed": {
+                            "value": 0
+                        },
+                        "snow": {
+                            "value": {
+                                "w": 1.0,
+                                "x": 0.93,
+                                "y": 0.95,
+                                "z": 0.98
+                            }
+                        },
+                        "snow_amount": {
+                            "value": 1.0
+                        },
+                        "snow_line": {
+                            "value": 0.8500000238418579
+                        },
+                        "soil": {
+                            "value": {
+                                "w": 1.0,
+                                "x": 0.15,
+                                "y": 0.15,
+                                "z": 0.14
+                            }
+                        },
+                        "state": {
+                            "Materials.is_expanded": {
+                                "type": "bool",
+                                "value": true
+                            },
+                            "Rock & Ridges.is_expanded": {
+                                "type": "bool",
+                                "value": true
+                            },
+                            "Variation.is_expanded": {
+                                "type": "bool",
+                                "value": true
+                            },
+                            "Water & Snow.is_expanded": {
+                                "type": "bool",
+                                "value": true
+                            }
+                        },
+                        "strata": {
+                            "value": 0.3499999940395355
+                        },
+                        "streak_length": {
+                            "value": 0.05999999865889549
+                        },
+                        "streaks": {
+                            "value": 0.800000011920929
+                        }
+                    }
+                },
+                "current": "main"
+            },
+            "Atoll Island": {
+                "containers": {
+                    "main": {
+                        "cavity": {
+                            "value": 0.6000000238418579
+                        },
+                        "color_noise": {
+                            "value": 1.0
+                        },
+                        "deposition_amount": {
+                            "value": 0.5
+                        },
+                        "detail": {
+                            "value": 2.0
+                        },
+                        "dry_grass": {
+                            "value": {
+                                "w": 1.0,
+                                "x": 0.78,
+                                "y": 0.76,
+                                "z": 0.45
+                            }
+                        },
+                        "flow": {
+                            "value": 0.20000000298023224
+                        },
+                        "flow_width": {
+                            "value": 0.5
+                        },
+                        "grass": {
+                            "value": {
+                                "w": 1.0,
+                                "x": 0.12,
+                                "y": 0.52,
+                                "z": 0.22
+                            }
+                        },
+                        "noise_scale": {
+                            "value": 0.20000000298023224
+                        },
+                        "radius": {
+                            "value": 0.05000000074505806
+                        },
+                        "ridge": {
+                            "value": {
+                                "w": 1.0,
+                                "x": 0.75,
+                                "y": 0.72,
+                                "z": 0.66
+                            }
+                        },
+                        "rock": {
+                            "value": {
+                                "w": 1.0,
+                                "x": 0.62,
+                                "y": 0.58,
+                                "z": 0.52
+                            }
+                        },
+                        "rock_edge": {
+                            "value": 0.15000000596046448
+                        },
+                        "rock_slope": {
+                            "value": 3.0
+                        },
+                        "sediment": {
+                            "value": {
+                                "w": 1.0,
+                                "x": 0.9,
+                                "y": 0.87,
+                                "z": 0.75
+                            }
+                        },
+                        "seed": {
+                            "value": 0
+                        },
+                        "snow": {
+                            "value": {
+                                "w": 1.0,
+                                "x": 0.98,
+                                "y": 0.98,
+                                "z": 0.98
+                            }
+                        },
+                        "snow_amount": {
+                            "value": 1.0
+                        },
+                        "snow_line": {
+                            "value": 0.8500000238418579
+                        },
+                        "soil": {
+                            "value": {
+                                "w": 1.0,
+                                "x": 0.84,
+                                "y": 0.79,
+                                "z": 0.65
+                            }
+                        },
+                        "state": {
+                            "Materials.is_expanded": {
+                                "type": "bool",
+                                "value": true
+                            },
+                            "Rock & Ridges.is_expanded": {
+                                "type": "bool",
+                                "value": true
+                            },
+                            "Variation.is_expanded": {
+                                "type": "bool",
+                                "value": true
+                            },
+                            "Water & Snow.is_expanded": {
+                                "type": "bool",
+                                "value": true
+                            }
+                        },
+                        "strata": {
+                            "value": 0.3499999940395355
+                        },
+                        "streak_length": {
+                            "value": 0.05999999865889549
+                        },
+                        "streaks": {
+                            "value": 0.800000011920929
+                        }
+                    }
+                },
+                "current": "main"
+            },
+            "Red Canyon": {
+                "containers": {
+                    "main": {
+                        "cavity": {
+                            "value": 0.6000000238418579
+                        },
+                        "color_noise": {
+                            "value": 1.0
+                        },
+                        "deposition_amount": {
+                            "value": 0.5
+                        },
+                        "detail": {
+                            "value": 2.0
+                        },
+                        "dry_grass": {
+                            "value": {
+                                "w": 1.0,
+                                "x": 0.68,
+                                "y": 0.45,
+                                "z": 0.28
+                            }
+                        },
+                        "flow": {
+                            "value": 0.20000000298023224
+                        },
+                        "flow_width": {
+                            "value": 0.5
+                        },
+                        "grass": {
+                            "value": {
+                                "w": 1.0,
+                                "x": 0.46,
+                                "y": 0.38,
+                                "z": 0.25
+                            }
+                        },
+                        "noise_scale": {
+                            "value": 0.20000000298023224
+                        },
+                        "radius": {
+                            "value": 0.05000000074505806
+                        },
+                        "ridge": {
+                            "value": {
+                                "w": 1.0,
+                                "x": 0.85,
+                                "y": 0.52,
+                                "z": 0.3
+                            }
+                        },
+                        "rock": {
+                            "value": {
+                                "w": 1.0,
+                                "x": 0.66,
+                                "y": 0.28,
+                                "z": 0.16
+                            }
+                        },
+                        "rock_edge": {
+                            "value": 0.15000000596046448
+                        },
+                        "rock_slope": {
+                            "value": 3.0
+                        },
+                        "sediment": {
+                            "value": {
+                                "w": 1.0,
+                                "x": 0.82,
+                                "y": 0.62,
+                                "z": 0.42
+                            }
+                        },
+                        "seed": {
+                            "value": 0
+                        },
+                        "snow": {
+                            "value": {
+                                "w": 1.0,
+                                "x": 0.94,
+                                "y": 0.92,
+                                "z": 0.9
+                            }
+                        },
+                        "snow_amount": {
+                            "value": 1.0
+                        },
+                        "snow_line": {
+                            "value": 0.8500000238418579
+                        },
+                        "soil": {
+                            "value": {
+                                "w": 1.0,
+                                "x": 0.62,
+                                "y": 0.32,
+                                "z": 0.18
+                            }
+                        },
+                        "state": {
+                            "Materials.is_expanded": {
+                                "type": "bool",
+                                "value": true
+                            },
+                            "Rock & Ridges.is_expanded": {
+                                "type": "bool",
+                                "value": true
+                            },
+                            "Variation.is_expanded": {
+                                "type": "bool",
+                                "value": true
+                            },
+                            "Water & Snow.is_expanded": {
+                                "type": "bool",
+                                "value": true
+                            }
+                        },
+                        "strata": {
+                            "value": 0.3499999940395355
+                        },
+                        "streak_length": {
+                            "value": 0.05999999865889549
+                        },
+                        "streaks": {
+                            "value": 0.800000011920929
+                        }
+                    }
+                },
+                "current": "main"
+            },
+            "Desert Dunes": {
+                "containers": {
+                    "main": {
+                        "cavity": {
+                            "value": 0.6000000238418579
+                        },
+                        "color_noise": {
+                            "value": 1.0
+                        },
+                        "deposition_amount": {
+                            "value": 0.5
+                        },
+                        "detail": {
+                            "value": 2.0
+                        },
+                        "dry_grass": {
+                            "value": {
+                                "w": 1.0,
+                                "x": 0.82,
+                                "y": 0.68,
+                                "z": 0.46
+                            }
+                        },
+                        "flow": {
+                            "value": 0.20000000298023224
+                        },
+                        "flow_width": {
+                            "value": 0.5
+                        },
+                        "grass": {
+                            "value": {
+                                "w": 1.0,
+                                "x": 0.74,
+                                "y": 0.62,
+                                "z": 0.42
+                            }
+                        },
+                        "noise_scale": {
+                            "value": 0.20000000298023224
+                        },
+                        "radius": {
+                            "value": 0.05000000074505806
+                        },
+                        "ridge": {
+                            "value": {
+                                "w": 1.0,
+                                "x": 0.92,
+                                "y": 0.82,
+                                "z": 0.6
+                            }
+                        },
+                        "rock": {
+                            "value": {
+                                "w": 1.0,
+                                "x": 0.65,
+                                "y": 0.52,
+                                "z": 0.36
+                            }
+                        },
+                        "rock_edge": {
+                            "value": 0.15000000596046448
+                        },
+                        "rock_slope": {
+                            "value": 3.0
+                        },
+                        "sediment": {
+                            "value": {
+                                "w": 1.0,
+                                "x": 0.88,
+                                "y": 0.76,
+                                "z": 0.52
+                            }
+                        },
+                        "seed": {
+                            "value": 0
+                        },
+                        "snow": {
+                            "value": {
+                                "w": 1.0,
+                                "x": 0.96,
+                                "y": 0.94,
+                                "z": 0.92
+                            }
+                        },
+                        "snow_amount": {
+                            "value": 1.0
+                        },
+                        "snow_line": {
+                            "value": 0.8500000238418579
+                        },
+                        "soil": {
+                            "value": {
+                                "w": 1.0,
+                                "x": 0.7,
+                                "y": 0.56,
+                                "z": 0.38
+                            }
+                        },
+                        "state": {
+                            "Materials.is_expanded": {
+                                "type": "bool",
+                                "value": true
+                            },
+                            "Rock & Ridges.is_expanded": {
+                                "type": "bool",
+                                "value": true
+                            },
+                            "Variation.is_expanded": {
+                                "type": "bool",
+                                "value": true
+                            },
+                            "Water & Snow.is_expanded": {
+                                "type": "bool",
+                                "value": true
+                            }
+                        },
+                        "strata": {
+                            "value": 0.3499999940395355
+                        },
+                        "streak_length": {
+                            "value": 0.05999999865889549
+                        },
+                        "streaks": {
+                            "value": 0.800000011920929
+                        }
+                    }
+                },
+                "current": "main"
+            },
+            "Alien Sulfur": {
+                "containers": {
+                    "main": {
+                        "cavity": {
+                            "value": 0.6000000238418579
+                        },
+                        "color_noise": {
+                            "value": 1.0
+                        },
+                        "deposition_amount": {
+                            "value": 0.5
+                        },
+                        "detail": {
+                            "value": 2.0
+                        },
+                        "dry_grass": {
+                            "value": {
+                                "w": 1.0,
+                                "x": 0.58,
+                                "y": 0.52,
+                                "z": 0.12
+                            }
+                        },
+                        "flow": {
+                            "value": 0.20000000298023224
+                        },
+                        "flow_width": {
+                            "value": 0.5
+                        },
+                        "grass": {
+                            "value": {
+                                "w": 1.0,
+                                "x": 0.72,
+                                "y": 0.68,
+                                "z": 0.14
+                            }
+                        },
+                        "noise_scale": {
+                            "value": 0.20000000298023224
+                        },
+                        "radius": {
+                            "value": 0.05000000074505806
+                        },
+                        "ridge": {
+                            "value": {
+                                "w": 1.0,
+                                "x": 0.88,
+                                "y": 0.62,
+                                "z": 0.15
+                            }
+                        },
+                        "rock": {
+                            "value": {
+                                "w": 1.0,
+                                "x": 0.26,
+                                "y": 0.2,
+                                "z": 0.24
+                            }
+                        },
+                        "rock_edge": {
+                            "value": 0.15000000596046448
+                        },
+                        "rock_slope": {
+                            "value": 3.0
+                        },
+                        "sediment": {
+                            "value": {
+                                "w": 1.0,
+                                "x": 0.85,
+                                "y": 0.8,
+                                "z": 0.2
+                            }
+                        },
+                        "seed": {
+                            "value": 0
+                        },
+                        "snow": {
+                            "value": {
+                                "w": 1.0,
+                                "x": 0.92,
+                                "y": 0.9,
+                                "z": 0.75
+                            }
+                        },
+                        "snow_amount": {
+                            "value": 1.0
+                        },
+                        "snow_line": {
+                            "value": 0.8500000238418579
+                        },
+                        "soil": {
+                            "value": {
+                                "w": 1.0,
+                                "x": 0.38,
+                                "y": 0.22,
+                                "z": 0.15
+                            }
+                        },
+                        "state": {
+                            "Materials.is_expanded": {
+                                "type": "bool",
+                                "value": true
+                            },
+                            "Rock & Ridges.is_expanded": {
+                                "type": "bool",
+                                "value": true
+                            },
+                            "Variation.is_expanded": {
+                                "type": "bool",
+                                "value": true
+                            },
+                            "Water & Snow.is_expanded": {
+                                "type": "bool",
+                                "value": true
+                            }
+                        },
+                        "strata": {
+                            "value": 0.3499999940395355
+                        },
+                        "streak_length": {
+                            "value": 0.05999999865889549
+                        },
+                        "streaks": {
+                            "value": 0.800000011920929
+                        }
+                    }
+                },
+                "current": "main"
+            }
+        }
+    }
+}

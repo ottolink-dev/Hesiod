@@ -3,7 +3,7 @@
  * this software. */
 #include "hesiod/gui/widgets/controls/control_tones.hpp"
 #include "hesiod/app/hesiod_application.hpp"
-#include "hesiod/gui/widgets/gui_utils.hpp"
+#include "hesiod/gui/widgets/utils/gui_utils.hpp"
 
 namespace hesiod
 {

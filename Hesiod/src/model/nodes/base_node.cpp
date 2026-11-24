@@ -12,22 +12,24 @@
 
 #include "gnode/graph.hpp"
 
-#include "highmap/flora/forest.hpp"
 #include "highmap/geometry/cloud.hpp"
 #include "highmap/geometry/path.hpp"
 #include "highmap/virtual_array/virtual_array.hpp"
+#include "highmap/world/flora/forest.hpp"
+#include "highmap/world/rocks/rock_field.hpp"
 
 #include "meta/ext/array/array.hpp"
 #include "meta/metadata/keys.hpp"
 
+#include "gnode/graph_worker.hpp"
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/logger.hpp"
-#include "hesiod/model/graph/graph_worker.hpp"
 #include "hesiod/model/nodes/attributes.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/legacy/legacy_converter.hpp"
 #include "hesiod/model/nodes/node_factory.hpp"
 #include "hesiod/model/utils.hpp"
+#include "hesiod/profiling.hpp"
 
 namespace hesiod
 {
@@ -40,6 +42,7 @@ std::string map_type_name(const std::string &typeid_name)
       {typeid(hmap::Array).name(), "Array"},
       {typeid(hmap::Cloud).name(), "Cloud"},
       {typeid(hmap::Forest).name(), "Forest"},
+      {typeid(hmap::RockField).name(), "RockField"},
       {typeid(hmap::VirtualArray).name(), "VirtualArray"},
       {typeid(hmap::VirtualTexture).name(), "VirtualTexture"},
       {typeid(hmap::Path).name(), "Path"},
@@ -56,7 +59,9 @@ BaseNode::BaseNode(const std::string &label, std::weak_ptr<GraphConfig> config)
 {
   Logger::log()->trace("BaseNode::BaseNode, label: {}", label);
 
-  this->category = get_node_inventory().at(label);
+  const auto &inventory = get_node_inventory();
+  if (auto it = inventory.find(label); it != inventory.end())
+    this->category = it->second;
   this->update_runtime_info(NodeRuntimeStep::NRS_INIT);
 
   // initialize documentation
@@ -91,6 +96,8 @@ const GraphConfig &BaseNode::cfg() const
 
 void BaseNode::compute()
 {
+  HSD_PROFILE_ZONE("BaseNode::compute");
+  HSD_PROFILE_TEXT(std::format("{} id={}", this->get_node_type(), this->get_id()));
   if (this->compute_started)
     this->compute_started(this->get_id());
 
@@ -104,7 +111,16 @@ void BaseNode::compute()
 
   try
   {
+    HSD_PROFILE_ZONE("Node algorithm");
+    HSD_PROFILE_TEXT(std::format("{} id={} shape={}x{} tiling={}x{}",
+                                 this->get_node_type(),
+                                 this->get_id(),
+                                 this->cfg().shape.x,
+                                 this->cfg().shape.y,
+                                 this->cfg().tiling.x,
+                                 this->cfg().tiling.y));
     this->compute_fct(*this);
+    this->computed_shape = this->cfg().shape;
   }
   catch (const std::bad_alloc &)
   {
@@ -149,6 +165,10 @@ void BaseNode::compute()
     throw std::bad_alloc();
 }
 
+void BaseNode::on_pre_async_compute() { this->begin_background_compute(); }
+
+void BaseNode::on_async_compute_cancelled() { this->cancel_background_compute(); }
+
 void BaseNode::begin_background_compute()
 {
   this->frozen_meta_group.reset();
@@ -180,7 +200,7 @@ void BaseNode::begin_background_compute()
 bool BaseNode::is_port_busy(int port_index) const
 {
   // the update thread only computes the node that rewrites its data
-  if (GraphWorker::in_update_thread() || port_index < 0 ||
+  if (gnode::GraphWorker::in_worker_thread() || port_index < 0 ||
       port_index >= this->get_nports())
     return false;
 
@@ -200,7 +220,7 @@ bool BaseNode::is_port_busy(int port_index) const
 meta::ContainerGroup &BaseNode::get_meta_group()
 {
   // the update thread computes from the snapshot, see begin_background_compute()
-  if (this->frozen_meta_group && GraphWorker::in_update_thread())
+  if (this->frozen_meta_group && gnode::GraphWorker::in_worker_thread())
     return *this->frozen_meta_group;
 
   if (!this->meta_group)
@@ -214,7 +234,7 @@ meta::ContainerGroup &BaseNode::get_meta_group()
 
 const meta::ContainerGroup &BaseNode::get_meta_group() const
 {
-  if (this->frozen_meta_group && GraphWorker::in_update_thread())
+  if (this->frozen_meta_group && gnode::GraphWorker::in_worker_thread())
     return *this->frozen_meta_group;
 
   return *this->meta_group;
@@ -510,6 +530,12 @@ float BaseNode::get_memory_usage() const
       if (p_d)
         count += sizeof(float) * 3 * p_d->size();
     }
+    else if (this->get_data_type(k) == typeid(hmap::RockField).name())
+    {
+      auto *p_d = this->get_value_ref<hmap::RockField>(k);
+      if (p_d)
+        count += sizeof(hmap::ScatterItem) * p_d->size();
+    }
   }
 
   if (count > 0.)
@@ -759,7 +785,7 @@ void BaseNode::propagate_config_change()
                                        cfg.tile_shape,
                                        cfg.halo,
                                        cfg.storage_mode);
-          p_v->copy_from(va, cfg.cm_cpu);
+          p_v->copy_from(va, cfg.cm_cpu, false); // no data to copy, tiles come on demand
         }
       }
     }

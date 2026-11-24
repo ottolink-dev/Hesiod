@@ -1,0 +1,54 @@
+R""(
+QDialog#hsdMessage QWidget { background: transparent; color: INK; }
+QDialog#hsdMessage QLabel#messageTitle { font-size: 16px; font-weight: 600; }
+QDialog#hsdMessage QLabel#messageText { color: DIM; font-size: 13px; }
+QDialog#hsdMessage QLabel#messageFootnote { color: FAINT; font-size: 12px; }
+QDialog#hsdMessage QFrame#messageDetails {
+  background: DEEP; border: 1px solid BORDER; border-radius: 8px; }
+QDialog#hsdMessage QLabel#detailKey { color: FAINT; font-size: 12px; }
+QDialog#hsdMessage QLabel#detailValue { color: INK; font-size: 12px; }
+QDialog#hsdMessage QLabel#messageError { color: DANGER; font-size: 12px; }
+QDialog#hsdMessage QLineEdit {
+  background: DEEP; color: INK; border: 1px solid BORDER; border-radius: 7px;
+  padding: 7px 10px; font-size: 13px; selection-background-color: ACCENT; }
+QDialog#hsdMessage QLineEdit:hover { border-color: FAINT; }
+QDialog#hsdMessage QLineEdit:focus { border-color: ACCENT; }
+QDialog#hsdMessage QPushButton {
+  background: FIELD; color: INK; border: 1px solid BORDER; border-radius: 7px;
+  padding: 7px 18px; font-size: 13px; min-width: 64px; }
+QDialog#hsdMessage QPushButton:hover { background: FIELD_HOVER; border-color: FAINT; }
+QDialog#hsdMessage QPushButton:focus { border-color: ACCENT; }
+QDialog#hsdMessage QPushButton[hsdRole="primary"] {
+  background: ACCENT; border-color: ACCENT; color: #ffffff; font-weight: 600; }
+QDialog#hsdMessage QPushButton[hsdRole="primary"]:hover { background: ACCENT_HOVER; }
+QDialog#hsdMessage QPushButton[hsdRole="danger"] {
+  background: transparent; color: DANGER; border-color: transparent; }
+QDialog#hsdMessage QPushButton[hsdRole="danger"]:hover {
+  background: DANGER_SOFT; border-color: DANGER_BORDER; }
+
+/* Error Dialog extra styling */
+QDialog#hsdMessage QFrame#problemFrame {
+  background: DEEP; border: 1px solid BORDER; border-radius: 8px; }
+QDialog#hsdMessage QWidget#problemRow { border-bottom: 1px solid BORDER; }
+QDialog#hsdMessage QLabel#problemTag {
+  color: WARN; background: WARN_SOFT; border-radius: 4px;
+  padding: 1px 0px; font-size: 10px; font-weight: 600; }
+QDialog#hsdMessage QLabel#problemWhat { color: INK; font-size: 12px; }
+QDialog#hsdMessage QLabel#problemWhy { color: DIM; font-size: 12px; }
+QDialog#hsdMessage QScrollBar:vertical {
+  width: 10px; background: transparent; margin: 4px 2px 4px 0px; border: none; }
+QDialog#hsdMessage QScrollBar::handle:vertical {
+  background: BORDER; border-radius: 4px; min-height: 30px; }
+QDialog#hsdMessage QScrollBar::add-line:vertical,
+QDialog#hsdMessage QScrollBar::sub-line:vertical { height: 0px; border: none; }
+QDialog#hsdMessage QScrollBar::add-page:vertical,
+QDialog#hsdMessage QScrollBar::sub-page:vertical { background: transparent; }
+
+/* Color Picker Dialog extra styling */
+QDialog#hsdMessage QLabel#fieldLabel { color: FAINT; font-size: 11px; }
+QDialog#hsdMessage QLineEdit#hexField, QDialog#hsdMessage QSpinBox#channelField {
+  background: DEEP; color: INK; border: 1px solid BORDER; border-radius: 6px;
+  padding: 4px 6px; font-size: 12px; selection-background-color: ACCENT; }
+QDialog#hsdMessage QLineEdit#hexField:focus,
+QDialog#hsdMessage QSpinBox#channelField:focus { border-color: ACCENT; }
+)""

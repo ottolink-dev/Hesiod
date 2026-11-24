@@ -1,0 +1,41 @@
+name: Profiling harness checks
+
+on:
+  pull_request:
+    branches: [main, dev]
+    paths:
+      - '.github/workflows/profiling.yml'
+      - 'scripts/profiling/**'
+      - 'scripts/hsd/**'
+      - 'tests/profiling/**'
+      - 'docs/profiling/**'
+      - 'Hesiod/data/node_documentation.json'
+      - 'Hesiod/src/model/nodes/**'
+  push:
+    branches: [main, dev]
+    paths:
+      - '.github/workflows/profiling.yml'
+      - 'scripts/profiling/**'
+      - 'scripts/hsd/**'
+      - 'tests/profiling/**'
+      - 'docs/profiling/**'
+      - 'Hesiod/data/node_documentation.json'
+      - 'Hesiod/src/model/nodes/**'
+
+permissions:
+  contents: read
+
+jobs:
+  harness:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m unittest discover -s tests/profiling -v
+      - name: Verify immutable Day 1 artifacts
+        working-directory: docs/profiling/baselines/2026-10-08
+        run: sha256sum --check SHA256SUMS

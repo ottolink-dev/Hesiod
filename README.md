@@ -138,9 +138,7 @@ It builds and audits the standalone package and uploads the ZIP, checksum,
 source information and verification report as a 14-day Actions artifact.
 The audit checks every bundled Mach-O, including plugins and the WebEngine
 helper, for ARM64 support, dependency closure and valid signatures. Hosted CI
-does not test GPU rendering. The weekly workflow reuses this job at the same
-`dev` commit as Linux and Windows and publishes all three archives to the
-website dev channel only after every build and archive validation succeeds.
+does not test GPU rendering. It does not publish packages to the website.
 
 ### Linux
 
@@ -148,6 +146,9 @@ There are also required external dependencies for ubuntu you can execute:
 ```
 sudo apt-get -y install libglfw3 libglfw3-dev libglew-dev libopengl-dev freeglut3-dev libboost-all-dev libeigen3-dev libglm-dev fuse libfuse2 ocl-icd-opencl-dev libassimp-dev qt6-webengine-dev zlib1g-dev
 ```
+
+> [!NOTE]
+> AMD users on Linux may need to install `rocm-opencl` and `rocm-clinfo` for OpenCL compatibility.
 
 #### Getting the sources
 
@@ -175,6 +176,15 @@ Start the main executable:
 ```
 bin/./hesiod
 ```
+
+## Profiling with Tracy
+
+Optional Tracy instrumentation and repeatable node sweeps are documented in the
+[profiling guide](docs/profiling/README.md). Profiling is disabled by default;
+normal builds do not require Tracy.
+
+The [Day 1 baseline](docs/profiling/baselines/2026-10-08/README.md) preserves the
+initial results, CSV, fixtures, provenance and known coverage gaps for issue #783.
 
 ## Dependencies and module structures
 

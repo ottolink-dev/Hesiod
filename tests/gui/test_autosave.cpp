@@ -496,6 +496,45 @@ private Q_SLOTS:
   {
     QVERIFY(HSD_APP->get_autosave_manager_ref() == nullptr);
   }
+
+  void bake_config_serialization_and_dirty_tracking()
+  {
+    ProjectModel model;
+    int          changes = 0;
+    model.has_changed = [&changes]() { ++changes; };
+
+    BakeConfig cfg;
+    cfg.resolution = 2048;
+    cfg.nvariants = 3;
+    cfg.export_dir = "/tmp/test_export";
+    cfg.force_distributed = false;
+    cfg.force_auto_export = false;
+    cfg.rename_export_files = false;
+    cfg.force_maximum_fbm_octaves = true;
+    cfg.min_memory = true;
+    cfg.max_tile_resolution = 1024;
+
+    model.set_bake_config(cfg);
+    QCOMPARE(changes, 1);
+    QVERIFY(model.get_is_dirty());
+
+    const nlohmann::json json = model.json_to();
+    QVERIFY(json.contains("bake_config"));
+
+    ProjectModel restored;
+    restored.json_from(json);
+
+    const BakeConfig restored_cfg = restored.get_bake_config();
+    QCOMPARE(restored_cfg.resolution, 2048);
+    QCOMPARE(restored_cfg.nvariants, 3);
+    QCOMPARE(qs(restored_cfg.export_dir), QString("/tmp/test_export"));
+    QCOMPARE(restored_cfg.force_distributed, false);
+    QCOMPARE(restored_cfg.force_auto_export, false);
+    QCOMPARE(restored_cfg.rename_export_files, false);
+    QCOMPARE(restored_cfg.force_maximum_fbm_octaves, true);
+    QCOMPARE(restored_cfg.min_memory, true);
+    QCOMPARE(restored_cfg.max_tile_resolution, 1024);
+  }
 };
 
 int main(int argc, char **argv)

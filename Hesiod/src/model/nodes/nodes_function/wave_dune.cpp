@@ -1,6 +1,7 @@
 /* Copyright (c) 2023 Otto Link. Distributed under the terms of the GNU General
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
+#include "highmap/math/constants.hpp"
 #include "highmap/primitives.hpp"
 
 #include "hesiod/model/nodes/attributes.hpp"
@@ -37,7 +38,7 @@ void setup_wave_dune_node(BaseNode &node)
 
   // attribute(s)
   add_float(node, A_KW, "kw", 2.f, 0.01f, FLT_MAX);
-  add_float(node, A_ANGLE, "angle", 0.f, -180.f, 180.f, "{:.1f}°");
+  add_angle(node, A_ANGLE);
   add_float(node, A_XTOP, "xtop", 0.7f, 0.f, 1.f);
   add_float(node, A_XBOTTOM, "xbottom", 0.9f, 0.f, 1.f);
   add_float(node, A_PHASE_SHIFT, "phase_shift", 0.f, -180.f, 180.f, "{:.1f}°");
@@ -56,7 +57,7 @@ void compute_wave_dune_node(BaseNode &node)
   hmap::VirtualArray *p_env = node.get_value_ref<hmap::VirtualArray>(P_ENVELOPE);
   hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
-  const float phase_rad = node.val<float>(A_PHASE_SHIFT) * float(M_PI / 180.0);
+  const float phase_rad = node.val<float>(A_PHASE_SHIFT) * hmap::cte::deg_to_rad;
 
   hmap::for_each_tile(
       {p_dr},

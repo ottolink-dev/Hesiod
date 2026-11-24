@@ -9,11 +9,12 @@
 #include "hesiod/model/nodes/node_factory.hpp"
 #include "hesiod/model/utils.hpp"
 
-#include "hesiod/gui/widgets/gui_utils.hpp"
+#include "hesiod/gui/widgets/utils/gui_utils.hpp"
 
 // specific nodes
-#include "hesiod/model/nodes/broadcast_node.hpp"
-#include "hesiod/model/nodes/receive_node.hpp"
+#include "hesiod/model/nodes/node_in_node.hpp"
+#include "hesiod/model/nodes/node_out_node.hpp"
+#include "hesiod/model/nodes/terrain_merge_node.hpp"
 
 // setup node, create ports, attributes, define compute function,
 // define attributes tooltips...
@@ -140,6 +141,7 @@ std::map<std::string, std::string> get_node_inventory()
   std::map<std::string, std::string> node_inventory = {
       {"Abs", "Math/Base"},
       {"AbsSmooth", "Math/Base"},
+      {"AeolianErosion", "WIP"}, // "Erosion"
       {"AreaRemove", "Terrain Features/Morphology"},
       {"Badlands", "Primitive/Geological"},
       {"Band", "Primitive/Function"},
@@ -149,7 +151,9 @@ std::map<std::string, std::string> get_node_inventory()
       {"BlenderBridge", "Bridges"},
       {"BlendPoissonBf", "Operator/Blend"},
       {"Brush", "Primitive/Authoring"},
-      {"Broadcast", "Routing"},
+      {"NodeIn", "Graph IO"},
+      {"NodeOut", "Graph IO"},
+      {"TerrainMerge", "Graph IO"},
       {"Bump", "Primitive/Function"},
       {"Caldera", "WIP"}, // "Primitive/Geological"},
       {"Clamp", "Filter/Range"},
@@ -170,7 +174,9 @@ std::map<std::string, std::string> get_node_inventory()
       {"CloudSetValues", "Geometry/Cloud"},
       {"CloudShuffle", "Geometry/Cloud"},
       {"CloudToArrayInterp", "Geometry/Cloud"},
+      {"CloudToForest", "Flora"},
       {"CloudToPath", "Geometry/Cloud"},
+      {"CloudToRocks", "Rock"},
       {"CloudToVectors", "Geometry/Cloud"},
       {"CoastalErosionDiffusion", "Erosion/Water"},
       {"CoastalErosionProfile", "Erosion/Water"},
@@ -188,23 +194,27 @@ std::map<std::string, std::string> get_node_inventory()
       {"ConvolveSVD", "Math/Convolution"},
       {"Cos", "Math/Base"},
       {"Crater", "Primitive/Geological"},
+      {"CraterField", "Primitive/Geological"},
       {"Curvatures", "Terrain Features"},
       {"Debug", "Debug"},
       {"Dendry", "WIP"},
       {"DepositionFillHoles", "Erosion/Deposition"},
       {"DepressionFilling", "Erosion/Deposition"},
       {"DirectionalBlur", "Filter/Smoothing"},
+      {"DistanceShaper", "Terrain Features/Morphology"},
       {"DistanceTransform", "Terrain Features/Morphology"},
       {"ExpandShrink", "Filter/Recast"},
       {"ExportAsset", "Export"},
       {"ExportAsCubemap", "WIP"}, // "Export"},
       {"ExportCloud", "Export"},
       {"ExportCloudToPly", "Export"},
+      {"ExportForest", "Export"},
       {"ExportHeightmap", "Export"},
       {"ExportHeightmapStreamed", "Export"},
       {"ExportNormalMap", "Export"},
       {"ExportPath", "Export"},
       {"ExportPointsToPly", "Export"},
+      {"ExportRocks", "Export"},
       {"ExportScene", "WIP"},
       {"ExportTexture", "Export"},
       {"ExportTextureStreamed", "Export"},
@@ -213,6 +223,8 @@ std::map<std::string, std::string> get_node_inventory()
       {"FillTalus", "Filter/Advanced Filters"},
       {"FindCutPath", "Geometry/Path"},
       {"FlatbedCarve", "Hydrology"},
+      {"FlattenAroundPoints", "Geometry/Cloud"},
+      {"Flip", "Operator/Transform"},
       {"FloodingFromBoundaries", "Hydrology"},
       {"FloodingFromPoint", "Hydrology"},
       {"FloodingLakeSystem", "Hydrology"},
@@ -222,6 +234,7 @@ std::map<std::string, std::string> get_node_inventory()
       {"FlowSimulationViscous", "WIP"}, // , "Hydrology"},
       {"FlowStream", "WIP"},            // Hydrology
       {"Fold", "Filter/Recast"},
+      {"ForestProcess", "Flora"},
       {"GaborWaveFbm", "Primitive/Coherent"},
       {"Gain", "Filter/Recurve"},
       {"GammaCorrection", "Filter/Recurve"},
@@ -246,8 +259,7 @@ std::map<std::string, std::string> get_node_inventory()
       {"HydraulicSaleve", "Erosion/Hydraulic"},
       {"HydraulicSchott", "WIP"}, // "Erosion/Hydraulic"
       {"HydraulicStreamLog", "Erosion/Hydraulic"},
-      {"HydraulicStreamUpscaleAmplification", "WIP"}, // "Erosion/Hydraulic"
-      {"HydraulicVpipes", "WIP"},                     // "Erosion/Hydraulic"
+      {"HydraulicVpipes", "WIP"}, // "Erosion/Hydraulic"
       {"ImportHeightmap", "Export"},
       {"ImportTexture", "Export"},
       {"Inverse", "Math/Base"},
@@ -269,7 +281,7 @@ std::map<std::string, std::string> get_node_inventory()
       {"LevelSetCurvature", "WIP"}, // "Terrain Features/Advanced"},
       {"MakeBinary", "Terrain Features/Morphology"},
       {"MakePeriodic", "Operator/Tiling"},
-      {"MakePeriodicStitching", "WIP"}, // , "Operator/Tiling"},
+      {"MakePeriodicStitching", "Operator/Tiling"},
       {"MeanShift", "WIP"},
       {"Median3x3", "Filter/Smoothing"},
       {"MergeWaterDepths", "Hydrology"},
@@ -298,6 +310,7 @@ std::map<std::string, std::string> get_node_inventory()
       {"PathToCloud", "Geometry/Path"},
       {"PathToHeightmap", "Geometry/Path"},
       {"PathTransform", "Geometry/Path"},
+      {"PlaceRocksProcedural", "Rock"},
       {"Phasor", "Primitive/Coherent"},
       {"Plateau", "Filter/Recurve"},
       {"Plates", "Primitive/Geological"},
@@ -308,12 +321,12 @@ std::map<std::string, std::string> get_node_inventory()
       {"Preview", "Debug"},
       {"ProjectTalus", "Filter"},
       {"QuadSurface", "Primitive/Function"},
-      {"QuiltingBlend", "WIP"},   // , "Operator/Resynthesis"},
-      {"QuiltingExpand", "WIP"},  // , "Operator/Resynthesis"},
-      {"QuiltingShuffle", "WIP"}, // , "Operator/Resynthesis"},
+      {"QuiltingBlend", "Operator/Resynthesis"},
+      {"QuiltingExpand", "Operator/Resynthesis"},
+      {"QuiltingShuffle", "Operator/Resynthesis"},
       {"RadialDisplacementToXy", "Math"},
       {"RecastCliff", "Filter/Recast"},
-      {"Receive", "Routing"},
+
       {"Recurve", "Filter/Recurve"},
       {"RecurveKura", "Filter/Recurve"},
       {"RelativeDistanceFromSkeleton", "Terrain Features/Morphology"},
@@ -324,6 +337,9 @@ std::map<std::string, std::string> get_node_inventory()
       {"Ridgelines", "Primitive/Authoring"},
       {"Rift", "Primitive/Geological"},
       {"Rifts", "Erosion/Hydraulic"},
+      {"RockSimulation", "Rock"},
+      {"RocksProcess", "Rock"},
+      {"RocksToHeightmap", "Rock"},
       {"Rotate", "Operator/Transform"},
       {"RotateDisplacement", "Math"},
       {"Rugosity", "Terrain Features/Advanced"},
@@ -334,7 +350,7 @@ std::map<std::string, std::string> get_node_inventory()
       {"SelectCurvature", "Terrain Features/Selector"},
       {"SelectMultiband3", "Terrain Features/Selector"},
       {"SelectSlope", "Terrain Features/Selector"},
-      {"SelectSoil", "Terrain Features/ForTexturing"},
+      {"SelectSoil", "Terrain Features/Selector"},
       {"SelectTransitions", "Terrain Features/Selector"},
       {"SelectValue", "Terrain Features/Selector"},
       {"SetAlpha", "Texture"},
@@ -357,9 +373,10 @@ std::map<std::string, std::string> get_node_inventory()
       {"StrataCells", "Erosion/Stratify"},
       {"StrataPlates", "Erosion/Stratify"},
       {"StrataTerrace", "Erosion/Stratify"},
+      {"TerrainTexture", "Texture"},
       {"TextureAdvectionParticle", "Texture"},
-      {"TextureQuiltingExpand", "WIP"},  // , "Texture"},
-      {"TextureQuiltingShuffle", "WIP"}, // , "Texture"},
+      {"TextureQuiltingExpand", "Texture"},
+      {"TextureQuiltingShuffle", "Texture"},
       {"TextureSelectColor", "Texture"},
       {"TextureSplitChannels", "Texture"},
       {"TextureToHeightmap", "Texture"},
@@ -399,19 +416,27 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
 {
   // --- specialized nodes
 
-  if (node_type == "Broadcast")
+  if (node_type == "TerrainMerge")
   {
-    auto sptr = std::make_shared<hesiod::BroadcastNode>(node_type, config);
-    setup_broadcast_node(*sptr);
-    sptr->set_compute_fct(&compute_broadcast_node);
+    auto sptr = std::make_shared<hesiod::TerrainMergeNode>(node_type, config);
+    setup_terrain_merge_node(*sptr);
+    sptr->set_compute_fct(&compute_terrain_merge_node);
+    return sptr;
+  }
+
+  if (node_type == "NodeIn")
+  {
+    auto sptr = std::make_shared<hesiod::NodeInNode>(node_type, config);
+    setup_node_in_node(*sptr);
+    sptr->set_compute_fct(&compute_node_in_node);
     sptr->finalize_attributes();
     return sptr;
   }
-  else if (node_type == "Receive")
+  else if (node_type == "NodeOut")
   {
-    auto sptr = std::make_shared<hesiod::ReceiveNode>(node_type, config);
-    setup_receive_node(*sptr);
-    sptr->set_compute_fct(&compute_receive_node);
+    auto sptr = std::make_shared<hesiod::NodeOutNode>(node_type, config);
+    setup_node_out_node(*sptr);
+    sptr->set_compute_fct(&compute_node_out_node);
     sptr->finalize_attributes();
     return sptr;
   }
@@ -438,6 +463,7 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
 #ifndef HESIOD_MINIMAL_NODE_SET
     SETUP_NODE(Abs, abs);
     SETUP_NODE(AbsSmooth, abs_smooth);
+    SETUP_NODE(AeolianErosion, aeolian_erosion);
     SETUP_NODE(AreaRemove, area_remove);
     SETUP_NODE(Badlands, badlands);
     SETUP_NODE(Band, band);
@@ -467,7 +493,9 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
     SETUP_NODE(CloudSetValues, cloud_set_values);
     SETUP_NODE(CloudShuffle, cloud_shuffle);
     SETUP_NODE(CloudToArrayInterp, cloud_to_array_interp);
+    SETUP_NODE(CloudToForest, cloud_to_forest);
     SETUP_NODE(CloudToPath, cloud_to_path);
+    SETUP_NODE(CloudToRocks, cloud_to_rocks);
     SETUP_NODE(CloudToVectors, cloud_to_vectors);
     SETUP_NODE(CoastalErosionDiffusion, coastal_erosion_diffusion);
     SETUP_NODE(CoastalErosionProfile, coastal_erosion_profile);
@@ -483,21 +511,25 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
     SETUP_NODE(Cos, cos);
     SETUP_NODE(ConvolveSVD, convolve_svd);
     SETUP_NODE(Crater, crater);
+    SETUP_NODE(CraterField, crater_field);
     SETUP_NODE(Curvatures, curvatures);
     SETUP_NODE(Dendry, dendry);
     SETUP_NODE(DepositionFillHoles, deposition_fill_holes);
     SETUP_NODE(DepressionFilling, depression_filling);
     SETUP_NODE(DirectionalBlur, directional_blur);
+    SETUP_NODE(DistanceShaper, distance_shaper);
     SETUP_NODE(DistanceTransform, distance_transform);
     SETUP_NODE(ExpandShrink, expand_shrink);
     SETUP_NODE(ExportAsset, export_asset);
     SETUP_NODE(ExportAsCubemap, export_as_cubemap);
     SETUP_NODE(ExportCloud, export_cloud);
     SETUP_NODE(ExportCloudToPly, export_cloud_to_ply);
+    SETUP_NODE(ExportForest, export_forest);
     SETUP_NODE(ExportHeightmapStreamed, export_heightmap_streamed);
     SETUP_NODE(ExportNormalMap, export_normal_map);
     SETUP_NODE(ExportPath, export_path);
     SETUP_NODE(ExportPointsToPly, export_points_to_ply);
+    SETUP_NODE(ExportRocks, export_rocks);
     SETUP_NODE(ExportScene, export_scene);
     SETUP_NODE(ExportTexture, export_texture);
     SETUP_NODE(ExportTextureStreamed, export_texture_streamed);
@@ -506,6 +538,8 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
     SETUP_NODE(FillTalus, fill_talus);
     SETUP_NODE(FindCutPath, find_cut_path);
     SETUP_NODE(FlatbedCarve, flatbed_carve);
+    SETUP_NODE(FlattenAroundPoints, flatten_around_points);
+    SETUP_NODE(Flip, flip);
     SETUP_NODE(FloodingFromBoundaries, flooding_from_boundaries);
     SETUP_NODE(FloodingFromPoint, flooding_from_point);
     SETUP_NODE(FloodingLakeSystem, flooding_lake_system);
@@ -514,6 +548,7 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
     SETUP_NODE(FlowSimulationViscous, flow_simulation_viscous);
     SETUP_NODE(FlowStream, flow_stream);
     SETUP_NODE(Fold, fold);
+    SETUP_NODE(ForestProcess, forest_process);
     SETUP_NODE(GammaCorrection, gamma_correction);
     SETUP_NODE(GammaCorrectionLocal, gamma_correction_local);
     SETUP_NODE(GaussianDecay, gaussian_decay);
@@ -535,8 +570,6 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
     SETUP_NODE(HydraulicProcedural, hydraulic_procedural);
     SETUP_NODE(HydraulicSaleve, hydraulic_saleve);
     SETUP_NODE(HydraulicSchott, hydraulic_schott);
-    SETUP_NODE(HydraulicStreamUpscaleAmplification,
-               hydraulic_stream_upscale_amplification);
     SETUP_NODE(HydraulicVpipes, hydraulic_vpipes);
     SETUP_NODE(ImportHeightmap, import_heightmap);
     SETUP_NODE(ImportTexture, import_texture);
@@ -588,6 +621,7 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
     SETUP_NODE(PathToCloud, path_to_cloud);
     SETUP_NODE(PathToHeightmap, path_to_heightmap);
     SETUP_NODE(PathTransform, path_transform);
+    SETUP_NODE(PlaceRocksProcedural, place_rocks_procedural);
     SETUP_NODE(Phasor, phasor);
     SETUP_NODE(Plateau, plateau);
     SETUP_NODE(Plates, plates);
@@ -612,6 +646,9 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
     SETUP_NODE(Ridgelines, ridgelines);
     SETUP_NODE(Rift, rift);
     SETUP_NODE(Rifts, rifts);
+    SETUP_NODE(RockSimulation, rock_simulation);
+    SETUP_NODE(RocksProcess, rocks_process);
+    SETUP_NODE(RocksToHeightmap, rocks_to_heightmap);
     SETUP_NODE(Rotate, rotate);
     SETUP_NODE(RotateDisplacement, rotate_displacement);
     SETUP_NODE(Rugosity, rugosity);
@@ -644,6 +681,7 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
     SETUP_NODE(StrataCells, strata_cells);
     SETUP_NODE(StrataPlates, strata_plates);
     SETUP_NODE(StrataTerrace, strata_terrace);
+    SETUP_NODE(TerrainTexture, terrain_texture);
     SETUP_NODE(TextureAdvectionParticle, texture_advection_particle);
     SETUP_NODE(TextureQuiltingExpand, texture_quilting_expand);
     SETUP_NODE(TextureQuiltingShuffle, texture_quilting_shuffle);

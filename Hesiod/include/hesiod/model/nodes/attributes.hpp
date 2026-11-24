@@ -35,11 +35,14 @@ meta::Attribute<float> &add_angle(BaseNode          &node,
                                   float              default_val = 0.f,
                                   float              vmin = -180.f,
                                   float              vmax = 180.f,
-                                  const std::string &value_format = "{:.1f}°");
+                                  const std::string &value_format = "{:.1f}°",
+                                  float              step = 1.f);
 
 meta::Attribute<meta::Array> &add_array(BaseNode          &node,
                                         const std::string &key,
-                                        const std::string &label);
+                                        const std::string &label,
+                                        glm::ivec2         storage_shape,
+                                        glm::ivec2         canvas_shape);
 
 meta::Attribute<bool> &add_bool(BaseNode          &node,
                                 const std::string &key,

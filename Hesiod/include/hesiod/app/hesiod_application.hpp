@@ -15,9 +15,9 @@
 #include "hesiod/app/app_context.hpp"
 #include "hesiod/app/autosave_manager.hpp"
 #include "hesiod/bridges/blender/blender_streamer.hpp"
-#include "hesiod/gui/widgets/app_settings_window.hpp"
+#include "hesiod/gui/widgets/containers/main_window.hpp"
+#include "hesiod/gui/widgets/dialogs/app_settings_window.hpp"
 #include "hesiod/gui/widgets/graph_config_widgets/bake_config_dialog.hpp"
-#include "hesiod/gui/widgets/main_window.hpp"
 
 #define HSD_CTX                                                                          \
   static_cast<hesiod::HesiodApplication *>(QCoreApplication::instance())->get_context()

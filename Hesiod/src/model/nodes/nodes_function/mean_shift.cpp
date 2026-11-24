@@ -63,7 +63,7 @@ void compute_mean_shift_node(BaseNode &node)
     p_mask = &mask_default;
 
   int   ir    = node.val_pixel_radius(A_RADIUS);
-  float talus = node.val<float>(A_TALUS_GLOBAL) / (float)p_out->shape.x;
+  float talus = node.val_talus(A_TALUS_GLOBAL);
 
   hmap::for_each_tile(
       {p_in, p_mask},

@@ -13,6 +13,7 @@
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/attributes.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
+#include "hesiod/model/nodes/post_effects.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
 namespace hesiod
@@ -44,6 +45,31 @@ void post_apply_enveloppe(BaseNode                 &node,
         *pa_out -= hmin;
         *pa_out *= *pa_env;
         *pa_out += hmin;
+      },
+      node.cfg().cm_cpu);
+}
+
+void post_apply_normalize_and_clip(BaseNode           &node,
+                                   hmap::VirtualArray &h,
+                                   float               multiplier,
+                                   bool                smooth_transition,
+                                   bool                range_01)
+{
+  Logger::log()->trace("post_apply_normalize_and_clip: [{}]/[{}]",
+                       node.get_node_type(),
+                       node.get_id());
+
+  hmap::for_each_tile(
+      {},
+      {&h},
+      [multiplier, smooth_transition, range_01](std::vector<const hmap::Array *>,
+                                                std::vector<hmap::Array *> p_arrays_out,
+                                                const hmap::TileRegion &,
+                                                hmap::ICommunicator &comm)
+      {
+        auto [pa_out] = unpack<1>(p_arrays_out);
+
+        hmap::normalize_and_clip(*pa_out, multiplier, smooth_transition, range_01, comm);
       },
       node.cfg().cm_cpu);
 }
@@ -89,11 +115,11 @@ void post_process_heightmap(BaseNode                 &node,
     // mix
     float      k = 0.1f; // TODO hardcoded?
     int        ir = 0;
-    const auto method = node.val_enum<BlendingMethod>("post_mix_method");
+    const auto method = node.val_enum<BlendingMethod>(post_keys::MIX_METHOD);
     blend_heightmaps(node, h, *p_in, h, method, k, ir);
 
     // lerp between input and output
-    float t = node.val<float>("post_mix");
+    float t = node.val<float>(post_keys::MIX);
 
     hmap::for_each_tile(
         {p_in},
@@ -111,11 +137,11 @@ void post_process_heightmap(BaseNode                 &node,
   }
 
   // inverse
-  if (node.val<bool>("post_inverse"))
+  if (node.val<bool>(post_keys::INVERSE))
     h.inverse(node.cfg().cm_cpu);
 
   // gamma
-  float post_gamma = node.val<float>("post_gamma");
+  float post_gamma = node.val<float>(post_keys::GAMMA);
 
   if (post_gamma != 1.f)
   {
@@ -139,7 +165,7 @@ void post_process_heightmap(BaseNode                 &node,
   }
 
   // gain
-  float post_gain = node.val<float>("post_gain");
+  float post_gain = node.val<float>(post_keys::GAIN);
 
   if (post_gain != 1.f)
   {
@@ -163,7 +189,7 @@ void post_process_heightmap(BaseNode                 &node,
   }
 
   // smoothing
-  const int ir = (int)(node.val<float>("post_smoothing_radius") * h.shape.x);
+  const int ir = (int)(node.val<float>(post_keys::SMOOTHING_RADIUS) * h.shape.x);
 
   if (ir)
   {
@@ -183,19 +209,19 @@ void post_process_heightmap(BaseNode                 &node,
   }
 
   // remap
-  if (node.state_val<bool>("post_remap", meta::keys::state::active))
+  if (node.state_val<bool>(post_keys::REMAP, meta::keys::state::active))
   {
-    glm::vec2 range = node.val<glm::vec2>("post_remap");
+    glm::vec2 range = node.val<glm::vec2>(post_keys::REMAP);
 
     h.remap(range.x, range.y, node.cfg().cm_cpu);
   }
 
   // saturate
-  if (node.state_val<bool>("post_saturate", meta::keys::state::active))
+  if (node.state_val<bool>(post_keys::SATURATE, meta::keys::state::active))
   {
     float     hmin = h.min(node.cfg().cm_cpu);
     float     hmax = h.max(node.cfg().cm_cpu);
-    glm::vec2 range = node.val<glm::vec2>("post_saturate");
+    glm::vec2 range = node.val<glm::vec2>(post_keys::SATURATE);
 
     hmap::for_each_tile(
         {},
@@ -223,19 +249,26 @@ void setup_post_process_heightmap_attributes(BaseNode                   &node,
 
   node.set_current_category("Post-Processing");
 
+  // The slider-driven effects carry the same `state.active` the two ranges
+  // already have, so the properties panel can keep one in the output chain
+  // while it still sits on its neutral value. Declared here rather than on
+  // first use: an undo snapshot only restores the state keys it contains.
+  const auto declare_stage = [](meta::AbstractAttribute &attr)
+  { attr.state().try_add(meta::keys::state::active, false); };
+
   // clang-format off
   if (options.add_mix)
   {
-    add_enum(node, "post_mix_method", "Mix Method", enum_mappings.blending_method_map, "replace");
-    add_float(node, "post_mix", "Mix Factor", 1.f, 0.f, 1.f); 
+    add_enum(node, post_keys::MIX_METHOD, "Mix Method", enum_mappings.blending_method_map, "replace");
+    declare_stage(add_float(node, post_keys::MIX, "Mix Factor", 1.f, 0.f, 1.f));
   }
 
-  add_bool(node, "post_inverse", "Invert Output", false);
-  add_float(node, "post_gamma", "Gamma", 1.f, 0.01f, 4.f);
-  add_float(node, "post_gain", "Gain", 1.f, 0.01f, 4.f);
-  add_float(node, "post_smoothing_radius", "Smoothing Radius", 0.f, 0.f, 0.05f);
-  add_range(node, "post_remap", "Remap Range", {0.f, 1.f}, -1.f, 2.f, options.remap_active_state);
-  add_range(node, "post_saturate", "Saturation Range", {0.f, 1.f}, -1.f, 2.f, false);
+  add_bool(node, post_keys::INVERSE, "Invert Output", false);
+  declare_stage(add_float(node, post_keys::GAMMA, "Gamma", 1.f, 0.01f, 4.f));
+  declare_stage(add_float(node, post_keys::GAIN, "Gain", 1.f, 0.01f, 4.f));
+  declare_stage(add_float(node, post_keys::SMOOTHING_RADIUS, "Smoothing Radius", 0.f, 0.f, 0.05f));
+  add_range(node, post_keys::REMAP, "Remap Range", {0.f, 1.f}, -1.f, 2.f, options.remap_active_state);
+  add_range(node, post_keys::SATURATE, "Saturation Range", {0.f, 1.f}, -1.f, 2.f, false);
   // clang-format on
 }
 

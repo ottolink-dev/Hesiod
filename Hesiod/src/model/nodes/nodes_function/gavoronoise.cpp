@@ -1,6 +1,7 @@
 /* Copyright (c) 2023 Otto Link. Distributed under the terms of the GNU General
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
+#include "highmap/math/constants.hpp"
 #include "highmap/opencl/gpu_opencl.hpp"
 #include "highmap/primitives.hpp"
 
@@ -99,7 +100,7 @@ void compute_gavoronoise_node(BaseNode &node)
         hmap::Array angle_deg(region.shape, node.val<float>(A_ANGLE));
 
         if (pa_angle)
-          angle_deg += (*pa_angle) * 180.f / M_PI;
+          angle_deg += (*pa_angle) * hmap::cte::rad_to_deg;
 
         *pa_out = hmap::gpu::gavoronoise(region.shape,
                                          node.val_wavenumber(A_KW),

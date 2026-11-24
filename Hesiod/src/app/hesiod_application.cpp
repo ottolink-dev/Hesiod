@@ -38,33 +38,35 @@
 #include "highmap/opencl/gpu_opencl.hpp"
 #include "highmap/openmp.hpp"
 
-#include "hesiod/app/hesiod_application.hpp"
+#include "gnode/graph_worker.hpp"
 #include "hesiod/app/bundle_runtime.hpp"
+#include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/app/ui_scale.hpp"
 #include "hesiod/cli/batch_mode.hpp"
 #include "hesiod/gui/project_ui.hpp"
-#include "hesiod/gui/widgets/about_dialog.hpp"
-#include "hesiod/gui/widgets/batch_export_progress_dialog.hpp"
-#include "hesiod/gui/widgets/color_picker_dialog.hpp"
-#include "hesiod/gui/widgets/documentation_popup.hpp"
-#include "hesiod/gui/widgets/error_dialog.hpp"
-#include "hesiod/gui/widgets/example_selector_dialog.hpp"
-#include "hesiod/gui/widgets/fractional_repaint_filter.hpp"
+#include "hesiod/gui/undo/undo_manager.hpp"
+#include "hesiod/gui/widgets/containers/graph_manager_widget.hpp"
+#include "hesiod/gui/widgets/containers/graph_tabs_widget.hpp"
+#include "hesiod/gui/widgets/dialogs/about_dialog.hpp"
+#include "hesiod/gui/widgets/dialogs/batch_export_progress_dialog.hpp"
+#include "hesiod/gui/widgets/dialogs/color_picker_dialog.hpp"
+#include "hesiod/gui/widgets/dialogs/documentation_popup.hpp"
+#include "hesiod/gui/widgets/dialogs/error_dialog.hpp"
+#include "hesiod/gui/widgets/dialogs/example_selector_dialog.hpp"
+#include "hesiod/gui/widgets/dialogs/message_dialog.hpp"
+#include "hesiod/gui/widgets/dialogs/node_inspector_widget.hpp"
+#include "hesiod/gui/widgets/dialogs/project_settings_dialog.hpp"
+#include "hesiod/gui/widgets/dialogs/splash_screen.hpp"
 #include "hesiod/gui/widgets/graph_config_widgets/bake_config_dialog.hpp"
-#include "hesiod/gui/widgets/graph_manager_widget.hpp"
-#include "hesiod/gui/widgets/graph_tabs_widget.hpp"
-#include "hesiod/gui/widgets/gui_utils.hpp"
-#include "hesiod/gui/widgets/menu_chrome.hpp"
-#include "hesiod/gui/widgets/message_dialog.hpp"
-#include "hesiod/gui/widgets/project_settings_dialog.hpp"
-#include "hesiod/gui/widgets/splash_screen.hpp"
-#include "hesiod/gui/widgets/tool_tip_blocker.hpp"
-#include "hesiod/gui/widgets/window_chrome.hpp"
+#include "hesiod/gui/widgets/shell/menu_chrome.hpp"
+#include "hesiod/gui/widgets/shell/window_chrome.hpp"
+#include "hesiod/gui/widgets/utils/fractional_repaint_filter.hpp"
+#include "hesiod/gui/widgets/utils/gui_utils.hpp"
+#include "hesiod/gui/widgets/utils/tool_tip_blocker.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/constants/color_gradient.hpp"
-#include "hesiod/model/graph/graph_manager.hpp"
 #include "hesiod/model/graph/graph_node.hpp"
-#include "hesiod/model/graph/graph_worker.hpp"
+#include "hesiod/model/graph_manager/graph_manager.hpp"
 #include "hesiod/model/utils.hpp"
 
 namespace fs = std::filesystem;
@@ -73,13 +75,15 @@ namespace hesiod
 {
 
 HesiodApplication::HesiodApplication(int &argc, char **argv, StartupMode mode)
-    : QApplication(argc, argv),
-      context([] {
-        // AppContext's member constructors load icons, so establish bundled
-        // resource paths before constructing the context, after Qt is ready.
-        initialize_bundle_runtime();
-        return AppContext{};
-      }())
+    : QApplication(argc, argv), context(
+                                    []
+                                    {
+                                      // AppContext's member constructors load icons, so
+                                      // establish bundled resource paths before
+                                      // constructing the context, after Qt is ready.
+                                      initialize_bundle_runtime();
+                                      return AppContext{};
+                                    }())
 {
   Logger::log()->trace("HesiodApplication::HesiodApplication");
 
@@ -134,6 +138,7 @@ HesiodApplication::HesiodApplication(int &argc, char **argv, StartupMode mode)
   {
     // stop here, skip the rest
     this->headless = true;
+    this->context.headless = true;
     this->headless_exit_code = ret;
     return;
   }
@@ -519,19 +524,31 @@ void HesiodApplication::load_project_model_and_ui(const std::string &fname,
     this->main_window->setCentralWidget(this->project_ui->get_widget());
 
   // reset other visibility state
+  if (blank_startup)
+    this->context.app_settings.window.show_graph_manager_widget = false;
   this->project_ui->get_graph_manager_widget_ref()->setVisible(
       this->context.app_settings.window.show_graph_manager_widget);
 
+#if HSD_ENABLE_TEXTURE_DOWNLOADER
   if (this->context.app_settings.interface.enable_texture_downloader)
   {
     this->project_ui->get_texture_downloader_ref()->setVisible(
         this->context.app_settings.window.show_texture_downloader_widget);
   }
+#endif
 
+#if HSD_ENABLE_HEIGHTMAPPER
   if (this->context.app_settings.interface.enable_heightmapper_widget)
   {
     this->project_ui->get_heightmapper_widget_ref()->setVisible(
         this->context.app_settings.window.show_heightmapper_widget);
+  }
+#endif
+
+  if (this->project_ui->get_node_inspector_widget_ref())
+  {
+    this->project_ui->get_node_inspector_widget_ref()->setVisible(
+        this->context.app_settings.window.show_node_inspector);
   }
 
   // --- connections
@@ -540,6 +557,17 @@ void HesiodApplication::load_project_model_and_ui(const std::string &fname,
   this->connect(this->project_ui->get_graph_manager_widget_ref(),
                 &GraphManagerWidget::has_changed,
                 [this]() { this->context.project_model->on_has_changed(); });
+
+  this->connect(this->project_ui->get_graph_manager_widget_ref(),
+                &GraphManagerWidget::selected_graph_changed,
+                [this](const std::string & /* graph_id */)
+                {
+                  if (this->main_window)
+                  {
+                    this->main_window->raise();
+                    this->main_window->activateWindow();
+                  }
+                });
 
   this->connect(this->project_ui->get_graph_tabs_widget_ref(),
                 &GraphTabsWidget::has_changed,
@@ -587,6 +615,9 @@ void HesiodApplication::load_project_model_and_ui(const std::string &fname,
   // in Viewer3D::json_from) through set_viewer_render_type, which also updates
   // viewer_render_type, so this line never puts a stale mode back.
   this->set_viewer_render_type(this->viewer_render_type);
+
+  if (!blank_startup)
+    this->context.project_model->get_graph_manager_ref()->update();
 
   if (opened_at_1k > 0)
     this->notify(std::format("Project loaded at 1K resolution ({} graph{} lowered by "
@@ -705,218 +736,161 @@ void HesiodApplication::on_export_batch()
 
     // --- run
 
-    // retrieve config of the first graph
-    auto graph_nodes = this->context.project_model->get_graph_manager_ref()
-                           ->get_graph_nodes();
-    auto         it = graph_nodes.begin();
-    GraphConfig *p_config = it != graph_nodes.end() ? it->second->get_config_ref()
-                                                    : nullptr;
-
-    if (p_config)
+    // populate the scheduled list in topological update order for progress display
+    std::vector<NodeExportStatus> scheduled_nodes;
+    auto graph_manager_ref = this->context.project_model->get_graph_manager_ref();
+    if (graph_manager_ref)
     {
-      GraphConfig bake_config = *p_config;
-
-      if (bake_settings.min_memory)
+      for (const auto &graph_id : graph_manager_ref->get_graph_order())
       {
-        bake_config.storage_mode = hmap::StorageMode::VA_DISK_LRU_MIN;
-        bake_config.cm_cpu.mode = hmap::ForEachMode::VA_SEQUENTIAL;
-        bake_config.cm_gpu.mode = hmap::ForEachMode::VA_SEQUENTIAL;
-      }
-      else if (bake_settings.force_distributed)
-      {
-        bake_config.cm_cpu.mode = hmap::ForEachMode::VA_DISTRIBUTED;
-        bake_config.cm_gpu.mode = hmap::ForEachMode::VA_DISTRIBUTED;
-      }
+        GraphNode *p_graph = graph_manager_ref->get_graph_ref_by_id(graph_id);
+        if (!p_graph)
+          continue;
 
-      // define bake shape, keep the aspect ratio
-      float      scale = static_cast<float>(bake_settings.resolution) / p_config->shape.x;
-      glm::ivec2 bake_shape = {static_cast<int>(scale * p_config->shape.x),
-                               static_cast<int>(scale * p_config->shape.y)};
+        std::vector<std::string> dirty_ids;
+        for (const auto &[nid, p_node] : p_graph->get_nodes())
+          dirty_ids.push_back(nid);
 
-      // compute tiling based on max tile shape
-      glm::ivec2 bake_tiling = p_config->tiling;
-      if (bake_settings.max_tile_resolution > 0)
-      {
-        bake_tiling = {std::max(1,
-                                (bake_shape.x + bake_settings.max_tile_resolution - 1) /
-                                    bake_settings.max_tile_resolution),
-                       std::max(1,
-                                (bake_shape.y + bake_settings.max_tile_resolution - 1) /
-                                    bake_settings.max_tile_resolution)};
-      }
-
-      bake_config.set_shape(bake_shape);
-      bake_config.set_tiling(bake_tiling);
-
-      Logger::log()->trace("HesiodApplication::on_export_batch: bake_shape: ({}, {}), "
-                           "bake_tiling: ({}, {})",
-                           bake_shape.x,
-                           bake_shape.y,
-                           bake_tiling.x,
-                           bake_tiling.y);
-
-      // populate the scheduled list in topological update order for progress display
-      std::vector<NodeExportStatus> scheduled_nodes;
-      auto graph_manager_ref = this->context.project_model->get_graph_manager_ref();
-      if (graph_manager_ref)
-      {
-        for (const auto &graph_id : graph_manager_ref->get_graph_order())
+        std::vector<std::string> sorted_ids = p_graph->topological_sort(dirty_ids);
+        for (const auto &nid : sorted_ids)
         {
-          GraphNode *p_graph = graph_manager_ref->get_graph_ref_by_id(graph_id);
-          if (!p_graph)
-            continue;
-
-          std::vector<std::string> dirty_ids;
-          for (const auto &[nid, p_node] : p_graph->get_nodes())
-            dirty_ids.push_back(nid);
-
-          std::vector<std::string> sorted_ids = p_graph->topological_sort(dirty_ids);
-          for (const auto &nid : sorted_ids)
-          {
-            BaseNode        *p_base = p_graph->get_node_ref_by_id<BaseNode>(nid);
-            NodeExportStatus st;
-            st.node_id = nid;
-            st.node_label = p_base ? p_base->get_label() : nid;
-            st.node_type = p_base ? p_base->get_node_type() : "";
-            st.state = NodeComputeState::Pending;
-            scheduled_nodes.push_back(st);
-          }
+          BaseNode        *p_base = p_graph->get_node_ref_by_id<BaseNode>(nid);
+          NodeExportStatus st;
+          st.node_id = graph_id + "/" + nid;
+          st.node_label = p_base ? p_base->get_label() : nid;
+          st.node_type = p_base ? p_base->get_node_type() : "";
+          st.state = NodeComputeState::Pending;
+          scheduled_nodes.push_back(st);
         }
       }
-      progress.set_node_list(scheduled_nodes);
+    }
+    progress.set_node_list(scheduled_nodes);
 
-      // launch worker process for isolated bake execution
-      QProcess    worker_process;
-      QStringList worker_args;
-      worker_args << "-b" << QString::fromStdString(fname.string());
-      worker_args << QString::fromStdString(
-          std::format("--shape={},{}", bake_shape.x, bake_shape.y));
-      worker_args << QString::fromStdString(
-          std::format("--tiling={},{}", bake_tiling.x, bake_tiling.y));
-      worker_args << QString::fromStdString(
-          std::format("--overlap={}", bake_config.overlap));
+    // launch worker process for isolated bake execution
+    QProcess    worker_process;
+    QStringList worker_args;
+    worker_args << "-b" << QString::fromStdString(fname.string());
 
-      if (bake_settings.min_memory)
-        worker_args << "--min-memory";
-      else if (bake_settings.force_distributed)
-        worker_args << "--force-distributed";
+    if (bake_settings.min_memory)
+      worker_args << "--min-memory";
+    else if (bake_settings.force_distributed)
+      worker_args << "--force-distributed";
 
-      worker_args << "--ipc";
+    worker_args << "--ipc";
 
-      std::string current_node_computing;
-      QByteArray  stdout_buffer;
+    std::string current_node_computing;
+    QByteArray  stdout_buffer;
 
-      auto parse_ipc_line = [&progress, &current_node_computing](const QString &line)
+    auto parse_ipc_line = [&progress, &current_node_computing](const QString &line)
+    {
+      if (line.startsWith("HSD_IPC:NODE_STARTED:"))
       {
-        if (line.startsWith("HSD_IPC:NODE_STARTED:"))
+        std::string node_id = line.mid(21).trimmed().toStdString();
+        current_node_computing = node_id;
+        progress.on_node_started(node_id);
+      }
+      else if (line.startsWith("HSD_IPC:NODE_FINISHED:"))
+      {
+        QString     rest = line.mid(22).trimmed();
+        int         sep = rest.lastIndexOf(':');
+        std::string node_id;
+        bool        ok = true;
+        if (sep != -1)
         {
-          std::string node_id = line.mid(21).trimmed().toStdString();
-          current_node_computing = node_id;
-          progress.on_node_started(node_id);
+          node_id = rest.left(sep).toStdString();
+          ok = (rest.mid(sep + 1) != "0");
         }
-        else if (line.startsWith("HSD_IPC:NODE_FINISHED:"))
+        else
         {
-          QString     rest = line.mid(22).trimmed();
-          int         sep = rest.lastIndexOf(':');
-          std::string node_id;
-          bool        ok = true;
-          if (sep != -1)
-          {
-            node_id = rest.left(sep).toStdString();
-            ok = (rest.mid(sep + 1) != "0");
-          }
-          else
-          {
-            node_id = rest.toStdString();
-          }
-          if (current_node_computing == node_id)
-            current_node_computing.clear();
-          progress.on_node_finished(node_id, ok);
+          node_id = rest.toStdString();
         }
-      };
+        if (current_node_computing == node_id)
+          current_node_computing.clear();
+        progress.on_node_finished(node_id, ok);
+      }
+    };
 
-      QObject::connect(&worker_process,
-                       &QProcess::readyReadStandardOutput,
-                       [&]()
+    QObject::connect(&worker_process,
+                     &QProcess::readyReadStandardOutput,
+                     [&]()
+                     {
+                       stdout_buffer.append(worker_process.readAllStandardOutput());
+                       int newline_pos = -1;
+                       while ((newline_pos = stdout_buffer.indexOf('\n')) != -1)
                        {
-                         stdout_buffer.append(worker_process.readAllStandardOutput());
-                         int newline_pos = -1;
-                         while ((newline_pos = stdout_buffer.indexOf('\n')) != -1)
-                         {
-                           QByteArray line_bytes = stdout_buffer.left(newline_pos);
-                           stdout_buffer.remove(0, newline_pos + 1);
-                           QString line = QString::fromUtf8(line_bytes).trimmed();
-                           if (!line.isEmpty())
-                             parse_ipc_line(line);
-                         }
-                       });
+                         QByteArray line_bytes = stdout_buffer.left(newline_pos);
+                         stdout_buffer.remove(0, newline_pos + 1);
+                         QString line = QString::fromUtf8(line_bytes).trimmed();
+                         if (!line.isEmpty())
+                           parse_ipc_line(line);
+                       }
+                     });
 
-      QObject::connect(&worker_process,
-                       &QProcess::readyReadStandardError,
-                       [&]()
-                       {
-                         QByteArray err_bytes = worker_process.readAllStandardError();
-                         Logger::log()->warn("Hesiod worker stderr: {}",
-                                             err_bytes.toStdString());
-                       });
+    QObject::connect(&worker_process,
+                     &QProcess::readyReadStandardError,
+                     [&]()
+                     {
+                       QByteArray err_bytes = worker_process.readAllStandardError();
+                       Logger::log()->warn("Hesiod worker stderr: {}",
+                                           err_bytes.toStdString());
+                     });
 
-      auto cancel_connection = QObject::connect(
-          &progress,
-          &BatchExportProgressDialog::request_cancel,
-          [&]()
+    auto cancel_connection = QObject::connect(
+        &progress,
+        &BatchExportProgressDialog::request_cancel,
+        [&]()
+        {
+          if (worker_process.state() != QProcess::NotRunning)
           {
-            if (worker_process.state() != QProcess::NotRunning)
-            {
-              Logger::log()->info("Killing bake worker process on "
-                                  "user request");
-              worker_process.kill();
-            }
-          });
+            Logger::log()->info("Killing bake worker process on "
+                                "user request");
+            worker_process.kill();
+          }
+        });
 
-      worker_process.start(QCoreApplication::applicationFilePath(), worker_args);
+    worker_process.start(QCoreApplication::applicationFilePath(), worker_args);
 
-      while (worker_process.state() != QProcess::NotRunning)
-      {
-        worker_process.waitForFinished(100);
-        QCoreApplication::processEvents();
-      }
+    while (worker_process.state() != QProcess::NotRunning)
+    {
+      worker_process.waitForFinished(100);
+      QCoreApplication::processEvents();
+    }
 
-      QObject::disconnect(cancel_connection);
+    QObject::disconnect(cancel_connection);
 
-      // flush any remaining stdout buffer
-      if (!stdout_buffer.isEmpty())
-      {
-        QString line = QString::fromUtf8(stdout_buffer).trimmed();
-        if (!line.isEmpty())
-          parse_ipc_line(line);
-      }
+    // flush any remaining stdout buffer
+    if (!stdout_buffer.isEmpty())
+    {
+      QString line = QString::fromUtf8(stdout_buffer).trimmed();
+      if (!line.isEmpty())
+        parse_ipc_line(line);
+    }
 
-      // check if user canceled
-      if (progress.is_canceled())
-      {
-        Logger::log()->info("Bake process canceled by user.");
-        if (!current_node_computing.empty())
-          progress.on_node_finished(current_node_computing, false);
+    // check if user canceled
+    if (progress.is_canceled())
+    {
+      Logger::log()->info("Bake process canceled by user.");
+      if (!current_node_computing.empty())
+        progress.on_node_finished(current_node_computing, false);
 
-        progress.on_export_canceled();
-        progress.exec();
-        this->notify("Baking canceled.");
-        return;
-      }
+      progress.on_export_canceled();
+      progress.exec();
+      this->notify("Baking canceled.");
+      return;
+    }
 
-      // check exit status
-      if (worker_process.exitStatus() == QProcess::CrashExit ||
-          worker_process.exitCode() != 0)
-      {
-        Logger::log()->error("Worker process crashed or exited with error code {}.",
-                             worker_process.exitCode());
-        if (!current_node_computing.empty())
-          progress.on_node_finished(current_node_computing, false);
+    // check exit status
+    if (worker_process.exitStatus() == QProcess::CrashExit ||
+        worker_process.exitCode() != 0)
+    {
+      Logger::log()->error("Worker process crashed or exited with error code {}.",
+                           worker_process.exitCode());
+      if (!current_node_computing.empty())
+        progress.on_node_finished(current_node_computing, false);
 
-        progress.on_export_failed("Worker process failed during bake execution.");
-        progress.exec();
-        return;
-      }
+      progress.on_export_failed("Worker process failed during bake execution.");
+      progress.exec();
+      return;
     }
   }
 
@@ -1697,6 +1671,19 @@ void HesiodApplication::setup_menu_bar()
   quit->setIcon(HSD_ICON("menu_quit"));
   file_menu->addAction(quit);
 
+  // --- edit
+
+  QMenu *edit_menu = add_menu(this->main_window->menu_bar(), "&Edit");
+
+  QUndoStack *undo_stack = UndoManager::instance().get_stack();
+  QAction    *undo_action = undo_stack->createUndoAction(this, tr("&Undo"));
+  undo_action->setShortcut(QKeySequence::Undo);
+  edit_menu->addAction(undo_action);
+
+  QAction *redo_action = undo_stack->createRedoAction(this, tr("&Redo"));
+  redo_action->setShortcuts({QKeySequence::Redo, QKeySequence(tr("Ctrl+Y"))});
+  edit_menu->addAction(redo_action);
+
   // --- project
 
   QMenu *project_menu = add_menu(this->main_window->menu_bar(), "&Project");
@@ -1803,6 +1790,7 @@ void HesiodApplication::setup_menu_bar()
   show_layout_manager->setIcon(HSD_ICON("menu_graph_manager"));
   view_menu->addAction(show_layout_manager);
 
+#if HSD_ENABLE_TEXTURE_DOWNLOADER
   // texture dld
   auto *show_texture_downloader = new QAction("Texture Downloader", this);
   show_texture_downloader->setIcon(HSD_ICON("menu_texture_downloader"));
@@ -1811,46 +1799,70 @@ void HesiodApplication::setup_menu_bar()
     view_menu->addSeparator();
     view_menu->addAction(show_texture_downloader);
   }
+#endif
 
+#if HSD_ENABLE_HEIGHTMAPPER
   auto *show_heightmapper_widget = new QAction("Tangram Heightmapper", this);
   show_heightmapper_widget->setIcon(HSD_ICON("menu_heightmapper"));
   if (this->context.app_settings.interface.enable_heightmapper_widget)
   {
     view_menu->addAction(show_heightmapper_widget);
   }
+#endif
+
+  auto *show_node_inspector = new QAction("Node Inspector", this);
+  show_node_inspector->setIcon(HSD_ICON("info"));
+  view_menu->addAction(show_node_inspector);
 
   // window entries show their icon at full strength only while it is open
-  this->connect(
-      view_menu,
-      &QMenu::aboutToShow,
-      this,
-      [this, show_layout_manager, show_texture_downloader, show_heightmapper_widget]()
-      {
-        auto set_icon = [](QAction *action, const char *name, QWidget *window)
-        {
-          QIcon icon = HSD_ICON(name);
-          if (!window || !window->isVisible())
-          {
-            QPixmap faded(64, 64);
-            faded.fill(Qt::transparent);
-            QPainter painter(&faded);
-            painter.setOpacity(0.35);
-            painter.drawPixmap(0, 0, icon.pixmap(64, 64));
-            painter.end();
-            icon = QIcon(faded);
-          }
-          action->setIcon(icon);
-        };
-        set_icon(show_layout_manager,
-                 "menu_graph_manager",
-                 this->project_ui->get_graph_manager_widget_ref());
-        set_icon(show_texture_downloader,
-                 "menu_texture_downloader",
-                 this->project_ui->get_texture_downloader_ref());
-        set_icon(show_heightmapper_widget,
-                 "menu_heightmapper",
-                 this->project_ui->get_heightmapper_widget_ref());
-      });
+  this->connect(view_menu,
+                &QMenu::aboutToShow,
+                this,
+                [this,
+                 show_layout_manager
+#if HSD_ENABLE_TEXTURE_DOWNLOADER
+                 ,
+                 show_texture_downloader
+#endif
+#if HSD_ENABLE_HEIGHTMAPPER
+                 ,
+                 show_heightmapper_widget
+#endif
+                 ,
+                 show_node_inspector]()
+                {
+                  auto set_icon = [](QAction *action, const char *name, QWidget *window)
+                  {
+                    QIcon icon = HSD_ICON(name);
+                    if (!window || !window->isVisible())
+                    {
+                      QPixmap faded(64, 64);
+                      faded.fill(Qt::transparent);
+                      QPainter painter(&faded);
+                      painter.setOpacity(0.35);
+                      painter.drawPixmap(0, 0, icon.pixmap(64, 64));
+                      painter.end();
+                      icon = QIcon(faded);
+                    }
+                    action->setIcon(icon);
+                  };
+                  set_icon(show_layout_manager,
+                           "menu_graph_manager",
+                           this->project_ui->get_graph_manager_widget_ref());
+#if HSD_ENABLE_TEXTURE_DOWNLOADER
+                  set_icon(show_texture_downloader,
+                           "menu_texture_downloader",
+                           this->project_ui->get_texture_downloader_ref());
+#endif
+#if HSD_ENABLE_HEIGHTMAPPER
+                  set_icon(show_heightmapper_widget,
+                           "menu_heightmapper",
+                           this->project_ui->get_heightmapper_widget_ref());
+#endif
+                  set_icon(show_node_inspector,
+                           "info",
+                           this->project_ui->get_node_inspector_widget_ref());
+                });
 
   view_menu->addSeparator();
 
@@ -1989,6 +2001,7 @@ void HesiodApplication::setup_menu_bar()
         show_layout_manager->setChecked(!state);
       });
 
+#if HSD_ENABLE_TEXTURE_DOWNLOADER
   if (this->context.app_settings.interface.enable_texture_downloader)
   {
     this->connect(
@@ -2003,7 +2016,9 @@ void HesiodApplication::setup_menu_bar()
           show_texture_downloader->setChecked(!state);
         });
   }
+#endif
 
+#if HSD_ENABLE_HEIGHTMAPPER
   if (this->context.app_settings.interface.enable_heightmapper_widget)
   {
     this->connect(
@@ -2019,6 +2034,21 @@ void HesiodApplication::setup_menu_bar()
           show_heightmapper_widget->setChecked(!state);
         });
   }
+#endif
+
+  this->connect(show_node_inspector,
+                &QAction::triggered,
+                this,
+                [this, show_node_inspector]()
+                {
+                  if (auto *inspector = this->project_ui->get_node_inspector_widget_ref())
+                  {
+                    bool state = inspector->isVisible();
+                    this->context.app_settings.window.show_node_inspector = !state;
+                    inspector->setVisible(!state);
+                    show_node_inspector->setChecked(!state);
+                  }
+                });
 
   // graphs
   this->connect(
@@ -2039,6 +2069,25 @@ void HesiodApplication::setup_menu_bar()
                 this,
                 [this]()
                 { this->project_ui->get_graph_manager_widget_ref()->on_reseed(true); });
+
+  // --- share standard shortcuts with the Graph Manager window
+
+  if (GraphManagerWidget *gmw = this->project_ui->get_graph_manager_widget_ref())
+  {
+    gmw->addActions({new_action,
+                     load_action,
+                     save,
+                     save_as,
+                     save_copy,
+                     export_batch,
+                     settings_action,
+                     quit,
+                     undo_action,
+                     redo_action,
+                     rename_action,
+                     reseed,
+                     reseed_back});
+  }
 }
 
 void HesiodApplication::show()

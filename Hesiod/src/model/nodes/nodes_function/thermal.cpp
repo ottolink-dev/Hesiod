@@ -5,11 +5,8 @@
 #include "highmap/opencl/gpu_opencl.hpp"
 #include "highmap/primitives.hpp"
 
-#include "highmap/dbg/timer.hpp"
-
-#include "hesiod/model/nodes/attributes.hpp"
-
 #include "hesiod/logger.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 
@@ -92,12 +89,11 @@ void compute_thermal_node(BaseNode &node)
 
   // clang-format off
   const auto type = node.val<std::string>(A_TYPE);
-  const auto talus_global = node.val<float>(A_TALUS);
   const auto duration = node.val<float>(A_DURATION);
   const auto scale_talus = node.val<bool>(A_SCALE_TALUS);
   // clang-format on
 
-  const float talus      = talus_global / float(p_out->shape.x);
+  const float talus      = node.val_talus(A_TALUS);
   const int   iterations = int(duration * p_out->shape.x);
 
   // --- Talus map

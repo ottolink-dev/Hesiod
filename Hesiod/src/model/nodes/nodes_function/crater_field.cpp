@@ -1,0 +1,191 @@
+/* Copyright (c) 2026 Otto Link. Distributed under the terms of the GNU General
+ * Public License. The full license is in the file LICENSE, distributed with
+ * this software. */
+#include "highmap/primitives.hpp"
+
+#include "hesiod/logger.hpp"
+#include "hesiod/model/nodes/attributes.hpp"
+#include "hesiod/model/nodes/base_node.hpp"
+#include "hesiod/model/nodes/post_process.hpp"
+
+namespace hesiod
+{
+
+// -----------------------------------------------------------------------------
+// Ports & Attributes
+// -----------------------------------------------------------------------------
+
+constexpr const char *P_NOISE       = "noise";
+constexpr const char *P_ENVELOPE    = "envelope";
+constexpr const char *P_OUT         = "output";
+constexpr const char *P_CRATER_MASK = "crater_mask";
+
+constexpr const char *A_SEED                        = "seed";
+constexpr const char *A_N_CRATERS                   = "n_craters";
+constexpr const char *A_R_MIN                       = "r_min";
+constexpr const char *A_R_MAX                       = "r_max";
+constexpr const char *A_SCALE_ELEVATION_WITH_RADIUS = "scale_elevation_with_radius";
+constexpr const char *A_ANGLE                       = "angle";
+constexpr const char *A_ELEVATION_OFFSET            = "elevation_offset";
+constexpr const char *A_INNER_DEPTH                 = "inner_depth";
+constexpr const char *A_INNER_EXP                   = "inner_exp";
+constexpr const char *A_LIP_HEIGHT                  = "lip_height";
+constexpr const char *A_LIP_EXTENT                  = "lip_extent";
+constexpr const char *A_LIP_EXP                     = "lip_exp";
+constexpr const char *A_ASYM_RATIO                  = "asym_ratio";
+constexpr const char *A_CENTRAL_PEAK_HEIGHT         = "central_peak_height";
+constexpr const char *A_CENTRAL_PEAK_EXTENT         = "central_peak_extent";
+constexpr const char *A_N_TERRACES                  = "n_terraces";
+constexpr const char *A_TERRACE_EXTENT              = "terrace_extent";
+constexpr const char *A_TERRACE_EXP                 = "terrace_exp";
+constexpr const char *A_TERRACE_PERSISTENCE         = "terrace_persistence";
+
+// -----------------------------------------------------------------------------
+// Setup
+// -----------------------------------------------------------------------------
+
+void setup_crater_field_node(BaseNode &node)
+{
+  Logger::log()->trace("setup node {}", node.get_label());
+
+  // --- Ports
+
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_NOISE);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_ENVELOPE);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_OUT, CONFIG(node));
+  node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_CRATER_MASK, CONFIG(node));
+
+  // --- Attributes
+
+  // clang-format off
+  node.set_current_category("Main Parameters");
+  add_seed(node, A_SEED, "Seed");
+  add_int(node, A_N_CRATERS, "Crater Count", 100, 1, FLT_MAX);
+  add_float(node, A_R_MIN, "Min Radius", 0.01f, 0.001f, 1.f);
+  add_float(node, A_R_MAX, "Max Radius", 0.05f, 0.001f, 1.f);
+  add_bool(node, A_SCALE_ELEVATION_WITH_RADIUS, "Scale Elevation With Radius", true);
+  add_float(node, A_ANGLE, "Rotation Angle", 30.f, -180.f, 180.f, "{:.1f}°");
+  add_float(node, A_ELEVATION_OFFSET, "Elevation Offset", 0.f, -1.f, 1.f);
+
+  node.set_current_category("Crater Profile");
+  add_float(node, A_INNER_DEPTH, "Inner Basin Depth", 0.5f, 0.f, 1.f);
+  add_float(node, A_INNER_EXP, "Inner Basin Falloff", 3.f, 0.01f, 4.f);
+  add_float(node, A_LIP_HEIGHT, "Rim Height", 0.1f, 0.f, 1.f);
+  add_float(node, A_LIP_EXTENT, "Rim Width", 0.25f, 0.f, 2.f);
+  add_float(node, A_LIP_EXP, "Rim Falloff", 2.f, 0.01f, 4.f);
+  add_float(node, A_ASYM_RATIO, "Asymmetry Ratio", 0.1f, 0.f, 1.f);
+
+  node.set_current_category("Central Peak");
+  add_float(node, A_CENTRAL_PEAK_HEIGHT, "Central Peak Height", 0.f, 0.f, 1.f);
+  add_float(node, A_CENTRAL_PEAK_EXTENT, "Central Peak Extent", 0.f, 0.f, 1.f);
+
+  node.set_current_category("Terraces");
+  add_int(node, A_N_TERRACES, "Terrace Count", 0, 0, 16);
+  add_float(node, A_TERRACE_EXTENT, "Terrace Extent", 0.1f, 0.f, 1.f);
+  add_float(node, A_TERRACE_EXP, "Terrace Sharpness", 2.f, 0.01f, 4.f);
+  add_float(node, A_TERRACE_PERSISTENCE, "Terrace Persistence", 0.5f, 0.f, 1.f);
+  // clang-format on
+
+  // --- Attribute(s) order
+
+  setup_default_noise(node, {.noise_amp = 0.2f, .kw = 4.f, .smoothness = 0.3f});
+
+  setup_post_process_heightmap_attributes(
+      node,
+      {.add_mix = false, .remap_active_state = false});
+}
+
+// -----------------------------------------------------------------------------
+// Compute
+// -----------------------------------------------------------------------------
+
+void compute_crater_field_node(BaseNode &node)
+{
+  Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
+
+  // --- Inputs / Outputs
+
+  const auto *p_noise       = node.get_value_ref<hmap::VirtualArray>(P_NOISE);
+  const auto *p_envelope    = node.get_value_ref<hmap::VirtualArray>(P_ENVELOPE);
+  auto       *p_out         = node.get_value_ref<hmap::VirtualArray>(P_OUT);
+  auto       *p_crater_mask = node.get_value_ref<hmap::VirtualArray>(P_CRATER_MASK);
+
+  // --- Params
+
+  // clang-format off
+  const auto seed                = static_cast<uint>(node.val<int>(A_SEED));
+  const auto n_craters           = node.val<int>(A_N_CRATERS);
+  const auto r_min               = node.val<float>(A_R_MIN);
+  const auto r_max                       = node.val<float>(A_R_MAX);
+  const auto scale_elevation_with_radius = node.val<bool>(A_SCALE_ELEVATION_WITH_RADIUS);
+  const auto angle               = node.val<float>(A_ANGLE);
+  const auto elevation_offset    = node.val<float>(A_ELEVATION_OFFSET);
+  const auto inner_depth         = node.val<float>(A_INNER_DEPTH);
+  const auto inner_exp           = node.val<float>(A_INNER_EXP);
+  const auto lip_height          = node.val<float>(A_LIP_HEIGHT);
+  const auto lip_extent          = node.val<float>(A_LIP_EXTENT);
+  const auto lip_exp             = node.val<float>(A_LIP_EXP);
+  const auto asym_ratio          = node.val<float>(A_ASYM_RATIO);
+  const auto central_peak_height = node.val<float>(A_CENTRAL_PEAK_HEIGHT);
+  const auto central_peak_extent = node.val<float>(A_CENTRAL_PEAK_EXTENT);
+  const auto n_terraces          = node.val<int>(A_N_TERRACES);
+  const auto terrace_extent      = node.val<float>(A_TERRACE_EXTENT);
+  const auto terrace_exp         = node.val<float>(A_TERRACE_EXP);
+  const auto terrace_persistence = node.val<float>(A_TERRACE_PERSISTENCE);
+  // clang-format on
+
+  // --- Resolve default noise
+
+  hmap::VirtualArray noise_default(CONFIG(node));
+  generate_noise(node, p_noise, noise_default);
+
+  // --- Compute
+
+  hmap::for_each_tile(
+      {p_noise, p_envelope},
+      {p_out, p_crater_mask},
+      [&](std::vector<const hmap::Array *> p_arrays_in,
+          std::vector<hmap::Array *>       p_arrays_out,
+          const hmap::TileRegion          &region)
+      {
+        auto [pa_noise, pa_envelope]  = unpack<2>(p_arrays_in);
+        auto [pa_out, pa_crater_mask] = unpack<2>(p_arrays_out);
+
+        *pa_out = hmap::crater_field(region.shape,
+                                     seed,
+                                     n_craters,
+                                     r_min,
+                                     std::max(r_min, r_max),
+                                     angle,
+                                     inner_depth,
+                                     inner_exp,
+                                     lip_height,
+                                     lip_extent,
+                                     lip_exp,
+                                     asym_ratio,
+                                     central_peak_height,
+                                     central_peak_extent,
+                                     n_terraces,
+                                     terrace_extent,
+                                     terrace_exp,
+                                     terrace_persistence,
+                                     pa_noise,
+                                     region.bbox,
+                                     pa_crater_mask,
+                                     /* p_inner_crater_mask */ nullptr,
+                                     scale_elevation_with_radius);
+
+        if (pa_envelope)
+          *pa_out *= *pa_envelope;
+
+        if (elevation_offset)
+          *pa_out += elevation_offset;
+      },
+      node.cfg().cm_cpu);
+
+  // --- Post-process
+
+  post_process_heightmap(node, *p_out);
+}
+
+} // namespace hesiod

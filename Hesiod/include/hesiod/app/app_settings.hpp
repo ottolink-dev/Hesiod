@@ -6,7 +6,7 @@
 
 #include "nlohmann/json.hpp"
 
-#include "hesiod/gui/node_palette_style.hpp"
+#include "hesiod/gui/theme/node_palette_palette.hpp"
 
 #define HSD_ICON(name)                                                                   \
   static_cast<hesiod::HesiodApplication *>(QCoreApplication::instance())                 \
@@ -29,7 +29,6 @@ struct AppSettings
 
   struct Model
   {
-    bool allow_broadcast_receive_within_same_graph = true;
   } model;
 
   struct Colors
@@ -46,6 +45,8 @@ struct AppSettings
     QColor hover{"#8B8B8B"};
     QColor pressed{"#ABABAB"};
     QColor separator{"#ABABAB"};
+    QColor building{"#FFB86C"}; // a graph being updated
+    QColor warning{"#FF5555"};  // e.g. a graph left partly up to date
   } colors;
 
   struct Icons
@@ -90,11 +91,13 @@ struct AppSettings
   struct Interface
   {
     bool enable_data_preview_in_node_body = true;
-    bool enable_node_settings_in_node_body = false;
     bool enable_texture_downloader = true;
     bool enable_heightmapper_widget = true;
     bool enable_tool_tips = true;
     bool enable_example_selector_at_startup = true;
+
+    // Theme name (e.g. "Dark", "Light", or any custom theme in ~/.config/hesiod/themes)
+    std::string theme_name = "Dark";
 
     // Node properties panel look. Both are names resolved at runtime, not
     // enums, so registering a new design or colourway does not mean editing
@@ -135,12 +138,14 @@ struct AppSettings
   } interface;
 
   /// Look of the node palette sidebar. Only read when it is enabled.
-  NodePaletteStyle node_palette;
+  NodePalettePalette node_palette;
 
   struct NodeEditor
   {
     std::string gpu_device_name = ""; // let CLWrapper decides
     int         default_resolution = 1024;
+    // New Brush nodes only. Saved paintings retain their stored shape.
+    int         brush_storage_resolution = 512;
     bool        open_projects_at_1k = false; // cap graphs above 1024 on load
     int         default_tiling = 4;
     float       default_overlap = 0.5f;
@@ -159,8 +164,12 @@ struct AppSettings
     bool        disable_during_update = false;
     bool        enable_node_groups = true;
     bool        live_update = false;
-    bool        async_update = true; // compute in the background, see GraphWorker
-    float       port_radius = 7.f;
+    bool merge_node_attribute_undo = false; // merge consecutive undo commands on the same
+                                            // node
+    bool  async_update = true;       // compute in the background, see gnode::GraphWorker
+    bool  show_compute_time = true;  // on each node, see Style::Node
+    bool  show_build_border = false; // around the editor while it updates
+    float port_radius = 7.f;
   } node_editor;
 
   struct Viewer
@@ -168,7 +177,8 @@ struct AppSettings
     int  width = 512;
     int  height = 512;
     bool add_heighmap_skirt = true;
-    int  toolbar_scale = 100; // viewport toolbar size, percent
+    int  mesh_resolution = 1024; // 3D view mesh, vertices per side at most (0: full)
+    int  toolbar_scale = 100;    // viewport toolbar size, percent
   } viewer;
 
   struct Window // main window
@@ -184,12 +194,14 @@ struct AppSettings
     WindowGeometry geom_main;
     WindowGeometry geom_graph_manager;
     WindowGeometry geom_heightmapper;
+    WindowGeometry geom_node_inspector;
 
     int progress_bar_width = 200;
 
     bool show_graph_manager_widget = false;
     bool show_texture_downloader_widget = false;
     bool show_heightmapper_widget = false;
+    bool show_node_inspector = false;
   } window;
 };
 

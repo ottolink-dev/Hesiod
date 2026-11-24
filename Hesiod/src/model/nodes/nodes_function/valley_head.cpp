@@ -27,6 +27,7 @@ constexpr const char *A_DEPTH_LENGTH      = "depth_length";
 constexpr const char *A_DEVELOPMENT_POWER = "development_power";
 constexpr const char *A_MAX_DEPTH         = "max_depth";
 constexpr const char *A_MAX_WIDTH         = "max_width";
+constexpr const char *A_MIN_DEPTH         = "min_depth";
 constexpr const char *A_MIN_WIDTH         = "min_width";
 constexpr const char *A_PROFILE_POWER     = "profile_power";
 constexpr const char *A_WIDTH_LENGTH      = "width_length";
@@ -52,13 +53,14 @@ void setup_valley_head_node(BaseNode &node)
   node.set_current_category("Geometry");
   add_angle(node, A_ANGLE, "Angle", 145.f, -180.f, 180.f);
   add_xy(node, A_CENTER, "Center", {0.2f, 0.8f});
+  add_float(node, A_MIN_DEPTH, "Min Depth", 0.f, 0.f, 1.f);
   add_float(node, A_MAX_DEPTH, "Max Depth", 0.3f, 0.f, 1.f);
   add_float(node, A_MIN_WIDTH, "Min Width", 0.02f, 0.f, 1.f);
   add_float(node, A_MAX_WIDTH, "Max Width", 0.4f, 0.f, 1.f);
 
   node.set_current_category("Evolution");
-  add_float(node, A_DEPTH_LENGTH, "Depth Length", 0.5f, 0.001f, 1.f);
-  add_float(node, A_WIDTH_LENGTH, "Width Length", 0.5f, 0.001f, 1.f);
+  add_float(node, A_DEPTH_LENGTH, "Depth Length", 0.5f, 0.f, 1.f);
+  add_float(node, A_WIDTH_LENGTH, "Width Length", 0.5f, 0.f, 1.f);
   add_float(node, A_DEVELOPMENT_POWER, "Development Power", 1.f, 0.01f, 4.f);
   add_float(node, A_PROFILE_POWER, "Profile Power", 1.3f, 0.01f, 4.f);
 
@@ -94,6 +96,7 @@ void compute_valley_head_node(BaseNode &node)
   // --- Params
 
   const auto angle             = node.val<float>(A_ANGLE);
+  const auto min_depth         = node.val<float>(A_MIN_DEPTH);
   const auto max_depth         = node.val<float>(A_MAX_DEPTH);
   const auto min_width         = node.val<float>(A_MIN_WIDTH);
   const auto max_width         = node.val<float>(A_MAX_WIDTH);
@@ -122,6 +125,7 @@ void compute_valley_head_node(BaseNode &node)
 
         *pa_out = hmap::valley_head(region.shape,
                                     angle,
+                                    min_depth,
                                     max_depth,
                                     min_width,
                                     max_width,

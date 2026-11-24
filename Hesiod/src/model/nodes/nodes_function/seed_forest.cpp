@@ -1,9 +1,9 @@
 /* Copyright (c) 2026 Otto Link. Distributed under the terms of the GNU General
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
-#include "highmap/flora/forest_growth.hpp"
-#include "highmap/flora/forest_seeding.hpp"
-#include "highmap/flora/species.hpp"
+#include "highmap/world/flora/forest_growth.hpp"
+#include "highmap/world/flora/forest_seeding.hpp"
+#include "highmap/world/flora/species.hpp"
 
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/attributes.hpp"
@@ -93,7 +93,7 @@ void setup_seed_forest_node(BaseNode &node)
   add_float(node, A_ANGLE_WIDTH, "Angle Tolerance", 90.0f, 0.0f, 180.0f);
 
   node.set_current_category("Modulation & Exclusion");
-  add_float(node, A_EXCLUSION_THRESHOLD, "Exclusion Threshold", 0.5f, 0.0f, 1.0f);
+  add_float(node, A_EXCLUSION_THRESHOLD, "Exclusion Threshold", 0.f, 0.0f, 1.0f);
   // clang-format on
 }
 

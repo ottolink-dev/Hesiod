@@ -53,20 +53,22 @@ public:
     bool                  active = true;
   };
 
-  std::string    add_node(const std::string                     &type,
-                          QPointF                                position,
-                          const std::function<void(BaseNode &)> &initialize = {});
-  bool           connect(const Link &link);
-  bool           disconnect(const Link &link);
-  void           erase(const std::vector<std::string> &node_ids,
-                       const std::vector<Link>        &links = {});
-  void           clear();
-  std::string    replace_node(const std::string &id, const std::string &type);
-  std::string    insert_node(const std::string &id,
-                             const std::string &type,
-                             QPointF            position);
-  nlohmann::json import_nodes(const nlohmann::json &json, QPointF origin);
-  void           request_update(const std::vector<std::string> &ids = {});
+  std::string       add_node(const std::string                     &type,
+                             QPointF                                position,
+                             const std::function<void(BaseNode &)> &initialize = {},
+                             const std::string                     &requested_id = "");
+  bool              connect(const Link &link);
+  bool              disconnect(const Link &link);
+  void              erase(const std::vector<std::string> &node_ids,
+                          const std::vector<Link>        &links = {});
+  void              clear();
+  std::string       replace_node(const std::string &id, const std::string &type);
+  std::string       insert_node(const std::string &id,
+                                const std::string &type,
+                                QPointF            position);
+  nlohmann::json    import_nodes(const nlohmann::json &json, QPointF origin);
+  void              request_update(const std::vector<std::string> &ids = {});
+  std::vector<Link> get_links_for(const std::string &id) const { return links_for(id); }
 
 private:
   struct Notification

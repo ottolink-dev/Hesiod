@@ -8,12 +8,15 @@
 #include "highmap/colormaps.hpp"
 #include "highmap/curvature.hpp"
 #include "highmap/erosion.hpp"
+#include "highmap/filters.hpp"
+#include "highmap/geometry/cloud.hpp"
 #include "highmap/kernels.hpp"
 #include "highmap/local_metrics.hpp"
 #include "highmap/math.hpp"
 #include "highmap/morphology.hpp"
 #include "highmap/primitives.hpp"
 #include "highmap/range.hpp"
+#include "highmap/scatter/scatter_field.hpp"
 #include "highmap/transform.hpp"
 
 #include "hesiod/model/nodes/base_node.hpp"
@@ -23,6 +26,12 @@ namespace hesiod
 
 static struct EnumMappings
 {
+
+  const std::map<std::string, int> array_sampling_map = {
+      {"Point", static_cast<int>(hmap::ArraySampling::AS_POINT)},
+      {"Minimum", static_cast<int>(hmap::ArraySampling::AS_MIN)},
+      {"Maximum", static_cast<int>(hmap::ArraySampling::AS_MAX)},
+      {"Mean", static_cast<int>(hmap::ArraySampling::AS_MEAN)}};
 
   const std::map<std::string, int> mix_method_map = {
       {"Linear", hmap::MixMethod::MM_LINEAR},
@@ -94,6 +103,16 @@ static struct EnumMappings
       {"Y only", hmap::DistanceFunctionAxis::DFA_Y},
   };
 
+  const std::map<std::string, int> distance_method_map = {
+      {"Real-time (RT)", static_cast<int>(hmap::DistanceMethod::RT)},
+      {"Classic", static_cast<int>(hmap::DistanceMethod::CLASSIC)},
+  };
+
+  const std::map<std::string, int> distance_mode_map = {
+      {"Asterisk", static_cast<int>(hmap::DistanceMode::ASTERISK)},
+      {"Pyramid", static_cast<int>(hmap::DistanceMode::PYRAMID)},
+  };
+
   const std::map<std::string, int> distance_transform_type_map = {
       {"Exact", hmap::DistanceTransformType::DT_EXACT},
       {"Approx. (fast)", hmap::DistanceTransformType::DT_APPROX},
@@ -160,7 +179,8 @@ static struct EnumMappings
       {"Roughness", hmap::gpu::LocalMetrics::LM_ROUGHNESS},
       {"Ruggedness", hmap::gpu::LocalMetrics::LM_RUGGEDNESS},
       {"Rugosity Concave", hmap::gpu::LocalMetrics::LM_RUGOSITY_CONCAVE},
-      {"Rugosity Convex", hmap::gpu::LocalMetrics::LM_RUGOSITY_CONVEX}};
+      {"Rugosity Convex", hmap::gpu::LocalMetrics::LM_RUGOSITY_CONVEX},
+      {"Topographic Residual", hmap::gpu::LocalMetrics::LM_TOPOGRAPHIC_RESIDUAL}};
 
   const std::map<std::string, int> mask_combine_method_map = {
       {"union", MaskCombineMethod::UNION},
@@ -273,6 +293,13 @@ static struct EnumMappings
       {"Edge distance squared", hmap::VoronoiReturnType::EDGE_DISTANCE_SQUARED},
       {"Cell value", hmap::VoronoiReturnType::CONSTANT},
       {"Cell value * (F2 - F1)", hmap::VoronoiReturnType::CONSTANT_F2MF1_SQUARED}};
+
+  const std::map<std::string, int> scatter_shape_map = {
+      {"Disk", hmap::ScatterShape::SCATTER_SHAPE_DISK},
+      {"Polygon", hmap::ScatterShape::SCATTER_SHAPE_POLYGON},
+      {"Cone", hmap::ScatterShape::SCATTER_SHAPE_CONE},
+      {"Pyramid", hmap::ScatterShape::SCATTER_SHAPE_PYRAMID},
+      {"Smooth Dome", hmap::ScatterShape::SCATTER_SHAPE_SMOOTH_DOME}};
 } enum_mappings;
 
 } // namespace hesiod

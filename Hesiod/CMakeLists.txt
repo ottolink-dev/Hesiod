@@ -54,17 +54,19 @@ add_library(hesiod_core OBJECT ${HESIOD_SOURCES} ${HESIOD_GUI_INCLUDES})
 add_executable(${PROJECT_NAME} app/main.cpp)
 target_link_libraries(${PROJECT_NAME} PRIVATE hesiod_core)
 if(APPLE)
-  set_target_properties(${PROJECT_NAME} PROPERTIES
-    MACOSX_BUNDLE TRUE
-    OUTPUT_NAME Hesiod
-    MACOSX_BUNDLE_GUI_IDENTIFIER com.hesiodengine.Hesiod
-    MACOSX_BUNDLE_BUNDLE_NAME Hesiod
-    MACOSX_BUNDLE_BUNDLE_VERSION "${hesiod-root_VERSION}"
-    MACOSX_BUNDLE_SHORT_VERSION_STRING "${hesiod-root_VERSION}")
-  add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory
-      "${EXECUTABLE_OUTPUT_PATH}/data"
-      "$<TARGET_BUNDLE_CONTENT_DIR:${PROJECT_NAME}>/Resources/data"
+  set_target_properties(
+    ${PROJECT_NAME}
+    PROPERTIES MACOSX_BUNDLE TRUE
+               OUTPUT_NAME Hesiod
+               MACOSX_BUNDLE_GUI_IDENTIFIER com.hesiodengine.Hesiod
+               MACOSX_BUNDLE_BUNDLE_NAME Hesiod
+               MACOSX_BUNDLE_BUNDLE_VERSION "${hesiod-root_VERSION}"
+               MACOSX_BUNDLE_SHORT_VERSION_STRING "${hesiod-root_VERSION}")
+  add_custom_command(
+    TARGET ${PROJECT_NAME}
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory "${EXECUTABLE_OUTPUT_PATH}/data"
+            "$<TARGET_BUNDLE_CONTENT_DIR:${PROJECT_NAME}>/Resources/data"
     VERBATIM)
 endif()
 
@@ -87,6 +89,7 @@ target_compile_features(hesiod_core PUBLIC cxx_std_20)
 target_link_libraries(
   hesiod_core
   PUBLIC hesiod_options
+         hesiod_tracy
          hesiod_platform
          hesiod_qt_logging
          hesiod_git_version
@@ -123,6 +126,14 @@ else()
   message(
     STATUS
       "Hesiod: Qt6::GuiPrivate not found, interface scale applies on restart")
+endif()
+
+if(HESIOD_ENABLE_TEXTURE_DOWNLOADER)
+  target_compile_definitions(hesiod_core PUBLIC HSD_ENABLE_TEXTURE_DOWNLOADER=1)
+endif()
+
+if(HESIOD_ENABLE_HEIGHTMAPPER)
+  target_compile_definitions(hesiod_core PUBLIC HSD_ENABLE_HEIGHTMAPPER=1)
 endif()
 
 # ------------------------------
@@ -185,6 +196,21 @@ if(HESIOD_ENABLE_TESTS)
     graph_editor PROPERTIES WORKING_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}
                             ENVIRONMENT "QT_QPA_PLATFORM=offscreen")
 
+  add_executable(profile_highmap
+                 ${CMAKE_SOURCE_DIR}/tests/profiling/highmap_workload.cpp)
+  set_target_properties(profile_highmap PROPERTIES AUTOMOC OFF)
+  target_compile_features(profile_highmap PRIVATE cxx_std_20)
+  target_include_directories(profile_highmap
+                             PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+  target_link_libraries(profile_highmap PRIVATE highmap hesiod_tracy)
+  add_test(NAME profiling_highmap COMMAND profile_highmap)
+
+  # Explicit desktop workload; requires a real OpenGL display, not offscreen
+  # CTest.
+  add_executable(profile_viewer
+                 ${CMAKE_SOURCE_DIR}/tests/gui/profile_viewer.cpp)
+  target_link_libraries(profile_viewer PRIVATE hesiod_core Qt6::Test)
+
   add_executable(test_autosave ${CMAKE_SOURCE_DIR}/tests/gui/test_autosave.cpp)
   add_dependencies(test_autosave test_model_headers)
   target_link_libraries(test_autosave PRIVATE hesiod_core Qt6::Test)
@@ -192,4 +218,12 @@ if(HESIOD_ENABLE_TESTS)
   set_tests_properties(
     autosave PROPERTIES WORKING_DIRECTORY ${EXECUTABLE_OUTPUT_PATH} ENVIRONMENT
                         "QT_QPA_PLATFORM=offscreen")
+
+  add_executable(test_brush_storage
+                 ${CMAKE_SOURCE_DIR}/tests/model/test_brush_storage.cpp)
+  target_link_libraries(test_brush_storage PRIVATE hesiod_core Qt6::Test)
+  add_test(NAME brush_storage COMMAND test_brush_storage)
+  set_tests_properties(
+    brush_storage PROPERTIES WORKING_DIRECTORY ${EXECUTABLE_OUTPUT_PATH}
+                             ENVIRONMENT "QT_QPA_PLATFORM=offscreen")
 endif()

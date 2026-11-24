@@ -1,24 +1,34 @@
 /* Copyright (c) 2026 Otto Link. Distributed under the terms of the GNU General
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
+#include <fstream>
 #include <set>
 #include <tuple>
 
+#include <QDropEvent>
 #include <QLineEdit>
 #include <QMenu>
+#include <QMimeData>
 #include <QSignalSpy>
 #include <QTemporaryDir>
 #include <QTimer>
+#include <QUrl>
 #include <QtTest>
 
+#include <opencv2/imgcodecs.hpp>
+
+#include "gnode/graph_worker.hpp"
 #include "gnodegui/style.hpp"
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/graph_editor.hpp"
 #include "hesiod/gui/hesiod_node_proxy.hpp"
-#include "hesiod/gui/widgets/graph_node_widget.hpp"
+#include "hesiod/gui/widgets/dialogs/node_inspector_widget.hpp"
+#include "hesiod/gui/widgets/graph/graph_node_widget.hpp"
 #include "hesiod/model/graph/graph_manager.hpp"
 #include "hesiod/model/graph/graph_node.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
+#include "hesiod/model/nodes/node_factory.hpp"
+#include "hesiod/model/utils.hpp"
 
 using namespace hesiod;
 
@@ -153,6 +163,18 @@ class GraphEditorTest : public QObject
 {
   Q_OBJECT
 private Q_SLOTS:
+  void export_filename_replacements_work_without_a_gui_project()
+  {
+    QVERIFY(!HSD_CTX.project_model);
+    auto       config = small_config();
+    BaseNode   node("Abs", config);
+    const auto replacements = get_standard_replacements(node, "exports/heightmap.png");
+    QCOMPARE(replacements.at("{PROJECT}"), std::string());
+    QCOMPARE(replacements.at("{FILENAME}"), std::string("heightmap"));
+    QCOMPARE(replacements.at("{EXT}"), std::string("png"));
+    QCOMPARE(replacements.at("{WIDTH}"), std::string("8"));
+  }
+
   void proxy_preserves_node_identity_and_port_values()
   {
     Fixture     f;
@@ -496,22 +518,79 @@ private Q_SLOTS:
     QVERIFY(consistent(*f.graph, f.view));
   }
 
-  void clear_removes_model_nodes_and_broadcast_registration()
+  void clear_removes_model_nodes_and_boundary_ports()
   {
     auto    manager = std::make_shared<GraphManager>("graphs");
     Fixture f;
     manager->add_graph_node(f.graph, "test");
-    f.add("Broadcast");
-    f.add("Receive");
-    QCOMPARE(manager->get_broadcast_params().size(), size_t(1));
+    f.add("NodeIn");
+    f.add("NodeOut");
+    QCOMPARE(f.graph->get_nports(), 2);
     f.reset_counts();
     f.editor.clear();
     QVERIFY(f.graph->get_nodes().empty());
-    QVERIFY(manager->get_broadcast_params().empty());
+    QCOMPARE(f.graph->get_nports(), 0);
     QCOMPARE(f.deleted.size(), size_t(2));
     QCOMPARE(f.updates, 0);
     QVERIFY(f.notifications_consistent);
     QVERIFY(consistent(*f.graph, f.view));
+  }
+
+  void graph_manager_links_and_coord_frame_interpolation()
+  {
+    auto manager = std::make_shared<GraphManager>("graphs");
+    auto cfg1 = std::make_shared<GraphConfig>();
+    cfg1->set_shape({32, 32});
+    auto cfg2 = std::make_shared<GraphConfig>();
+    cfg2->set_shape({32, 32});
+
+    auto g1 = std::make_shared<GraphNode>("g1", cfg1);
+    auto g2 = std::make_shared<GraphNode>("g2", cfg2);
+    manager->add_graph_node(g1, "g1");
+    manager->add_graph_node(g2, "g2");
+
+    const std::string c1 = g1->add_node("Constant");
+    const std::string out1 = g1->add_node("NodeOut");
+    g1->new_link(c1, "output", out1, "value");
+
+    const std::string in2 = g2->add_node("NodeIn");
+    const std::string out2 = g2->add_node("NodeOut");
+    g2->new_link(in2, "value", out2, "value");
+
+    QCOMPARE(g1->get_nports(), 1);
+    QCOMPARE(g2->get_nports(), 2);
+
+    QVERIFY(manager->new_link("g1", "output_0", "g2", "input_0"));
+    auto order = manager->get_graph_order();
+    QCOMPARE(order.size(), size_t(2));
+    QCOMPARE(order[0], std::string("g1"));
+    QCOMPARE(order[1], std::string("g2"));
+
+    // Offset g2's CoordFrame so it partially overlaps g1
+    g2->set_origin(glm::vec2(0.5f, 0.f));
+    g2->set_size(glm::vec2(1.f, 1.f));
+
+    manager->update();
+
+    auto *va2 = g2->get_value_ref<hmap::VirtualArray>("output_0");
+    QVERIFY(va2 != nullptr);
+    // Inside overlap (x < 0.5 in g2 -> x >= 0.5 in g1) should be non-zero or valid
+    QVERIFY(!va2->empty());
+
+    // Serialization round-trip & reload data flow check
+    nlohmann::json j = manager->json_to();
+    auto           manager2 = std::make_shared<GraphManager>("graphs2");
+    manager2->json_from(j);
+    QCOMPARE(manager2->get_graph_nodes().size(), size_t(2));
+    QCOMPARE(manager2->get_links().size(), size_t(1));
+
+    manager2->update();
+    auto *g2_reloaded = manager2->get_graph_ref_by_id("g2");
+    QVERIFY(g2_reloaded != nullptr);
+    auto *va2_reloaded = g2_reloaded->get_value_ref<hmap::VirtualArray>("output_0");
+    QVERIFY(va2_reloaded != nullptr);
+    QVERIFY(!va2_reloaded->empty());
+    QCOMPARE(va2_reloaded->max(cfg2->cm_cpu), va2->max(cfg2->cm_cpu));
   }
 
   void computation_failure_does_not_leave_edits_blocked()
@@ -533,10 +612,9 @@ private Q_SLOTS:
     QTest::addColumn<QString>("target_type");
     QTest::addColumn<QString>("output_port");
     QTest::addColumn<QString>("input_port");
-    QTest::newRow("current-port") << QString("Thru") << QString("output")
-                                 << QString("input");
-    QTest::newRow("legacy-port") << QString("Thru") << QString("out")
-                                << QString("in");
+    QTest::newRow("current-port")
+        << QString("Thru") << QString("output") << QString("input");
+    QTest::newRow("legacy-port") << QString("Thru") << QString("out") << QString("in");
     QTest::newRow("post-process-current-port")
         << QString("PostProcess") << QString("output") << QString("input");
     QTest::newRow("post-process-legacy-port")
@@ -689,6 +767,349 @@ private Q_SLOTS:
     QVERIFY(consistent(*graph, widget));
     QCoreApplication::sendPostedEvents(nullptr, QEvent::DeferredDelete);
   }
+
+  void empty_graph_update_emits_finished()
+  {
+    auto            graph = std::make_shared<GraphNode>("empty", small_config());
+    GraphNodeWidget widget(graph);
+    widget.scene()->setParent(&widget);
+    gnode::GraphWorker worker;
+    worker.enabled = []() { return true; };
+    worker.post_to_caller = [](std::function<void()> fct) { fct(); };
+    graph->set_p_worker(&worker);
+
+    int started = 0;
+    int finished = 0;
+    QObject::connect(&widget, &GraphNodeWidget::update_started, [&]() { ++started; });
+    QObject::connect(&widget, &GraphNodeWidget::update_finished, [&]() { ++finished; });
+
+    widget.on_graph_reload_request();
+    QCOMPARE(started, 1);
+    QCOMPARE(finished, 1);
+  }
+
+  void test_node_inspector()
+  {
+    auto gm = std::make_shared<GraphManager>("gm_test");
+    auto graph1 = std::make_shared<GraphNode>("g1", small_config());
+    auto graph2 = std::make_shared<GraphNode>("g2", small_config());
+
+    gm->add_graph_node(graph1, "g1");
+    gm->add_graph_node(graph2, "g2");
+
+    graph1->add_node("Constant", "c1");
+    graph1->add_node("Thru", "t1");
+    graph2->add_node("Constant", "c2");
+
+    NodeInspectorWidget inspector(gm);
+    inspector.refresh_content();
+
+    auto *table = inspector.findChild<QTableView *>();
+    QVERIFY(table != nullptr);
+
+    auto *proxy = qobject_cast<QSortFilterProxyModel *>(table->model());
+    QVERIFY(proxy != nullptr);
+
+    // 3 nodes in total across all graphs
+    QCOMPARE(proxy->rowCount(), 3);
+
+    // Filter by text "Thru"
+    auto *search_edit = inspector.findChild<QLineEdit *>();
+    QVERIFY(search_edit != nullptr);
+    search_edit->setText("Thru");
+    QCOMPARE(proxy->rowCount(), 1);
+
+    // Clear filter
+    search_edit->clear();
+    QCOMPARE(proxy->rowCount(), 3);
+
+    // Test editing comment directly in model for node c1
+    int c1_row = -1;
+    for (int r = 0; r < proxy->rowCount(); ++r)
+    {
+      if (proxy->data(proxy->index(r, NodeInspectorModel::Column::COL_ID)).toString() ==
+          "c1")
+      {
+        c1_row = r;
+        break;
+      }
+    }
+    QVERIFY(c1_row != -1);
+
+    QModelIndex comment_idx = proxy->index(c1_row,
+                                           NodeInspectorModel::Column::COL_COMMENT);
+    QVERIFY(proxy->flags(comment_idx) & Qt::ItemIsEditable);
+    QVERIFY(proxy->setData(comment_idx, "my note", Qt::EditRole));
+    QCOMPARE(proxy->data(comment_idx, Qt::DisplayRole).toString(), "my note");
+
+    // Check underlying BaseNode
+    BaseNode *c1 = graph1->get_node_ref_by_id<BaseNode>("c1");
+    QVERIFY(c1 != nullptr);
+    QCOMPARE(c1->get_comment(), "my note");
+  }
+
+  void test_flip_node_modes()
+  {
+    Fixture    f;
+    const auto c = f.add("Constant");
+    const auto flip_id = f.add("Flip");
+    f.editor.connect({c, "output", flip_id, "input"});
+
+    auto *node_c = f.graph->get_node_ref_by_id<BaseNode>(c);
+    auto *node_f = f.graph->get_node_ref_by_id<BaseNode>(flip_id);
+    QVERIFY(node_c != nullptr);
+    QVERIFY(node_f != nullptr);
+
+    // Populate the input array with distinct values across coordinates
+    // (0,0)=0, (3,0)=3, (0,3)=12, (3,3)=15
+    auto *va_in = node_c->get_value_ref<hmap::VirtualArray>("output");
+    QVERIFY(va_in != nullptr);
+    const glm::ivec2 shape = f.config->shape;
+    hmap::Array      in_arr(shape);
+    for (int j = 0; j < shape.y; ++j)
+      for (int i = 0; i < shape.x; ++i)
+        in_arr(i, j) = static_cast<float>(i + shape.x * j);
+    va_in->from_array(in_arr, f.config->cm_cpu);
+
+    auto *va_out = node_f->get_value_ref<hmap::VirtualArray>("output");
+    QVERIFY(va_out != nullptr);
+
+    // 1. Identity (no flipping)
+    node_f->set_value<bool>("flip_ud", false);
+    node_f->set_value<bool>("flip_lr", false);
+    node_f->set_value<bool>("transpose", false);
+    compute_flip_node(*node_f);
+    hmap::Array out_arr = va_out->to_array(f.config->cm_cpu);
+    for (int j = 0; j < shape.y; ++j)
+      for (int i = 0; i < shape.x; ++i)
+        QCOMPARE(out_arr(i, j), in_arr(i, j));
+
+    // 2. Flip LR: x -> shape.x - 1 - x
+    node_f->set_value<bool>("flip_lr", true);
+    compute_flip_node(*node_f);
+    out_arr = va_out->to_array(f.config->cm_cpu);
+    for (int j = 0; j < shape.y; ++j)
+      for (int i = 0; i < shape.x; ++i)
+        QCOMPARE(out_arr(i, j), in_arr(shape.x - 1 - i, j));
+
+    // 3. Flip UD: y -> shape.y - 1 - y
+    node_f->set_value<bool>("flip_lr", false);
+    node_f->set_value<bool>("flip_ud", true);
+    compute_flip_node(*node_f);
+    out_arr = va_out->to_array(f.config->cm_cpu);
+    for (int j = 0; j < shape.y; ++j)
+      for (int i = 0; i < shape.x; ++i)
+        QCOMPARE(out_arr(i, j), in_arr(i, shape.y - 1 - j));
+
+    // 4. Flip both LR and UD
+    node_f->set_value<bool>("flip_lr", true);
+    node_f->set_value<bool>("flip_ud", true);
+    compute_flip_node(*node_f);
+    out_arr = va_out->to_array(f.config->cm_cpu);
+    for (int j = 0; j < shape.y; ++j)
+      for (int i = 0; i < shape.x; ++i)
+        QCOMPARE(out_arr(i, j), in_arr(shape.x - 1 - i, shape.y - 1 - j));
+
+    // 5. Transpose: (i, j) -> (j, i)
+    node_f->set_value<bool>("flip_lr", false);
+    node_f->set_value<bool>("flip_ud", false);
+    node_f->set_value<bool>("transpose", true);
+    compute_flip_node(*node_f);
+    out_arr = va_out->to_array(f.config->cm_cpu);
+    for (int j = 0; j < shape.y; ++j)
+      for (int i = 0; i < shape.x; ++i)
+        QCOMPARE(out_arr(i, j), in_arr(j, i));
+  }
+
+  void test_flatten_around_points_node()
+  {
+    Fixture    f;
+    const auto c = f.add("Constant");
+    const auto cl = f.add("CloudRandom");
+    const auto fap_id = f.add("FlattenAroundPoints");
+    f.editor.connect({c, "output", fap_id, "input"});
+    f.editor.connect({cl, "cloud", fap_id, "cloud"});
+
+    auto *node_c = f.graph->get_node_ref_by_id<BaseNode>(c);
+    auto *node_cl = f.graph->get_node_ref_by_id<BaseNode>(cl);
+    auto *node_fap = f.graph->get_node_ref_by_id<BaseNode>(fap_id);
+    QVERIFY(node_c != nullptr);
+    QVERIFY(node_cl != nullptr);
+    QVERIFY(node_fap != nullptr);
+
+    auto *va_in = node_c->get_value_ref<hmap::VirtualArray>("output");
+    auto *p_cloud = node_cl->get_value_ref<hmap::Cloud>("cloud");
+    auto *va_out = node_fap->get_value_ref<hmap::VirtualArray>("output");
+    auto *va_mask = node_fap->get_value_ref<hmap::VirtualArray>("mask");
+    QVERIFY(va_in != nullptr);
+    QVERIFY(p_cloud != nullptr);
+    QVERIFY(va_out != nullptr);
+    QVERIFY(va_mask != nullptr);
+
+    const glm::ivec2 shape = f.config->shape;
+    hmap::Array      in_arr(shape);
+    for (int j = 0; j < shape.y; ++j)
+      for (int i = 0; i < shape.x; ++i)
+        in_arr(i, j) = static_cast<float>(i + j) / static_cast<float>(shape.x + shape.y);
+    va_in->from_array(in_arr, f.config->cm_cpu);
+
+    *p_cloud = hmap::Cloud(std::vector<float>{3.f / 7.f},
+                           std::vector<float>{3.f / 7.f},
+                           std::vector<float>{0.1f});
+
+    // 1. Terrain-aware mode using Cloud values
+    node_fap->set_value<bool>("terrain_aware", true);
+    node_fap->set_value<bool>("use_cloud_values", true);
+    node_fap->set_value<float>("terrain_follow", 0.f);
+    node_fap->set_value<float>("radius", 0.5f);
+    node_fap->set_value<float>("strength", 1.f);
+    compute_flatten_around_points_node(*node_fap);
+
+    hmap::Array out_arr = va_out->to_array(f.config->cm_cpu);
+    hmap::Array mask_arr = va_mask->to_array(f.config->cm_cpu);
+    QVERIFY(mask_arr.max() > 0.f);
+    QVERIFY(out_arr(3, 3) < in_arr(3, 3));
+
+    // 2. Isotropic mode
+    node_fap->set_value<bool>("terrain_aware", false);
+    compute_flatten_around_points_node(*node_fap);
+
+    out_arr = va_out->to_array(f.config->cm_cpu);
+    mask_arr = va_mask->to_array(f.config->cm_cpu);
+    QVERIFY(mask_arr.max() > 0.f);
+    QVERIFY(out_arr(3, 3) < in_arr(3, 3));
+  }
+
+  void test_file_drag_and_drop()
+  {
+    Fixture         f;
+    GraphNodeWidget widget(f.graph);
+    QTemporaryDir   tmp_dir;
+    QVERIFY(tmp_dir.isValid());
+
+    auto send_drop = [&](const QList<QUrl> &urls, const QPointF &widget_pos)
+    {
+      QMimeData mime;
+      mime.setUrls(urls);
+      QDragEnterEvent drag_enter(widget_pos.toPoint(),
+                                 Qt::CopyAction,
+                                 &mime,
+                                 Qt::LeftButton,
+                                 Qt::NoModifier);
+      QApplication::sendEvent(widget.viewport(), &drag_enter);
+      QDropEvent event(widget_pos,
+                       Qt::CopyAction,
+                       &mime,
+                       Qt::LeftButton,
+                       Qt::NoModifier);
+      QApplication::sendEvent(widget.viewport(), &event);
+    };
+
+    // 1. Grayscale 1-channel PNG -> ImportHeightmap
+    const std::filesystem::path gray_path =
+        std::filesystem::path(tmp_dir.path().toStdString()) / "gray.png";
+    cv::Mat gray_img(16, 16, CV_8UC1, cv::Scalar(128));
+    QVERIFY(cv::imwrite(gray_path.string(), gray_img));
+
+    send_drop({QUrl::fromLocalFile(QString::fromStdString(gray_path.string()))},
+              QPointF(50.0, 50.0));
+    QCOMPARE(f.graph->get_nodes().size(), size_t(1));
+    {
+      const std::string id = f.graph->get_nodes().begin()->first;
+      auto             *node = f.graph->get_node_ref_by_id<BaseNode>(id);
+      QVERIFY(node != nullptr);
+      QCOMPARE(node->get_label(), std::string("ImportHeightmap"));
+    }
+
+    // 2. RGB image with identical channels (R == G == B) -> ImportHeightmap
+    const std::filesystem::path rgb_gray_path =
+        std::filesystem::path(tmp_dir.path().toStdString()) / "rgb_gray.png";
+    cv::Mat rgb_gray_img(16, 16, CV_8UC3, cv::Scalar(64, 64, 64));
+    QVERIFY(cv::imwrite(rgb_gray_path.string(), rgb_gray_img));
+
+    send_drop({QUrl::fromLocalFile(QString::fromStdString(rgb_gray_path.string()))},
+              QPointF(100.0, 100.0));
+    QCOMPARE(f.graph->get_nodes().size(), size_t(2));
+    {
+      int hm_count = 0;
+      for (const auto &[id, _] : f.graph->get_nodes())
+      {
+        auto *n = f.graph->get_node_ref_by_id<BaseNode>(id);
+        if (n && n->get_label() == "ImportHeightmap")
+          ++hm_count;
+      }
+      QCOMPARE(hm_count, 2);
+    }
+
+    // 3. Colored RGB image (R != G) -> ImportTexture
+    const std::filesystem::path color_path =
+        std::filesystem::path(tmp_dir.path().toStdString()) / "color.png";
+    cv::Mat color_img(16, 16, CV_8UC3, cv::Scalar(10, 120, 220));
+    QVERIFY(cv::imwrite(color_path.string(), color_img));
+
+    send_drop({QUrl::fromLocalFile(QString::fromStdString(color_path.string()))},
+              QPointF(150.0, 150.0));
+    QCOMPARE(f.graph->get_nodes().size(), size_t(3));
+    {
+      int tex_count = 0;
+      for (const auto &[id, _] : f.graph->get_nodes())
+      {
+        auto *n = f.graph->get_node_ref_by_id<BaseNode>(id);
+        if (n && n->get_label() == "ImportTexture")
+          ++tex_count;
+      }
+      QCOMPARE(tex_count, 1);
+    }
+
+    // 4. Valid .hsd file drop -> imports nodes
+    const std::filesystem::path hsd_path =
+        std::filesystem::path(tmp_dir.path().toStdString()) / "sample.hsd";
+    {
+      nlohmann::json hsd_json;
+      hsd_json["graph_manager"]["graph_nodes"]["graph_0"]["nodes"] = {
+          {{"id", "n1"}, {"label", "Constant"}, {"value", 0.5}}};
+      hsd_json["graph_tabs_widget"]["graph_node_widgets"]["graph_0"]["nodes"] = {
+          {{"id", "n1"},
+           {"caption", "Constant"},
+           {"scene_position.x", 1000.0},
+           {"scene_position.y", 1000.0}}};
+      hsd_json["graph_tabs_widget"]["graph_node_widgets"]["graph_0"]["links"] =
+          nlohmann::json::array();
+      std::ofstream out(hsd_path);
+      out << hsd_json.dump(2);
+    }
+
+    send_drop({QUrl::fromLocalFile(QString::fromStdString(hsd_path.string()))},
+              QPointF(200.0, 200.0));
+    QCOMPARE(f.graph->get_nodes().size(), size_t(4));
+
+    // 5. Unsupported / corrupt / missing files -> gracefully ignored
+    const std::filesystem::path txt_path =
+        std::filesystem::path(tmp_dir.path().toStdString()) / "notes.txt";
+    {
+      std::ofstream out(txt_path);
+      out << "hello";
+    }
+    const std::filesystem::path corrupt_png =
+        std::filesystem::path(tmp_dir.path().toStdString()) / "corrupt.png";
+    {
+      std::ofstream out(corrupt_png);
+      out << "not a png";
+    }
+    const std::filesystem::path corrupt_hsd =
+        std::filesystem::path(tmp_dir.path().toStdString()) / "corrupt.hsd";
+    {
+      std::ofstream out(corrupt_hsd);
+      out << "{broken json";
+    }
+
+    send_drop({QUrl::fromLocalFile(QString::fromStdString(txt_path.string())),
+               QUrl::fromLocalFile(QString::fromStdString(corrupt_png.string())),
+               QUrl::fromLocalFile(QString::fromStdString(corrupt_hsd.string())),
+               QUrl::fromLocalFile(tmp_dir.path())},
+              QPointF(250.0, 250.0));
+    QCOMPARE(f.graph->get_nodes().size(), size_t(4));
+  }
 };
 
 int main(int argc, char **argv)
@@ -700,7 +1121,6 @@ int main(int argc, char **argv)
   qputenv("XDG_CACHE_HOME", config_dir.path().toUtf8());
   qputenv("QT_LOGGING_RULES", HESIOD_QPUTENV_QT_LOGGING_RULES);
   HesiodApplication app(argc, argv, HesiodApplication::StartupMode::ContextOnly);
-  app.get_context().app_settings.interface.enable_node_settings_in_node_body = false;
   GN_STYLE->viewer.add_toolbar = false;
   GraphEditorTest tests;
   return QTest::qExec(&tests, argc, argv);

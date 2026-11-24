@@ -36,12 +36,11 @@ constexpr const char *A_FLOW_GAMMA            = "flow_gamma";
 constexpr const char *A_FLOW_WEIGHT           = "flow_weight";
 constexpr const char *A_GRADIENT_GAIN         = "gradient_gain";
 constexpr const char *A_GRADIENT_WEIGHT       = "gradient_weight";
-constexpr const char *A_K_SATURATION          = "k_saturation";
+constexpr const char *A_NORMALIZE             = "normalize";
 constexpr const char *A_RADIUS_CURVATURE      = "radius_curvature";
 constexpr const char *A_RADIUS_GRADIENT       = "radius_gradient";
 constexpr const char *A_RMAX                  = "rmax";
 constexpr const char *A_RMIN                  = "rmin";
-constexpr const char *A_SATURATION_LIMIT      = "saturation_limit";
 constexpr const char *A_SMALLER_SCALES_WEIGHT = "smaller_scales_weight";
 constexpr const char *A_STEPS                 = "steps";
 constexpr const char *A_TALUS_REF             = "talus_ref";
@@ -72,6 +71,7 @@ void setup_select_soil_node(BaseNode &node)
     add_float(node, A_TALUS_REF, "Ref. Talus", 10.f, 0.01f, 32.f);
     add_float(node, A_CLIPPING_RATIO, "Clipping Ratio", 50.f, 0.1f, 100.f);
     add_float(node, A_FLOW_GAMMA, "Flow Distrib. Exponent", 1.f, 0.01f, 4.f);
+    add_bool(node, A_NORMALIZE, "Normalize", true);
 
     setup_post_process_heightmap_attributes(
         node,
@@ -87,6 +87,7 @@ void setup_select_soil_node(BaseNode &node)
     add_float(node, A_RMAX, "Max Radius", 0.1f, 0.f, 0.2f);
     add_float(node, A_RMIN, "Min Radius", 0.f, 0.f, 0.2f);
     add_int(node, A_STEPS, "Sampling Steps", 4, 2, 8);
+    add_bool(node, A_NORMALIZE, "Normalize", true);
 
     add_float(node, A_SMALLER_SCALES_WEIGHT, "Smaller-Scale Influence", 1.f, 0.f, 2.f);
     add_enum(node,
@@ -95,8 +96,6 @@ void setup_select_soil_node(BaseNode &node)
              enum_mappings.clamping_mode_map,
              "Keep positive & clamp");
     add_float(node, A_CURVATURE_CLAMPING, "Clamp Limit", 1.f, 0.f, FLT_MAX, "{:.4f}");
-    add_float(node, A_SATURATION_LIMIT, "Saturation Limit", 0.3f, 0.f, 1.f);
-    add_float(node, A_K_SATURATION, "Saturation Smoothing", 0.1f, 0.f, 1.f);
 
     setup_post_process_heightmap_attributes(
         node,
@@ -114,6 +113,7 @@ void setup_select_soil_node(BaseNode &node)
     add_float(node, A_GRADIENT_GAIN, "Gradient Gain", 1.f, 0.01f, 10.f);
     add_float(node, A_CURVATURE_WEIGHT, "Curvature Weight", 1.f, -1.f, 1.f);
     add_float(node, A_GRADIENT_WEIGHT, "Gradient Weight", 0.2f, -1.f, 1.f);
+    add_bool(node, A_NORMALIZE, "Normalize", true);
     add_enum(node,
              A_CURVATURE_CLAMP_MODE,
              "Curvature Clamp Mode",
@@ -180,16 +180,18 @@ void compute_select_soil_node(BaseNode &node)
 
   if (group == G_FLOW)
   {
-    int   nx    = p_out->shape.x;
-    int   ir    = std::max(1, (int)(node.val<float>(A_RADIUS_GRADIENT) * nx));
-    float talus = node.val<float>(A_TALUS_REF) / nx;
+    int        nx        = p_out->shape.x;
+    int        ir        = std::max(1, (int)(node.val<float>(A_RADIUS_GRADIENT) * nx));
+    float      talus     = node.val_talus(A_TALUS_REF);
+    const bool normalize = node.val<bool>(A_NORMALIZE);
 
     hmap::for_each_tile(
         {p_in},
         {p_out},
-        [&node, nx, ir, talus](std::vector<const hmap::Array *> p_arrays_in,
-                               std::vector<hmap::Array *>       p_arrays_out,
-                               const hmap::TileRegion &)
+        [&](std::vector<const hmap::Array *> p_arrays_in,
+            std::vector<hmap::Array *>       p_arrays_out,
+            const hmap::TileRegion &,
+            hmap::ICommunicator &comm)
         {
           auto [pa_in]   = unpack<1>(p_arrays_in);
           auto [pa_out]  = unpack<1>(p_arrays_out);
@@ -203,7 +205,9 @@ void compute_select_soil_node(BaseNode &node)
                                                 talus,
                                                 node.val<float>(A_CLIPPING_RATIO),
                                                 node.val<float>(A_FLOW_GAMMA),
-                                                k_smooth);
+                                                k_smooth,
+                                                normalize,
+                                                comm);
         },
         node.cfg().cm_gpu);
 
@@ -212,16 +216,18 @@ void compute_select_soil_node(BaseNode &node)
   }
   else if (group == G_ROCKS)
   {
-    int nx     = p_out->shape.x;
-    int ir_min = (int)(node.val<float>(A_RMIN) * nx);
-    int ir_max = std::max(1, (int)(node.val<float>(A_RMAX) * nx));
+    int        nx        = p_out->shape.x;
+    int        ir_min    = (int)(node.val<float>(A_RMIN) * nx);
+    int        ir_max    = std::max(1, (int)(node.val<float>(A_RMAX) * nx));
+    const bool normalize = node.val<bool>(A_NORMALIZE);
 
     hmap::for_each_tile(
         {p_in},
         {p_out},
-        [&node, ir_min, ir_max](std::vector<const hmap::Array *> p_arrays_in,
-                                std::vector<hmap::Array *>       p_arrays_out,
-                                const hmap::TileRegion &)
+        [&](std::vector<const hmap::Array *> p_arrays_in,
+            std::vector<hmap::Array *>       p_arrays_out,
+            const hmap::TileRegion &,
+            hmap::ICommunicator &comm)
         {
           auto [pa_in]  = unpack<1>(p_arrays_in);
           auto [pa_out] = unpack<1>(p_arrays_out);
@@ -233,29 +239,14 @@ void compute_select_soil_node(BaseNode &node)
                                                  node.val<int>(A_STEPS),
                                                  node.val<float>(A_SMALLER_SCALES_WEIGHT),
                                                  mode,
-                                                 node.val<float>(A_CURVATURE_CLAMPING));
+                                                 node.val<float>(A_CURVATURE_CLAMPING),
+                                                 normalize,
+                                                 comm);
         },
         node.cfg().cm_gpu);
 
     p_out->sync_overlap_buffers();
     post_process_heightmap(node, *p_out);
-
-    // saturate
-    hmap::for_each_tile(
-        {},
-        {p_out},
-        [&node](std::vector<const hmap::Array *>,
-                std::vector<hmap::Array *> p_arrays_out,
-                const hmap::TileRegion &)
-        {
-          auto [pa_out] = unpack<1>(p_arrays_out);
-
-          hmap::saturate(*pa_out,
-                         0.f,
-                         node.val<float>(A_SATURATION_LIMIT),
-                         node.val<float>(A_K_SATURATION));
-        },
-        node.cfg().cm_cpu);
   }
   else if (group == G_WEATHERED)
   {
@@ -263,6 +254,7 @@ void compute_select_soil_node(BaseNode &node)
     int        nx          = p_out->shape.x;
     int        ir_curv     = (int)(node.val<float>(A_RADIUS_CURVATURE) * nx);
     int        ir_grad     = std::max(1, (int)(node.val<float>(A_RADIUS_GRADIENT) * nx));
+    const bool normalize   = node.val<bool>(A_NORMALIZE);
 
     hmap::VirtualArray grad_norm(CONFIG(node));
 
@@ -296,9 +288,10 @@ void compute_select_soil_node(BaseNode &node)
     hmap::for_each_tile(
         {p_in, &grad_norm},
         {p_out},
-        [&node, nx, ir_curv](std::vector<const hmap::Array *> p_arrays_in,
-                             std::vector<hmap::Array *>       p_arrays_out,
-                             const hmap::TileRegion &)
+        [&](std::vector<const hmap::Array *> p_arrays_in,
+            std::vector<hmap::Array *>       p_arrays_out,
+            const hmap::TileRegion &,
+            hmap::ICommunicator &comm)
         {
           auto [pa_in, pa_grad_norm] = unpack<2>(p_arrays_in);
           auto [pa_out]              = unpack<1>(p_arrays_out);
@@ -312,7 +305,9 @@ void compute_select_soil_node(BaseNode &node)
               node.val<float>(A_CURVATURE_CLAMPING),
               node.val<float>(A_CURVATURE_WEIGHT),
               node.val<float>(A_GRADIENT_WEIGHT),
-              (float)nx);
+              (float)nx,
+              normalize,
+              comm);
         },
         node.cfg().cm_gpu);
 

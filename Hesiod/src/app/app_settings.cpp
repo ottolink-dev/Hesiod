@@ -17,6 +17,7 @@
 
 #include "hesiod/app/app_settings.hpp"
 #include "hesiod/app/ui_scale.hpp"
+#include "hesiod/gui/theme/theme.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/utils.hpp"
 
@@ -103,22 +104,6 @@ void AppSettings::json_from(nlohmann::json const &json)
 {
   Logger::log()->trace("AppSettings::json_from");
 
-  json_safe_get(json,
-                "model.allow_broadcast_receive_within_same_graph",
-                model.allow_broadcast_receive_within_same_graph);
-
-  json_safe_get(json, "colors.bg_deep", colors.bg_deep);
-  json_safe_get(json, "colors.bg_primary", colors.bg_primary);
-  json_safe_get(json, "colors.bg_secondary", colors.bg_secondary);
-  json_safe_get(json, "colors.text_primary", colors.text_primary);
-  json_safe_get(json, "colors.text_disabled", colors.text_disabled);
-  json_safe_get(json, "colors.accent", colors.accent);
-  json_safe_get(json, "colors.accent_bw", colors.accent_bw);
-  json_safe_get(json, "colors.border", colors.border);
-  json_safe_get(json, "colors.hover", colors.hover);
-  json_safe_get(json, "colors.pressed", colors.pressed);
-  json_safe_get(json, "colors.separator", colors.separator);
-
   json_safe_get(json, "global.omp_num_threads", global.omp_num_threads);
   json_safe_get(json, "global.icon_path", global.icon_path);
   json_safe_get(json,
@@ -139,9 +124,6 @@ void AppSettings::json_from(nlohmann::json const &json)
                 "interface.enable_data_preview_in_node_body",
                 interface.enable_data_preview_in_node_body);
   json_safe_get(json,
-                "interface.enable_node_settings_in_node_body",
-                interface.enable_node_settings_in_node_body);
-  json_safe_get(json,
                 "interface.enable_texture_downloader",
                 interface.enable_texture_downloader);
   json_safe_get(json,
@@ -151,6 +133,7 @@ void AppSettings::json_from(nlohmann::json const &json)
   json_safe_get(json,
                 "interface.enable_example_selector_at_startup",
                 interface.enable_example_selector_at_startup);
+  json_safe_get(json, "interface.theme_name", interface.theme_name);
   json_safe_get(json,
                 "interface.properties_panel_design",
                 interface.properties_panel_design);
@@ -200,29 +183,11 @@ void AppSettings::json_from(nlohmann::json const &json)
   // node palette look; every entry is optional so an older config keeps the
   // compiled defaults instead of a half-populated style
   {
-    auto get_color = [&json](const std::string &key, QColor &value)
-    {
-      if (json.contains(key) && json.at(key).is_string())
-      {
-        const QString name = QString::fromStdString(json.at(key).get<std::string>());
-        if (QColor::isValidColorName(name))
-          value = QColor(name);
-      }
-    };
-
     auto get_metric = [&json](const std::string &key, int &value, int lo, int hi)
     {
       if (json.contains(key) && json.at(key).is_number())
         value = std::clamp(json.at(key).get<int>(), lo, hi);
     };
-
-    get_color("node_palette.surface", node_palette.surface);
-    get_color("node_palette.surface_hover", node_palette.surface_hover);
-    get_color("node_palette.surface_selected", node_palette.surface_selected);
-    get_color("node_palette.flyout_bg", node_palette.flyout_bg);
-    get_color("node_palette.flyout_border", node_palette.flyout_border);
-    get_color("node_palette.text", node_palette.text);
-    get_color("node_palette.text_active", node_palette.text_active);
 
     get_metric("node_palette.button_height", node_palette.button_height, 20, 120);
     get_metric("node_palette.button_spacing", node_palette.button_spacing, 0, 40);
@@ -267,6 +232,12 @@ void AppSettings::json_from(nlohmann::json const &json)
   }
 
   json_safe_get(json, "node_editor.default_resolution", node_editor.default_resolution);
+  json_safe_get(json,
+                "node_editor.brush_storage_resolution",
+                node_editor.brush_storage_resolution);
+  if (node_editor.brush_storage_resolution < 128 ||
+      node_editor.brush_storage_resolution > 4096)
+    node_editor.brush_storage_resolution = 512;
   json_safe_get(json, "node_editor.open_projects_at_1k", node_editor.open_projects_at_1k);
   json_safe_get(json, "node_editor.default_tiling", node_editor.default_tiling);
   json_safe_get(json, "node_editor.default_overlap", node_editor.default_overlap);
@@ -299,12 +270,18 @@ void AppSettings::json_from(nlohmann::json const &json)
                 node_editor.disable_during_update);
   json_safe_get(json, "node_editor.enable_node_groups", node_editor.enable_node_groups);
   json_safe_get(json, "node_editor.live_update", node_editor.live_update);
+  json_safe_get(json,
+                "node_editor.merge_node_attribute_undo",
+                node_editor.merge_node_attribute_undo);
   json_safe_get(json, "node_editor.async_update", node_editor.async_update);
+  json_safe_get(json, "node_editor.show_compute_time", node_editor.show_compute_time);
+  json_safe_get(json, "node_editor.show_build_border", node_editor.show_build_border);
   json_safe_get(json, "node_editor.port_radius", node_editor.port_radius);
 
   json_safe_get(json, "viewer.width", viewer.width);
   json_safe_get(json, "viewer.height", viewer.height);
   json_safe_get(json, "viewer.add_heighmap_skirt", viewer.add_heighmap_skirt);
+  json_safe_get(json, "viewer.mesh_resolution", viewer.mesh_resolution);
   json_safe_get(json, "viewer.toolbar_scale", viewer.toolbar_scale);
 
   // window
@@ -322,6 +299,10 @@ void AppSettings::json_from(nlohmann::json const &json)
     json_safe_get(json, "window.geom_heightmapper.y", window.geom_heightmapper.y);
     json_safe_get(json, "window.geom_heightmapper.w", window.geom_heightmapper.w);
     json_safe_get(json, "window.geom_heightmapper.h", window.geom_heightmapper.h);
+    json_safe_get(json, "window.geom_node_inspector.x", window.geom_node_inspector.x);
+    json_safe_get(json, "window.geom_node_inspector.y", window.geom_node_inspector.y);
+    json_safe_get(json, "window.geom_node_inspector.w", window.geom_node_inspector.w);
+    json_safe_get(json, "window.geom_node_inspector.h", window.geom_node_inspector.h);
   }
 }
 
@@ -330,21 +311,6 @@ nlohmann::json AppSettings::json_to() const
   Logger::log()->trace("AppSettings::json_to");
 
   nlohmann::json json;
-
-  json["model.allow_broadcast_receive_within_same_graph"] =
-      model.allow_broadcast_receive_within_same_graph;
-
-  json["colors.bg_deep"] = colors.bg_deep.name().toStdString();
-  json["colors.bg_primary"] = colors.bg_primary.name().toStdString();
-  json["colors.bg_secondary"] = colors.bg_secondary.name().toStdString();
-  json["colors.text_primary"] = colors.text_primary.name().toStdString();
-  json["colors.text_disabled"] = colors.text_disabled.name().toStdString();
-  json["colors.accent"] = colors.accent.name().toStdString();
-  json["colors.accent_bw"] = colors.accent_bw.name().toStdString();
-  json["colors.border"] = colors.border.name().toStdString();
-  json["colors.hover"] = colors.hover.name().toStdString();
-  json["colors.pressed"] = colors.pressed.name().toStdString();
-  json["colors.separator"] = colors.separator.name().toStdString();
 
   json["global.omp_num_threads"] = global.omp_num_threads;
   json["global.icon_path"] = global.icon_path;
@@ -357,13 +323,12 @@ nlohmann::json AppSettings::json_to() const
 
   json["interface.enable_data_preview_in_node_body"] =
       interface.enable_data_preview_in_node_body;
-  json["interface.enable_node_settings_in_node_body"] =
-      interface.enable_node_settings_in_node_body;
   json["interface.enable_texture_downloader"] = interface.enable_texture_downloader;
   json["interface.enable_heightmapper_widget"] = interface.enable_heightmapper_widget;
   json["interface.enable_tool_tips"] = interface.enable_tool_tips;
   json["interface.enable_example_selector_at_startup"] =
       interface.enable_example_selector_at_startup;
+  json["interface.theme_name"] = interface.theme_name;
   json["interface.properties_panel_design"] = interface.properties_panel_design;
   json["interface.properties_panel_theme"] = interface.properties_panel_theme;
   json["interface.ui_scale"] = ui_scale::sanitize(interface.ui_scale);
@@ -371,14 +336,6 @@ nlohmann::json AppSettings::json_to() const
   json["interface.enable_ui_animations"] = interface.enable_ui_animations;
   json["interface.recent_colors"] = interface.recent_colors;
 
-  json["node_palette.surface"] = node_palette.surface.name().toStdString();
-  json["node_palette.surface_hover"] = node_palette.surface_hover.name().toStdString();
-  json["node_palette.surface_selected"] = node_palette.surface_selected.name()
-                                              .toStdString();
-  json["node_palette.flyout_bg"] = node_palette.flyout_bg.name().toStdString();
-  json["node_palette.flyout_border"] = node_palette.flyout_border.name().toStdString();
-  json["node_palette.text"] = node_palette.text.name().toStdString();
-  json["node_palette.text_active"] = node_palette.text_active.name().toStdString();
   json["node_palette.button_height"] = node_palette.button_height;
   json["node_palette.button_spacing"] = node_palette.button_spacing;
   json["node_palette.rail_padding"] = node_palette.rail_padding;
@@ -391,6 +348,7 @@ nlohmann::json AppSettings::json_to() const
 
   json["node_editor.gpu_device_name"] = node_editor.gpu_device_name;
   json["node_editor.default_resolution"] = node_editor.default_resolution;
+  json["node_editor.brush_storage_resolution"] = node_editor.brush_storage_resolution;
   json["node_editor.open_projects_at_1k"] = node_editor.open_projects_at_1k;
   json["node_editor.default_tiling"] = node_editor.default_tiling;
   json["node_editor.default_overlap"] = node_editor.default_overlap;
@@ -410,12 +368,16 @@ nlohmann::json AppSettings::json_to() const
   json["node_editor.disable_during_update"] = node_editor.disable_during_update;
   json["node_editor.enable_node_groups"] = node_editor.enable_node_groups;
   json["node_editor.live_update"] = node_editor.live_update;
+  json["node_editor.merge_node_attribute_undo"] = node_editor.merge_node_attribute_undo;
   json["node_editor.async_update"] = node_editor.async_update;
+  json["node_editor.show_compute_time"] = node_editor.show_compute_time;
+  json["node_editor.show_build_border"] = node_editor.show_build_border;
   json["node_editor.port_radius"] = node_editor.port_radius;
 
   json["viewer.width"] = viewer.width;
   json["viewer.height"] = viewer.height;
   json["viewer.add_heighmap_skirt"] = viewer.add_heighmap_skirt;
+  json["viewer.mesh_resolution"] = viewer.mesh_resolution;
   json["viewer.toolbar_scale"] = viewer.toolbar_scale;
 
   json["window.geom_main.x"] = window.geom_main.x;
@@ -431,9 +393,14 @@ nlohmann::json AppSettings::json_to() const
   json["window.geom_heightmapper.y"] = window.geom_heightmapper.y;
   json["window.geom_heightmapper.w"] = window.geom_heightmapper.w;
   json["window.geom_heightmapper.h"] = window.geom_heightmapper.h;
+  json["window.geom_node_inspector.x"] = window.geom_node_inspector.x;
+  json["window.geom_node_inspector.y"] = window.geom_node_inspector.y;
+  json["window.geom_node_inspector.w"] = window.geom_node_inspector.w;
+  json["window.geom_node_inspector.h"] = window.geom_node_inspector.h;
   json["window.show_graph_manager_widget"] = window.show_graph_manager_widget;
   json["window.show_texture_downloader_widget"] = window.show_texture_downloader_widget;
   json["window.show_heightmapper_widget"] = window.show_heightmapper_widget;
+  json["window.show_node_inspector"] = window.show_node_inspector;
 
   return json;
 }

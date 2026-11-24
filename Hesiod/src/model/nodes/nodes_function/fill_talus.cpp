@@ -70,7 +70,7 @@ void compute_fill_talus_node(BaseNode &node)
   const auto noise_ratio = node.val<float>(A_NOISE_RATIO);
   // clang-format on
 
-  float talus = node.val<float>(A_SLOPE) / (float)p_out->shape.x;
+  float talus = node.val_talus(A_SLOPE);
 
   // --- Compute
 

@@ -25,7 +25,7 @@
 #include "meta_qt/ui/theme.hpp"
 
 #include "hesiod/app/hesiod_application.hpp"
-#include "hesiod/gui/widgets/gui_utils.hpp"
+#include "hesiod/gui/widgets/utils/gui_utils.hpp"
 #include "hesiod/gui/widgets/viewers/viewport/panel_model.hpp"
 #include "hesiod/gui/widgets/viewers/viewport/sun_dome.hpp"
 #include "hesiod/gui/widgets/viewers/viewport/viewport_specs.hpp"

@@ -35,7 +35,7 @@ void setup_slope_node(BaseNode &node)
   node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_OUT, CONFIG(node));
 
   // attribute(s)
-  add_float(node, A_ANGLE, "angle", 0.f, -180.f, 180.f, "{:.1f}°");
+  add_angle(node, A_ANGLE);
   add_float(node, A_TALUS_GLOBAL, "talus_global", 2.f, 0.01f, FLT_MAX);
   add_xy(node, A_CENTER, "center");
 

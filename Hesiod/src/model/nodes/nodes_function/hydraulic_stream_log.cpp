@@ -16,14 +16,15 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_INPUT      = "input";
-constexpr const char *P_BEDROCK    = "bedrock";
-constexpr const char *P_MOISTURE   = "moisture";
-constexpr const char *P_MASK       = "mask";
-constexpr const char *P_OUTPUT     = "output";
-constexpr const char *P_EROSION    = "erosion";
-constexpr const char *P_DEPOSITION = "deposition";
-constexpr const char *P_FLOW_MAP   = "flow_map";
+constexpr const char *P_INPUT       = "input";
+constexpr const char *P_BEDROCK     = "bedrock";
+constexpr const char *P_ERODIBILITY = "erodibility";
+constexpr const char *P_MOISTURE    = "moisture";
+constexpr const char *P_MASK        = "mask";
+constexpr const char *P_OUTPUT      = "output";
+constexpr const char *P_EROSION     = "erosion";
+constexpr const char *P_DEPOSITION  = "deposition";
+constexpr const char *P_FLOW_MAP    = "flow_map";
 
 constexpr const char *A_SEED                      = "seed";
 constexpr const char *A_LEVELS                    = "levels";
@@ -46,9 +47,11 @@ void setup_hydraulic_stream_log_node(BaseNode &node)
 {
   Logger::log()->trace("setup node {}", node.get_label());
 
-  // port(s)
+  // --- Ports
+
   node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_INPUT);
   node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_BEDROCK);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_ERODIBILITY);
   node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_MOISTURE);
   node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_MASK);
   node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_OUTPUT, CONFIG(node));
@@ -56,7 +59,8 @@ void setup_hydraulic_stream_log_node(BaseNode &node)
   node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_DEPOSITION, CONFIG(node));
   node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_FLOW_MAP, CONFIG(node));
 
-  // attribute(s)
+  // --- Attributes
+
   // clang-format off
   node.set_current_category("Multiscale");
   add_seed(node, A_SEED, "Seed");
@@ -92,23 +96,38 @@ void compute_hydraulic_stream_log_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  const auto *p_in         = node.get_value_ref<hmap::VirtualArray>(P_INPUT);
-  const auto *p_bedrock    = node.get_value_ref<hmap::VirtualArray>(P_BEDROCK);
-  const auto *p_moisture   = node.get_value_ref<hmap::VirtualArray>(P_MOISTURE);
-  const auto *p_mask       = node.get_value_ref<hmap::VirtualArray>(P_MASK);
-  auto       *p_out        = node.get_value_ref<hmap::VirtualArray>(P_OUTPUT);
-  auto       *p_erosion    = node.get_value_ref<hmap::VirtualArray>(P_EROSION);
-  auto       *p_deposition = node.get_value_ref<hmap::VirtualArray>(P_DEPOSITION);
-  auto       *p_flow_map   = node.get_value_ref<hmap::VirtualArray>(P_FLOW_MAP);
+  // --- Inputs / Outputs
+
+  const auto *p_in          = node.get_value_ref<hmap::VirtualArray>(P_INPUT);
+  const auto *p_bedrock     = node.get_value_ref<hmap::VirtualArray>(P_BEDROCK);
+  const auto *p_erodibility = node.get_value_ref<hmap::VirtualArray>(P_ERODIBILITY);
+  const auto *p_moisture    = node.get_value_ref<hmap::VirtualArray>(P_MOISTURE);
+  const auto *p_mask        = node.get_value_ref<hmap::VirtualArray>(P_MASK);
+  auto       *p_out         = node.get_value_ref<hmap::VirtualArray>(P_OUTPUT);
+  auto       *p_erosion     = node.get_value_ref<hmap::VirtualArray>(P_EROSION);
+  auto       *p_deposition  = node.get_value_ref<hmap::VirtualArray>(P_DEPOSITION);
+  auto       *p_flow_map    = node.get_value_ref<hmap::VirtualArray>(P_FLOW_MAP);
 
   if (!p_in)
     return;
 
-  int deposition_ir = (int)(node.val<float>(A_DEPOSITION_RADIUS) * p_out->shape.x);
-  int gradient_ir = (int)(node.val<float>(A_GRADIENT_PREFILTER_RADIUS) * p_out->shape.x);
+  // --- Params
 
-  deposition_ir = std::max(1, deposition_ir);
-  gradient_ir   = std::max(1, gradient_ir);
+  // clang-format off
+  const auto c_erosion              = node.val<float>(A_C_EROSION);
+  const auto talus_ref              = node.val<float>(A_TALUS_REF);
+  const auto levels                 = node.val<int>(A_LEVELS);
+  const auto deposition_scale_ratio = node.val<float>(A_DEPOSITION_SCALE_RATIO);
+  const auto gradient_power         = node.val<float>(A_GRADIENT_POWER);
+  const auto gradient_scaling_ratio = node.val<float>(A_GRADIENT_SCALING_RATIO);
+  const auto saturation_ratio       = node.val<float>(A_SATURATION_RATIO);
+  const auto mix                    = node.val<float>(A_MIX);
+  const auto warp                   = node.val<float>(A_WARP);
+  const auto seed                   = static_cast<std::uint32_t>(node.val<int>(A_SEED));
+  // clang-format on
+
+  const auto deposition_ir = node.val_pixel_radius(A_DEPOSITION_RADIUS);
+  const auto gradient_ir   = node.val_pixel_radius(A_GRADIENT_PREFILTER_RADIUS);
 
   // --- Prepare mask
 
@@ -118,65 +137,66 @@ void compute_hydraulic_stream_log_node(BaseNode &node)
 
   // --- Compute
 
-  float hmin = p_in->min(node.cfg().cm_cpu);
-  float hmax = p_in->max(node.cfg().cm_cpu);
+  const glm::vec2 range = p_in->range(node.cfg().cm_cpu);
 
-  if (hmax - hmin < 1.0e-6f)
+  if (range.y - range.x < 1.0e-6f)
   {
     Logger::log()->warn(
         "HydraulicStreamLog [{}]: input is flat/near-constant (value range ~ 0). "
         "Erosion is gradient-driven and will produce little or no change.",
         node.get_id());
+
+    hmap::copy_data(*p_in, *p_out, node.cfg().cm_cpu);
     return;
   }
 
   hmap::for_each_tile(
-      {p_in, p_mask, p_bedrock, p_moisture},
+      {p_in, p_mask, p_bedrock, p_erodibility, p_moisture},
       {p_out, p_erosion, p_deposition, p_flow_map},
       [&](std::vector<const hmap::Array *> p_arrays_in,
           std::vector<hmap::Array *>       p_arrays_out,
           const hmap::TileRegion &)
       {
-        auto [pa_in, pa_mask, pa_bedrock, pa_moisture]        = unpack<4>(p_arrays_in);
+        auto [pa_in, pa_mask, pa_bedrock, pa_erodibility, pa_moisture] = unpack<5>(
+            p_arrays_in);
         auto [pa_out, pa_erosion, pa_deposition, pa_flow_map] = unpack<4>(p_arrays_out);
 
         *pa_out = *pa_in;
 
-        hmap::gpu::hydraulic_stream_log_multiscale(
-            *pa_out,
-            node.val<float>(A_C_EROSION),
-            node.val<float>(A_TALUS_REF),
-            pa_mask,
-            node.val<int>(A_LEVELS),
-            deposition_ir,
-            node.val<float>(A_DEPOSITION_SCALE_RATIO),
-            node.val<float>(A_GRADIENT_POWER),
-            node.val<float>(A_GRADIENT_SCALING_RATIO),
-            gradient_ir,
-            node.val<float>(A_SATURATION_RATIO),
-            pa_bedrock,
-            pa_moisture,
-            pa_erosion,
-            pa_deposition,
-            pa_flow_map,
-            node.val<float>(A_MIX),
-            node.val<float>(A_WARP),
-            static_cast<std::uint32_t>(node.val<int>(A_SEED)));
+        hmap::gpu::hydraulic_stream_log_multiscale(*pa_out,
+                                                   c_erosion,
+                                                   talus_ref,
+                                                   pa_mask,
+                                                   levels,
+                                                   deposition_ir,
+                                                   deposition_scale_ratio,
+                                                   gradient_power,
+                                                   gradient_scaling_ratio,
+                                                   gradient_ir,
+                                                   saturation_ratio,
+                                                   pa_bedrock,
+                                                   pa_erodibility,
+                                                   pa_moisture,
+                                                   pa_erosion,
+                                                   pa_deposition,
+                                                   pa_flow_map,
+                                                   mix,
+                                                   warp,
+                                                   seed);
       },
       node.cfg().cm_gpu);
 
+  // --- Post-process
+
   p_out->sync_overlap_buffers();
-
   p_erosion->sync_overlap_buffers();
-  p_erosion->remap(0.f, 1.f, node.cfg().cm_cpu);
-
   p_deposition->sync_overlap_buffers();
-  p_deposition->remap(0.f, 1.f, node.cfg().cm_cpu);
-
   p_flow_map->sync_overlap_buffers();
+
+  p_erosion->remap(0.f, 1.f, node.cfg().cm_cpu);
+  p_deposition->remap(0.f, 1.f, node.cfg().cm_cpu);
   p_flow_map->remap(0.f, 1.f, node.cfg().cm_cpu);
 
-  // post-process
   post_process_heightmap(node, *p_out, p_in);
 }
 

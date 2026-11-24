@@ -89,7 +89,7 @@ void compute_strata_plates_node(BaseNode &node)
   // --- Params
 
   // clang-format off
-  const auto slope             = node.val<float>(A_SLOPE);
+  const auto talus             = node.val_talus(A_SLOPE);
   const auto skew              = node.val<float>(A_SKEW);
   const auto direction_count   = node.val<int>(A_DIRECTION_COUNT);
   const auto direction_offset  = node.val<int>(A_DIRECTION_OFFSET);
@@ -97,8 +97,6 @@ void compute_strata_plates_node(BaseNode &node)
   const auto seed              = node.val<int>(A_SEED);
   const auto mix_ratio         = node.val<float>(A_MIX_RATIO);
   // clang-format on
-
-  float talus = slope / float(p_in->shape.x);
 
   // --- Prepare mask
 

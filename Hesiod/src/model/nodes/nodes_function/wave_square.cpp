@@ -1,6 +1,7 @@
 /* Copyright (c) 2023 Otto Link. Distributed under the terms of the GNU General
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
+#include "highmap/math/constants.hpp"
 #include "highmap/primitives.hpp"
 
 #include "hesiod/model/nodes/attributes.hpp"
@@ -52,7 +53,7 @@ void compute_wave_square_node(BaseNode &node)
   hmap::VirtualArray *p_env = node.get_value_ref<hmap::VirtualArray>(P_ENVELOPE);
   hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>(P_OUT);
 
-  const float phase_rad = node.val<float>(A_PHASE_SHIFT) * float(M_PI / 180.0);
+  const float phase_rad = node.val<float>(A_PHASE_SHIFT) * hmap::cte::deg_to_rad;
 
   hmap::for_each_tile(
       {p_dr},

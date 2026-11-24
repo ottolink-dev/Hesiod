@@ -8,6 +8,7 @@
 #include "hesiod/logger.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
+#include "hesiod/profiling.hpp"
 
 namespace hesiod
 {
@@ -49,8 +50,12 @@ void compute_hydraulic_blur_node(BaseNode &node)
   if (!p_in)
     return;
 
-  float zmin = p_in->min(node.cfg().cm_cpu);
-  float zmax = p_in->max(node.cfg().cm_cpu);
+  float zmin, zmax;
+  {
+    HSD_PROFILE_ZONE("HydraulicBlur::input_range");
+    zmin = p_in->min(node.cfg().cm_cpu);
+    zmax = p_in->max(node.cfg().cm_cpu);
+  }
 
   hmap::for_each_tile(
       {p_in},
@@ -61,7 +66,10 @@ void compute_hydraulic_blur_node(BaseNode &node)
       {
         auto [pa_in]  = unpack<1>(p_arrays_in);
         auto [pa_out] = unpack<1>(p_arrays_out);
-        *pa_out       = *pa_in;
+        {
+          HSD_PROFILE_ZONE("HydraulicBlur::copy_input");
+          *pa_out = *pa_in;
+        }
 
         hmap::hydraulic_blur(*pa_out,
                              node.val<float>(A_RADIUS),
@@ -71,11 +79,17 @@ void compute_hydraulic_blur_node(BaseNode &node)
       node.cfg().cm_cpu);
 
   // preverse input elevation range
-  p_out->remap(zmin, zmax, node.cfg().cm_cpu);
+  {
+    HSD_PROFILE_ZONE("HydraulicBlur::remap");
+    p_out->remap(zmin, zmax, node.cfg().cm_cpu);
+  }
 
   // post-process
-  p_out->sync_overlap_buffers();
-  post_process_heightmap(node, *p_out, p_in);
+  {
+    HSD_PROFILE_ZONE("HydraulicBlur::post_process");
+    p_out->sync_overlap_buffers();
+    post_process_heightmap(node, *p_out, p_in);
+  }
 }
 
 } // namespace hesiod

@@ -4,11 +4,12 @@
 #include <string>
 
 #include "highmap/array.hpp"
-#include "highmap/flora/forest.hpp"
 #include "highmap/geometry/cloud.hpp"
 #include "highmap/geometry/path.hpp"
 #include "highmap/virtual_array/virtual_array.hpp"
 #include "highmap/virtual_array/virtual_texture.hpp"
+#include "highmap/world/flora/forest.hpp"
+#include "highmap/world/rocks/rock_field.hpp"
 
 #include "hesiod/model/nodes/base_node.hpp"
 
@@ -54,6 +55,10 @@ template <typename T> std::string get_data_info(BaseNode *node, const std::strin
   else if constexpr (std::is_same_v<T, hmap::Forest>)
   {
     return std::format("trees: {}", p_val->size());
+  }
+  else if constexpr (std::is_same_v<T, hmap::RockField>)
+  {
+    return std::format("rocks: {}", p_val->size());
   }
   else
   {

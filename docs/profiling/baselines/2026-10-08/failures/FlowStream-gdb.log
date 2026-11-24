@@ -1,0 +1,376 @@
+warning: File "/nix/store/j7qx4s4mr17j1wqgvqdzj33lmrnzb387-gcc-16.2.0-lib/lib/libstdc++.so.6.0.36-gdb.py" auto-loading has been declined by your `auto-load safe-path' set to "$debugdir:$datadir/auto-load:/nix/store/w2nk3f7prwzpm6h13rfxh8lh46yfdysj-gcc-15.3.0-lib".
+To enable execution of this file add
+	add-auto-load-safe-path /nix/store/j7qx4s4mr17j1wqgvqdzj33lmrnzb387-gcc-16.2.0-lib/lib/libstdc++.so.6.0.36-gdb.py
+line to your configuration file "/home/barrulus/dev/Hesiod/build/tracy/failure-investigation/config/gdb/gdbinit".
+To completely disable this security protection add
+	set auto-load safe-path /
+line to your configuration file "/home/barrulus/dev/Hesiod/build/tracy/failure-investigation/config/gdb/gdbinit".
+For more information about this security protection see the
+"Auto-loading safe path" section in the GDB manual.  E.g., run from the shell:
+	info "(gdb)Auto-loading safe path"
+warning: File "/nix/store/h4wfwic161kxrr74jlzla5lsm28hgary-glibc-2.44-25/lib/libthread_db.so.1" auto-loading has been declined by your `auto-load safe-path' set to "$debugdir:$datadir/auto-load:/nix/store/w2nk3f7prwzpm6h13rfxh8lh46yfdysj-gcc-15.3.0-lib".
+warning: Unable to find libthread_db matching inferior's thread library, thread debugging will not be available.
+warning: File "/nix/store/3dkchpfn8r3ipsccl1001xhcl5smfjdx-glib-2.88.3/lib/libgobject-2.0.so.0.8800.3-gdb.py" auto-loading has been declined by your `auto-load safe-path' set to "$debugdir:$datadir/auto-load:/nix/store/w2nk3f7prwzpm6h13rfxh8lh46yfdysj-gcc-15.3.0-lib".
+warning: File "/nix/store/3dkchpfn8r3ipsccl1001xhcl5smfjdx-glib-2.88.3/lib/libglib-2.0.so.0.8800.3-gdb.py" auto-loading has been declined by your `auto-load safe-path' set to "$debugdir:$datadir/auto-load:/nix/store/w2nk3f7prwzpm6h13rfxh8lh46yfdysj-gcc-15.3.0-lib".
+[New LWP 280913]
+[New LWP 280914]
+[New LWP 280915]
+[hesiod] [06:53:16] [---I---] Welcome to Hesiod v0.6.0!
+[hesiod] [06:53:16] [---I---] Release mode: Release
+[New LWP 280916]
+[hesiod] [06:53:17] [---T---] AppSettings::Icons::Icons
+[hesiod] [06:53:17] [---T---] HesiodApplication::HesiodApplication
+[hesiod] [06:53:17] [---T---] AppContext::initialize
+[hesiod] [06:53:17] [---T---] AppContext::load_settings
+[hesiod] [06:53:17] [---T---] json_from_file: JSON successfully loaded from /home/barrulus/dev/Hesiod/build/tracy/failure-investigation/config/hesiod/hesiod.json
+[hesiod] [06:53:17] [---T---] AppContext::settings_json_from
+[hesiod] [06:53:17] [---T---] AppSettings::json_from
+[hesiod] [06:53:17] [---E---] Required json key "model.allow_broadcast_receive_within_same_graph" not found.
+[hesiod] [06:53:17] [---E---] Required json key "colors.bg_deep" not found.
+[hesiod] [06:53:17] [---E---] Required json key "colors.bg_primary" not found.
+[hesiod] [06:53:17] [---E---] Required json key "colors.bg_secondary" not found.
+[hesiod] [06:53:17] [---E---] Required json key "colors.text_primary" not found.
+[hesiod] [06:53:17] [---E---] Required json key "colors.text_disabled" not found.
+[hesiod] [06:53:17] [---E---] Required json key "colors.accent" not found.
+[hesiod] [06:53:17] [---E---] Required json key "colors.accent_bw" not found.
+[hesiod] [06:53:17] [---E---] Required json key "colors.border" not found.
+[hesiod] [06:53:17] [---E---] Required json key "colors.hover" not found.
+[hesiod] [06:53:17] [---E---] Required json key "colors.pressed" not found.
+[hesiod] [06:53:17] [---E---] Required json key "colors.separator" not found.
+[hesiod] [06:53:17] [---E---] Required json key "global.icon_path" not found.
+[hesiod] [06:53:17] [---E---] Required json key "global.default_startup_project_file" not found.
+[hesiod] [06:53:17] [---E---] Required json key "global.save_backup_file" not found.
+[hesiod] [06:53:17] [---E---] Required json key "global.recent_files" not found.
+[hesiod] [06:53:17] [---E---] Required json key "global.max_recent_files" not found.
+[hesiod] [06:53:17] [---E---] Required json key "interface.enable_data_preview_in_node_body" not found.
+[hesiod] [06:53:17] [---E---] Required json key "interface.enable_node_settings_in_node_body" not found.
+[hesiod] [06:53:17] [---E---] Required json key "interface.enable_texture_downloader" not found.
+[hesiod] [06:53:17] [---E---] Required json key "interface.enable_heightmapper_widget" not found.
+[hesiod] [06:53:17] [---E---] Required json key "interface.enable_tool_tips" not found.
+[hesiod] [06:53:17] [---E---] Required json key "interface.enable_example_selector_at_startup" not found.
+[hesiod] [06:53:17] [---E---] Required json key "node_editor.gpu_device_name" not found.
+[hesiod] [06:53:17] [---E---] Required json key "node_editor.default_resolution" not found.
+[hesiod] [06:53:17] [---E---] Required json key "node_editor.default_tiling" not found.
+[hesiod] [06:53:17] [---E---] Required json key "node_editor.default_overlap" not found.
+[hesiod] [06:53:17] [---E---] Required json key "node_editor.preview_w" not found.
+[hesiod] [06:53:17] [---E---] Required json key "node_editor.preview_h" not found.
+[hesiod] [06:53:17] [---E---] Required json key "node_editor.doc_path" not found.
+[hesiod] [06:53:17] [---E---] Required json key "node_editor.position_delta_when_duplicating_node" not found.
+[hesiod] [06:53:17] [---E---] Required json key "node_editor.auto_layout_dx" not found.
+[hesiod] [06:53:17] [---E---] Required json key "node_editor.auto_layout_dy" not found.
+[hesiod] [06:53:17] [---E---] Required json key "node_editor.show_node_library_pan" not found.
+[hesiod] [06:53:17] [---E---] Required json key "node_editor.show_node_settings_pan" not found.
+[hesiod] [06:53:17] [---E---] Required json key "node_editor.node_settings_panel_width" not found.
+[hesiod] [06:53:17] [---E---] Required json key "node_editor.node_settings_pan_width" not found.
+[hesiod] [06:53:17] [---E---] Required json key "node_editor.show_node_toolbar_in_settings_pan" not found.
+[hesiod] [06:53:17] [---E---] Required json key "node_editor.show_viewer" not found.
+[hesiod] [06:53:17] [---E---] Required json key "node_editor.disable_during_update" not found.
+[hesiod] [06:53:17] [---E---] Required json key "node_editor.enable_node_groups" not found.
+[hesiod] [06:53:17] [---E---] Required json key "node_editor.live_update" not found.
+[hesiod] [06:53:17] [---E---] Required json key "node_editor.port_radius" not found.
+[hesiod] [06:53:17] [---E---] Required json key "viewer.width" not found.
+[hesiod] [06:53:17] [---E---] Required json key "viewer.height" not found.
+[hesiod] [06:53:17] [---E---] Required json key "viewer.add_heighmap_skirt" not found.
+[hesiod] [06:53:17] [---E---] Required json key "window.geom_main.x" not found.
+[hesiod] [06:53:17] [---E---] Required json key "window.geom_main.y" not found.
+[hesiod] [06:53:17] [---E---] Required json key "window.geom_main.w" not found.
+[hesiod] [06:53:17] [---E---] Required json key "window.geom_main.h" not found.
+[hesiod] [06:53:17] [---E---] Required json key "window.progress_bar_width" not found.
+[hesiod] [06:53:17] [---E---] Required json key "window.geom_graph_manager.x" not found.
+[hesiod] [06:53:17] [---E---] Required json key "window.geom_graph_manager.y" not found.
+[hesiod] [06:53:17] [---E---] Required json key "window.geom_graph_manager.w" not found.
+[hesiod] [06:53:17] [---E---] Required json key "window.geom_graph_manager.h" not found.
+[hesiod] [06:53:17] [---E---] Required json key "window.geom_heightmapper.x" not found.
+[hesiod] [06:53:17] [---E---] Required json key "window.geom_heightmapper.y" not found.
+[hesiod] [06:53:17] [---E---] Required json key "window.geom_heightmapper.w" not found.
+[hesiod] [06:53:17] [---E---] Required json key "window.geom_heightmapper.h" not found.
+[hesiod] [06:53:17] [---T---] StyleSettings::json_from
+[hesiod] [06:53:17] [---T---] AppContext::load_node_documentation
+[hesiod] [06:53:17] [---T---] JSON successfully loaded from data/node_documentation.json
+[clwrap] [06:53:17] [---T---] DeviceManager::DeviceManager
+[clwrap] [06:53:17] [---T---] initializing OpenCL devices...
+[clwrap] [06:53:19] [---T---] checking device performances...
+[clwrap] [06:53:19] [---T---] checking platform: NVIDIA Corporation - NVIDIA CUDA
+[clwrap] [06:53:19] [---T---] rating - device: NVIDIA GeForce RTX 5060 Laptop GPU, score: 1000052.6580820961
+[clwrap] [06:53:19] [---I---] Selected OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [06:53:19] [---I---] - device Name: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [06:53:19] [---I---]  - device Vendor: NVIDIA Corporation
+[clwrap] [06:53:19] [---I---]  - device Version: OpenCL 3.0 CUDA
+[clwrap] [06:53:19] [---I---]  - device Type: GPU
+[clwrap] [06:53:19] [---T---] loading kernel sources
+[clwrap] [06:53:19] [---T---] program building skipped, kernel sources are empty
+[clwrap] [06:53:19] [---T---] loading kernel sources
+[New LWP 280978]
+[New LWP 280979]
+[New LWP 280980]
+[New LWP 280981]
+[New LWP 280982]
+[New LWP 280983]
+[New LWP 280984]
+[New LWP 280985]
+[clwrap] [06:53:19] [---T---] building OpenCL kernels
+[clwrap] [06:53:19] [---T---] build options: -cl-fast-relaxed-math -cl-mad-enable -cl-no-signed-zeros -cl-denorms-are-zero -cl-finite-math-only 
+[clwrap] [06:53:19] [---T---] available kernels: advection_particle;advection_warp;bilateral_filter;poisson_compute_laplacian;blend_poisson_red_black;coastal_fetch;coastal_fetch_directional;curvature_quadric;directional_blur;eulerian_transport;expand;flow_accum_stochastic_solve;flow_accum_stochastic_normalize;flow_direction_d8;gabor_wave;gabor_wave_fbm;gavoronoise;gavoronoise_with_base;generate_riverbed;gradient_norm;harmonic_interpolation_red_black;harmonic_interpolation_red_black_diff;harmonic_interpolation_red_black_diff_aniso;hemisphere_field;hemisphere_field_fbm;mcdonald_solve;mcdonald_filter;mcdonald_debris;hydraulic_particle;hydraulic_schott;hydraulic_schott_erosion;hydraulic_vpipes_flow_pass;hydraulic_vpipes_water_pass;hydraulic_vpipes_erosion_pass;hydraulic_vpipes_sediment_transport_pass;interpolate_array_bicubic;interpolate_array_bilinear;interpolate_array_nearest;interpolate_array_lagrange;jump_flooding;laplace;laplacian_fract;local_max;local_mean;local_min;local_relief;local_skewness;local_variance;local_z_score;maximum_smooth;mean_shift;median_3x3;minimum_smooth;mountain_range_radial;noise;noise_fbm;normal_displacement;phase_averaging;phase_field;plateau_post;polygon_field;polygon_field_fbm;project_talus_along_direction;rotate_hmap;ruggedness;rugosity_post;sdf_2d_polyline;sdf_2d_polyline_bezier;shallow_viscous_flow;thinning;relative_distance_from_skeleton;smooth_cpulse;snow_simulation;sparse_max_convolution;sparse_max_convolution_with_size;thermal;thermal_with_bedrock;thermal_auto_bedrock;thermal_flatten;thermal_inflate;thermal_olsen;thermal_rib;thermal_ridge;thermal_schott;thermal_scree;topographic_position_index;vorolines;voronoi_edge_distance;voronoi;voronoi_fbm;voronoise;voronoise_fbm;vororand;warp_xy;warp_x;warp_y;water_depth_filter;wavelet_noise;rifts;strata;strata_cells;strata_terrace
+hmap [info ] [openmp.cpp              :29] OpenMP enabled
+hmap [info ] [openmp.cpp              :32] Version: 202111
+hmap [info ] [openmp.cpp              :35] Num processors: 24
+hmap [info ] [openmp.cpp              :38] Max threads: 1
+hmap [info ] [openmp.cpp              :41] Dynamic threads: OFF
+hmap [info ] [openmp.cpp              :44] Nested parallelism: OFF
+hmap [info ] [openmp.cpp              :51] Actual threads in parallel region: 1
+[hesiod] [06:53:19] [---T---] HesiodApplication::HesiodApplication: OpenCV build information dumped in: opencv_build_information.log
+[hesiod] [06:53:19] [---I---] ColorGradientManager::ColorGradientManager: initializing...
+[hesiod] [06:53:19] [---T---] ColorGradientManager::update_data
+[hesiod] [06:53:19] [---T---] ColorGradientManager::update_data: parsing data/color_gradients/b071dc.json
+[hesiod] [06:53:19] [---T---] json_from_file: JSON successfully loaded from data/color_gradients/b071dc.json
+[hesiod] [06:53:19] [---T---] ColorGradientManager::update_data: parsing data/color_gradients/9aa90a.json
+[hesiod] [06:53:19] [---T---] json_from_file: JSON successfully loaded from data/color_gradients/9aa90a.json
+[hesiod] [06:53:19] [---T---] ColorGradientManager::update_data: parsing data/color_gradients/94b013.json
+[hesiod] [06:53:19] [---T---] json_from_file: JSON successfully loaded from data/color_gradients/94b013.json
+[hesiod] [06:53:19] [---T---] ColorGradientManager::update_data: parsing data/color_gradients/c8001c.json
+[hesiod] [06:53:19] [---T---] json_from_file: JSON successfully loaded from data/color_gradients/c8001c.json
+[hesiod] [06:53:19] [---T---] ColorGradientManager::update_data: parsing data/color_gradients/17e67d.json
+[hesiod] [06:53:19] [---T---] json_from_file: JSON successfully loaded from data/color_gradients/17e67d.json
+[hesiod] [06:53:19] [---T---] ColorGradientManager::update_data: parsing data/color_gradients/84a5d1.json
+[hesiod] [06:53:19] [---T---] json_from_file: JSON successfully loaded from data/color_gradients/84a5d1.json
+[hesiod] [06:53:19] [---T---] ColorGradientManager::update_data: parsing data/color_gradients/c386e3.json
+[hesiod] [06:53:19] [---T---] json_from_file: JSON successfully loaded from data/color_gradients/c386e3.json
+[hesiod] [06:53:19] [---T---] ColorGradientManager::update_data: parsing data/color_gradients/4153cd.json
+[hesiod] [06:53:19] [---T---] json_from_file: JSON successfully loaded from data/color_gradients/4153cd.json
+[hesiod] [06:53:19] [---T---] ColorGradientManager::update_data: parsing data/color_gradients/4ff108.json
+[hesiod] [06:53:19] [---T---] json_from_file: JSON successfully loaded from data/color_gradients/4ff108.json
+[hesiod] [06:53:19] [---T---] ColorGradientManager::update_data: parsing data/color_gradients/468801.json
+[hesiod] [06:53:19] [---T---] json_from_file: JSON successfully loaded from data/color_gradients/468801.json
+[hesiod] [06:53:19] [---T---] ColorGradientManager::update_data: parsing data/color_gradients/6588a0.json
+[hesiod] [06:53:19] [---T---] json_from_file: JSON successfully loaded from data/color_gradients/6588a0.json
+[hesiod] [06:53:19] [---T---] ColorGradientManager::update_data: parsing data/color_gradients/48a9c3.json
+[hesiod] [06:53:19] [---T---] json_from_file: JSON successfully loaded from data/color_gradients/48a9c3.json
+[hesiod] [06:53:19] [---T---] ColorGradientManager::update_data: parsing data/color_gradients/376b60.json
+[hesiod] [06:53:19] [---T---] json_from_file: JSON successfully loaded from data/color_gradients/376b60.json
+[hesiod] [06:53:19] [---T---] ColorGradientManager::update_data: parsing data/color_gradients/5995c7.json
+[hesiod] [06:53:19] [---T---] json_from_file: JSON successfully loaded from data/color_gradients/5995c7.json
+[hesiod] [06:53:19] [---T---] ColorGradientManager::update_data: parsing data/color_gradients/e34d7a.json
+[hesiod] [06:53:19] [---T---] json_from_file: JSON successfully loaded from data/color_gradients/e34d7a.json
+[hesiod] [06:53:19] [---T---] ColorGradientManager::update_data: parsing data/color_gradients/428333.json
+[hesiod] [06:53:19] [---T---] json_from_file: JSON successfully loaded from data/color_gradients/428333.json
+[hesiod] [06:53:19] [---T---] ColorGradientManager::update_data: parsing data/color_gradients/4e2050.json
+[hesiod] [06:53:19] [---T---] json_from_file: JSON successfully loaded from data/color_gradients/4e2050.json
+[hesiod] [06:53:19] [---T---] ColorGradientManager::update_data: parsing data/color_gradients/277d46.json
+[hesiod] [06:53:19] [---T---] json_from_file: JSON successfully loaded from data/color_gradients/277d46.json
+[hesiod] [06:53:19] [---T---] ColorGradientManager::update_data: parsing data/color_gradients/736888.json
+[hesiod] [06:53:19] [---T---] json_from_file: JSON successfully loaded from data/color_gradients/736888.json
+[hesiod] [06:53:19] [---T---] ColorGradientManager::update_data: parsing data/color_gradients/06d0d3.json
+[hesiod] [06:53:19] [---T---] json_from_file: JSON successfully loaded from data/color_gradients/06d0d3.json
+[hesiod] [06:53:19] [---T---] ColorGradientManager::update_data: parsing data/color_gradients/780427.json
+[hesiod] [06:53:19] [---T---] json_from_file: JSON successfully loaded from data/color_gradients/780427.json
+[hesiod] [06:53:19] [---T---] ColorGradientManager::update_data: parsing data/color_gradients/19354f.json
+[hesiod] [06:53:19] [---T---] json_from_file: JSON successfully loaded from data/color_gradients/19354f.json
+[hesiod] [06:53:19] [---T---] ColorGradientManager::update_data: parsing data/color_gradients/54cd78.json
+[hesiod] [06:53:19] [---T---] json_from_file: JSON successfully loaded from data/color_gradients/54cd78.json
+[hesiod] [06:53:19] [---T---] ColorGradientManager::update_data: parsing data/color_gradients/771b3c.json
+[hesiod] [06:53:19] [---T---] json_from_file: JSON successfully loaded from data/color_gradients/771b3c.json
+[hesiod] [06:53:19] [---T---] ColorGradientManager::update_data: parsing data/color_gradients/fe1bcc.json
+[hesiod] [06:53:19] [---T---] json_from_file: JSON successfully loaded from data/color_gradients/fe1bcc.json
+[hesiod] [06:53:19] [---T---] ColorGradientManager::update_data: parsing data/color_gradients/bf4b51.json
+[hesiod] [06:53:19] [---T---] json_from_file: JSON successfully loaded from data/color_gradients/bf4b51.json
+[hesiod] [06:53:19] [---T---] ColorGradientManager::update_data: parsing data/color_gradients/ceb39f.json
+[hesiod] [06:53:19] [---T---] json_from_file: JSON successfully loaded from data/color_gradients/ceb39f.json
+[hesiod] [06:53:19] [---T---] ColorGradientManager::update_data: parsing data/color_gradients/7f27bd.json
+[hesiod] [06:53:19] [---T---] json_from_file: JSON successfully loaded from data/color_gradients/7f27bd.json
+[hesiod] [06:53:19] [---T---] ColorGradientManager::update_data: parsing data/color_gradients/051c4a.json
+[hesiod] [06:53:19] [---T---] json_from_file: JSON successfully loaded from data/color_gradients/051c4a.json
+[hesiod] [06:53:19] [---T---] ColorGradientManager::update_data: parsing data/color_gradients/8ef2a2.json
+[hesiod] [06:53:19] [---T---] json_from_file: JSON successfully loaded from data/color_gradients/8ef2a2.json
+[hesiod] [06:53:19] [---T---] ColorGradientManager::update_data: parsing data/color_gradients/154abe.json
+[hesiod] [06:53:19] [---T---] json_from_file: JSON successfully loaded from data/color_gradients/154abe.json
+[hesiod] [06:53:19] [---T---] ColorGradientManager::update_data: parsing data/color_gradients/f57b18.json
+[hesiod] [06:53:19] [---T---] json_from_file: JSON successfully loaded from data/color_gradients/f57b18.json
+[hesiod] [06:53:19] [---T---] ColorGradientManager::update_data: parsing data/color_gradients/459ca6.json
+[hesiod] [06:53:19] [---T---] json_from_file: JSON successfully loaded from data/color_gradients/459ca6.json
+[hesiod] [06:53:19] [---T---] ColorGradientManager::update_data: parsing data/color_gradients/200b67.json
+[hesiod] [06:53:19] [---T---] json_from_file: JSON successfully loaded from data/color_gradients/200b67.json
+[hesiod] [06:53:19] [---T---] ColorGradientManager::update_data: parsing data/color_gradients/cf1702.json
+[hesiod] [06:53:19] [---T---] json_from_file: JSON successfully loaded from data/color_gradients/cf1702.json
+[hesiod] [06:53:19] [---T---] ColorGradientManager::update_data: parsing data/color_gradients/b8e244.json
+[hesiod] [06:53:19] [---T---] json_from_file: JSON successfully loaded from data/color_gradients/b8e244.json
+[hesiod] [06:53:19] [---T---] ColorGradientManager::update_data: parsing data/color_gradients/e0b6b6.json
+[hesiod] [06:53:19] [---T---] json_from_file: JSON successfully loaded from data/color_gradients/e0b6b6.json
+[hesiod] [06:53:19] [---T---] ColorGradientManager::update_data: parsing data/color_gradients/f0afea.json
+[hesiod] [06:53:19] [---T---] json_from_file: JSON successfully loaded from data/color_gradients/f0afea.json
+[hesiod] [06:53:19] [---T---] ColorGradientManager::update_data: parsing data/color_gradients/bc6950.json
+[hesiod] [06:53:19] [---T---] json_from_file: JSON successfully loaded from data/color_gradients/bc6950.json
+[hesiod] [06:53:19] [---T---] ColorGradientManager::update_data: parsing data/color_gradients/b49b6c.json
+[hesiod] [06:53:19] [---T---] json_from_file: JSON successfully loaded from data/color_gradients/b49b6c.json
+[hesiod] [06:53:19] [---T---] BlenderStreamer::start: port 9001
+[hesiod] [06:53:19] [---I---] executing Hesiod in batch mode
+[hesiod] [06:53:19] [---T---] file: /home/barrulus/dev/Hesiod/build/tracy/overnight/fixtures/FlowStream.hsd
+[hesiod] [06:53:19] [---T---] cli shape: {512, 512}
+[hesiod] [06:53:19] [---T---] cli tiling: {1, 1}
+[hesiod] [06:53:19] [---T---] cli overlap: 0
+[hesiod] [06:53:19] [---T---] GraphConfig::GraphConfig
+[hesiod] [06:53:19] [---D---] 
+GraphConfig
+  Shape          : 1024 x 1024
+  Tiling         : 4 x 4
+  Overlap        : 0.5
+  Tile shape     : 256 x 256
+  Halo           : 128
+
+  Storage mode   : VA_DISK_LRU
+
+  Compute modes
+    CPU           : VA_DISTRIBUTED (trim=0)
+    GPU           : VA_SINGLE_ARRAY (trim=0)
+    Single array  : VA_SINGLE_ARRAY (trim=0)
+
+[hesiod] [06:53:19] [---D---] 
+GraphConfig
+  Shape          : 512 x 512
+  Tiling         : 4 x 4
+  Overlap        : 0.5
+  Tile shape     : 128 x 128
+  Halo           : 64
+
+  Storage mode   : VA_DISK_LRU
+
+  Compute modes
+    CPU           : VA_DISTRIBUTED (trim=0)
+    GPU           : VA_SINGLE_ARRAY (trim=0)
+    Single array  : VA_SINGLE_ARRAY (trim=0)
+
+[hesiod] [06:53:19] [---D---] 
+GraphConfig
+  Shape          : 512 x 512
+  Tiling         : 1 x 1
+  Overlap        : 0.5
+  Tile shape     : 512 x 512
+  Halo           : 256
+
+  Storage mode   : VA_DISK_LRU
+
+  Compute modes
+    CPU           : VA_DISTRIBUTED (trim=0)
+    GPU           : VA_SINGLE_ARRAY (trim=0)
+    Single array  : VA_SINGLE_ARRAY (trim=0)
+
+[hesiod] [06:53:19] [---D---] 
+GraphConfig
+  Shape          : 512 x 512
+  Tiling         : 1 x 1
+  Overlap        : 0
+  Tile shape     : 512 x 512
+  Halo           : 0
+
+  Storage mode   : VA_DISK_LRU
+
+  Compute modes
+    CPU           : VA_DISTRIBUTED (trim=0)
+    GPU           : VA_SINGLE_ARRAY (trim=0)
+    Single array  : VA_SINGLE_ARRAY (trim=0)
+
+[hesiod] [06:53:19] [---I---] graph configurations will be overriden:
+[hesiod] [06:53:19] [---I---] compute shape: {512, 512}
+[hesiod] [06:53:19] [---I---] compute tiling: {1, 1}
+[hesiod] [06:53:19] [---I---] compute overlap: 0
+[hesiod] [06:53:19] [---T---] GraphManager::GraphManager: id: 
+[hesiod] [06:53:19] [---T---] GraphManager::load_from_file: fname /home/barrulus/dev/Hesiod/build/tracy/overnight/fixtures/FlowStream.hsd
+[hesiod] [06:53:19] [---T---] json_from_file: JSON successfully loaded from /home/barrulus/dev/Hesiod/build/tracy/overnight/fixtures/FlowStream.hsd
+[hesiod] [06:53:19] [---T---] GraphManager::json_from
+[hesiod] [06:53:19] [---T---] GraphManager::clear
+[hesiod] [06:53:19] [---T---] graph graph_id: graph
+[hesiod] [06:53:19] [---T---] GraphConfig::GraphConfig
+[hesiod] [06:53:19] [---D---] 
+GraphConfig
+  Shape          : 1024 x 1024
+  Tiling         : 4 x 4
+  Overlap        : 0.5
+  Tile shape     : 256 x 256
+  Halo           : 128
+
+  Storage mode   : VA_DISK_LRU
+
+  Compute modes
+    CPU           : VA_DISTRIBUTED (trim=0)
+    GPU           : VA_SINGLE_ARRAY (trim=0)
+    Single array  : VA_SINGLE_ARRAY (trim=0)
+
+[hesiod] [06:53:19] [---T---] GraphNode::GraphNode
+[hesiod] [06:53:19] [---T---] GraphManager::add_graph_node: graph
+[hesiod] [06:53:19] [---T---] GraphNode::set_p_broadcast_params: ptr = OK
+[hesiod] [06:53:19] [---T---] GraphNode::json_from, graph graph
+[hesiod] [06:53:19] [---T---] GraphNode::json_from: GraphConfig override
+[hesiod] [06:53:19] [---T---] GraphNode::json_from, node type: GaussianPulse
+[hesiod] [06:53:19] [---T---] BaseNode::BaseNode, label: GaussianPulse
+[hesiod] [06:53:19] [---T---] setup node GaussianPulse
+[hesiod] [06:53:19] [---T---] setup_post_process_heightmap_attributes: [GaussianPulse]/[]
+[hesiod] [06:53:19] [---T---] BaseNode::update_attributes_tool_tip
+[hesiod] [06:53:19] [---T---] GraphNode::add_node: id = 1
+[hesiod] [06:53:19] [---T---] GraphNode::json_from, node type: CloudLattice
+[hesiod] [06:53:19] [---T---] BaseNode::BaseNode, label: CloudLattice
+[hesiod] [06:53:19] [---T---] setup node CloudLattice
+[hesiod] [06:53:19] [---T---] BaseNode::update_attributes_tool_tip
+[hesiod] [06:53:19] [---T---] GraphNode::add_node: id = 2
+[hesiod] [06:53:19] [---T---] GraphNode::json_from, node type: FlowStream
+[hesiod] [06:53:19] [---T---] BaseNode::BaseNode, label: FlowStream
+[hesiod] [06:53:19] [---T---] setup node FlowStream
+[hesiod] [06:53:19] [---T---] BaseNode::update_attributes_tool_tip
+[hesiod] [06:53:19] [---T---] GraphNode::add_node: id = 3
+[hesiod] [06:53:19] [---T---] GraphNode::json_from, new link request: 1/output => 3/input
+[hesiod] [06:53:19] [---T---] GraphNode::json_from, new link request: 2/cloud => 3/sources
+[hesiod] [06:53:19] [---T---] GraphManager::update()
+[hesiod] [06:53:19] [---T---] GraphNode::update
+[gnode-] [06:53:19] [---T---] Updating graph...
+[gnode-] [06:53:19] [---T---] Graph::update: update queue:
+[gnode-] [06:53:19] [---T---] Graph::update: node id: 2
+[gnode-] [06:53:19] [---T---] Graph::update: node id: 1
+[gnode-] [06:53:19] [---T---] Graph::update: node id: 3
+[gnode-] [06:53:19] [---T---] Updating node: CloudLattice(2)
+[hesiod] [06:53:19] [---T---] computing node [CloudLattice]/[2]
+[gnode-] [06:53:19] [---T---] Updating node: GaussianPulse(1)
+[hesiod] [06:53:19] [---T---] computing node [GaussianPulse]/[1]
+[New LWP 280986]
+[hesiod] [06:53:19] [---T---] post_apply_enveloppe: [GaussianPulse]/[1]
+[hesiod] [06:53:19] [---T---] post_process_heightmap: [GaussianPulse]/[1]
+[LWP 280986 exited]
+[New LWP 280987]
+[LWP 280987 exited]
+[New LWP 280988]
+[LWP 280988 exited]
+[New LWP 280989]
+[LWP 280989 exited]
+[gnode-] [06:53:19] [---T---] Updating node: FlowStream(3)
+[hesiod] [06:53:19] [---T---] computing node [FlowStream]/[3]
+[New LWP 280990]
+[LWP 280990 exited]
+[New LWP 280991]
+[LWP 280991 exited]
+[New LWP 280992]
+[LWP 280992 exited]
+
+Thread 1 "hesiod" received signal SIGSEGV, Segmentation fault.
+hmap::flow_stream (z=..., ij_start=..., ij_start@entry=..., elevation_ratio=0.5, distance_exponent=distance_exponent@entry=2, upward_penalization=upward_penalization@entry=100) at /home/barrulus/dev/Hesiod/external/HighMap/HighMap/src/hydrology/flow_stream.cpp:107
+107	  size_t             npts = i_path_list[kmin].size();
+#0  hmap::flow_stream (z=..., ij_start=..., ij_start@entry=..., elevation_ratio=0.5, distance_exponent=distance_exponent@entry=2, upward_penalization=upward_penalization@entry=100) at /home/barrulus/dev/Hesiod/external/HighMap/HighMap/src/hydrology/flow_stream.cpp:107
+#1  0x0000555555eecc79 in operator() (__closure=__closure@entry=0x7ffffffd2060, region=..., p_arrays=...) at /home/barrulus/dev/Hesiod/Hesiod/src/model/nodes/nodes_function/flow_stream.cpp:90
+#2  0x0000555555ef0396 in operator() (__closure=0x7ffffffd2048, out=<synthetic pointer>..., region=...) at /home/barrulus/dev/Hesiod/external/HighMap/HighMap/include/highmap/virtual_array/virtual_array.inl:148
+#3  hmap::single_array_compute<hmap::for_each_tile<hesiod::compute_flow_stream_node(BaseNode&)::<lambda(std::vector<Array*>, const TileRegion&)> >(const std::vector<VirtualArray*>&, hesiod::compute_flow_stream_node(BaseNode&)::<lambda(std::vector<Array*>, const TileRegion&)>&&, const ComputeMode&)::<lambda(const std::vector<const hmap::Array*>&, std::vector<hmap::Array*>&, const hmap::TileRegion&)>&>(const hmap::TileAccess &, struct {...} &, int) (access=..., func=..., stride=<optimized out>) at /home/barrulus/dev/Hesiod/external/HighMap/HighMap/include/highmap/virtual_array/virtual_array.inl:277
+#4  0x0000555555ef1a1b in hmap::for_each_tile<hmap::for_each_tile<hesiod::compute_flow_stream_node(BaseNode&)::<lambda(std::vector<Array*>, const TileRegion&)> >(const std::vector<VirtualArray*>&, hesiod::compute_flow_stream_node(BaseNode&)::<lambda(std::vector<Array*>, const TileRegion&)>&&, const ComputeMode&)::<lambda(const std::vector<const hmap::Array*>&, std::vector<hmap::Array*>&, const hmap::TileRegion&)> > (access=..., func=..., cm=...) at /home/barrulus/dev/Hesiod/external/HighMap/HighMap/include/highmap/virtual_array/virtual_array.inl:88
+#5  hmap::for_each_tile<hesiod::compute_flow_stream_node(BaseNode&)::<lambda(std::vector<hmap::Array*>, const hmap::TileRegion&)> > (outputs=..., func=..., cm=...) at /home/barrulus/dev/Hesiod/external/HighMap/HighMap/include/highmap/virtual_array/virtual_array.inl:144
+#6  hesiod::compute_flow_stream_node (node=...) at /home/barrulus/dev/Hesiod/Hesiod/src/model/nodes/nodes_function/flow_stream.cpp:69
+#7  0x0000555555ca8728 in std::function<void(hesiod::BaseNode&)>::operator() (this=0x555557d790e0, __args#0=...) at /nix/store/5q6bdxkp7lc70gn9mnf4yiybrx8ry5xq-gcc-16.2.0/include/c++/16.2.0/bits/std_function.h:581
+#8  hesiod::BaseNode::compute (this=0x555557d78ef0) at /home/barrulus/dev/Hesiod/Hesiod/src/model/nodes/base_node.cpp:113
+#9  0x00005555568259e1 in gnode::Node::update (this=0x555557d78ef0) at /home/barrulus/dev/Hesiod/external/GNode/GNode/src/node.cpp:138
+#10 0x000055555680d3a0 in gnode::Graph::update (this=this@entry=0x555557d76e20) at /home/barrulus/dev/Hesiod/external/GNode/GNode/src/graph.cpp:599
+#11 0x0000555555c852ff in hesiod::GraphNode::update (this=0x555557d76e20) at /home/barrulus/dev/Hesiod/Hesiod/src/model/graph/graph_node.cpp:418
+#12 0x0000555555c824e1 in hesiod::GraphManager::update (this=<optimized out>) at /home/barrulus/dev/Hesiod/Hesiod/src/model/graph/graph_manager.cpp:453
+#13 0x0000555555c8333f in hesiod::GraphManager::load_from_file (this=this@entry=0x7ffffffd2dc0, fname=..., p_config=p_config@entry=0x7ffffffd2ca0) at /home/barrulus/dev/Hesiod/Hesiod/src/model/graph/graph_manager.cpp:348
+#14 0x0000555555bad142 in hesiod::cli::run_batch_mode (filename=..., shape=..., tiling=..., overlap=<optimized out>, p_input_model_config=<optimized out>) at /home/barrulus/dev/Hesiod/Hesiod/src/cli/batch_mode.cpp:183
+#15 0x0000555555bafd4d in hesiod::cli::parse_args (parser=..., argc=5, argv=argv@entry=0x7ffffffd4bd8, startup_file=...) at /home/barrulus/dev/Hesiod/Hesiod/src/cli/batch_mode.cpp:82
+#16 0x0000555555b963df in hesiod::HesiodApplication::HesiodApplication (this=this@entry=0x7ffffffd4650, argc=@0x7ffffffd457c: 5, argv=argv@entry=0x7ffffffd4bd8, mode=mode@entry=hesiod::HesiodApplication::StartupMode::Normal) at /home/barrulus/dev/Hesiod/Hesiod/src/app/hesiod_application.cpp:101
+#17 0x0000555555ae3108 in main (argc=<optimized out>, argv=<optimized out>) at /home/barrulus/dev/Hesiod/Hesiod/app/main.cpp:66
+#0  hmap::flow_stream (z=..., ij_start=..., ij_start@entry=..., elevation_ratio=0.5, distance_exponent=distance_exponent@entry=2, upward_penalization=upward_penalization@entry=100) at /home/barrulus/dev/Hesiod/external/HighMap/HighMap/src/hydrology/flow_stream.cpp:107
+107	  size_t             npts = i_path_list[kmin].size();
+Can't take address of "ij_exits" which isn't an lvalue.
+Cannot evaluate function -- may be inlined
+$1 = <optimized out>
+$2 = <optimized out>

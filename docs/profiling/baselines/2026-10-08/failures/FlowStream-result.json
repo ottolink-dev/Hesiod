@@ -1,0 +1,21 @@
+{
+  "case": "FlowStream",
+  "target": "FlowStream",
+  "size": 512,
+  "repeat": 1,
+  "mode": "tracy",
+  "command": [
+    "/home/barrulus/dev/Hesiod/build/tracy/overnight/bin/hesiod",
+    "--batch=/home/barrulus/dev/Hesiod/build/tracy/overnight/fixtures/FlowStream.hsd",
+    "--shape=512,512",
+    "--tiling=1,1",
+    "--overlap=0"
+  ],
+  "graph_sha256": "c97bf800129ec711bbd3d12227279f1707e75ce9708a00407dfd0cccc4dd04c4",
+  "status": "failed",
+  "app_exit": 134,
+  "capture_exit": 0,
+  "error": "application or capture exited unsuccessfully",
+  "failure_kind": "ValueError",
+  "wall_seconds_including_profiler_shutdown": 7.599424570995325
+}

@@ -11,6 +11,8 @@
 
 #include "nlohmann/json.hpp"
 
+#include "hesiod/gui/widgets/rail/rail_owner.hpp"
+
 namespace qtr
 {
 class RenderWidget;
@@ -21,12 +23,16 @@ namespace hesiod
 
 class GraphNodeWidget;
 
-// the toolbar's pieces, one file each in viewers/viewport/
+// the toolbar's pieces, one file each in rail/ and viewers/viewport/
+namespace rail
+{
+class SnapGuide;
+} // namespace rail
+
 namespace viewport
 {
 class ViewportRail;
 class ViewportPanel;
-class SnapGuide;
 } // namespace viewport
 
 // =====================================
@@ -49,7 +55,7 @@ class SnapGuide;
 // - The first button is the graph's preview resolution.
 //
 // Parented to the renderer; everything it creates is a child of it.
-class ViewportControls : public QObject
+class ViewportControls : public QObject, public rail::RailOwner
 {
 public:
   ViewportControls(qtr::RenderWidget        *renderer,
@@ -81,21 +87,19 @@ protected:
   bool eventFilter(QObject *watched, QEvent *event) override;
 
 private:
-  friend class viewport::ViewportRail;
-
   void open_panel(int tool);
-  void close_panel(bool animate = true);
-  void on_tool_activated(int tool, const QRect &item_rect);
+  void close_panel(bool animate = true) override;
+  void on_tool_activated(int tool, const QRect &item_rect) override;
   void show_resolution_menu(const QRect &item_rect);
   void show_more_menu(const QRect &item_rect);
   void rebuild_rail();
   void reset_all();
-  void notify_layout_changed();
+  void notify_layout_changed() override;
 
   QPointer<qtr::RenderWidget>                      renderer;
   QPointer<GraphNodeWidget>                        graph;
   viewport::ViewportRail                          *rail = nullptr;
-  viewport::SnapGuide                             *guide = nullptr;
+  rail::SnapGuide                                 *guide = nullptr;
   std::map<int, QPointer<viewport::ViewportPanel>> panels;
   int                                              open_tool = -1;
   int                                              render_type = 1;

@@ -5,8 +5,8 @@
 #include "highmap/filters.hpp"
 #include "highmap/gradient.hpp"
 #include "highmap/math.hpp"
+#include "highmap/math/constants.hpp"
 #include "highmap/morphology.hpp"
-#include "highmap/multiscale/downscaling.hpp"
 #include "highmap/opencl/gpu_opencl.hpp"
 #include "highmap/range.hpp"
 
@@ -23,13 +23,14 @@ namespace hesiod
 // Ports & Attributes
 // -----------------------------------------------------------------------------
 
-constexpr const char *P_INPUT      = "input";
-constexpr const char *P_BEDROCK    = "bedrock";
-constexpr const char *P_MOISTURE   = "moisture";
-constexpr const char *P_MASK       = "mask";
-constexpr const char *P_OUTPUT     = "output";
-constexpr const char *P_EROSION    = "erosion";
-constexpr const char *P_DEPOSITION = "deposition";
+constexpr const char *P_INPUT       = "input";
+constexpr const char *P_BEDROCK     = "bedrock";
+constexpr const char *P_ERODIBILITY = "erodibility";
+constexpr const char *P_MOISTURE    = "moisture";
+constexpr const char *P_MASK        = "mask";
+constexpr const char *P_OUTPUT      = "output";
+constexpr const char *P_EROSION     = "erosion";
+constexpr const char *P_DEPOSITION  = "deposition";
 
 constexpr const char *A_SEED                      = "seed";
 constexpr const char *A_LEVELS                    = "levels";
@@ -97,6 +98,7 @@ void setup_hydraulic_particle_node(BaseNode &node)
   // port(s)
   node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_INPUT);
   node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_BEDROCK);
+  node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_ERODIBILITY);
   node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_MOISTURE);
   node.add_port<hmap::VirtualArray>(gnode::PortType::IN, P_MASK);
   node.add_port<hmap::VirtualArray>(gnode::PortType::OUT, P_OUTPUT, CONFIG(node));
@@ -136,13 +138,14 @@ void compute_hydraulic_particle_node(BaseNode &node)
 {
   Logger::log()->trace("computing node [{}]/[{}]", node.get_label(), node.get_id());
 
-  const auto *p_in         = node.get_value_ref<hmap::VirtualArray>(P_INPUT);
-  const auto *p_bedrock    = node.get_value_ref<hmap::VirtualArray>(P_BEDROCK);
-  const auto *p_moisture   = node.get_value_ref<hmap::VirtualArray>(P_MOISTURE);
-  const auto *p_mask       = node.get_value_ref<hmap::VirtualArray>(P_MASK);
-  auto       *p_out        = node.get_value_ref<hmap::VirtualArray>(P_OUTPUT);
-  auto       *p_erosion    = node.get_value_ref<hmap::VirtualArray>(P_EROSION);
-  auto       *p_deposition = node.get_value_ref<hmap::VirtualArray>(P_DEPOSITION);
+  const auto *p_in          = node.get_value_ref<hmap::VirtualArray>(P_INPUT);
+  const auto *p_bedrock     = node.get_value_ref<hmap::VirtualArray>(P_BEDROCK);
+  const auto *p_erodibility = node.get_value_ref<hmap::VirtualArray>(P_ERODIBILITY);
+  const auto *p_moisture    = node.get_value_ref<hmap::VirtualArray>(P_MOISTURE);
+  const auto *p_mask        = node.get_value_ref<hmap::VirtualArray>(P_MASK);
+  auto       *p_out         = node.get_value_ref<hmap::VirtualArray>(P_OUTPUT);
+  auto       *p_erosion     = node.get_value_ref<hmap::VirtualArray>(P_EROSION);
+  auto       *p_deposition  = node.get_value_ref<hmap::VirtualArray>(P_DEPOSITION);
 
   if (!p_in)
     return;
@@ -167,7 +170,7 @@ void compute_hydraulic_particle_node(BaseNode &node)
   const bool  enable_default_bedrock = node.val<bool>(A_ENABLE_DEFAULT_BEDROCK);
   const float bd_elevation_strength  = node.val<float>(A_BD_ELEVATION_STRENGTH);
   const float bd_slope_strength      = node.val<float>(A_BD_SLOPE_STRENGTH);
-  const float bd_talus               = node.val<float>(A_BD_SLOPE) / p_out->shape.x;
+  const float bd_talus               = node.val_talus(A_BD_SLOPE);
 
   const bool  enable_ridge_forcing      = node.val<bool>(A_ENABLE_RIDGE_FORCING);
   const float ridge_spatial_frequency   = node.val<float>(A_RIDGE_SPATIAL_FREQUENCY);
@@ -200,14 +203,15 @@ void compute_hydraulic_particle_node(BaseNode &node)
   }
 
   hmap::for_each_tile(
-      {p_in, p_bedrock, p_moisture, p_mask},
+      {p_in, p_bedrock, p_erodibility, p_moisture, p_mask},
       {p_out, p_erosion, p_deposition},
       [&](std::vector<const hmap::Array *> p_arrays_in,
           std::vector<hmap::Array *>       p_arrays_out,
           const hmap::TileRegion          &region)
       {
-        auto [pa_in, pa_bedrock, pa_moisture, pa_mask] = unpack<4>(p_arrays_in);
-        auto [pa_out, pa_erosion, pa_deposition]       = unpack<3>(p_arrays_out);
+        auto [pa_in, pa_bedrock, pa_erodibility, pa_moisture, pa_mask] = unpack<5>(
+            p_arrays_in);
+        auto [pa_out, pa_erosion, pa_deposition] = unpack<3>(p_arrays_out);
 
         *pa_out = *pa_in;
 
@@ -225,7 +229,8 @@ void compute_hydraulic_particle_node(BaseNode &node)
           hmap::Array ridges = hmap::gpu::gabor_wave_fbm(region.shape,
                                                          kr,
                                                          seed + 1,
-                                                         angle * 180.f / M_PI + 90.f,
+                                                         angle * hmap::cte::rad_to_deg +
+                                                             90.f,
                                                          0.f,
                                                          octaves,
                                                          weight,
@@ -277,6 +282,7 @@ void compute_hydraulic_particle_node(BaseNode &node)
                                                    seed,
                                                    steps_per_level,
                                                    pa_bedrock,
+                                                   pa_erodibility,
                                                    pa_moisture,
                                                    nullptr,
                                                    pa_erosion,
@@ -302,6 +308,7 @@ void compute_hydraulic_particle_node(BaseNode &node)
                                         nparticles,
                                         seed,
                                         pa_bedrock,
+                                        pa_erodibility,
                                         pa_moisture,
                                         nullptr,
                                         pa_erosion,

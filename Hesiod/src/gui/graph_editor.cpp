@@ -139,13 +139,14 @@ void GraphEditor::validate_connection(const Link &link) const
 
 std::string GraphEditor::add_node(const std::string                     &type,
                                   QPointF                                position,
-                                  const std::function<void(BaseNode &)> &initialize)
+                                  const std::function<void(BaseNode &)> &initialize,
+                                  const std::string                     &requested_id)
 {
   if (type.empty())
     return {};
   auto              graph = this->graph();
   Batch             batch(*this);
-  const std::string id = graph->add_node(type);
+  const std::string id = graph->add_node(type, requested_id);
   try
   {
     auto *node = graph->get_node_ref_by_id<BaseNode>(id);

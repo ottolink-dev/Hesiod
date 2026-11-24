@@ -24,6 +24,7 @@ endif()
 if(HESIOD_ENABLE_PCH)
   set(HIGHMAP_ENABLE_PCH ON)
 endif()
+set(HIGHMAP_ENABLE_TRACY ${HESIOD_ENABLE_TRACY})
 add_subdirectory(HighMap)
 if(APPLE)
   target_include_directories(clwrapper PUBLIC ${HESIOD_OPENCL_INCLUDE_DIR})
@@ -38,6 +39,7 @@ set(META_ENABLE_FTXUI_UI OFF)
 add_subdirectory(Meta)
 
 # QTerrainRenderer
+set(QTR_ENABLE_TRACY ${HESIOD_ENABLE_TRACY})
 add_subdirectory(QTerrainRenderer)
 
 # QTextureDownloader

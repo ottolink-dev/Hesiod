@@ -2,6 +2,8 @@
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
 #include "highmap/hydrology/hydrology.hpp"
+#include "highmap/math/constants.hpp"
+#include "highmap/range.hpp"
 
 #include "hesiod/model/nodes/attributes.hpp"
 
@@ -59,30 +61,29 @@ void compute_flooding_lake_system_node(BaseNode &node)
   if (!p_in)
     return;
 
-  const auto use_distributed_computation = node.val<bool>(A_USE_DISTRIBUTED_COMPUTATION);
-  int        ir                          = node.val_pixel_radius(A_MININAL_RADIUS, 0);
-  float      surface_threshold           = M_PI * ir * ir;
+  // clang-format off
+  const auto  use_distributed_computation = node.val<bool>(A_USE_DISTRIBUTED_COMPUTATION);
+  const int   ir                          = node.val_pixel_radius(A_MININAL_RADIUS, 0);
+  const float surface_threshold           = hmap::cte::pi * ir * ir;
+  // clang-format on
 
-  if (use_distributed_computation)
-  {
-    *p_out = hmap::va::flooding_lake_system(*p_in, surface_threshold, node.cfg().cm_cpu);
-  }
-  else
-  {
-    hmap::for_each_tile(
-        {p_in},
-        {p_out},
-        [surface_threshold](std::vector<const hmap::Array *> p_arrays_in,
-                            std::vector<hmap::Array *>       p_arrays_out,
-                            const hmap::TileRegion &)
-        {
-          auto [pa_in]  = unpack<1>(p_arrays_in);
-          auto [pa_out] = unpack<1>(p_arrays_out);
+  const auto cm = use_distributed_computation ? node.cfg().cm_cpu
+                                              : node.cfg().cm_single_array;
 
-          *pa_out = hmap::flooding_lake_system(*pa_in, surface_threshold);
-        },
-        node.cfg().cm_single_array);
-  }
+  hmap::for_each_tile(
+      {p_in},
+      {p_out},
+      [surface_threshold](std::vector<const hmap::Array *> p_arrays_in,
+                          std::vector<hmap::Array *>       p_arrays_out,
+                          const hmap::TileRegion          &region,
+                          hmap::ICommunicator             &comm)
+      {
+        auto [pa_in]  = unpack<1>(p_arrays_in);
+        auto [pa_out] = unpack<1>(p_arrays_out);
+
+        *pa_out = hmap::flooding_lake_system(*pa_in, surface_threshold, region, comm);
+      },
+      cm);
 }
 
 } // namespace hesiod

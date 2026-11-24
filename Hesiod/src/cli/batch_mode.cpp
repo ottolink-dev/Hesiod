@@ -5,15 +5,17 @@
 
 #include <QTimer>
 
+#include "gnode/graph_worker.hpp"
+#include "hesiod/app/bundle_runtime.hpp"
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/app/bundle_runtime.hpp"
 #include "hesiod/cli/batch_mode.hpp"
 #include "hesiod/gui/project_ui.hpp"
-#include "hesiod/gui/widgets/graph_tabs_widget.hpp"
-#include "hesiod/gui/widgets/gui_utils.hpp"
+#include "hesiod/gui/widgets/containers/graph_tabs_widget.hpp"
+#include "hesiod/gui/widgets/utils/gui_utils.hpp"
 #include "hesiod/logger.hpp"
-#include "hesiod/model/graph/graph_manager.hpp"
 #include "hesiod/model/graph/graph_node.hpp"
+#include "hesiod/model/graph_manager/graph_manager.hpp"
 #include "hesiod/model/nodes/node_factory.hpp"
 #include "hesiod/model/nodes/post_process.hpp"
 #include "hesiod/model/utils.hpp"
@@ -91,7 +93,7 @@ int parse_args(args::ArgumentParser &parser,
   args::Flag min_memory_arg(batch_args,
                             "min-memory",
                             "Minimal memory footprint mode (storage mode: "
-                            "VA_DISK_LRU_MIN, compute mode: VA_SEQUENTIAL)",
+                            "VA_DISK_LRU_STREAM, compute mode: VA_SEQUENTIAL)",
                             {"min-memory", "low-memory"});
 
   args::Flag ipc_arg(batch_args,
@@ -209,10 +211,10 @@ void run_batch_mode(const std::string                  &filename,
 
   if (min_memory)
   {
-    config.storage_mode = hmap::StorageMode::VA_DISK_LRU_MIN;
+    config.storage_mode = hmap::StorageMode::VA_DISK_LRU_STREAM;
     config.cm_cpu.mode = hmap::ForEachMode::VA_SEQUENTIAL;
     config.cm_gpu.mode = hmap::ForEachMode::VA_SEQUENTIAL;
-    Logger::log()->info("minimal memory mode enabled (storage mode: VA_DISK_LRU_MIN, "
+    Logger::log()->info("minimal memory mode enabled (storage mode: VA_DISK_LRU_STREAM, "
                         "compute mode: VA_SEQUENTIAL)");
   }
   else if (force_distributed)
@@ -230,7 +232,10 @@ void run_batch_mode(const std::string                  &filename,
         "forcing sequential computation for all compute modes (CPU and GPU)");
   }
 
-  if (shape.x || shape.y || tiling.x || tiling.y || overlap >= 0.f)
+  const bool override_config = (shape.x || shape.y || tiling.x || tiling.y ||
+                                overlap >= 0.f);
+
+  if (override_config)
   {
     glm::ivec2 new_shape = (shape.x && shape.y) ? shape : glm::ivec2(1024, 1024);
     glm::ivec2 new_tiling = (tiling.x && tiling.y) ? tiling : glm::ivec2(1, 1);
@@ -253,14 +258,27 @@ void run_batch_mode(const std::string                  &filename,
 
   // load graph structure without running update yet
   nlohmann::json json = json_from_file(filename);
-  graph_manager.json_from(json["graph_manager"], &config);
+  graph_manager.json_from(json["graph_manager"], override_config ? &config : nullptr);
 
-  // force distributed computation in batch mode
+  // apply batch compute/storage settings and force distributed computation
   for (const auto &graph_id : graph_manager.get_graph_order())
   {
     GraphNode *p_graph = graph_manager.get_graph_ref_by_id(graph_id);
     if (!p_graph)
       continue;
+
+    if (!override_config)
+    {
+      if (GraphConfig *p_cfg = p_graph->get_config_ref())
+      {
+        p_cfg->storage_mode = config.storage_mode;
+        p_cfg->cm_cpu.trim_storage = config.cm_cpu.trim_storage;
+        p_cfg->cm_gpu.trim_storage = config.cm_gpu.trim_storage;
+        p_cfg->cm_single_array.trim_storage = config.cm_single_array.trim_storage;
+        p_cfg->cm_cpu.mode = config.cm_cpu.mode;
+        p_cfg->cm_gpu.mode = config.cm_gpu.mode;
+      }
+    }
 
     for (const auto &[node_id, p_node] : p_graph->get_nodes())
     {
@@ -287,11 +305,16 @@ void run_batch_mode(const std::string                  &filename,
       if (!p_graph)
         continue;
 
-      p_graph->compute_started = [](const std::string &node_id)
-      { std::cout << "HSD_IPC:NODE_STARTED:" << node_id << std::endl; };
+      p_graph->compute_started = [graph_id](const std::string &node_id)
+      {
+        std::cout << "HSD_IPC:NODE_STARTED:" << graph_id << "/" << node_id << std::endl;
+      };
 
-      p_graph->compute_finished = [](const std::string &node_id)
-      { std::cout << "HSD_IPC:NODE_FINISHED:" << node_id << ":1" << std::endl; };
+      p_graph->compute_finished = [graph_id](const std::string &node_id)
+      {
+        std::cout << "HSD_IPC:NODE_FINISHED:" << graph_id << "/" << node_id << ":1"
+                  << std::endl;
+      };
     }
   }
 
@@ -300,11 +323,9 @@ void run_batch_mode(const std::string                  &filename,
 
   graph_manager.update();
 
-  string_to_file(graph_manager.runtime_info_to_string('|'), "batch.log");
+  graph_manager.get_worker().finish();
 
-  // flatten & export if there is a configuration defined
-  if (!graph_manager.get_export_param().export_path.empty())
-    graph_manager.export_flatten();
+  string_to_file(graph_manager.runtime_info_to_string('|'), "batch.log");
 }
 
 void run_node_inventory()

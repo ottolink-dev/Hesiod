@@ -10,11 +10,11 @@
 #include "qtr/render_widget.hpp"
 
 #include "hesiod/app/hesiod_application.hpp"
-#include "hesiod/gui/widgets/graph_node_widget.hpp"
-#include "hesiod/gui/widgets/menu_chrome.hpp"
-#include "hesiod/gui/widgets/properties_panel_design.hpp"
+#include "hesiod/gui/widgets/graph/graph_node_widget.hpp"
+#include "hesiod/gui/widgets/node_widgets/properties_panel_design.hpp"
+#include "hesiod/gui/widgets/rail/snap_guide.hpp"
+#include "hesiod/gui/widgets/shell/menu_chrome.hpp"
 #include "hesiod/gui/widgets/viewers/viewport/panel_model.hpp"
-#include "hesiod/gui/widgets/viewers/viewport/snap_guide.hpp"
 #include "hesiod/gui/widgets/viewers/viewport/viewport_panel.hpp"
 #include "hesiod/gui/widgets/viewers/viewport/viewport_rail.hpp"
 #include "hesiod/gui/widgets/viewers/viewport/viewport_specs.hpp"
@@ -242,7 +242,7 @@ void ViewportControls::open_panel(int tool)
     meta::qt::ContainerRenderOptions options;
     options.design = properties_panel_design().design;
     options.row_context = ctx;
-    options.category_policy = meta::qt::CategoryPolicy::CP_MERGED;
+    options.category_policy = meta::qt::CategoryPolicy::Merged;
     options.root_category_name = std::string{};
 
     QWidget *rows = meta::qt::render(p_model->get_container(), options, panel);

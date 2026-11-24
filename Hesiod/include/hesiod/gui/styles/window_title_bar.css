@@ -1,0 +1,13 @@
+R""(
+QWidget#hsdTitleBar { background: transparent; }
+QMenuBar#hsdTitleMenuBar {
+  background: transparent; border: none; padding: 0; margin: 0;
+  color: INK_DIM; spacing: 2px; FONT_FAMILY font-size: 13px; }
+QMenuBar#hsdTitleMenuBar::item {
+  background: transparent; color: INK_DIM; padding: 5px 10px; border-radius: 6px; }
+QMenuBar#hsdTitleMenuBar::item:selected { background: HOVER; color: INK; }
+QMenuBar#hsdTitleMenuBar::item:pressed { background: PRESSED; color: INK; }
+QLineEdit#hsdTitleEditor {
+  background: transparent; border: none; color: INK; FONT_FAMILY font-size: 12px;
+  selection-background-color: ACCENT; }
+)""
