@@ -23,6 +23,7 @@ enum GraphTool : int
   ToolUpdate,
   ToolStop,
   ToolFit,
+  ToolAutoLayout,
   ToolImport,
   ToolSettings,
   ToolViewport
@@ -38,6 +39,8 @@ const char *icon_name(int tool)
     return "graph_stop";
   case ToolFit:
     return "graph_fit";
+  case ToolAutoLayout:
+    return "graph_auto_layout";
   case ToolImport:
     return "graph_import";
   case ToolSettings:
@@ -81,6 +84,7 @@ GraphControls::GraphControls(GraphNodeWidget *graph) : QObject(graph), graph(gra
   this->rail->set_items({Item{ToolUpdate, "Update the graph", false, false},
                          Item{ToolStop, "Stop the update (Esc)", false, false},
                          Item{ToolFit, "Fit the view to the nodes", true, false},
+                         Item{ToolAutoLayout, "Automatic node layout", false, false},
                          Item{ToolImport, "Import a graph", true, false},
                          Item{ToolSettings, "Graph settings", false, false},
                          Item{ToolViewport, "Open a viewer", true, false}});
@@ -142,6 +146,9 @@ void GraphControls::on_tool_activated(int tool, const QRect & /* item_rect */)
     break;
   case ToolFit:
     this->graph->zoom_to_content();
+    break;
+  case ToolAutoLayout:
+    this->graph->automatic_node_layout();
     break;
   case ToolImport:
     Q_EMIT this->graph->graph_import_request();

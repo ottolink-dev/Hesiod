@@ -344,7 +344,7 @@ void GraphNodeWidget::automatic_node_layout()
 
   for (auto &[nid, _] : gno->get_nodes())
   {
-    if (k > points.size() - 1)
+    if (k >= points.size())
     {
       Logger::log()->error(
           "GraphNodeWidget::automatic_node_layout: computed layout is incoherent "
