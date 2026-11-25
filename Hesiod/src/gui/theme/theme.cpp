@@ -11,20 +11,50 @@
 namespace hesiod
 {
 
+ThemeDefinition ThemeDefinition::make_default_dark()
+{
+  ThemeDefinition t;
+  t.name = "Dark";
+  t.is_dark = true;
+  t.background = QColor("#191919");
+  t.surface = QColor("#2B2B2B");
+  t.text = QColor("#F4F4F5");
+  t.text_muted = QColor("#949495");
+  t.accent = QColor("#5E81AC");
+  t.border = QColor("#5B5B5B");
+  t.node_editor_bg = QColor("#2B2B2B");
+  return t;
+}
+
+ThemeDefinition ThemeDefinition::make_default_light()
+{
+  ThemeDefinition t;
+  t.name = "Light";
+  t.is_dark = false;
+  t.background = QColor("#E1E2E4");
+  t.surface = QColor("#EDEDED");
+  t.text = QColor("#1C1E21");
+  t.text_muted = QColor("#5E636A");
+  t.accent = QColor("#3B679B");
+  t.border = QColor("#C3C7CE");
+  t.node_editor_bg = QColor("#E1E2E4"); // Follow theme background
+  return t;
+}
+
 ThemeDefinition ThemeDefinition::from_seeds(const std::string &name,
                                             const QColor      &ground,
                                             const QColor      &accent)
 {
   using oklch::Lch;
 
-  // --- normalise the seeds
+  // --- normalize the seeds
   Lch g = oklch::to_lch(ground);
   g.L = std::clamp(g.L, 0.20, 0.29);
   g.C = std::min(g.C, 0.014);
 
   Lch a = oklch::to_lch(accent);
   if (a.C < 0.012)
-    a.h = g.h; // a grey has no hue of its own: borrow the ground's
+    a.h = g.h; // a gray has no hue of its own: borrow the ground's
   a.L = std::clamp(a.L, a.C < 0.03 ? 0.80 : 0.66, 0.90);
   a.C = std::min(a.C, 0.135);
 
@@ -50,14 +80,14 @@ ThemeDefinition ThemeDefinition::from_seeds(const std::string &name,
   return t;
 }
 
-std::vector<ThemeDefinition> ThemeDefinition::make_colourways()
+std::vector<ThemeDefinition> ThemeDefinition::make_colorways()
 {
   using oklch::from_lch;
 
-  // Grounds are graphite: grey first, with only a breath of the hue. Accents
-  // are mineral colours at moderate chroma, never neon.
+  // Grounds are graphite: gray first, with only a breath of the hue. Accents
+  // are mineral colors at moderate chroma, never neon.
   return {
-      from_seeds("Dark", from_lch({0.235, 0.006, 255}), from_lch({0.75, 0.095, 252})),
+      from_seeds("Slate", from_lch({0.235, 0.006, 255}), from_lch({0.75, 0.095, 252})),
       from_seeds("Clay", from_lch({0.240, 0.006, 55}), from_lch({0.75, 0.095, 48})),
       from_seeds("Moss", from_lch({0.235, 0.006, 150}), from_lch({0.77, 0.085, 148})),
       from_seeds("Sand", from_lch({0.240, 0.006, 85}), from_lch({0.83, 0.085, 88})),
@@ -67,23 +97,6 @@ std::vector<ThemeDefinition> ThemeDefinition::make_colourways()
   };
 }
 
-ThemeDefinition ThemeDefinition::make_default_dark() { return make_colourways().front(); }
-
-ThemeDefinition ThemeDefinition::make_default_light()
-{
-  ThemeDefinition t;
-  t.name = "Light";
-  t.is_dark = false;
-  t.background = QColor("#E1E2E4");
-  t.surface = QColor("#EDEDED");
-  t.text = QColor("#1C1E21");
-  t.text_muted = QColor("#5E636A");
-  t.accent = QColor("#3B679B");
-  t.border = QColor("#C3C7CE");
-  t.node_editor_bg = QColor("#E1E2E4"); // Follow theme background
-  return t;
-}
-
 QColor ThemeDefinition::derive_group_accent(const std::string &name)
 {
   uint hash = 2166136261u;
@@ -91,7 +104,7 @@ QColor ThemeDefinition::derive_group_accent(const std::string &name)
     hash = (hash ^ static_cast<uint>(c)) * 16777619u;
 
   // any hue, but always the same perceived lightness and a moderate chroma:
-  // a panel of differently coloured groups stays one palette
+  // a panel of differently colored groups stays one palette
   return oklch::from_lch({0.76, 0.095, static_cast<double>(hash % 360u)});
 }
 

@@ -2,9 +2,9 @@ R""(
 /* ============================================================================
    Hesiod application stylesheet.
 
-   Every colour is a placeholder (COLOR_...) replaced at runtime by
+   Every color is a placeholder (COLOR_...) replaced at runtime by
    apply_global_style() with a tone derived from the active theme, so one
-   template serves every colourway, light or dark.
+   template serves every theme, light or dark.
 
    The vocabulary:
      base     COLOR_BG_DEEP        behind the panes, the graph background
@@ -300,7 +300,7 @@ QComboBox::drop-down {
     width: 24px;
 }
 
-/* a mid grey that reads on dark and on light: an image cannot follow the theme */
+/* a mid gray that reads on dark and on light: an image cannot follow the theme */
 QComboBox::down-arrow {
     image: url(ICON_CHEVRON_PATH);
     width: 12px;
@@ -426,11 +426,14 @@ QMenu::indicator {
     padding-left: 8px;
 }
 
+/* a seam, not the panel border: that one follows the theme's border color and
+   can land on the popup's own tone (it does in "Dark"), the seam is a fixed
+   step from it */
 QMenu::separator {
     height: 1px;
     margin: 5px 10px;
-    background-color: COLOR_PANEL_BORDER;
-    color: COLOR_PANEL_BORDER;
+    background-color: COLOR_SEAM;
+    color: COLOR_SEAM;
 }
 
 /* QPushButton / QToolButton ----------------------------------------------- */

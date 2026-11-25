@@ -51,6 +51,13 @@ Oklab linear_to_oklab(const Rgb &c)
 
 Rgb oklab_to_linear(const Oklab &c)
 {
+  // the neutral axis, exactly: the matrices would leave a rounding residue
+  if (c.a == 0.0 && c.b == 0.0)
+  {
+    const double v = c.L * c.L * c.L;
+    return {v, v, v};
+  }
+
   const double l_ = c.L + 0.3963377774 * c.a + 0.2158037573 * c.b;
   const double m_ = c.L - 0.1055613458 * c.a - 0.0638541728 * c.b;
   const double s_ = c.L - 0.0894841775 * c.a - 1.2914855480 * c.b;
@@ -66,6 +73,11 @@ Rgb oklab_to_linear(const Oklab &c)
 
 Oklab to_oklab(const QColor &color)
 {
+  // a gray has no chroma at all, not the 1e-8 the matrices give it: a mix or
+  // a lightness step of a neutral tone must come out neutral in every channel
+  if (color.red() == color.green() && color.green() == color.blue())
+    return {std::cbrt(srgb_decode(color.redF())), 0.0, 0.0};
+
   return linear_to_oklab({srgb_decode(color.redF()),
                           srgb_decode(color.greenF()),
                           srgb_decode(color.blueF())});
@@ -125,7 +137,7 @@ QColor from_lch(const Lch &lch, double alpha)
   if (in_gamut(rgb))
     return encode(rgb, alpha);
 
-  // keep lightness and hue, give up chroma until the colour exists in sRGB
+  // keep lightness and hue, give up chroma until the color exists in sRGB
   double lo = 0.0;
   double hi = c.C;
   for (int i = 0; i < 18; ++i)

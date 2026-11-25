@@ -40,14 +40,18 @@ std::vector<fs::path> get_theme_search_paths()
 
 ThemeRegistry::ThemeRegistry()
 {
-  // Built-in themes are always compiled-in and registered first
-  for (const ThemeDefinition &colourway : ThemeDefinition::make_colourways())
+  // Built-in themes are always compiled-in and registered first: the two
+  // defaults, then the colorways
+  std::vector<ThemeDefinition> builtin = ThemeDefinition::make_colorways();
+  builtin.insert(
+      builtin.begin(),
+      {ThemeDefinition::make_default_dark(), ThemeDefinition::make_default_light()});
+
+  for (const ThemeDefinition &theme : builtin)
   {
-    this->builtin_order.push_back(colourway.name);
-    this->register_theme(colourway);
+    this->builtin_order.push_back(theme.name);
+    this->register_theme(theme);
   }
-  this->builtin_order.push_back("Light");
-  this->register_theme(ThemeDefinition::make_default_light());
 
   this->scan_themes();
 }
@@ -109,7 +113,8 @@ std::vector<std::string> ThemeRegistry::available_theme_names() const
   std::vector<std::string> names;
   names.reserve(this->themes.size());
 
-  // built-ins first, in their own order ("Dark" leads), then user themes
+  // built-ins first, in their own order ("Dark" and "Light" lead), then user
+  // themes
   for (const std::string &name : this->builtin_order)
     if (this->has_theme(name))
       names.push_back(name);
