@@ -58,6 +58,7 @@
 #include "hesiod/gui/widgets/dialogs/project_settings_dialog.hpp"
 #include "hesiod/gui/widgets/dialogs/splash_screen.hpp"
 #include "hesiod/gui/widgets/graph_config_widgets/bake_config_dialog.hpp"
+#include "hesiod/gui/motion/motion.hpp"
 #include "hesiod/gui/widgets/shell/menu_chrome.hpp"
 #include "hesiod/gui/widgets/shell/window_chrome.hpp"
 #include "hesiod/gui/widgets/utils/fractional_repaint_filter.hpp"
@@ -158,6 +159,7 @@ HesiodApplication::HesiodApplication(int &argc, char **argv, StartupMode mode)
   apply_global_style(this->get_qapp());
   apply_animation_settings(this->context.app_settings.interface.enable_ui_animations);
   MenuAnimator::install(this->get_qapp());
+  motion::drive_qt_animations(); // Qt's own animations on the display's clock
   install_native_dialog_polish(this->get_qapp());
   install_color_picker();
 
@@ -1409,6 +1411,8 @@ void HesiodApplication::on_save()
     {
       this->context.project_model->set_path(path);
       this->add_recent_file(path.string());
+      if (this->main_window)
+        this->main_window->get_title_bar()->flash_saved();
     }
   }
 }
@@ -1448,6 +1452,8 @@ void HesiodApplication::on_save_as()
     {
       this->context.project_model->set_path(clean_path.string());
       this->add_recent_file(clean_path.string());
+      if (this->main_window)
+        this->main_window->get_title_bar()->flash_saved();
     }
   }
 }

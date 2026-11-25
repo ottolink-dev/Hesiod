@@ -12,7 +12,7 @@ typedef unsigned int uint;
 #endif
 
 #include <QCoreApplication>
-#ifdef Q_OS_MACOS
+#if defined(Q_OS_MACOS) || defined(Q_OS_WIN)
 #include <QSurfaceFormat>
 #endif
 
@@ -42,6 +42,20 @@ int main(int argc, char *argv[])
   format.setDepthBufferSize(24);
   format.setStencilBufferSize(8);
   QSurfaceFormat::setDefaultFormat(format);
+#endif
+#ifdef Q_OS_WIN
+  {
+    // One wait for the display per frame, not two. A window that holds an
+    // OpenGL view is put on screen through a buffer swap, and with the default
+    // swap interval that swap waits for the display. The interface's animation
+    // clock (motion.hpp) already waits for the compositor before every step,
+    // so each frame waited twice: measured in the main window, frames arrived
+    // 12 ms and 38 ms apart in turn instead of every 16.7 ms. Under the
+    // compositor a window cannot tear, so the swap does not need its own wait.
+    QSurfaceFormat format = QSurfaceFormat::defaultFormat();
+    format.setSwapInterval(0);
+    QSurfaceFormat::setDefaultFormat(format);
+  }
 #endif
   hesiod::Logger::log()->info("Welcome to Hesiod v{}.{}.{}!",
                               HESIOD_VERSION_MAJOR,

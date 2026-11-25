@@ -2,6 +2,7 @@
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
 #include <algorithm>
+#include <cmath>
 
 #include <QApplication>
 #include <QEnterEvent>
@@ -13,12 +14,13 @@
 #include <QMouseEvent>
 #include <QPainter>
 #include <QPainterPath>
-#include <QVariantAnimation>
 
 #include "meta_qt/ui/theme.hpp"
 
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/theme/style_sheet.hpp"
+#include "hesiod/gui/widgets/shell/title_chip.hpp"
+#include "hesiod/gui/widgets/shell/title_menu_bar.hpp"
 #include "hesiod/gui/widgets/shell/window_chrome.hpp"
 #include "hesiod/gui/widgets/utils/gui_utils.hpp"
 
@@ -56,15 +58,29 @@ WindowButton::WindowButton(Kind kind, QWidget *parent)
 void WindowButton::enterEvent(QEnterEvent *event)
 {
   this->hovered = true;
-  this->update();
+  this->hover_t.to(1.0, motion::hover_in, motion::enter());
   QAbstractButton::enterEvent(event);
 }
 
 void WindowButton::leaveEvent(QEvent *event)
 {
   this->hovered = false;
-  this->update();
+  this->hover_t.to(0.0, motion::hover_out, motion::leave());
+  this->press_t.to(0.0, motion::press_out, motion::enter());
   QAbstractButton::leaveEvent(event);
+}
+
+void WindowButton::mousePressEvent(QMouseEvent *event)
+{
+  if (event->button() == Qt::LeftButton)
+    this->press_t.to(1.0, motion::press_in, motion::enter());
+  QAbstractButton::mousePressEvent(event);
+}
+
+void WindowButton::mouseReleaseEvent(QMouseEvent *event)
+{
+  this->press_t.to(0.0, motion::press_out, motion::enter());
+  QAbstractButton::mouseReleaseEvent(event);
 }
 
 void WindowButton::set_maximized(bool new_state)
@@ -87,37 +103,42 @@ void WindowButton::paintEvent(QPaintEvent *)
   QPainter p(this);
   p.setRenderHint(QPainter::Antialiasing);
 
-  const bool   down = this->isDown();
   const QRectF box = QRectF(this->rect()).adjusted(2, 2, -2, -2);
   const QColor close_red("#c8463d");
 
-  // hover plate
-  if (this->hovered || down)
+  const qreal heat = std::clamp(std::max(this->hover_t.value(), this->press_t.value()),
+                                0.0,
+                                1.0);
+  const qreal held = std::clamp(this->press_t.value(), 0.0, 1.0);
+
+  if (heat > 0.002)
   {
     QColor plate;
     if (this->kind == Kind::Close)
-      plate = down ? close_red.darker(115) : close_red;
+      plate = mix_colors(close_red, close_red.darker(115), held);
     else
-      plate = mix_colors(colors.bg_deep, colors.text_primary, down ? 0.10 : 0.07);
+      plate = mix_colors(colors.bg_deep, colors.text_primary, 0.07 + 0.03 * held);
+    plate.setAlphaF(heat);
 
     p.setPen(Qt::NoPen);
     p.setBrush(plate);
-    p.drawRoundedRect(box, 6, 6);
+    p.drawRoundedRect(box, 8, 8);
   }
 
-  // glyph colour: close is tinted red at rest (as a cue for the destructive
-  // one) and turns light on its red plate
-  QColor ink = mix_colors(colors.text_primary, colors.bg_deep, 0.30);
-  if (this->kind == Kind::Close)
-    ink = (this->hovered || down) ? QColor("#f4f4f5") : close_red.lighter(115);
-  else if (this->hovered)
-    ink = colors.text_primary;
+  // glyph colour: all three are neutral at rest. Nothing in the title bar is
+  // coloured until it is aimed at; close turns light on its red plate.
+  const QColor rest = mix_colors(colors.text_primary, colors.bg_deep, 0.30);
+  const QColor lit = this->kind == Kind::Close ? QColor("#f4f4f5") : colors.text_primary;
+  const QColor ink = mix_colors(rest, lit, heat);
 
   // all glyphs share one 10x10 box snapped to the pixel grid, so the three
   // buttons read as a set
   const qreal   g = 10.0;
   const QPointF c(std::round(this->width() / 2.0), std::round(this->height() / 2.0));
   const QRectF  glyph(c.x() - g / 2, c.y() - g / 2, g, g);
+
+  // (the glyph stays on the pixel grid while held: the plate darkening is
+  // the press feedback, a shrinking 10 px glyph only goes soft)
 
   QPen pen(ink, 1.2);
   pen.setCapStyle(Qt::RoundCap);
@@ -162,281 +183,6 @@ void WindowButton::paintEvent(QPaintEvent *)
 }
 
 // =====================================
-// TitleChip
-// =====================================
-
-// The project name in the title bar: shows the name, a "Not saved" hint and an
-// unsaved-changes dot, opens the project menu on click and edits the name in
-// place on request.
-class TitleChip final : public QWidget
-{
-public:
-  explicit TitleChip(QWidget *parent) : QWidget(parent)
-  {
-    this->setCursor(Qt::PointingHandCursor);
-    this->setAttribute(Qt::WA_Hover);
-
-    // A plain QWidget picks up the application stylesheet's background, filled
-    // as a square behind the rounded chip: opt out, the chip paints itself.
-    this->setObjectName("hsdTitleChip");
-    this->setAttribute(Qt::WA_NoSystemBackground);
-    this->setAutoFillBackground(false);
-
-    this->flip = new QVariantAnimation(this);
-    this->flip->setDuration(280);
-    this->flip->setEasingCurve(QEasingCurve::OutCubic);
-    QObject::connect(this->flip,
-                     &QVariantAnimation::valueChanged,
-                     this,
-                     [this](const QVariant &v)
-                     {
-                       this->open_t = v.toReal();
-                       this->update();
-                     });
-
-    this->editor = new QLineEdit(this);
-    this->editor->setObjectName("hsdTitleEditor");
-    this->editor->setAlignment(Qt::AlignCenter);
-    this->editor->setFrame(false);
-    this->editor->hide();
-    this->editor->installEventFilter(this);
-
-    QObject::connect(this->editor,
-                     &QLineEdit::returnPressed,
-                     this,
-                     [this]() { this->finish_rename(true); });
-  }
-
-  void set(const QString &new_name, const QString &new_path, bool new_dirty, bool saved)
-  {
-    this->name = new_name.isEmpty() ? QString("Untitled") : new_name;
-    this->hint = saved ? QString() : QString("Not saved");
-    this->dirty = new_dirty;
-    this->setToolTip(saved ? new_path + "\n\nClick for project actions (F2 renames)"
-                           : QString("This project has no file yet.\n\nClick for project "
-                                     "actions (F2 renames)"));
-    this->update();
-  }
-
-  // width the chip would like for its content
-  int natural_width() const
-  {
-    const QFontMetrics fm(this->name_font());
-    const QFontMetrics fh(this->hint_font());
-    int w = 28 + fm.horizontalAdvance(this->name) + 28 /* divider + chevron */;
-    if (!this->hint.isEmpty())
-      w += 10 + fh.horizontalAdvance(this->hint);
-    if (this->dirty)
-      w += 12;
-    return w;
-  }
-
-  bool renaming() const { return this->editor->isVisible(); }
-
-  void begin_rename(const QString &current, std::function<void(const QString &)> commit)
-  {
-    this->on_commit = std::move(commit);
-    this->editor->setGeometry(this->rect().adjusted(10, 3, -10, -3));
-    this->editor->setText(current);
-    this->editor->selectAll();
-    this->editor->show();
-    this->editor->setFocus(Qt::OtherFocusReason);
-    this->update();
-  }
-
-  std::function<void(const QPoint &)> on_clicked;
-
-protected:
-  bool eventFilter(QObject *watched, QEvent *event) override
-  {
-    if (watched == this->editor)
-    {
-      if (event->type() == QEvent::KeyPress &&
-          static_cast<QKeyEvent *>(event)->key() == Qt::Key_Escape)
-      {
-        this->finish_rename(false);
-        return true;
-      }
-      if (event->type() == QEvent::FocusOut && this->editor->isVisible())
-        this->finish_rename(false); // clicking away cancels, Enter commits
-    }
-    return QWidget::eventFilter(watched, event);
-  }
-
-  void resizeEvent(QResizeEvent *event) override
-  {
-    QWidget::resizeEvent(event);
-    if (this->editor->isVisible())
-      this->editor->setGeometry(this->rect().adjusted(10, 3, -10, -3));
-  }
-
-  // The menu opens on press, like a menu bar item: waiting for the release,
-  // or for a possible double-click, made it feel as if it lagged behind.
-  // Rename is the menu's first item (and F2).
-  void mousePressEvent(QMouseEvent *event) override
-  {
-    if (event->button() != Qt::LeftButton || this->renaming() || !this->on_clicked)
-      return QWidget::mousePressEvent(event);
-
-    event->accept();
-
-    // A click on the chip while its menu is open only closes the menu: the
-    // menu is built with setNoReplayFor(chip) (see TitleBar::title_chip), so
-    // Qt does not replay that press here and open it straight again.
-    this->pressed = true;
-    this->animate_open(true);
-    this->repaint();
-    this->on_clicked(this->mapToGlobal(QPoint(this->width() / 2, this->height() + 4)));
-    this->pressed = false;
-    this->animate_open(false);
-    this->update();
-  }
-
-  void mouseReleaseEvent(QMouseEvent *event) override
-  {
-    this->pressed = false;
-    this->update();
-    QWidget::mouseReleaseEvent(event);
-  }
-
-  // a quick second click is a click too (it reopens the menu the first one
-  // closed), not a rename
-  void mouseDoubleClickEvent(QMouseEvent *event) override
-  {
-    this->mousePressEvent(event);
-  }
-
-  void paintEvent(QPaintEvent *) override
-  {
-    const auto &colors = HSD_CTX.app_settings.colors;
-
-    QPainter p(this);
-    p.setRenderHint(QPainter::Antialiasing);
-
-    const bool   hover = this->underMouse() || this->renaming();
-    const QRectF box = QRectF(this->rect()).adjusted(0.5, 0.5, -0.5, -0.5);
-
-    QColor fill = colors.bg_primary;
-    if (this->pressed)
-      fill = mix_colors(colors.bg_primary, colors.text_primary, 0.10);
-    else if (hover)
-      fill = mix_colors(colors.bg_primary, colors.text_primary, 0.05);
-
-    p.setPen(QPen(hover ? mix_colors(colors.bg_primary, colors.border, 0.75)
-                        : panel_border_color(),
-                  1));
-    p.setBrush(fill);
-    p.drawRoundedRect(box, 7, 7);
-
-    if (this->renaming())
-      return;
-
-    // content centred as a group: [name] [hint] [dot]; chevron at the right
-    const QFontMetrics fm(this->name_font());
-    const QFontMetrics fh(this->hint_font());
-
-    const int chevron_space = 28;
-    const int avail = this->width() - 24 - chevron_space;
-    const int hint_w = this->hint.isEmpty() ? 0 : 10 + fh.horizontalAdvance(this->hint);
-    const int dot_w = this->dirty ? 12 : 0;
-
-    const QString shown = fm.elidedText(this->name,
-                                        Qt::ElideMiddle,
-                                        std::max(20, avail - hint_w - dot_w));
-    const int     name_w = fm.horizontalAdvance(shown);
-    const int     group = name_w + hint_w + dot_w;
-    int           x = std::max(12, (this->width() - chevron_space - group) / 2 + 6);
-
-    p.setFont(this->name_font());
-    p.setPen(colors.text_primary);
-    p.drawText(QRect(x, 0, name_w + 2, this->height()), Qt::AlignVCenter, shown);
-    x += name_w;
-
-    if (!this->hint.isEmpty())
-    {
-      p.setFont(this->hint_font());
-      p.setPen(mix_colors(colors.bg_primary, colors.text_primary, 0.50));
-      p.drawText(QRect(x + 10, 0, hint_w, this->height()), Qt::AlignVCenter, this->hint);
-      x += hint_w;
-    }
-
-    if (this->dirty)
-    {
-      p.setPen(Qt::NoPen);
-      p.setBrush(colors.accent);
-      p.drawEllipse(QPointF(x + 8, this->height() / 2.0), 3.0, 3.0);
-    }
-
-    // the menu affordance: a hairline divider, then a chevron that turns to
-    // point up while the menu is open
-    {
-      const qreal divider_x = this->width() - 26.5;
-      p.setPen(
-          QPen(mix_colors(colors.bg_primary, colors.border, hover ? 0.55 : 0.35), 1));
-      p.drawLine(QPointF(divider_x, 7), QPointF(divider_x, this->height() - 7));
-
-      QPen pen(mix_colors(colors.bg_primary, colors.text_primary, hover ? 0.9 : 0.6),
-               1.6);
-      pen.setCapStyle(Qt::RoundCap);
-      pen.setJoinStyle(Qt::RoundJoin);
-      p.setPen(pen);
-      p.setBrush(Qt::NoBrush);
-
-      p.save();
-      p.translate(this->width() - 13.5, this->height() / 2.0);
-      p.rotate(180.0 * this->open_t);
-      QPainterPath chevron;
-      chevron.moveTo(-4.0, -2.0);
-      chevron.lineTo(0.0, 2.0);
-      chevron.lineTo(4.0, -2.0);
-      p.drawPath(chevron);
-      p.restore();
-    }
-  }
-
-private:
-  QFont name_font() const { return meta::qt::ui_font(12); }
-  QFont hint_font() const { return meta::qt::ui_font(11); }
-
-  void finish_rename(bool commit)
-  {
-    if (!this->editor->isVisible())
-      return;
-
-    const QString text = this->editor->text().trimmed();
-    this->editor->hide();
-    this->update();
-
-    auto callback = std::move(this->on_commit);
-    this->on_commit = nullptr;
-    if (commit && callback)
-      callback(text);
-  }
-
-  QString    name = "Untitled", hint;
-  bool       dirty = false;
-  bool       pressed = false;
-  QLineEdit *editor = nullptr;
-
-  // chevron turn (0: down, 1: up while the menu is open), and the menu's
-  // state for mousePressEvent (see there)
-  QVariantAnimation *flip = nullptr;
-  qreal              open_t = 0.0;
-
-  void animate_open(bool open)
-  {
-    this->flip->stop();
-    this->flip->setDuration(HSD_CTX.app_settings.interface.enable_ui_animations ? 280
-                                                                                : 1);
-    this->flip->setStartValue(this->open_t);
-    this->flip->setEndValue(open ? 1.0 : 0.0);
-    this->flip->start();
-  }
-
-  std::function<void(const QString &)> on_commit;
-};
-
-// =====================================
 // TitleBar
 // =====================================
 
@@ -450,7 +196,7 @@ TitleBar::TitleBar(QWidget *window) : QWidget(window), p_window(window)
   layout->setContentsMargins(8, 0, 6, 0);
   layout->setSpacing(2);
 
-  this->p_menu_bar = new QMenuBar(this);
+  this->p_menu_bar = new TitleMenuBar(this);
   this->p_menu_bar->setObjectName("hsdTitleMenuBar");
   this->p_menu_bar->setNativeMenuBar(false);
   this->p_menu_bar->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Fixed);
@@ -480,6 +226,7 @@ TitleBar::TitleBar(QWidget *window) : QWidget(window), p_window(window)
     if (this->on_title_clicked)
       this->on_title_clicked(pos);
   };
+  this->p_chip->on_layout = [this]() { this->place_title(); };
 
   this->update_style();
 
@@ -530,12 +277,13 @@ void TitleBar::update_style()
   const std::map<std::string, QColor> color_tokens = {
       {"INK", colors.text_primary},
       {"INK_DIM", mix_colors(colors.text_primary, colors.bg_deep, 0.35)},
-      {"HOVER", mix_colors(colors.bg_deep, colors.text_primary, 0.08)},
-      {"PRESSED", mix_colors(colors.bg_deep, colors.text_primary, 0.13)},
       {"ACCENT", colors.accent}};
 
   QString css = render_stylesheet(css_template, string_tokens, color_tokens);
   this->setStyleSheet(css);
+
+  if (this->p_menu_bar)
+    this->p_menu_bar->update();
 
   if (this->p_chip)
     this->p_chip->update();
@@ -555,6 +303,8 @@ void TitleBar::begin_title_rename(const QString                       &current,
 {
   this->p_chip->begin_rename(current, std::move(commit));
 }
+
+void TitleBar::flash_saved() { this->p_chip->flash_saved(); }
 
 bool TitleBar::is_caption_area(const QPoint &local_pos) const
 {
@@ -588,6 +338,10 @@ void TitleBar::paintEvent(QPaintEvent *)
 
 void TitleBar::place_title()
 {
+  // nothing to place before the chip exists
+  if (!this->p_chip)
+    return;
+
   // free band between the menu entries and the right-hand controls
   const int left = this->p_menu_bar->geometry().right() + 16;
   int       right_edge = this->p_min->isVisible() ? this->p_min->geometry().left()
@@ -596,12 +350,14 @@ void TitleBar::place_title()
     right_edge = std::min(right_edge, this->p_trailing->geometry().left());
   const int right = right_edge - 16;
 
-  // a fixed minimum keeps short names ("island") from shrinking the chip into
-  // a pill that no longer reads as the title
+  // The chip is as wide as its content (it says how wide, and keeps saying so
+  // while that changes), up to what the band has to give.
   const int room = std::max(0, right - left);
-  const int natural = this->p_chip->natural_width();
-  const int w = std::min(std::max(natural, 240), std::min(room, 460));
-  const int h = 26;
+  const int most = std::min(room, 460);
+  this->p_chip->set_max_width(most);
+
+  const int w = std::min(this->p_chip->natural_width(), most);
+  const int h = TitleChip::kHeight;
   int       x = (this->width() - w) / 2;
   x = std::clamp(x, left, std::max(left, right - w));
   this->p_chip->setGeometry(x, (this->height() - h) / 2, w, h);
