@@ -16,6 +16,7 @@
 
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/motion/motion.hpp"
+#include "hesiod/gui/theme/oklch.hpp"
 #include "hesiod/gui/widgets/node_widgets/node_palette_sidebar.hpp"
 #include "hesiod/gui/widgets/utils/gui_utils.hpp"
 #include "hesiod/logger.hpp"
@@ -37,6 +38,16 @@ QColor panel_border_color()
 {
   const auto &colors = HSD_CTX.app_settings.colors;
   return mix_colors(colors.bg_primary, colors.border, 0.38);
+}
+
+QColor on_accent_color()
+{
+  const auto  &colors = HSD_CTX.app_settings.colors;
+  const QColor dark = oklch::from_lch({0.16, 0.008, oklch::to_lch(colors.bg_primary).h});
+  const QColor light(255, 255, 255);
+  return oklch::contrast(dark, colors.accent) >= oklch::contrast(light, colors.accent)
+             ? dark
+             : light;
 }
 
 void apply_animation_settings(bool enabled)

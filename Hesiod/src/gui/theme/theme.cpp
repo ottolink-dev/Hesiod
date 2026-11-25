@@ -3,6 +3,7 @@
  * this software. */
 #include <algorithm>
 
+#include "hesiod/gui/theme/oklch.hpp"
 #include "hesiod/gui/theme/theme.hpp"
 #include "hesiod/gui/widgets/utils/gui_utils.hpp"
 #include "hesiod/model/utils.hpp"
@@ -10,20 +11,63 @@
 namespace hesiod
 {
 
-ThemeDefinition ThemeDefinition::make_default_dark()
+ThemeDefinition ThemeDefinition::from_seeds(const std::string &name,
+                                            const QColor      &ground,
+                                            const QColor      &accent)
 {
+  using oklch::Lch;
+
+  // --- normalise the seeds
+  Lch g = oklch::to_lch(ground);
+  g.L = std::clamp(g.L, 0.20, 0.29);
+  g.C = std::min(g.C, 0.014);
+
+  Lch a = oklch::to_lch(accent);
+  if (a.C < 0.012)
+    a.h = g.h; // a grey has no hue of its own: borrow the ground's
+  a.L = std::clamp(a.L, a.C < 0.03 ? 0.80 : 0.66, 0.90);
+  a.C = std::min(a.C, 0.135);
+
+  auto neutral = [&g](double lightness, double chroma_scale = 1.0)
+  { return oklch::from_lch({lightness, g.C * chroma_scale, g.h}); };
+
   ThemeDefinition t;
-  t.name = "Dark";
+  t.name = name;
   t.is_dark = true;
-  t.background = QColor("#191919");
-  t.surface = QColor("#2B2B2B");
-  t.text = QColor("#F4F4F5");
-  t.text_muted = QColor("#949495");
-  t.accent = QColor("#5E81AC");
-  t.border = QColor("#5B5B5B");
-  t.node_editor_bg = QColor("#2B2B2B");
+
+  // a short, even ladder: base, panes a step above it, everything else
+  // derived from those two in derive_app_colors()
+  t.background = neutral(g.L);
+  t.surface = neutral(g.L + 0.030);
+  t.node_editor_bg = neutral(g.L);
+  t.border = neutral(g.L + 0.112);
+
+  t.text = neutral(0.945, 0.5);
+  // labels stay readable on the lightest surface they can sit on (a popup)
+  t.text_muted = oklch::ensure_contrast(neutral(0.76), neutral(g.L + 0.098), 4.5);
+
+  t.accent = oklch::from_lch(a);
   return t;
 }
+
+std::vector<ThemeDefinition> ThemeDefinition::make_colourways()
+{
+  using oklch::from_lch;
+
+  // Grounds are graphite: grey first, with only a breath of the hue. Accents
+  // are mineral colours at moderate chroma, never neon.
+  return {
+      from_seeds("Dark", from_lch({0.235, 0.006, 255}), from_lch({0.75, 0.095, 252})),
+      from_seeds("Clay", from_lch({0.240, 0.006, 55}), from_lch({0.75, 0.095, 48})),
+      from_seeds("Moss", from_lch({0.235, 0.006, 150}), from_lch({0.77, 0.085, 148})),
+      from_seeds("Sand", from_lch({0.240, 0.006, 85}), from_lch({0.83, 0.085, 88})),
+      from_seeds("Heather", from_lch({0.235, 0.007, 300}), from_lch({0.77, 0.085, 302})),
+      from_seeds("Coral", from_lch({0.240, 0.006, 25}), from_lch({0.75, 0.105, 26})),
+      from_seeds("Graphite", from_lch({0.235, 0.003, 255}), from_lch({0.89, 0.004, 255})),
+  };
+}
+
+ThemeDefinition ThemeDefinition::make_default_dark() { return make_colourways().front(); }
 
 ThemeDefinition ThemeDefinition::make_default_light()
 {
@@ -46,7 +90,9 @@ QColor ThemeDefinition::derive_group_accent(const std::string &name)
   for (const char c : name)
     hash = (hash ^ static_cast<uint>(c)) * 16777619u;
 
-  return QColor::fromHsl(static_cast<int>(hash % 360u), 115, 145);
+  // any hue, but always the same perceived lightness and a moderate chroma:
+  // a panel of differently coloured groups stays one palette
+  return oklch::from_lch({0.76, 0.095, static_cast<double>(hash % 360u)});
 }
 
 AppSettings::Colors ThemeDefinition::derive_app_colors() const
@@ -62,14 +108,16 @@ AppSettings::Colors ThemeDefinition::derive_app_colors() const
 
   if (this->is_dark)
   {
-    c.bg_secondary = mix_colors(this->surface, QColor("#FFFFFF"), 0.12);
-    c.text_disabled = mix_colors(this->text_muted, this->background, 0.65);
-    c.accent_bw = QColor("#FFFFFF");
-    c.hover = mix_colors(this->surface, QColor("#FFFFFF"), 0.35);
-    c.pressed = mix_colors(this->surface, QColor("#FFFFFF"), 0.50);
-    c.separator = mix_colors(this->border, this->text_muted, 0.30);
-    c.building = QColor("#FFB86C");
-    c.warning = QColor("#FF5555");
+    // Steps in perceptual lightness from the pane surface, so that "a little
+    // lighter" is the same visible amount whatever the theme's hue or depth.
+    c.bg_secondary = oklch::shifted(this->surface, 0.048); // things you press
+    c.text_disabled = oklch::mix(this->text_muted, this->surface, 0.50);
+    c.accent_bw = this->text;
+    c.hover = oklch::shifted(this->surface, 0.105);
+    c.pressed = oklch::shifted(this->surface, 0.160);
+    c.separator = oklch::shifted(this->surface, 0.052);
+    c.building = oklch::from_lch({0.80, 0.110, 72});
+    c.warning = oklch::from_lch({0.72, 0.135, 25});
   }
   else
   {

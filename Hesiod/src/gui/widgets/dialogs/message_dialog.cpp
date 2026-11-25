@@ -251,7 +251,8 @@ MessageDialog::MessageDialog(QWidget       *parent,
 
   const QColor                        s = surface();
   const std::map<std::string, QColor> color_tokens = {
-      {"ACCENT_HOVER", colors.accent.lighter(112)},
+      {"ACCENT_HOVER", colors.accent.lighter(108)},
+      {"ON_ACCENT", on_accent_color()},
       {"ACCENT", colors.accent},
       {"DANGER_SOFT", mix_colors(s, kDanger, 0.12)},
       {"DANGER_BORDER", mix_colors(s, kDanger, 0.35)},

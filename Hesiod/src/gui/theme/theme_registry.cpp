@@ -1,6 +1,7 @@
 /* Copyright (c) 2026 Otto Link. Distributed under the terms of the GNU General
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
+#include <algorithm>
 #include <cstdlib>
 #include <filesystem>
 #include <fstream>
@@ -40,7 +41,12 @@ std::vector<fs::path> get_theme_search_paths()
 ThemeRegistry::ThemeRegistry()
 {
   // Built-in themes are always compiled-in and registered first
-  this->register_theme(ThemeDefinition::make_default_dark());
+  for (const ThemeDefinition &colourway : ThemeDefinition::make_colourways())
+  {
+    this->builtin_order.push_back(colourway.name);
+    this->register_theme(colourway);
+  }
+  this->builtin_order.push_back("Light");
   this->register_theme(ThemeDefinition::make_default_light());
 
   this->scan_themes();
@@ -103,17 +109,15 @@ std::vector<std::string> ThemeRegistry::available_theme_names() const
   std::vector<std::string> names;
   names.reserve(this->themes.size());
 
-  // Guarantee Dark and Light are first if present
-  if (this->has_theme("Dark"))
-    names.push_back("Dark");
-  if (this->has_theme("Light"))
-    names.push_back("Light");
+  // built-ins first, in their own order ("Dark" leads), then user themes
+  for (const std::string &name : this->builtin_order)
+    if (this->has_theme(name))
+      names.push_back(name);
 
   for (const auto &[name, _] : this->themes)
-  {
-    if (name != "Dark" && name != "Light")
+    if (std::find(this->builtin_order.begin(), this->builtin_order.end(), name) ==
+        this->builtin_order.end())
       names.push_back(name);
-  }
 
   return names;
 }

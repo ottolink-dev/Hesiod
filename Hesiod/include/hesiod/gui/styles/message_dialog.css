@@ -9,17 +9,17 @@ QDialog#hsdMessage QLabel#detailKey { color: FAINT; font-size: 12px; }
 QDialog#hsdMessage QLabel#detailValue { color: INK; font-size: 12px; }
 QDialog#hsdMessage QLabel#messageError { color: DANGER; font-size: 12px; }
 QDialog#hsdMessage QLineEdit {
-  background: DEEP; color: INK; border: 1px solid BORDER; border-radius: 7px;
+  background: DEEP; color: INK; border: 1px solid BORDER; border-radius: 8px;
   padding: 7px 10px; font-size: 13px; selection-background-color: ACCENT; }
 QDialog#hsdMessage QLineEdit:hover { border-color: FAINT; }
 QDialog#hsdMessage QLineEdit:focus { border-color: ACCENT; }
 QDialog#hsdMessage QPushButton {
-  background: FIELD; color: INK; border: 1px solid BORDER; border-radius: 7px;
+  background: FIELD; color: INK; border: 1px solid BORDER; border-radius: 8px;
   padding: 7px 18px; font-size: 13px; min-width: 64px; }
 QDialog#hsdMessage QPushButton:hover { background: FIELD_HOVER; border-color: FAINT; }
 QDialog#hsdMessage QPushButton:focus { border-color: ACCENT; }
 QDialog#hsdMessage QPushButton[hsdRole="primary"] {
-  background: ACCENT; border-color: ACCENT; color: #ffffff; font-weight: 600; }
+  background: ACCENT; border-color: ACCENT; color: ON_ACCENT; font-weight: 600; }
 QDialog#hsdMessage QPushButton[hsdRole="primary"]:hover { background: ACCENT_HOVER; }
 QDialog#hsdMessage QPushButton[hsdRole="danger"] {
   background: transparent; color: DANGER; border-color: transparent; }

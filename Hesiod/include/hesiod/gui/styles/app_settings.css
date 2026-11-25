@@ -5,13 +5,13 @@ QDialog#hsdSettings QLabel#sidebarVersion { color: FAINT; font-size: 11px; }
 QDialog#hsdSettings QLabel#searchStatus { color: FAINT; font-size: 11px; padding: 0px 8px; }
 
 QDialog#hsdSettings QLineEdit#settingsSearch {
-  background: FIELD; border: 1px solid BORDER; border-radius: 7px;
+  background: FIELD; border: 1px solid BORDER; border-radius: 8px;
   padding: 6px 6px; font-size: 13px; color: INK;
   selection-background-color: ACCENT; }
 QDialog#hsdSettings QLineEdit#settingsSearch:focus { border-color: ACCENT; }
 
 QDialog#hsdSettings QPushButton#navButton {
-  text-align: left; padding: 8px 12px; border: none; border-radius: 7px;
+  text-align: left; padding: 8px 12px; border: none; border-radius: 8px;
   color: DIM; font-size: 13px; background: transparent; }
 QDialog#hsdSettings QPushButton#navButton:hover { background: NAV_HOVER; color: INK; }
 QDialog#hsdSettings QPushButton#navButton:checked {
@@ -48,17 +48,21 @@ QDialog#hsdSettings QFrame#restartBanner {
 QDialog#hsdSettings QLabel#restartLabel { color: INK; font-size: 12px; }
 
 QDialog#hsdSettings QFrame#stepper {
-  background: FIELD; border: 1px solid BORDER; border-radius: 7px; }
+  background: FIELD; border: 1px solid BORDER; border-radius: 8px; }
 QDialog#hsdSettings QFrame#stepper:hover { border-color: FAINT; }
 QDialog#hsdSettings QAbstractSpinBox {
   background: transparent; border: none; color: INK; font-size: 13px;
   selection-background-color: ACCENT; padding: 0px; min-height: 28px; }
 
 QDialog#hsdSettings QComboBox#settingsChoice {
-  background: FIELD; border: 1px solid BORDER; border-radius: 7px; color: INK;
+  background: FIELD; border: 1px solid BORDER; border-radius: 8px; color: INK;
   font-size: 13px; padding: 4px 10px; min-height: 22px; min-width: 110px; }
 QDialog#hsdSettings QComboBox#settingsChoice:hover { border-color: FAINT; }
 QDialog#hsdSettings QComboBox#settingsChoice::drop-down { border: none; width: 20px; }
+/* the list is a window of its own: left transparent like the other widgets
+   here, it would have no background at all */
+QDialog#hsdSettings QComboBoxPrivateContainer,
+QDialog#hsdSettings QComboBox#settingsChoice QAbstractItemView { background: FIELD; }
 
 QDialog#hsdSettings QPushButton#presetChip {
   background: FIELD; color: DIM; border: 1px solid BORDER; border-radius: 12px;
@@ -68,19 +72,19 @@ QDialog#hsdSettings QPushButton#presetChip:checked {
   background: ACCENT_SOFT; color: INK; border-color: ACCENT; }
 
 QDialog#hsdSettings QPushButton#primaryButton {
-  background: ACCENT; color: #ffffff; border: 1px solid ACCENT; border-radius: 7px;
+  background: ACCENT; color: ON_ACCENT; border: 1px solid ACCENT; border-radius: 8px;
   padding: 7px 22px; font-size: 13px; font-weight: 600; }
 QDialog#hsdSettings QPushButton#primaryButton:hover { background: ACCENT_HOVER; }
 QDialog#hsdSettings QPushButton#primaryButton:disabled {
   background: FIELD; border-color: BORDER; color: GHOST; }
 QDialog#hsdSettings QPushButton#secondaryButton {
-  background: FIELD; color: INK; border: 1px solid BORDER; border-radius: 7px;
+  background: FIELD; color: INK; border: 1px solid BORDER; border-radius: 8px;
   padding: 7px 16px; font-size: 13px; }
 QDialog#hsdSettings QPushButton#secondaryButton:hover { border-color: FAINT; }
 QDialog#hsdSettings QPushButton#secondaryButton:disabled { color: GHOST; }
 QDialog#hsdSettings QPushButton#ghostButton {
   background: transparent; color: DIM; border: 1px solid transparent;
-  border-radius: 7px; padding: 7px 12px; font-size: 13px; }
+  border-radius: 8px; padding: 7px 12px; font-size: 13px; }
 QDialog#hsdSettings QPushButton#ghostButton:hover { background: FIELD; color: INK; }
 QDialog#hsdSettings QLabel#footerStatus { color: DIM; font-size: 12px; }
 
