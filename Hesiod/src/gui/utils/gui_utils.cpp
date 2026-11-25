@@ -42,9 +42,13 @@ QColor panel_border_color()
 
 QColor on_accent_color()
 {
-  const auto  &colors = HSD_CTX.app_settings.colors;
-  const QColor dark = oklch::from_lch({0.16, 0.008, oklch::to_lch(colors.bg_primary).h});
-  const QColor light(255, 255, 255);
+  const auto &colors = HSD_CTX.app_settings.colors;
+
+  // near-black in the ground's own hue, never more tinted than the ground: on
+  // a neutral theme the ink is a neutral gray
+  const oklch::Lch ground = oklch::to_lch(colors.bg_primary);
+  const QColor     dark = oklch::from_lch({0.16, std::min(0.008, ground.C), ground.h});
+  const QColor     light(255, 255, 255);
   return oklch::contrast(dark, colors.accent) >= oklch::contrast(light, colors.accent)
              ? dark
              : light;

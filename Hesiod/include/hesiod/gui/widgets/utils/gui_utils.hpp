@@ -32,7 +32,7 @@ QColor panel_border_color();
 // Text and glyphs on an accent fill (a primary button, a selection). The
 // accent may be light or dark depending on the theme, so the ink is whichever
 // of near-black and white reads better on it, never a fixed white. The
-// stylesheet's COLOR_ON_ACCENT is this same colour.
+// stylesheet's COLOR_ON_ACCENT is this same color.
 QColor on_accent_color();
 
 /** @brief Switch interface motion on or off across the application.

@@ -1,9 +1,10 @@
 /* Copyright (c) 2026 Otto Link. Distributed under the terms of the GNU General
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
-// OKLab / OKLCH colour maths (Björn Ottosson's matrices), no dependency.
+// OKLab / OKLCH color math (Björn Ottosson's matrices), no dependency.
 // Everything the theme derives goes through here so that "a bit lighter" and
-// "half way between" mean the same thing for every colourway.
+// "half way between" mean the same thing for every colorway. A neutral gray
+// (r == g == b) stays exactly neutral through every helper.
 #pragma once
 #include <QColor>
 
@@ -24,13 +25,13 @@ QColor from_lch(const Lch &lch,
 // interpolation in OKLab, t = 0 gives a, t = 1 gives b (alpha interpolated too)
 QColor mix(const QColor &a, const QColor &b, double t);
 
-// WCAG contrast ratio of two opaque colours
+// WCAG contrast ratio of two opaque colors
 double contrast(const QColor &a, const QColor &b);
 
 // moves the lightness of fg away from bg until the ratio is reached
 QColor ensure_contrast(const QColor &fg, const QColor &bg, double ratio);
 
-// the same colour, `delta` lighter (or darker) in perceptual lightness
+// the same color, `delta` lighter (or darker) in perceptual lightness
 QColor shifted(const QColor &color, double delta);
 
 } // namespace hesiod::oklch
