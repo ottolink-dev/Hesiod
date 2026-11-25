@@ -71,7 +71,7 @@ void compute_smooth_cpulse_node(BaseNode &node)
       {p_out},
       [&](std::vector<const hmap::Array *> p_arrays_in,
           std::vector<hmap::Array *>       p_arrays_out,
-          const hmap::TileRegion          &region,
+          const hmap::UvTile              &region,
           hmap::ICommunicator             &comm)
       {
         auto [pa_in, pa_mask] = unpack<2>(p_arrays_in);

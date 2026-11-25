@@ -140,7 +140,7 @@ void compute_recast_cliff_node(BaseNode &node)
       {p_out, p_cliff_mask},
       [&](std::vector<const hmap::Array *> p_arrays_in,
           std::vector<hmap::Array *>       p_arrays_out,
-          const hmap::TileRegion          &region,
+          const hmap::UvTile              &region,
           hmap::ICommunicator             &comm)
       {
         auto [pa_in, pa_mask, pa_angle] = unpack<3>(p_arrays_in);

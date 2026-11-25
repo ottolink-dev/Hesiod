@@ -97,7 +97,7 @@ void compute_valley_fill_node(BaseNode &node)
       {p_out, p_deposition_map},
       [&node, talus, iterations, zmin, zmax](std::vector<const hmap::Array *> p_arrays_in,
                                              std::vector<hmap::Array *> p_arrays_out,
-                                             const hmap::TileRegion &)
+                                             const hmap::UvTile &)
       {
         auto [pa_in, pa_noise, pa_mask, pa_talus_map] = unpack<4>(p_arrays_in);
         auto [pa_out, pa_deposition_map]              = unpack<2>(p_arrays_out);

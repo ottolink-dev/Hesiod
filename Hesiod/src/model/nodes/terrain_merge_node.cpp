@@ -101,7 +101,7 @@ void compute_terrain_merge_node(BaseNode &node)
   // zero output before sequential accumulation
   hmap::for_each_tile(
       *p_out,
-      [](hmap::Array &array, const hmap::TileRegion &) { array = 0.f; },
+      [](hmap::Array &array, const hmap::UvTile &) { array = 0.f; },
       node.cfg().cm_cpu);
 
   bool has_base = false;
@@ -132,7 +132,7 @@ void compute_terrain_merge_node(BaseNode &node)
           {&aligned_upper},
           [](std::vector<const hmap::Array *> p_in_arrays,
              std::vector<hmap::Array *>       p_out_arrays,
-             const hmap::TileRegion &) { *p_out_arrays[0] = *p_in_arrays[0]; },
+             const hmap::UvTile &) { *p_out_arrays[0] = *p_in_arrays[0]; },
           node.cfg().cm_cpu);
 
       hmap::align_terrains(*p_out,

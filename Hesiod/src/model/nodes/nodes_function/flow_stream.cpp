@@ -176,7 +176,7 @@ void compute_flow_stream_node(BaseNode &node)
       {p_out},
       [&](std::vector<const hmap::Array *> p_arrays_in,
           std::vector<hmap::Array *>       p_arrays_out,
-          const hmap::TileRegion          &region)
+          const hmap::UvTile              &region)
       {
         auto [pa_in]  = unpack<1>(p_arrays_in);
         auto [pa_out] = unpack<1>(p_arrays_out);
@@ -199,7 +199,7 @@ void compute_flow_stream_node(BaseNode &node)
                           radial_profile,
                           radial_profile_parameter,
                           /* p_river_mask */ nullptr,
-                          region.bbox);
+                          region.uv_rect);
       },
       node.cfg().cm_cpu);
 
@@ -210,7 +210,7 @@ void compute_flow_stream_node(BaseNode &node)
       {p_water_depth},
       [&](std::vector<const hmap::Array *> p_arrays_in,
           std::vector<hmap::Array *>       p_arrays_out,
-          const hmap::TileRegion          &region)
+          const hmap::UvTile              &region)
       {
         auto [pa_in, pa_out]  = unpack<2>(p_arrays_in);
         auto [pa_water_depth] = unpack<1>(p_arrays_out);

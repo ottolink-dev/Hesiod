@@ -126,7 +126,7 @@ void compute_select_curvature_node(BaseNode &node)
         {p_out},
         [&](std::vector<const hmap::Array *> p_arrays_in,
             std::vector<hmap::Array *>       p_arrays_out,
-            const hmap::TileRegion &,
+            const hmap::UvTile &,
             hmap::ICommunicator &comm)
         {
           auto [pa_in]  = unpack<1>(p_arrays_in);
@@ -155,7 +155,7 @@ void compute_select_curvature_node(BaseNode &node)
         {p_out},
         [&](std::vector<const hmap::Array *> p_arrays_in,
             std::vector<hmap::Array *>       p_arrays_out,
-            const hmap::TileRegion &,
+            const hmap::UvTile &,
             hmap::ICommunicator &comm)
         {
           auto [pa_in]  = unpack<1>(p_arrays_in);
@@ -182,7 +182,7 @@ void compute_select_curvature_node(BaseNode &node)
         {p_out},
         [&](std::vector<const hmap::Array *> p_arrays_in,
             std::vector<hmap::Array *>       p_arrays_out,
-            const hmap::TileRegion &,
+            const hmap::UvTile &,
             hmap::ICommunicator &comm)
         {
           auto [pa_in]  = unpack<1>(p_arrays_in);

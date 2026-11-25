@@ -125,13 +125,13 @@ void compute_flatten_around_points_node(BaseNode &node)
         {},
         [&](std::vector<const hmap::Array *> p_arrays_in,
             std::vector<hmap::Array *>,
-            const hmap::TileRegion &region)
+            const hmap::UvTile &region)
         {
           auto [pa_in] = unpack<1>(p_arrays_in);
           cloud_work.set_values_from_array(*pa_in,
                                            array_sampling,
                                            sampling_rad,
-                                           region.bbox);
+                                           hmap::BBox2D(region.uv_rect.to_vec4()));
         },
         node.cfg().cm_cpu);
   }
@@ -147,7 +147,7 @@ void compute_flatten_around_points_node(BaseNode &node)
       {p_out, p_mask},
       [&](std::vector<const hmap::Array *> p_arrays_in,
           std::vector<hmap::Array *>       p_arrays_out,
-          const hmap::TileRegion          &region)
+          const hmap::UvTile              &region)
       {
         auto [pa_in]           = unpack<1>(p_arrays_in);
         auto [pa_out, pa_mask] = unpack<2>(p_arrays_out);
@@ -169,7 +169,7 @@ void compute_flatten_around_points_node(BaseNode &node)
                                                     radial_profile,
                                                     profile_param,
                                                     pa_mask,
-                                                    region.bbox);
+                                                    region.uv_rect);
         }
         else
         {
@@ -182,7 +182,7 @@ void compute_flatten_around_points_node(BaseNode &node)
                                       radial_profile,
                                       profile_param,
                                       pa_mask,
-                                      region.bbox);
+                                      region.uv_rect);
         }
       },
       node.cfg().cm_cpu);

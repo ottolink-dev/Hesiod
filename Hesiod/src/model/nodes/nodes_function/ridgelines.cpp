@@ -75,7 +75,7 @@ void compute_ridgelines_node(BaseNode &node)
           {p_out},
           [&node, p_path, xs, ys, zs](std::vector<const hmap::Array *> p_arrays_in,
                                       std::vector<hmap::Array *>       p_arrays_out,
-                                      const hmap::TileRegion          &region)
+                                      const hmap::UvTile              &region)
           {
             auto [pa_dx, pa_dy] = unpack<2>(p_arrays_in);
             auto [pa_out]       = unpack<1>(p_arrays_out);
@@ -94,7 +94,7 @@ void compute_ridgelines_node(BaseNode &node)
                                        pa_dx,
                                        pa_dy,
                                        nullptr, // stretching
-                                       region.bbox);
+                                       region.uv_rect);
           },
           node.cfg().cm_cpu);
     }
@@ -106,7 +106,7 @@ void compute_ridgelines_node(BaseNode &node)
           {p_out},
           [](std::vector<const hmap::Array *>,
              std::vector<hmap::Array *> p_arrays_out,
-             const hmap::TileRegion &)
+             const hmap::UvTile &)
           {
             auto [pa_out] = unpack<1>(p_arrays_out);
             *pa_out       = 0.f;

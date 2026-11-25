@@ -132,7 +132,7 @@ void compute_select_slope_node(BaseNode &node)
         {p_out},
         [&](std::vector<const hmap::Array *> p_arrays_in,
             std::vector<hmap::Array *>       p_arrays_out,
-            const hmap::TileRegion          &region,
+            const hmap::UvTile              &region,
             hmap::ICommunicator             &comm)
         {
           auto [pa_in]  = unpack<1>(p_arrays_in);
@@ -161,7 +161,7 @@ void compute_select_slope_node(BaseNode &node)
         {p_out},
         [&](std::vector<const hmap::Array *>,
             std::vector<hmap::Array *> p_arrays_out,
-            const hmap::TileRegion &)
+            const hmap::UvTile &)
         {
           auto [pa_out] = unpack<1>(p_arrays_out);
           *pa_out       = select_angle(*pa_out,
@@ -180,13 +180,14 @@ void compute_select_slope_node(BaseNode &node)
         {p_out},
         [&node](std::vector<const hmap::Array *> p_arrays_in,
                 std::vector<hmap::Array *>       p_arrays_out,
-                const hmap::TileRegion          &region)
+                const hmap::UvTile              &region)
         {
           auto [pa_in]  = unpack<1>(p_arrays_in);
           auto [pa_out] = unpack<1>(p_arrays_out);
-          *pa_out       = hmap::select_inward_outward_slope(*pa_in,
-                                                      node.val<glm::vec2>(A_CENTER),
-                                                      region.bbox);
+          *pa_out       = hmap::select_inward_outward_slope(
+              *pa_in,
+              node.val<glm::vec2>(A_CENTER),
+              hmap::BBox2D(region.uv_rect.to_vec4()));
         },
         node.cfg().cm_cpu);
 

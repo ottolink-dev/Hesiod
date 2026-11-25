@@ -154,7 +154,7 @@ void compute_seed_forest_node(BaseNode &node)
       {p_out_density},
       [&](std::vector<const hmap::Array *> p_arrays_in,
           std::vector<hmap::Array *>       p_arrays_out,
-          const hmap::TileRegion &)
+          const hmap::UvTile &)
       {
         auto [pa_elevation, pa_secondary, pa_exclusion] = unpack<3>(p_arrays_in);
         auto [pa_density]                               = unpack<1>(p_arrays_out);
@@ -184,7 +184,7 @@ void compute_seed_forest_node(BaseNode &node)
   // --- Seed Forest
 
   hmap::ForestSeedingOptions options;
-  options.bbox                = {0.0f, 1.0f, 0.0f, 1.0f};
+  options.bbox                = hmap::BBox2D::unit();
   options.seed                = seed;
   options.exclusion_threshold = exclusion_threshold;
 

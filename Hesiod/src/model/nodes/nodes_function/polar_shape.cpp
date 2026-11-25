@@ -114,7 +114,7 @@ void compute_polar_shape_node(BaseNode &node)
       {p_out},
       [&](std::vector<const hmap::Array *> p_arrays_in,
           std::vector<hmap::Array *>       p_arrays_out,
-          const hmap::TileRegion          &region)
+          const hmap::UvTile              &region)
       {
         auto [pa_noise_r, pa_noise_theta] = unpack<2>(p_arrays_in);
         auto [pa_out]                     = unpack<1>(p_arrays_out);
@@ -134,7 +134,7 @@ void compute_polar_shape_node(BaseNode &node)
                                     pa_noise_r,
                                     pa_noise_theta,
                                     center,
-                                    region.bbox);
+                                    region.uv_rect);
       },
       node.cfg().cm_cpu);
 

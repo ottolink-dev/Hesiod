@@ -22,7 +22,7 @@ void generate_map(BaseNode                &node,
       {&map},
       [&node, options](std::vector<const hmap::Array *> p_arrays_in,
                        std::vector<hmap::Array *>       p_arrays_out,
-                       const hmap::TileRegion          &region)
+                       const hmap::UvTile              &region)
       {
         auto [pa_map] = unpack<1>(p_arrays_out);
 
@@ -40,7 +40,7 @@ void generate_map(BaseNode                &node,
                                       /* p_noise_x */ nullptr,
                                       /* p_noise_y */ nullptr,
                                       /* center */ {0.5f, 0.5f},
-                                      region.bbox);
+                                      region.uv_rect);
         }
         break;
           //

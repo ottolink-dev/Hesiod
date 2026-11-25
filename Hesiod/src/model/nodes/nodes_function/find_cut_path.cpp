@@ -115,10 +115,10 @@ void compute_find_cut_path_node(BaseNode &node)
         {},
         [&](std::vector<const hmap::Array *> p_arrays_in,
             std::vector<hmap::Array *>,
-            const hmap::TileRegion &region)
+            const hmap::UvTile &region)
         {
           auto [pa_in] = unpack<1>(p_arrays_in);
-          p_path->set_values_from_array(*pa_in, region.bbox);
+          p_path->set_values_from_array(*pa_in, hmap::BBox2D(region.uv_rect.to_vec4()));
         },
         node.cfg().cm_cpu);
   }

@@ -129,14 +129,14 @@ void compute_set_borders_node(BaseNode &node)
       {p_out},
       [buffer_sizes, border_values](std::vector<const hmap::Array *> p_arrays_in,
                                     std::vector<hmap::Array *>       p_arrays_out,
-                                    const hmap::TileRegion          &region)
+                                    const hmap::UvTile              &region)
       {
         auto [pa_in]  = unpack<1>(p_arrays_in);
         auto [pa_out] = unpack<1>(p_arrays_out);
 
         *pa_out = *pa_in;
 
-        hmap::set_borders(*pa_out, border_values, buffer_sizes, region.bbox);
+        hmap::set_borders(*pa_out, border_values, buffer_sizes, region.uv_rect);
       },
       node.cfg().cm_cpu);
 }

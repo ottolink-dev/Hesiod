@@ -86,7 +86,7 @@ void compute_clamp_oblique_node(BaseNode &node)
       {p_out},
       [&](std::vector<const hmap::Array *> p_arrays_in,
           std::vector<hmap::Array *>       p_arrays_out,
-          const hmap::TileRegion          &region)
+          const hmap::UvTile              &region)
       {
         auto [pa_in]  = unpack<1>(p_arrays_in);
         auto [pa_out] = unpack<1>(p_arrays_out);
@@ -99,7 +99,7 @@ void compute_clamp_oblique_node(BaseNode &node)
                                   use_max_operator,
                                   k,
                                   center,
-                                  region.bbox);
+                                  hmap::BBox2D(region.uv_rect.to_vec4()));
       },
       node.cfg().cm_cpu);
 

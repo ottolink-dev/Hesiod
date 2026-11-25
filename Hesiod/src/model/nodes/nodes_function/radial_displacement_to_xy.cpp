@@ -52,7 +52,7 @@ void compute_radial_displacement_to_xy_node(BaseNode &node)
         {p_dx, p_dy},
         [&node](std::vector<const hmap::Array *> p_arrays_in,
                 std::vector<hmap::Array *>       p_arrays_out,
-                const hmap::TileRegion          &region)
+                const hmap::UvTile              &region)
         {
           auto [pa_dr]        = unpack<1>(p_arrays_in);
           auto [pa_dx, pa_dy] = unpack<2>(p_arrays_out);
@@ -62,7 +62,7 @@ void compute_radial_displacement_to_xy_node(BaseNode &node)
                                           *pa_dy,
                                           node.val<float>(A_SMOOTHING),
                                           node.val<glm::vec2>(A_CENTER),
-                                          region.bbox);
+                                          region.uv_rect);
         },
         node.cfg().cm_cpu);
   }

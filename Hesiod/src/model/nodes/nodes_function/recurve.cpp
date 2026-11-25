@@ -63,7 +63,7 @@ void compute_recurve_node(BaseNode &node)
           {p_out},
           [&node, t, hmin, hmax](std::vector<const hmap::Array *> p_arrays_in,
                                  std::vector<hmap::Array *>       p_arrays_out,
-                                 const hmap::TileRegion &)
+                                 const hmap::UvTile &)
           {
             auto [pa_in, pa_mask] = unpack<2>(p_arrays_in);
             auto [pa_out]         = unpack<1>(p_arrays_out);

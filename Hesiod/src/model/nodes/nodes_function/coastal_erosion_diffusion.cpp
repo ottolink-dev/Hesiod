@@ -87,7 +87,7 @@ void compute_coastal_erosion_diffusion_node(BaseNode &node)
       {p_z_out, p_depth_out, p_mask_out},
       [&](std::vector<const hmap::Array *> p_arrays_in,
           std::vector<hmap::Array *>       p_arrays_out,
-          const hmap::TileRegion &)
+          const hmap::UvTile &)
       {
         auto [pa_z, pa_depth, pa_mask] = unpack<3>(p_arrays_in);
 

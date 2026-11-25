@@ -111,7 +111,7 @@ void compute_hydraulic_vpipes_node(BaseNode &node)
       {p_out, p_water_depth, p_sediment},
       [&node, iterations](std::vector<const hmap::Array *> p_arrays_in,
                           std::vector<hmap::Array *>       p_arrays_out,
-                          const hmap::TileRegion &)
+                          const hmap::UvTile &)
       {
         const auto [pa_in, pa_bedrock, pa_moisture_map, pa_mask] = unpack<4>(p_arrays_in);
         auto [pa_out, pa_water_depth, pa_sediment] = unpack<3>(p_arrays_out);

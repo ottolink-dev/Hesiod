@@ -50,7 +50,7 @@ void compute_merge_water_depths_node(BaseNode &node)
         {p_depth},
         [&node](std::vector<const hmap::Array *> p_arrays_in,
                 std::vector<hmap::Array *>       p_arrays_out,
-                const hmap::TileRegion &)
+                const hmap::UvTile &)
         {
           auto [pa_in1, pa_in2] = unpack<2>(p_arrays_in);
           auto [pa_depth]       = unpack<1>(p_arrays_out);

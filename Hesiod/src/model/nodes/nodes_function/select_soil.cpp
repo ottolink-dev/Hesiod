@@ -190,7 +190,7 @@ void compute_select_soil_node(BaseNode &node)
         {p_out},
         [&](std::vector<const hmap::Array *> p_arrays_in,
             std::vector<hmap::Array *>       p_arrays_out,
-            const hmap::TileRegion &,
+            const hmap::UvTile &,
             hmap::ICommunicator &comm)
         {
           auto [pa_in]   = unpack<1>(p_arrays_in);
@@ -226,7 +226,7 @@ void compute_select_soil_node(BaseNode &node)
         {p_out},
         [&](std::vector<const hmap::Array *> p_arrays_in,
             std::vector<hmap::Array *>       p_arrays_out,
-            const hmap::TileRegion &,
+            const hmap::UvTile &,
             hmap::ICommunicator &comm)
         {
           auto [pa_in]  = unpack<1>(p_arrays_in);
@@ -263,7 +263,7 @@ void compute_select_soil_node(BaseNode &node)
         {&grad_norm},
         [&node, ir_grad, kernel_type](std::vector<const hmap::Array *> p_arrays_in,
                                       std::vector<hmap::Array *>       p_arrays_out,
-                                      const hmap::TileRegion &)
+                                      const hmap::UvTile &)
         {
           auto [pa_in]  = unpack<1>(p_arrays_in);
           auto [pa_out] = unpack<1>(p_arrays_out);
@@ -278,7 +278,7 @@ void compute_select_soil_node(BaseNode &node)
         {&grad_norm},
         [&node](std::vector<const hmap::Array *>,
                 std::vector<hmap::Array *> p_arrays_out,
-                const hmap::TileRegion &)
+                const hmap::UvTile &)
         {
           auto [pa_out] = unpack<1>(p_arrays_out);
           hmap::gain(*pa_out, node.val<float>(A_GRADIENT_GAIN));
@@ -290,7 +290,7 @@ void compute_select_soil_node(BaseNode &node)
         {p_out},
         [&](std::vector<const hmap::Array *> p_arrays_in,
             std::vector<hmap::Array *>       p_arrays_out,
-            const hmap::TileRegion &,
+            const hmap::UvTile &,
             hmap::ICommunicator &comm)
         {
           auto [pa_in, pa_grad_norm] = unpack<2>(p_arrays_in);
@@ -321,7 +321,7 @@ void compute_select_soil_node(BaseNode &node)
         {p_out},
         [&node](std::vector<const hmap::Array *> p_arrays_in,
                 std::vector<hmap::Array *>       p_arrays_out,
-                const hmap::TileRegion &)
+                const hmap::UvTile &)
         {
           auto [pa_in]  = unpack<1>(p_arrays_in);
           auto [pa_out] = unpack<1>(p_arrays_out);

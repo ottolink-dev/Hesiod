@@ -161,7 +161,7 @@ void compute_terrain_texture_node(BaseNode &node)
       p_tex->channels_ptr(),
       [&](std::vector<const hmap::Array *> p_arrays_in,
           std::vector<hmap::Array *>       p_arrays_out,
-          const hmap::TileRegion          &region)
+          const hmap::UvTile              &region)
       {
         auto [pa_z, pa_snow, pa_dep, pa_noise] = unpack<4>(p_arrays_in);
 
@@ -169,7 +169,7 @@ void compute_terrain_texture_node(BaseNode &node)
                                                   pa_dep,
                                                   pa_snow,
                                                   p,
-                                                  region.bbox,
+                                                  region.uv_rect.to_vec4(),
                                                   pa_noise);
 
         for (size_t ch = 0; ch < p_arrays_out.size() && ch < tex.channels.size(); ++ch)

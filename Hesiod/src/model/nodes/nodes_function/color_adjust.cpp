@@ -120,7 +120,7 @@ void compute_color_adjust_node(BaseNode &node)
       p_out->channels_ptr(),
       [&](std::vector<const hmap::Array *>,
           std::vector<hmap::Array *> p_arrays_out,
-          const hmap::TileRegion    &region)
+          const hmap::UvTile        &region)
       {
         auto [r, g, b] = unpack<3>(p_arrays_out);
 

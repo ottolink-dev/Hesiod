@@ -72,7 +72,7 @@ void compute_path_dig_node(BaseNode &node)
             [&node, p_path, ir_width, ir_decay, ir_flattening_radius](
                 std::vector<const hmap::Array *> p_arrays_in,
                 std::vector<hmap::Array *>       p_arrays_out,
-                const hmap::TileRegion          &region)
+                const hmap::UvTile              &region)
             {
               auto [pa_in]  = unpack<1>(p_arrays_in);
               auto [pa_out] = unpack<1>(p_arrays_out);
@@ -85,7 +85,7 @@ void compute_path_dig_node(BaseNode &node)
                              ir_decay,
                              ir_flattening_radius,
                              node.val<bool>(A_FORCE_DOWNHILL),
-                             region.bbox,
+                             region.uv_rect,
                              node.val<float>(A_DEPTH));
             },
             node.cfg().cm_cpu);

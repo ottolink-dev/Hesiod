@@ -169,7 +169,7 @@ void compute_falloff_node(BaseNode &node)
         {p_out},
         [&](std::vector<const hmap::Array *> p_arrays_in,
             std::vector<hmap::Array *>       p_arrays_out,
-            const hmap::TileRegion          &region)
+            const hmap::UvTile              &region)
         {
           auto [pa_in]  = unpack<1>(p_arrays_in);
           auto [pa_out] = unpack<1>(p_arrays_out);
@@ -185,7 +185,7 @@ void compute_falloff_node(BaseNode &node)
                              center,
                              radius,
                              nullptr,
-                             region.bbox);
+                             region.uv_rect);
         },
         node.cfg().cm_cpu);
   }
@@ -200,7 +200,7 @@ void compute_falloff_node(BaseNode &node)
         {p_out},
         [&](std::vector<const hmap::Array *> p_arrays_in,
             std::vector<hmap::Array *>       p_arrays_out,
-            const hmap::TileRegion          &region)
+            const hmap::UvTile              &region)
         {
           auto [pa_in]  = unpack<1>(p_arrays_in);
           auto [pa_out] = unpack<1>(p_arrays_out);
@@ -211,7 +211,7 @@ void compute_falloff_node(BaseNode &node)
                                   nullptr,
                                   nullptr,
                                   center,
-                                  region.bbox);
+                                  region.uv_rect);
         },
         node.cfg().cm_cpu);
   }
@@ -225,14 +225,14 @@ void compute_falloff_node(BaseNode &node)
         {p_out},
         [&strength, dist_fn](std::vector<const hmap::Array *> p_arrays_in,
                              std::vector<hmap::Array *>       p_arrays_out,
-                             const hmap::TileRegion          &region)
+                             const hmap::UvTile              &region)
         {
           auto [pa_in]  = unpack<1>(p_arrays_in);
           auto [pa_out] = unpack<1>(p_arrays_out);
 
           *pa_out = *pa_in;
 
-          hmap::falloff(*pa_out, strength, dist_fn, nullptr, region.bbox);
+          hmap::falloff(*pa_out, strength, dist_fn, nullptr, region.uv_rect);
         },
         node.cfg().cm_cpu);
   }
