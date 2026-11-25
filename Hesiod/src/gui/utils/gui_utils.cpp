@@ -58,16 +58,16 @@ void apply_animation_settings(bool enabled)
 {
   Logger::log()->trace("apply_animation_settings: {}", enabled);
 
-  // menus are animated by MenuAnimator (menu_chrome.hpp); Qt's own menu
-  // effects animate a grabbed screenshot of the menu and would run on top of it
-  QApplication::setEffectEnabled(Qt::UI_AnimateMenu, false);
-  QApplication::setEffectEnabled(Qt::UI_FadeMenu, false);
-
-  for (const Qt::UIEffect effect : {Qt::UI_AnimateCombo,
+  // Menus, combo lists and tooltips get their entrance from MenuAnimator
+  // (menu_animator.hpp). Qt's own effects animate a grabbed screenshot and
+  // would run on top of it, so they stay off whatever the setting says.
+  for (const Qt::UIEffect effect : {Qt::UI_AnimateMenu,
+                                    Qt::UI_FadeMenu,
+                                    Qt::UI_AnimateCombo,
                                     Qt::UI_AnimateTooltip,
-                                    Qt::UI_FadeTooltip,
-                                    Qt::UI_AnimateToolBox})
-    QApplication::setEffectEnabled(effect, enabled);
+                                    Qt::UI_FadeTooltip})
+    QApplication::setEffectEnabled(effect, false);
+  QApplication::setEffectEnabled(Qt::UI_AnimateToolBox, enabled);
 
   // the shared animation clock (motion.hpp): with motion off, everything
   // that is driven by it lands on its end state at once

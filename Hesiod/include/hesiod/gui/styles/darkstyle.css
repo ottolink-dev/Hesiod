@@ -310,7 +310,7 @@ QComboBox::down-arrow {
 /* square, like the menus: the list is a window of its own */
 QComboBox QAbstractItemView {
     background-color: COLOR_POPUP;
-    border: 1px solid COLOR_PANEL_BORDER;
+    border: 1px solid COLOR_SEAM;
     padding: 5px;
     color: COLOR_TEXT_PRIMARY;
     selection-background-color: COLOR_MUTED_ACCENT;
@@ -391,13 +391,22 @@ QMenuBar::item:pressed {
     background-color: COLOR_BG_SECONDARY;
 }
 
+/* The edge of a floating surface is a seam, like the lines inside it: the
+   panel border follows the theme's border color and can land on the popup's
+   own tone (it does in "Dark"). */
 QMenu {
-    border: 1px solid COLOR_PANEL_BORDER;
+    border: 1px solid COLOR_SEAM;
     color: COLOR_TEXT_PRIMARY;
     padding: 6px;
     background-color: COLOR_POPUP;
     selection-background-color: COLOR_MENU_HOVER;
     menu-scrollable: 1;
+}
+
+/* HsdMenu paints its fill and the highlight of the active row itself, under
+   what Qt draws */
+QMenu#hsdMenu {
+    background-color: transparent;
 }
 
 QMenu::item {
@@ -409,6 +418,10 @@ QMenu::item {
 QMenu::item:selected {
     background-color: COLOR_MENU_HOVER;
     color: COLOR_TEXT_PRIMARY;
+}
+
+QMenu#hsdMenu::item:selected {
+    background-color: transparent;
 }
 
 QMenu::item:disabled {
@@ -426,9 +439,6 @@ QMenu::indicator {
     padding-left: 8px;
 }
 
-/* a seam, not the panel border: that one follows the theme's border color and
-   can land on the popup's own tone (it does in "Dark"), the seam is a fixed
-   step from it */
 QMenu::separator {
     height: 1px;
     margin: 5px 10px;
@@ -682,7 +692,7 @@ QToolTip {
     color: COLOR_TEXT_PRIMARY;
     padding: 6px 9px;
     border-radius: 7px;
-    border: 1px solid COLOR_PANEL_BORDER;
+    border: 1px solid COLOR_SEAM;
 }
 
 /* QProgressBar ------------------------------------------------------------ */
