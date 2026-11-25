@@ -35,6 +35,7 @@
 
 #include "meta_qt/designs/stock/stock.hpp"
 
+#include "highmap/adapters/opencv.hpp"
 #include "highmap/opencl/gpu_opencl.hpp"
 #include "highmap/openmp.hpp"
 
@@ -43,6 +44,7 @@
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/app/ui_scale.hpp"
 #include "hesiod/cli/batch_mode.hpp"
+#include "hesiod/gui/motion/motion.hpp"
 #include "hesiod/gui/project_ui.hpp"
 #include "hesiod/gui/undo/undo_manager.hpp"
 #include "hesiod/gui/widgets/containers/graph_manager_widget.hpp"
@@ -58,7 +60,6 @@
 #include "hesiod/gui/widgets/dialogs/project_settings_dialog.hpp"
 #include "hesiod/gui/widgets/dialogs/splash_screen.hpp"
 #include "hesiod/gui/widgets/graph_config_widgets/bake_config_dialog.hpp"
-#include "hesiod/gui/motion/motion.hpp"
 #include "hesiod/gui/widgets/shell/menu_chrome.hpp"
 #include "hesiod/gui/widgets/shell/window_chrome.hpp"
 #include "hesiod/gui/widgets/utils/fractional_repaint_filter.hpp"

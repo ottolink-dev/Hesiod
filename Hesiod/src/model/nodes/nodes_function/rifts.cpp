@@ -105,7 +105,7 @@ void compute_rifts_node(BaseNode &node)
       {p_out},
       [&node, hmin, hmax](std::vector<const hmap::Array *> p_arrays_in,
                           std::vector<hmap::Array *>       p_arrays_out,
-                          const hmap::TileRegion          &region)
+                          const hmap::UvTile              &region)
       {
         auto [pa_in, pa_dx, pa_dy, pa_mask] = unpack<4>(p_arrays_in);
         auto [pa_out]                       = unpack<1>(p_arrays_out);
@@ -133,7 +133,7 @@ void compute_rifts_node(BaseNode &node)
                          pa_dy,
                          pa_mask,
                          node.val<glm::vec2>(A_CENTER),
-                         region.bbox);
+                         region.uv_rect);
         hmap::remap(*pa_out, hmin, hmax, 0.f, 1.f);
       },
       node.cfg().cm_gpu);

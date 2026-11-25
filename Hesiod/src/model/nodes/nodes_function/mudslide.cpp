@@ -120,7 +120,7 @@ void compute_mudslide_node(BaseNode &node)
       {p_out, p_depth, &depth_init},
       [&node, &params](std::vector<const hmap::Array *> p_arrays_in,
                        std::vector<hmap::Array *>       p_arrays_out,
-                       const hmap::TileRegion &)
+                       const hmap::UvTile &)
       {
         auto [pa_in, pa_map]                   = unpack<2>(p_arrays_in);
         auto [pa_out, pa_depth, pa_depth_init] = unpack<3>(p_arrays_out);
@@ -159,7 +159,7 @@ void compute_mudslide_node(BaseNode &node)
       {p_out},
       [](std::vector<const hmap::Array *> p_arrays_in,
          std::vector<hmap::Array *>       p_arrays_out,
-         const hmap::TileRegion &)
+         const hmap::UvTile &)
       {
         auto [pa_in, pa_depth, pa_depth_init] = unpack<3>(p_arrays_in);
         auto [pa_out]                         = unpack<1>(p_arrays_out);

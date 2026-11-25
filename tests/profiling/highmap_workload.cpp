@@ -48,7 +48,7 @@ int main()
           {&output},
           [](const std::vector<const hmap::Array *> &in,
              std::vector<hmap::Array *>             &out,
-             const hmap::TileRegion &) { *out[0] = *in[0] + 3.f; },
+             const hmap::UvTile &) { *out[0] = *in[0] + 3.f; },
           cm);
       auto result = output.to_array(sequential);
       for (size_t i = 0; i < result.vector.size(); ++i)

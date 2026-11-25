@@ -64,7 +64,7 @@ void compute_wave_dune_node(BaseNode &node)
       {p_out},
       [&](std::vector<const hmap::Array *> p_arrays_in,
           std::vector<hmap::Array *>       p_arrays_out,
-          const hmap::TileRegion          &region)
+          const hmap::UvTile              &region)
       {
         auto [pa_dr]  = unpack<1>(p_arrays_in);
         auto [pa_out] = unpack<1>(p_arrays_out);
@@ -78,7 +78,7 @@ void compute_wave_dune_node(BaseNode &node)
                                   pa_dr,
                                   nullptr,
                                   node.val<glm::vec2>(A_CENTER),
-                                  region.bbox);
+                                  region.uv_rect);
       },
       node.cfg().cm_cpu);
 

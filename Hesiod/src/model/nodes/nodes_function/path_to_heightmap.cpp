@@ -54,10 +54,10 @@ void compute_path_to_heightmap_node(BaseNode &node)
             {p_out},
             [p_path](std::vector<const hmap::Array *>,
                      std::vector<hmap::Array *> p_arrays_out,
-                     const hmap::TileRegion    &region)
+                     const hmap::UvTile        &region)
             {
               auto [pa_out] = unpack<1>(p_arrays_out);
-              p_path->to_array(*pa_out, region.bbox);
+              p_path->to_array(*pa_out, hmap::BBox2D(region.uv_rect.to_vec4()));
             },
             node.cfg().cm_cpu);
       }
@@ -82,7 +82,7 @@ void compute_path_to_heightmap_node(BaseNode &node)
           {p_out},
           [](std::vector<const hmap::Array *>,
              std::vector<hmap::Array *> p_arrays_out,
-             const hmap::TileRegion &)
+             const hmap::UvTile &)
           {
             auto [pa_out] = unpack<1>(p_arrays_out);
             *pa_out       = 0.f;

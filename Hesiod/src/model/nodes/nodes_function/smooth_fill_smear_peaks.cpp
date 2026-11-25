@@ -61,7 +61,7 @@ void compute_smooth_fill_smear_peaks_node(BaseNode &node)
       {p_out},
       [&ir](std::vector<const hmap::Array *> p_arrays_in,
             std::vector<hmap::Array *>       p_arrays_out,
-            const hmap::TileRegion &)
+            const hmap::UvTile &)
       {
         auto [pa_in, pa_mask] = unpack<2>(p_arrays_in);
         auto [pa_out]         = unpack<1>(p_arrays_out);

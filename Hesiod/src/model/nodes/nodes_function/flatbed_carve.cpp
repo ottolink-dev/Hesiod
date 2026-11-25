@@ -80,7 +80,7 @@ void compute_flatbed_carve_node(BaseNode &node)
           {p_out, p_mask},
           [&node, width, falloff, p_path](std::vector<const hmap::Array *> p_arrays_in,
                                           std::vector<hmap::Array *>       p_arrays_out,
-                                          const hmap::TileRegion          &region)
+                                          const hmap::UvTile              &region)
           {
             auto [pa_in, pa_dr]    = unpack<2>(p_arrays_in);
             auto [pa_out, pa_mask] = unpack<2>(p_arrays_out);
@@ -99,7 +99,7 @@ void compute_flatbed_carve_node(BaseNode &node)
                                 node.val<float>(A_RADIAL_PROFILE_PARAMETER),
                                 pa_mask,
                                 pa_dr,
-                                region.bbox);
+                                region.uv_rect);
           },
           node.cfg().cm_cpu);
 

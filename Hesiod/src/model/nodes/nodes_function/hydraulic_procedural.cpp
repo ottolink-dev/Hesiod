@@ -174,7 +174,7 @@ void compute_hydraulic_procedural_node(BaseNode &node)
       {p_out, p_ridge_mask},
       [&node, &params](std::vector<const hmap::Array *> p_arrays_in,
                        std::vector<hmap::Array *>       p_arrays_out,
-                       const hmap::TileRegion          &region)
+                       const hmap::UvTile              &region)
       {
         const auto [pa_in,
                     pa_noise_x,
@@ -211,7 +211,7 @@ void compute_hydraulic_procedural_node(BaseNode &node)
                                             pa_noise_x,
                                             pa_noise_y,
                                             pa_ridge_mask,
-                                            region.bbox);
+                                            region.uv_rect);
       },
       node.cfg().cm_gpu);
 

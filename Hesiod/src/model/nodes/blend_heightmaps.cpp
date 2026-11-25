@@ -96,7 +96,7 @@ void blend_heightmaps(BaseNode                 &node,
 
   auto lambda_tile = [&lambda](std::vector<const hmap::Array *> p_arrays_in,
                                std::vector<hmap::Array *>       p_arrays_out,
-                               const hmap::TileRegion &)
+                               const hmap::UvTile &)
   {
     auto [a1, a2] = unpack<2>(p_arrays_in);
     auto [m] = unpack<1>(p_arrays_out);

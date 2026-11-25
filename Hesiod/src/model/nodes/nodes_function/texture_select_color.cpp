@@ -81,7 +81,7 @@ void compute_texture_select_color_node(BaseNode &node)
       {p_mask},
       [&](std::vector<const hmap::Array *> p_arrays_in,
           std::vector<hmap::Array *>       p_arrays_out,
-          const hmap::TileRegion &)
+          const hmap::UvTile &)
       {
         auto [pa_r, pa_g, pa_b] = unpack<3>(p_arrays_in);
         auto [pa_mask]          = unpack<1>(p_arrays_out);

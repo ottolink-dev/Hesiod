@@ -199,7 +199,7 @@ void compute_hydraulic_mcdonald_node(BaseNode &node)
       {p_out, p_sediment, p_discharge},
       [&](std::vector<const hmap::Array *> p_arrays_in,
           std::vector<hmap::Array *>       p_arrays_out,
-          const hmap::TileRegion &)
+          const hmap::UvTile &)
       {
         auto [pa_in, pa_moisture]     = unpack<2>(p_arrays_in);
         auto [pa_out, pa_sed, pa_dis] = unpack<3>(p_arrays_out);

@@ -207,7 +207,7 @@ void compute_hydraulic_particle_node(BaseNode &node)
       {p_out, p_erosion, p_deposition},
       [&](std::vector<const hmap::Array *> p_arrays_in,
           std::vector<hmap::Array *>       p_arrays_out,
-          const hmap::TileRegion          &region)
+          const hmap::UvTile              &region)
       {
         auto [pa_in, pa_bedrock, pa_erodibility, pa_moisture, pa_mask] = unpack<5>(
             p_arrays_in);
@@ -239,7 +239,7 @@ void compute_hydraulic_particle_node(BaseNode &node)
                                                          nullptr,
                                                          nullptr,
                                                          nullptr,
-                                                         region.bbox);
+                                                         region.uv_rect);
 
           ridges = 0.5f * ridges - 0.5f; // in [-1..0]
 

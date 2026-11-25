@@ -138,7 +138,7 @@ void compute_aeolian_erosion_node(BaseNode &node)
       {p_out, p_sediment, p_bedrock_out},
       [&](std::vector<const hmap::Array *> p_arrays_in,
           std::vector<hmap::Array *>       p_arrays_out,
-          const hmap::TileRegion          &region)
+          const hmap::UvTile              &region)
       {
         auto [pa_bedrock, pa_sand_map, pa_vegetation, pa_abrasion_mask] = unpack<4>(
             p_arrays_in);

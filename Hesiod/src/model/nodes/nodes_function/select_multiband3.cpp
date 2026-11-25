@@ -63,7 +63,7 @@ void compute_select_multiband3_node(BaseNode &node)
         {p_low, p_mid, p_high},
         [&node, vmin, vmax](std::vector<const hmap::Array *> p_arrays_in,
                             std::vector<hmap::Array *>       p_arrays_out,
-                            const hmap::TileRegion &)
+                            const hmap::UvTile &)
         {
           auto [pa_in]                   = unpack<1>(p_arrays_in);
           auto [pa_low, pa_mid, pa_high] = unpack<3>(p_arrays_out);

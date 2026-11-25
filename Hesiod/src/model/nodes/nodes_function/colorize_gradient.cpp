@@ -124,7 +124,7 @@ void compute_colorize_gradient_node(BaseNode &node)
         {p_alpha_copy},
         [clamp_alpha, reverse_alpha](std::vector<const hmap::Array *>,
                                      std::vector<hmap::Array *> p_arrays_out,
-                                     const hmap::TileRegion &)
+                                     const hmap::UvTile &)
         {
           auto [pa_alpha_copy] = unpack<1>(p_arrays_out);
           hmap::Array &alpha   = *pa_alpha_copy;
@@ -176,7 +176,7 @@ void compute_colorize_gradient_node(BaseNode &node)
         vas_out,
         [ir, shade_strength](std::vector<const hmap::Array *> p_arrays_in,
                              std::vector<hmap::Array *>       p_arrays_out,
-                             const hmap::TileRegion &)
+                             const hmap::UvTile &)
         {
           auto [pa_z]    = unpack<1>(p_arrays_in);
           auto [r, g, b] = unpack<3>(p_arrays_out);

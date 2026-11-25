@@ -69,7 +69,7 @@ hmap::VirtualArray pre_process_mask(BaseNode                 &node,
           {&mask_out},
           [](std::vector<const hmap::Array *>,
              std::vector<hmap::Array *> p_arrays_out,
-             const hmap::TileRegion &)
+             const hmap::UvTile &)
           {
             auto [pa_out] = unpack<1>(p_arrays_out);
             *pa_out *= (1.f - *pa_out);
@@ -83,7 +83,7 @@ hmap::VirtualArray pre_process_mask(BaseNode                 &node,
           {&mask_out},
           [](std::vector<const hmap::Array *> p_arrays_in,
              std::vector<hmap::Array *>       p_arrays_out,
-             const hmap::TileRegion &)
+             const hmap::UvTile &)
           {
             auto [pa_in] = unpack<1>(p_arrays_in);
             auto [pa_out] = unpack<1>(p_arrays_out);
@@ -107,7 +107,7 @@ hmap::VirtualArray pre_process_mask(BaseNode                 &node,
           {&mask_out},
           [&ir](std::vector<const hmap::Array *>,
                 std::vector<hmap::Array *> p_arrays_out,
-                const hmap::TileRegion &)
+                const hmap::UvTile &)
           {
             auto [pa_out] = unpack<1>(p_arrays_out);
             hmap::gpu::smooth_cpulse(*pa_out, ir);
@@ -127,7 +127,7 @@ hmap::VirtualArray pre_process_mask(BaseNode                 &node,
           {&mask_out},
           [mask_gain](std::vector<const hmap::Array *>,
                       std::vector<hmap::Array *> p_arrays_out,
-                      const hmap::TileRegion &)
+                      const hmap::UvTile &)
           {
             auto [pa] = unpack<1>(p_arrays_out);
             hmap::gain(*pa, mask_gain);
@@ -149,7 +149,7 @@ hmap::VirtualArray pre_process_mask(BaseNode                 &node,
         {&mask_out},
         [](std::vector<const hmap::Array *>,
            std::vector<hmap::Array *> p_arrays_out,
-           const hmap::TileRegion &)
+           const hmap::UvTile &)
         {
           auto [pa_out] = unpack<1>(p_arrays_out);
           hmap::clamp(*pa_out, 0.f, 1.f);

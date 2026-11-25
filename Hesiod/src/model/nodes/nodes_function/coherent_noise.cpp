@@ -33,6 +33,10 @@ constexpr const char *A_LACUNARITY     = "lacunarity";
 constexpr const char *A_PERIODIC       = "periodic";
 constexpr const char *A_K_SMOOTHING    = "k_smoothing";
 constexpr const char *A_GRADIENT_SCALE = "gradient_scale";
+constexpr const char *A_SLOPE_POWER    = "slope_power";
+constexpr const char *A_OCTAVE_BLEND   = "octave_blend";
+constexpr const char *A_BIAS_ANGLE     = "bias_angle";
+constexpr const char *A_BIAS_STRENGTH  = "bias_strength";
 constexpr const char *A_WARP0          = "warp0";
 constexpr const char *A_DAMP0          = "damp0";
 constexpr const char *A_WARP_SCALE     = "warp_scale";
@@ -43,6 +47,7 @@ constexpr const char *A_STRETCH        = "stretch";
 constexpr const char *A_STRETCH_DECAY  = "stretch_decay";
 
 constexpr const char *G_FBM      = "FBM";
+constexpr const char *G_SLOPE    = "Slope";
 constexpr const char *G_RIDGED   = "Ridged";
 constexpr const char *G_IQ       = "IQ";
 constexpr const char *G_JORDAN   = "Jordan";
@@ -102,6 +107,35 @@ void setup_coherent_noise_node(BaseNode &node)
 
     add_fbm_attributes();
     add_bool(node, A_PERIODIC, "Periodic (tileable)", false);
+
+    add_stretching_attributes();
+
+    setup_post_process_heightmap_attributes(
+        node,
+        {.add_mix = false, .remap_active_state = true});
+  }
+
+  {
+    node.set_current_group(G_SLOPE);
+
+    // clang-format off
+    node.set_current_category("Noise");
+
+    add_enum(node, A_NOISE_TYPE, "Type", enum_mappings.noise_type_map_fbm);
+    add_wavenumber(node, A_KW, "Spatial Frequency");
+    add_seed(node, A_SEED, "Seed");
+    // clang-format on
+
+    add_fbm_attributes();
+
+    // clang-format off
+    node.set_current_category("Slope");
+    add_float(node, A_GRADIENT_SCALE, "Gradient Scale", 0.2f, 0.f, 2.f);
+    add_float(node, A_SLOPE_POWER, "Slope Power", 2.f, 0.1f, 8.f);
+    add_float(node, A_OCTAVE_BLEND, "Octave Blend", 1.f, 0.f, 1.f);
+    add_angle(node, A_BIAS_ANGLE, "Bias Angle", 0.f);
+    add_float(node, A_BIAS_STRENGTH, "Bias Strength", 0.f, 0.f, 1.f);
+    // clang-format on
 
     add_stretching_attributes();
 
@@ -301,7 +335,7 @@ void compute_coherent_noise_node(BaseNode &node)
         {p_out},
         [&](std::vector<const hmap::Array *> p_arrays_in,
             std::vector<hmap::Array *>       p_arrays_out,
-            const hmap::TileRegion          &region)
+            const hmap::UvTile              &region)
         {
           auto [pa_dx, pa_dy, pa_ctrl] = unpack<3>(p_arrays_in);
           auto [pa_out]                = unpack<1>(p_arrays_out);
@@ -332,11 +366,54 @@ void compute_coherent_noise_node(BaseNode &node)
                                          pa_ctrl,
                                          pa_dx,
                                          pa_dy,
-                                         region.bbox,
+                                         region.uv_rect,
                                          period,
                                          angle,
                                          stretch,
                                          stretch_decay);
+        },
+        node.cfg().cm_gpu);
+  }
+  else if (current_group == G_SLOPE)
+  {
+    const auto noise_type     = node.val_enum<hmap::NoiseType>(A_NOISE_TYPE);
+    const auto gradient_scale = node.val<float>(A_GRADIENT_SCALE);
+    const auto slope_power    = node.val<float>(A_SLOPE_POWER);
+    const auto octave_blend   = node.val<float>(A_OCTAVE_BLEND);
+    const auto bias_angle     = node.val<float>(A_BIAS_ANGLE);
+    const auto bias_strength  = node.val<float>(A_BIAS_STRENGTH);
+
+    hmap::for_each_tile(
+        {p_dx, p_dy, p_ctrl},
+        {p_out},
+        [&](std::vector<const hmap::Array *> p_arrays_in,
+            std::vector<hmap::Array *>       p_arrays_out,
+            const hmap::UvTile              &region)
+        {
+          auto [pa_dx, pa_dy, pa_ctrl] = unpack<3>(p_arrays_in);
+          auto [pa_out]                = unpack<1>(p_arrays_out);
+
+          *pa_out = hmap::gpu::noise_slope(noise_type,
+                                           region.shape,
+                                           kw,
+                                           seed,
+                                           octaves,
+                                           weight,
+                                           persistence,
+                                           lacunarity,
+                                           gradient_scale,
+                                           slope_power,
+                                           octave_blend,
+                                           bias_angle,
+                                           bias_strength,
+                                           pa_ctrl,
+                                           pa_dx,
+                                           pa_dy,
+                                           region.uv_rect,
+                                           glm::ivec2(0, 0),
+                                           angle,
+                                           stretch,
+                                           stretch_decay);
         },
         node.cfg().cm_gpu);
   }
@@ -350,7 +427,7 @@ void compute_coherent_noise_node(BaseNode &node)
         {p_out},
         [&](std::vector<const hmap::Array *> p_arrays_in,
             std::vector<hmap::Array *>       p_arrays_out,
-            const hmap::TileRegion          &region)
+            const hmap::UvTile              &region)
         {
           auto [pa_dx, pa_dy, pa_ctrl] = unpack<3>(p_arrays_in);
           auto [pa_out]                = unpack<1>(p_arrays_out);
@@ -367,7 +444,7 @@ void compute_coherent_noise_node(BaseNode &node)
                                        pa_ctrl,
                                        pa_dx,
                                        pa_dy,
-                                       region.bbox,
+                                       region.uv_rect,
                                        angle,
                                        stretch,
                                        stretch_decay);
@@ -384,7 +461,7 @@ void compute_coherent_noise_node(BaseNode &node)
         {p_out},
         [&](std::vector<const hmap::Array *> p_arrays_in,
             std::vector<hmap::Array *>       p_arrays_out,
-            const hmap::TileRegion          &region)
+            const hmap::UvTile              &region)
         {
           auto [pa_dx, pa_dy, pa_ctrl] = unpack<3>(p_arrays_in);
           auto [pa_out]                = unpack<1>(p_arrays_out);
@@ -401,7 +478,7 @@ void compute_coherent_noise_node(BaseNode &node)
                                    pa_ctrl,
                                    pa_dx,
                                    pa_dy,
-                                   region.bbox,
+                                   region.uv_rect,
                                    angle,
                                    stretch,
                                    stretch_decay);
@@ -421,7 +498,7 @@ void compute_coherent_noise_node(BaseNode &node)
         {p_out},
         [&](std::vector<const hmap::Array *> p_arrays_in,
             std::vector<hmap::Array *>       p_arrays_out,
-            const hmap::TileRegion          &region)
+            const hmap::UvTile              &region)
         {
           auto [pa_dx, pa_dy, pa_ctrl] = unpack<3>(p_arrays_in);
           auto [pa_out]                = unpack<1>(p_arrays_out);
@@ -441,7 +518,7 @@ void compute_coherent_noise_node(BaseNode &node)
                                        pa_ctrl,
                                        pa_dx,
                                        pa_dy,
-                                       region.bbox,
+                                       region.uv_rect,
                                        angle,
                                        stretch,
                                        stretch_decay);
@@ -457,7 +534,7 @@ void compute_coherent_noise_node(BaseNode &node)
         {p_out},
         [&](std::vector<const hmap::Array *> p_arrays_in,
             std::vector<hmap::Array *>       p_arrays_out,
-            const hmap::TileRegion          &region)
+            const hmap::UvTile              &region)
         {
           auto [pa_dx, pa_dy, pa_ctrl] = unpack<3>(p_arrays_in);
           auto [pa_out]                = unpack<1>(p_arrays_out);
@@ -473,7 +550,7 @@ void compute_coherent_noise_node(BaseNode &node)
                                          pa_ctrl,
                                          pa_dx,
                                          pa_dy,
-                                         region.bbox,
+                                         region.uv_rect,
                                          angle,
                                          stretch,
                                          stretch_decay);
@@ -489,7 +566,7 @@ void compute_coherent_noise_node(BaseNode &node)
         {p_out},
         [&](std::vector<const hmap::Array *> p_arrays_in,
             std::vector<hmap::Array *>       p_arrays_out,
-            const hmap::TileRegion          &region)
+            const hmap::UvTile              &region)
         {
           auto [pa_dx, pa_dy, pa_ctrl] = unpack<3>(p_arrays_in);
           auto [pa_out]                = unpack<1>(p_arrays_out);
@@ -505,7 +582,7 @@ void compute_coherent_noise_node(BaseNode &node)
                                          pa_ctrl,
                                          pa_dx,
                                          pa_dy,
-                                         region.bbox,
+                                         region.uv_rect,
                                          angle,
                                          stretch,
                                          stretch_decay);
@@ -522,7 +599,7 @@ void compute_coherent_noise_node(BaseNode &node)
         {p_out},
         [&](std::vector<const hmap::Array *> p_arrays_in,
             std::vector<hmap::Array *>       p_arrays_out,
-            const hmap::TileRegion          &region)
+            const hmap::UvTile              &region)
         {
           auto [pa_dx, pa_dy, pa_ctrl] = unpack<3>(p_arrays_in);
           auto [pa_out]                = unpack<1>(p_arrays_out);
@@ -539,7 +616,7 @@ void compute_coherent_noise_node(BaseNode &node)
                                       pa_ctrl,
                                       pa_dx,
                                       pa_dy,
-                                      region.bbox,
+                                      region.uv_rect,
                                       angle,
                                       stretch,
                                       stretch_decay);

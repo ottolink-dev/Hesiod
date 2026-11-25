@@ -167,7 +167,7 @@ void compute_place_rocks_procedural_node(BaseNode &node)
       {p_density_va},
       [&](std::vector<const hmap::Array *> p_arrays_in,
           std::vector<hmap::Array *>       p_arrays_out,
-          const hmap::TileRegion          &region)
+          const hmap::UvTile              &region)
       {
         auto [pa_elevation, pa_secondary, pa_exclusion] = unpack<3>(p_arrays_in);
         auto [pa_density]                               = unpack<1>(p_arrays_out);
@@ -188,14 +188,14 @@ void compute_place_rocks_procedural_node(BaseNode &node)
                                                weight_secondary,
                                                exclusion,
                                                exclusion_threshold,
-                                               region.bbox);
+                                               hmap::BBox2D(region.uv_rect.to_vec4()));
       },
       node.cfg().cm_cpu);
 
   // --- Configure Seeding Options
 
   hmap::RockSeedingOptions options;
-  options.bbox                = p_elevation->bbox;
+  options.bbox                = hmap::BBox2D::unit();
   options.seed                = seed;
   options.exclusion_threshold = exclusion_threshold;
   options.distribution        = hmap::RockDistribution(class_id,

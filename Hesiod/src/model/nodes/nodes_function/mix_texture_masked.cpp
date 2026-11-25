@@ -105,7 +105,7 @@ void compute_mix_texture_masked_node(BaseNode &node)
 
     auto lambda = [mix_method, gain](std::vector<const hmap::Array *> p_arrays_in,
                                      std::vector<hmap::Array *>       p_arrays_out,
-                                     const hmap::TileRegion &)
+                                     const hmap::UvTile &)
     {
       // In1: 0..3
       // In2: 4..7
@@ -143,7 +143,7 @@ void compute_mix_texture_masked_node(BaseNode &node)
     auto lambda =
         [iterations, threshold, gain](std::vector<const hmap::Array *> p_arrays_in,
                                       std::vector<hmap::Array *>       p_arrays_out,
-                                      const hmap::TileRegion &)
+                                      const hmap::UvTile &)
     {
       // In1: 0..3
       // In2: 4..7

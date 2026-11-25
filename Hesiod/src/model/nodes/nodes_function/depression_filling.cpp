@@ -89,7 +89,7 @@ void compute_depression_filling_node(BaseNode &node)
       {p_out, p_fill_map},
       [&](std::vector<const hmap::Array *> p_arrays_in,
           std::vector<hmap::Array *>       p_arrays_out,
-          const hmap::TileRegion          &region,
+          const hmap::UvTile              &region,
           hmap::ICommunicator             &comm)
       {
         auto [pa_in]               = unpack<1>(p_arrays_in);

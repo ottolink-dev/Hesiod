@@ -48,7 +48,7 @@ void compute_gradient_node(BaseNode &node)
         {p_dx},
         [](std::vector<const hmap::Array *> p_arrays_in,
            std::vector<hmap::Array *>       p_arrays_out,
-           const hmap::TileRegion &)
+           const hmap::UvTile &)
         {
           auto [pa_in] = unpack<1>(p_arrays_in);
           auto [pa_dx] = unpack<1>(p_arrays_out);
@@ -62,7 +62,7 @@ void compute_gradient_node(BaseNode &node)
         {p_dy},
         [](std::vector<const hmap::Array *> p_arrays_in,
            std::vector<hmap::Array *>       p_arrays_out,
-           const hmap::TileRegion &)
+           const hmap::UvTile &)
         {
           auto [pa_in] = unpack<1>(p_arrays_in);
           auto [pa_dy] = unpack<1>(p_arrays_out);

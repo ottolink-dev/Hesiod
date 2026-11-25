@@ -103,7 +103,7 @@ void compute_snow_melting_map_node(BaseNode &node)
       {p_melting_map},
       [&node, &params](std::vector<const hmap::Array *> p_arrays_in,
                        std::vector<hmap::Array *>       p_arrays_out,
-                       const hmap::TileRegion &)
+                       const hmap::UvTile &)
       {
         const auto [pa_z]     = unpack<1>(p_arrays_in);
         auto [pa_melting_map] = unpack<1>(p_arrays_out);

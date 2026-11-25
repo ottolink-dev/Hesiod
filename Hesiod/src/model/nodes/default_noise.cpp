@@ -25,7 +25,7 @@ void generate_noise(BaseNode                  &node,
       {&noise},
       [&node, seed_increment](std::vector<const hmap::Array *> p_arrays_in,
                               std::vector<hmap::Array *>       p_arrays_out,
-                              const hmap::TileRegion          &region)
+                              const hmap::UvTile              &region)
       {
         auto [pa_noise_default] = unpack<1>(p_arrays_out);
 
@@ -46,7 +46,7 @@ void generate_noise(BaseNode                  &node,
                                                  nullptr,
                                                  nullptr,
                                                  nullptr,
-                                                 region.bbox);
+                                                 region.uv_rect);
 
         *pa_noise_default *= node.val<float>("dn_noise_amp");
       },

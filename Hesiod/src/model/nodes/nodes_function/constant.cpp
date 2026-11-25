@@ -39,7 +39,7 @@ void compute_constant_node(BaseNode &node)
       {p_out},
       [&node](std::vector<const hmap::Array *>,
               std::vector<hmap::Array *> p_arrays_out,
-              const hmap::TileRegion &)
+              const hmap::UvTile &)
       {
         auto [pa_out] = unpack<1>(p_arrays_out);
         *pa_out       = node.val<float>(A_VALUE);

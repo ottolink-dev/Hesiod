@@ -65,7 +65,7 @@ void compute_island_land_mask_node(BaseNode &node)
       {p_out},
       [&node](std::vector<const hmap::Array *>,
               std::vector<hmap::Array *> p_arrays_out,
-              const hmap::TileRegion    &region)
+              const hmap::UvTile        &region)
       {
         auto [pa_out] = unpack<1>(p_arrays_out);
 
@@ -80,7 +80,7 @@ void compute_island_land_mask_node(BaseNode &node)
                                          node.val<float>(A_PERSISTENCE),
                                          node.val<float>(A_LACUNARITY),
                                          node.val<glm::vec2>(A_CENTER),
-                                         region.bbox);
+                                         region.uv_rect.to_vec4());
       },
       node.cfg().cm_cpu);
 

@@ -124,7 +124,7 @@ void compute_strata_plates_node(BaseNode &node)
       {p_out},
       [&](std::vector<const hmap::Array *> p_arrays_in,
           std::vector<hmap::Array *>       p_arrays_out,
-          const hmap::TileRegion &)
+          const hmap::UvTile &)
       {
         auto [pa_in, pa_dx, pa_dy, pa_mask, pa_talus] = unpack<5>(p_arrays_in);
         auto [pa_out]                                 = unpack<1>(p_arrays_out);

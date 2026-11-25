@@ -144,7 +144,7 @@ void compute_texture_advection_particle_node(BaseNode &node)
 
   auto lambda = [&](std::vector<const hmap::Array *> p_arrays_in,
                     std::vector<hmap::Array *>       p_arrays_out,
-                    const hmap::TileRegion          &region)
+                    const hmap::UvTile              &region)
   {
     // 3 scalars + 4 channels
     auto [pa_z, pa_advection_mask, pa_mask, pa_r, pa_g, pa_b, pa_a] = unpack<7>(

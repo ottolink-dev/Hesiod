@@ -166,7 +166,7 @@ void compute_colorize_bivariate_node(BaseNode &node)
         [range1, range2, denom1, denom2, sharpness](
             std::vector<const hmap::Array *> p_arrays_in,
             std::vector<hmap::Array *>       p_arrays_out,
-            const hmap::TileRegion          &region)
+            const hmap::UvTile              &region)
         {
           auto [pa_in1, pa_in2, pa_noise] = unpack<3>(p_arrays_in);
           auto [pa_out1, pa_out2]         = unpack<2>(p_arrays_out);
