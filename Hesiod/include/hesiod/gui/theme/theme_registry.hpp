@@ -34,6 +34,7 @@ private:
   ThemeRegistry();
 
   std::map<std::string, ThemeDefinition> themes;
+  std::vector<std::string>               builtin_order;
 };
 
 } // namespace hesiod

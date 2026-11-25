@@ -1,7 +1,9 @@
 /* Copyright (c) 2025 Otto Link. Distributed under the terms of the GNU General
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
+#include <algorithm>
 #include <map>
+#include <string>
 
 #include <QColor>
 #include <QPalette>
@@ -11,6 +13,8 @@
 #include "meta_qt/ui/theme.hpp"
 
 #include "hesiod/app/hesiod_application.hpp"
+#include "hesiod/gui/theme/oklch.hpp"
+#include "hesiod/gui/theme/style_sheet.hpp"
 #include "hesiod/gui/theme/theme.hpp"
 #include "hesiod/gui/theme/theme_registry.hpp"
 #include "hesiod/gui/widgets/graph/graph_node_widget.hpp"
@@ -48,38 +52,65 @@ void apply_global_style(QApplication &app)
 #include "hesiod/gui/styles/darkstyle.css"
       ;
 
+  const auto &colors = ctx.app_settings.colors;
+
+  // Tones the stylesheet names but the theme does not store: each is a fixed
+  // perceptual step from the pane surface. In a light theme the steps run the
+  // other way, so a well is still "set in" and a popup still "lifted".
+  const double sign = active_theme.is_dark ? 1.0 : -0.8;
+  auto         tone = [&](double delta)
+  { return oklch::shifted(colors.bg_primary, sign * delta); };
+
+  const QColor well = tone(-0.048);
+  const QColor popup = tone(0.068);
+  const QColor menu_hover = oklch::mix(popup, colors.text_primary, 0.085);
+  const QColor accent_hover = oklch::shifted(colors.accent, sign * 0.045);
+
+  const QColor on_accent = on_accent_color();
+
   std::map<std::string, QColor> place_holders = {
-      {"COLOR_BG_DEEP", ctx.app_settings.colors.bg_deep},
-      {"COLOR_BG_PRIMARY", ctx.app_settings.colors.bg_primary},
-      {"COLOR_BG_SECONDARY", ctx.app_settings.colors.bg_secondary},
-      {"COLOR_TEXT_PRIMARY", ctx.app_settings.colors.text_primary},
-      {"COLOR_TEXT_SECONDARY", ctx.app_settings.colors.text_secondary},
-      {"COLOR_TEXT_DISABLED", ctx.app_settings.colors.text_disabled},
-      {"COLOR_ACCENT", ctx.app_settings.colors.accent},
-      {"COLOR_BW_ACCENT", ctx.app_settings.colors.accent_bw},
-      {"COLOR_BORDER", ctx.app_settings.colors.border},
-      {"COLOR_HOVER", ctx.app_settings.colors.hover},
-      {"COLOR_PRESSED", ctx.app_settings.colors.pressed},
-      {"COLOR_SEPARATOR", ctx.app_settings.colors.separator},
-      // derived tones for the panel cards and popups: the configured border and
-      // accent are too loud at the size of a whole pane or a menu highlight
+      {"COLOR_BG_DEEP", colors.bg_deep},
+      {"COLOR_BG_PRIMARY", colors.bg_primary},
+      {"COLOR_BG_SECONDARY", colors.bg_secondary},
+      {"COLOR_TEXT_PRIMARY", colors.text_primary},
+      {"COLOR_TEXT_SECONDARY", colors.text_secondary},
+      {"COLOR_TEXT_DISABLED", colors.text_disabled},
+      {"COLOR_ACCENT", colors.accent},
+      {"COLOR_BW_ACCENT", colors.accent_bw},
+      {"COLOR_BORDER", colors.border},
+      {"COLOR_HOVER", colors.hover},
+      {"COLOR_PRESSED", colors.pressed},
+      {"COLOR_SEPARATOR", colors.separator},
+      // surfaces
+      {"COLOR_WELL", well},
+      {"COLOR_POPUP", popup},
+      {"COLOR_LIFT", oklch::mix(colors.bg_secondary, colors.text_primary, 0.055)},
+      {"COLOR_SUNK", oklch::mix(colors.bg_secondary, colors.bg_primary, 0.75)},
+      {"COLOR_MENU_HOVER", menu_hover},
+      // lines
+      {"COLOR_RIM", oklch::mix(tone(-0.075), well, 0.45)},
+      {"COLOR_SEAM", tone(0.028)},
+      {"COLOR_SOFT_BORDER", tone(0.082)},
       {"COLOR_PANEL_BORDER", panel_border_color()},
-      {"COLOR_PANEL_HOVER",
-       mix_colors(ctx.app_settings.colors.bg_deep,
-                  ctx.app_settings.colors.bg_primary,
-                  0.6)},
-      {"COLOR_MUTED_ACCENT",
-       mix_colors(ctx.app_settings.colors.bg_primary,
-                  ctx.app_settings.colors.accent,
-                  0.55)}};
+      // scrollbars
+      {"COLOR_THUMB", tone(0.100)},
+      {"COLOR_GRIP", tone(0.170)},
+      // accent
+      {"COLOR_ON_ACCENT", on_accent},
+      {"COLOR_HOVER_ACCENT", accent_hover},
+      {"COLOR_MUTED_ACCENT", oklch::mix(colors.bg_primary, colors.accent, 0.30)},
+      {"COLOR_DANGER", colors.warning},
+      {"COLOR_PANEL_HOVER", oklch::mix(colors.bg_deep, colors.bg_primary, 0.6)}};
 
-  for (auto &[p, color] : place_holders)
-    hesiod::replace_all(style_sheet, p, color.name().toStdString());
-
+  // render_stylesheet() replaces the longest names first, so a placeholder
+  // that starts like another one (COLOR_HOVER, COLOR_HOVER_ACCENT) is safe
+  std::map<std::string, std::string> paths;
   if (ctx.app_settings.icons.icon_paths.contains("check"))
-    hesiod::replace_all(style_sheet,
-                        "ICON_CHECK_PATH",
-                        ctx.app_settings.icons.icon_paths.at("check"));
+    paths["ICON_CHECK_PATH"] = ctx.app_settings.icons.icon_paths.at("check");
+  if (ctx.app_settings.icons.icon_paths.contains("chevron_down"))
+    paths["ICON_CHEVRON_PATH"] = ctx.app_settings.icons.icon_paths.at("chevron_down");
+
+  const QString rendered = render_stylesheet(style_sheet, paths, place_holders);
 
   // The theme has to reach the palette as well as the stylesheet: custom-painted
   // widgets (the MetaUI sliders, range bars and canvases) query QPalette
@@ -88,13 +119,11 @@ void apply_global_style(QApplication &app)
   // dark background and use the system accent instead of ours. This is the
   // palette-side counterpart of the qsx::Config block below.
   {
-    const auto &colors = ctx.app_settings.colors;
-
     QPalette pal = app.palette();
 
     pal.setColor(QPalette::Window, colors.bg_primary);
     pal.setColor(QPalette::WindowText, colors.text_primary);
-    pal.setColor(QPalette::Base, colors.bg_secondary);
+    pal.setColor(QPalette::Base, well);
     pal.setColor(QPalette::AlternateBase, colors.bg_primary);
     pal.setColor(QPalette::Text, colors.text_primary);
     pal.setColor(QPalette::PlaceholderText, colors.text_secondary);
@@ -102,8 +131,8 @@ void apply_global_style(QApplication &app)
     pal.setColor(QPalette::ButtonText, colors.text_primary);
     pal.setColor(QPalette::BrightText, colors.text_primary);
     pal.setColor(QPalette::Highlight, colors.accent);
-    pal.setColor(QPalette::HighlightedText, colors.text_primary);
-    pal.setColor(QPalette::ToolTipBase, colors.bg_deep);
+    pal.setColor(QPalette::HighlightedText, on_accent);
+    pal.setColor(QPalette::ToolTipBase, popup);
     pal.setColor(QPalette::ToolTipText, colors.text_primary);
     pal.setColor(QPalette::Mid, colors.border);
     pal.setColor(QPalette::Dark, colors.bg_deep);
@@ -121,7 +150,7 @@ void apply_global_style(QApplication &app)
     meta::qt::ThemeRegistry::instance().update_palette_theme(pal);
   }
 
-  app.setStyleSheet(style_sheet.c_str());
+  app.setStyleSheet(rendered);
 
   // re-tint icons to match the (now loaded) palette text color
   ctx.app_settings.icons.apply_text_color(ctx.app_settings.colors.text_primary);

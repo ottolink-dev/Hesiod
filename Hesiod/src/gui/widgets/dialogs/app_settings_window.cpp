@@ -1586,7 +1586,8 @@ void AppSettingsWindow::apply_stylesheet()
 
   const QColor                        warn("#d9a441");
   const std::map<std::string, QColor> color_tokens = {
-      {"ACCENT_HOVER", t.accent.lighter(112)},
+      {"ACCENT_HOVER", t.accent.lighter(108)},
+      {"ON_ACCENT", on_accent_color()},
       {"ACCENT_SOFT", t.accent_soft},
       {"ACCENT_TEXT", t.accent.lighter(135)},
       {"ACCENT", t.accent},
