@@ -1,8 +1,7 @@
 diff --git a/CMakeLists.txt b/CMakeLists.txt
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -121,7 +121,8 @@ find_package(zstd REQUIRED)
- include_directories(${OpenCV_INCLUDE_DIRS})
+@@ -135,6 +135,7 @@ find_package(zstd REQUIRED)
  
  # OpenMP
 -add_compile_options($<$<COMPILE_LANGUAGE:CXX>:${OpenMP_CXX_FLAGS}>)
