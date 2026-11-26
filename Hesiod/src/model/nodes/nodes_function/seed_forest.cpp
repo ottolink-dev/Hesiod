@@ -243,13 +243,46 @@ void compute_seed_forest_node(BaseNode &node)
 
   *p_out_forest = hmap::Forest(hmap::merge_scatter_fields(tile_fields, tile_bboxs, true));
 
-  *p_out_forest = hmap::grow_forest_iterative(*p_out_forest,
-                                              options.species,
-                                              /* iterations */ 15,
-                                              0.1f,
-                                              hmap::InteractionMatrix{},
-                                              hmap::Array{}, // TODO VA version
-                                              0.8f);
+  // --- Grow forest
+
+  std::vector<hmap::ScatterField> grown_fields(ntiles);
+  std::vector<hmap::BBox2D>       grown_bboxs(ntiles);
+
+  hmap::for_each_tile(
+      {p_out_density},
+      {},
+      [&](const std::vector<const hmap::Array *> &p_arrays_in,
+          std::vector<hmap::Array *> &,
+          const hmap::UvTile &region)
+      {
+        int          tile_index = region.key.ty * num_tiles.x + region.key.tx;
+        hmap::BBox2D tile_bbox  = region.uv_rect.to_bbox2d();
+        grown_bboxs[tile_index] = tile_bbox;
+
+        std::vector<hmap::Tree> tile_trees;
+        for (const auto &t : *p_out_forest)
+        {
+          if (tile_bbox.contains(t.position))
+            tile_trees.push_back(t);
+        }
+
+        grown_fields[tile_index] = hmap::grow_forest_iterative(hmap::Forest(tile_trees),
+                                                               options.species,
+                                                               /* iterations */ 15,
+                                                               0.1f,
+                                                               hmap::InteractionMatrix{},
+                                                               *p_arrays_in[0],
+                                                               0.8f,
+                                                               true,
+                                                               options.bbox,
+                                                               region);
+      },
+      node.cfg().cm_cpu);
+
+  *p_out_forest = hmap::Forest(
+      hmap::merge_scatter_fields(grown_fields, grown_bboxs, true));
+
+  // --- Set elevation from terrain
 
   hmap::for_each_tile(
       {p_elevation},
