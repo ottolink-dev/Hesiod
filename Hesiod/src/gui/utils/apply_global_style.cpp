@@ -144,7 +144,7 @@ void apply_global_style(QApplication &app)
 
     pal.setColor(QPalette::Window, colors.bg_primary);
     pal.setColor(QPalette::WindowText, colors.text_primary);
-    pal.setColor(QPalette::Base, well);
+    pal.setColor(QPalette::Base, colors.bg_secondary);
     pal.setColor(QPalette::AlternateBase, colors.bg_primary);
     pal.setColor(QPalette::Text, colors.text_primary);
     pal.setColor(QPalette::PlaceholderText, colors.text_secondary);
