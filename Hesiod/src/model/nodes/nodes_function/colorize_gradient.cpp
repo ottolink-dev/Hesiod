@@ -148,16 +148,32 @@ void compute_colorize_gradient_node(BaseNode &node)
     cmax += p_noise->max(node.cfg().cm_cpu);
   }
 
-  hmap::colorize(*p_tex,
-                 *p_level,
-                 node.cfg().cm_cpu,
-                 cmin,
-                 cmax,
-                 positions,
-                 colormap_colors,
-                 p_alpha_copy,
-                 reverse_colormap,
-                 p_noise);
+  hmap::for_each_tile(
+      {p_level, p_alpha_copy, p_noise},
+      p_tex->channels_ptr(),
+      [&](std::vector<const hmap::Array *> p_arrays_in,
+          std::vector<hmap::Array *>       p_arrays_out,
+          const hmap::UvTile &)
+      {
+        auto [pa_level, pa_alpha_copy, pa_noise] = unpack<3>(p_arrays_in);
+
+        hmap::Texture tex = hmap::colorize(*pa_level,
+                                           cmin,
+                                           cmax,
+                                           positions,
+                                           colormap_colors,
+                                           reverse_colormap,
+                                           pa_noise);
+
+        for (size_t ch = 0; ch < p_arrays_out.size() && ch < tex.channels.size(); ++ch)
+          *p_arrays_out[ch] = std::move(tex.channels[ch]);
+
+        if (pa_alpha_copy && p_arrays_out.size() > 3)
+          *p_arrays_out[3] = *pa_alpha_copy;
+      },
+      node.cfg().cm_cpu);
+
+  p_tex->sync_overlap_buffers();
 
   // --- Topographic residual shading (optional)
 

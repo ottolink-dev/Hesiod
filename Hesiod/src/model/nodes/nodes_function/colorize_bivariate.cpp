@@ -205,21 +205,35 @@ void compute_colorize_bivariate_node(BaseNode &node)
 
   // --- Compute
 
-  hmap::colorize_bivariate(*p_tex,
-                           *p_in1_final,
-                           *p_in2_final,
-                           node.cfg().cm_cpu,
-                           range1_final,
-                           range2_final,
-                           positions1,
-                           positions2,
-                           colormap_colors1,
-                           colormap_colors2,
-                           mix_method,
-                           reverse_colormap1,
-                           reverse_colormap2,
-                           p_noise_final,
-                           p_noise_final);
+  hmap::for_each_tile(
+      {p_in1_final, p_in2_final, p_noise_final},
+      p_tex->channels_ptr(),
+      [&](std::vector<const hmap::Array *> p_arrays_in,
+          std::vector<hmap::Array *>       p_arrays_out,
+          const hmap::UvTile &)
+      {
+        auto [pa_in1, pa_in2, pa_noise] = unpack<3>(p_arrays_in);
+
+        hmap::Texture tex = hmap::colorize_bivariate(*pa_in1,
+                                                     *pa_in2,
+                                                     range1_final,
+                                                     range2_final,
+                                                     positions1,
+                                                     positions2,
+                                                     colormap_colors1,
+                                                     colormap_colors2,
+                                                     mix_method,
+                                                     reverse_colormap1,
+                                                     reverse_colormap2,
+                                                     pa_noise,
+                                                     pa_noise);
+
+        for (size_t ch = 0; ch < p_arrays_out.size() && ch < tex.channels.size(); ++ch)
+          *p_arrays_out[ch] = std::move(tex.channels[ch]);
+      },
+      node.cfg().cm_cpu);
+
+  p_tex->sync_overlap_buffers();
 }
 
 } // namespace hesiod

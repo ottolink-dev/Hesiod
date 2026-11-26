@@ -73,7 +73,7 @@ void compute_cloud_to_array_interp_node(BaseNode &node)
           auto [pa_dx, pa_dy] = unpack<2>(p_arrays_in);
           auto [pa_out]       = unpack<1>(p_arrays_out);
 
-          glm::vec4 bbox_points = {0.f, 1.f, 0.f, 1.f};
+          hmap::BBox2D bbox_points(0.f, 1.f, 0.f, 1.f);
 
           *pa_out = 0.f;
 

@@ -42,7 +42,30 @@ void compute_texture_to_heightmap_node(BaseNode &node)
   if (p_tex)
   {
     hmap::VirtualArray *p_out = node.get_value_ref<hmap::VirtualArray>(P_ELEVATION);
-    hmap::luminance(*p_out, *p_tex, node.cfg().cm_cpu);
+
+    std::vector<const hmap::VirtualArray *> inputs;
+    for (auto *p_ch : p_tex->channels_ptr())
+      inputs.push_back(p_ch);
+
+    hmap::for_each_tile(
+        inputs,
+        {p_out},
+        [&](std::vector<const hmap::Array *> p_arrays_in,
+            std::vector<hmap::Array *>       p_arrays_out,
+            const hmap::UvTile &)
+        {
+          auto [pa_out] = unpack<1>(p_arrays_out);
+
+          hmap::Texture tex;
+          tex.channels.reserve(p_arrays_in.size());
+          for (const auto *pa_ch : p_arrays_in)
+            tex.channels.push_back(*pa_ch);
+
+          *pa_out = hmap::luminance(tex);
+        },
+        node.cfg().cm_cpu);
+
+    p_out->sync_overlap_buffers();
 
     // post-process
     post_process_heightmap(node, *p_out);

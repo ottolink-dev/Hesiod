@@ -169,7 +169,7 @@ void compute_terrain_texture_node(BaseNode &node)
                                                   pa_dep,
                                                   pa_snow,
                                                   p,
-                                                  region.uv_rect.to_vec4(),
+                                                  region.uv_rect.to_bbox2d(),
                                                   pa_noise);
 
         for (size_t ch = 0; ch < p_arrays_out.size() && ch < tex.channels.size(); ++ch)

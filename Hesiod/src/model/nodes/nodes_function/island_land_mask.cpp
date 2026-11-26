@@ -40,7 +40,7 @@ void setup_island_land_mask_node(BaseNode &node)
   // attribute(s)
   add_float(node, A_RADIUS, "radius", 0.2f, 0.f, 1.f);
   add_seed(node, A_SEED, "Seed");
-  add_float(node, A_DISPLACEMENT, "displacement", 0.4f, 0.f, FLT_MAX);
+  add_float(node, A_DISPLACEMENT, "displacement", 0.1f, 0.f, 0.2f);
   add_enum(node, A_NOISE_TYPE, "Type", enum_mappings.noise_type_map);
   add_float(node, A_KW, "kw", 4.f, 0.f, FLT_MAX);
   add_int(node, A_OCTAVES, "Octaves", 8, 0, 32);
@@ -80,7 +80,7 @@ void compute_island_land_mask_node(BaseNode &node)
                                          node.val<float>(A_PERSISTENCE),
                                          node.val<float>(A_LACUNARITY),
                                          node.val<glm::vec2>(A_CENTER),
-                                         region.uv_rect.to_vec4());
+                                         region.uv_rect.to_bbox2d());
       },
       node.cfg().cm_cpu);
 
