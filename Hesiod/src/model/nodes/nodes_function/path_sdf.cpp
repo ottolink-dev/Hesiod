@@ -67,7 +67,7 @@ void compute_path_sdf_node(BaseNode &node)
       {p_out},
       [&node, p_path, smooth_path](std::vector<const hmap::Array *> p_arrays_in,
                                    std::vector<hmap::Array *>       p_arrays_out,
-                                   const hmap::TileRegion          &region)
+                                   const hmap::UvTile              &region)
       {
         auto [pa_dx, pa_dy] = unpack<2>(p_arrays_in);
         auto [pa_out]       = unpack<1>(p_arrays_out);
@@ -76,7 +76,7 @@ void compute_path_sdf_node(BaseNode &node)
         {
           *pa_out = hmap::gpu::path_sdf_bezier_to_array(*p_path,
                                                         region.shape,
-                                                        region.bbox,
+                                                        region.uv_rect,
                                                         pa_dx,
                                                         pa_dy);
         }
@@ -84,7 +84,7 @@ void compute_path_sdf_node(BaseNode &node)
         {
           *pa_out = hmap::gpu::path_sdf_to_array(*p_path,
                                                  region.shape,
-                                                 region.bbox,
+                                                 region.uv_rect,
                                                  pa_dx,
                                                  pa_dy);
         }

@@ -149,7 +149,7 @@ void compute_flow_simulation_node(BaseNode &node)
       {p_water_out},
       [&](std::vector<const hmap::Array *> p_arrays_in,
           std::vector<hmap::Array *>       p_arrays_out,
-          const hmap::TileRegion          &region,
+          const hmap::UvTile              &region,
           hmap::ICommunicator             &comm)
       {
         auto [pa_z, pa_depth, pa_rain] = unpack<3>(p_arrays_in);
@@ -189,7 +189,7 @@ void compute_flow_simulation_node(BaseNode &node)
         {p_water_out},
         [&](std::vector<const hmap::Array *>,
             std::vector<hmap::Array *> p_arrays_out,
-            const hmap::TileRegion &)
+            const hmap::UvTile &)
         {
           auto [pa_water] = unpack<1>(p_arrays_out);
 
@@ -207,7 +207,7 @@ void compute_flow_simulation_node(BaseNode &node)
         {p_water_out},
         [&](std::vector<const hmap::Array *> p_arrays_in,
             std::vector<hmap::Array *>       p_arrays_out,
-            const hmap::TileRegion &)
+            const hmap::UvTile &)
         {
           auto [pa_z]     = unpack<1>(p_arrays_in);
           auto [pa_water] = unpack<1>(p_arrays_out);

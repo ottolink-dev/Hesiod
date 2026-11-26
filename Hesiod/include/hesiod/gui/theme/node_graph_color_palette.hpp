@@ -46,12 +46,13 @@ struct NodeGraphColorPalette
       {"Debug", QColor(200, 0, 0, 255)},         {"Math", QColor(0, 43, 54, 255)},
       {"Geometry", QColor(101, 123, 131, 255)},  {"Flora", QColor(104, 159, 56, 255)},
       {"Roads", QColor(147, 161, 161, 255)},     {"Routing", QColor(188, 182, 163, 255)},
-      {"IO", QColor(203, 196, 177, 255)},        {"Features", QColor(181, 137, 0, 255)},
-      {"Erosion", QColor(203, 75, 22, 255)},     {"Mask", QColor(211, 54, 130, 255)},
-      {"Filter", QColor(108, 113, 196, 255)},    {"Operator", QColor(108, 113, 196, 255)},
-      {"Hydrology", QColor(38, 139, 210, 255)},  {"Primitive", QColor(42, 161, 152, 255)},
-      {"Biomes", QColor(133, 153, 0, 255)},      {"Texture", QColor(0, 0, 0, 255)},
-      {"Rock", QColor(140, 140, 140, 255)},      {"WIP", QColor(255, 255, 255, 255)},
+      {"Graph IO", QColor(211, 54, 130, 255)},   {"IO", QColor(203, 196, 177, 255)},
+      {"Features", QColor(181, 137, 0, 255)},    {"Erosion", QColor(203, 75, 22, 255)},
+      {"Mask", QColor(211, 54, 130, 255)},       {"Filter", QColor(108, 113, 196, 255)},
+      {"Operator", QColor(108, 113, 196, 255)},  {"Hydrology", QColor(38, 139, 210, 255)},
+      {"Primitive", QColor(42, 161, 152, 255)},  {"Biomes", QColor(133, 153, 0, 255)},
+      {"Texture", QColor(0, 0, 0, 255)},         {"Rock", QColor(140, 140, 140, 255)},
+      {"WIP", QColor(255, 255, 255, 255)},
   };
 };
 

@@ -5,6 +5,7 @@
 
 #include <optional>
 #include <string>
+#include <vector>
 
 #include <QColor>
 #include <nlohmann/json.hpp>
@@ -38,6 +39,23 @@ struct ThemeDefinition
   // --- Built-in compiled presets
   static ThemeDefinition make_default_dark();
   static ThemeDefinition make_default_light();
+
+  /**
+   * @brief A dark theme from two colors: a colorway.
+   *
+   * `ground` is the tone behind the panes; its hue barely tints every neutral.
+   * `accent` is the one color that carries selection and focus. Both are
+   * normalized in OKLCH before the seven tokens are derived: the ground is
+   * kept gray and clearly above black, the accent below the chroma at which
+   * it starts to glow on a dark surface. Any two colors therefore give a
+   * calm, readable theme.
+   */
+  static ThemeDefinition from_seeds(const std::string &name,
+                                    const QColor      &ground,
+                                    const QColor      &accent);
+
+  /// The built-in colorways: secondary dark themes next to "Dark" and "Light".
+  static std::vector<ThemeDefinition> make_colorways();
 
   // --- Derived helpers
   static QColor derive_group_accent(const std::string &name);

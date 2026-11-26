@@ -12,9 +12,10 @@
 #include "gnode/graph_worker.hpp"
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/widgets/containers/main_window.hpp"
+#include "hesiod/gui/widgets/shell/status_line.hpp"
 #include "hesiod/gui/widgets/shell/window_chrome.hpp"
 #include "hesiod/logger.hpp"
-#include "hesiod/model/graph/graph_manager.hpp"
+#include "hesiod/model/graph_manager/graph_manager.hpp"
 
 // last: windows.h leaks macros (interface, min, max...) that clash with the
 // project headers above
@@ -229,7 +230,9 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 
 void MainWindow::notify(const std::string &msg, int timeout)
 {
-  this->statusBar()->showMessage(msg.c_str(), timeout);
+  // notify() can be called before setup_status_bar() has run
+  if (this->status_line)
+    this->status_line->show_message(QString::fromStdString(msg), timeout);
 }
 
 void MainWindow::set_project_title(const std::string &name,
@@ -305,6 +308,11 @@ void MainWindow::setup_status_bar()
   // resizing is done from the window border; the grip only adds clutter
   this->statusBar()->setSizeGripEnabled(!this->frameless);
   this->statusBar()->setObjectName("hsdStatusBar");
+
+  // the messages are drawn by a widget of the bar, not by the bar itself, so
+  // that they can fade in and out
+  this->status_line = new StatusLine(this->statusBar());
+  this->statusBar()->addWidget(this->status_line, 1);
 }
 
 void MainWindow::restore_geometry()

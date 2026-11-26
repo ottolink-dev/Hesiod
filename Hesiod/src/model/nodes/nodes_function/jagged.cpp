@@ -135,7 +135,7 @@ void compute_jagged_node(BaseNode &node)
        gamma,
        angle](std::vector<const hmap::Array *> p_arrays_in,
               std::vector<hmap::Array *>       p_arrays_out,
-              const hmap::TileRegion          &region)
+              const hmap::UvTile              &region)
       {
         const auto [pa_in, pa_dx, pa_dy, pa_mask] = unpack<4>(p_arrays_in);
         auto [pa_out]                             = unpack<1>(p_arrays_out);
@@ -154,7 +154,7 @@ void compute_jagged_node(BaseNode &node)
                                         pa_mask,
                                         pa_dx,
                                         pa_dy,
-                                        region.bbox);
+                                        region.uv_rect);
       },
       node.cfg().cm_gpu);
 

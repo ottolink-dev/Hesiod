@@ -98,13 +98,31 @@ void compute_path_find_node(BaseNode &node)
 
     std::uint32_t segment_seed = seed + static_cast<std::uint32_t>(i);
 
-    hmap::Path segment_path = hmap::va::find_path_dijkstra(node.cfg().cm_cpu,
-                                                           *p_hmap,
-                                                           start,
-                                                           end,
-                                                           segment_seed,
-                                                           control_points_count,
-                                                           favor_domain_center);
+    hmap::Path segment_path;
+
+    hmap::for_each_tile(
+        {p_hmap},
+        {},
+        [&](std::vector<const hmap::Array *> p_arrays_in,
+            std::vector<hmap::Array *>,
+            const hmap::UvTile  &region,
+            hmap::ICommunicator &comm)
+        {
+          auto [pa_hmap] = hmap::unpack<1>(p_arrays_in);
+
+          hmap::Path tile_path = hmap::find_path_dijkstra(*pa_hmap,
+                                                          start,
+                                                          end,
+                                                          segment_seed,
+                                                          control_points_count,
+                                                          favor_domain_center,
+                                                          region,
+                                                          comm);
+
+          if (comm.rank() == 0)
+            segment_path = std::move(tile_path);
+        },
+        node.cfg().cm_cpu);
 
     if (segment_path.empty())
     {
@@ -138,10 +156,10 @@ void compute_path_find_node(BaseNode &node)
         {},
         [&](std::vector<const hmap::Array *> p_arrays_in,
             std::vector<hmap::Array *>,
-            const hmap::TileRegion &region)
+            const hmap::UvTile &region)
         {
           auto [pa_in] = unpack<1>(p_arrays_in);
-          p_out->set_values_from_array(*pa_in, region.bbox);
+          p_out->set_values_from_array(*pa_in, region.uv_rect.to_bbox2d());
         },
         node.cfg().cm_cpu);
   }

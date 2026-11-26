@@ -79,7 +79,7 @@ void compute_mountain_range_radial_node(BaseNode &node)
       {p_out},
       [&node](std::vector<const hmap::Array *> p_arrays_in,
               std::vector<hmap::Array *>       p_arrays_out,
-              const hmap::TileRegion          &region)
+              const hmap::UvTile              &region)
       {
         auto [pa_ctrl, pa_dx, pa_dy, pa_angle] = unpack<4>(p_arrays_in);
         auto [pa_out]                          = unpack<1>(p_arrays_out);
@@ -99,7 +99,7 @@ void compute_mountain_range_radial_node(BaseNode &node)
                                                    pa_dx,
                                                    pa_dy,
                                                    pa_angle,
-                                                   region.bbox);
+                                                   region.uv_rect);
       },
       node.cfg().cm_gpu);
 

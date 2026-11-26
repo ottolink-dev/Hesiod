@@ -68,29 +68,29 @@ void compute_rocks_to_heightmap_node(BaseNode &node)
 
   // --- Convert RockField to Heightmap & Rock Map
 
-  glm::ivec2 shape = node.cfg().shape;
+  hmap::for_each_tile(
+      {},
+      {p_out_height, p_out_rock_map},
+      [&](std::vector<const hmap::Array *>,
+          std::vector<hmap::Array *> p_arrays_out,
+          const hmap::UvTile        &region)
+      {
+        auto [pa_height, pa_rock_map] = unpack<2>(p_arrays_out);
 
-  if (p_out_height || p_out_rock_map)
-  {
-    hmap::Array  rock_map;
-    hmap::Array *p_rock_map_target = p_out_rock_map ? &rock_map : nullptr;
+        hmap::Array rock_elevation = p_in_rocks->to_heightmap(region.shape,
+                                                              shape_type,
+                                                              height_radius_ratio,
+                                                              std::nullopt,
+                                                              pa_rock_map,
+                                                              seed,
+                                                              region.uv_rect);
 
-    hmap::Array rock_elevation = p_in_rocks->to_heightmap(shape,
-                                                          shape_type,
-                                                          height_radius_ratio,
-                                                          std::nullopt,
-                                                          p_rock_map_target,
-                                                          seed);
+        if (pa_height)
+          *pa_height = std::move(rock_elevation);
+      },
+      node.cfg().cm_cpu);
 
-    if (p_out_height)
-    {
-      p_out_height->from_array(rock_elevation, node.cfg().cm_cpu);
-      post_process_heightmap(node, *p_out_height);
-    }
-
-    if (p_out_rock_map)
-      p_out_rock_map->from_array(rock_map, node.cfg().cm_cpu);
-  }
+  post_process_heightmap(node, *p_out_height);
 }
 
 } // namespace hesiod

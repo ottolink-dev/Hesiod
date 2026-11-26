@@ -136,7 +136,7 @@ void compute_rift_node(BaseNode &node)
       {p_out, p_rmask, p_bmask},
       [&](std::vector<const hmap::Array *> p_arrays_in,
           std::vector<hmap::Array *>       p_arrays_out,
-          const hmap::TileRegion          &region)
+          const hmap::UvTile              &region)
       {
         auto [pa_dr, pa_ds]               = unpack<2>(p_arrays_in);
         auto [pa_out, pa_rmask, pa_bmask] = unpack<3>(p_arrays_out);
@@ -158,7 +158,7 @@ void compute_rift_node(BaseNode &node)
                              pa_dr,
                              pa_ds,
                              center,
-                             region.bbox,
+                             region.uv_rect,
                              pa_rmask,
                              pa_bmask);
       },

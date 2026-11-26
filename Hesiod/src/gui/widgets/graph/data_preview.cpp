@@ -300,10 +300,9 @@ void DataPreview::update_preview()
       if (p_path && p_path->size() > 0)
       {
         hmap::Array array(shape);
-        glm::vec4   bbox(0.f, 1.f, 0.f, 1.f);
         hmap::Path  path = *p_path;
         path.remap_values(0.1f, 1.f);
-        path.to_array(array, bbox);
+        path.to_array(array);
         img = build_colored_array(array, hmap::Cmap::MAGMA, /* normalize */ false);
         img_format = QImage::Format_RGB888;
       }

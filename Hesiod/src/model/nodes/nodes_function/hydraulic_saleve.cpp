@@ -179,7 +179,7 @@ void compute_hydraulic_saleve_node(BaseNode &node)
         {p_out},
         [deposition_ir, deposition_strength](std::vector<const hmap::Array *>,
                                              std::vector<hmap::Array *> p_arrays_out,
-                                             const hmap::TileRegion &)
+                                             const hmap::UvTile &)
         {
           auto [pa_out] = unpack<1>(p_arrays_out);
 
@@ -200,7 +200,7 @@ void compute_hydraulic_saleve_node(BaseNode &node)
         [stream_strength, deposition_ir, deposition_strength, stream_exp](
             std::vector<const hmap::Array *> p_arrays_in,
             std::vector<hmap::Array *>       p_arrays_out,
-            const hmap::TileRegion &)
+            const hmap::UvTile &)
         {
           auto [pa_mask] = unpack<1>(p_arrays_in);
           auto [pa_out]  = unpack<1>(p_arrays_out);

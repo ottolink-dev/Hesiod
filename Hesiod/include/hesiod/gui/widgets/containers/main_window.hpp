@@ -8,6 +8,7 @@
 namespace hesiod
 {
 
+class StatusLine;
 class TitleBar;
 
 class MainWindow : public QMainWindow
@@ -45,8 +46,9 @@ private:
   void setup_frameless_window();
   void setup_status_bar();
 
-  TitleBar *title_bar = nullptr;
-  bool      frameless = false;
+  TitleBar   *title_bar = nullptr;
+  StatusLine *status_line = nullptr; // the messages of notify()
+  bool        frameless = false;
 };
 
 } // namespace hesiod

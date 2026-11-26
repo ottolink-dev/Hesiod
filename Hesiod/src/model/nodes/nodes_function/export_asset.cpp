@@ -214,12 +214,41 @@ void compute_export_asset_node(BaseNode &node)
       nmap_ptrs.push_back(&c);
     flipped_nmap.from_arrays(nmap_ptrs, node.cfg().cm_cpu);
 
-    hmap::mix_normal_map(normal_map,
-                         normal_map,
-                         flipped_nmap,
-                         node.cfg().cm_cpu,
-                         detail_scale,
-                         blending_method);
+    std::vector<const hmap::VirtualArray *> inputs;
+    for (auto *p : normal_map.channels_ptr())
+      inputs.push_back(p);
+    for (auto *p : flipped_nmap.channels_ptr())
+      inputs.push_back(p);
+
+    hmap::for_each_tile(
+        inputs,
+        normal_map.channels_ptr(),
+        [&](std::vector<const hmap::Array *> p_arrays_in,
+            std::vector<hmap::Array *>       p_arrays_out,
+            const hmap::UvTile &)
+        {
+          const size_t  n_ch = p_arrays_out.size();
+          hmap::Texture tex_base;
+          hmap::Texture tex_detail;
+          tex_base.channels.reserve(n_ch);
+          tex_detail.channels.reserve(n_ch);
+          for (size_t ch = 0; ch < n_ch; ++ch)
+          {
+            tex_base.channels.push_back(*p_arrays_in[ch]);
+            tex_detail.channels.push_back(*p_arrays_in[n_ch + ch]);
+          }
+
+          hmap::Texture tex_out = hmap::mix_normal_map(tex_base,
+                                                       tex_detail,
+                                                       detail_scale,
+                                                       blending_method);
+
+          for (size_t ch = 0; ch < n_ch && ch < tex_out.channels.size(); ++ch)
+            *p_arrays_out[ch] = std::move(tex_out.channels[ch]);
+        },
+        node.cfg().cm_cpu);
+
+    normal_map.sync_overlap_buffers();
   }
 
   {

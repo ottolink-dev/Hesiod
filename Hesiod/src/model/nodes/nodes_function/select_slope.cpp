@@ -132,7 +132,7 @@ void compute_select_slope_node(BaseNode &node)
         {p_out},
         [&](std::vector<const hmap::Array *> p_arrays_in,
             std::vector<hmap::Array *>       p_arrays_out,
-            const hmap::TileRegion          &region,
+            const hmap::UvTile              &region,
             hmap::ICommunicator             &comm)
         {
           auto [pa_in]  = unpack<1>(p_arrays_in);
@@ -154,14 +154,26 @@ void compute_select_slope_node(BaseNode &node)
     int ir = node.val_pixel_radius(A_RADIUS, 0);
 
     // filtered field
-    *p_out = hmap::va::smooth_cpulse(*p_in, ir, nullptr, node.cfg().cm_gpu);
+    hmap::for_each_tile(
+        {p_in},
+        {p_out},
+        [&](std::vector<const hmap::Array *> p_arrays_in,
+            std::vector<hmap::Array *>       p_arrays_out,
+            const hmap::UvTile &)
+        {
+          auto [pa_in]  = unpack<1>(p_arrays_in);
+          auto [pa_out] = unpack<1>(p_arrays_out);
+          *pa_out       = *pa_in;
+          hmap::gpu::smooth_cpulse(*pa_out, ir);
+        },
+        node.cfg().cm_gpu);
 
     hmap::for_each_tile(
         {},
         {p_out},
         [&](std::vector<const hmap::Array *>,
             std::vector<hmap::Array *> p_arrays_out,
-            const hmap::TileRegion &)
+            const hmap::UvTile &)
         {
           auto [pa_out] = unpack<1>(p_arrays_out);
           *pa_out       = select_angle(*pa_out,
@@ -180,13 +192,13 @@ void compute_select_slope_node(BaseNode &node)
         {p_out},
         [&node](std::vector<const hmap::Array *> p_arrays_in,
                 std::vector<hmap::Array *>       p_arrays_out,
-                const hmap::TileRegion          &region)
+                const hmap::UvTile              &region)
         {
           auto [pa_in]  = unpack<1>(p_arrays_in);
           auto [pa_out] = unpack<1>(p_arrays_out);
           *pa_out       = hmap::select_inward_outward_slope(*pa_in,
                                                       node.val<glm::vec2>(A_CENTER),
-                                                      region.bbox);
+                                                      region.uv_rect.to_bbox2d());
         },
         node.cfg().cm_cpu);
 

@@ -14,6 +14,7 @@
 // specific nodes
 #include "hesiod/model/nodes/node_in_node.hpp"
 #include "hesiod/model/nodes/node_out_node.hpp"
+#include "hesiod/model/nodes/terrain_merge_node.hpp"
 
 // setup node, create ports, attributes, define compute function,
 // define attributes tooltips...
@@ -150,8 +151,9 @@ std::map<std::string, std::string> get_node_inventory()
       {"BlenderBridge", "Bridges"},
       {"BlendPoissonBf", "Operator/Blend"},
       {"Brush", "Primitive/Authoring"},
-      {"NodeIn", "Routing"},
-      {"NodeOut", "Routing"},
+      {"NodeIn", "Graph IO"},
+      {"NodeOut", "Graph IO"},
+      {"TerrainMerge", "Graph IO"},
       {"Bump", "Primitive/Function"},
       {"Caldera", "WIP"}, // "Primitive/Geological"},
       {"Clamp", "Filter/Range"},
@@ -254,7 +256,7 @@ std::map<std::string, std::string> get_node_inventory()
       {"HydraulicMise", "Erosion/Hydraulic"},
       {"HydraulicParticle", "Erosion/Hydraulic"},
       {"HydraulicProcedural", "WIP"}, // "Erosion/Hydraulic"},
-      {"HydraulicSaleve", "Erosion/Hydraulic"},
+      {"HydraulicSaleve", "WIP/DEPRECATED"},
       {"HydraulicSchott", "WIP"}, // "Erosion/Hydraulic"
       {"HydraulicStreamLog", "Erosion/Hydraulic"},
       {"HydraulicVpipes", "WIP"}, // "Erosion/Hydraulic"
@@ -413,6 +415,14 @@ std::shared_ptr<gnode::Node> node_factory(const std::string         &node_type,
                                           std::weak_ptr<GraphConfig> config)
 {
   // --- specialized nodes
+
+  if (node_type == "TerrainMerge")
+  {
+    auto sptr = std::make_shared<hesiod::TerrainMergeNode>(node_type, config);
+    setup_terrain_merge_node(*sptr);
+    sptr->set_compute_fct(&compute_terrain_merge_node);
+    return sptr;
+  }
 
   if (node_type == "NodeIn")
   {

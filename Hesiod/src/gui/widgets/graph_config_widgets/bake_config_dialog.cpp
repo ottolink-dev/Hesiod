@@ -199,7 +199,7 @@ BakeConfigDialog::BakeConfigDialog(int               max_size,
   meta::qt::ContainerRenderOptions render_options;
   render_options.design = properties_panel_design().design;
   render_options.row_context = ctx;
-  render_options.category_policy = meta::qt::CategoryPolicy::CP_MERGED;
+  render_options.category_policy = meta::qt::CategoryPolicy::Merged;
   render_options.root_category_name = std::string{};
 
   const QString note_css = QString("color: %1; font-size: 11px; background: transparent;"

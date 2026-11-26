@@ -62,7 +62,7 @@ void compute_combine_mask_node(BaseNode &node)
 
   std::function<void(std::vector<const hmap::Array *> p_arrays_in,
                      std::vector<hmap::Array *>       p_arrays_out,
-                     const hmap::TileRegion &)>
+                     const hmap::UvTile &)>
       lambda;
 
   const auto method = node.val_enum<MaskCombineMethod>(A_METHOD);
@@ -72,7 +72,7 @@ void compute_combine_mask_node(BaseNode &node)
   case MaskCombineMethod::UNION:
     lambda = [](std::vector<const hmap::Array *> p_arrays_in,
                 std::vector<hmap::Array *>       p_arrays_out,
-                const hmap::TileRegion &)
+                const hmap::UvTile &)
     {
       auto [pa_in1, pa_in2] = unpack<2>(p_arrays_in);
       auto [pa_out]         = unpack<1>(p_arrays_out);
@@ -83,7 +83,7 @@ void compute_combine_mask_node(BaseNode &node)
   case MaskCombineMethod::INTERSECTION:
     lambda = [](std::vector<const hmap::Array *> p_arrays_in,
                 std::vector<hmap::Array *>       p_arrays_out,
-                const hmap::TileRegion &)
+                const hmap::UvTile &)
     {
       auto [pa_in1, pa_in2] = unpack<2>(p_arrays_in);
       auto [pa_out]         = unpack<1>(p_arrays_out);
@@ -94,7 +94,7 @@ void compute_combine_mask_node(BaseNode &node)
   case MaskCombineMethod::EXCLUSION:
     lambda = [](std::vector<const hmap::Array *> p_arrays_in,
                 std::vector<hmap::Array *>       p_arrays_out,
-                const hmap::TileRegion &)
+                const hmap::UvTile &)
     {
       auto [pa_in1, pa_in2] = unpack<2>(p_arrays_in);
       auto [pa_out]         = unpack<1>(p_arrays_out);

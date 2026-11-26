@@ -32,12 +32,27 @@ QColor with_alpha(QColor color, qreal alpha);
 // match them. The stylesheet's COLOR_PANEL_BORDER is this same colour.
 QColor panel_border_color();
 
+// Text and glyphs on an accent fill (a primary button, a selection). The
+// accent may be light or dark depending on the theme, so the ink is whichever
+// of near-black and white reads better on it, never a fixed white. The
+// stylesheet's COLOR_ON_ACCENT is this same color.
+QColor on_accent_color();
+
+// Tones of the active theme that apply_global_style() derives for the
+// stylesheet, for the widgets that paint or frame a popup themselves: the
+// fill of the floating surfaces (COLOR_POPUP), the row under the pointer in a
+// menu (COLOR_MENU_HOVER), and the quiet line used for separators inside a
+// popup and for its edge (COLOR_SEAM).
+QColor popup_color();
+QColor menu_hover_color();
+QColor seam_color();
+
 /** @brief Switch interface motion on or off across the application.
  *
- * Covers Qt's own menu/combo/tooltip effects and any node palette sidebar that
- * is already open. Called at startup and again whenever the setting changes,
- * because "disable animations" that only applies to windows opened afterwards
- * reads as the setting not working.
+ * Covers the animation clock, the effects Qt has of its own and any node
+ * palette sidebar that is already open. Called at startup and again whenever
+ * the setting changes, because "disable animations" that only applies to
+ * windows opened afterwards reads as the setting not working.
  */
 void apply_animation_settings(bool enabled);
 

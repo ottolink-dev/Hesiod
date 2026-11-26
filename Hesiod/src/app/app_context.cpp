@@ -12,7 +12,7 @@
 #include "gnode/graph_worker.hpp"
 #include "hesiod/app/app_context.hpp"
 #include "hesiod/logger.hpp"
-#include "hesiod/model/graph/graph_manager.hpp"
+#include "hesiod/model/graph_manager/graph_manager.hpp"
 #include "hesiod/model/utils.hpp"
 
 namespace hesiod

@@ -48,7 +48,9 @@ void GraphNodeWidget::show_node_context_menu(const std::string &node_id,
   const std::string node_type = p_node->get_label();
   const bool locked = this->preview_viewer && this->preview_viewer->is_locked_on(node_id);
 
-  HsdMenu  menu(QString::fromStdString(node_type), this);
+  HsdMenu menu(QString::fromStdString(node_type), this);
+  menu.add_header(QString::fromStdString(node_type));
+  menu.addSeparator();
   QAction *settings = menu.addAction(HSD_ICON("tune"), "Settings…");
   menu.addSeparator();
   QAction *refresh = menu.addAction(HSD_ICON("refresh"), "Refresh");

@@ -28,8 +28,8 @@
 #include "hesiod/gui/widgets/graph/coord_frame_widget.hpp"
 #include "hesiod/gui/widgets/graph_config_widgets/graph_config_dialog.hpp"
 #include "hesiod/logger.hpp"
-#include "hesiod/model/graph/graph_manager.hpp"
 #include "hesiod/model/graph/graph_node.hpp"
+#include "hesiod/model/graph_manager/graph_manager.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/utils.hpp"
 
@@ -319,10 +319,9 @@ void GraphPreviewLayerWidget::update_bg_image(float vmin, float vmax)
       if (p_path->size() > 0)
       {
         hmap::Array array(shape_img);
-        glm::vec4   bbox(0.f, 1.f, 0.f, 1.f);
         hmap::Path  path = *p_path;
         path.remap_values(0.1f, 1.f);
-        path.to_array(array, bbox);
+        path.to_array(array);
         img = hmap::colorize(array, 0.f, 1.f, hmap::Cmap::MAGMA, false).to_img_8bit();
       }
     }
@@ -487,6 +486,24 @@ GraphManagerWidget::GraphManagerWidget(std::weak_ptr<GraphManager> p_graph_manag
                 &gngui::GraphViewer::node_deleted,
                 this,
                 [this](const std::string &graph_id) { this->delete_graph(graph_id); });
+
+  this->connect(this->graph_viewer,
+                &gngui::GraphViewer::node_selected,
+                this,
+                [this](const std::string &graph_id)
+                { this->coord_frame_widget->select_frame(graph_id); });
+
+  this->connect(this->graph_viewer,
+                &gngui::GraphViewer::node_hovered,
+                this,
+                [this](const std::string &graph_id)
+                { this->coord_frame_widget->set_hovered_frame(graph_id, true); });
+
+  this->connect(this->graph_viewer,
+                &gngui::GraphViewer::node_unhovered,
+                this,
+                [this](const std::string &graph_id)
+                { this->coord_frame_widget->set_hovered_frame(graph_id, false); });
 
   // --- Connections: Buttons & CoordFrameWidget (Right Pane)
   this->connect(this->apply_button,
@@ -941,5 +958,7 @@ void GraphManagerWidget::update_combobox(const std::string &graph_id)
   if (it != this->preview_widgets.end() && it->second)
     it->second->update_combobox();
 }
+
+// =====================================
 
 } // namespace hesiod

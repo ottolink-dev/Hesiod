@@ -133,7 +133,7 @@ void compute_distance_shaper_node(BaseNode &node)
       {p_out},
       [&](std::vector<const hmap::Array *> p_arrays_in,
           std::vector<hmap::Array *>       p_arrays_out,
-          const hmap::TileRegion &)
+          const hmap::UvTile &)
       {
         auto [pa_in, pa_dx, pa_dy, pa_mask] = unpack<4>(p_arrays_in);
         auto [pa_out]                       = unpack<1>(p_arrays_out);

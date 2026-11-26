@@ -37,7 +37,7 @@ void post_apply_enveloppe(BaseNode                 &node,
       {&h},
       [hmin](std::vector<const hmap::Array *> p_arrays_in,
              std::vector<hmap::Array *>       p_arrays_out,
-             const hmap::TileRegion &)
+             const hmap::UvTile &)
       {
         auto [pa_env] = unpack<1>(p_arrays_in);
         auto [pa_out] = unpack<1>(p_arrays_out);
@@ -64,7 +64,7 @@ void post_apply_normalize_and_clip(BaseNode           &node,
       {&h},
       [multiplier, smooth_transition, range_01](std::vector<const hmap::Array *>,
                                                 std::vector<hmap::Array *> p_arrays_out,
-                                                const hmap::TileRegion &,
+                                                const hmap::UvTile &,
                                                 hmap::ICommunicator &comm)
       {
         auto [pa_out] = unpack<1>(p_arrays_out);
@@ -90,7 +90,7 @@ void post_apply_saturate_percentile(BaseNode           &node,
       {&h},
       [range, range_sat](std::vector<const hmap::Array *>,
                          std::vector<hmap::Array *> p_arrays_out,
-                         const hmap::TileRegion &)
+                         const hmap::UvTile &)
       {
         auto [pa_h] = unpack<1>(p_arrays_out);
 
@@ -126,7 +126,7 @@ void post_process_heightmap(BaseNode                 &node,
         {&h},
         [t](std::vector<const hmap::Array *> p_arrays_in,
             std::vector<hmap::Array *>       p_arrays_out,
-            const hmap::TileRegion &)
+            const hmap::UvTile &)
         {
           auto [pa_in] = unpack<1>(p_arrays_in);
           auto [pa_out] = unpack<1>(p_arrays_out);
@@ -154,7 +154,7 @@ void post_process_heightmap(BaseNode                 &node,
         {&h},
         [post_gamma](std::vector<const hmap::Array *>,
                      std::vector<hmap::Array *> p_arrays_out,
-                     const hmap::TileRegion &)
+                     const hmap::UvTile &)
         {
           auto [pa] = unpack<1>(p_arrays_out);
           hmap::gamma_correction(*pa, post_gamma);
@@ -178,7 +178,7 @@ void post_process_heightmap(BaseNode                 &node,
         {&h},
         [post_gain](std::vector<const hmap::Array *>,
                     std::vector<hmap::Array *> p_arrays_out,
-                    const hmap::TileRegion &)
+                    const hmap::UvTile &)
         {
           auto [pa] = unpack<1>(p_arrays_out);
           hmap::gain(*pa, post_gain);
@@ -198,7 +198,7 @@ void post_process_heightmap(BaseNode                 &node,
         {&h},
         [&ir](std::vector<const hmap::Array *>,
               std::vector<hmap::Array *> p_arrays_out,
-              const hmap::TileRegion &)
+              const hmap::UvTile &)
         {
           auto [pa_out] = unpack<1>(p_arrays_out);
           return hmap::gpu::smooth_cpulse(*pa_out, ir);
@@ -228,7 +228,7 @@ void post_process_heightmap(BaseNode                 &node,
         {&h},
         [&](std::vector<const hmap::Array *>,
             std::vector<hmap::Array *> p_arrays_out,
-            const hmap::TileRegion &)
+            const hmap::UvTile &)
         {
           auto [pa_out] = unpack<1>(p_arrays_out);
 

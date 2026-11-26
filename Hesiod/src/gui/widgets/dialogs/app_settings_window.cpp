@@ -1038,6 +1038,21 @@ void AppSettingsWindow::setup_pages()
                                      {4096, "4096 × 4096"}}),
                   false,
                   "default heightmap size shape new graph project resolution");
+    this->add_row(
+        editing,
+        "New brush storage resolution",
+        "Painting resolution for new Brush nodes, independent of the graph "
+        "resolution. Higher values use more memory and larger project files. "
+        "Existing paintings keep their saved resolution.",
+        this->make_choice(HSD_SETTING(int, node_editor.brush_storage_resolution),
+                          {{128, "128 × 128"},
+                           {256, "256 × 256"},
+                           {512, "512 × 512"},
+                           {1024, "1024 × 1024"},
+                           {2048, "2048 × 2048"},
+                           {4096, "4096 × 4096"}}),
+        false,
+        "brush paint storage memory size resolution");
     this->add_row(editing,
                   "Open projects at 1K",
                   "Load graphs above 1024 × 1024 at 1024 for lighter editing. The "
@@ -1571,7 +1586,8 @@ void AppSettingsWindow::apply_stylesheet()
 
   const QColor                        warn("#d9a441");
   const std::map<std::string, QColor> color_tokens = {
-      {"ACCENT_HOVER", t.accent.lighter(112)},
+      {"ACCENT_HOVER", t.accent.lighter(108)},
+      {"ON_ACCENT", on_accent_color()},
       {"ACCENT_SOFT", t.accent_soft},
       {"ACCENT_TEXT", t.accent.lighter(135)},
       {"ACCENT", t.accent},

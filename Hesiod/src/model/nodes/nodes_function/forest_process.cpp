@@ -90,10 +90,10 @@ void compute_forest_process_node(BaseNode &node)
         {},
         [&](const std::vector<const hmap::Array *> &p_arrays_in,
             std::vector<hmap::Array *> &,
-            const hmap::TileRegion &region)
+            const hmap::UvTile &region)
         {
           const auto [p_elev_tile] = unpack<1>(p_arrays_in);
-          p_out_forest->set_elevation_from_terrain(*p_elev_tile, region.bbox);
+          p_out_forest->set_elevation_from_terrain(*p_elev_tile, region.uv_rect);
         },
         node.cfg().cm_cpu);
   }
@@ -132,7 +132,7 @@ void compute_forest_process_node(BaseNode &node)
         {},
         [&](const std::vector<const hmap::Array *> &p_arrays_in,
             std::vector<hmap::Array *> &,
-            const hmap::TileRegion &region)
+            const hmap::UvTile &region)
         {
           const auto [pa_mask]     = unpack<1>(p_arrays_in);
           const uint32_t tile_seed = base_seed + region.key.hash();
@@ -140,7 +140,7 @@ void compute_forest_process_node(BaseNode &node)
           p_out_forest->prune_density(*pa_mask,
                                       prune_density_ratio,
                                       tile_seed,
-                                      region.inner_bbox());
+                                      region.core_uv_rect());
         },
         cm);
   }
@@ -165,9 +165,7 @@ void compute_forest_process_node(BaseNode &node)
   {
     hmap::for_each_tile(
         *p_out_density,
-        [&](hmap::Array            &density,
-            const hmap::TileRegion &region,
-            hmap::ICommunicator    &comm)
+        [&](hmap::Array &density, const hmap::UvTile &region, hmap::ICommunicator &comm)
         {
           density = p_out_forest->to_density_map(density.shape,
                                                  0.0f,

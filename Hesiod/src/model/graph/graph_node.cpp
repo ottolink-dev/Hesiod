@@ -15,6 +15,7 @@
 #include "hesiod/model/nodes/node_factory.hpp"
 #include "hesiod/model/nodes/node_in_node.hpp"
 #include "hesiod/model/nodes/node_out_node.hpp"
+#include "hesiod/model/nodes/terrain_merge_node.hpp"
 #include "hesiod/model/utils.hpp"
 
 namespace hesiod
@@ -91,7 +92,7 @@ std::string GraphNode::add_node(const std::shared_ptr<gnode::Node> &node,
     };
 
     const std::string node_type = p_basenode->get_node_type();
-    if (node_type == "NodeIn" || node_type == "NodeOut")
+    if (node_type == "NodeIn" || node_type == "NodeOut" || node_type == "TerrainMerge")
     {
       this->setup_boundary_node(p_basenode);
       this->auto_bind_ports();
@@ -233,7 +234,7 @@ void GraphNode::auto_bind_ports()
         if (it != this->inputs.end())
           it->node = input_node;
         else
-          this->inputs.push_back({slot_name, input_node});
+          this->inputs.push_back({slot_name, input_node, nullptr, -1});
 
         Logger::log()->trace("auto_bind_ports: {} bound IN '{}' -> {} ({})",
                              this->get_id(),
@@ -289,6 +290,33 @@ void GraphNode::auto_bind_ports()
                   this->add_port<T>(gnode::PortType::OUT, slot_name);
               });
           this->outputs.push_back({slot_name, output_node});
+        }
+      }
+    }
+    else if (auto merge_node = std::dynamic_pointer_cast<TerrainMergeNode>(node_ptr))
+    {
+      for (int slot = 0; slot < 4; ++slot)
+      {
+        const std::string slot_name = make_unique_label("merge_in_" +
+                                                        std::to_string(slot + 1));
+        active_inputs.insert(slot_name);
+
+        if (!this->has_port(slot_name))
+          this->add_port<hmap::VirtualArray>(gnode::PortType::IN, slot_name);
+
+        auto it = std::find_if(this->inputs.begin(),
+                               this->inputs.end(),
+                               [&slot_name](const InputBinding &b)
+                               { return b.name == slot_name; });
+        if (it != this->inputs.end())
+        {
+          it->node = nullptr;
+          it->merge_node = merge_node;
+          it->merge_slot = slot;
+        }
+        else
+        {
+          this->inputs.push_back({slot_name, nullptr, merge_node, slot});
         }
       }
     }
@@ -373,9 +401,9 @@ void GraphNode::pull_inputs_from_parent()
   gnode::Graph *parent_graph = this->get_p_graph();
   const auto   *dst_frame = static_cast<const hmap::CoordFrame *>(this);
 
-  for (auto &[port_name, in_node] : this->inputs)
+  for (auto &[port_name, in_node, merge_node, merge_slot] : this->inputs)
   {
-    if (!in_node)
+    if (!in_node && !merge_node)
       continue;
 
     const GraphConfig      *src_cfg = this->config.get();
@@ -397,6 +425,14 @@ void GraphNode::pull_inputs_from_parent()
           break;
         }
       }
+    }
+
+    if (merge_node)
+    {
+      auto *p_src = this->get_value_ref<hmap::VirtualArray>(port_name);
+      merge_node->set_input(merge_slot, p_src, src_frame);
+      merge_node->is_dirty = true;
+      continue;
     }
 
     Logger::log()->trace(

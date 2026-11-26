@@ -71,7 +71,7 @@ void compute_white_node(BaseNode &node)
       {p_out},
       [seed](std::vector<const hmap::Array *>,
              std::vector<hmap::Array *> p_arrays_out,
-             const hmap::TileRegion    &region)
+             const hmap::UvTile        &region)
       {
         auto [pa_out] = unpack<1>(p_arrays_out);
 

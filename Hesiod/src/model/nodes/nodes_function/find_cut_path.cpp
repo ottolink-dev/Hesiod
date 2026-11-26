@@ -94,16 +94,32 @@ void compute_find_cut_path_node(BaseNode &node)
 
   // --- Compute
 
-  *p_path = hmap::va::find_cut_path_dijkstra(node.cfg().cm_cpu,
-                                             *p_in,
-                                             start,
-                                             end,
-                                             seed,
-                                             control_points_count,
-                                             favor_boundary_center,
-                                             favor_lower_elevation,
-                                             favor_sinks,
-                                             favor_center);
+  hmap::for_each_tile(
+      {p_in},
+      {},
+      [&](std::vector<const hmap::Array *> p_arrays_in,
+          std::vector<hmap::Array *>,
+          const hmap::UvTile  &region,
+          hmap::ICommunicator &comm)
+      {
+        auto [pa_in] = hmap::unpack<1>(p_arrays_in);
+
+        hmap::Path tile_path = hmap::find_cut_path_dijkstra(*pa_in,
+                                                            start,
+                                                            end,
+                                                            seed,
+                                                            control_points_count,
+                                                            favor_boundary_center,
+                                                            favor_lower_elevation,
+                                                            favor_sinks,
+                                                            favor_center,
+                                                            region,
+                                                            comm);
+
+        if (comm.rank() == 0)
+          *p_path = std::move(tile_path);
+      },
+      node.cfg().cm_cpu);
 
   if (smooth_path)
   {
@@ -115,10 +131,10 @@ void compute_find_cut_path_node(BaseNode &node)
         {},
         [&](std::vector<const hmap::Array *> p_arrays_in,
             std::vector<hmap::Array *>,
-            const hmap::TileRegion &region)
+            const hmap::UvTile &region)
         {
           auto [pa_in] = unpack<1>(p_arrays_in);
-          p_path->set_values_from_array(*pa_in, region.bbox);
+          p_path->set_values_from_array(*pa_in, region.uv_rect.to_bbox2d());
         },
         node.cfg().cm_cpu);
   }

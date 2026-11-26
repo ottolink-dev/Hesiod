@@ -35,6 +35,7 @@
 
 #include "meta_qt/designs/stock/stock.hpp"
 
+#include "highmap/adapters/opencv.hpp"
 #include "highmap/opencl/gpu_opencl.hpp"
 #include "highmap/openmp.hpp"
 
@@ -43,6 +44,7 @@
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/app/ui_scale.hpp"
 #include "hesiod/cli/batch_mode.hpp"
+#include "hesiod/gui/motion/motion.hpp"
 #include "hesiod/gui/project_ui.hpp"
 #include "hesiod/gui/undo/undo_manager.hpp"
 #include "hesiod/gui/widgets/containers/graph_manager_widget.hpp"
@@ -58,6 +60,7 @@
 #include "hesiod/gui/widgets/dialogs/project_settings_dialog.hpp"
 #include "hesiod/gui/widgets/dialogs/splash_screen.hpp"
 #include "hesiod/gui/widgets/graph_config_widgets/bake_config_dialog.hpp"
+#include "hesiod/gui/widgets/shell/menu_animator.hpp"
 #include "hesiod/gui/widgets/shell/menu_chrome.hpp"
 #include "hesiod/gui/widgets/shell/window_chrome.hpp"
 #include "hesiod/gui/widgets/utils/fractional_repaint_filter.hpp"
@@ -65,8 +68,8 @@
 #include "hesiod/gui/widgets/utils/tool_tip_blocker.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/constants/color_gradient.hpp"
-#include "hesiod/model/graph/graph_manager.hpp"
 #include "hesiod/model/graph/graph_node.hpp"
+#include "hesiod/model/graph_manager/graph_manager.hpp"
 #include "hesiod/model/utils.hpp"
 
 namespace fs = std::filesystem;
@@ -158,6 +161,7 @@ HesiodApplication::HesiodApplication(int &argc, char **argv, StartupMode mode)
   apply_global_style(this->get_qapp());
   apply_animation_settings(this->context.app_settings.interface.enable_ui_animations);
   MenuAnimator::install(this->get_qapp());
+  motion::drive_qt_animations(); // Qt's own animations on the display's clock
   install_native_dialog_polish(this->get_qapp());
   install_color_picker();
 
@@ -557,6 +561,17 @@ void HesiodApplication::load_project_model_and_ui(const std::string &fname,
   this->connect(this->project_ui->get_graph_manager_widget_ref(),
                 &GraphManagerWidget::has_changed,
                 [this]() { this->context.project_model->on_has_changed(); });
+
+  this->connect(this->project_ui->get_graph_manager_widget_ref(),
+                &GraphManagerWidget::selected_graph_changed,
+                [this](const std::string & /* graph_id */)
+                {
+                  if (this->main_window)
+                  {
+                    this->main_window->raise();
+                    this->main_window->activateWindow();
+                  }
+                });
 
   this->connect(this->project_ui->get_graph_tabs_widget_ref(),
                 &GraphTabsWidget::has_changed,
@@ -1314,10 +1329,11 @@ void HesiodApplication::show_project_menu(const QPoint &global_pos)
   // where the project lives, as a heading
   {
     const QFontMetrics fm(menu.font());
-    QAction           *where = menu.addAction(
-        saved ? fm.elidedText(QString::fromStdString(path.string()), Qt::ElideMiddle, 360)
-              : QString("Not saved yet"));
-    where->setEnabled(false);
+    menu.add_header(saved ? fm.elidedText(QDir::toNativeSeparators(
+                                              QString::fromStdString(path.string())),
+                                          Qt::ElideMiddle,
+                                          360)
+                          : QString("Not saved yet"));
   }
   menu.addSeparator();
 
@@ -1398,6 +1414,8 @@ void HesiodApplication::on_save()
     {
       this->context.project_model->set_path(path);
       this->add_recent_file(path.string());
+      if (this->main_window)
+        this->main_window->get_title_bar()->flash_saved();
     }
   }
 }
@@ -1437,6 +1455,8 @@ void HesiodApplication::on_save_as()
     {
       this->context.project_model->set_path(clean_path.string());
       this->add_recent_file(clean_path.string());
+      if (this->main_window)
+        this->main_window->get_title_bar()->flash_saved();
     }
   }
 }
@@ -2058,6 +2078,25 @@ void HesiodApplication::setup_menu_bar()
                 this,
                 [this]()
                 { this->project_ui->get_graph_manager_widget_ref()->on_reseed(true); });
+
+  // --- share standard shortcuts with the Graph Manager window
+
+  if (GraphManagerWidget *gmw = this->project_ui->get_graph_manager_widget_ref())
+  {
+    gmw->addActions({new_action,
+                     load_action,
+                     save,
+                     save_as,
+                     save_copy,
+                     export_batch,
+                     settings_action,
+                     quit,
+                     undo_action,
+                     redo_action,
+                     rename_action,
+                     reseed,
+                     reseed_back});
+  }
 }
 
 void HesiodApplication::show()

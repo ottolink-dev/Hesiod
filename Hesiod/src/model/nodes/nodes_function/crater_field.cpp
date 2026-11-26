@@ -146,7 +146,7 @@ void compute_crater_field_node(BaseNode &node)
       {p_out, p_crater_mask},
       [&](std::vector<const hmap::Array *> p_arrays_in,
           std::vector<hmap::Array *>       p_arrays_out,
-          const hmap::TileRegion          &region)
+          const hmap::UvTile              &region)
       {
         auto [pa_noise, pa_envelope]  = unpack<2>(p_arrays_in);
         auto [pa_out, pa_crater_mask] = unpack<2>(p_arrays_out);
@@ -170,7 +170,7 @@ void compute_crater_field_node(BaseNode &node)
                                      terrace_exp,
                                      terrace_persistence,
                                      pa_noise,
-                                     region.bbox,
+                                     region.uv_rect,
                                      pa_crater_mask,
                                      /* p_inner_crater_mask */ nullptr,
                                      scale_elevation_with_radius);

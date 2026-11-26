@@ -50,7 +50,7 @@ void compute_rotate_displacement_node(BaseNode &node)
         {p_dx, p_dy},
         [&node](std::vector<const hmap::Array *> p_arrays_in,
                 std::vector<hmap::Array *>       p_arrays_out,
-                const hmap::TileRegion &)
+                const hmap::UvTile &)
         {
           auto [pa_in]        = unpack<1>(p_arrays_in);
           auto [pa_dx, pa_dy] = unpack<2>(p_arrays_out);

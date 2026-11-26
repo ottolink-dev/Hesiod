@@ -50,7 +50,7 @@ void compute_gaussian_decay_node(BaseNode &node)
         {p_out},
         [&node](std::vector<const hmap::Array *> p_arrays_in,
                 std::vector<hmap::Array *>       p_arrays_out,
-                const hmap::TileRegion &)
+                const hmap::UvTile &)
         {
           auto [pa_in]  = unpack<1>(p_arrays_in);
           auto [pa_out] = unpack<1>(p_arrays_out);

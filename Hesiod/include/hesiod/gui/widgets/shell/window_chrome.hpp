@@ -7,6 +7,8 @@
 #include <QPointer>
 #include <QWidget>
 
+#include "hesiod/gui/motion/motion.hpp"
+
 class QHBoxLayout;
 class QLabel;
 class QMenuBar;
@@ -41,12 +43,16 @@ public:
 protected:
   void enterEvent(QEnterEvent *event) override;
   void leaveEvent(QEvent *event) override;
+  void mousePressEvent(QMouseEvent *event) override;
+  void mouseReleaseEvent(QMouseEvent *event) override;
   void paintEvent(QPaintEvent *event) override;
 
 private:
   Kind kind;
   bool maximized = false;
   bool hovered = false;
+  Anim hover_t{this}; // hovered, as a number that fades
+  Anim press_t{this}; // held down
 };
 
 // =====================================
@@ -63,10 +69,14 @@ class TitleChip;
 // bar is only the menu row under it and leaves all of that to the window
 // manager.
 //
+// The menu row (TitleMenuBar) and the project chip (TitleChip) paint
+// themselves, so they light up and move like the rest of the interface.
+//
 // The project chip is interactive: a click asks for the project menu
 // (on_title_clicked, with the point to open it at), a double-click asks for a
 // rename (on_title_rename_requested), and begin_title_rename() edits the name
-// in place.
+// in place. The chip is as wide as what it shows; the bar keeps it centred
+// while that changes.
 class TitleBar : public QWidget
 {
   Q_OBJECT
@@ -99,6 +109,9 @@ public:
   void begin_title_rename(const QString                       &current,
                           std::function<void(const QString &)> commit);
 
+  // the project was just written to its file: the chip says so for a moment
+  void flash_saved();
+
   void update_style();
 
   std::function<void(const QPoint &global_pos)> on_title_clicked;
@@ -113,7 +126,7 @@ private:
 
   QWidget      *p_window;
   QMenuBar     *p_menu_bar;
-  TitleChip    *p_chip;
+  TitleChip    *p_chip = nullptr;
   QHBoxLayout  *p_trailing;
   WindowButton *p_min;
   WindowButton *p_max;

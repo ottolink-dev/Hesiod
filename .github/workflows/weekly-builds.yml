@@ -84,7 +84,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: microsoft/vcpkg
-          ref: ef7dbf94b9198bc58f45951adcf1f041fcbc5ea0
+          ref: 7d2bab768f86e068ce3f63c53afb420d384caf4f
           path: vcpkg
           persist-credentials: false
       - name: Restore Windows dependency cache

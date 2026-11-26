@@ -67,7 +67,7 @@ void compute_set_alpha_node(BaseNode &node)
           {&alpha_copy},
           [&node](std::vector<const hmap::Array *> p_arrays_in,
                   std::vector<hmap::Array *>       p_arrays_out,
-                  const hmap::TileRegion &)
+                  const hmap::UvTile &)
           {
             auto [pa_noise]      = unpack<1>(p_arrays_in);
             auto [pa_alpha_copy] = unpack<1>(p_arrays_out);

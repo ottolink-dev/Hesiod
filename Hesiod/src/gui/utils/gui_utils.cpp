@@ -15,6 +15,8 @@
 #include <QApplication>
 
 #include "hesiod/app/hesiod_application.hpp"
+#include "hesiod/gui/motion/motion.hpp"
+#include "hesiod/gui/theme/oklch.hpp"
 #include "hesiod/gui/widgets/node_widgets/node_palette_sidebar.hpp"
 #include "hesiod/gui/widgets/utils/gui_utils.hpp"
 #include "hesiod/logger.hpp"
@@ -44,20 +46,38 @@ QColor panel_border_color()
   return mix_colors(colors.bg_primary, colors.border, 0.38);
 }
 
+QColor on_accent_color()
+{
+  const auto &colors = HSD_CTX.app_settings.colors;
+
+  // near-black in the ground's own hue, never more tinted than the ground: on
+  // a neutral theme the ink is a neutral gray
+  const oklch::Lch ground = oklch::to_lch(colors.bg_primary);
+  const QColor     dark = oklch::from_lch({0.16, std::min(0.008, ground.C), ground.h});
+  const QColor     light(255, 255, 255);
+  return oklch::contrast(dark, colors.accent) >= oklch::contrast(light, colors.accent)
+             ? dark
+             : light;
+}
+
 void apply_animation_settings(bool enabled)
 {
   Logger::log()->trace("apply_animation_settings: {}", enabled);
 
-  // menus are animated by MenuAnimator (menu_chrome.hpp); Qt's own menu
-  // effects animate a grabbed screenshot of the menu and would run on top of it
-  QApplication::setEffectEnabled(Qt::UI_AnimateMenu, false);
-  QApplication::setEffectEnabled(Qt::UI_FadeMenu, false);
-
-  for (const Qt::UIEffect effect : {Qt::UI_AnimateCombo,
+  // Menus, combo lists and tooltips get their entrance from MenuAnimator
+  // (menu_animator.hpp). Qt's own effects animate a grabbed screenshot and
+  // would run on top of it, so they stay off whatever the setting says.
+  for (const Qt::UIEffect effect : {Qt::UI_AnimateMenu,
+                                    Qt::UI_FadeMenu,
+                                    Qt::UI_AnimateCombo,
                                     Qt::UI_AnimateTooltip,
-                                    Qt::UI_FadeTooltip,
-                                    Qt::UI_AnimateToolBox})
-    QApplication::setEffectEnabled(effect, enabled);
+                                    Qt::UI_FadeTooltip})
+    QApplication::setEffectEnabled(effect, false);
+  QApplication::setEffectEnabled(Qt::UI_AnimateToolBox, enabled);
+
+  // the shared animation clock (motion.hpp): with motion off, everything
+  // that is driven by it lands on its end state at once
+  motion::set_enabled(enabled);
 
   // reach the sidebars that already exist: a motion setting that only applies
   // to widgets created later looks like it did nothing

@@ -242,7 +242,7 @@ void ViewportControls::open_panel(int tool)
     meta::qt::ContainerRenderOptions options;
     options.design = properties_panel_design().design;
     options.row_context = ctx;
-    options.category_policy = meta::qt::CategoryPolicy::CP_MERGED;
+    options.category_policy = meta::qt::CategoryPolicy::Merged;
     options.root_category_name = std::string{};
 
     QWidget *rows = meta::qt::render(p_model->get_container(), options, panel);

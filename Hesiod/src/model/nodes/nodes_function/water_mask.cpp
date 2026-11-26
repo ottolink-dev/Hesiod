@@ -53,7 +53,7 @@ void compute_water_mask_node(BaseNode &node)
         {p_mask},
         [&node](std::vector<const hmap::Array *> p_arrays_in,
                 std::vector<hmap::Array *>       p_arrays_out,
-                const hmap::TileRegion &)
+                const hmap::UvTile &)
         {
           auto [pa_depth, pa_z] = unpack<2>(p_arrays_in);
           auto [pa_mask]        = unpack<1>(p_arrays_out);

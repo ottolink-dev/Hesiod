@@ -75,7 +75,7 @@ void compute_flip_node(BaseNode &node)
       {p_out},
       [flip_ud, flip_lr, transpose](std::vector<const hmap::Array *> p_arrays_in,
                                     std::vector<hmap::Array *>       p_arrays_out,
-                                    const hmap::TileRegion &)
+                                    const hmap::UvTile &)
       {
         auto [pa_in]  = unpack<1>(p_arrays_in);
         auto [pa_out] = unpack<1>(p_arrays_out);

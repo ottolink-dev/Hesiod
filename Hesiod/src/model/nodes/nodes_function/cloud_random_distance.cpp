@@ -62,7 +62,7 @@ void compute_cloud_random_distance_node(BaseNode &node)
         {},
         [&node, &clouds, &mtx](std::vector<const hmap::Array *> p_arrays_in,
                                std::vector<hmap::Array *>,
-                               const hmap::TileRegion &region)
+                               const hmap::UvTile &region)
         {
           auto [pa_density] = unpack<1>(p_arrays_in);
 
@@ -75,7 +75,7 @@ void compute_cloud_random_distance_node(BaseNode &node)
                                                       dmax,
                                                       *pa_density,
                                                       tile_seed,
-                                                      region.bbox);
+                                                      region.uv_rect.to_bbox2d());
 
           std::lock_guard<std::mutex> lock(mtx);
           clouds.emplace_back(c);

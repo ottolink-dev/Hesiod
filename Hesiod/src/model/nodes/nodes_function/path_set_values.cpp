@@ -93,10 +93,10 @@ void compute_path_set_values_node(BaseNode &node)
           {},
           [&](std::vector<const hmap::Array *> p_arrays_in,
               std::vector<hmap::Array *>,
-              const hmap::TileRegion &region)
+              const hmap::UvTile &region)
           {
             auto [pa_hmap] = unpack<1>(p_arrays_in);
-            p_out->set_values_from_array(*pa_hmap, region.bbox);
+            p_out->set_values_from_array(*pa_hmap, region.uv_rect.to_bbox2d());
           },
           node.cfg().cm_cpu);
     }

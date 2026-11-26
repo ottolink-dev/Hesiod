@@ -149,7 +149,7 @@ void compute_island_node(BaseNode &node)
       {p_out, p_depth, p_mask},
       [&](std::vector<const hmap::Array *> p_arrays_in,
           std::vector<hmap::Array *>       p_arrays_out,
-          const hmap::TileRegion &)
+          const hmap::UvTile &)
       {
         auto [pa_land, pa_dr]            = unpack<2>(p_arrays_in);
         auto [pa_out, pa_depth, pa_mask] = unpack<3>(p_arrays_out);

@@ -174,7 +174,7 @@ void compute_rock_simulation_node(BaseNode &node)
   hmap::RockDistribution dist(0u, radius_min, radius_max, power_law_alpha);
 
   hmap::RockSimulationOptions options;
-  options.bbox                   = {0.0f, 1.0f, 0.0f, 1.0f};
+  options.bbox                   = hmap::BBox2D::unit();
   options.time_step              = time_step;
   options.max_steps              = max_steps;
   options.gravity                = gravity;

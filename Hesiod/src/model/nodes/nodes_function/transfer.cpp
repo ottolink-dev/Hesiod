@@ -62,7 +62,7 @@ void compute_transfer_node(BaseNode &node)
         {p_out},
         [&node, ir](std::vector<const hmap::Array *> p_arrays_in,
                     std::vector<hmap::Array *>       p_arrays_out,
-                    const hmap::TileRegion &)
+                    const hmap::UvTile &)
         {
           auto [pa_s, pa_t] = unpack<2>(p_arrays_in);
           auto [pa_out]     = unpack<1>(p_arrays_out);
