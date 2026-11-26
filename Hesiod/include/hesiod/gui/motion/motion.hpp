@@ -54,6 +54,12 @@ constexpr int section_out = 200;
 constexpr int value = 300; // a control gliding to a value set from outside
 constexpr int theme = 320; // colourway crossfade
 
+// the shell's menus and status bar
+constexpr int menu_glide = 85;   // a menu's highlight, from a row to its neighbor
+constexpr int status_in = 200;   // a status bar message arriving
+constexpr int status_aside = 90; // a status bar message stepping aside for the next
+constexpr int status_out = 420;  // a status bar message whose time is up
+
 const QEasingCurve &enter();  // (.22, 1, .36, 1)   decelerate into place
 const QEasingCurve &leave();  // (.4, 0, .9, .6)     gather speed and go
 const QEasingCurve &change(); // (.45, 0, .15, 1)   between two resting states

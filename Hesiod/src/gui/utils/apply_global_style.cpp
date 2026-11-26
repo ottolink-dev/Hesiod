@@ -30,6 +30,24 @@
 namespace hesiod
 {
 
+namespace
+{
+
+// Tones of the stylesheet that some widgets also need in code, as
+// apply_global_style() last derived them for the active theme.
+struct SharedTones
+{
+  QColor popup;
+  QColor menu_hover;
+  QColor seam;
+} shared_tones;
+
+} // namespace
+
+QColor popup_color() { return shared_tones.popup; }
+QColor menu_hover_color() { return shared_tones.menu_hover; }
+QColor seam_color() { return shared_tones.seam; }
+
 void apply_global_style(QApplication &app)
 {
   Logger::log()->trace("apply_global_style");
@@ -64,9 +82,12 @@ void apply_global_style(QApplication &app)
   const QColor well = tone(-0.048);
   const QColor popup = tone(0.068);
   const QColor menu_hover = oklch::mix(popup, colors.text_primary, 0.085);
+  const QColor seam = tone(0.028);
   const QColor accent_hover = oklch::shifted(colors.accent, sign * 0.045);
 
   const QColor on_accent = on_accent_color();
+
+  shared_tones = {popup, menu_hover, seam};
 
   std::map<std::string, QColor> place_holders = {
       {"COLOR_BG_DEEP", colors.bg_deep},
@@ -89,7 +110,7 @@ void apply_global_style(QApplication &app)
       {"COLOR_MENU_HOVER", menu_hover},
       // lines
       {"COLOR_RIM", oklch::mix(tone(-0.075), well, 0.45)},
-      {"COLOR_SEAM", tone(0.028)},
+      {"COLOR_SEAM", seam},
       {"COLOR_SOFT_BORDER", tone(0.082)},
       {"COLOR_PANEL_BORDER", panel_border_color()},
       // scrollbars

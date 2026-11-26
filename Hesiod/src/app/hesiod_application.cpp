@@ -60,6 +60,7 @@
 #include "hesiod/gui/widgets/dialogs/project_settings_dialog.hpp"
 #include "hesiod/gui/widgets/dialogs/splash_screen.hpp"
 #include "hesiod/gui/widgets/graph_config_widgets/bake_config_dialog.hpp"
+#include "hesiod/gui/widgets/shell/menu_animator.hpp"
 #include "hesiod/gui/widgets/shell/menu_chrome.hpp"
 #include "hesiod/gui/widgets/shell/window_chrome.hpp"
 #include "hesiod/gui/widgets/utils/fractional_repaint_filter.hpp"
@@ -1328,10 +1329,11 @@ void HesiodApplication::show_project_menu(const QPoint &global_pos)
   // where the project lives, as a heading
   {
     const QFontMetrics fm(menu.font());
-    QAction           *where = menu.addAction(
-        saved ? fm.elidedText(QString::fromStdString(path.string()), Qt::ElideMiddle, 360)
-              : QString("Not saved yet"));
-    where->setEnabled(false);
+    menu.add_header(saved ? fm.elidedText(QDir::toNativeSeparators(
+                                              QString::fromStdString(path.string())),
+                                          Qt::ElideMiddle,
+                                          360)
+                          : QString("Not saved yet"));
   }
   menu.addSeparator();
 
