@@ -188,7 +188,7 @@ void compute_place_rocks_procedural_node(BaseNode &node)
                                                weight_secondary,
                                                exclusion,
                                                exclusion_threshold,
-                                               hmap::BBox2D(region.uv_rect.to_vec4()));
+                                               region.uv_rect.to_bbox2d());
       },
       node.cfg().cm_cpu);
 

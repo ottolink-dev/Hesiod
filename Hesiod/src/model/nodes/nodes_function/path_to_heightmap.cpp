@@ -57,7 +57,7 @@ void compute_path_to_heightmap_node(BaseNode &node)
                      const hmap::UvTile        &region)
             {
               auto [pa_out] = unpack<1>(p_arrays_out);
-              p_path->to_array(*pa_out, hmap::BBox2D(region.uv_rect.to_vec4()));
+              p_path->to_array(*pa_out, region.uv_rect.to_bbox2d());
             },
             node.cfg().cm_cpu);
       }

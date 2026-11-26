@@ -131,7 +131,7 @@ void compute_flatten_around_points_node(BaseNode &node)
           cloud_work.set_values_from_array(*pa_in,
                                            array_sampling,
                                            sampling_rad,
-                                           hmap::BBox2D(region.uv_rect.to_vec4()));
+                                           region.uv_rect.to_bbox2d());
         },
         node.cfg().cm_cpu);
   }

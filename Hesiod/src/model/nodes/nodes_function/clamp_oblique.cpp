@@ -99,7 +99,7 @@ void compute_clamp_oblique_node(BaseNode &node)
                                   use_max_operator,
                                   k,
                                   center,
-                                  hmap::BBox2D(region.uv_rect.to_vec4()));
+                                  region.uv_rect.to_bbox2d());
       },
       node.cfg().cm_cpu);
 

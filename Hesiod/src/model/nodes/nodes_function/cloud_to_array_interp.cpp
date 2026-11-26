@@ -84,7 +84,7 @@ void compute_cloud_to_array_interp_node(BaseNode &node)
                                    method,
                                    pa_dx,
                                    pa_dy,
-                                   hmap::BBox2D(region.uv_rect.to_vec4()));
+                                   region.uv_rect.to_bbox2d());
         },
         node.cfg().cm_cpu);
   }
