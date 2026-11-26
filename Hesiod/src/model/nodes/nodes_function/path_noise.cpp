@@ -159,7 +159,7 @@ void compute_path_noise_node(BaseNode &node)
                               orientation,
                               persistence,
                               /* p_control_field */ nullptr,
-                              /* bbox */ glm::vec4{0.f, 1.f, 0.f, 1.f},
+                              /* bbox */ hmap::BBox2D{0.f, 1.f, 0.f, 1.f},
                               /* bounded */ false);
 
     if (remove_loops)
@@ -183,7 +183,7 @@ void compute_path_noise_node(BaseNode &node)
                             orientation,
                             /* p_weights */ nullptr,
                             /* p_mask */ nullptr,
-                            /* bbox */ glm::vec4{0.f, 1.f, 0.f, 1.f});
+                            /* bbox */ hmap::BBox2D{0.f, 1.f, 0.f, 1.f});
 
     if (remove_loops)
       *p_out = hmap::remove_geometric_loops(*p_out);

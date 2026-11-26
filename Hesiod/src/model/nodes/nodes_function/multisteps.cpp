@@ -140,7 +140,7 @@ void compute_multisteps_node(BaseNode &node)
                                      pa_dx,
                                      pa_dy,
                                      center,
-                                     region.uv_rect.to_vec4());
+                                     region.uv_rect.to_bbox2d());
         },
         node.cfg().cm_cpu);
   }
@@ -174,7 +174,7 @@ void compute_multisteps_node(BaseNode &node)
                                           outer_slope,
                                           pa_control,
                                           center,
-                                          region.uv_rect.to_vec4());
+                                          region.uv_rect.to_bbox2d());
         },
         node.cfg().cm_gpu);
   }

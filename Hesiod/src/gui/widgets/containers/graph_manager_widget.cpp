@@ -319,10 +319,9 @@ void GraphPreviewLayerWidget::update_bg_image(float vmin, float vmax)
       if (p_path->size() > 0)
       {
         hmap::Array array(shape_img);
-        glm::vec4   bbox(0.f, 1.f, 0.f, 1.f);
         hmap::Path  path = *p_path;
         path.remap_values(0.1f, 1.f);
-        path.to_array(array, bbox);
+        path.to_array(array);
         img = hmap::colorize(array, 0.f, 1.f, hmap::Cmap::MAGMA, false).to_img_8bit();
       }
     }

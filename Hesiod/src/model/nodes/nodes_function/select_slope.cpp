@@ -154,7 +154,19 @@ void compute_select_slope_node(BaseNode &node)
     int ir = node.val_pixel_radius(A_RADIUS, 0);
 
     // filtered field
-    *p_out = hmap::va::smooth_cpulse(*p_in, ir, nullptr, node.cfg().cm_gpu);
+    hmap::for_each_tile(
+        {p_in},
+        {p_out},
+        [&](std::vector<const hmap::Array *> p_arrays_in,
+            std::vector<hmap::Array *>       p_arrays_out,
+            const hmap::UvTile &)
+        {
+          auto [pa_in]  = unpack<1>(p_arrays_in);
+          auto [pa_out] = unpack<1>(p_arrays_out);
+          *pa_out       = *pa_in;
+          hmap::gpu::smooth_cpulse(*pa_out, ir);
+        },
+        node.cfg().cm_gpu);
 
     hmap::for_each_tile(
         {},
