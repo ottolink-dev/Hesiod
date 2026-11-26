@@ -14,14 +14,18 @@ CMAKE = '''find_package(GSL REQUIRED COMPONENTS gsl gslcblas)
 find_package(assimp REQUIRED)
 find_package(glm REQUIRED)
 find_package(OpenMP REQUIRED)
-find_package(OpenCV REQUIRED)
+if(HIGHMAP_ENABLE_OPENCV)
+  find_package(OpenCV REQUIRED)
+  include_directories(${OpenCV_INCLUDE_DIRS})
+  add_compile_definitions(HIGHMAP_ENABLE_OPENCV=1)
+else()
+  add_compile_definitions(HIGHMAP_ENABLE_OPENCV=0)
+endif()
 find_package(OpenCL REQUIRED)
 find_package(OpenEXR REQUIRED)
 find_package(TIFF REQUIRED)
 find_package(nlohmann_json REQUIRED)
 find_package(zstd REQUIRED)
-
-include_directories(${OpenCV_INCLUDE_DIRS})
 
 # OpenMP
 {openmp}
@@ -41,7 +45,13 @@ class DependencyPatchTests(unittest.TestCase):
                 highmap.mkdir(parents=True)
                 # Give git apply a repository boundary independent of the host.
                 subprocess.run(['git', 'init', '-q', str(highmap)], check=True)
-                (highmap / 'CMakeLists.txt').write_text(CMAKE.replace('{openmp}', flags))
+                cmake_text = CMAKE.replace('{openmp}', flags)
+                if flags == LEGACY:
+                    cmake_text = cmake_text.replace(
+                        '# OpenMP\n',
+                        'include_directories(${OpenCV_INCLUDE_DIRS})\n\n# OpenMP\n',
+                    )
+                (highmap / 'CMakeLists.txt').write_text(cmake_text)
                 kernel = highmap / 'HighMap/src/gpu_opencl/kernels/common/_common_rand.cl'
                 kernel.parent.mkdir(parents=True)
                 kernel.write_text('float hash13f(float3 p);\n')
