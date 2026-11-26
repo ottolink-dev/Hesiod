@@ -22,8 +22,14 @@ else
 fi
 # Newer HighMap revisions already supply this helper; retain compatibility
 # with the older dependency pinned by main as well as the current dev branch.
-if ! grep -Eq 'float[[:space:]]+hash13f[[:space:]]*\(' \
-    "$source_dir/external/HighMap/HighMap/src/gpu_opencl/kernels/common/_common_rand.cl"; then
-  apply_patch_once HighMap "$source_dir/scripts/macos/patches/highmap-hash13.patch"
-fi
+for rand_cl in \
+    "$source_dir/external/HighMap/HighMap/src/opencl/kernels/common/_common_rand.cl" \
+    "$source_dir/external/HighMap/HighMap/src/gpu_opencl/kernels/common/_common_rand.cl"; do
+  if [[ -f "$rand_cl" ]]; then
+    if ! grep -Eq 'float[[:space:]]+hash13f[[:space:]]*\(' "$rand_cl"; then
+      apply_patch_once HighMap "$source_dir/scripts/macos/patches/highmap-hash13.patch"
+    fi
+    break
+  fi
+done
 apply_patch_once Meta "$source_dir/scripts/macos/patches/meta-sstream.patch"
