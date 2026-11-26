@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 
+#include <QLabel>
 #include <QMenu>
 #include <QPainter>
 #include <QScrollArea>
@@ -22,11 +23,11 @@
 #include "meta_qt/ui/design_registry.hpp"
 #include "meta_qt/ui/theme.hpp"
 
+#include "hesiod/gui/widgets/post_process/post_dock_metrics.hpp"
 #include "hesiod/gui/widgets/post_process/post_effect_chip.hpp"
 #include "hesiod/gui/widgets/post_process/post_effect_glyph.hpp"
 #include "hesiod/gui/widgets/post_process/post_effect_tray.hpp"
 #include "hesiod/gui/widgets/post_process/post_process_dock.hpp"
-#include "hesiod/gui/widgets/post_process/post_range_editor.hpp"
 #include "hesiod/gui/widgets/post_process/post_stage_label.hpp"
 #include "hesiod/gui/widgets/post_process/post_stage_row.hpp"
 #include "hesiod/gui/widgets/post_process/post_stage_scope.hpp"
@@ -49,7 +50,6 @@ struct PostProcessDock::Impl
     PostStageRow                       *row = nullptr;
     PostEffectChip                     *chip = nullptr;
     QVariantAnimation                  *reveal = nullptr;
-    PostRangeEditor                    *range = nullptr;
     std::vector<meta::qt::MetaWidget *> rows;
     bool                                shown = false;
   };
@@ -238,32 +238,8 @@ void PostProcessDock::Impl::add_stage(meta::AttributeContainer &container,
                    this->q,
                    [this, effect]() { this->set_effect(effect, false); });
 
-  PostRangeEditor *range = stage.range;
-  stage.row->fill_menu = [this, effect, range](QMenu &menu)
+  stage.row->fill_menu = [this, effect](QMenu &menu)
   {
-    if (range)
-    {
-      const float lo = range->domain_min();
-      const float hi = range->domain_max();
-
-      menu.addAction(QObject::tr("Unit Range (0 to 1)"),
-                     range,
-                     [range]() { range->commit({0.f, 1.f}); });
-      menu.addAction(QObject::tr("Full Range (%1 to %2)").arg(lo).arg(hi),
-                     range,
-                     [range, lo, hi]() { range->commit({lo, hi}); });
-      menu.addAction(QObject::tr("Centre on Zero"),
-                     range,
-                     [range]()
-                     {
-                       // same span, moved so that it straddles zero
-                       const glm::vec2 current = range->value();
-                       const float     half = 0.5f * (current.y - current.x);
-                       range->commit({-half, half});
-                     });
-      menu.addSeparator();
-    }
-
     const QString name = QString::fromStdString(post_effect_info(effect).name);
     menu.addAction(QObject::tr("Remove %1").arg(name),
                    this->q,
@@ -326,34 +302,33 @@ void PostProcessDock::Impl::add_range(Stage                    &stage,
                                       meta::AttributeContainer &container,
                                       const char               *key)
 {
-  meta::AbstractAttribute *p_attr = container.find(key);
-  auto *p_range = p_attr ? p_attr->try_cast<meta::Attribute<glm::vec2>>() : nullptr;
-  if (!p_range)
+  // The row is the one a range has anywhere else in the panel: its label, the
+  // bar and the presets. The attribute asks for it without the On/Off toggle,
+  // being in the chain is that switch.
+  const size_t before = stage.rows.size();
+  this->add_row(stage, container, key);
+  if (stage.rows.size() == before)
     return;
 
-  stage.range = new PostRangeEditor(*p_range, this->ctx, *this->theme, stage.row);
+  // That row puts its label on a line of its own, above the bar. Say where
+  // that line is, so the scope sits level with the label and not with the
+  // middle of a much taller row.
+  meta::qt::MetaWidget *widget = stage.rows.back();
+  const QLabel         *label = widget->findChild<QLabel *>();
 
-  if (const std::string tip = meta::common::try_get<std::string>(*p_attr,
-                                                                 meta::keys::ui::tooltip,
-                                                                 "");
-      !tip.empty())
-    stage.range->setToolTip(QString::fromStdString(tip));
-
-  stage.row->content->addWidget(stage.range);
-
-  const PostEffect effect = stage.effect;
-
-  stage.range->on_edit_started = [this, effect]() { this->begin_stage_edit(effect); };
-  stage.range->on_value_changed = [this, effect]()
-  {
-    this->refresh_scope(effect);
-    Q_EMIT this->q->value_changed();
-  };
-  stage.range->on_edit_ended = [this, effect]() { this->end_stage_edit(effect); };
+  if (label && widget->layout())
+    widget->setProperty(post_dock::HEAD_CENTRE_PROPERTY,
+                        widget->layout()->contentsMargins().top() +
+                            label->sizeHint().height() / 2);
 }
 
 void PostProcessDock::Impl::begin_stage_edit(PostEffect effect)
 {
+  // A range row announces an edit with every step of a drag. The host takes
+  // its undo snapshot when an edit starts, so only the first one counts.
+  if (this->editing && *this->editing == effect)
+    return;
+
   this->editing = effect;
   Q_EMIT this->q->edit_started();
 }
@@ -395,8 +370,6 @@ void PostProcessDock::Impl::set_effect(PostEffect effect, bool active)
 
   for (meta::qt::MetaWidget *widget : p_stage->rows)
     widget->sync_widget_from_model();
-  if (p_stage->range)
-    p_stage->range->sync();
 
   this->refresh_scope(effect);
   this->set_shown(*p_stage, active, /* animate */ true);
@@ -508,8 +481,6 @@ void PostProcessDock::Impl::sync()
 
     for (meta::qt::MetaWidget *widget : stage.rows)
       widget->sync_widget_from_model();
-    if (stage.range)
-      stage.range->sync();
 
     stage.row->scope->set_glyph(model_post_glyph(container, stage.effect));
   }

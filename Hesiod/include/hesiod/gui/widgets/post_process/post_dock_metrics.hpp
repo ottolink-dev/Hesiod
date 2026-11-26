@@ -14,7 +14,6 @@ inline constexpr int CHIP_SIZE = 24;   ///< a tray toggle
 inline constexpr int CHIP_GAP = 2;     ///< between toggles of one family
 inline constexpr int GROUP_GAP = 11;   ///< between families, a divider sits in it
 inline constexpr int TRAY_HEIGHT = 34; ///< the tray, on one line
-inline constexpr int RANGE_HEIGHT = 52;
 
 /// Dynamic property a stage row sets to say where its first line is centred.
 inline constexpr char HEAD_CENTRE_PROPERTY[] = "stage_head_centre";

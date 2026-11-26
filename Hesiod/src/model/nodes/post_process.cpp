@@ -256,6 +256,11 @@ void setup_post_process_heightmap_attributes(BaseNode                   &node,
   const auto declare_stage = [](meta::AbstractAttribute &attr)
   { attr.state().try_add(meta::keys::state::active, false); };
 
+  // The two ranges are switched on and off by the chain as well, so their rows
+  // go without the On/Off toggle a range row has of its own.
+  const auto declare_range_stage = [](meta::Attribute<glm::vec2> &attr)
+  { attr.metadata().try_add(std::string(meta::keys::ui::show_toggle), false); };
+
   // clang-format off
   if (options.add_mix)
   {
@@ -267,8 +272,8 @@ void setup_post_process_heightmap_attributes(BaseNode                   &node,
   declare_stage(add_float(node, post_keys::GAMMA, "Gamma", 1.f, 0.01f, 4.f));
   declare_stage(add_float(node, post_keys::GAIN, "Gain", 1.f, 0.01f, 4.f));
   declare_stage(add_float(node, post_keys::SMOOTHING_RADIUS, "Smoothing Radius", 0.f, 0.f, 0.05f));
-  add_range(node, post_keys::REMAP, "Remap Range", {0.f, 1.f}, -1.f, 2.f, options.remap_active_state);
-  add_range(node, post_keys::SATURATE, "Saturation Range", {0.f, 1.f}, -1.f, 2.f, false);
+  declare_range_stage(add_range(node, post_keys::REMAP, "Remap Range", {0.f, 1.f}, -1.f, 2.f, options.remap_active_state));
+  declare_range_stage(add_range(node, post_keys::SATURATE, "Saturation Range", {0.f, 1.f}, -1.f, 2.f, false));
   // clang-format on
 }
 
