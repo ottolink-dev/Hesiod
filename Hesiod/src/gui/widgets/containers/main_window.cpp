@@ -230,7 +230,9 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 
 void MainWindow::notify(const std::string &msg, int timeout)
 {
-  this->status_line->show_message(QString::fromStdString(msg), timeout);
+  // notify() can be called before setup_status_bar() has run
+  if (this->status_line)
+    this->status_line->show_message(QString::fromStdString(msg), timeout);
 }
 
 void MainWindow::set_project_title(const std::string &name,

@@ -8,16 +8,13 @@
 #include <QTimer>
 
 #include "hesiod/gui/widgets/shell/popup_entrance.hpp"
+#include "hesiod/gui/widgets/shell/shell_style.hpp"
 
 namespace hesiod
 {
 
 namespace
 {
-
-constexpr char kName[] = "_hsd_popup_entrance";
-constexpr int  kRisePx = 12;
-constexpr int  kUnfoldPx = 6;
 
 // Where a menu or a list comes from, relative to its place: out of the side
 // of the parent menu it belongs to, otherwise away from the pointer, so one
@@ -31,14 +28,14 @@ QPoint unfold_from(const QWidget *window)
   {
     const int middle = parent->x() + parent->width() / 2;
     if (at.left() >= middle)
-      return QPoint(-kUnfoldPx, 0);
+      return QPoint(-shell::popup_unfold, 0);
     if (at.right() < middle)
-      return QPoint(kUnfoldPx, 0);
-    return QPoint(0, -kUnfoldPx);
+      return QPoint(shell::popup_unfold, 0);
+    return QPoint(0, -shell::popup_unfold);
   }
 
-  const bool above = at.bottom() < QCursor::pos().y() + 14;
-  return QPoint(0, above ? kUnfoldPx : -kUnfoldPx);
+  const bool above = at.bottom() < QCursor::pos().y() + shell::popup_pointer_margin;
+  return QPoint(0, above ? shell::popup_unfold : -shell::popup_unfold);
 }
 
 } // namespace
@@ -46,8 +43,6 @@ QPoint unfold_from(const QWidget *window)
 PopupEntrance::PopupEntrance(QWidget *window_, Travel travel_, int duration_ms_)
     : QObject(window_), window(window_), travel(travel_), duration_ms(duration_ms_)
 {
-  this->setObjectName(kName);
-
   // Show reaches the application's filters before the window's own showEvent,
   // and several of these windows only take their final place there (a dialog
   // centers itself, a menu is clamped to the screen). So: invisible now, and
@@ -58,9 +53,8 @@ PopupEntrance::PopupEntrance(QWidget *window_, Travel travel_, int duration_ms_)
 
 void PopupEntrance::cancel(QWidget *window)
 {
-  // the name is only ever given to a PopupEntrance
-  auto *entrance = static_cast<PopupEntrance *>(
-      window->findChild<QObject *>(kName, Qt::FindDirectChildrenOnly));
+  auto *entrance = window->findChild<PopupEntrance *>(QString(),
+                                                      Qt::FindDirectChildrenOnly);
   if (!entrance)
     return;
 
@@ -81,7 +75,7 @@ void PopupEntrance::start()
   case Travel::None:
     break;
   case Travel::Rise:
-    this->from = QPoint(0, kRisePx);
+    this->from = QPoint(0, shell::popup_rise);
     break;
   case Travel::Unfold:
     this->from = unfold_from(this->window);
@@ -108,7 +102,7 @@ void PopupEntrance::apply(double t)
 
   // the fade runs ahead of the travel: the window is nearly solid while it
   // still has a little way to go, so the movement is seen, not just a blend
-  this->window->setWindowOpacity(std::min(1.0, 1.35 * t));
+  this->window->setWindowOpacity(std::min(1.0, shell::popup_fade_lead * t));
 
   // Moved by the change since the last step, not to a remembered position: a
   // window that is placed again meanwhile (a tooltip following the pointer, a

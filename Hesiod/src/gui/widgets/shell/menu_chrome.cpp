@@ -15,6 +15,7 @@
 
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/widgets/shell/menu_chrome.hpp"
+#include "hesiod/gui/widgets/shell/shell_style.hpp"
 #include "hesiod/gui/widgets/utils/gui_utils.hpp"
 
 namespace hesiod
@@ -23,9 +24,7 @@ namespace hesiod
 namespace
 {
 
-constexpr qreal kPlateRadius = 7.0;         // QMenu::item's radius in the stylesheet
-constexpr int   kGlideMs = 85;              // from a row to its neighbor
-constexpr char  kHeaderTag[] = "hsdHeader"; // marks the action of a header row
+constexpr char header_tag[] = "hsdHeader"; // marks the action of a header row
 
 // the shortcut an action shows: an explicit "\t..." suffix in its text wins,
 // as it does in Qt's own menu layout
@@ -65,7 +64,7 @@ QAction *HsdMenu::add_header(const QString &title)
 {
   QAction *action = this->addAction(title);
   action->setEnabled(false);
-  action->setProperty(kHeaderTag, true);
+  action->setProperty(header_tag, true);
   return action;
 }
 
@@ -99,8 +98,8 @@ void HsdMenu::follow_active()
   else
   {
     // decelerating from the first frame, so it leaves with the pointer
-    this->plate_y.to(at.y(), kGlideMs, motion::enter());
-    this->plate_height.to(at.height(), kGlideMs, motion::enter());
+    this->plate_y.to(at.y(), motion::menu_glide, motion::enter());
+    this->plate_height.to(at.height(), motion::menu_glide, motion::enter());
   }
 
   this->row = at;
@@ -148,7 +147,7 @@ void HsdMenu::initStyleOption(QStyleOptionMenuItem *option, const QAction *actio
 
   // a header is a disabled row (the stylesheet gives it that ink), set apart
   // from the rows that are merely unavailable by its weight
-  if (action && action->property(kHeaderTag).toBool())
+  if (action && action->property(header_tag).toBool())
     option->font.setWeight(QFont::DemiBold);
 }
 
@@ -176,8 +175,8 @@ void HsdMenu::paintEvent(QPaintEvent *event)
                                this->plate_y.value(),
                                this->row.width(),
                                this->plate_height.value()),
-                        kPlateRadius,
-                        kPlateRadius);
+                        shell::menu_plate_radius,
+                        shell::menu_plate_radius);
     }
   }
 
@@ -185,15 +184,12 @@ void HsdMenu::paintEvent(QPaintEvent *event)
 
   QFont font = this->font();
   if (font.pointSizeF() > 0)
-    font.setPointSizeF(font.pointSizeF() * 0.86);
+    font.setPointSizeF(font.pointSizeF() * shell::menu_shortcut_scale);
   else
-    font.setPixelSize(std::max(8, qRound(font.pixelSize() * 0.86)));
+    font.setPixelSize(std::max(8, qRound(font.pixelSize() * shell::menu_shortcut_scale)));
 
   QPainter p(this);
   p.setFont(font);
-
-  // right inset matching the item's right padding in the stylesheet
-  const int right_inset = 18;
 
   for (QAction *action : this->actions())
   {
@@ -208,14 +204,18 @@ void HsdMenu::paintEvent(QPaintEvent *event)
     if (!rect.isValid() || !event->rect().intersects(rect))
       continue;
 
-    QColor ink = mix_colors(colors.bg_primary, colors.text_primary, 0.55);
+    QColor ink = mix_colors(colors.bg_primary,
+                            colors.text_primary,
+                            shell::menu_shortcut_ink);
     if (!action->isEnabled())
       ink = colors.text_disabled;
     else if (action == this->activeAction())
-      ink = mix_colors(colors.bg_primary, colors.text_primary, 0.80);
+      ink = mix_colors(colors.bg_primary,
+                       colors.text_primary,
+                       shell::menu_shortcut_ink_active);
 
     p.setPen(ink);
-    p.drawText(rect.adjusted(0, 0, -right_inset, 0),
+    p.drawText(rect.adjusted(0, 0, -shell::menu_shortcut_inset, 0),
                Qt::AlignRight | Qt::AlignVCenter,
                shortcut);
   }

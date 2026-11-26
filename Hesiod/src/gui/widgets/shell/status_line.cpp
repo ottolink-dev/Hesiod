@@ -9,22 +9,11 @@
 #include <QPainter>
 
 #include "hesiod/app/hesiod_application.hpp"
+#include "hesiod/gui/widgets/shell/shell_style.hpp"
 #include "hesiod/gui/widgets/shell/status_line.hpp"
 
 namespace hesiod
 {
-
-namespace
-{
-
-// lengths in pixels, durations in milliseconds
-constexpr int   kInset = 8;    // the left inset a status bar message has always had
-constexpr qreal kRise = 4.0;   // how far below its place a message starts
-constexpr int   kInMs = 200;   // a message arriving
-constexpr int   kAsideMs = 90; // stepping aside for the next one
-constexpr int   kOutMs = 420;  // its time is up
-
-} // namespace
 
 StatusLine::StatusLine(QWidget *parent) : QWidget(parent)
 {
@@ -39,7 +28,8 @@ StatusLine::StatusLine(QWidget *parent) : QWidget(parent)
   QObject::connect(&this->expiry,
                    &QTimer::timeout,
                    this,
-                   [this]() { this->fade.to(0.0, kOutMs, motion::change()); });
+                   [this]()
+                   { this->fade.to(0.0, motion::status_out, motion::change()); });
 
   // faded out: either the next message is waiting, or the line is now empty
   this->fade.on_done = [this]()
@@ -62,7 +52,7 @@ void StatusLine::appear(int timeout_ms)
   if (this->text.isEmpty())
     return;
 
-  this->fade.to(1.0, kInMs, motion::enter());
+  this->fade.to(1.0, motion::status_in, motion::enter());
   if (timeout_ms > 0)
     this->expiry.start(timeout_ms);
 }
@@ -97,17 +87,19 @@ void StatusLine::show_message(const QString &message, int timeout_ms)
     return;
 
   this->fade.set(this->fade.value()); // it may be on its slow way out already
-  this->fade.to(0.0, kAsideMs, motion::leave());
+  this->fade.to(0.0, motion::status_aside, motion::leave());
 }
 
 QSize StatusLine::sizeHint() const
 {
-  return QSize(240, QFontMetrics(this->font()).height() + 8);
+  return QSize(shell::status_width_hint,
+               QFontMetrics(this->font()).height() + shell::status_height_padding);
 }
 
 QSize StatusLine::minimumSizeHint() const
 {
-  return QSize(40, QFontMetrics(this->font()).height() + 8);
+  return QSize(shell::status_min_width,
+               QFontMetrics(this->font()).height() + shell::status_height_padding);
 }
 
 void StatusLine::paintEvent(QPaintEvent *)
@@ -126,13 +118,13 @@ void StatusLine::paintEvent(QPaintEvent *)
   // It rises the last few pixels into place as it appears, a whole device
   // pixel at a time: text drawn between two pixel rows is soft.
   const qreal dpr = this->devicePixelRatioF();
-  const qreal rise = std::round(kRise * (1.0 - shown) * dpr) / dpr;
+  const qreal rise = std::round(shell::status_rise * (1.0 - shown) * dpr) / dpr;
 
-  const QRectF  box = QRectF(this->rect()).adjusted(kInset, 0.0, 0.0, 0.0);
+  const QRectF  box = QRectF(this->rect()).adjusted(shell::status_inset, 0.0, 0.0, 0.0);
   const QString line = QFontMetrics(this->font())
                            .elidedText(this->text,
                                        Qt::ElideRight,
-                                       std::max(0, this->width() - kInset));
+                                       std::max(0, this->width() - shell::status_inset));
   p.drawText(box.translated(0.0, rise), Qt::AlignLeft | Qt::AlignVCenter, line);
 }
 

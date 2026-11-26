@@ -21,6 +21,8 @@ namespace hesiod
 // stays sharp on the way.
 class PopupEntrance : public QObject
 {
+  Q_OBJECT
+
 public:
   enum class Travel
   {
