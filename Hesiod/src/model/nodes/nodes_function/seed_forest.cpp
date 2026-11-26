@@ -205,17 +205,43 @@ void compute_seed_forest_node(BaseNode &node)
 
   // --- Spawn forest
 
-  hmap::VirtualArray empty_va;
-  const auto        &exclusion_va = p_exclusion ? *p_exclusion : empty_va;
+  const glm::ivec2                num_tiles = p_out_density->get_max_tiles();
+  const int                       ntiles    = p_out_density->get_ntiles();
+  std::vector<hmap::ScatterField> tile_fields(ntiles);
+  std::vector<hmap::BBox2D>       tile_bboxs(ntiles);
 
-  *p_out_forest = hmap::va::seed_forest_clusters(species_count,
-                                                 tree_count,
-                                                 *p_out_density,
-                                                 exclusion_va,
-                                                 cluster_spread,
-                                                 points_per_cluster,
-                                                 options,
-                                                 node.cfg().cm_cpu);
+  std::vector<const hmap::VirtualArray *> ptrs_in = {p_out_density};
+  if (p_exclusion)
+    ptrs_in.push_back(p_exclusion);
+
+  hmap::for_each_tile(
+      ptrs_in,
+      {},
+      [&](const std::vector<const hmap::Array *> &p_arrays_in,
+          std::vector<hmap::Array *> &,
+          const hmap::UvTile  &region,
+          hmap::ICommunicator &comm)
+      {
+        int tile_index         = region.key.ty * num_tiles.x + region.key.tx;
+        tile_bboxs[tile_index] = region.uv_rect.to_bbox2d();
+
+        const hmap::Array &density   = *p_arrays_in[0];
+        const hmap::Array  empty_arr = {};
+        const hmap::Array &exclusion = p_exclusion ? *p_arrays_in[1] : empty_arr;
+
+        tile_fields[tile_index] = hmap::seed_forest_clusters(species_count,
+                                                             tree_count,
+                                                             density,
+                                                             exclusion,
+                                                             cluster_spread,
+                                                             points_per_cluster,
+                                                             options,
+                                                             region,
+                                                             comm);
+      },
+      node.cfg().cm_cpu);
+
+  *p_out_forest = hmap::Forest(hmap::merge_scatter_fields(tile_fields, tile_bboxs, true));
 
   *p_out_forest = hmap::grow_forest_iterative(*p_out_forest,
                                               options.species,
@@ -225,8 +251,15 @@ void compute_seed_forest_node(BaseNode &node)
                                               hmap::Array{}, // TODO VA version
                                               0.8f);
 
-  hmap::Array elev_array = p_elevation->to_array(node.cfg().cm_cpu);
-  p_out_forest->set_elevation_from_terrain(elev_array);
+  hmap::for_each_tile(
+      {p_elevation},
+      {},
+      [&](const std::vector<const hmap::Array *> &p_arrays_in,
+          std::vector<hmap::Array *> &,
+          const hmap::UvTile &region,
+          hmap::ICommunicator &)
+      { p_out_forest->set_elevation_from_terrain(*p_arrays_in[0], region.uv_rect); },
+      node.cfg().cm_cpu);
 }
 
 } // namespace hesiod
