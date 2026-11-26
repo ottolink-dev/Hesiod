@@ -203,24 +203,48 @@ void compute_place_rocks_procedural_node(BaseNode &node)
                                                 radius_max,
                                                 power_law_alpha);
 
-  const hmap::VirtualArray empty_va{};
-  const auto              &exclusion_ref = p_exclusion ? *p_exclusion : empty_va;
-
   // --- Run Procedural Placement
 
-  *p_out_rocks = hmap::va::place_rocks_procedural(rock_count,
-                                                  *p_elevation,
-                                                  rmin,
-                                                  rmax,
-                                                  max_talus,
-                                                  *p_density_va,
-                                                  exclusion_ref,
-                                                  size_slope_weight,
-                                                  size_elevation_gain,
-                                                  size_elevation_exponent,
-                                                  options,
-                                                  node.cfg().cm_cpu);
+  const glm::ivec2 num_tiles = p_elevation->get_max_tiles();
+  int              ntiles    = num_tiles.x * num_tiles.y;
 
+  std::vector<hmap::ScatterField> tile_fields(ntiles);
+  std::vector<hmap::BBox2D>       tile_bboxs(ntiles);
+
+  hmap::for_each_tile(
+      {p_elevation, p_density_va, p_exclusion},
+      {},
+      [&](std::vector<const hmap::Array *> p_arrays_in,
+          std::vector<hmap::Array *> &,
+          const hmap::UvTile  &region,
+          hmap::ICommunicator &comm)
+      {
+        auto [pa_elevation, pa_density, pa_exclusion] = unpack<3>(p_arrays_in);
+
+        static const hmap::Array empty_array;
+        const auto              &exclusion = pa_exclusion ? *pa_exclusion : empty_array;
+
+        int tile_index         = region.key.ty * num_tiles.x + region.key.tx;
+        tile_bboxs[tile_index] = region.uv_rect.to_bbox2d();
+
+        tile_fields[tile_index] = hmap::place_rocks_procedural(rock_count,
+                                                               *pa_elevation,
+                                                               rmin,
+                                                               rmax,
+                                                               max_talus,
+                                                               *pa_density,
+                                                               exclusion,
+                                                               size_slope_weight,
+                                                               size_elevation_gain,
+                                                               size_elevation_exponent,
+                                                               options,
+                                                               region,
+                                                               comm);
+      },
+      node.cfg().cm_cpu);
+
+  *p_out_rocks = hmap::RockField(
+      hmap::merge_scatter_fields(tile_fields, tile_bboxs, true));
   p_out_rocks->prune_collisions();
 }
 
