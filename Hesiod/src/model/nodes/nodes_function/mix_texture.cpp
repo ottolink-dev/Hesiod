@@ -61,13 +61,53 @@ void compute_mix_texture_node(BaseNode &node)
 
   if ((int)ptr_list.size())
   {
-    mix(*p_out,
-        ptr_list,
-        node.cfg().cm_cpu,
-        node.val_enum<hmap::MixMethod>(A_MIX_METHOD));
+    const auto   mix_method = node.val_enum<hmap::MixMethod>(A_MIX_METHOD);
+    const size_t n_tex      = ptr_list.size();
+
+    std::vector<const hmap::VirtualArray *> inputs;
+    for (auto *p_tex : ptr_list)
+      for (auto *p_ch : p_tex->channels_ptr())
+        inputs.push_back(p_ch);
+
+    hmap::for_each_tile(
+        inputs,
+        p_out->channels_ptr(),
+        [&](std::vector<const hmap::Array *> p_arrays_in,
+            std::vector<hmap::Array *>       p_arrays_out,
+            const hmap::UvTile &)
+        {
+          const size_t                       n_ch = p_arrays_out.size();
+          std::vector<hmap::Texture>         textures(n_tex);
+          std::vector<const hmap::Texture *> tex_ptrs;
+          tex_ptrs.reserve(n_tex);
+
+          for (size_t t = 0; t < n_tex; ++t)
+          {
+            textures[t].shape = p_arrays_in[t * n_ch]->shape;
+            textures[t].channels.reserve(n_ch);
+            for (size_t ch = 0; ch < n_ch; ++ch)
+              textures[t].channels.push_back(*p_arrays_in[t * n_ch + ch]);
+            tex_ptrs.push_back(&textures[t]);
+          }
+
+          hmap::Texture tex_out = hmap::mix(tex_ptrs, mix_method);
+
+          for (size_t ch = 0; ch < n_ch && ch < tex_out.channels.size(); ++ch)
+            *p_arrays_out[ch] = std::move(tex_out.channels[ch]);
+        },
+        node.cfg().cm_cpu);
+
+    p_out->sync_overlap_buffers();
 
     if (node.val<bool>(A_RESET_OUTPUT_ALPHA))
-      p_out->fill(3, 1.f, node.cfg().cm_cpu);
+    {
+      if (p_out->channels_ptr().size() >= 4)
+        p_out->fill(3, 1.f, node.cfg().cm_cpu);
+      else
+        Logger::log()->error("compute_mix_texture_node: cannot reset alpha, expected 4 "
+                             "channels but got {}",
+                             p_out->channels_ptr().size());
+    }
   }
 }
 
