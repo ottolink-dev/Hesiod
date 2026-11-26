@@ -55,12 +55,47 @@ void compute_mix_normal_map_node(BaseNode &node)
   {
     hmap::VirtualTexture *p_out = node.get_value_ref<hmap::VirtualTexture>(P_NORMAL_MAP);
 
-    hmap::mix_normal_map(*p_out,
-                         *p_in1,
-                         *p_in2,
-                         node.cfg().cm_cpu,
-                         node.val<float>(A_DETAIL_SCALING),
-                         node.val_enum<hmap::NormalMapBlendingMethod>(A_BLENDING_METHOD));
+    const float detail_scaling  = node.val<float>(A_DETAIL_SCALING);
+    const auto  blending_method = node.val_enum<hmap::NormalMapBlendingMethod>(
+        A_BLENDING_METHOD);
+
+    std::vector<const hmap::VirtualArray *> inputs;
+    for (auto *p : p_in1->channels_ptr())
+      inputs.push_back(p);
+    for (auto *p : p_in2->channels_ptr())
+      inputs.push_back(p);
+
+    hmap::for_each_tile(
+        inputs,
+        p_out->channels_ptr(),
+        [&](std::vector<const hmap::Array *> p_arrays_in,
+            std::vector<hmap::Array *>       p_arrays_out,
+            const hmap::UvTile &)
+        {
+          const size_t  n_ch = p_arrays_out.size();
+          hmap::Texture tex_base;
+          hmap::Texture tex_detail;
+          tex_base.shape   = p_arrays_in[0]->shape;
+          tex_detail.shape = p_arrays_in[n_ch]->shape;
+          tex_base.channels.reserve(n_ch);
+          tex_detail.channels.reserve(n_ch);
+          for (size_t ch = 0; ch < n_ch; ++ch)
+          {
+            tex_base.channels.push_back(*p_arrays_in[ch]);
+            tex_detail.channels.push_back(*p_arrays_in[n_ch + ch]);
+          }
+
+          hmap::Texture tex_out = hmap::mix_normal_map(tex_base,
+                                                       tex_detail,
+                                                       detail_scaling,
+                                                       blending_method);
+
+          for (size_t ch = 0; ch < n_ch && ch < tex_out.channels.size(); ++ch)
+            *p_arrays_out[ch] = std::move(tex_out.channels[ch]);
+        },
+        node.cfg().cm_cpu);
+
+    p_out->sync_overlap_buffers();
   }
 }
 
