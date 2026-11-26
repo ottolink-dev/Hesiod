@@ -60,6 +60,23 @@ constexpr int status_in = 200;   // a status bar message arriving
 constexpr int status_aside = 90; // a status bar message stepping aside for the next
 constexpr int status_out = 420;  // a status bar message whose time is up
 
+// the floating toolbars, the graph tabs and the build progress
+constexpr int rail_hover_glide = 145;  // a toolbar's hover plate, from a tool to the next
+constexpr int rail_active_glide = 220; // its active plate, to the tool chosen
+constexpr int rail_active_in = 150;
+constexpr int rail_active_out = 160;
+constexpr int rail_morph = 220; // a toolbar changing length (its tools changed)
+constexpr int rail_fold = 90;   // a dropped toolbar folding before its flight
+constexpr int snap_glide = 170; // the snap guide, from a spot to the next
+constexpr int snap_in = 140;
+constexpr int snap_out = 130;
+constexpr int tab_rise = 210;       // a graph tab becoming current
+constexpr int tab_settle = 170;     // the one that was current, sitting back
+constexpr int build_fill = 150;     // the build progress bar, to the next step
+constexpr int build_fill_last = 90; // the bar running to its end as the build finishes
+constexpr int stop_warm_in = 150;   // the stop tool taking the building color
+constexpr int stop_warm_out = 280;  // and giving it back
+
 const QEasingCurve &enter();  // (.22, 1, .36, 1)   decelerate into place
 const QEasingCurve &leave();  // (.4, 0, .9, .6)     gather speed and go
 const QEasingCurve &change(); // (.45, 0, .15, 1)   between two resting states

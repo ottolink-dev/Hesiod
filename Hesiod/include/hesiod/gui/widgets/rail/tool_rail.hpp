@@ -9,6 +9,7 @@
 
 #include "nlohmann/json.hpp"
 
+#include "hesiod/gui/motion/motion.hpp"
 #include "hesiod/gui/widgets/rail/rail_style.hpp"
 
 class QVariantAnimation;
@@ -76,7 +77,8 @@ protected:
   // instead of a tool (true when it did), and a tool's face (by default its
   // icon_painter icon)
   virtual void paint_under_tools(QPainter &, const QPointF & /* origin */) {}
-  virtual bool paint_cell(QPainter &, const Item &, const QRectF & /* cell */, bool)
+  // heat: how far the cell has answered the pointer, 0 cold .. 1 under it
+  virtual bool paint_cell(QPainter &, const Item &, const QRectF & /* cell */, qreal)
   {
     return false;
   }
@@ -84,6 +86,7 @@ protected:
                           const Item   &item,
                           const QRectF &cell,
                           const QColor &ink);
+  virtual bool uses_hover_pill(const Item &) const { return true; }
 
   // cell `i` relative to the docked rail's top-left, and which one has a tool
   QRectF cell_rect(size_t i) const;
@@ -133,6 +136,19 @@ private:
   std::vector<Item> items;
   int               active_tool = -1;
   int               hovered = -1;
+  HotTrack          hot{this};               // hovered, as fading numbers
+  HotTrack          active_track{this};      // the active tool's ink
+  Anim              press_t{this};           // 1 while a tool is held down
+  Anim              hover_pos{this, 0.0};    // the hover plate, along the rail
+  Anim              hover_alpha{this, 0.0};  // and its opacity
+  Anim              active_pos{this, 0.0};   // the active plate, along the rail
+  Anim              active_alpha{this, 0.0}; // and its opacity
+  Anim              morph_t{this, 1.0};      // length change when the tools change
+  QRectF            morph_from;
+  bool              has_placed_once = false;
+
+  void  set_hovered(int index);
+  qreal cell_along(size_t i) const;
 
   // docked placement, as shown now (derived in place())
   Edge    edge = Edge::Right;

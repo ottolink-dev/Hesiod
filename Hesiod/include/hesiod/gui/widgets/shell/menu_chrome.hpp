@@ -25,6 +25,7 @@ class HsdMenu : public QMenu
 {
 public:
   explicit HsdMenu(const QString &title, QWidget *parent = nullptr);
+  explicit HsdMenu(QWidget *parent = nullptr) : HsdMenu(QString(), parent) {}
 
   // submenu of the same kind (Qt's addMenu(QString) would create a plain QMenu)
   HsdMenu *add_sub_menu(const QString &title);

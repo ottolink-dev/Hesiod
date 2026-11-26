@@ -31,6 +31,21 @@ constexpr int kMagnet = 28;     // snap to a corner within this distance
 constexpr int kCenterSnap = 32; // drop this close to an edge's middle to centre on it
 constexpr int kRadius = 12;     // rail corners; cells use kRadius minus their inset
 
+// --- tool plates and ink (ToolRail), from the surface toward the text color
+constexpr qreal hover_plate_tone = 0.075;
+constexpr qreal held_plate_tone = 0.055;  // added while the tool is held
+constexpr qreal active_plate_tone = 0.16; // the active tool's plate
+constexpr qreal plate_sink = 0.9;         // a held plate shrinks this much on each side
+constexpr qreal tool_ink_rest = 0.72;
+constexpr qreal tool_ink_hover = 0.23; // added under the pointer
+
+// --- the 2D / 3D switch (ViewportRail)
+constexpr qreal view_overshoot = 0.06;  // how far past a cell the spring may carry it
+constexpr qreal view_hover_inset = 2.5; // the hover tint on the resting side, in its cell
+constexpr qreal view_hover_tone = 0.07;
+constexpr qreal view_ink_rest = 0.55;
+constexpr qreal view_ink_hover = 0.35; // added under the pointer
+
 QColor surface_color();
 QColor border_color();
 bool   animations_on();

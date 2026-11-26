@@ -3,7 +3,7 @@
 #pragma once
 #include <QWidget>
 
-class QVariantAnimation;
+#include "hesiod/gui/motion/motion.hpp"
 
 namespace hesiod::rail
 {
@@ -25,11 +25,13 @@ protected:
   void paintEvent(QPaintEvent *) override;
 
 private:
-  void run_fade(qreal to);
+  QRectF current_rect() const;
 
-  QRectF             target;
-  qreal              opacity = 0.0;
-  QVariantAnimation *fade = nullptr;
+  QRectF from_rect;
+  QRectF to_rect;
+  bool   has_target = false;
+  Anim   fade{this, 0.0};
+  Anim   glide{this, 1.0};
 };
 
 } // namespace hesiod::rail

@@ -17,7 +17,7 @@ void CustomQMenu::mousePressEvent(QMouseEvent *event)
   }
   else
   {
-    QMenu::mousePressEvent(event);
+    HsdMenu::mousePressEvent(event);
   }
 }
 

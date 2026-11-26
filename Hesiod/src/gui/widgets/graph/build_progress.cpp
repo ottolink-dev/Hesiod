@@ -3,6 +3,7 @@
  * this software. */
 #include <algorithm>
 
+#include <QEnterEvent>
 #include <QEvent>
 #include <QFontMetrics>
 #include <QMouseEvent>
@@ -11,7 +12,9 @@
 
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/widgets/graph/build_progress.hpp"
+#include "hesiod/gui/widgets/graph/graph_style.hpp"
 #include "hesiod/gui/widgets/rail/tool_rail.hpp"
+#include "hesiod/gui/widgets/utils/gui_utils.hpp"
 
 namespace hesiod
 {
@@ -31,6 +34,19 @@ BuildProgress::BuildProgress(QWidget *area, std::function<void()> resume)
   QFont font = this->font();
   font.setBold(true);
   this->setFont(font);
+
+  this->appear_t.on_tick = [this]()
+  {
+    const qreal t = std::clamp(this->appear_t.value(), 0.0, 1.0);
+    const int   dy = qRound(graph_style::build_rise * (1.0 - t));
+    this->move(this->x(), this->rest_y + dy);
+    this->update();
+  };
+  this->appear_t.on_done = [this]()
+  {
+    if (!this->updating && this->appear_t.value() <= 0.005)
+      this->hide();
+  };
 
   this->hide();
   area->installEventFilter(this);
@@ -54,6 +70,7 @@ void BuildProgress::on_update_started()
     this->done_ids.clear();
     this->pass.clear();
     this->done_before = this->done = this->total = 0;
+    this->fill_t.set(0.0);
   }
   this->held = false;
   this->refresh();
@@ -105,6 +122,19 @@ bool BuildProgress::eventFilter(QObject *watched, QEvent *event)
   return false;
 }
 
+void BuildProgress::enterEvent(QEnterEvent *event)
+{
+  if (this->held)
+    this->hover_t.to(1.0, motion::hover_in, motion::enter());
+  QWidget::enterEvent(event);
+}
+
+void BuildProgress::leaveEvent(QEvent *event)
+{
+  this->hover_t.to(0.0, motion::hover_out, motion::leave());
+  QWidget::leaveEvent(event);
+}
+
 void BuildProgress::mousePressEvent(QMouseEvent *event)
 {
   if (event->button() == Qt::LeftButton && this->held && this->resume)
@@ -116,35 +146,41 @@ void BuildProgress::paintEvent(QPaintEvent *)
 {
   const auto &colors = HSD_CTX.app_settings.colors;
 
+  const qreal vis = std::clamp(this->appear_t.value(), 0.0, 1.0);
+  if (vis <= 0.002)
+    return;
+
   QPainter p(this);
   p.setRenderHint(QPainter::Antialiasing);
+  p.setOpacity(vis);
 
   const QRectF box = QRectF(this->rect()).adjusted(0.5, 0.5, -0.5, -0.5);
   const qreal  radius = box.height() / 2.0;
   QPainterPath shape;
   shape.addRoundedRect(box, radius, radius);
 
-  QColor background = colors.bg_deep;
+  const qreal h = this->held ? std::clamp(this->hover_t.value(), 0.0, 1.0) : 0.0;
+  QColor      background = this->held ? mix_colors(colors.bg_deep,
+                                              colors.warning,
+                                              graph_style::build_hover_tint * h)
+                                      : colors.bg_deep;
   background.setAlphaF(0.92);
   p.fillPath(shape, background);
 
-  // the bar fills the pill itself
-  if (!this->held && this->total > 0)
+  // the bar fills the pill itself, gliding smoothly between steps
+  const qreal progress = std::clamp(this->fill_t.value(), 0.0, 1.0);
+  if (!this->held && progress > 0.002)
   {
     QColor fill = colors.building;
     fill.setAlphaF(0.28);
     p.save();
     p.setClipPath(shape);
-    p.fillRect(QRectF(box.left(),
-                      box.top(),
-                      box.width() * this->done / this->total,
-                      box.height()),
-               fill);
+    p.fillRect(QRectF(box.left(), box.top(), box.width() * progress, box.height()), fill);
     p.restore();
   }
 
   QColor edge = this->held ? colors.warning : colors.building;
-  edge.setAlphaF(0.75);
+  edge.setAlphaF(0.75 + graph_style::build_edge_hover * h);
   p.setPen(QPen(edge, 1.0));
   p.drawPath(shape);
 
@@ -152,7 +188,9 @@ void BuildProgress::paintEvent(QPaintEvent *)
 
   if (this->held)
   {
-    p.setPen(colors.warning);
+    p.setPen(mix_colors(colors.warning,
+                        colors.text_primary,
+                        graph_style::build_ink_hover * h));
     p.drawText(text_box, Qt::AlignCenter, held_text);
     return;
   }
@@ -195,7 +233,10 @@ void BuildProgress::place()
     y = std::min(y, docked.top() - h - h / 4);
   }
 
-  this->setGeometry(a.center().x() - w / 2, y, w, h);
+  this->rest_y = y;
+  const int dy = qRound(graph_style::build_rise *
+                        (1.0 - std::clamp(this->appear_t.value(), 0.0, 1.0)));
+  this->setGeometry(a.center().x() - w / 2, this->rest_y + dy, w, h);
 }
 
 void BuildProgress::refresh()
@@ -205,20 +246,37 @@ void BuildProgress::refresh()
   // clickable only to go on with a held update
   this->setAttribute(Qt::WA_TransparentForMouseEvents, !this->held);
   this->setCursor(this->held ? Qt::PointingHandCursor : Qt::ArrowCursor);
+  if (!this->held)
+    this->hover_t.to(0.0, motion::hover_out, motion::leave());
   this->setToolTip(this->held ? "The last update was stopped: nodes after the one being "
                                 "computed are not up to date. Click to go on with it, "
                                 "any edit does too."
                               : QString());
 
-  if (visible && !this->isVisible())
+  if (this->total > 0)
   {
-    this->place();
-    this->show();
+    const double ratio = std::clamp(double(this->done) / double(this->total), 0.0, 1.0);
+    this->fill_t.to(ratio, motion::build_fill, motion::enter());
   }
-  else if (!visible)
-    this->hide();
 
-  this->raise();
+  if (visible)
+  {
+    if (!this->isVisible())
+    {
+      this->appear_t.set(0.0);
+      this->place();
+      this->show();
+    }
+    this->raise();
+    this->appear_t.to(1.0, motion::popup_in, motion::enter());
+  }
+  else if (this->isVisible())
+  {
+    if (this->total > 0)
+      this->fill_t.to(1.0, motion::build_fill_last, motion::enter());
+    this->appear_t.to(0.0, motion::popup_out, motion::leave());
+  }
+
   this->update();
 }
 

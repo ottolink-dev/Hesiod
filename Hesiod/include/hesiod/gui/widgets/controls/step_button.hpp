@@ -3,6 +3,8 @@
 #pragma once
 #include <QAbstractButton>
 
+#include "hesiod/gui/motion/motion.hpp"
+
 class QAbstractSpinBox;
 
 namespace hesiod
@@ -19,9 +21,13 @@ protected:
   void paintEvent(QPaintEvent *event) override;
   void enterEvent(QEnterEvent *event) override;
   void leaveEvent(QEvent *event) override;
+  void mousePressEvent(QMouseEvent *event) override;
+  void mouseReleaseEvent(QMouseEvent *event) override;
 
 private:
   bool plus;
+  Anim hover_t{this}; // 0 at rest, 1 under the pointer
+  Anim press_t{this}; // 0 released, 1 held
 };
 
 // [-] value [+]: wraps `spin` (its own arrows hidden) in a frame of the given

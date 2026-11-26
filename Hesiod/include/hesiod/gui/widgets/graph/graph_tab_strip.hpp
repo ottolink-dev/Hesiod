@@ -2,6 +2,7 @@
    License. The full license is in the file LICENSE, distributed with this software. */
 #pragma once
 #include <functional>
+#include <memory>
 #include <vector>
 
 #include <QPainterPath>
@@ -9,7 +10,7 @@
 #include <QTransform>
 #include <QWidget>
 
-class QTimer;
+#include "hesiod/gui/motion/motion.hpp"
 
 namespace hesiod
 {
@@ -47,8 +48,8 @@ public:
   std::function<void(int, const QPoint &)>
       on_context_menu; // right click: tab, global pos
 
-  static constexpr int kThickness = 36; // across the strip, overlap included
-  static constexpr int kOverlap = 2;    // drawn over the card's border
+  static constexpr int thickness = 36; // across the strip, overlap included
+  static constexpr int overlap = 2;    // drawn over the card's border
 
   QSize sizeHint() const override;
   QSize minimumSizeHint() const override;
@@ -58,16 +59,17 @@ protected:
   void leaveEvent(QEvent *event) override;
   void mouseMoveEvent(QMouseEvent *event) override;
   void mousePressEvent(QMouseEvent *event) override;
+  void mouseReleaseEvent(QMouseEvent *event) override;
   void paintEvent(QPaintEvent *event) override;
   void contextMenuEvent(QContextMenuEvent *event) override;
 
 private:
   struct Tab
   {
-    QString name;
-    QRectF  rect;         // full (active) geometry, strip space
-    qreal   active = 0.0; // 0: sitting back, 1: part of the editor
-    qreal   hover = 0.0;
+    QString               name;
+    QRectF                rect;   // full (active) geometry, strip space
+    std::unique_ptr<Anim> active; // 0: sitting back, 1: part of the editor
+    std::unique_ptr<Anim> hover;
   };
 
   // strip space <-> widget space (a swap of x and y when vertical: its own
@@ -77,7 +79,7 @@ private:
 
   void   layout_tabs();
   qreal  natural_width(const QString &name) const;
-  void   step();
+  void   retarget_hover(int next);
   int    tab_at(const QPointF &strip_pos) const;
   QRectF plus_rect() const;
 
@@ -85,9 +87,10 @@ private:
   std::vector<Tab> tabs;
   int              current = -1;
   int              hovered = -1; // tab index, or -2 for the "+"
-  qreal            plus_hover = 0.0;
+  int              pressed_index = -1;
+  Anim             plus_hover{this, 0.0};
+  Anim             press_t{this, 0.0};
   bool             plus_shown = true; // hidden when the tabs need its room
-  QTimer          *ticker = nullptr;
 };
 
 // The node editor's card with the tab strip laid over one of its edges (the

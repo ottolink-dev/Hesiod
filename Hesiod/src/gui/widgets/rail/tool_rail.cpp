@@ -39,7 +39,7 @@ ToolRail::ToolRail(RailOwner *owner, SnapGuide *guide, QWidget *parent)
   this->setAutoFillBackground(false);
 
   this->expand_anim = new QVariantAnimation(this);
-  this->expand_anim->setEasingCurve(QEasingCurve::OutCubic);
+  this->expand_anim->setEasingCurve(motion::enter());
   QObject::connect(this->expand_anim,
                    &QVariantAnimation::valueChanged,
                    this,
@@ -50,7 +50,7 @@ ToolRail::ToolRail(RailOwner *owner, SnapGuide *guide, QWidget *parent)
                    });
 
   this->flight = new QVariantAnimation(this);
-  this->flight->setEasingCurve(QEasingCurve::OutCubic);
+  this->flight->setEasingCurve(motion::enter());
   QObject::connect(this->flight,
                    &QVariantAnimation::valueChanged,
                    this,
@@ -70,18 +70,68 @@ ToolRail::ToolRail(RailOwner *owner, SnapGuide *guide, QWidget *parent)
                      this->animate_expand(1.0, 220);
                      this->owner->notify_layout_changed();
                    });
+  this->morph_t.on_tick = [this]() { this->apply_geometry(); };
+}
+
+qreal ToolRail::cell_along(size_t i) const
+{
+  const QRectF c = this->cell_rect(i);
+  return is_vertical(this->edge) ? c.top() : c.left();
 }
 
 void ToolRail::set_items(std::vector<Item> new_items)
 {
+  const bool should_morph = this->has_placed_once && this->isVisible() &&
+                            !this->dragging && !this->flying && motion::enabled();
+  const QRectF old_geom = should_morph ? QRectF(this->geometry()) : QRectF();
+  const Edge   old_edge = this->edge;
+
   this->items = std::move(new_items);
-  this->hovered = -1;
+  this->set_hovered(-1);
+  this->active_track.set(this->index_of(this->active_tool));
+  const int act_idx = this->index_of(this->active_tool);
+  if (act_idx >= 0)
+  {
+    this->active_pos.set(this->cell_along(size_t(act_idx)));
+    this->active_alpha.set(1.0);
+  }
+  else
+    this->active_alpha.set(0.0);
+
   this->place();
+
+  if (should_morph && this->edge == old_edge &&
+      old_geom != QRectF(this->anchor, this->full_size(this->edge)))
+  {
+    this->morph_from = old_geom;
+    this->morph_t.set(0.0);
+    this->morph_t.to(1.0, motion::rail_morph, motion::enter());
+  }
 }
 
 void ToolRail::set_active(int tool)
 {
+  if (tool == this->active_tool)
+    return;
+
+  const int prev_idx = this->index_of(this->active_tool);
+  const int next_idx = this->index_of(tool);
   this->active_tool = tool;
+  this->active_track.set(next_idx);
+
+  if (next_idx < 0 || !this->uses_hover_pill(this->items[size_t(next_idx)]))
+  {
+    this->active_alpha.to(0.0, motion::rail_active_out, motion::change());
+  }
+  else
+  {
+    const qreal target = this->cell_along(size_t(next_idx));
+    if (prev_idx < 0 || this->active_alpha.value() < 0.05)
+      this->active_pos.set(target);
+    else
+      this->active_pos.to(target, motion::rail_active_glide, motion::enter());
+    this->active_alpha.to(1.0, motion::rail_active_in, motion::enter());
+  }
   this->update();
 }
 
@@ -178,6 +228,8 @@ void ToolRail::place()
   this->along = pos;
   this->anchor = this->anchor_at(this->edge, this->along);
   this->expand_t = 1.0;
+  this->has_placed_once = true;
+  this->morph_t.set(1.0);
   this->apply_geometry();
   this->raise();
   this->owner->notify_layout_changed();
@@ -249,9 +301,34 @@ bool ToolRail::event(QEvent *event)
   return QWidget::event(event);
 }
 
+void ToolRail::set_hovered(int index)
+{
+  const int prev = this->hovered;
+  this->hovered = index;
+  this->hot.set(index);
+
+  if (index < 0 || index >= int(this->items.size()) ||
+      !this->uses_hover_pill(this->items[size_t(index)]))
+  {
+    this->hover_alpha.to(0.0, motion::hover_out, motion::change());
+  }
+  else
+  {
+    const qreal target = this->cell_along(size_t(index));
+    const bool  had_pill = prev >= 0 && prev < int(this->items.size()) &&
+                          this->uses_hover_pill(this->items[size_t(prev)]) &&
+                          this->hover_alpha.value() > 0.05;
+    if (!had_pill)
+      this->hover_pos.set(target);
+    else
+      this->hover_pos.to(target, motion::rail_hover_glide, motion::enter());
+    this->hover_alpha.to(1.0, motion::hover_in, motion::enter());
+  }
+}
+
 void ToolRail::leaveEvent(QEvent *event)
 {
-  this->hovered = -1;
+  this->set_hovered(-1);
   this->update();
   QWidget::leaveEvent(event);
 }
@@ -266,6 +343,8 @@ void ToolRail::mousePressEvent(QMouseEvent *event)
   this->pressed = true;
   this->press_pos = event->position();
   this->pressed_index = this->index_at(event->position());
+  if (this->pressed_index >= 0)
+    this->press_t.to(1.0, motion::press_in, motion::enter());
   event->accept();
 }
 
@@ -288,7 +367,7 @@ void ToolRail::mouseMoveEvent(QMouseEvent *event)
   const int index = this->index_at(event->position());
   if (index != this->hovered)
   {
-    this->hovered = index;
+    this->set_hovered(index);
     this->setCursor(index >= 0 ? Qt::PointingHandCursor : Qt::OpenHandCursor);
     this->update();
   }
@@ -298,6 +377,7 @@ void ToolRail::mouseReleaseEvent(QMouseEvent *event)
 {
   if (event->button() != Qt::LeftButton)
     return;
+  this->press_t.to(0.0, motion::press_out, motion::change());
 
   const bool was_pressed = this->pressed;
   this->pressed = false;
@@ -344,13 +424,60 @@ void ToolRail::paintEvent(QPaintEvent *)
 
     this->paint_under_tools(p, origin);
 
+    // one hover plate, gliding from a tool to the next along the rail
+    const qreal hover_a = std::clamp(this->hover_alpha.value(), 0.0, 1.0);
+    const qreal held_all = std::clamp(this->press_t.value(), 0.0, 1.0);
+    if (hover_a > 0.002)
+    {
+      const qreal across = (thick_px() - cell_px()) / 2.0;
+      const qreal pos = this->hover_pos.value();
+      QRectF pill = (is_vertical(this->edge) ? QRectF(across, pos, cell_px(), cell_px())
+                                             : QRectF(pos, across, cell_px(), cell_px()))
+                        .translated(origin);
+      const qreal sink = (this->hovered >= 0 && this->hovered == this->pressed_index)
+                             ? plate_sink * held_all
+                             : 0.0;
+      QColor      plate = mix_colors(surface_color(),
+                                colors.text_primary,
+                                hover_plate_tone +
+                                    held_plate_tone * (sink > 0.0 ? held_all : 0.0));
+      plate.setAlphaF(hover_a);
+      p.setPen(Qt::NoPen);
+      p.setBrush(plate);
+      p.drawRoundedRect(pill.adjusted(1 + sink, 1 + sink, -1 - sink, -1 - sink),
+                        this->cell_radius(),
+                        this->cell_radius());
+    }
+
+    // one plate for the active tool, gray like the hover plate but stronger
+    const qreal active_a = std::clamp(this->active_alpha.value(), 0.0, 1.0);
+    if (active_a > 0.002)
+    {
+      const qreal across = (thick_px() - cell_px()) / 2.0;
+      const qreal pos = this->active_pos.value();
+      QRectF pill = (is_vertical(this->edge) ? QRectF(across, pos, cell_px(), cell_px())
+                                             : QRectF(pos, across, cell_px(), cell_px()))
+                        .translated(origin);
+      const qreal sink = (this->active_tool >= 0 &&
+                          this->index_of(this->active_tool) == this->pressed_index)
+                             ? plate_sink * held_all
+                             : 0.0;
+      QColor plate = mix_colors(surface_color(), colors.text_primary, active_plate_tone);
+      plate.setAlphaF(active_a);
+      p.setPen(Qt::NoPen);
+      p.setBrush(plate);
+      p.drawRoundedRect(pill.adjusted(1 + sink, 1 + sink, -1 - sink, -1 - sink),
+                        this->cell_radius(),
+                        this->cell_radius());
+    }
+
     for (size_t i = 0; i < this->items.size(); ++i)
     {
       const Item  &item = this->items[i];
       const QRectF cell = this->cell_rect(i).translated(origin);
-      const bool   hover = int(i) == this->hovered;
+      const qreal  heat = this->hot.heat(int(i));
 
-      if (this->paint_cell(p, item, cell, hover))
+      if (this->paint_cell(p, item, cell, heat))
         continue;
 
       if (item.separator_before)
@@ -370,22 +497,16 @@ void ToolRail::paintEvent(QPaintEvent *)
         }
       }
 
-      const bool active = item.tool == this->active_tool;
+      const qreal  act = std::clamp(this->active_track.heat(int(i)), 0.0, 1.0);
+      const QColor base_ink = mix_colors(surface_color(),
+                                         colors.text_primary,
+                                         tool_ink_rest + tool_ink_hover * heat);
+      const QColor ink = mix_colors(base_ink, colors.text_primary, act);
 
-      if (active || hover)
-      {
-        p.setPen(Qt::NoPen);
-        p.setBrush(active ? mix_colors(surface_color(), colors.accent, 0.22)
-                          : mix_colors(surface_color(), colors.text_primary, 0.07));
-        p.drawRoundedRect(cell.adjusted(1, 1, -1, -1),
-                          this->cell_radius(),
-                          this->cell_radius());
-      }
-
-      QColor ink = mix_colors(surface_color(), colors.text_primary, hover ? 0.95 : 0.72);
-      if (active)
-        ink = colors.accent.lighter(135);
-
+      // Icons are drawn at their own size, always. Scaling a hairline icon by
+      // a few percent puts its strokes between pixels, so it blurs and
+      // shimmers for as long as the pointer moves; the plate under the tool
+      // and the brightening ink already say "hovered" and "held".
       this->paint_tool(p, item, cell, ink);
 
       if (item.flyout)
@@ -469,10 +590,20 @@ void ToolRail::apply_geometry()
   const QRectF sq = this->square_rect();
   const qreal  t = this->expand_t;
 
-  const QRectF r(sq.left() + (full.left() - sq.left()) * t,
-                 sq.top() + (full.top() - sq.top()) * t,
-                 sq.width() + (full.width() - sq.width()) * t,
-                 sq.height() + (full.height() - sq.height()) * t);
+  QRectF r(sq.left() + (full.left() - sq.left()) * t,
+           sq.top() + (full.top() - sq.top()) * t,
+           sq.width() + (full.width() - sq.width()) * t,
+           sq.height() + (full.height() - sq.height()) * t);
+
+  if (!this->dragging && !this->flying && this->morph_t.value() < 0.999)
+  {
+    const qreal m = std::clamp(this->morph_t.value(), 0.0, 1.0);
+    r = QRectF(this->morph_from.left() + (r.left() - this->morph_from.left()) * m,
+               this->morph_from.top() + (r.top() - this->morph_from.top()) * m,
+               this->morph_from.width() + (r.width() - this->morph_from.width()) * m,
+               this->morph_from.height() + (r.height() - this->morph_from.height()) * m);
+  }
+
   this->setGeometry(r.toAlignedRect());
   this->update();
 }
@@ -624,7 +755,8 @@ void ToolRail::begin_drag(const QPointF &in_parent)
 {
   this->owner->close_panel(false);
   this->dragging = true;
-  this->hovered = -1;
+  this->set_hovered(-1);
+  this->press_t.to(0.0, motion::press_out, motion::change());
   this->setCursor(Qt::ClosedHandCursor);
 
   // the square starts where the press was, then follows the cursor
@@ -646,8 +778,8 @@ void ToolRail::end_drag()
 
   // glide the folded square to where the first tool will be, then unfold
   this->flying = true;
-  this->expand_anim->stop();
-  this->expand_t = 0.0;
+  if (this->expand_t > 0.01)
+    this->animate_expand(0.0, motion::rail_fold);
   this->flight->stop();
   this->flight->setStartValue(this->drag_center);
   this->flight->setEndValue(landing);

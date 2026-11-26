@@ -9,6 +9,8 @@
 #include <QStringList>
 #include <QWidget>
 
+#include "hesiod/gui/motion/motion.hpp"
+
 namespace hesiod
 {
 
@@ -38,6 +40,8 @@ public:
 
 protected:
   bool eventFilter(QObject *watched, QEvent *event) override;
+  void enterEvent(QEnterEvent *event) override;
+  void leaveEvent(QEvent *event) override;
   void mousePressEvent(QMouseEvent *event) override;
   void paintEvent(QPaintEvent *event) override;
 
@@ -55,6 +59,10 @@ private:
   int                      done_before = 0; // done, and not in the current pass
   int                      done = 0;
   int                      total = 0;
+  int                      rest_y = 0;
+  Anim                     appear_t{this, 0.0};
+  Anim                     fill_t{this, 0.0};
+  Anim                     hover_t{this, 0.0};
 };
 
 } // namespace hesiod
