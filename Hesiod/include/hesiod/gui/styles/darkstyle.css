@@ -347,7 +347,7 @@ QLabel {
 
 /* QLineEdit --------------------------------------------------------------- */
 QLineEdit {
-    background-color: COLOR_WELL;
+    background-color: COLOR_BG_SECONDARY;
     padding: 5px 9px;
     border-style: solid;
     border: 1px solid COLOR_RIM;
