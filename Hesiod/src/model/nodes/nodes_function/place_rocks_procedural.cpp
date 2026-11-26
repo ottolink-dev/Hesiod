@@ -25,8 +25,8 @@ constexpr const char *P_ROCK_FIELD        = "rock_field";
 constexpr const char *P_DENSITY           = "density";
 
 constexpr const char *A_ROCK_COUNT = "rock_count";
-constexpr const char *A_MIN_ELEV   = "min_elev";
-constexpr const char *A_MAX_ELEV   = "max_elev";
+constexpr const char *A_MIN_RADIUS = "min_elev";
+constexpr const char *A_MAX_RADIUS = "max_elev";
 constexpr const char *A_MAX_SLOPE  = "max_slope";
 constexpr const char *A_SEED       = "seed";
 
@@ -70,8 +70,8 @@ void setup_place_rocks_procedural_node(BaseNode &node)
   // clang-format off
   node.set_current_category("Seeding & Placement");
   add_int(node, A_ROCK_COUNT, "Rock Count", 10000, 1, 1000000);
-  add_float(node, A_MIN_ELEV, "Min Elevation", 0.0f, -2.0f, 2.0f);
-  add_float(node, A_MAX_ELEV, "Max Elevation", 0.9f, -2.0f, 2.0f);
+  add_float(node, A_MIN_RADIUS, "Min Radius", 0.0005f, 0.0001f, 0.05f, "{:.4f}");
+  add_float(node, A_MAX_RADIUS, "Max Radius", 0.002f, 0.0001f, 0.1f, "{:.4f}");
   add_float(node, A_MAX_SLOPE, "Max Slope", 4.0f, 0.0f, 16.0f);
   add_seed(node, A_SEED, "Seed");
 
@@ -122,8 +122,8 @@ void compute_place_rocks_procedural_node(BaseNode &node)
   // --- Parameters
 
   const auto rock_count = static_cast<size_t>(std::max(1, node.val<int>(A_ROCK_COUNT)));
-  const auto min_elev   = node.val<float>(A_MIN_ELEV);
-  const auto max_elev   = node.val<float>(A_MAX_ELEV);
+  const auto rmin       = node.val<float>(A_MIN_RADIUS);
+  const auto rmax       = node.val<float>(A_MAX_RADIUS);
   const auto max_slope  = node.val<float>(A_MAX_SLOPE);
   const auto seed       = static_cast<uint32_t>(node.val<int>(A_SEED));
 
@@ -210,8 +210,8 @@ void compute_place_rocks_procedural_node(BaseNode &node)
 
   *p_out_rocks = hmap::va::place_rocks_procedural(rock_count,
                                                   *p_elevation,
-                                                  min_elev,
-                                                  max_elev,
+                                                  rmin,
+                                                  rmax,
                                                   max_talus,
                                                   *p_density_va,
                                                   exclusion_ref,
