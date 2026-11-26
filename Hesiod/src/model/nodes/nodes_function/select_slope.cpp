@@ -184,10 +184,9 @@ void compute_select_slope_node(BaseNode &node)
         {
           auto [pa_in]  = unpack<1>(p_arrays_in);
           auto [pa_out] = unpack<1>(p_arrays_out);
-          *pa_out       = hmap::select_inward_outward_slope(
-              *pa_in,
-              node.val<glm::vec2>(A_CENTER),
-              hmap::BBox2D(region.uv_rect.to_vec4()));
+          *pa_out       = hmap::select_inward_outward_slope(*pa_in,
+                                                      node.val<glm::vec2>(A_CENTER),
+                                                      region.uv_rect.to_bbox2d());
         },
         node.cfg().cm_cpu);
 

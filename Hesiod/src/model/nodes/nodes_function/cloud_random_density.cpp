@@ -65,11 +65,10 @@ void compute_cloud_random_density_node(BaseNode &node)
 
         uint tile_seed = node.val<int>(A_SEED) + region.key.hash();
 
-        hmap::Cloud c = hmap::random_cloud_density(
-            npoints_per_tile,
-            *pa_density,
-            tile_seed,
-            hmap::BBox2D(region.uv_rect.to_vec4()));
+        hmap::Cloud c = hmap::random_cloud_density(npoints_per_tile,
+                                                   *pa_density,
+                                                   tile_seed,
+                                                   region.uv_rect.to_bbox2d());
 
         std::lock_guard<std::mutex> lock(mtx);
         clouds.emplace_back(c);

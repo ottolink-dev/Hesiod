@@ -71,7 +71,7 @@ void compute_cloud_sdf_node(BaseNode &node)
 
           *pa_out = hmap::cloud_sdf_to_array(*p_cloud,
                                              region.shape,
-                                             hmap::BBox2D(region.uv_rect.to_vec4()),
+                                             region.uv_rect.to_bbox2d(),
                                              pa_dx,
                                              pa_dy);
         },
