@@ -34,6 +34,12 @@ QColor mix_colors(const QColor &from, const QColor &to, qreal amount)
                           from.alphaF() + (to.alphaF() - from.alphaF()) * amount);
 }
 
+QColor with_alpha(QColor color, qreal alpha)
+{
+  color.setAlphaF(std::clamp(alpha, 0.0, 1.0));
+  return color;
+}
+
 QColor panel_border_color()
 {
   const auto &colors = HSD_CTX.app_settings.colors;

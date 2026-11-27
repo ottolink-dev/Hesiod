@@ -4,6 +4,8 @@
 #pragma once
 #include <string>
 
+class QMenu;
+
 namespace meta::qt
 {
 struct Theme;
@@ -41,5 +43,13 @@ struct PropertiesPanelDesign
  * leave an empty panel with nothing to explain it.
  */
 const PropertiesPanelDesign &properties_panel_design();
+
+/** @brief Dress a popup menu opened from the panel in the panel's own theme.
+ *
+ * For designs that bring their own chrome: the overflow menu of a node's
+ * header and the context menus of its rows are part of the same surface and
+ * should not fall back to the application's menu style.
+ */
+void style_panel_menu(QMenu &menu, const meta::qt::Theme &theme);
 
 } // namespace hesiod

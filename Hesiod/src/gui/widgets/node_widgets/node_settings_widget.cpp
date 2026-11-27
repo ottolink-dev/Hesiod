@@ -1,6 +1,9 @@
 /* Copyright (c) 2025 Otto Link. Distributed under the terms of the GNU General
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
+#include <algorithm>
+
+#include <QEvent>
 #include <QLabel>
 #include <QScrollArea>
 #include <QScrollBar>
@@ -17,12 +20,138 @@
 #include "hesiod/gui/widgets/node_widgets/node_settings_widget.hpp"
 #include "hesiod/gui/widgets/node_widgets/properties_panel_design.hpp"
 #include "hesiod/gui/widgets/node_widgets/properties_panel_header.hpp"
+#include "hesiod/gui/widgets/post_process/post_process_dock.hpp"
 #include "hesiod/gui/widgets/utils/gui_utils.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/utils.hpp"
 
 namespace hesiod
 {
+
+namespace
+{
+
+QString panel_scrollbar_stylesheet(const meta::qt::Theme &theme)
+{
+  // The space of the bar is always there; with nothing to scroll, Qt would
+  // still draw a handle over the whole height, which reads as content that is
+  // cut off.
+  return meta::qt::industrial::scrollbar_stylesheet(theme) +
+         "QScrollBar[idle=\"true\"]::handle:vertical,"
+         "QScrollBar[idle=\"true\"]::handle:vertical:hover { "
+         "background: transparent; }";
+}
+
+/** @brief Reserve the vertical scrollbar permanently.
+ *
+ * An as-needed bar appearing on expand narrows the viewport and reflows every
+ * row, so padding jumps sideways for reasons unrelated to what was clicked.
+ * Costs a few pixels and removes a whole class of confusion.
+ */
+void reserve_scrollbar(QScrollArea *area, const meta::qt::Theme &theme)
+{
+  area->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+  area->setStyleSheet(panel_scrollbar_stylesheet(theme));
+
+  QScrollBar *bar = area->verticalScrollBar();
+  bar->setProperty("idle", true); // empty until there is something in it
+
+  QObject::connect(bar,
+                   &QScrollBar::rangeChanged,
+                   bar,
+                   [bar](int, int max)
+                   {
+                     if (bar->property("idle").toBool() == (max == 0))
+                       return;
+                     bar->setProperty("idle", max == 0);
+                     bar->style()->unpolish(bar);
+                     bar->style()->polish(bar);
+                   });
+}
+
+/** @brief The foot of the pane: as tall as the output chain it holds.
+ *
+ * Sits under the scrolling list and outside it, so the chain of the node on
+ * show stays where it is while the attributes above it scroll, and the row of
+ * toggles is always in the same place.
+ *
+ * It is a scroll area of its own only as a backstop: the chain is given what
+ * it asks for up to a share of the pane, and scrolls past that rather than
+ * squeezing the attributes out of a short window.
+ */
+class ChainArea final : public QScrollArea
+{
+public:
+  explicit ChainArea(QWidget *parent) : QScrollArea(parent)
+  {
+    this->setWidgetResizable(true);
+    this->setFrameShape(QFrame::NoFrame);
+    this->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    this->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+
+    if (parent)
+      parent->installEventFilter(this);
+
+    // Past the cap, show the end of the chain: that is where the toggles are.
+    QScrollBar *bar = this->verticalScrollBar();
+    QObject::connect(bar,
+                     &QScrollBar::rangeChanged,
+                     bar,
+                     [bar](int, int max) { bar->setValue(max); });
+  }
+
+  QSize sizeHint() const override
+  {
+    return QSize(QScrollArea::sizeHint().width(), this->fitted_height());
+  }
+
+  QSize minimumSizeHint() const override { return QSize(0, this->fitted_height()); }
+
+  bool eventFilter(QObject *watched, QEvent *event) override
+  {
+    const bool chain_changed = watched == this->widget() &&
+                               (event->type() == QEvent::LayoutRequest ||
+                                event->type() == QEvent::Resize ||
+                                event->type() == QEvent::Show ||
+                                event->type() == QEvent::Hide);
+    const bool pane_resized = watched == this->parentWidget() &&
+                              event->type() == QEvent::Resize;
+
+    const bool handled = QScrollArea::eventFilter(watched, event);
+
+    if ((chain_changed || pane_resized) && !this->fitting &&
+        this->height() != this->fitted_height())
+    {
+      // Now, not on the next pass of the event loop: a stage opens over a
+      // dozen frames, and a foot that trails it by one shows the row of
+      // toggles pushed out and pulled back on every one of them.
+      this->fitting = true;
+      this->updateGeometry();
+      if (this->parentWidget() && this->parentWidget()->layout())
+        this->parentWidget()->layout()->activate();
+      this->fitting = false;
+    }
+
+    return handled;
+  }
+
+private:
+  int fitted_height() const
+  {
+    // a chain hides itself on a node whose current container offers no effect
+    if (!this->widget() || this->widget()->isHidden())
+      return 0;
+
+    const int wanted = this->widget()->sizeHint().height();
+    const int share = this->parentWidget() ? this->parentWidget()->height() * 3 / 5
+                                           : wanted;
+    return std::max(0, std::min(wanted, share));
+  }
+
+  bool fitting = false;
+};
+
+} // namespace
 
 NodeSettingsWidget::NodeSettingsWidget(QPointer<GraphNodeWidget> p_graph_node_widget,
                                        QWidget                  *parent)
@@ -111,34 +240,7 @@ void NodeSettingsWidget::setup_layout()
     this->scroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 
     if (panel.has_own_chrome)
-    {
-      // Reserve the vertical scrollbar permanently. An as-needed bar appearing
-      // on expand narrows the viewport and reflows every row, so padding jumps
-      // sideways for reasons unrelated to what was clicked. Costs a few pixels
-      // and removes a whole class of confusion.
-      this->scroll->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
-
-      // ...but only its space: with nothing to scroll, Qt would still draw a
-      // handle over the whole height, which reads as content that is cut off
-      this->scroll->setStyleSheet(
-          meta::qt::industrial::scrollbar_stylesheet(*panel.theme) +
-          "QScrollBar[idle=\"true\"]::handle:vertical,"
-          "QScrollBar[idle=\"true\"]::handle:vertical:hover { "
-          "background: transparent; }");
-      QScrollBar *bar = this->scroll->verticalScrollBar();
-      bar->setProperty("idle", true); // empty until the first node is shown
-      this->connect(bar,
-                    &QScrollBar::rangeChanged,
-                    bar,
-                    [bar](int, int max)
-                    {
-                      if (bar->property("idle").toBool() == (max == 0))
-                        return;
-                      bar->setProperty("idle", max == 0);
-                      bar->style()->unpolish(bar);
-                      bar->style()->polish(bar);
-                    });
-    }
+      reserve_scrollbar(this->scroll, *panel.theme);
 
     this->scroll->setWidget(container);
     this->scroll->setWidgetResizable(true);
@@ -146,6 +248,17 @@ void NodeSettingsWidget::setup_layout()
     this->scroll->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     layout->addWidget(this->scroll);
+
+    // --- output chain of the node on show, attached under the list
+
+    this->chain_area = new ChainArea(this);
+    this->chain_area->hide();
+
+    // the same gutter as the list above, or the two would not line up
+    if (panel.has_own_chrome)
+      reserve_scrollbar(this->chain_area, *panel.theme);
+
+    layout->addWidget(this->chain_area);
   }
 }
 
@@ -159,14 +272,17 @@ void NodeSettingsWidget::update_content()
   const PropertiesPanelDesign &panel = properties_panel_design();
   if (this->scroll && panel.has_own_chrome)
   {
-    this->scroll->setStyleSheet(meta::qt::industrial::scrollbar_stylesheet(*panel.theme) +
-                                "QScrollBar[idle=\"true\"]::handle:vertical,"
-                                "QScrollBar[idle=\"true\"]::handle:vertical:hover { "
-                                "background: transparent; }");
+    this->scroll->setStyleSheet(panel_scrollbar_stylesheet(*panel.theme));
+    this->chain_area->setStyleSheet(panel_scrollbar_stylesheet(*panel.theme));
   }
 
   clear_layout(this->attr_layout);
   this->attr_widgets.clear();
+
+  // the chain at the foot belonged to the widgets that just went
+  this->chain_area->hide();
+  if (QWidget *old_chain = this->chain_area->takeWidget())
+    old_chain->deleteLater();
 
   // lifetime safe getter
   GraphNode *p_gno = this->p_graph_node_widget->get_p_graph_node();
@@ -279,6 +395,18 @@ void NodeSettingsWidget::update_content()
   }
 
   this->attr_layout->addStretch();
+
+  // With one node on show, its output chain leaves the list and is attached to
+  // the foot of the pane. With several, pinned or selected together, a strip
+  // at the foot could not say whose it is, so each chain stays at the end of
+  // its own node.
+  if (this->attr_widgets.size() == 1 && this->attr_widgets.front())
+    if (PostProcessDock *chain = this->attr_widgets.front()->release_post_dock())
+    {
+      this->chain_area->setWidget(chain);
+      chain->setAutoFillBackground(false); // setWidget turns it on; the card is rounded
+      this->chain_area->show();
+    }
 }
 
 void NodeSettingsWidget::sync_content()
