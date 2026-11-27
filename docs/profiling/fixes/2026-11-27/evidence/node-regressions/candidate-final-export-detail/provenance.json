@@ -1,0 +1,7 @@
+{
+  "binary": "/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/candidate-final/bin/hesiod",
+  "binary_sha256": "b65f9a51d5f5d9a2d7874070d65cf1ba5a5c19660faa94ca0925916d8e7d6b27",
+  "script_sha256": "4746da38c5dd1b99a50ef3131ae8a512f39cf110bbbb2ccb1709c5198d18bfe3",
+  "size": 128,
+  "suite": "export-detail"
+}

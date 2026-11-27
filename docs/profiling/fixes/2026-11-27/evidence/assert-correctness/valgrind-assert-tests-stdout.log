@@ -1,0 +1,22 @@
+Running main() from /home/barrulus/dev/Hesiod-783/output/validation/googletest/googletest/src/gtest_main.cc
+Note: Google Test filter = AssertAlmostEqual.*
+[==========] Running 6 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 6 tests from AssertAlmostEqual
+[ RUN      ] AssertAlmostEqual.RejectsNonfiniteOperandsInEitherOrder
+[       OK ] AssertAlmostEqual.RejectsNonfiniteOperandsInEitherOrder (6 ms)
+[ RUN      ] AssertAlmostEqual.RejectsNonfiniteTolerance
+[       OK ] AssertAlmostEqual.RejectsNonfiniteTolerance (1 ms)
+[ RUN      ] AssertAlmostEqual.ZeroFieldComparisonIsSymmetric
+[       OK ] AssertAlmostEqual.ZeroFieldComparisonIsSymmetric (2 ms)
+[ RUN      ] AssertAlmostEqual.PreservesRelativeL1ErrorAndTolerance
+[       OK ] AssertAlmostEqual.PreservesRelativeL1ErrorAndTolerance (4 ms)
+[ RUN      ] AssertAlmostEqual.FiniteExtremesDoNotOverflowNormalization
+[       OK ] AssertAlmostEqual.FiniteExtremesDoNotOverflowNormalization (2 ms)
+[ RUN      ] AssertAlmostEqual.SuccessfulComparisonResetsReusedResults
+[       OK ] AssertAlmostEqual.SuccessfulComparisonResetsReusedResults (1 ms)
+[----------] 6 tests from AssertAlmostEqual (21 ms total)
+
+[----------] Global test environment tear-down
+[==========] 6 tests from 1 test suite ran. (37 ms total)
+[  PASSED  ] 6 tests.

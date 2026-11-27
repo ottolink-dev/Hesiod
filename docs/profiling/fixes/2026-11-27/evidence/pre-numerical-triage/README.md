@@ -1,0 +1,1 @@
+These results precede HighMap #594–#597 and CLWrapper #10. The repaired numerical assertion exposed four previously hidden failures; the host lacked a CPU OpenCL device. Final results are archived separately.

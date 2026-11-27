@@ -1,0 +1,168 @@
+{
+  "implemented_locally": 21,
+  "remaining": 2,
+  "published_code": false,
+  "issues": [
+    {
+      "repo": "Hesiod",
+      "issue": 933,
+      "status": "implemented locally",
+      "commit": "ff7cc1fa",
+      "url": "https://github.com/ottolink-dev/Hesiod/issues/933"
+    },
+    {
+      "repo": "Hesiod",
+      "issue": 934,
+      "status": "implemented locally",
+      "commit": "ff7cc1fa",
+      "url": "https://github.com/ottolink-dev/Hesiod/issues/934"
+    },
+    {
+      "repo": "Hesiod",
+      "issue": 935,
+      "status": "implemented locally",
+      "commit": "ff7cc1fa",
+      "url": "https://github.com/ottolink-dev/Hesiod/issues/935"
+    },
+    {
+      "repo": "Hesiod",
+      "issue": 936,
+      "status": "implemented locally",
+      "commit": "ff7cc1fa",
+      "url": "https://github.com/ottolink-dev/Hesiod/issues/936"
+    },
+    {
+      "repo": "Hesiod",
+      "issue": 937,
+      "status": "implemented locally",
+      "commit": "ff7cc1fa",
+      "url": "https://github.com/ottolink-dev/Hesiod/issues/937"
+    },
+    {
+      "repo": "Hesiod",
+      "issue": 938,
+      "status": "implemented locally",
+      "commit": "ff7cc1fa",
+      "url": "https://github.com/ottolink-dev/Hesiod/issues/938"
+    },
+    {
+      "repo": "Hesiod",
+      "issue": 939,
+      "status": "implemented locally",
+      "commit": "ff7cc1fa",
+      "url": "https://github.com/ottolink-dev/Hesiod/issues/939"
+    },
+    {
+      "repo": "Hesiod",
+      "issue": 940,
+      "status": "implemented locally",
+      "commit": "ff7cc1fa",
+      "url": "https://github.com/ottolink-dev/Hesiod/issues/940"
+    },
+    {
+      "repo": "Hesiod",
+      "issue": 941,
+      "status": "implemented locally",
+      "commit": "ff7cc1fa",
+      "url": "https://github.com/ottolink-dev/Hesiod/issues/941"
+    },
+    {
+      "repo": "HighMap",
+      "issue": 586,
+      "status": "remaining follow-up",
+      "commit": null,
+      "url": "https://github.com/ottolink-dev/HighMap/issues/586"
+    },
+    {
+      "repo": "HighMap",
+      "issue": 587,
+      "status": "implemented locally",
+      "commit": "3804fae82",
+      "url": "https://github.com/ottolink-dev/HighMap/issues/587"
+    },
+    {
+      "repo": "HighMap",
+      "issue": 588,
+      "status": "implemented locally",
+      "commit": "3804fae82",
+      "url": "https://github.com/ottolink-dev/HighMap/issues/588"
+    },
+    {
+      "repo": "HighMap",
+      "issue": 589,
+      "status": "implemented locally",
+      "commit": "42046747c",
+      "url": "https://github.com/ottolink-dev/HighMap/issues/589"
+    },
+    {
+      "repo": "HighMap",
+      "issue": 590,
+      "status": "implemented locally",
+      "commit": "3804fae82",
+      "url": "https://github.com/ottolink-dev/HighMap/issues/590"
+    },
+    {
+      "repo": "HighMap",
+      "issue": 591,
+      "status": "implemented locally",
+      "commit": "18b95a93f",
+      "url": "https://github.com/ottolink-dev/HighMap/issues/591"
+    },
+    {
+      "repo": "HighMap",
+      "issue": 592,
+      "status": "implemented locally",
+      "commit": "d547eebf7",
+      "url": "https://github.com/ottolink-dev/HighMap/issues/592"
+    },
+    {
+      "repo": "HighMap",
+      "issue": 593,
+      "status": "remaining follow-up",
+      "commit": null,
+      "url": "https://github.com/ottolink-dev/HighMap/issues/593"
+    },
+    {
+      "repo": "HighMap",
+      "issue": 594,
+      "status": "implemented locally",
+      "commit": "6333aa983",
+      "url": "https://github.com/ottolink-dev/HighMap/issues/594"
+    },
+    {
+      "repo": "HighMap",
+      "issue": 595,
+      "status": "implemented locally",
+      "commit": "2dde8ecff",
+      "url": "https://github.com/ottolink-dev/HighMap/issues/595"
+    },
+    {
+      "repo": "HighMap",
+      "issue": 596,
+      "status": "implemented locally",
+      "commit": "64e6acfe2",
+      "url": "https://github.com/ottolink-dev/HighMap/issues/596"
+    },
+    {
+      "repo": "HighMap",
+      "issue": 597,
+      "status": "implemented locally",
+      "commit": "817bf63f4",
+      "url": "https://github.com/ottolink-dev/HighMap/issues/597"
+    },
+    {
+      "repo": "GNode",
+      "issue": 34,
+      "status": "implemented locally",
+      "commit": "149a4a9",
+      "url": "https://github.com/ottolink-dev/GNode/issues/34"
+    },
+    {
+      "repo": "CLWrapper",
+      "issue": 10,
+      "status": "implemented locally",
+      "commit": "5c742c2",
+      "url": "https://github.com/ottolink-dev/CLWrapper/issues/10"
+    }
+  ]
+}

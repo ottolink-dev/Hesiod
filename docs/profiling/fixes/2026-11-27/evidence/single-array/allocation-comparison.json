@@ -1,0 +1,77 @@
+{
+  "rows": [
+    {
+      "size": 1024,
+      "stride": 1,
+      "disk": 0,
+      "gather_source_shape_allocations": 8,
+      "sum_a": 3145728,
+      "sum_c": 10485760,
+      "version": "baseline"
+    },
+    {
+      "size": 1024,
+      "stride": 1,
+      "disk": 0,
+      "gather_source_shape_allocations": 4,
+      "sum_a": 3145728,
+      "sum_c": 10485760,
+      "version": "fixed"
+    },
+    {
+      "size": 1024,
+      "stride": 1,
+      "disk": 1,
+      "gather_source_shape_allocations": 8,
+      "sum_a": 3145728,
+      "sum_c": 10485760,
+      "version": "baseline"
+    },
+    {
+      "size": 1024,
+      "stride": 1,
+      "disk": 1,
+      "gather_source_shape_allocations": 4,
+      "sum_a": 3145728,
+      "sum_c": 10485760,
+      "version": "fixed"
+    },
+    {
+      "size": 1024,
+      "stride": 2,
+      "disk": 0,
+      "gather_source_shape_allocations": 4,
+      "sum_a": 3145728,
+      "sum_c": 10485760,
+      "version": "baseline"
+    },
+    {
+      "size": 1024,
+      "stride": 2,
+      "disk": 0,
+      "gather_source_shape_allocations": 4,
+      "sum_a": 3145728,
+      "sum_c": 10485760,
+      "version": "fixed"
+    },
+    {
+      "size": 1024,
+      "stride": 2,
+      "disk": 1,
+      "gather_source_shape_allocations": 4,
+      "sum_a": 3145728,
+      "sum_c": 10485760,
+      "version": "baseline"
+    },
+    {
+      "size": 1024,
+      "stride": 2,
+      "disk": 1,
+      "gather_source_shape_allocations": 4,
+      "sum_a": 3145728,
+      "sum_c": 10485760,
+      "version": "fixed"
+    }
+  ],
+  "method": "Standalone replacement operator new counts allocations exactly matching a full source float array during gather; callback reads independent aliased snapshots. Excludes initialization and scatter. This is allocation count, not live RSS."
+}

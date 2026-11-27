@@ -1,0 +1,30 @@
+==3070707== Memcheck, a memory error detector
+==3070707== Copyright (C) 2002-2026, and GNU GPL'd, by Julian Seward et al.
+==3070707== Using Valgrind-3.27.1 and LibVEX; rerun with -h for copyright info
+==3070707== Command: output/fixes/quilting/repro-baseline shape
+==3070707== Parent PID: 1608408
+==3070707== 
+==3070707== Invalid read of size 4
+==3070707==    at 0x40A2240: hmap::quilting(std::vector<hmap::Array const*, std::allocator<hmap::Array const*> > const&, glm::vec<2, int, (glm::qualifier)0>, glm::vec<2, int, (glm::qualifier)0>, float, unsigned int, std::vector<hmap::Array*, std::allocator<hmap::Array*> >, bool, bool, bool, float) (quilting.cpp:145)
+==3070707==    by 0x4041F07: main (repro.cpp:11)
+==3070707==  Address 0x0 is not stack'd, malloc'd or (recently) free'd
+==3070707== 
+==3070707== 
+==3070707== Process terminating with default action of signal 11 (SIGSEGV): dumping core
+==3070707==  Access not within mapped region at address 0x0
+==3070707==    at 0x40A2240: hmap::quilting(std::vector<hmap::Array const*, std::allocator<hmap::Array const*> > const&, glm::vec<2, int, (glm::qualifier)0>, glm::vec<2, int, (glm::qualifier)0>, float, unsigned int, std::vector<hmap::Array*, std::allocator<hmap::Array*> >, bool, bool, bool, float) (quilting.cpp:145)
+==3070707==    by 0x4041F07: main (repro.cpp:11)
+==3070707==  If you believe this happened as a result of a stack
+==3070707==  overflow in your program's main thread (unlikely but
+==3070707==  possible), you can try to increase the size of the
+==3070707==  main thread stack using the --main-stacksize= flag.
+==3070707==  The main thread stack size used in this run was 8388608.
+==3070707== 
+==3070707== HEAP SUMMARY:
+==3070707==     in use at exit: 415,897 bytes in 3,524 blocks
+==3070707==   total heap usage: 8,542 allocs, 5,018 frees, 744,734 bytes allocated
+==3070707== 
+==3070707== For a detailed leak analysis, rerun with: --leak-check=full
+==3070707== 
+==3070707== For lists of detected and suppressed errors, rerun with: -s
+==3070707== ERROR SUMMARY: 1 errors from 1 contexts (suppressed: 0 from 0)

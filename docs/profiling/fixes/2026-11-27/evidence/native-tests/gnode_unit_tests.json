@@ -1,0 +1,732 @@
+{
+  "tests": 60,
+  "failures": 0,
+  "disabled": 0,
+  "errors": 0,
+  "timestamp": "2026-11-27T12:46:42Z",
+  "time": "0.739s",
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "AsyncVsSequentialUpdate",
+      "tests": 5,
+      "failures": 0,
+      "disabled": 0,
+      "errors": 0,
+      "timestamp": "2026-11-27T12:46:42Z",
+      "time": "0.021s",
+      "testsuite": [
+        {
+          "name": "FullUpdateSmallRandomGraph",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/GNode\/tests\/unit_tests\/src\/async_vs_sync.cpp",
+          "line": 187,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0.002s",
+          "classname": "AsyncVsSequentialUpdate"
+        },
+        {
+          "name": "FullUpdateLargeRandomGraphMultipleThreads",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/GNode\/tests\/unit_tests\/src\/async_vs_sync.cpp",
+          "line": 200,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0.005s",
+          "classname": "AsyncVsSequentialUpdate"
+        },
+        {
+          "name": "FullUpdateVariousThreadCounts",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/GNode\/tests\/unit_tests\/src\/async_vs_sync.cpp",
+          "line": 214,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0.005s",
+          "classname": "AsyncVsSequentialUpdate"
+        },
+        {
+          "name": "SelectiveUpdateFromSingleValueNode",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/GNode\/tests\/unit_tests\/src\/async_vs_sync.cpp",
+          "line": 231,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0.003s",
+          "classname": "AsyncVsSequentialUpdate"
+        },
+        {
+          "name": "SelectiveUpdateFromMultipleValueNodes",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/GNode\/tests\/unit_tests\/src\/async_vs_sync.cpp",
+          "line": 258,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0.003s",
+          "classname": "AsyncVsSequentialUpdate"
+        }
+      ]
+    },
+    {
+      "name": "GraphCycle",
+      "tests": 3,
+      "failures": 0,
+      "disabled": 0,
+      "errors": 0,
+      "timestamp": "2026-11-27T12:46:42Z",
+      "time": "0s",
+      "testsuite": [
+        {
+          "name": "Reachability",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/GNode\/tests\/unit_tests\/src\/cycle_detection.cpp",
+          "line": 5,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "GraphCycle"
+        },
+        {
+          "name": "DetectSimpleCycle",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/GNode\/tests\/unit_tests\/src\/cycle_detection.cpp",
+          "line": 21,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "GraphCycle"
+        },
+        {
+          "name": "DetectIndirectCycle",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/GNode\/tests\/unit_tests\/src\/cycle_detection.cpp",
+          "line": 33,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "GraphCycle"
+        }
+      ]
+    },
+    {
+      "name": "GraphUpdate",
+      "tests": 4,
+      "failures": 0,
+      "disabled": 0,
+      "errors": 0,
+      "timestamp": "2026-11-27T12:46:42Z",
+      "time": "0s",
+      "testsuite": [
+        {
+          "name": "DeepPropagation",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/GNode\/tests\/unit_tests\/src\/deep_propagation.cpp",
+          "line": 5,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "GraphUpdate"
+        },
+        {
+          "name": "DisconnectedNodes",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/GNode\/tests\/unit_tests\/src\/disconnected_nodes.cpp",
+          "line": 5,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "GraphUpdate"
+        },
+        {
+          "name": "IncrementalUpdate",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/GNode\/tests\/unit_tests\/src\/incremental_update.cpp",
+          "line": 7,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "GraphUpdate"
+        },
+        {
+          "name": "SimpleChain",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/GNode\/tests\/unit_tests\/src\/simple_chain.cpp",
+          "line": 5,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "GraphUpdate"
+        }
+      ]
+    },
+    {
+      "name": "EventSystem",
+      "tests": 7,
+      "failures": 0,
+      "disabled": 0,
+      "errors": 0,
+      "timestamp": "2026-11-27T12:46:42Z",
+      "time": "0s",
+      "testsuite": [
+        {
+          "name": "BasicSubscriptionAndNotify",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/GNode\/tests\/unit_tests\/src\/event_system.cpp",
+          "line": 6,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "EventSystem"
+        },
+        {
+          "name": "MultipleSubscribers",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/GNode\/tests\/unit_tests\/src\/event_system.cpp",
+          "line": 25,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "EventSystem"
+        },
+        {
+          "name": "AutomaticDisconnection",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/GNode\/tests\/unit_tests\/src\/event_system.cpp",
+          "line": 51,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "EventSystem"
+        },
+        {
+          "name": "ManualDisconnection",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/GNode\/tests\/unit_tests\/src\/event_system.cpp",
+          "line": 66,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "EventSystem"
+        },
+        {
+          "name": "OutlivedEventConnection",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/GNode\/tests\/unit_tests\/src\/event_system.cpp",
+          "line": 81,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "EventSystem"
+        },
+        {
+          "name": "NodeEvents",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/GNode\/tests\/unit_tests\/src\/event_system.cpp",
+          "line": 99,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "EventSystem"
+        },
+        {
+          "name": "GraphEvents",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/GNode\/tests\/unit_tests\/src\/event_system.cpp",
+          "line": 131,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "EventSystem"
+        }
+      ]
+    },
+    {
+      "name": "GraphStress",
+      "tests": 2,
+      "failures": 0,
+      "disabled": 0,
+      "errors": 0,
+      "timestamp": "2026-11-27T12:46:42Z",
+      "time": "0.44s",
+      "testsuite": [
+        {
+          "name": "IncrementalUpdate5000Nodes",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/GNode\/tests\/unit_tests\/src\/incremental_update.cpp",
+          "line": 34,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0.181s",
+          "classname": "GraphStress"
+        },
+        {
+          "name": "RandomDAG_Correctness",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/GNode\/tests\/unit_tests\/src\/random_dag.cpp",
+          "line": 9,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0.258s",
+          "classname": "GraphStress"
+        }
+      ]
+    },
+    {
+      "name": "ParallelGraphUpdate",
+      "tests": 19,
+      "failures": 0,
+      "disabled": 0,
+      "errors": 0,
+      "timestamp": "2026-11-27T12:46:42Z",
+      "time": "0.253s",
+      "testsuite": [
+        {
+          "name": "DiamondConvergenceAndSpeedup",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/GNode\/tests\/unit_tests\/src\/parallel_update.cpp",
+          "line": 42,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0.041s",
+          "classname": "ParallelGraphUpdate"
+        },
+        {
+          "name": "AsyncFutureBasic",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/GNode\/tests\/unit_tests\/src\/parallel_update.cpp",
+          "line": 90,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0.001s",
+          "classname": "ParallelGraphUpdate"
+        },
+        {
+          "name": "SelectiveNodesUpdate",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/GNode\/tests\/unit_tests\/src\/parallel_update.cpp",
+          "line": 111,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0.001s",
+          "classname": "ParallelGraphUpdate"
+        },
+        {
+          "name": "Cancellation",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/GNode\/tests\/unit_tests\/src\/parallel_update.cpp",
+          "line": 141,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "ParallelGraphUpdate"
+        },
+        {
+          "name": "CancellationWithConcurrentDownstreamScheduling",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/GNode\/tests\/unit_tests\/src\/parallel_update.cpp",
+          "line": 173,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0.045s",
+          "classname": "ParallelGraphUpdate"
+        },
+        {
+          "name": "ExceptionPropagation",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/GNode\/tests\/unit_tests\/src\/parallel_update.cpp",
+          "line": 221,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0.001s",
+          "classname": "ParallelGraphUpdate"
+        },
+        {
+          "name": "CancellationFollowedByFailureInRunningNode",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/GNode\/tests\/unit_tests\/src\/parallel_update.cpp",
+          "line": 268,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0.103s",
+          "classname": "ParallelGraphUpdate"
+        },
+        {
+          "name": "GraphWorkerExecution",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/GNode\/tests\/unit_tests\/src\/parallel_update.cpp",
+          "line": 330,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "ParallelGraphUpdate"
+        },
+        {
+          "name": "GraphWorkerRapidCoalescing",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/GNode\/tests\/unit_tests\/src\/parallel_update.cpp",
+          "line": 351,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0.001s",
+          "classname": "ParallelGraphUpdate"
+        },
+        {
+          "name": "GraphWorkerDestroyUnderLoad",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/GNode\/tests\/unit_tests\/src\/parallel_update.cpp",
+          "line": 374,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "ParallelGraphUpdate"
+        },
+        {
+          "name": "GraphWorkerMultiGraphSelectiveCancel",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/GNode\/tests\/unit_tests\/src\/parallel_update.cpp",
+          "line": 389,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "ParallelGraphUpdate"
+        },
+        {
+          "name": "GraphWorkerExceptionInStartNext",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/GNode\/tests\/unit_tests\/src\/parallel_update.cpp",
+          "line": 420,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "ParallelGraphUpdate"
+        },
+        {
+          "name": "GraphWorkerExceptionInFinish",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/GNode\/tests\/unit_tests\/src\/parallel_update.cpp",
+          "line": 446,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "ParallelGraphUpdate"
+        },
+        {
+          "name": "GraphWorkerHoldAndResume",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/GNode\/tests\/unit_tests\/src\/parallel_update.cpp",
+          "line": 473,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "ParallelGraphUpdate"
+        },
+        {
+          "name": "ThreadPoolDetachedEnqueue",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/GNode\/tests\/unit_tests\/src\/parallel_update.cpp",
+          "line": 501,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "ParallelGraphUpdate"
+        },
+        {
+          "name": "MissingNodeIdInDirtyList",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/GNode\/tests\/unit_tests\/src\/parallel_update.cpp",
+          "line": 516,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "ParallelGraphUpdate"
+        },
+        {
+          "name": "GraphWorkerStressRequestStopFinish",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/GNode\/tests\/unit_tests\/src\/parallel_update.cpp",
+          "line": 524,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0.001s",
+          "classname": "ParallelGraphUpdate"
+        },
+        {
+          "name": "PostedCallbacksAreDiscardedAfterDestruction",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/GNode\/tests\/unit_tests\/src\/parallel_update.cpp",
+          "line": 548,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "ParallelGraphUpdate"
+        },
+        {
+          "name": "DestructionWaitsForRunningPostedCallback",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/GNode\/tests\/unit_tests\/src\/parallel_update.cpp",
+          "line": 565,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0.05s",
+          "classname": "ParallelGraphUpdate"
+        }
+      ]
+    },
+    {
+      "name": "SubGraphTest",
+      "tests": 15,
+      "failures": 0,
+      "disabled": 0,
+      "errors": 0,
+      "timestamp": "2026-11-27T12:46:42Z",
+      "time": "0.022s",
+      "testsuite": [
+        {
+          "name": "BasicHierarchicalEvaluation",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/GNode\/tests\/unit_tests\/src\/subgraph_test.cpp",
+          "line": 105,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "SubGraphTest"
+        },
+        {
+          "name": "NestedSubGraphs",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/GNode\/tests\/unit_tests\/src\/subgraph_test.cpp",
+          "line": 170,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "SubGraphTest"
+        },
+        {
+          "name": "AsyncStressParallelSubgraphs",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/GNode\/tests\/unit_tests\/src\/subgraph_test.cpp",
+          "line": 235,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0.009s",
+          "classname": "SubGraphTest"
+        },
+        {
+          "name": "AsyncNestedSubGraphsStress",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/GNode\/tests\/unit_tests\/src\/subgraph_test.cpp",
+          "line": 343,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0.001s",
+          "classname": "SubGraphTest"
+        },
+        {
+          "name": "AsyncRapidConcurrentTriggers",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/GNode\/tests\/unit_tests\/src\/subgraph_test.cpp",
+          "line": 410,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0.004s",
+          "classname": "SubGraphTest"
+        },
+        {
+          "name": "ExceptionPropagationSync",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/GNode\/tests\/unit_tests\/src\/subgraph_test.cpp",
+          "line": 452,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "SubGraphTest"
+        },
+        {
+          "name": "ExceptionPropagationAsync",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/GNode\/tests\/unit_tests\/src\/subgraph_test.cpp",
+          "line": 485,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "SubGraphTest"
+        },
+        {
+          "name": "NestedSubGraphExceptionPropagationAsync",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/GNode\/tests\/unit_tests\/src\/subgraph_test.cpp",
+          "line": 519,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "SubGraphTest"
+        },
+        {
+          "name": "AsyncStressParallelSubgraphsWithExceptions",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/GNode\/tests\/unit_tests\/src\/subgraph_test.cpp",
+          "line": 571,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0.005s",
+          "classname": "SubGraphTest"
+        },
+        {
+          "name": "AsyncRecoveryAfterExceptionStress",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/GNode\/tests\/unit_tests\/src\/subgraph_test.cpp",
+          "line": 620,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0.001s",
+          "classname": "SubGraphTest"
+        },
+        {
+          "name": "AutoBindPorts",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/GNode\/tests\/unit_tests\/src\/subgraph_test.cpp",
+          "line": 670,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "SubGraphTest"
+        },
+        {
+          "name": "LifecycleHooksPropagation",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/GNode\/tests\/unit_tests\/src\/subgraph_test.cpp",
+          "line": 710,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "SubGraphTest"
+        },
+        {
+          "name": "RebindSubgraph",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/GNode\/tests\/unit_tests\/src\/subgraph_test.cpp",
+          "line": 725,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "SubGraphTest"
+        },
+        {
+          "name": "AutoBindPortsRemoval",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/GNode\/tests\/unit_tests\/src\/subgraph_test.cpp",
+          "line": 748,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "SubGraphTest"
+        },
+        {
+          "name": "RemoveOrphanLinksAfterPortRemoval",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/GNode\/tests\/unit_tests\/src\/subgraph_test.cpp",
+          "line": 769,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "SubGraphTest"
+        }
+      ]
+    },
+    {
+      "name": "Ports",
+      "tests": 1,
+      "failures": 0,
+      "disabled": 0,
+      "errors": 0,
+      "timestamp": "2026-11-27T12:46:42Z",
+      "time": "0s",
+      "testsuite": [
+        {
+          "name": "Validation",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/GNode\/tests\/unit_tests\/src\/validation.cpp",
+          "line": 5,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "Ports"
+        }
+      ]
+    },
+    {
+      "name": "GraphLinks",
+      "tests": 1,
+      "failures": 0,
+      "disabled": 0,
+      "errors": 0,
+      "timestamp": "2026-11-27T12:46:42Z",
+      "time": "0s",
+      "testsuite": [
+        {
+          "name": "InvalidPorts",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/GNode\/tests\/unit_tests\/src\/validation.cpp",
+          "line": 18,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "GraphLinks"
+        }
+      ]
+    },
+    {
+      "name": "GraphExceptions",
+      "tests": 2,
+      "failures": 0,
+      "disabled": 0,
+      "errors": 0,
+      "timestamp": "2026-11-27T12:46:42Z",
+      "time": "0s",
+      "testsuite": [
+        {
+          "name": "GetNodeRefMissing",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/GNode\/tests\/unit_tests\/src\/validation.cpp",
+          "line": 28,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "GraphExceptions"
+        },
+        {
+          "name": "UpdateMissingNode",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/GNode\/tests\/unit_tests\/src\/validation.cpp",
+          "line": 42,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "GraphExceptions"
+        }
+      ]
+    },
+    {
+      "name": "NodeExceptions",
+      "tests": 1,
+      "failures": 0,
+      "disabled": 0,
+      "errors": 0,
+      "timestamp": "2026-11-27T12:46:42Z",
+      "time": "0s",
+      "testsuite": [
+        {
+          "name": "GetValueRefExceptions",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/GNode\/tests\/unit_tests\/src\/validation.cpp",
+          "line": 34,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "NodeExceptions"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "cases": 3240,
+  "comparison": "byte-for-byte identical to immutable d73 baseline for positive smoothing radii and zero-overlap cases that never invoke smoothing",
+  "bytes": 319733824,
+  "baseline_sha256": "5c03dc900b2325662b66986f25f79d28ce80ed36892a3fbd966fb03ef5b8274e",
+  "fixed_sha256": "5c03dc900b2325662b66986f25f79d28ce80ed36892a3fbd966fb03ef5b8274e"
+}

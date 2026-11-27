@@ -1,0 +1,1275 @@
+Running main() from /home/barrulus/dev/Hesiod-783/output/validation/googletest/googletest/src/gtest_main.cc
+
+Repeating all tests (iteration 1) . . .
+
+Note: Google Test filter = DeviceManagerTest.*
+Note: Randomizing tests' orders with a seed of 783 .
+[==========] Running 9 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 9 tests from DeviceManagerTest
+[ RUN      ] DeviceManagerTest.PlatformMetadataTest
+[clwrap] [12:57:11] [---T---] DeviceManager::DeviceManager
+[clwrap] [12:57:11] [---T---] initializing OpenCL devices...
+[clwrap] [12:57:11] [---T---] checking device performances...
+[clwrap] [12:57:11] [---T---] checking platform: NVIDIA Corporation - NVIDIA CUDA
+[clwrap] [12:57:11] [---T---] rating - device: NVIDIA GeForce RTX 5060 Laptop GPU, score: 1000052.6580820961
+[clwrap] [12:57:11] [---I---] Selected OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:11] [---I---] - device Name: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:11] [---I---]  - device Vendor: NVIDIA Corporation
+[clwrap] [12:57:11] [---I---]  - device Version: OpenCL 3.0 CUDA
+[clwrap] [12:57:11] [---I---]  - device Type: GPU
+[       OK ] DeviceManagerTest.PlatformMetadataTest (68 ms)
+[ RUN      ] DeviceManagerTest.GetDeviceTest
+[       OK ] DeviceManagerTest.GetDeviceTest (0 ms)
+[ RUN      ] DeviceManagerTest.AvailableDevicesTest
+[       OK ] DeviceManagerTest.AvailableDevicesTest (0 ms)
+[ RUN      ] DeviceManagerTest.CpuDeviceTypeFilterAutoRediscoveryWhenAvailable
+/home/barrulus/dev/Hesiod-783/external/HighMap/external/CLWrapper/tests/unit_tests/test_device_manager.cpp:134: Skipped
+No CPU OpenCL device is available; generic filter rediscovery is covered separately.
+
+[  SKIPPED ] DeviceManagerTest.CpuDeviceTypeFilterAutoRediscoveryWhenAvailable (0 ms)
+[ RUN      ] DeviceManagerTest.SetDeviceTypeFilterAutoRediscoveryTest
+[clwrap] [12:57:11] [---T---] initializing OpenCL devices...
+[clwrap] [12:57:11] [---T---] checking device performances...
+[clwrap] [12:57:11] [---T---] checking platform: NVIDIA Corporation - NVIDIA CUDA
+[clwrap] [12:57:11] [---T---] rating - device: NVIDIA GeForce RTX 5060 Laptop GPU, score: 1000052.6580820961
+[clwrap] [12:57:11] [---I---] Selected OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:11] [---I---] - device Name: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:11] [---I---]  - device Vendor: NVIDIA Corporation
+[clwrap] [12:57:11] [---I---]  - device Version: OpenCL 3.0 CUDA
+[clwrap] [12:57:11] [---I---]  - device Type: GPU
+[clwrap] [12:57:11] [---T---] initializing OpenCL devices...
+[clwrap] [12:57:11] [---T---] checking device performances...
+[clwrap] [12:57:11] [---T---] checking platform: NVIDIA Corporation - NVIDIA CUDA
+[clwrap] [12:57:11] [---T---] rating - device: NVIDIA GeForce RTX 5060 Laptop GPU, score: 1000052.6580820961
+[clwrap] [12:57:11] [---I---] Selected OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:11] [---I---] - device Name: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:11] [---I---]  - device Vendor: NVIDIA Corporation
+[clwrap] [12:57:11] [---I---]  - device Version: OpenCL 3.0 CUDA
+[clwrap] [12:57:11] [---I---]  - device Type: GPU
+[clwrap] [12:57:11] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[       OK ] DeviceManagerTest.SetDeviceTypeFilterAutoRediscoveryTest (0 ms)
+[ RUN      ] DeviceManagerTest.SetDeviceBoundsCheckingTest
+[clwrap] [12:57:11] [---E---] Platform ID 999999 is out of bounds (total platforms: 1)
+[clwrap] [12:57:11] [---E---] Device index 999999 is out of bounds for platform 0 (total devices: 1)
+[clwrap] [12:57:11] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[       OK ] DeviceManagerTest.SetDeviceBoundsCheckingTest (0 ms)
+[ RUN      ] DeviceManagerTest.IsReadyTest
+[       OK ] DeviceManagerTest.IsReadyTest (0 ms)
+[ RUN      ] DeviceManagerTest.DeviceMetadataTest
+[       OK ] DeviceManagerTest.DeviceMetadataTest (0 ms)
+[ RUN      ] DeviceManagerTest.DeviceSwitchAndExecutionTest
+[clwrap] [12:57:11] [---T---] loading kernel sources
+[clwrap] [12:57:11] [---T---] program building skipped, kernel sources are empty
+[clwrap] [12:57:11] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:11] [---T---] loading kernel sources
+[clwrap] [12:57:11] [---T---] building OpenCL kernels
+[clwrap] [12:57:11] [---T---] build options: 
+[clwrap] [12:57:11] [---T---] available kernels: simple_add
+[clwrap] [12:57:11] [---T---] Run::Run [simple_add]
+[clwrap] [12:57:11] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[       OK ] DeviceManagerTest.DeviceSwitchAndExecutionTest (67 ms)
+[----------] 9 tests from DeviceManagerTest (136 ms total)
+
+[==========] 9 tests from 1 test suite ran. (136 ms total)
+[  PASSED  ] 8 tests.
+[  SKIPPED ] 1 test, listed below:
+[  SKIPPED ] DeviceManagerTest.CpuDeviceTypeFilterAutoRediscoveryWhenAvailable
+
+Repeating all tests (iteration 2) . . .
+
+Note: Google Test filter = DeviceManagerTest.*
+Note: Randomizing tests' orders with a seed of 784 .
+[==========] Running 9 tests from 1 test suite.
+[----------] 9 tests from DeviceManagerTest
+[ RUN      ] DeviceManagerTest.AvailableDevicesTest
+[       OK ] DeviceManagerTest.AvailableDevicesTest (0 ms)
+[ RUN      ] DeviceManagerTest.DeviceMetadataTest
+[       OK ] DeviceManagerTest.DeviceMetadataTest (0 ms)
+[ RUN      ] DeviceManagerTest.GetDeviceTest
+[       OK ] DeviceManagerTest.GetDeviceTest (0 ms)
+[ RUN      ] DeviceManagerTest.DeviceSwitchAndExecutionTest
+[clwrap] [12:57:11] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:11] [---T---] loading kernel sources
+[clwrap] [12:57:11] [---T---] building OpenCL kernels
+[clwrap] [12:57:11] [---T---] build options: 
+[clwrap] [12:57:12] [---T---] available kernels: simple_add
+[clwrap] [12:57:12] [---T---] Run::Run [simple_add]
+[clwrap] [12:57:12] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[       OK ] DeviceManagerTest.DeviceSwitchAndExecutionTest (112 ms)
+[ RUN      ] DeviceManagerTest.SetDeviceBoundsCheckingTest
+[clwrap] [12:57:12] [---E---] Platform ID 999999 is out of bounds (total platforms: 1)
+[clwrap] [12:57:12] [---E---] Device index 999999 is out of bounds for platform 0 (total devices: 1)
+[clwrap] [12:57:12] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[       OK ] DeviceManagerTest.SetDeviceBoundsCheckingTest (0 ms)
+[ RUN      ] DeviceManagerTest.IsReadyTest
+[       OK ] DeviceManagerTest.IsReadyTest (0 ms)
+[ RUN      ] DeviceManagerTest.SetDeviceTypeFilterAutoRediscoveryTest
+[clwrap] [12:57:12] [---T---] initializing OpenCL devices...
+[clwrap] [12:57:12] [---T---] checking device performances...
+[clwrap] [12:57:12] [---T---] checking platform: NVIDIA Corporation - NVIDIA CUDA
+[clwrap] [12:57:12] [---T---] rating - device: NVIDIA GeForce RTX 5060 Laptop GPU, score: 1000052.6580820961
+[clwrap] [12:57:12] [---I---] Selected OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:12] [---I---] - device Name: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:12] [---I---]  - device Vendor: NVIDIA Corporation
+[clwrap] [12:57:12] [---I---]  - device Version: OpenCL 3.0 CUDA
+[clwrap] [12:57:12] [---I---]  - device Type: GPU
+[clwrap] [12:57:12] [---T---] initializing OpenCL devices...
+[clwrap] [12:57:12] [---T---] checking device performances...
+[clwrap] [12:57:12] [---T---] checking platform: NVIDIA Corporation - NVIDIA CUDA
+[clwrap] [12:57:12] [---T---] rating - device: NVIDIA GeForce RTX 5060 Laptop GPU, score: 1000052.6580820961
+[clwrap] [12:57:12] [---I---] Selected OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:12] [---I---] - device Name: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:12] [---I---]  - device Vendor: NVIDIA Corporation
+[clwrap] [12:57:12] [---I---]  - device Version: OpenCL 3.0 CUDA
+[clwrap] [12:57:12] [---I---]  - device Type: GPU
+[clwrap] [12:57:12] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[       OK ] DeviceManagerTest.SetDeviceTypeFilterAutoRediscoveryTest (1 ms)
+[ RUN      ] DeviceManagerTest.PlatformMetadataTest
+[       OK ] DeviceManagerTest.PlatformMetadataTest (0 ms)
+[ RUN      ] DeviceManagerTest.CpuDeviceTypeFilterAutoRediscoveryWhenAvailable
+/home/barrulus/dev/Hesiod-783/external/HighMap/external/CLWrapper/tests/unit_tests/test_device_manager.cpp:134: Skipped
+No CPU OpenCL device is available; generic filter rediscovery is covered separately.
+
+[  SKIPPED ] DeviceManagerTest.CpuDeviceTypeFilterAutoRediscoveryWhenAvailable (0 ms)
+[----------] 9 tests from DeviceManagerTest (113 ms total)
+
+[==========] 9 tests from 1 test suite ran. (113 ms total)
+[  PASSED  ] 8 tests.
+[  SKIPPED ] 1 test, listed below:
+[  SKIPPED ] DeviceManagerTest.CpuDeviceTypeFilterAutoRediscoveryWhenAvailable
+
+Repeating all tests (iteration 3) . . .
+
+Note: Google Test filter = DeviceManagerTest.*
+Note: Randomizing tests' orders with a seed of 785 .
+[==========] Running 9 tests from 1 test suite.
+[----------] 9 tests from DeviceManagerTest
+[ RUN      ] DeviceManagerTest.AvailableDevicesTest
+[       OK ] DeviceManagerTest.AvailableDevicesTest (0 ms)
+[ RUN      ] DeviceManagerTest.PlatformMetadataTest
+[       OK ] DeviceManagerTest.PlatformMetadataTest (0 ms)
+[ RUN      ] DeviceManagerTest.IsReadyTest
+[       OK ] DeviceManagerTest.IsReadyTest (0 ms)
+[ RUN      ] DeviceManagerTest.GetDeviceTest
+[       OK ] DeviceManagerTest.GetDeviceTest (0 ms)
+[ RUN      ] DeviceManagerTest.DeviceSwitchAndExecutionTest
+[clwrap] [12:57:12] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:12] [---T---] loading kernel sources
+[clwrap] [12:57:12] [---T---] building OpenCL kernels
+[clwrap] [12:57:12] [---T---] build options: 
+[clwrap] [12:57:12] [---T---] available kernels: simple_add
+[clwrap] [12:57:12] [---T---] Run::Run [simple_add]
+[clwrap] [12:57:12] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[       OK ] DeviceManagerTest.DeviceSwitchAndExecutionTest (111 ms)
+[ RUN      ] DeviceManagerTest.DeviceMetadataTest
+[       OK ] DeviceManagerTest.DeviceMetadataTest (0 ms)
+[ RUN      ] DeviceManagerTest.CpuDeviceTypeFilterAutoRediscoveryWhenAvailable
+/home/barrulus/dev/Hesiod-783/external/HighMap/external/CLWrapper/tests/unit_tests/test_device_manager.cpp:134: Skipped
+No CPU OpenCL device is available; generic filter rediscovery is covered separately.
+
+[  SKIPPED ] DeviceManagerTest.CpuDeviceTypeFilterAutoRediscoveryWhenAvailable (0 ms)
+[ RUN      ] DeviceManagerTest.SetDeviceBoundsCheckingTest
+[clwrap] [12:57:12] [---E---] Platform ID 999999 is out of bounds (total platforms: 1)
+[clwrap] [12:57:12] [---E---] Device index 999999 is out of bounds for platform 0 (total devices: 1)
+[clwrap] [12:57:12] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[       OK ] DeviceManagerTest.SetDeviceBoundsCheckingTest (0 ms)
+[ RUN      ] DeviceManagerTest.SetDeviceTypeFilterAutoRediscoveryTest
+[clwrap] [12:57:12] [---T---] initializing OpenCL devices...
+[clwrap] [12:57:12] [---T---] checking device performances...
+[clwrap] [12:57:12] [---T---] checking platform: NVIDIA Corporation - NVIDIA CUDA
+[clwrap] [12:57:12] [---T---] rating - device: NVIDIA GeForce RTX 5060 Laptop GPU, score: 1000052.6580820961
+[clwrap] [12:57:12] [---I---] Selected OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:12] [---I---] - device Name: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:12] [---I---]  - device Vendor: NVIDIA Corporation
+[clwrap] [12:57:12] [---I---]  - device Version: OpenCL 3.0 CUDA
+[clwrap] [12:57:12] [---I---]  - device Type: GPU
+[clwrap] [12:57:12] [---T---] initializing OpenCL devices...
+[clwrap] [12:57:12] [---T---] checking device performances...
+[clwrap] [12:57:12] [---T---] checking platform: NVIDIA Corporation - NVIDIA CUDA
+[clwrap] [12:57:12] [---T---] rating - device: NVIDIA GeForce RTX 5060 Laptop GPU, score: 1000052.6580820961
+[clwrap] [12:57:12] [---I---] Selected OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:12] [---I---] - device Name: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:12] [---I---]  - device Vendor: NVIDIA Corporation
+[clwrap] [12:57:12] [---I---]  - device Version: OpenCL 3.0 CUDA
+[clwrap] [12:57:12] [---I---]  - device Type: GPU
+[clwrap] [12:57:12] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[       OK ] DeviceManagerTest.SetDeviceTypeFilterAutoRediscoveryTest (1 ms)
+[----------] 9 tests from DeviceManagerTest (112 ms total)
+
+[==========] 9 tests from 1 test suite ran. (112 ms total)
+[  PASSED  ] 8 tests.
+[  SKIPPED ] 1 test, listed below:
+[  SKIPPED ] DeviceManagerTest.CpuDeviceTypeFilterAutoRediscoveryWhenAvailable
+
+Repeating all tests (iteration 4) . . .
+
+Note: Google Test filter = DeviceManagerTest.*
+Note: Randomizing tests' orders with a seed of 786 .
+[==========] Running 9 tests from 1 test suite.
+[----------] 9 tests from DeviceManagerTest
+[ RUN      ] DeviceManagerTest.DeviceSwitchAndExecutionTest
+[clwrap] [12:57:12] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:12] [---T---] loading kernel sources
+[clwrap] [12:57:12] [---T---] building OpenCL kernels
+[clwrap] [12:57:12] [---T---] build options: 
+[clwrap] [12:57:12] [---T---] available kernels: simple_add
+[clwrap] [12:57:12] [---T---] Run::Run [simple_add]
+[clwrap] [12:57:12] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[       OK ] DeviceManagerTest.DeviceSwitchAndExecutionTest (113 ms)
+[ RUN      ] DeviceManagerTest.IsReadyTest
+[       OK ] DeviceManagerTest.IsReadyTest (0 ms)
+[ RUN      ] DeviceManagerTest.DeviceMetadataTest
+[       OK ] DeviceManagerTest.DeviceMetadataTest (0 ms)
+[ RUN      ] DeviceManagerTest.AvailableDevicesTest
+[       OK ] DeviceManagerTest.AvailableDevicesTest (0 ms)
+[ RUN      ] DeviceManagerTest.GetDeviceTest
+[       OK ] DeviceManagerTest.GetDeviceTest (0 ms)
+[ RUN      ] DeviceManagerTest.CpuDeviceTypeFilterAutoRediscoveryWhenAvailable
+/home/barrulus/dev/Hesiod-783/external/HighMap/external/CLWrapper/tests/unit_tests/test_device_manager.cpp:134: Skipped
+No CPU OpenCL device is available; generic filter rediscovery is covered separately.
+
+[  SKIPPED ] DeviceManagerTest.CpuDeviceTypeFilterAutoRediscoveryWhenAvailable (0 ms)
+[ RUN      ] DeviceManagerTest.PlatformMetadataTest
+[       OK ] DeviceManagerTest.PlatformMetadataTest (0 ms)
+[ RUN      ] DeviceManagerTest.SetDeviceTypeFilterAutoRediscoveryTest
+[clwrap] [12:57:12] [---T---] initializing OpenCL devices...
+[clwrap] [12:57:12] [---T---] checking device performances...
+[clwrap] [12:57:12] [---T---] checking platform: NVIDIA Corporation - NVIDIA CUDA
+[clwrap] [12:57:12] [---T---] rating - device: NVIDIA GeForce RTX 5060 Laptop GPU, score: 1000052.6580820961
+[clwrap] [12:57:12] [---I---] Selected OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:12] [---I---] - device Name: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:12] [---I---]  - device Vendor: NVIDIA Corporation
+[clwrap] [12:57:12] [---I---]  - device Version: OpenCL 3.0 CUDA
+[clwrap] [12:57:12] [---I---]  - device Type: GPU
+[clwrap] [12:57:12] [---T---] initializing OpenCL devices...
+[clwrap] [12:57:12] [---T---] checking device performances...
+[clwrap] [12:57:12] [---T---] checking platform: NVIDIA Corporation - NVIDIA CUDA
+[clwrap] [12:57:12] [---T---] rating - device: NVIDIA GeForce RTX 5060 Laptop GPU, score: 1000052.6580820961
+[clwrap] [12:57:12] [---I---] Selected OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:12] [---I---] - device Name: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:12] [---I---]  - device Vendor: NVIDIA Corporation
+[clwrap] [12:57:12] [---I---]  - device Version: OpenCL 3.0 CUDA
+[clwrap] [12:57:12] [---I---]  - device Type: GPU
+[clwrap] [12:57:12] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[       OK ] DeviceManagerTest.SetDeviceTypeFilterAutoRediscoveryTest (1 ms)
+[ RUN      ] DeviceManagerTest.SetDeviceBoundsCheckingTest
+[clwrap] [12:57:12] [---E---] Platform ID 999999 is out of bounds (total platforms: 1)
+[clwrap] [12:57:12] [---E---] Device index 999999 is out of bounds for platform 0 (total devices: 1)
+[clwrap] [12:57:12] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[       OK ] DeviceManagerTest.SetDeviceBoundsCheckingTest (0 ms)
+[----------] 9 tests from DeviceManagerTest (115 ms total)
+
+[==========] 9 tests from 1 test suite ran. (115 ms total)
+[  PASSED  ] 8 tests.
+[  SKIPPED ] 1 test, listed below:
+[  SKIPPED ] DeviceManagerTest.CpuDeviceTypeFilterAutoRediscoveryWhenAvailable
+
+Repeating all tests (iteration 5) . . .
+
+Note: Google Test filter = DeviceManagerTest.*
+Note: Randomizing tests' orders with a seed of 787 .
+[==========] Running 9 tests from 1 test suite.
+[----------] 9 tests from DeviceManagerTest
+[ RUN      ] DeviceManagerTest.IsReadyTest
+[       OK ] DeviceManagerTest.IsReadyTest (0 ms)
+[ RUN      ] DeviceManagerTest.AvailableDevicesTest
+[       OK ] DeviceManagerTest.AvailableDevicesTest (0 ms)
+[ RUN      ] DeviceManagerTest.GetDeviceTest
+[       OK ] DeviceManagerTest.GetDeviceTest (0 ms)
+[ RUN      ] DeviceManagerTest.DeviceMetadataTest
+[       OK ] DeviceManagerTest.DeviceMetadataTest (0 ms)
+[ RUN      ] DeviceManagerTest.DeviceSwitchAndExecutionTest
+[clwrap] [12:57:12] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:12] [---T---] loading kernel sources
+[clwrap] [12:57:12] [---T---] building OpenCL kernels
+[clwrap] [12:57:12] [---T---] build options: 
+[clwrap] [12:57:12] [---T---] available kernels: simple_add
+[clwrap] [12:57:12] [---T---] Run::Run [simple_add]
+[clwrap] [12:57:12] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[       OK ] DeviceManagerTest.DeviceSwitchAndExecutionTest (111 ms)
+[ RUN      ] DeviceManagerTest.SetDeviceTypeFilterAutoRediscoveryTest
+[clwrap] [12:57:12] [---T---] initializing OpenCL devices...
+[clwrap] [12:57:12] [---T---] checking device performances...
+[clwrap] [12:57:12] [---T---] checking platform: NVIDIA Corporation - NVIDIA CUDA
+[clwrap] [12:57:12] [---T---] rating - device: NVIDIA GeForce RTX 5060 Laptop GPU, score: 1000052.6580820961
+[clwrap] [12:57:12] [---I---] Selected OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:12] [---I---] - device Name: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:12] [---I---]  - device Vendor: NVIDIA Corporation
+[clwrap] [12:57:12] [---I---]  - device Version: OpenCL 3.0 CUDA
+[clwrap] [12:57:12] [---I---]  - device Type: GPU
+[clwrap] [12:57:12] [---T---] initializing OpenCL devices...
+[clwrap] [12:57:12] [---T---] checking device performances...
+[clwrap] [12:57:12] [---T---] checking platform: NVIDIA Corporation - NVIDIA CUDA
+[clwrap] [12:57:12] [---T---] rating - device: NVIDIA GeForce RTX 5060 Laptop GPU, score: 1000052.6580820961
+[clwrap] [12:57:12] [---I---] Selected OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:12] [---I---] - device Name: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:12] [---I---]  - device Vendor: NVIDIA Corporation
+[clwrap] [12:57:12] [---I---]  - device Version: OpenCL 3.0 CUDA
+[clwrap] [12:57:12] [---I---]  - device Type: GPU
+[clwrap] [12:57:12] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[       OK ] DeviceManagerTest.SetDeviceTypeFilterAutoRediscoveryTest (1 ms)
+[ RUN      ] DeviceManagerTest.SetDeviceBoundsCheckingTest
+[clwrap] [12:57:12] [---E---] Platform ID 999999 is out of bounds (total platforms: 1)
+[clwrap] [12:57:12] [---E---] Device index 999999 is out of bounds for platform 0 (total devices: 1)
+[clwrap] [12:57:12] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[       OK ] DeviceManagerTest.SetDeviceBoundsCheckingTest (0 ms)
+[ RUN      ] DeviceManagerTest.CpuDeviceTypeFilterAutoRediscoveryWhenAvailable
+/home/barrulus/dev/Hesiod-783/external/HighMap/external/CLWrapper/tests/unit_tests/test_device_manager.cpp:134: Skipped
+No CPU OpenCL device is available; generic filter rediscovery is covered separately.
+
+[  SKIPPED ] DeviceManagerTest.CpuDeviceTypeFilterAutoRediscoveryWhenAvailable (0 ms)
+[ RUN      ] DeviceManagerTest.PlatformMetadataTest
+[       OK ] DeviceManagerTest.PlatformMetadataTest (0 ms)
+[----------] 9 tests from DeviceManagerTest (113 ms total)
+
+[==========] 9 tests from 1 test suite ran. (113 ms total)
+[  PASSED  ] 8 tests.
+[  SKIPPED ] 1 test, listed below:
+[  SKIPPED ] DeviceManagerTest.CpuDeviceTypeFilterAutoRediscoveryWhenAvailable
+
+Repeating all tests (iteration 6) . . .
+
+Note: Google Test filter = DeviceManagerTest.*
+Note: Randomizing tests' orders with a seed of 788 .
+[==========] Running 9 tests from 1 test suite.
+[----------] 9 tests from DeviceManagerTest
+[ RUN      ] DeviceManagerTest.GetDeviceTest
+[       OK ] DeviceManagerTest.GetDeviceTest (0 ms)
+[ RUN      ] DeviceManagerTest.SetDeviceTypeFilterAutoRediscoveryTest
+[clwrap] [12:57:12] [---T---] initializing OpenCL devices...
+[clwrap] [12:57:12] [---T---] checking device performances...
+[clwrap] [12:57:12] [---T---] checking platform: NVIDIA Corporation - NVIDIA CUDA
+[clwrap] [12:57:12] [---T---] rating - device: NVIDIA GeForce RTX 5060 Laptop GPU, score: 1000052.6580820961
+[clwrap] [12:57:12] [---I---] Selected OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:12] [---I---] - device Name: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:12] [---I---]  - device Vendor: NVIDIA Corporation
+[clwrap] [12:57:12] [---I---]  - device Version: OpenCL 3.0 CUDA
+[clwrap] [12:57:12] [---I---]  - device Type: GPU
+[clwrap] [12:57:12] [---T---] initializing OpenCL devices...
+[clwrap] [12:57:12] [---T---] checking device performances...
+[clwrap] [12:57:12] [---T---] checking platform: NVIDIA Corporation - NVIDIA CUDA
+[clwrap] [12:57:12] [---T---] rating - device: NVIDIA GeForce RTX 5060 Laptop GPU, score: 1000052.6580820961
+[clwrap] [12:57:12] [---I---] Selected OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:12] [---I---] - device Name: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:12] [---I---]  - device Vendor: NVIDIA Corporation
+[clwrap] [12:57:12] [---I---]  - device Version: OpenCL 3.0 CUDA
+[clwrap] [12:57:12] [---I---]  - device Type: GPU
+[clwrap] [12:57:12] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[       OK ] DeviceManagerTest.SetDeviceTypeFilterAutoRediscoveryTest (0 ms)
+[ RUN      ] DeviceManagerTest.DeviceSwitchAndExecutionTest
+[clwrap] [12:57:12] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:12] [---T---] loading kernel sources
+[clwrap] [12:57:12] [---T---] building OpenCL kernels
+[clwrap] [12:57:12] [---T---] build options: 
+[clwrap] [12:57:12] [---T---] available kernels: simple_add
+[clwrap] [12:57:12] [---T---] Run::Run [simple_add]
+[clwrap] [12:57:12] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[       OK ] DeviceManagerTest.DeviceSwitchAndExecutionTest (110 ms)
+[ RUN      ] DeviceManagerTest.CpuDeviceTypeFilterAutoRediscoveryWhenAvailable
+/home/barrulus/dev/Hesiod-783/external/HighMap/external/CLWrapper/tests/unit_tests/test_device_manager.cpp:134: Skipped
+No CPU OpenCL device is available; generic filter rediscovery is covered separately.
+
+[  SKIPPED ] DeviceManagerTest.CpuDeviceTypeFilterAutoRediscoveryWhenAvailable (0 ms)
+[ RUN      ] DeviceManagerTest.SetDeviceBoundsCheckingTest
+[clwrap] [12:57:12] [---E---] Platform ID 999999 is out of bounds (total platforms: 1)
+[clwrap] [12:57:12] [---E---] Device index 999999 is out of bounds for platform 0 (total devices: 1)
+[clwrap] [12:57:12] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[       OK ] DeviceManagerTest.SetDeviceBoundsCheckingTest (0 ms)
+[ RUN      ] DeviceManagerTest.AvailableDevicesTest
+[       OK ] DeviceManagerTest.AvailableDevicesTest (0 ms)
+[ RUN      ] DeviceManagerTest.PlatformMetadataTest
+[       OK ] DeviceManagerTest.PlatformMetadataTest (0 ms)
+[ RUN      ] DeviceManagerTest.IsReadyTest
+[       OK ] DeviceManagerTest.IsReadyTest (0 ms)
+[ RUN      ] DeviceManagerTest.DeviceMetadataTest
+[       OK ] DeviceManagerTest.DeviceMetadataTest (0 ms)
+[----------] 9 tests from DeviceManagerTest (111 ms total)
+
+[==========] 9 tests from 1 test suite ran. (111 ms total)
+[  PASSED  ] 8 tests.
+[  SKIPPED ] 1 test, listed below:
+[  SKIPPED ] DeviceManagerTest.CpuDeviceTypeFilterAutoRediscoveryWhenAvailable
+
+Repeating all tests (iteration 7) . . .
+
+Note: Google Test filter = DeviceManagerTest.*
+Note: Randomizing tests' orders with a seed of 789 .
+[==========] Running 9 tests from 1 test suite.
+[----------] 9 tests from DeviceManagerTest
+[ RUN      ] DeviceManagerTest.IsReadyTest
+[       OK ] DeviceManagerTest.IsReadyTest (0 ms)
+[ RUN      ] DeviceManagerTest.SetDeviceBoundsCheckingTest
+[clwrap] [12:57:12] [---E---] Platform ID 999999 is out of bounds (total platforms: 1)
+[clwrap] [12:57:12] [---E---] Device index 999999 is out of bounds for platform 0 (total devices: 1)
+[clwrap] [12:57:12] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[       OK ] DeviceManagerTest.SetDeviceBoundsCheckingTest (0 ms)
+[ RUN      ] DeviceManagerTest.PlatformMetadataTest
+[       OK ] DeviceManagerTest.PlatformMetadataTest (0 ms)
+[ RUN      ] DeviceManagerTest.CpuDeviceTypeFilterAutoRediscoveryWhenAvailable
+/home/barrulus/dev/Hesiod-783/external/HighMap/external/CLWrapper/tests/unit_tests/test_device_manager.cpp:134: Skipped
+No CPU OpenCL device is available; generic filter rediscovery is covered separately.
+
+[  SKIPPED ] DeviceManagerTest.CpuDeviceTypeFilterAutoRediscoveryWhenAvailable (0 ms)
+[ RUN      ] DeviceManagerTest.DeviceSwitchAndExecutionTest
+[clwrap] [12:57:12] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:12] [---T---] loading kernel sources
+[clwrap] [12:57:12] [---T---] building OpenCL kernels
+[clwrap] [12:57:12] [---T---] build options: 
+[clwrap] [12:57:12] [---T---] available kernels: simple_add
+[clwrap] [12:57:12] [---T---] Run::Run [simple_add]
+[clwrap] [12:57:12] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[       OK ] DeviceManagerTest.DeviceSwitchAndExecutionTest (110 ms)
+[ RUN      ] DeviceManagerTest.SetDeviceTypeFilterAutoRediscoveryTest
+[clwrap] [12:57:12] [---T---] initializing OpenCL devices...
+[clwrap] [12:57:12] [---T---] checking device performances...
+[clwrap] [12:57:12] [---T---] checking platform: NVIDIA Corporation - NVIDIA CUDA
+[clwrap] [12:57:12] [---T---] rating - device: NVIDIA GeForce RTX 5060 Laptop GPU, score: 1000052.6580820961
+[clwrap] [12:57:12] [---I---] Selected OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:12] [---I---] - device Name: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:12] [---I---]  - device Vendor: NVIDIA Corporation
+[clwrap] [12:57:12] [---I---]  - device Version: OpenCL 3.0 CUDA
+[clwrap] [12:57:12] [---I---]  - device Type: GPU
+[clwrap] [12:57:12] [---T---] initializing OpenCL devices...
+[clwrap] [12:57:12] [---T---] checking device performances...
+[clwrap] [12:57:12] [---T---] checking platform: NVIDIA Corporation - NVIDIA CUDA
+[clwrap] [12:57:12] [---T---] rating - device: NVIDIA GeForce RTX 5060 Laptop GPU, score: 1000052.6580820961
+[clwrap] [12:57:12] [---I---] Selected OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:12] [---I---] - device Name: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:12] [---I---]  - device Vendor: NVIDIA Corporation
+[clwrap] [12:57:12] [---I---]  - device Version: OpenCL 3.0 CUDA
+[clwrap] [12:57:12] [---I---]  - device Type: GPU
+[clwrap] [12:57:12] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[       OK ] DeviceManagerTest.SetDeviceTypeFilterAutoRediscoveryTest (1 ms)
+[ RUN      ] DeviceManagerTest.DeviceMetadataTest
+[       OK ] DeviceManagerTest.DeviceMetadataTest (0 ms)
+[ RUN      ] DeviceManagerTest.GetDeviceTest
+[       OK ] DeviceManagerTest.GetDeviceTest (0 ms)
+[ RUN      ] DeviceManagerTest.AvailableDevicesTest
+[       OK ] DeviceManagerTest.AvailableDevicesTest (0 ms)
+[----------] 9 tests from DeviceManagerTest (111 ms total)
+
+[==========] 9 tests from 1 test suite ran. (111 ms total)
+[  PASSED  ] 8 tests.
+[  SKIPPED ] 1 test, listed below:
+[  SKIPPED ] DeviceManagerTest.CpuDeviceTypeFilterAutoRediscoveryWhenAvailable
+
+Repeating all tests (iteration 8) . . .
+
+Note: Google Test filter = DeviceManagerTest.*
+Note: Randomizing tests' orders with a seed of 790 .
+[==========] Running 9 tests from 1 test suite.
+[----------] 9 tests from DeviceManagerTest
+[ RUN      ] DeviceManagerTest.DeviceMetadataTest
+[       OK ] DeviceManagerTest.DeviceMetadataTest (0 ms)
+[ RUN      ] DeviceManagerTest.SetDeviceBoundsCheckingTest
+[clwrap] [12:57:12] [---E---] Platform ID 999999 is out of bounds (total platforms: 1)
+[clwrap] [12:57:12] [---E---] Device index 999999 is out of bounds for platform 0 (total devices: 1)
+[clwrap] [12:57:12] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[       OK ] DeviceManagerTest.SetDeviceBoundsCheckingTest (0 ms)
+[ RUN      ] DeviceManagerTest.DeviceSwitchAndExecutionTest
+[clwrap] [12:57:12] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:12] [---T---] loading kernel sources
+[clwrap] [12:57:12] [---T---] building OpenCL kernels
+[clwrap] [12:57:12] [---T---] build options: 
+[clwrap] [12:57:12] [---T---] available kernels: simple_add
+[clwrap] [12:57:12] [---T---] Run::Run [simple_add]
+[clwrap] [12:57:12] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[       OK ] DeviceManagerTest.DeviceSwitchAndExecutionTest (107 ms)
+[ RUN      ] DeviceManagerTest.SetDeviceTypeFilterAutoRediscoveryTest
+[clwrap] [12:57:12] [---T---] initializing OpenCL devices...
+[clwrap] [12:57:12] [---T---] checking device performances...
+[clwrap] [12:57:12] [---T---] checking platform: NVIDIA Corporation - NVIDIA CUDA
+[clwrap] [12:57:12] [---T---] rating - device: NVIDIA GeForce RTX 5060 Laptop GPU, score: 1000052.6580820961
+[clwrap] [12:57:12] [---I---] Selected OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:12] [---I---] - device Name: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:12] [---I---]  - device Vendor: NVIDIA Corporation
+[clwrap] [12:57:12] [---I---]  - device Version: OpenCL 3.0 CUDA
+[clwrap] [12:57:12] [---I---]  - device Type: GPU
+[clwrap] [12:57:12] [---T---] initializing OpenCL devices...
+[clwrap] [12:57:12] [---T---] checking device performances...
+[clwrap] [12:57:12] [---T---] checking platform: NVIDIA Corporation - NVIDIA CUDA
+[clwrap] [12:57:12] [---T---] rating - device: NVIDIA GeForce RTX 5060 Laptop GPU, score: 1000052.6580820961
+[clwrap] [12:57:12] [---I---] Selected OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:12] [---I---] - device Name: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:12] [---I---]  - device Vendor: NVIDIA Corporation
+[clwrap] [12:57:12] [---I---]  - device Version: OpenCL 3.0 CUDA
+[clwrap] [12:57:12] [---I---]  - device Type: GPU
+[clwrap] [12:57:12] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[       OK ] DeviceManagerTest.SetDeviceTypeFilterAutoRediscoveryTest (1 ms)
+[ RUN      ] DeviceManagerTest.IsReadyTest
+[       OK ] DeviceManagerTest.IsReadyTest (0 ms)
+[ RUN      ] DeviceManagerTest.PlatformMetadataTest
+[       OK ] DeviceManagerTest.PlatformMetadataTest (0 ms)
+[ RUN      ] DeviceManagerTest.CpuDeviceTypeFilterAutoRediscoveryWhenAvailable
+/home/barrulus/dev/Hesiod-783/external/HighMap/external/CLWrapper/tests/unit_tests/test_device_manager.cpp:134: Skipped
+No CPU OpenCL device is available; generic filter rediscovery is covered separately.
+
+[  SKIPPED ] DeviceManagerTest.CpuDeviceTypeFilterAutoRediscoveryWhenAvailable (0 ms)
+[ RUN      ] DeviceManagerTest.AvailableDevicesTest
+[       OK ] DeviceManagerTest.AvailableDevicesTest (0 ms)
+[ RUN      ] DeviceManagerTest.GetDeviceTest
+[       OK ] DeviceManagerTest.GetDeviceTest (0 ms)
+[----------] 9 tests from DeviceManagerTest (109 ms total)
+
+[==========] 9 tests from 1 test suite ran. (109 ms total)
+[  PASSED  ] 8 tests.
+[  SKIPPED ] 1 test, listed below:
+[  SKIPPED ] DeviceManagerTest.CpuDeviceTypeFilterAutoRediscoveryWhenAvailable
+
+Repeating all tests (iteration 9) . . .
+
+Note: Google Test filter = DeviceManagerTest.*
+Note: Randomizing tests' orders with a seed of 791 .
+[==========] Running 9 tests from 1 test suite.
+[----------] 9 tests from DeviceManagerTest
+[ RUN      ] DeviceManagerTest.DeviceSwitchAndExecutionTest
+[clwrap] [12:57:12] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:12] [---T---] loading kernel sources
+[clwrap] [12:57:12] [---T---] building OpenCL kernels
+[clwrap] [12:57:12] [---T---] build options: 
+[clwrap] [12:57:12] [---T---] available kernels: simple_add
+[clwrap] [12:57:12] [---T---] Run::Run [simple_add]
+[clwrap] [12:57:12] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[       OK ] DeviceManagerTest.DeviceSwitchAndExecutionTest (112 ms)
+[ RUN      ] DeviceManagerTest.AvailableDevicesTest
+[       OK ] DeviceManagerTest.AvailableDevicesTest (0 ms)
+[ RUN      ] DeviceManagerTest.SetDeviceBoundsCheckingTest
+[clwrap] [12:57:12] [---E---] Platform ID 999999 is out of bounds (total platforms: 1)
+[clwrap] [12:57:12] [---E---] Device index 999999 is out of bounds for platform 0 (total devices: 1)
+[clwrap] [12:57:12] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[       OK ] DeviceManagerTest.SetDeviceBoundsCheckingTest (0 ms)
+[ RUN      ] DeviceManagerTest.PlatformMetadataTest
+[       OK ] DeviceManagerTest.PlatformMetadataTest (0 ms)
+[ RUN      ] DeviceManagerTest.CpuDeviceTypeFilterAutoRediscoveryWhenAvailable
+/home/barrulus/dev/Hesiod-783/external/HighMap/external/CLWrapper/tests/unit_tests/test_device_manager.cpp:134: Skipped
+No CPU OpenCL device is available; generic filter rediscovery is covered separately.
+
+[  SKIPPED ] DeviceManagerTest.CpuDeviceTypeFilterAutoRediscoveryWhenAvailable (0 ms)
+[ RUN      ] DeviceManagerTest.SetDeviceTypeFilterAutoRediscoveryTest
+[clwrap] [12:57:12] [---T---] initializing OpenCL devices...
+[clwrap] [12:57:12] [---T---] checking device performances...
+[clwrap] [12:57:12] [---T---] checking platform: NVIDIA Corporation - NVIDIA CUDA
+[clwrap] [12:57:12] [---T---] rating - device: NVIDIA GeForce RTX 5060 Laptop GPU, score: 1000052.6580820961
+[clwrap] [12:57:12] [---I---] Selected OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:12] [---I---] - device Name: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:12] [---I---]  - device Vendor: NVIDIA Corporation
+[clwrap] [12:57:12] [---I---]  - device Version: OpenCL 3.0 CUDA
+[clwrap] [12:57:12] [---I---]  - device Type: GPU
+[clwrap] [12:57:12] [---T---] initializing OpenCL devices...
+[clwrap] [12:57:12] [---T---] checking device performances...
+[clwrap] [12:57:12] [---T---] checking platform: NVIDIA Corporation - NVIDIA CUDA
+[clwrap] [12:57:12] [---T---] rating - device: NVIDIA GeForce RTX 5060 Laptop GPU, score: 1000052.6580820961
+[clwrap] [12:57:12] [---I---] Selected OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:12] [---I---] - device Name: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:12] [---I---]  - device Vendor: NVIDIA Corporation
+[clwrap] [12:57:12] [---I---]  - device Version: OpenCL 3.0 CUDA
+[clwrap] [12:57:12] [---I---]  - device Type: GPU
+[clwrap] [12:57:12] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[       OK ] DeviceManagerTest.SetDeviceTypeFilterAutoRediscoveryTest (1 ms)
+[ RUN      ] DeviceManagerTest.GetDeviceTest
+[       OK ] DeviceManagerTest.GetDeviceTest (0 ms)
+[ RUN      ] DeviceManagerTest.DeviceMetadataTest
+[       OK ] DeviceManagerTest.DeviceMetadataTest (0 ms)
+[ RUN      ] DeviceManagerTest.IsReadyTest
+[       OK ] DeviceManagerTest.IsReadyTest (0 ms)
+[----------] 9 tests from DeviceManagerTest (113 ms total)
+
+[==========] 9 tests from 1 test suite ran. (113 ms total)
+[  PASSED  ] 8 tests.
+[  SKIPPED ] 1 test, listed below:
+[  SKIPPED ] DeviceManagerTest.CpuDeviceTypeFilterAutoRediscoveryWhenAvailable
+
+Repeating all tests (iteration 10) . . .
+
+Note: Google Test filter = DeviceManagerTest.*
+Note: Randomizing tests' orders with a seed of 792 .
+[==========] Running 9 tests from 1 test suite.
+[----------] 9 tests from DeviceManagerTest
+[ RUN      ] DeviceManagerTest.CpuDeviceTypeFilterAutoRediscoveryWhenAvailable
+/home/barrulus/dev/Hesiod-783/external/HighMap/external/CLWrapper/tests/unit_tests/test_device_manager.cpp:134: Skipped
+No CPU OpenCL device is available; generic filter rediscovery is covered separately.
+
+[  SKIPPED ] DeviceManagerTest.CpuDeviceTypeFilterAutoRediscoveryWhenAvailable (0 ms)
+[ RUN      ] DeviceManagerTest.SetDeviceBoundsCheckingTest
+[clwrap] [12:57:12] [---E---] Platform ID 999999 is out of bounds (total platforms: 1)
+[clwrap] [12:57:12] [---E---] Device index 999999 is out of bounds for platform 0 (total devices: 1)
+[clwrap] [12:57:12] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[       OK ] DeviceManagerTest.SetDeviceBoundsCheckingTest (0 ms)
+[ RUN      ] DeviceManagerTest.DeviceMetadataTest
+[       OK ] DeviceManagerTest.DeviceMetadataTest (0 ms)
+[ RUN      ] DeviceManagerTest.SetDeviceTypeFilterAutoRediscoveryTest
+[clwrap] [12:57:12] [---T---] initializing OpenCL devices...
+[clwrap] [12:57:12] [---T---] checking device performances...
+[clwrap] [12:57:12] [---T---] checking platform: NVIDIA Corporation - NVIDIA CUDA
+[clwrap] [12:57:12] [---T---] rating - device: NVIDIA GeForce RTX 5060 Laptop GPU, score: 1000052.6580820961
+[clwrap] [12:57:12] [---I---] Selected OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:12] [---I---] - device Name: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:12] [---I---]  - device Vendor: NVIDIA Corporation
+[clwrap] [12:57:12] [---I---]  - device Version: OpenCL 3.0 CUDA
+[clwrap] [12:57:12] [---I---]  - device Type: GPU
+[clwrap] [12:57:12] [---T---] initializing OpenCL devices...
+[clwrap] [12:57:12] [---T---] checking device performances...
+[clwrap] [12:57:12] [---T---] checking platform: NVIDIA Corporation - NVIDIA CUDA
+[clwrap] [12:57:12] [---T---] rating - device: NVIDIA GeForce RTX 5060 Laptop GPU, score: 1000052.6580820961
+[clwrap] [12:57:12] [---I---] Selected OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:12] [---I---] - device Name: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:12] [---I---]  - device Vendor: NVIDIA Corporation
+[clwrap] [12:57:12] [---I---]  - device Version: OpenCL 3.0 CUDA
+[clwrap] [12:57:12] [---I---]  - device Type: GPU
+[clwrap] [12:57:12] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[       OK ] DeviceManagerTest.SetDeviceTypeFilterAutoRediscoveryTest (0 ms)
+[ RUN      ] DeviceManagerTest.GetDeviceTest
+[       OK ] DeviceManagerTest.GetDeviceTest (0 ms)
+[ RUN      ] DeviceManagerTest.AvailableDevicesTest
+[       OK ] DeviceManagerTest.AvailableDevicesTest (0 ms)
+[ RUN      ] DeviceManagerTest.IsReadyTest
+[       OK ] DeviceManagerTest.IsReadyTest (0 ms)
+[ RUN      ] DeviceManagerTest.PlatformMetadataTest
+[       OK ] DeviceManagerTest.PlatformMetadataTest (0 ms)
+[ RUN      ] DeviceManagerTest.DeviceSwitchAndExecutionTest
+[clwrap] [12:57:12] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:12] [---T---] loading kernel sources
+[clwrap] [12:57:12] [---T---] building OpenCL kernels
+[clwrap] [12:57:12] [---T---] build options: 
+[clwrap] [12:57:12] [---T---] available kernels: simple_add
+[clwrap] [12:57:12] [---T---] Run::Run [simple_add]
+[clwrap] [12:57:12] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[       OK ] DeviceManagerTest.DeviceSwitchAndExecutionTest (117 ms)
+[----------] 9 tests from DeviceManagerTest (118 ms total)
+
+[==========] 9 tests from 1 test suite ran. (118 ms total)
+[  PASSED  ] 8 tests.
+[  SKIPPED ] 1 test, listed below:
+[  SKIPPED ] DeviceManagerTest.CpuDeviceTypeFilterAutoRediscoveryWhenAvailable
+
+Repeating all tests (iteration 11) . . .
+
+Note: Google Test filter = DeviceManagerTest.*
+Note: Randomizing tests' orders with a seed of 793 .
+[==========] Running 9 tests from 1 test suite.
+[----------] 9 tests from DeviceManagerTest
+[ RUN      ] DeviceManagerTest.IsReadyTest
+[       OK ] DeviceManagerTest.IsReadyTest (0 ms)
+[ RUN      ] DeviceManagerTest.DeviceSwitchAndExecutionTest
+[clwrap] [12:57:12] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:12] [---T---] loading kernel sources
+[clwrap] [12:57:13] [---T---] building OpenCL kernels
+[clwrap] [12:57:13] [---T---] build options: 
+[clwrap] [12:57:13] [---T---] available kernels: simple_add
+[clwrap] [12:57:13] [---T---] Run::Run [simple_add]
+[clwrap] [12:57:13] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[       OK ] DeviceManagerTest.DeviceSwitchAndExecutionTest (113 ms)
+[ RUN      ] DeviceManagerTest.AvailableDevicesTest
+[       OK ] DeviceManagerTest.AvailableDevicesTest (0 ms)
+[ RUN      ] DeviceManagerTest.PlatformMetadataTest
+[       OK ] DeviceManagerTest.PlatformMetadataTest (0 ms)
+[ RUN      ] DeviceManagerTest.SetDeviceTypeFilterAutoRediscoveryTest
+[clwrap] [12:57:13] [---T---] initializing OpenCL devices...
+[clwrap] [12:57:13] [---T---] checking device performances...
+[clwrap] [12:57:13] [---T---] checking platform: NVIDIA Corporation - NVIDIA CUDA
+[clwrap] [12:57:13] [---T---] rating - device: NVIDIA GeForce RTX 5060 Laptop GPU, score: 1000052.6580820961
+[clwrap] [12:57:13] [---I---] Selected OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:13] [---I---] - device Name: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:13] [---I---]  - device Vendor: NVIDIA Corporation
+[clwrap] [12:57:13] [---I---]  - device Version: OpenCL 3.0 CUDA
+[clwrap] [12:57:13] [---I---]  - device Type: GPU
+[clwrap] [12:57:13] [---T---] initializing OpenCL devices...
+[clwrap] [12:57:13] [---T---] checking device performances...
+[clwrap] [12:57:13] [---T---] checking platform: NVIDIA Corporation - NVIDIA CUDA
+[clwrap] [12:57:13] [---T---] rating - device: NVIDIA GeForce RTX 5060 Laptop GPU, score: 1000052.6580820961
+[clwrap] [12:57:13] [---I---] Selected OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:13] [---I---] - device Name: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:13] [---I---]  - device Vendor: NVIDIA Corporation
+[clwrap] [12:57:13] [---I---]  - device Version: OpenCL 3.0 CUDA
+[clwrap] [12:57:13] [---I---]  - device Type: GPU
+[clwrap] [12:57:13] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[       OK ] DeviceManagerTest.SetDeviceTypeFilterAutoRediscoveryTest (1 ms)
+[ RUN      ] DeviceManagerTest.DeviceMetadataTest
+[       OK ] DeviceManagerTest.DeviceMetadataTest (0 ms)
+[ RUN      ] DeviceManagerTest.GetDeviceTest
+[       OK ] DeviceManagerTest.GetDeviceTest (0 ms)
+[ RUN      ] DeviceManagerTest.SetDeviceBoundsCheckingTest
+[clwrap] [12:57:13] [---E---] Platform ID 999999 is out of bounds (total platforms: 1)
+[clwrap] [12:57:13] [---E---] Device index 999999 is out of bounds for platform 0 (total devices: 1)
+[clwrap] [12:57:13] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[       OK ] DeviceManagerTest.SetDeviceBoundsCheckingTest (0 ms)
+[ RUN      ] DeviceManagerTest.CpuDeviceTypeFilterAutoRediscoveryWhenAvailable
+/home/barrulus/dev/Hesiod-783/external/HighMap/external/CLWrapper/tests/unit_tests/test_device_manager.cpp:134: Skipped
+No CPU OpenCL device is available; generic filter rediscovery is covered separately.
+
+[  SKIPPED ] DeviceManagerTest.CpuDeviceTypeFilterAutoRediscoveryWhenAvailable (0 ms)
+[----------] 9 tests from DeviceManagerTest (114 ms total)
+
+[==========] 9 tests from 1 test suite ran. (114 ms total)
+[  PASSED  ] 8 tests.
+[  SKIPPED ] 1 test, listed below:
+[  SKIPPED ] DeviceManagerTest.CpuDeviceTypeFilterAutoRediscoveryWhenAvailable
+
+Repeating all tests (iteration 12) . . .
+
+Note: Google Test filter = DeviceManagerTest.*
+Note: Randomizing tests' orders with a seed of 794 .
+[==========] Running 9 tests from 1 test suite.
+[----------] 9 tests from DeviceManagerTest
+[ RUN      ] DeviceManagerTest.DeviceMetadataTest
+[       OK ] DeviceManagerTest.DeviceMetadataTest (0 ms)
+[ RUN      ] DeviceManagerTest.SetDeviceBoundsCheckingTest
+[clwrap] [12:57:13] [---E---] Platform ID 999999 is out of bounds (total platforms: 1)
+[clwrap] [12:57:13] [---E---] Device index 999999 is out of bounds for platform 0 (total devices: 1)
+[clwrap] [12:57:13] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[       OK ] DeviceManagerTest.SetDeviceBoundsCheckingTest (0 ms)
+[ RUN      ] DeviceManagerTest.GetDeviceTest
+[       OK ] DeviceManagerTest.GetDeviceTest (0 ms)
+[ RUN      ] DeviceManagerTest.AvailableDevicesTest
+[       OK ] DeviceManagerTest.AvailableDevicesTest (0 ms)
+[ RUN      ] DeviceManagerTest.PlatformMetadataTest
+[       OK ] DeviceManagerTest.PlatformMetadataTest (0 ms)
+[ RUN      ] DeviceManagerTest.CpuDeviceTypeFilterAutoRediscoveryWhenAvailable
+/home/barrulus/dev/Hesiod-783/external/HighMap/external/CLWrapper/tests/unit_tests/test_device_manager.cpp:134: Skipped
+No CPU OpenCL device is available; generic filter rediscovery is covered separately.
+
+[  SKIPPED ] DeviceManagerTest.CpuDeviceTypeFilterAutoRediscoveryWhenAvailable (0 ms)
+[ RUN      ] DeviceManagerTest.IsReadyTest
+[       OK ] DeviceManagerTest.IsReadyTest (0 ms)
+[ RUN      ] DeviceManagerTest.DeviceSwitchAndExecutionTest
+[clwrap] [12:57:13] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:13] [---T---] loading kernel sources
+[clwrap] [12:57:13] [---T---] building OpenCL kernels
+[clwrap] [12:57:13] [---T---] build options: 
+[clwrap] [12:57:13] [---T---] available kernels: simple_add
+[clwrap] [12:57:13] [---T---] Run::Run [simple_add]
+[clwrap] [12:57:13] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[       OK ] DeviceManagerTest.DeviceSwitchAndExecutionTest (112 ms)
+[ RUN      ] DeviceManagerTest.SetDeviceTypeFilterAutoRediscoveryTest
+[clwrap] [12:57:13] [---T---] initializing OpenCL devices...
+[clwrap] [12:57:13] [---T---] checking device performances...
+[clwrap] [12:57:13] [---T---] checking platform: NVIDIA Corporation - NVIDIA CUDA
+[clwrap] [12:57:13] [---T---] rating - device: NVIDIA GeForce RTX 5060 Laptop GPU, score: 1000052.6580820961
+[clwrap] [12:57:13] [---I---] Selected OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:13] [---I---] - device Name: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:13] [---I---]  - device Vendor: NVIDIA Corporation
+[clwrap] [12:57:13] [---I---]  - device Version: OpenCL 3.0 CUDA
+[clwrap] [12:57:13] [---I---]  - device Type: GPU
+[clwrap] [12:57:13] [---T---] initializing OpenCL devices...
+[clwrap] [12:57:13] [---T---] checking device performances...
+[clwrap] [12:57:13] [---T---] checking platform: NVIDIA Corporation - NVIDIA CUDA
+[clwrap] [12:57:13] [---T---] rating - device: NVIDIA GeForce RTX 5060 Laptop GPU, score: 1000052.6580820961
+[clwrap] [12:57:13] [---I---] Selected OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:13] [---I---] - device Name: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:13] [---I---]  - device Vendor: NVIDIA Corporation
+[clwrap] [12:57:13] [---I---]  - device Version: OpenCL 3.0 CUDA
+[clwrap] [12:57:13] [---I---]  - device Type: GPU
+[clwrap] [12:57:13] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[       OK ] DeviceManagerTest.SetDeviceTypeFilterAutoRediscoveryTest (1 ms)
+[----------] 9 tests from DeviceManagerTest (113 ms total)
+
+[==========] 9 tests from 1 test suite ran. (113 ms total)
+[  PASSED  ] 8 tests.
+[  SKIPPED ] 1 test, listed below:
+[  SKIPPED ] DeviceManagerTest.CpuDeviceTypeFilterAutoRediscoveryWhenAvailable
+
+Repeating all tests (iteration 13) . . .
+
+Note: Google Test filter = DeviceManagerTest.*
+Note: Randomizing tests' orders with a seed of 795 .
+[==========] Running 9 tests from 1 test suite.
+[----------] 9 tests from DeviceManagerTest
+[ RUN      ] DeviceManagerTest.PlatformMetadataTest
+[       OK ] DeviceManagerTest.PlatformMetadataTest (0 ms)
+[ RUN      ] DeviceManagerTest.DeviceSwitchAndExecutionTest
+[clwrap] [12:57:13] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:13] [---T---] loading kernel sources
+[clwrap] [12:57:13] [---T---] building OpenCL kernels
+[clwrap] [12:57:13] [---T---] build options: 
+[clwrap] [12:57:13] [---T---] available kernels: simple_add
+[clwrap] [12:57:13] [---T---] Run::Run [simple_add]
+[clwrap] [12:57:13] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[       OK ] DeviceManagerTest.DeviceSwitchAndExecutionTest (109 ms)
+[ RUN      ] DeviceManagerTest.IsReadyTest
+[       OK ] DeviceManagerTest.IsReadyTest (0 ms)
+[ RUN      ] DeviceManagerTest.DeviceMetadataTest
+[       OK ] DeviceManagerTest.DeviceMetadataTest (0 ms)
+[ RUN      ] DeviceManagerTest.AvailableDevicesTest
+[       OK ] DeviceManagerTest.AvailableDevicesTest (0 ms)
+[ RUN      ] DeviceManagerTest.GetDeviceTest
+[       OK ] DeviceManagerTest.GetDeviceTest (0 ms)
+[ RUN      ] DeviceManagerTest.SetDeviceTypeFilterAutoRediscoveryTest
+[clwrap] [12:57:13] [---T---] initializing OpenCL devices...
+[clwrap] [12:57:13] [---T---] checking device performances...
+[clwrap] [12:57:13] [---T---] checking platform: NVIDIA Corporation - NVIDIA CUDA
+[clwrap] [12:57:13] [---T---] rating - device: NVIDIA GeForce RTX 5060 Laptop GPU, score: 1000052.6580820961
+[clwrap] [12:57:13] [---I---] Selected OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:13] [---I---] - device Name: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:13] [---I---]  - device Vendor: NVIDIA Corporation
+[clwrap] [12:57:13] [---I---]  - device Version: OpenCL 3.0 CUDA
+[clwrap] [12:57:13] [---I---]  - device Type: GPU
+[clwrap] [12:57:13] [---T---] initializing OpenCL devices...
+[clwrap] [12:57:13] [---T---] checking device performances...
+[clwrap] [12:57:13] [---T---] checking platform: NVIDIA Corporation - NVIDIA CUDA
+[clwrap] [12:57:13] [---T---] rating - device: NVIDIA GeForce RTX 5060 Laptop GPU, score: 1000052.6580820961
+[clwrap] [12:57:13] [---I---] Selected OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:13] [---I---] - device Name: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:13] [---I---]  - device Vendor: NVIDIA Corporation
+[clwrap] [12:57:13] [---I---]  - device Version: OpenCL 3.0 CUDA
+[clwrap] [12:57:13] [---I---]  - device Type: GPU
+[clwrap] [12:57:13] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[       OK ] DeviceManagerTest.SetDeviceTypeFilterAutoRediscoveryTest (1 ms)
+[ RUN      ] DeviceManagerTest.CpuDeviceTypeFilterAutoRediscoveryWhenAvailable
+/home/barrulus/dev/Hesiod-783/external/HighMap/external/CLWrapper/tests/unit_tests/test_device_manager.cpp:134: Skipped
+No CPU OpenCL device is available; generic filter rediscovery is covered separately.
+
+[  SKIPPED ] DeviceManagerTest.CpuDeviceTypeFilterAutoRediscoveryWhenAvailable (0 ms)
+[ RUN      ] DeviceManagerTest.SetDeviceBoundsCheckingTest
+[clwrap] [12:57:13] [---E---] Platform ID 999999 is out of bounds (total platforms: 1)
+[clwrap] [12:57:13] [---E---] Device index 999999 is out of bounds for platform 0 (total devices: 1)
+[clwrap] [12:57:13] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[       OK ] DeviceManagerTest.SetDeviceBoundsCheckingTest (0 ms)
+[----------] 9 tests from DeviceManagerTest (110 ms total)
+
+[==========] 9 tests from 1 test suite ran. (110 ms total)
+[  PASSED  ] 8 tests.
+[  SKIPPED ] 1 test, listed below:
+[  SKIPPED ] DeviceManagerTest.CpuDeviceTypeFilterAutoRediscoveryWhenAvailable
+
+Repeating all tests (iteration 14) . . .
+
+Note: Google Test filter = DeviceManagerTest.*
+Note: Randomizing tests' orders with a seed of 796 .
+[==========] Running 9 tests from 1 test suite.
+[----------] 9 tests from DeviceManagerTest
+[ RUN      ] DeviceManagerTest.GetDeviceTest
+[       OK ] DeviceManagerTest.GetDeviceTest (0 ms)
+[ RUN      ] DeviceManagerTest.DeviceMetadataTest
+[       OK ] DeviceManagerTest.DeviceMetadataTest (0 ms)
+[ RUN      ] DeviceManagerTest.SetDeviceTypeFilterAutoRediscoveryTest
+[clwrap] [12:57:13] [---T---] initializing OpenCL devices...
+[clwrap] [12:57:13] [---T---] checking device performances...
+[clwrap] [12:57:13] [---T---] checking platform: NVIDIA Corporation - NVIDIA CUDA
+[clwrap] [12:57:13] [---T---] rating - device: NVIDIA GeForce RTX 5060 Laptop GPU, score: 1000052.6580820961
+[clwrap] [12:57:13] [---I---] Selected OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:13] [---I---] - device Name: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:13] [---I---]  - device Vendor: NVIDIA Corporation
+[clwrap] [12:57:13] [---I---]  - device Version: OpenCL 3.0 CUDA
+[clwrap] [12:57:13] [---I---]  - device Type: GPU
+[clwrap] [12:57:13] [---T---] initializing OpenCL devices...
+[clwrap] [12:57:13] [---T---] checking device performances...
+[clwrap] [12:57:13] [---T---] checking platform: NVIDIA Corporation - NVIDIA CUDA
+[clwrap] [12:57:13] [---T---] rating - device: NVIDIA GeForce RTX 5060 Laptop GPU, score: 1000052.6580820961
+[clwrap] [12:57:13] [---I---] Selected OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:13] [---I---] - device Name: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:13] [---I---]  - device Vendor: NVIDIA Corporation
+[clwrap] [12:57:13] [---I---]  - device Version: OpenCL 3.0 CUDA
+[clwrap] [12:57:13] [---I---]  - device Type: GPU
+[clwrap] [12:57:13] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[       OK ] DeviceManagerTest.SetDeviceTypeFilterAutoRediscoveryTest (0 ms)
+[ RUN      ] DeviceManagerTest.DeviceSwitchAndExecutionTest
+[clwrap] [12:57:13] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:13] [---T---] loading kernel sources
+[clwrap] [12:57:13] [---T---] building OpenCL kernels
+[clwrap] [12:57:13] [---T---] build options: 
+[clwrap] [12:57:13] [---T---] available kernels: simple_add
+[clwrap] [12:57:13] [---T---] Run::Run [simple_add]
+[clwrap] [12:57:13] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[       OK ] DeviceManagerTest.DeviceSwitchAndExecutionTest (109 ms)
+[ RUN      ] DeviceManagerTest.CpuDeviceTypeFilterAutoRediscoveryWhenAvailable
+/home/barrulus/dev/Hesiod-783/external/HighMap/external/CLWrapper/tests/unit_tests/test_device_manager.cpp:134: Skipped
+No CPU OpenCL device is available; generic filter rediscovery is covered separately.
+
+[  SKIPPED ] DeviceManagerTest.CpuDeviceTypeFilterAutoRediscoveryWhenAvailable (0 ms)
+[ RUN      ] DeviceManagerTest.AvailableDevicesTest
+[       OK ] DeviceManagerTest.AvailableDevicesTest (0 ms)
+[ RUN      ] DeviceManagerTest.SetDeviceBoundsCheckingTest
+[clwrap] [12:57:13] [---E---] Platform ID 999999 is out of bounds (total platforms: 1)
+[clwrap] [12:57:13] [---E---] Device index 999999 is out of bounds for platform 0 (total devices: 1)
+[clwrap] [12:57:13] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[       OK ] DeviceManagerTest.SetDeviceBoundsCheckingTest (0 ms)
+[ RUN      ] DeviceManagerTest.IsReadyTest
+[       OK ] DeviceManagerTest.IsReadyTest (0 ms)
+[ RUN      ] DeviceManagerTest.PlatformMetadataTest
+[       OK ] DeviceManagerTest.PlatformMetadataTest (0 ms)
+[----------] 9 tests from DeviceManagerTest (110 ms total)
+
+[==========] 9 tests from 1 test suite ran. (110 ms total)
+[  PASSED  ] 8 tests.
+[  SKIPPED ] 1 test, listed below:
+[  SKIPPED ] DeviceManagerTest.CpuDeviceTypeFilterAutoRediscoveryWhenAvailable
+
+Repeating all tests (iteration 15) . . .
+
+Note: Google Test filter = DeviceManagerTest.*
+Note: Randomizing tests' orders with a seed of 797 .
+[==========] Running 9 tests from 1 test suite.
+[----------] 9 tests from DeviceManagerTest
+[ RUN      ] DeviceManagerTest.IsReadyTest
+[       OK ] DeviceManagerTest.IsReadyTest (0 ms)
+[ RUN      ] DeviceManagerTest.AvailableDevicesTest
+[       OK ] DeviceManagerTest.AvailableDevicesTest (0 ms)
+[ RUN      ] DeviceManagerTest.SetDeviceTypeFilterAutoRediscoveryTest
+[clwrap] [12:57:13] [---T---] initializing OpenCL devices...
+[clwrap] [12:57:13] [---T---] checking device performances...
+[clwrap] [12:57:13] [---T---] checking platform: NVIDIA Corporation - NVIDIA CUDA
+[clwrap] [12:57:13] [---T---] rating - device: NVIDIA GeForce RTX 5060 Laptop GPU, score: 1000052.6580820961
+[clwrap] [12:57:13] [---I---] Selected OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:13] [---I---] - device Name: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:13] [---I---]  - device Vendor: NVIDIA Corporation
+[clwrap] [12:57:13] [---I---]  - device Version: OpenCL 3.0 CUDA
+[clwrap] [12:57:13] [---I---]  - device Type: GPU
+[clwrap] [12:57:13] [---T---] initializing OpenCL devices...
+[clwrap] [12:57:13] [---T---] checking device performances...
+[clwrap] [12:57:13] [---T---] checking platform: NVIDIA Corporation - NVIDIA CUDA
+[clwrap] [12:57:13] [---T---] rating - device: NVIDIA GeForce RTX 5060 Laptop GPU, score: 1000052.6580820961
+[clwrap] [12:57:13] [---I---] Selected OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:13] [---I---] - device Name: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:13] [---I---]  - device Vendor: NVIDIA Corporation
+[clwrap] [12:57:13] [---I---]  - device Version: OpenCL 3.0 CUDA
+[clwrap] [12:57:13] [---I---]  - device Type: GPU
+[clwrap] [12:57:13] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[       OK ] DeviceManagerTest.SetDeviceTypeFilterAutoRediscoveryTest (1 ms)
+[ RUN      ] DeviceManagerTest.CpuDeviceTypeFilterAutoRediscoveryWhenAvailable
+/home/barrulus/dev/Hesiod-783/external/HighMap/external/CLWrapper/tests/unit_tests/test_device_manager.cpp:134: Skipped
+No CPU OpenCL device is available; generic filter rediscovery is covered separately.
+
+[  SKIPPED ] DeviceManagerTest.CpuDeviceTypeFilterAutoRediscoveryWhenAvailable (0 ms)
+[ RUN      ] DeviceManagerTest.DeviceSwitchAndExecutionTest
+[clwrap] [12:57:13] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:13] [---T---] loading kernel sources
+[clwrap] [12:57:13] [---T---] building OpenCL kernels
+[clwrap] [12:57:13] [---T---] build options: 
+[clwrap] [12:57:13] [---T---] available kernels: simple_add
+[clwrap] [12:57:13] [---T---] Run::Run [simple_add]
+[clwrap] [12:57:13] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[       OK ] DeviceManagerTest.DeviceSwitchAndExecutionTest (112 ms)
+[ RUN      ] DeviceManagerTest.SetDeviceBoundsCheckingTest
+[clwrap] [12:57:13] [---E---] Platform ID 999999 is out of bounds (total platforms: 1)
+[clwrap] [12:57:13] [---E---] Device index 999999 is out of bounds for platform 0 (total devices: 1)
+[clwrap] [12:57:13] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[       OK ] DeviceManagerTest.SetDeviceBoundsCheckingTest (0 ms)
+[ RUN      ] DeviceManagerTest.PlatformMetadataTest
+[       OK ] DeviceManagerTest.PlatformMetadataTest (0 ms)
+[ RUN      ] DeviceManagerTest.GetDeviceTest
+[       OK ] DeviceManagerTest.GetDeviceTest (0 ms)
+[ RUN      ] DeviceManagerTest.DeviceMetadataTest
+[       OK ] DeviceManagerTest.DeviceMetadataTest (0 ms)
+[----------] 9 tests from DeviceManagerTest (113 ms total)
+
+[==========] 9 tests from 1 test suite ran. (113 ms total)
+[  PASSED  ] 8 tests.
+[  SKIPPED ] 1 test, listed below:
+[  SKIPPED ] DeviceManagerTest.CpuDeviceTypeFilterAutoRediscoveryWhenAvailable
+
+Repeating all tests (iteration 16) . . .
+
+Note: Google Test filter = DeviceManagerTest.*
+Note: Randomizing tests' orders with a seed of 798 .
+[==========] Running 9 tests from 1 test suite.
+[----------] 9 tests from DeviceManagerTest
+[ RUN      ] DeviceManagerTest.GetDeviceTest
+[       OK ] DeviceManagerTest.GetDeviceTest (0 ms)
+[ RUN      ] DeviceManagerTest.PlatformMetadataTest
+[       OK ] DeviceManagerTest.PlatformMetadataTest (0 ms)
+[ RUN      ] DeviceManagerTest.SetDeviceBoundsCheckingTest
+[clwrap] [12:57:13] [---E---] Platform ID 999999 is out of bounds (total platforms: 1)
+[clwrap] [12:57:13] [---E---] Device index 999999 is out of bounds for platform 0 (total devices: 1)
+[clwrap] [12:57:13] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[       OK ] DeviceManagerTest.SetDeviceBoundsCheckingTest (0 ms)
+[ RUN      ] DeviceManagerTest.CpuDeviceTypeFilterAutoRediscoveryWhenAvailable
+/home/barrulus/dev/Hesiod-783/external/HighMap/external/CLWrapper/tests/unit_tests/test_device_manager.cpp:134: Skipped
+No CPU OpenCL device is available; generic filter rediscovery is covered separately.
+
+[  SKIPPED ] DeviceManagerTest.CpuDeviceTypeFilterAutoRediscoveryWhenAvailable (0 ms)
+[ RUN      ] DeviceManagerTest.SetDeviceTypeFilterAutoRediscoveryTest
+[clwrap] [12:57:13] [---T---] initializing OpenCL devices...
+[clwrap] [12:57:13] [---T---] checking device performances...
+[clwrap] [12:57:13] [---T---] checking platform: NVIDIA Corporation - NVIDIA CUDA
+[clwrap] [12:57:13] [---T---] rating - device: NVIDIA GeForce RTX 5060 Laptop GPU, score: 1000052.6580820961
+[clwrap] [12:57:13] [---I---] Selected OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:13] [---I---] - device Name: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:13] [---I---]  - device Vendor: NVIDIA Corporation
+[clwrap] [12:57:13] [---I---]  - device Version: OpenCL 3.0 CUDA
+[clwrap] [12:57:13] [---I---]  - device Type: GPU
+[clwrap] [12:57:13] [---T---] initializing OpenCL devices...
+[clwrap] [12:57:13] [---T---] checking device performances...
+[clwrap] [12:57:13] [---T---] checking platform: NVIDIA Corporation - NVIDIA CUDA
+[clwrap] [12:57:13] [---T---] rating - device: NVIDIA GeForce RTX 5060 Laptop GPU, score: 1000052.6580820961
+[clwrap] [12:57:13] [---I---] Selected OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:13] [---I---] - device Name: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:13] [---I---]  - device Vendor: NVIDIA Corporation
+[clwrap] [12:57:13] [---I---]  - device Version: OpenCL 3.0 CUDA
+[clwrap] [12:57:13] [---I---]  - device Type: GPU
+[clwrap] [12:57:13] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[       OK ] DeviceManagerTest.SetDeviceTypeFilterAutoRediscoveryTest (1 ms)
+[ RUN      ] DeviceManagerTest.IsReadyTest
+[       OK ] DeviceManagerTest.IsReadyTest (0 ms)
+[ RUN      ] DeviceManagerTest.DeviceMetadataTest
+[       OK ] DeviceManagerTest.DeviceMetadataTest (0 ms)
+[ RUN      ] DeviceManagerTest.DeviceSwitchAndExecutionTest
+[clwrap] [12:57:13] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:13] [---T---] loading kernel sources
+[clwrap] [12:57:13] [---T---] building OpenCL kernels
+[clwrap] [12:57:13] [---T---] build options: 
+[clwrap] [12:57:13] [---T---] available kernels: simple_add
+[clwrap] [12:57:13] [---T---] Run::Run [simple_add]
+[clwrap] [12:57:13] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[       OK ] DeviceManagerTest.DeviceSwitchAndExecutionTest (112 ms)
+[ RUN      ] DeviceManagerTest.AvailableDevicesTest
+[       OK ] DeviceManagerTest.AvailableDevicesTest (0 ms)
+[----------] 9 tests from DeviceManagerTest (113 ms total)
+
+[==========] 9 tests from 1 test suite ran. (113 ms total)
+[  PASSED  ] 8 tests.
+[  SKIPPED ] 1 test, listed below:
+[  SKIPPED ] DeviceManagerTest.CpuDeviceTypeFilterAutoRediscoveryWhenAvailable
+
+Repeating all tests (iteration 17) . . .
+
+Note: Google Test filter = DeviceManagerTest.*
+Note: Randomizing tests' orders with a seed of 799 .
+[==========] Running 9 tests from 1 test suite.
+[----------] 9 tests from DeviceManagerTest
+[ RUN      ] DeviceManagerTest.AvailableDevicesTest
+[       OK ] DeviceManagerTest.AvailableDevicesTest (0 ms)
+[ RUN      ] DeviceManagerTest.SetDeviceTypeFilterAutoRediscoveryTest
+[clwrap] [12:57:13] [---T---] initializing OpenCL devices...
+[clwrap] [12:57:13] [---T---] checking device performances...
+[clwrap] [12:57:13] [---T---] checking platform: NVIDIA Corporation - NVIDIA CUDA
+[clwrap] [12:57:13] [---T---] rating - device: NVIDIA GeForce RTX 5060 Laptop GPU, score: 1000052.6580820961
+[clwrap] [12:57:13] [---I---] Selected OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:13] [---I---] - device Name: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:13] [---I---]  - device Vendor: NVIDIA Corporation
+[clwrap] [12:57:13] [---I---]  - device Version: OpenCL 3.0 CUDA
+[clwrap] [12:57:13] [---I---]  - device Type: GPU
+[clwrap] [12:57:13] [---T---] initializing OpenCL devices...
+[clwrap] [12:57:13] [---T---] checking device performances...
+[clwrap] [12:57:13] [---T---] checking platform: NVIDIA Corporation - NVIDIA CUDA
+[clwrap] [12:57:13] [---T---] rating - device: NVIDIA GeForce RTX 5060 Laptop GPU, score: 1000052.6580820961
+[clwrap] [12:57:13] [---I---] Selected OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:13] [---I---] - device Name: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:13] [---I---]  - device Vendor: NVIDIA Corporation
+[clwrap] [12:57:13] [---I---]  - device Version: OpenCL 3.0 CUDA
+[clwrap] [12:57:13] [---I---]  - device Type: GPU
+[clwrap] [12:57:13] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[       OK ] DeviceManagerTest.SetDeviceTypeFilterAutoRediscoveryTest (1 ms)
+[ RUN      ] DeviceManagerTest.IsReadyTest
+[       OK ] DeviceManagerTest.IsReadyTest (0 ms)
+[ RUN      ] DeviceManagerTest.SetDeviceBoundsCheckingTest
+[clwrap] [12:57:13] [---E---] Platform ID 999999 is out of bounds (total platforms: 1)
+[clwrap] [12:57:13] [---E---] Device index 999999 is out of bounds for platform 0 (total devices: 1)
+[clwrap] [12:57:13] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[       OK ] DeviceManagerTest.SetDeviceBoundsCheckingTest (0 ms)
+[ RUN      ] DeviceManagerTest.DeviceSwitchAndExecutionTest
+[clwrap] [12:57:13] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:13] [---T---] loading kernel sources
+[clwrap] [12:57:13] [---T---] building OpenCL kernels
+[clwrap] [12:57:13] [---T---] build options: 
+[clwrap] [12:57:13] [---T---] available kernels: simple_add
+[clwrap] [12:57:13] [---T---] Run::Run [simple_add]
+[clwrap] [12:57:13] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[       OK ] DeviceManagerTest.DeviceSwitchAndExecutionTest (114 ms)
+[ RUN      ] DeviceManagerTest.CpuDeviceTypeFilterAutoRediscoveryWhenAvailable
+/home/barrulus/dev/Hesiod-783/external/HighMap/external/CLWrapper/tests/unit_tests/test_device_manager.cpp:134: Skipped
+No CPU OpenCL device is available; generic filter rediscovery is covered separately.
+
+[  SKIPPED ] DeviceManagerTest.CpuDeviceTypeFilterAutoRediscoveryWhenAvailable (0 ms)
+[ RUN      ] DeviceManagerTest.PlatformMetadataTest
+[       OK ] DeviceManagerTest.PlatformMetadataTest (0 ms)
+[ RUN      ] DeviceManagerTest.DeviceMetadataTest
+[       OK ] DeviceManagerTest.DeviceMetadataTest (0 ms)
+[ RUN      ] DeviceManagerTest.GetDeviceTest
+[       OK ] DeviceManagerTest.GetDeviceTest (0 ms)
+[----------] 9 tests from DeviceManagerTest (115 ms total)
+
+[==========] 9 tests from 1 test suite ran. (115 ms total)
+[  PASSED  ] 8 tests.
+[  SKIPPED ] 1 test, listed below:
+[  SKIPPED ] DeviceManagerTest.CpuDeviceTypeFilterAutoRediscoveryWhenAvailable
+
+Repeating all tests (iteration 18) . . .
+
+Note: Google Test filter = DeviceManagerTest.*
+Note: Randomizing tests' orders with a seed of 800 .
+[==========] Running 9 tests from 1 test suite.
+[----------] 9 tests from DeviceManagerTest
+[ RUN      ] DeviceManagerTest.GetDeviceTest
+[       OK ] DeviceManagerTest.GetDeviceTest (0 ms)
+[ RUN      ] DeviceManagerTest.SetDeviceTypeFilterAutoRediscoveryTest
+[clwrap] [12:57:13] [---T---] initializing OpenCL devices...
+[clwrap] [12:57:13] [---T---] checking device performances...
+[clwrap] [12:57:13] [---T---] checking platform: NVIDIA Corporation - NVIDIA CUDA
+[clwrap] [12:57:13] [---T---] rating - device: NVIDIA GeForce RTX 5060 Laptop GPU, score: 1000052.6580820961
+[clwrap] [12:57:13] [---I---] Selected OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:13] [---I---] - device Name: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:13] [---I---]  - device Vendor: NVIDIA Corporation
+[clwrap] [12:57:13] [---I---]  - device Version: OpenCL 3.0 CUDA
+[clwrap] [12:57:13] [---I---]  - device Type: GPU
+[clwrap] [12:57:13] [---T---] initializing OpenCL devices...
+[clwrap] [12:57:13] [---T---] checking device performances...
+[clwrap] [12:57:13] [---T---] checking platform: NVIDIA Corporation - NVIDIA CUDA
+[clwrap] [12:57:13] [---T---] rating - device: NVIDIA GeForce RTX 5060 Laptop GPU, score: 1000052.6580820961
+[clwrap] [12:57:13] [---I---] Selected OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:13] [---I---] - device Name: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:13] [---I---]  - device Vendor: NVIDIA Corporation
+[clwrap] [12:57:13] [---I---]  - device Version: OpenCL 3.0 CUDA
+[clwrap] [12:57:13] [---I---]  - device Type: GPU
+[clwrap] [12:57:13] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[       OK ] DeviceManagerTest.SetDeviceTypeFilterAutoRediscoveryTest (1 ms)
+[ RUN      ] DeviceManagerTest.AvailableDevicesTest
+[       OK ] DeviceManagerTest.AvailableDevicesTest (0 ms)
+[ RUN      ] DeviceManagerTest.DeviceSwitchAndExecutionTest
+[clwrap] [12:57:13] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:13] [---T---] loading kernel sources
+[clwrap] [12:57:13] [---T---] building OpenCL kernels
+[clwrap] [12:57:13] [---T---] build options: 
+[clwrap] [12:57:13] [---T---] available kernels: simple_add
+[clwrap] [12:57:13] [---T---] Run::Run [simple_add]
+[clwrap] [12:57:13] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[       OK ] DeviceManagerTest.DeviceSwitchAndExecutionTest (114 ms)
+[ RUN      ] DeviceManagerTest.SetDeviceBoundsCheckingTest
+[clwrap] [12:57:13] [---E---] Platform ID 999999 is out of bounds (total platforms: 1)
+[clwrap] [12:57:13] [---E---] Device index 999999 is out of bounds for platform 0 (total devices: 1)
+[clwrap] [12:57:13] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[       OK ] DeviceManagerTest.SetDeviceBoundsCheckingTest (0 ms)
+[ RUN      ] DeviceManagerTest.CpuDeviceTypeFilterAutoRediscoveryWhenAvailable
+/home/barrulus/dev/Hesiod-783/external/HighMap/external/CLWrapper/tests/unit_tests/test_device_manager.cpp:134: Skipped
+No CPU OpenCL device is available; generic filter rediscovery is covered separately.
+
+[  SKIPPED ] DeviceManagerTest.CpuDeviceTypeFilterAutoRediscoveryWhenAvailable (0 ms)
+[ RUN      ] DeviceManagerTest.DeviceMetadataTest
+[       OK ] DeviceManagerTest.DeviceMetadataTest (0 ms)
+[ RUN      ] DeviceManagerTest.PlatformMetadataTest
+[       OK ] DeviceManagerTest.PlatformMetadataTest (0 ms)
+[ RUN      ] DeviceManagerTest.IsReadyTest
+[       OK ] DeviceManagerTest.IsReadyTest (0 ms)
+[----------] 9 tests from DeviceManagerTest (115 ms total)
+
+[==========] 9 tests from 1 test suite ran. (115 ms total)
+[  PASSED  ] 8 tests.
+[  SKIPPED ] 1 test, listed below:
+[  SKIPPED ] DeviceManagerTest.CpuDeviceTypeFilterAutoRediscoveryWhenAvailable
+
+Repeating all tests (iteration 19) . . .
+
+Note: Google Test filter = DeviceManagerTest.*
+Note: Randomizing tests' orders with a seed of 801 .
+[==========] Running 9 tests from 1 test suite.
+[----------] 9 tests from DeviceManagerTest
+[ RUN      ] DeviceManagerTest.IsReadyTest
+[       OK ] DeviceManagerTest.IsReadyTest (0 ms)
+[ RUN      ] DeviceManagerTest.PlatformMetadataTest
+[       OK ] DeviceManagerTest.PlatformMetadataTest (0 ms)
+[ RUN      ] DeviceManagerTest.DeviceMetadataTest
+[       OK ] DeviceManagerTest.DeviceMetadataTest (0 ms)
+[ RUN      ] DeviceManagerTest.GetDeviceTest
+[       OK ] DeviceManagerTest.GetDeviceTest (0 ms)
+[ RUN      ] DeviceManagerTest.SetDeviceTypeFilterAutoRediscoveryTest
+[clwrap] [12:57:13] [---T---] initializing OpenCL devices...
+[clwrap] [12:57:13] [---T---] checking device performances...
+[clwrap] [12:57:13] [---T---] checking platform: NVIDIA Corporation - NVIDIA CUDA
+[clwrap] [12:57:13] [---T---] rating - device: NVIDIA GeForce RTX 5060 Laptop GPU, score: 1000052.6580820961
+[clwrap] [12:57:13] [---I---] Selected OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:13] [---I---] - device Name: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:13] [---I---]  - device Vendor: NVIDIA Corporation
+[clwrap] [12:57:13] [---I---]  - device Version: OpenCL 3.0 CUDA
+[clwrap] [12:57:13] [---I---]  - device Type: GPU
+[clwrap] [12:57:13] [---T---] initializing OpenCL devices...
+[clwrap] [12:57:13] [---T---] checking device performances...
+[clwrap] [12:57:13] [---T---] checking platform: NVIDIA Corporation - NVIDIA CUDA
+[clwrap] [12:57:13] [---T---] rating - device: NVIDIA GeForce RTX 5060 Laptop GPU, score: 1000052.6580820961
+[clwrap] [12:57:13] [---I---] Selected OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:13] [---I---] - device Name: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:13] [---I---]  - device Vendor: NVIDIA Corporation
+[clwrap] [12:57:13] [---I---]  - device Version: OpenCL 3.0 CUDA
+[clwrap] [12:57:13] [---I---]  - device Type: GPU
+[clwrap] [12:57:13] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[       OK ] DeviceManagerTest.SetDeviceTypeFilterAutoRediscoveryTest (1 ms)
+[ RUN      ] DeviceManagerTest.CpuDeviceTypeFilterAutoRediscoveryWhenAvailable
+/home/barrulus/dev/Hesiod-783/external/HighMap/external/CLWrapper/tests/unit_tests/test_device_manager.cpp:134: Skipped
+No CPU OpenCL device is available; generic filter rediscovery is covered separately.
+
+[  SKIPPED ] DeviceManagerTest.CpuDeviceTypeFilterAutoRediscoveryWhenAvailable (0 ms)
+[ RUN      ] DeviceManagerTest.AvailableDevicesTest
+[       OK ] DeviceManagerTest.AvailableDevicesTest (0 ms)
+[ RUN      ] DeviceManagerTest.SetDeviceBoundsCheckingTest
+[clwrap] [12:57:13] [---E---] Platform ID 999999 is out of bounds (total platforms: 1)
+[clwrap] [12:57:13] [---E---] Device index 999999 is out of bounds for platform 0 (total devices: 1)
+[clwrap] [12:57:13] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[       OK ] DeviceManagerTest.SetDeviceBoundsCheckingTest (0 ms)
+[ RUN      ] DeviceManagerTest.DeviceSwitchAndExecutionTest
+[clwrap] [12:57:13] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:13] [---T---] loading kernel sources
+[clwrap] [12:57:13] [---T---] building OpenCL kernels
+[clwrap] [12:57:13] [---T---] build options: 
+[clwrap] [12:57:13] [---T---] available kernels: simple_add
+[clwrap] [12:57:13] [---T---] Run::Run [simple_add]
+[clwrap] [12:57:13] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[       OK ] DeviceManagerTest.DeviceSwitchAndExecutionTest (111 ms)
+[----------] 9 tests from DeviceManagerTest (112 ms total)
+
+[==========] 9 tests from 1 test suite ran. (112 ms total)
+[  PASSED  ] 8 tests.
+[  SKIPPED ] 1 test, listed below:
+[  SKIPPED ] DeviceManagerTest.CpuDeviceTypeFilterAutoRediscoveryWhenAvailable
+
+Repeating all tests (iteration 20) . . .
+
+Note: Google Test filter = DeviceManagerTest.*
+Note: Randomizing tests' orders with a seed of 802 .
+[==========] Running 9 tests from 1 test suite.
+[----------] 9 tests from DeviceManagerTest
+[ RUN      ] DeviceManagerTest.DeviceSwitchAndExecutionTest
+[clwrap] [12:57:13] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:13] [---T---] loading kernel sources
+[clwrap] [12:57:14] [---T---] building OpenCL kernels
+[clwrap] [12:57:14] [---T---] build options: 
+[clwrap] [12:57:14] [---T---] available kernels: simple_add
+[clwrap] [12:57:14] [---T---] Run::Run [simple_add]
+[clwrap] [12:57:14] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[       OK ] DeviceManagerTest.DeviceSwitchAndExecutionTest (113 ms)
+[ RUN      ] DeviceManagerTest.DeviceMetadataTest
+[       OK ] DeviceManagerTest.DeviceMetadataTest (0 ms)
+[ RUN      ] DeviceManagerTest.PlatformMetadataTest
+[       OK ] DeviceManagerTest.PlatformMetadataTest (0 ms)
+[ RUN      ] DeviceManagerTest.SetDeviceBoundsCheckingTest
+[clwrap] [12:57:14] [---E---] Platform ID 999999 is out of bounds (total platforms: 1)
+[clwrap] [12:57:14] [---E---] Device index 999999 is out of bounds for platform 0 (total devices: 1)
+[clwrap] [12:57:14] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[       OK ] DeviceManagerTest.SetDeviceBoundsCheckingTest (0 ms)
+[ RUN      ] DeviceManagerTest.IsReadyTest
+[       OK ] DeviceManagerTest.IsReadyTest (0 ms)
+[ RUN      ] DeviceManagerTest.AvailableDevicesTest
+[       OK ] DeviceManagerTest.AvailableDevicesTest (0 ms)
+[ RUN      ] DeviceManagerTest.GetDeviceTest
+[       OK ] DeviceManagerTest.GetDeviceTest (0 ms)
+[ RUN      ] DeviceManagerTest.SetDeviceTypeFilterAutoRediscoveryTest
+[clwrap] [12:57:14] [---T---] initializing OpenCL devices...
+[clwrap] [12:57:14] [---T---] checking device performances...
+[clwrap] [12:57:14] [---T---] checking platform: NVIDIA Corporation - NVIDIA CUDA
+[clwrap] [12:57:14] [---T---] rating - device: NVIDIA GeForce RTX 5060 Laptop GPU, score: 1000052.6580820961
+[clwrap] [12:57:14] [---I---] Selected OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:14] [---I---] - device Name: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:14] [---I---]  - device Vendor: NVIDIA Corporation
+[clwrap] [12:57:14] [---I---]  - device Version: OpenCL 3.0 CUDA
+[clwrap] [12:57:14] [---I---]  - device Type: GPU
+[clwrap] [12:57:14] [---T---] initializing OpenCL devices...
+[clwrap] [12:57:14] [---T---] checking device performances...
+[clwrap] [12:57:14] [---T---] checking platform: NVIDIA Corporation - NVIDIA CUDA
+[clwrap] [12:57:14] [---T---] rating - device: NVIDIA GeForce RTX 5060 Laptop GPU, score: 1000052.6580820961
+[clwrap] [12:57:14] [---I---] Selected OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:14] [---I---] - device Name: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:14] [---I---]  - device Vendor: NVIDIA Corporation
+[clwrap] [12:57:14] [---I---]  - device Version: OpenCL 3.0 CUDA
+[clwrap] [12:57:14] [---I---]  - device Type: GPU
+[clwrap] [12:57:14] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[       OK ] DeviceManagerTest.SetDeviceTypeFilterAutoRediscoveryTest (1 ms)
+[ RUN      ] DeviceManagerTest.CpuDeviceTypeFilterAutoRediscoveryWhenAvailable
+/home/barrulus/dev/Hesiod-783/external/HighMap/external/CLWrapper/tests/unit_tests/test_device_manager.cpp:134: Skipped
+No CPU OpenCL device is available; generic filter rediscovery is covered separately.
+
+[  SKIPPED ] DeviceManagerTest.CpuDeviceTypeFilterAutoRediscoveryWhenAvailable (0 ms)
+[----------] 9 tests from DeviceManagerTest (114 ms total)
+
+[----------] Global test environment tear-down
+[==========] 9 tests from 1 test suite ran. (114 ms total)
+[  PASSED  ] 8 tests.
+[  SKIPPED ] 1 test, listed below:
+[  SKIPPED ] DeviceManagerTest.CpuDeviceTypeFilterAutoRediscoveryWhenAvailable

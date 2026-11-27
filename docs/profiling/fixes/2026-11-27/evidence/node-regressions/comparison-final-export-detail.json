@@ -1,0 +1,121 @@
+{
+  "passed": true,
+  "cases": 20,
+  "checks": [
+    {
+      "case": "ExportAsset-detail-m0-mask0-none-t1",
+      "passed": true,
+      "relation": "exact PNG/CSV bytes or normalized GLB chunks match baseline"
+    },
+    {
+      "case": "ExportAsset-detail-m0-mask1-none-t1",
+      "passed": true,
+      "relation": "exact PNG/CSV bytes or normalized GLB chunks match baseline"
+    },
+    {
+      "case": "ExportAsset-detail-m1-mask0-x-t1",
+      "passed": true,
+      "relation": "exact PNG/CSV bytes or normalized GLB chunks match baseline"
+    },
+    {
+      "case": "ExportAsset-detail-m1-mask1-x-t1",
+      "passed": true,
+      "relation": "exact PNG/CSV bytes or normalized GLB chunks match baseline"
+    },
+    {
+      "case": "ExportAsset-detail-m2-mask0-y-t1",
+      "passed": true,
+      "relation": "exact PNG/CSV bytes or normalized GLB chunks match baseline"
+    },
+    {
+      "case": "ExportAsset-detail-m2-mask1-y-t1",
+      "passed": true,
+      "relation": "exact PNG/CSV bytes or normalized GLB chunks match baseline"
+    },
+    {
+      "case": "ExportAsset-detail-m3-mask0-xy-t1",
+      "passed": true,
+      "relation": "exact PNG/CSV bytes or normalized GLB chunks match baseline"
+    },
+    {
+      "case": "ExportAsset-detail-m3-mask1-xy-t1",
+      "passed": true,
+      "relation": "exact PNG/CSV bytes or normalized GLB chunks match baseline"
+    },
+    {
+      "case": "ExportAsset-detail-m4-mask0-xy-t1",
+      "passed": true,
+      "relation": "exact PNG/CSV bytes or normalized GLB chunks match baseline"
+    },
+    {
+      "case": "ExportAsset-detail-m4-mask1-xy-t1",
+      "passed": true,
+      "relation": "exact PNG/CSV bytes or normalized GLB chunks match baseline"
+    },
+    {
+      "case": "ExportAsset-detail-m0-mask0-none-t4",
+      "passed": true,
+      "relation": "exact PNG/CSV bytes or normalized GLB chunks match baseline"
+    },
+    {
+      "case": "ExportAsset-detail-m0-mask1-none-t4",
+      "passed": true,
+      "relation": "exact PNG/CSV bytes or normalized GLB chunks match baseline"
+    },
+    {
+      "case": "ExportAsset-detail-m1-mask0-x-t4",
+      "passed": true,
+      "relation": "exact PNG/CSV bytes or normalized GLB chunks match baseline"
+    },
+    {
+      "case": "ExportAsset-detail-m1-mask1-x-t4",
+      "passed": true,
+      "relation": "exact PNG/CSV bytes or normalized GLB chunks match baseline"
+    },
+    {
+      "case": "ExportAsset-detail-m2-mask0-y-t4",
+      "passed": true,
+      "relation": "exact PNG/CSV bytes or normalized GLB chunks match baseline"
+    },
+    {
+      "case": "ExportAsset-detail-m2-mask1-y-t4",
+      "passed": true,
+      "relation": "exact PNG/CSV bytes or normalized GLB chunks match baseline"
+    },
+    {
+      "case": "ExportAsset-detail-m3-mask0-xy-t4",
+      "passed": true,
+      "relation": "exact PNG/CSV bytes or normalized GLB chunks match baseline"
+    },
+    {
+      "case": "ExportAsset-detail-m3-mask1-xy-t4",
+      "passed": true,
+      "relation": "exact PNG/CSV bytes or normalized GLB chunks match baseline"
+    },
+    {
+      "case": "ExportAsset-detail-m4-mask0-xy-t4",
+      "passed": true,
+      "relation": "exact PNG/CSV bytes or normalized GLB chunks match baseline"
+    },
+    {
+      "case": "ExportAsset-detail-m4-mask1-xy-t4",
+      "passed": true,
+      "relation": "exact PNG/CSV bytes or normalized GLB chunks match baseline"
+    }
+  ],
+  "baseline": {
+    "binary": "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+    "binary_sha256": "0fa7fb40613cbb1af3401bf96e2490a8c68383a2b39f2021ff50f27a3110d4cc",
+    "script_sha256": "4746da38c5dd1b99a50ef3131ae8a512f39cf110bbbb2ccb1709c5198d18bfe3",
+    "size": 128,
+    "suite": "export-detail"
+  },
+  "candidate": {
+    "binary": "/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/candidate-final/bin/hesiod",
+    "binary_sha256": "b65f9a51d5f5d9a2d7874070d65cf1ba5a5c19660faa94ca0925916d8e7d6b27",
+    "script_sha256": "4746da38c5dd1b99a50ef3131ae8a512f39cf110bbbb2ccb1709c5198d18bfe3",
+    "size": 128,
+    "suite": "export-detail"
+  },
+  "scope": "128-square deterministic CPU graphs, sequential tiles; no tolerance; no performance claim"
+}

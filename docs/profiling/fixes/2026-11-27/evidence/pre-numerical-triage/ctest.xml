@@ -1,0 +1,1113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="(empty)"
+	tests="66"
+	failures="1"
+	disabled="0"
+	skipped="0"
+	hostname=""
+	time="4"
+	timestamp="2026-11-27T12:51:13"
+	>
+	<testcase name="clwrapper_unit_tests" classname="clwrapper_unit_tests" time="0.920844" status="fail">
+		<failure message="Failed"/>
+		<properties/>
+		<system-out>Running main() from /home/barrulus/dev/Hesiod-783/output/validation/googletest/googletest/src/gtest_main.cc
+[==========] Running 15 tests from 3 test suites.
+[----------] Global test environment set-up.
+[----------] 8 tests from DeviceManagerTest
+[ RUN      ] DeviceManagerTest.IsReadyTest
+[clwrap] [12:51:13] [---T---] DeviceManager::DeviceManager
+[clwrap] [12:51:13] [---T---] initializing OpenCL devices...
+[clwrap] [12:51:13] [---T---] checking device performances...
+[clwrap] [12:51:13] [---T---] checking platform: NVIDIA Corporation - NVIDIA CUDA
+[clwrap] [12:51:13] [---T---] rating - device: NVIDIA GeForce RTX 5060 Laptop GPU, score: 1000052.6580820961
+[clwrap] [12:51:13] [---I---] Selected OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:51:13] [---I---] - device Name: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:51:13] [---I---]  - device Vendor: NVIDIA Corporation
+[clwrap] [12:51:13] [---I---]  - device Version: OpenCL 3.0 CUDA
+[clwrap] [12:51:13] [---I---]  - device Type: GPU
+[       OK ] DeviceManagerTest.IsReadyTest (70 ms)
+[ RUN      ] DeviceManagerTest.GetDeviceTest
+[       OK ] DeviceManagerTest.GetDeviceTest (0 ms)
+[ RUN      ] DeviceManagerTest.AvailableDevicesTest
+[       OK ] DeviceManagerTest.AvailableDevicesTest (0 ms)
+[ RUN      ] DeviceManagerTest.DeviceMetadataTest
+[       OK ] DeviceManagerTest.DeviceMetadataTest (0 ms)
+[ RUN      ] DeviceManagerTest.PlatformMetadataTest
+[       OK ] DeviceManagerTest.PlatformMetadataTest (0 ms)
+[ RUN      ] DeviceManagerTest.SetDeviceBoundsCheckingTest
+[clwrap] [12:51:13] [---E---] Platform ID 999999 is out of bounds (total platforms: 1)
+[clwrap] [12:51:13] [---E---] Device index 999999 is out of bounds for platform 0 (total devices: 1)
+[clwrap] [12:51:13] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[       OK ] DeviceManagerTest.SetDeviceBoundsCheckingTest (0 ms)
+[ RUN      ] DeviceManagerTest.SetDeviceTypeFilterAutoRediscoveryTest
+[clwrap] [12:51:13] [---T---] initializing OpenCL devices...
+[clwrap] [12:51:13] [---T---] checking device performances...
+[clwrap] [12:51:13] [---T---] checking platform: NVIDIA Corporation - NVIDIA CUDA
+unknown file: Failure
+C++ exception with description "No OpenCL devices matching the device type filter were found!" thrown in the test body.
+
+[  FAILED  ] DeviceManagerTest.SetDeviceTypeFilterAutoRediscoveryTest (0 ms)
+[ RUN      ] DeviceManagerTest.DeviceSwitchAndExecutionTest
+[clwrap] [12:51:13] [---T---] loading kernel sources
+[clwrap] [12:51:13] [---T---] program building skipped, kernel sources are empty
+[clwrap] [12:51:13] [---E---] Device index 0 is out of bounds for platform 0 (total devices: 0)
+[       OK ] DeviceManagerTest.DeviceSwitchAndExecutionTest (0 ms)
+[----------] 8 tests from DeviceManagerTest (70 ms total)
+
+[----------] 3 tests from KernelManagerTest
+[ RUN      ] KernelManagerTest.SingletonInstanceTest
+[       OK ] KernelManagerTest.SingletonInstanceTest (0 ms)
+[ RUN      ] KernelManagerTest.AddKernelTest
+[clwrap] [12:51:13] [---T---] loading kernel sources
+[clwrap] [12:51:13] [---T---] building OpenCL kernels
+[clwrap] [12:51:13] [---T---] build options: 
+[clwrap] [12:51:13] [---T---] available kernels: simple_add
+[       OK ] KernelManagerTest.AddKernelTest (71 ms)
+[ RUN      ] KernelManagerTest.SourceStackingTest
+[clwrap] [12:51:13] [---T---] loading kernel sources
+[clwrap] [12:51:13] [---T---] building OpenCL kernels
+[clwrap] [12:51:13] [---T---] build options: 
+[clwrap] [12:51:13] [---T---] available kernels: add_kernel;sub_kernel
+[       OK ] KernelManagerTest.SourceStackingTest (116 ms)
+[----------] 3 tests from KernelManagerTest (187 ms total)
+
+[----------] 4 tests from RunTest
+[ RUN      ] RunTest.BufferBindingAndExecution
+[clwrap] [12:51:13] [---T---] loading kernel sources
+[clwrap] [12:51:14] [---T---] building OpenCL kernels
+[clwrap] [12:51:14] [---T---] build options: 
+[clwrap] [12:51:14] [---T---] available kernels: vector_add
+[clwrap] [12:51:14] [---T---] Run::Run [vector_add]
+[       OK ] RunTest.BufferBindingAndExecution (114 ms)
+[ RUN      ] RunTest.ImageBindingAndExecution
+[clwrap] [12:51:14] [---T---] loading kernel sources
+[clwrap] [12:51:14] [---T---] building OpenCL kernels
+[clwrap] [12:51:14] [---T---] build options: 
+[clwrap] [12:51:14] [---T---] available kernels: img_test
+[clwrap] [12:51:14] [---T---] Run::Run [img_test]
+[       OK ] RunTest.ImageBindingAndExecution (112 ms)
+[ RUN      ] RunTest.InOutImageSharingAndPingPong
+[clwrap] [12:51:14] [---T---] loading kernel sources
+[clwrap] [12:51:14] [---T---] building OpenCL kernels
+[clwrap] [12:51:14] [---T---] build options: 
+[clwrap] [12:51:14] [---T---] available kernels: img_scale
+[clwrap] [12:51:14] [---T---] Run::Run [img_scale]
+[clwrap] [12:51:14] [---T---] Run::Run [img_scale]
+[       OK ] RunTest.InOutImageSharingAndPingPong (112 ms)
+[ RUN      ] RunTest.SharedQueueAsyncAcrossRuns
+[clwrap] [12:51:14] [---T---] loading kernel sources
+[clwrap] [12:51:14] [---T---] building OpenCL kernels
+[clwrap] [12:51:14] [---T---] build options: 
+[clwrap] [12:51:14] [---T---] available kernels: img_scale;img_add_one
+[clwrap] [12:51:14] [---T---] Run::Run [img_scale]
+[clwrap] [12:51:14] [---T---] Run::Run [img_add_one] (shared queue)
+[clwrap] [12:51:14] [---T---] loading kernel sources
+[clwrap] [12:51:14] [---T---] building OpenCL kernels
+[clwrap] [12:51:14] [---T---] build options: 
+[clwrap] [12:51:14] [---T---] available kernels: vec_scale
+[clwrap] [12:51:14] [---T---] Run::Run [vec_scale]
+[       OK ] RunTest.SharedQueueAsyncAcrossRuns (228 ms)
+[----------] 4 tests from RunTest (568 ms total)
+
+[----------] Global test environment tear-down
+[==========] 15 tests from 3 test suites ran. (827 ms total)
+[  PASSED  ] 14 tests.
+[  FAILED  ] 1 test, listed below:
+[  FAILED  ] DeviceManagerTest.SetDeviceTypeFilterAutoRediscoveryTest
+
+ 1 FAILED TEST
+</system-out>
+	</testcase>
+	<testcase name="unit_tests_build" classname="unit_tests_build" time="0.0576096" status="run">
+		<properties/>
+		<system-out>[0/2] Re-checking globbed directories...
+ninja: no work to do.
+</system-out>
+	</testcase>
+	<testcase name="unit_tests_run" classname="unit_tests_run" time="0.769142" status="run">
+		<properties/>
+		<system-out>[==========] Running 12 tests from 1 test case.
+[----------] Global test environment set-up.
+[----------] 12 tests from kdtree
+[ RUN      ] kdtree.L2_vs_L2_simple
+[       OK ] kdtree.L2_vs_L2_simple (0 ms)
+[ RUN      ] kdtree.robust_empty_tree
+[       OK ] kdtree.robust_empty_tree (0 ms)
+[ RUN      ] kdtree.L2_vs_bruteforce
+[       OK ] kdtree.L2_vs_bruteforce (529 ms)
+[ RUN      ] kdtree.L2_vs_bruteforce_rknn
+[       OK ] kdtree.L2_vs_bruteforce_rknn (201 ms)
+[ RUN      ] kdtree.SO3_vs_bruteforce
+[       OK ] kdtree.SO3_vs_bruteforce (1 ms)
+[ RUN      ] kdtree.SO2_vs_bruteforce
+[       OK ] kdtree.SO2_vs_bruteforce (0 ms)
+[ RUN      ] kdtree.L2_dynamic_vs_bruteforce
+[       OK ] kdtree.L2_dynamic_vs_bruteforce (0 ms)
+[ RUN      ] kdtree.robust_nonempty_tree
+[       OK ] kdtree.robust_nonempty_tree (0 ms)
+[ RUN      ] kdtree.add_and_remove_points
+[       OK ] kdtree.add_and_remove_points (0 ms)
+[ RUN      ] kdtree.L2_concurrent_build_vs_bruteforce
+[       OK ] kdtree.L2_concurrent_build_vs_bruteforce (20 ms)
+...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="AttributeTest.ConstructionAndValue" classname="AttributeTest.ConstructionAndValue" time="0.0180519" status="run">
+		<properties/>
+		<system-out>Note: Google Test filter = AttributeTest.ConstructionAndValue
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from AttributeTest
+[ RUN      ] AttributeTest.ConstructionAndValue
+[       OK ] AttributeTest.ConstructionAndValue (0 ms)
+[----------] 1 test from AttributeTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+</system-out>
+	</testcase>
+	<testcase name="AttributeTest.TypeErasedAccess" classname="AttributeTest.TypeErasedAccess" time="0.0150053" status="run">
+		<properties/>
+		<system-out>Note: Google Test filter = AttributeTest.TypeErasedAccess
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from AttributeTest
+[ RUN      ] AttributeTest.TypeErasedAccess
+[       OK ] AttributeTest.TypeErasedAccess (0 ms)
+[----------] 1 test from AttributeTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+</system-out>
+	</testcase>
+	<testcase name="AttributeTest.EventNotification" classname="AttributeTest.EventNotification" time="0.0145841" status="run">
+		<properties/>
+		<system-out>Note: Google Test filter = AttributeTest.EventNotification
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from AttributeTest
+[ RUN      ] AttributeTest.EventNotification
+[       OK ] AttributeTest.EventNotification (0 ms)
+[----------] 1 test from AttributeTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+</system-out>
+	</testcase>
+	<testcase name="AttributeTest.MetadataAndStateSeparation" classname="AttributeTest.MetadataAndStateSeparation" time="0.014887" status="run">
+		<properties/>
+		<system-out>Note: Google Test filter = AttributeTest.MetadataAndStateSeparation
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from AttributeTest
+[ RUN      ] AttributeTest.MetadataAndStateSeparation
+[       OK ] AttributeTest.MetadataAndStateSeparation (0 ms)
+[----------] 1 test from AttributeTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+</system-out>
+	</testcase>
+	<testcase name="AttributeTest.PresetComment" classname="AttributeTest.PresetComment" time="0.0146568" status="run">
+		<properties/>
+		<system-out>Note: Google Test filter = AttributeTest.PresetComment
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from AttributeTest
+[ RUN      ] AttributeTest.PresetComment
+[       OK ] AttributeTest.PresetComment (0 ms)
+[----------] 1 test from AttributeTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+</system-out>
+	</testcase>
+	<testcase name="AttributeContainerTest.AddAndLookup" classname="AttributeContainerTest.AddAndLookup" time="0.0138255" status="run">
+		<properties/>
+		<system-out>Note: Google Test filter = AttributeContainerTest.AddAndLookup
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from AttributeContainerTest
+[ RUN      ] AttributeContainerTest.AddAndLookup
+[       OK ] AttributeContainerTest.AddAndLookup (0 ms)
+[----------] 1 test from AttributeContainerTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+</system-out>
+	</testcase>
+	<testcase name="AttributeContainerTest.TryAdd" classname="AttributeContainerTest.TryAdd" time="0.0136976" status="run">
+		<properties/>
+		<system-out>Note: Google Test filter = AttributeContainerTest.TryAdd
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from AttributeContainerTest
+[ RUN      ] AttributeContainerTest.TryAdd
+[       OK ] AttributeContainerTest.TryAdd (0 ms)
+[----------] 1 test from AttributeContainerTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+</system-out>
+	</testcase>
+	<testcase name="AttributeContainerTest.InsertionOrder" classname="AttributeContainerTest.InsertionOrder" time="0.0139085" status="run">
+		<properties/>
+		<system-out>Note: Google Test filter = AttributeContainerTest.InsertionOrder
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from AttributeContainerTest
+[ RUN      ] AttributeContainerTest.InsertionOrder
+[       OK ] AttributeContainerTest.InsertionOrder (0 ms)
+[----------] 1 test from AttributeContainerTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+</system-out>
+	</testcase>
+	<testcase name="SerializationTest.FullModeRoundTrip" classname="SerializationTest.FullModeRoundTrip" time="0.0139582" status="run">
+		<properties/>
+		<system-out>Note: Google Test filter = SerializationTest.FullModeRoundTrip
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from SerializationTest
+[ RUN      ] SerializationTest.FullModeRoundTrip
+[       OK ] SerializationTest.FullModeRoundTrip (0 ms)
+[----------] 1 test from SerializationTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+</system-out>
+	</testcase>
+	<testcase name="SerializationTest.StateModeEmitsOnlyValueAndState" classname="SerializationTest.StateModeEmitsOnlyValueAndState" time="0.0142055" status="run">
+		<properties/>
+		<system-out>Note: Google Test filter = SerializationTest.StateModeEmitsOnlyValueAndState
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from SerializationTest
+[ RUN      ] SerializationTest.StateModeEmitsOnlyValueAndState
+[       OK ] SerializationTest.StateModeEmitsOnlyValueAndState (0 ms)
+[----------] 1 test from SerializationTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+</system-out>
+	</testcase>
+	<testcase name="SerializationTest.StateModeIgnoresMetadataAndSkipsUndeclared" classname="SerializationTest.StateModeIgnoresMetadataAndSkipsUndeclared" time="0.0139362" status="run">
+		<properties/>
+		<system-out>Note: Google Test filter = SerializationTest.StateModeIgnoresMetadataAndSkipsUndeclared
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from SerializationTest
+[ RUN      ] SerializationTest.StateModeIgnoresMetadataAndSkipsUndeclared
+[       OK ] SerializationTest.StateModeIgnoresMetadataAndSkipsUndeclared (0 ms)
+[----------] 1 test from SerializationTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+</system-out>
+	</testcase>
+	<testcase name="SerializationTest.StateModeReconstructsDynamicStateAttributes" classname="SerializationTest.StateModeReconstructsDynamicStateAttributes" time="0.0136318" status="run">
+		<properties/>
+		<system-out>Note: Google Test filter = SerializationTest.StateModeReconstructsDynamicStateAttributes
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from SerializationTest
+[ RUN      ] SerializationTest.StateModeReconstructsDynamicStateAttributes
+[       OK ] SerializationTest.StateModeReconstructsDynamicStateAttributes (0 ms)
+[----------] 1 test from SerializationTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+</system-out>
+	</testcase>
+	<testcase name="SerializationTest.ContainerStateModeRoundTrip" classname="SerializationTest.ContainerStateModeRoundTrip" time="0.0139823" status="run">
+		<properties/>
+		<system-out>Note: Google Test filter = SerializationTest.ContainerStateModeRoundTrip
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from SerializationTest
+[ RUN      ] SerializationTest.ContainerStateModeRoundTrip
+[       OK ] SerializationTest.ContainerStateModeRoundTrip (0 ms)
+[----------] 1 test from SerializationTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+</system-out>
+	</testcase>
+	<testcase name="SerializationTest.ContainerGroupFullModeRoundTrip" classname="SerializationTest.ContainerGroupFullModeRoundTrip" time="0.0139131" status="run">
+		<properties/>
+		<system-out>Note: Google Test filter = SerializationTest.ContainerGroupFullModeRoundTrip
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from SerializationTest
+[ RUN      ] SerializationTest.ContainerGroupFullModeRoundTrip
+[       OK ] SerializationTest.ContainerGroupFullModeRoundTrip (0 ms)
+[----------] 1 test from SerializationTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+</system-out>
+	</testcase>
+	<testcase name="SerializationTest.ContainerGroupStateMode" classname="SerializationTest.ContainerGroupStateMode" time="0.0139239" status="run">
+		<properties/>
+		<system-out>Note: Google Test filter = SerializationTest.ContainerGroupStateMode
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from SerializationTest
+[ RUN      ] SerializationTest.ContainerGroupStateMode
+[meta--] [12:51:15] [---W---] ContainerGroup::json_from: current container 'undeclared_view' not found
+[       OK ] SerializationTest.ContainerGroupStateMode (0 ms)
+[----------] 1 test from SerializationTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+</system-out>
+	</testcase>
+	<testcase name="SerializationTest.ContainerGroupClear" classname="SerializationTest.ContainerGroupClear" time="0.0137512" status="run">
+		<properties/>
+		<system-out>Note: Google Test filter = SerializationTest.ContainerGroupClear
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from SerializationTest
+[ RUN      ] SerializationTest.ContainerGroupClear
+[       OK ] SerializationTest.ContainerGroupClear (0 ms)
+[----------] 1 test from SerializationTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+</system-out>
+	</testcase>
+	<testcase name="SerializationTest.MetadataAndStateRestoredBeforeValueNotification" classname="SerializationTest.MetadataAndStateRestoredBeforeValueNotification" time="0.0136659" status="run">
+		<properties/>
+		<system-out>Note: Google Test filter = SerializationTest.MetadataAndStateRestoredBeforeValueNotification
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from SerializationTest
+[ RUN      ] SerializationTest.MetadataAndStateRestoredBeforeValueNotification
+[       OK ] SerializationTest.MetadataAndStateRestoredBeforeValueNotification (0 ms)
+[----------] 1 test from SerializationTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+</system-out>
+	</testcase>
+	<testcase name="AttributeFactoryTest.CreateBuiltinTypes" classname="AttributeFactoryTest.CreateBuiltinTypes" time="0.0135514" status="run">
+		<properties/>
+		<system-out>Note: Google Test filter = AttributeFactoryTest.CreateBuiltinTypes
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from AttributeFactoryTest
+[ RUN      ] AttributeFactoryTest.CreateBuiltinTypes
+[       OK ] AttributeFactoryTest.CreateBuiltinTypes (0 ms)
+[----------] 1 test from AttributeFactoryTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+</system-out>
+	</testcase>
+	<testcase name="EventTest.SubscribeAndNotify" classname="EventTest.SubscribeAndNotify" time="0.0136368" status="run">
+		<properties/>
+		<system-out>Note: Google Test filter = EventTest.SubscribeAndNotify
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from EventTest
+[ RUN      ] EventTest.SubscribeAndNotify
+[       OK ] EventTest.SubscribeAndNotify (0 ms)
+[----------] 1 test from EventTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+</system-out>
+	</testcase>
+	<testcase name="EventTest.Unsubscribe" classname="EventTest.Unsubscribe" time="0.0135915" status="run">
+		<properties/>
+		<system-out>Note: Google Test filter = EventTest.Unsubscribe
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from EventTest
+[ RUN      ] EventTest.Unsubscribe
+[       OK ] EventTest.Unsubscribe (0 ms)
+[----------] 1 test from EventTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+</system-out>
+	</testcase>
+	<testcase name="EventTest.TeardownSafety" classname="EventTest.TeardownSafety" time="0.0136338" status="run">
+		<properties/>
+		<system-out>Note: Google Test filter = EventTest.TeardownSafety
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from EventTest
+[ RUN      ] EventTest.TeardownSafety
+[       OK ] EventTest.TeardownSafety (0 ms)
+[----------] 1 test from EventTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+</system-out>
+	</testcase>
+	<testcase name="ContainerGroupSyncTest.DetectSharedAttributes" classname="ContainerGroupSyncTest.DetectSharedAttributes" time="0.0134191" status="run">
+		<properties/>
+		<system-out>Note: Google Test filter = ContainerGroupSyncTest.DetectSharedAttributes
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from ContainerGroupSyncTest
+[ RUN      ] ContainerGroupSyncTest.DetectSharedAttributes
+[       OK ] ContainerGroupSyncTest.DetectSharedAttributes (0 ms)
+[----------] 1 test from ContainerGroupSyncTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+</system-out>
+	</testcase>
+	<testcase name="ContainerGroupSyncTest.BasicSynchronizationAndIndependence" classname="ContainerGroupSyncTest.BasicSynchronizationAndIndependence" time="0.013663" status="run">
+		<properties/>
+		<system-out>Note: Google Test filter = ContainerGroupSyncTest.BasicSynchronizationAndIndependence
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from ContainerGroupSyncTest
+[ RUN      ] ContainerGroupSyncTest.BasicSynchronizationAndIndependence
+[       OK ] ContainerGroupSyncTest.BasicSynchronizationAndIndependence (0 ms)
+[----------] 1 test from ContainerGroupSyncTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+</system-out>
+	</testcase>
+	<testcase name="ContainerGroupSyncTest.EventNotificationOnSync" classname="ContainerGroupSyncTest.EventNotificationOnSync" time="0.0134489" status="run">
+		<properties/>
+		<system-out>Note: Google Test filter = ContainerGroupSyncTest.EventNotificationOnSync
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from ContainerGroupSyncTest
+[ RUN      ] ContainerGroupSyncTest.EventNotificationOnSync
+[       OK ] ContainerGroupSyncTest.EventNotificationOnSync (0 ms)
+[----------] 1 test from ContainerGroupSyncTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+</system-out>
+	</testcase>
+	<testcase name="ContainerGroupSyncTest.EnableDisableSynchronization" classname="ContainerGroupSyncTest.EnableDisableSynchronization" time="0.0135431" status="run">
+		<properties/>
+		<system-out>Note: Google Test filter = ContainerGroupSyncTest.EnableDisableSynchronization
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from ContainerGroupSyncTest
+[ RUN      ] ContainerGroupSyncTest.EnableDisableSynchronization
+[       OK ] ContainerGroupSyncTest.EnableDisableSynchronization (0 ms)
+[----------] 1 test from ContainerGroupSyncTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+</system-out>
+	</testcase>
+	<testcase name="ContainerGroupSyncTest.SynchronizeAllAndClear" classname="ContainerGroupSyncTest.SynchronizeAllAndClear" time="0.0136744" status="run">
+		<properties/>
+		<system-out>Note: Google Test filter = ContainerGroupSyncTest.SynchronizeAllAndClear
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from ContainerGroupSyncTest
+[ RUN      ] ContainerGroupSyncTest.SynchronizeAllAndClear
+[       OK ] ContainerGroupSyncTest.SynchronizeAllAndClear (0 ms)
+[----------] 1 test from ContainerGroupSyncTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+</system-out>
+	</testcase>
+	<testcase name="ContainerGroupSyncTest.DynamicAdditionOfContainersAndAttributes" classname="ContainerGroupSyncTest.DynamicAdditionOfContainersAndAttributes" time="0.0138743" status="run">
+		<properties/>
+		<system-out>Note: Google Test filter = ContainerGroupSyncTest.DynamicAdditionOfContainersAndAttributes
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from ContainerGroupSyncTest
+[ RUN      ] ContainerGroupSyncTest.DynamicAdditionOfContainersAndAttributes
+[       OK ] ContainerGroupSyncTest.DynamicAdditionOfContainersAndAttributes (0 ms)
+[----------] 1 test from ContainerGroupSyncTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+</system-out>
+	</testcase>
+	<testcase name="ContainerGroupSyncTest.EraseContainerMaintainsSync" classname="ContainerGroupSyncTest.EraseContainerMaintainsSync" time="0.0146511" status="run">
+		<properties/>
+		<system-out>Note: Google Test filter = ContainerGroupSyncTest.EraseContainerMaintainsSync
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from ContainerGroupSyncTest
+[ RUN      ] ContainerGroupSyncTest.EraseContainerMaintainsSync
+[       OK ] ContainerGroupSyncTest.EraseContainerMaintainsSync (0 ms)
+[----------] 1 test from ContainerGroupSyncTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+</system-out>
+	</testcase>
+	<testcase name="ContainerGroupSyncTest.JsonRoundTripPreservesSync" classname="ContainerGroupSyncTest.JsonRoundTripPreservesSync" time="0.0144663" status="run">
+		<properties/>
+		<system-out>Note: Google Test filter = ContainerGroupSyncTest.JsonRoundTripPreservesSync
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from ContainerGroupSyncTest
+[ RUN      ] ContainerGroupSyncTest.JsonRoundTripPreservesSync
+[       OK ] ContainerGroupSyncTest.JsonRoundTripPreservesSync (0 ms)
+[----------] 1 test from ContainerGroupSyncTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+</system-out>
+	</testcase>
+	<testcase name="ContainerGroupSyncTest.SetCurrentToFirst" classname="ContainerGroupSyncTest.SetCurrentToFirst" time="0.014041" status="run">
+		<properties/>
+		<system-out>Note: Google Test filter = ContainerGroupSyncTest.SetCurrentToFirst
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from ContainerGroupSyncTest
+[ RUN      ] ContainerGroupSyncTest.SetCurrentToFirst
+[       OK ] ContainerGroupSyncTest.SetCurrentToFirst (0 ms)
+[----------] 1 test from ContainerGroupSyncTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+</system-out>
+	</testcase>
+	<testcase name="GradientMetricsTest.StopAndPresetEquality" classname="GradientMetricsTest.StopAndPresetEquality" time="0.0139977" status="run">
+		<properties/>
+		<system-out>Note: Google Test filter = GradientMetricsTest.StopAndPresetEquality
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from GradientMetricsTest
+[ RUN      ] GradientMetricsTest.StopAndPresetEquality
+[       OK ] GradientMetricsTest.StopAndPresetEquality (0 ms)
+[----------] 1 test from GradientMetricsTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+</system-out>
+	</testcase>
+	<testcase name="GradientMetricsTest.SampleInterpolatesAndClamps" classname="GradientMetricsTest.SampleInterpolatesAndClamps" time="0.0136655" status="run">
+		<properties/>
+		<system-out>Note: Google Test filter = GradientMetricsTest.SampleInterpolatesAndClamps
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from GradientMetricsTest
+[ RUN      ] GradientMetricsTest.SampleInterpolatesAndClamps
+[       OK ] GradientMetricsTest.SampleInterpolatesAndClamps (0 ms)
+[----------] 1 test from GradientMetricsTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+</system-out>
+	</testcase>
+	<testcase name="GradientMetricsTest.SampleHoldsEndColorsOutsideStopRange" classname="GradientMetricsTest.SampleHoldsEndColorsOutsideStopRange" time="0.0134379" status="run">
+		<properties/>
+		<system-out>Note: Google Test filter = GradientMetricsTest.SampleHoldsEndColorsOutsideStopRange
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from GradientMetricsTest
+[ RUN      ] GradientMetricsTest.SampleHoldsEndColorsOutsideStopRange
+[       OK ] GradientMetricsTest.SampleHoldsEndColorsOutsideStopRange (0 ms)
+[----------] 1 test from GradientMetricsTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+</system-out>
+	</testcase>
+	<testcase name="GradientMetricsTest.LuminanceOrdersDarkToLight" classname="GradientMetricsTest.LuminanceOrdersDarkToLight" time="0.0134404" status="run">
+		<properties/>
+		<system-out>Note: Google Test filter = GradientMetricsTest.LuminanceOrdersDarkToLight
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from GradientMetricsTest
+[ RUN      ] GradientMetricsTest.LuminanceOrdersDarkToLight
+[       OK ] GradientMetricsTest.LuminanceOrdersDarkToLight (0 ms)
+[----------] 1 test from GradientMetricsTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+</system-out>
+	</testcase>
+	<testcase name="GradientMetricsTest.HueOfPrimaries" classname="GradientMetricsTest.HueOfPrimaries" time="0.0135381" status="run">
+		<properties/>
+		<system-out>Note: Google Test filter = GradientMetricsTest.HueOfPrimaries
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from GradientMetricsTest
+[ RUN      ] GradientMetricsTest.HueOfPrimaries
+[       OK ] GradientMetricsTest.HueOfPrimaries (0 ms)
+[----------] 1 test from GradientMetricsTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+</system-out>
+	</testcase>
+	<testcase name="GradientMetricsTest.HueAveragesAcrossWrapAround" classname="GradientMetricsTest.HueAveragesAcrossWrapAround" time="0.0136313" status="run">
+		<properties/>
+		<system-out>Note: Google Test filter = GradientMetricsTest.HueAveragesAcrossWrapAround
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from GradientMetricsTest
+[ RUN      ] GradientMetricsTest.HueAveragesAcrossWrapAround
+[       OK ] GradientMetricsTest.HueAveragesAcrossWrapAround (0 ms)
+[----------] 1 test from GradientMetricsTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+</system-out>
+	</testcase>
+	<testcase name="GradientMetricsTest.AchromaticGradientHasNoHue" classname="GradientMetricsTest.AchromaticGradientHasNoHue" time="0.0134806" status="run">
+		<properties/>
+		<system-out>Note: Google Test filter = GradientMetricsTest.AchromaticGradientHasNoHue
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from GradientMetricsTest
+[ RUN      ] GradientMetricsTest.AchromaticGradientHasNoHue
+[       OK ] GradientMetricsTest.AchromaticGradientHasNoHue (0 ms)
+[----------] 1 test from GradientMetricsTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+</system-out>
+	</testcase>
+	<testcase name="GradientLibraryTest.AddMakesNamesUnique" classname="GradientLibraryTest.AddMakesNamesUnique" time="0.0134812" status="run">
+		<properties/>
+		<system-out>Note: Google Test filter = GradientLibraryTest.AddMakesNamesUnique
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from GradientLibraryTest
+[ RUN      ] GradientLibraryTest.AddMakesNamesUnique
+[       OK ] GradientLibraryTest.AddMakesNamesUnique (0 ms)
+[----------] 1 test from GradientLibraryTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+</system-out>
+	</testcase>
+	<testcase name="GradientLibraryTest.AddSortsStopsByPosition" classname="GradientLibraryTest.AddSortsStopsByPosition" time="0.0135091" status="run">
+		<properties/>
+		<system-out>Note: Google Test filter = GradientLibraryTest.AddSortsStopsByPosition
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from GradientLibraryTest
+[ RUN      ] GradientLibraryTest.AddSortsStopsByPosition
+[       OK ] GradientLibraryTest.AddSortsStopsByPosition (0 ms)
+[----------] 1 test from GradientLibraryTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+</system-out>
+	</testcase>
+	<testcase name="GradientLibraryTest.UpdateRenameRemove" classname="GradientLibraryTest.UpdateRenameRemove" time="0.0131711" status="run">
+		<properties/>
+		<system-out>Note: Google Test filter = GradientLibraryTest.UpdateRenameRemove
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from GradientLibraryTest
+[ RUN      ] GradientLibraryTest.UpdateRenameRemove
+[       OK ] GradientLibraryTest.UpdateRenameRemove (0 ms)
+[----------] 1 test from GradientLibraryTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+</system-out>
+	</testcase>
+	<testcase name="GradientLibraryTest.FavoritesFollowRenameAndRemoval" classname="GradientLibraryTest.FavoritesFollowRenameAndRemoval" time="0.0131864" status="run">
+		<properties/>
+		<system-out>Note: Google Test filter = GradientLibraryTest.FavoritesFollowRenameAndRemoval
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from GradientLibraryTest
+[ RUN      ] GradientLibraryTest.FavoritesFollowRenameAndRemoval
+[       OK ] GradientLibraryTest.FavoritesFollowRenameAndRemoval (0 ms)
+[----------] 1 test from GradientLibraryTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+</system-out>
+	</testcase>
+	<testcase name="GradientLibraryTest.ChangedFiresOncePerEffectiveMutation" classname="GradientLibraryTest.ChangedFiresOncePerEffectiveMutation" time="0.0135944" status="run">
+		<properties/>
+		<system-out>Note: Google Test filter = GradientLibraryTest.ChangedFiresOncePerEffectiveMutation
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from GradientLibraryTest
+[ RUN      ] GradientLibraryTest.ChangedFiresOncePerEffectiveMutation
+[       OK ] GradientLibraryTest.ChangedFiresOncePerEffectiveMutation (0 ms)
+[----------] 1 test from GradientLibraryTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+</system-out>
+	</testcase>
+	<testcase name="GradientLibraryTest.JsonRoundTrip" classname="GradientLibraryTest.JsonRoundTrip" time="0.013463" status="run">
+		<properties/>
+		<system-out>Note: Google Test filter = GradientLibraryTest.JsonRoundTrip
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from GradientLibraryTest
+[ RUN      ] GradientLibraryTest.JsonRoundTrip
+[       OK ] GradientLibraryTest.JsonRoundTrip (0 ms)
+[----------] 1 test from GradientLibraryTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+</system-out>
+	</testcase>
+	<testcase name="GradientLibraryTest.AutosaveAndLoad" classname="GradientLibraryTest.AutosaveAndLoad" time="0.0139518" status="run">
+		<properties/>
+		<system-out>Note: Google Test filter = GradientLibraryTest.AutosaveAndLoad
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from GradientLibraryTest
+[ RUN      ] GradientLibraryTest.AutosaveAndLoad
+[       OK ] GradientLibraryTest.AutosaveAndLoad (0 ms)
+[----------] 1 test from GradientLibraryTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+</system-out>
+	</testcase>
+	<testcase name="GradientLibraryTest.CorruptFileLeavesStateUntouched" classname="GradientLibraryTest.CorruptFileLeavesStateUntouched" time="0.0134589" status="run">
+		<properties/>
+		<system-out>Note: Google Test filter = GradientLibraryTest.CorruptFileLeavesStateUntouched
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from GradientLibraryTest
+[ RUN      ] GradientLibraryTest.CorruptFileLeavesStateUntouched
+[meta--] [12:51:16] [---E---] GradientLibrary: cannot parse '/tmp/meta_gradient_library_corrupt/broken.json': [json.exception.parse_error.101] parse error at line 1, column 4: syntax error while parsing object key - invalid literal; last read: '{ no'; expected string literal
+[meta--] [12:51:16] [---W---] GradientLibrary::load: '/tmp/meta_gradient_library_corrupt/no_gradients.json' is not a gradient library
+[       OK ] GradientLibraryTest.CorruptFileLeavesStateUntouched (0 ms)
+[----------] 1 test from GradientLibraryTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+</system-out>
+	</testcase>
+	<testcase name="GradientLibraryTest.ImportPolicy" classname="GradientLibraryTest.ImportPolicy" time="0.0136102" status="run">
+		<properties/>
+		<system-out>Note: Google Test filter = GradientLibraryTest.ImportPolicy
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from GradientLibraryTest
+[ RUN      ] GradientLibraryTest.ImportPolicy
+[meta--] [12:51:16] [---E---] GradientLibrary: cannot open '/tmp/meta_gradient_library_import/nope.json'
+[       OK ] GradientLibraryTest.ImportPolicy (0 ms)
+[----------] 1 test from GradientLibraryTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+</system-out>
+	</testcase>
+	<testcase name="GradientLibraryTest.ParsesHesiodFileShapes" classname="GradientLibraryTest.ParsesHesiodFileShapes" time="0.0135893" status="run">
+		<properties/>
+		<system-out>Note: Google Test filter = GradientLibraryTest.ParsesHesiodFileShapes
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from GradientLibraryTest
+[ RUN      ] GradientLibraryTest.ParsesHesiodFileShapes
+[       OK ] GradientLibraryTest.ParsesHesiodFileShapes (0 ms)
+[----------] 1 test from GradientLibraryTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+</system-out>
+	</testcase>
+	<testcase name="GradientLibraryTest.SortNamesRoundTrip" classname="GradientLibraryTest.SortNamesRoundTrip" time="0.0132834" status="run">
+		<properties/>
+		<system-out>Note: Google Test filter = GradientLibraryTest.SortNamesRoundTrip
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from GradientLibraryTest
+[ RUN      ] GradientLibraryTest.SortNamesRoundTrip
+[       OK ] GradientLibraryTest.SortNamesRoundTrip (0 ms)
+[----------] 1 test from GradientLibraryTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+</system-out>
+	</testcase>
+	<testcase name="DesignRegistryTest.RegistrationAndLookup" classname="DesignRegistryTest.RegistrationAndLookup" time="0.0135841" status="run">
+		<properties/>
+		<system-out>Note: Google Test filter = DesignRegistryTest.RegistrationAndLookup
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from DesignRegistryTest
+[ RUN      ] DesignRegistryTest.RegistrationAndLookup
+[       OK ] DesignRegistryTest.RegistrationAndLookup (0 ms)
+[----------] 1 test from DesignRegistryTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+</system-out>
+	</testcase>
+	<testcase name="DesignRegistryTest.FallbackChainAndWildcards" classname="DesignRegistryTest.FallbackChainAndWildcards" time="0.0166325" status="run">
+		<properties/>
+		<system-out>Note: Google Test filter = DesignRegistryTest.FallbackChainAndWildcards
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from DesignRegistryTest
+[ RUN      ] DesignRegistryTest.FallbackChainAndWildcards
+[       OK ] DesignRegistryTest.FallbackChainAndWildcards (3 ms)
+[----------] 1 test from DesignRegistryTest (3 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (3 ms total)
+[  PASSED  ] 1 test.
+</system-out>
+	</testcase>
+	<testcase name="DesignRegistryTest.CanRenderRejectionFallback" classname="DesignRegistryTest.CanRenderRejectionFallback" time="0.0168684" status="run">
+		<properties/>
+		<system-out>Note: Google Test filter = DesignRegistryTest.CanRenderRejectionFallback
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from DesignRegistryTest
+[ RUN      ] DesignRegistryTest.CanRenderRejectionFallback
+[       OK ] DesignRegistryTest.CanRenderRejectionFallback (3 ms)
+[----------] 1 test from DesignRegistryTest (3 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (3 ms total)
+[  PASSED  ] 1 test.
+</system-out>
+	</testcase>
+	<testcase name="DesignRegistryTest.CycleDetectionInFallbacks" classname="DesignRegistryTest.CycleDetectionInFallbacks" time="0.0133474" status="run">
+		<properties/>
+		<system-out>Note: Google Test filter = DesignRegistryTest.CycleDetectionInFallbacks
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from DesignRegistryTest
+[ RUN      ] DesignRegistryTest.CycleDetectionInFallbacks
+[       OK ] DesignRegistryTest.CycleDetectionInFallbacks (0 ms)
+[----------] 1 test from DesignRegistryTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+</system-out>
+	</testcase>
+	<testcase name="DesignRegistryTest.SectionFactoryResolution" classname="DesignRegistryTest.SectionFactoryResolution" time="0.0142491" status="run">
+		<properties/>
+		<system-out>Note: Google Test filter = DesignRegistryTest.SectionFactoryResolution
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from DesignRegistryTest
+[ RUN      ] DesignRegistryTest.SectionFactoryResolution
+[       OK ] DesignRegistryTest.SectionFactoryResolution (0 ms)
+[----------] 1 test from DesignRegistryTest (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (0 ms total)
+[  PASSED  ] 1 test.
+</system-out>
+	</testcase>
+	<testcase name="DesignRegistryTest.ContainerWidgetDesignIntegration" classname="DesignRegistryTest.ContainerWidgetDesignIntegration" time="0.0173037" status="run">
+		<properties/>
+		<system-out>Note: Google Test filter = DesignRegistryTest.ContainerWidgetDesignIntegration
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from DesignRegistryTest
+[ RUN      ] DesignRegistryTest.ContainerWidgetDesignIntegration
+[       OK ] DesignRegistryTest.ContainerWidgetDesignIntegration (4 ms)
+[----------] 1 test from DesignRegistryTest (4 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (4 ms total)
+[  PASSED  ] 1 test.
+</system-out>
+	</testcase>
+	<testcase name="GradientPickerTest.MergesHostAndLibraryPresets" classname="GradientPickerTest.MergesHostAndLibraryPresets" time="0.0185468" status="run">
+		<properties/>
+		<system-out>Note: Google Test filter = GradientPickerTest.MergesHostAndLibraryPresets
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from GradientPickerTest
+[ RUN      ] GradientPickerTest.MergesHostAndLibraryPresets
+[       OK ] GradientPickerTest.MergesHostAndLibraryPresets (4 ms)
+[----------] 1 test from GradientPickerTest (4 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (4 ms total)
+[  PASSED  ] 1 test.
+</system-out>
+	</testcase>
+	<testcase name="GradientPickerTest.FavoritesPinnedFirstThenSortKey" classname="GradientPickerTest.FavoritesPinnedFirstThenSortKey" time="0.0195047" status="run">
+		<properties/>
+		<system-out>Note: Google Test filter = GradientPickerTest.FavoritesPinnedFirstThenSortKey
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from GradientPickerTest
+[ RUN      ] GradientPickerTest.FavoritesPinnedFirstThenSortKey
+[       OK ] GradientPickerTest.FavoritesPinnedFirstThenSortKey (5 ms)
+[----------] 1 test from GradientPickerTest (5 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (5 ms total)
+[  PASSED  ] 1 test.
+</system-out>
+	</testcase>
+	<testcase name="GradientPickerTest.LuminanceSortGoesDarkToLight" classname="GradientPickerTest.LuminanceSortGoesDarkToLight" time="0.0200813" status="run">
+		<properties/>
+		<system-out>Note: Google Test filter = GradientPickerTest.LuminanceSortGoesDarkToLight
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from GradientPickerTest
+[ RUN      ] GradientPickerTest.LuminanceSortGoesDarkToLight
+[       OK ] GradientPickerTest.LuminanceSortGoesDarkToLight (5 ms)
+[----------] 1 test from GradientPickerTest (5 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (5 ms total)
+[  PASSED  ] 1 test.
+</system-out>
+	</testcase>
+	<testcase name="GradientPickerTest.SaveCurrentAsPresetAvoidsHostNames" classname="GradientPickerTest.SaveCurrentAsPresetAvoidsHostNames" time="0.019974" status="run">
+		<properties/>
+		<system-out>Note: Google Test filter = GradientPickerTest.SaveCurrentAsPresetAvoidsHostNames
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from GradientPickerTest
+[ RUN      ] GradientPickerTest.SaveCurrentAsPresetAvoidsHostNames
+[       OK ] GradientPickerTest.SaveCurrentAsPresetAvoidsHostNames (5 ms)
+[----------] 1 test from GradientPickerTest (5 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (5 ms total)
+[  PASSED  ] 1 test.
+</system-out>
+	</testcase>
+	<testcase name="GradientPickerTest.LibraryChangesRebuildTheGrid" classname="GradientPickerTest.LibraryChangesRebuildTheGrid" time="0.0202054" status="run">
+		<properties/>
+		<system-out>Note: Google Test filter = GradientPickerTest.LibraryChangesRebuildTheGrid
+[==========] Running 1 test from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 1 test from GradientPickerTest
+[ RUN      ] GradientPickerTest.LibraryChangesRebuildTheGrid
+[       OK ] GradientPickerTest.LibraryChangesRebuildTheGrid (5 ms)
+[----------] 1 test from GradientPickerTest (5 ms total)
+
+[----------] Global test environment tear-down
+[==========] 1 test from 1 test suite ran. (5 ms total)
+[  PASSED  ] 1 test.
+</system-out>
+	</testcase>
+	<testcase name="graph_editor" classname="graph_editor" time="0.289221" status="run">
+		<properties/>
+		<system-out>[hesiod] [12:51:16] [---T---] AppSettings::Icons::Icons
+[hesiod] [12:51:16] [---T---] HesiodApplication::HesiodApplication
+[hesiod] [12:51:16] [---T---] AppContext::initialize
+[hesiod] [12:51:16] [---T---] AppContext::load_settings
+[hesiod] [12:51:16] [---E---] json_from_file: Could not open file /tmp/qt_temp-UPezBy/test_graph_editor/hesiod.json to load JSON
+[hesiod] [12:51:16] [---T---] AppContext::settings_json_from
+[hesiod] [12:51:16] [---E---] AppContext::settings_json_from: could not parse app_settings
+[hesiod] [12:51:16] [---E---] AppContext::settings_json_from: could not parse node_graph_palette
+[hesiod] [12:51:16] [---T---] AppContext::load_node_documentation
+[hesiod] [12:51:16] [---T---] JSON successfully loaded from data/node_documentation.json
+********* Start testing of GraphEditorTest *********
+Config: Using QtTest library 6.12.0, Qt 6.12.0 (x86_64-little_endian-lp64 shared (dynamic) release build; by GCC 16.2.0), nixos 26.11
+PASS   : GraphEditorTest::initTestCase()
+[hesiod] [12:51:16] [---T---] G...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="profiling_highmap" classname="profiling_highmap" time="0.0744293" status="run">
+		<properties/>
+		<system-out>VA_SEQUENTIAL native: all 768 cells match
+VA_DISTRIBUTED native: all 768 cells match
+VA_SINGLE_ARRAY native: all 768 cells match
+VA_SEQUENTIAL reduced: all 768 cells match
+VA_DISTRIBUTED reduced: all 768 cells match
+VA_SINGLE_ARRAY reduced: all 768 cells match
+</system-out>
+	</testcase>
+	<testcase name="autosave" classname="autosave" time="0.571499" status="run">
+		<properties/>
+		<system-out>[hesiod] [12:51:16] [---T---] AppSettings::Icons::Icons
+[hesiod] [12:51:16] [---T---] HesiodApplication::HesiodApplication
+[hesiod] [12:51:16] [---T---] AppContext::initialize
+[hesiod] [12:51:16] [---T---] AppContext::load_settings
+[hesiod] [12:51:16] [---E---] json_from_file: Could not open file /tmp/qt_temp-cMTsTW/test_autosave/hesiod.json to load JSON
+[hesiod] [12:51:16] [---T---] AppContext::settings_json_from
+[hesiod] [12:51:16] [---E---] AppContext::settings_json_from: could not parse app_settings
+[hesiod] [12:51:16] [---E---] AppContext::settings_json_from: could not parse node_graph_palette
+[hesiod] [12:51:16] [---T---] AppContext::load_node_documentation
+[hesiod] [12:51:16] [---T---] JSON successfully loaded from data/node_documentation.json
+********* Start testing of AutosaveTest *********
+Config: Using QtTest library 6.12.0, Qt 6.12.0 (x86_64-little_endian-lp64 shared (dynamic) release build; by GCC 16.2.0), nixos 26.11
+PASS   : AutosaveTest::initTestCase()
+[hesiod] [12:51:16] [---T---] ProjectMode...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="brush_storage" classname="brush_storage" time="1.04085" status="run">
+		<properties/>
+		<system-out>[hesiod] [12:51:17] [---T---] AppSettings::Icons::Icons
+[hesiod] [12:51:17] [---T---] HesiodApplication::HesiodApplication
+[hesiod] [12:51:17] [---T---] AppContext::initialize
+[hesiod] [12:51:17] [---T---] AppContext::load_settings
+[hesiod] [12:51:17] [---E---] json_from_file: Could not open file /tmp/qt_temp-bwkcUX/test_brush_storage/hesiod.json to load JSON
+[hesiod] [12:51:17] [---T---] AppContext::settings_json_from
+[hesiod] [12:51:17] [---E---] AppContext::settings_json_from: could not parse app_settings
+[hesiod] [12:51:17] [---E---] AppContext::settings_json_from: could not parse node_graph_palette
+[hesiod] [12:51:17] [---T---] AppContext::load_node_documentation
+[hesiod] [12:51:17] [---T---] JSON successfully loaded from data/node_documentation.json
+********* Start testing of BrushStorageTest *********
+Config: Using QtTest library 6.12.0, Qt 6.12.0 (x86_64-little_endian-lp64 shared (dynamic) release build; by GCC 16.2.0), nixos 26.11
+PASS   : BrushStorageTest::initTestCase()
+[hesiod] [12:51:17] [---T---...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+</testsuite>

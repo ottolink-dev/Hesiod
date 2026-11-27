@@ -1,0 +1,73 @@
+Running main() from /home/barrulus/dev/Hesiod-783/output/validation/googletest/googletest/src/gtest_main.cc
+Note: Google Test filter = Quilting.*:SmoothCPulse.*:AssertAlmostEqual.*
+[==========] Running 25 tests from 3 test suites.
+[----------] Global test environment set-up.
+[----------] 14 tests from Quilting
+[ RUN      ] Quilting.InvalidParametersReturnEmptyArray
+hmap [warn ] [quilting.cpp            :34] Invalid array shape (0, 16): dimensions must be positive
+hmap [warn ] [quilting.cpp            :34] Invalid array shape (0, 2): dimensions must be positive
+hmap [warn ] [quilting.cpp            :38] Array is empty or uninitialized (shape: 0x0, buffer size: 0)
+hmap [warn ] [quilting.cpp            :278] Array is empty or uninitialized (shape: 0x0, buffer size: 0)
+hmap [warn ] [quilting.cpp            :383] Array is empty or uninitialized (shape: 0x0, buffer size: 0)
+[       OK ] Quilting.InvalidParametersReturnEmptyArray (1 ms)
+[ RUN      ] Quilting.BasicQuiltingAndShape
+[       OK ] Quilting.BasicQuiltingAndShape (1 ms)
+[ RUN      ] Quilting.SecondaryArrays
+[       OK ] Quilting.SecondaryArrays (3 ms)
+[ RUN      ] Quilting.QuiltingBlend
+[       OK ] Quilting.QuiltingBlend (2 ms)
+[ RUN      ] Quilting.QuiltingExpand
+[       OK ] Quilting.QuiltingExpand (1 ms)
+[ RUN      ] Quilting.QuiltingShuffle
+[       OK ] Quilting.QuiltingShuffle (1 ms)
+[ RUN      ] Quilting.FindVerticalCutPathOptimality
+[       OK ] Quilting.FindVerticalCutPathOptimality (0 ms)
+[ RUN      ] Quilting.ZeroOverlapQuilting
+[       OK ] Quilting.ZeroOverlapQuilting (1 ms)
+[ RUN      ] Quilting.SecondaryChannelsShareGuideSeamsAndTransforms
+[       OK ] Quilting.SecondaryChannelsShareGuideSeamsAndTransforms (72 ms)
+[ RUN      ] Quilting.SecondaryAliasesAreNotOverwrittenUntilAllSourcesAreConsumed
+[       OK ] Quilting.SecondaryAliasesAreNotOverwrittenUntilAllSourcesAreConsumed (8 ms)
+[ RUN      ] Quilting.ExpandAndShufflePreserveSecondaryChannelAlignment
+[       OK ] Quilting.ExpandAndShufflePreserveSecondaryChannelAlignment (5 ms)
+[ RUN      ] Quilting.MismatchedSecondaryShapesReturnEmptyWithoutMutation
+hmap [warn ] [quilting.cpp            :49] Array shape mismatch: lhs is (48, 32) [size: 1536], rhs is (32, 32) [size: 1024]
+hmap [warn ] [quilting.cpp            :49] Array shape mismatch: lhs is (32, 32) [size: 1024], rhs is (48, 32) [size: 1536]
+[       OK ] Quilting.MismatchedSecondaryShapesReturnEmptyWithoutMutation (1 ms)
+[ RUN      ] Quilting.RandomPatchSecondaryOwnershipPreservesSources
+[       OK ] Quilting.RandomPatchSecondaryOwnershipPreservesSources (15 ms)
+[ RUN      ] Quilting.SubpixelSmoothingRadiusProducesFiniteSeams
+[       OK ] Quilting.SubpixelSmoothingRadiusProducesFiniteSeams (1 ms)
+[----------] 14 tests from Quilting (119 ms total)
+
+[----------] 5 tests from SmoothCPulse
+[ RUN      ] SmoothCPulse.ConstantFieldPreserved
+[       OK ] SmoothCPulse.ConstantFieldPreserved (0 ms)
+[ RUN      ] SmoothCPulse.IdentityWhenRadiusZero
+[       OK ] SmoothCPulse.IdentityWhenRadiusZero (0 ms)
+[ RUN      ] SmoothCPulse.SmoothingReducesContrast
+[       OK ] SmoothCPulse.SmoothingReducesContrast (0 ms)
+[ RUN      ] SmoothCPulse.SymmetryPreserved
+[       OK ] SmoothCPulse.SymmetryPreserved (0 ms)
+[ RUN      ] SmoothCPulse.NoNewExtremaCreated
+[       OK ] SmoothCPulse.NoNewExtremaCreated (0 ms)
+[----------] 5 tests from SmoothCPulse (0 ms total)
+
+[----------] 6 tests from AssertAlmostEqual
+[ RUN      ] AssertAlmostEqual.RejectsNonfiniteOperandsInEitherOrder
+[       OK ] AssertAlmostEqual.RejectsNonfiniteOperandsInEitherOrder (0 ms)
+[ RUN      ] AssertAlmostEqual.RejectsNonfiniteTolerance
+[       OK ] AssertAlmostEqual.RejectsNonfiniteTolerance (0 ms)
+[ RUN      ] AssertAlmostEqual.ZeroFieldComparisonIsSymmetric
+[       OK ] AssertAlmostEqual.ZeroFieldComparisonIsSymmetric (0 ms)
+[ RUN      ] AssertAlmostEqual.PreservesRelativeL1ErrorAndTolerance
+[       OK ] AssertAlmostEqual.PreservesRelativeL1ErrorAndTolerance (0 ms)
+[ RUN      ] AssertAlmostEqual.FiniteExtremesDoNotOverflowNormalization
+[       OK ] AssertAlmostEqual.FiniteExtremesDoNotOverflowNormalization (0 ms)
+[ RUN      ] AssertAlmostEqual.SuccessfulComparisonResetsReusedResults
+[       OK ] AssertAlmostEqual.SuccessfulComparisonResetsReusedResults (0 ms)
+[----------] 6 tests from AssertAlmostEqual (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 25 tests from 3 test suites ran. (119 ms total)
+[  PASSED  ] 25 tests.

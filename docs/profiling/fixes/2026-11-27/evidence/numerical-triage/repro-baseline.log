@@ -1,0 +1,4 @@
+singleton value=-nan bits=4290772992 finite=0 equals7=0
+endpoints iterations=0 foreground=4 row=0,1,0,
+endpoints iterations=1 foreground=2 row=0,0,0,
+endpoints iterations=2 foreground=0 row=0,0,0,

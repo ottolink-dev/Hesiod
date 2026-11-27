@@ -1,0 +1,25 @@
+Running main() from /home/barrulus/dev/Hesiod-783/output/validation/googletest/googletest/src/gtest_main.cc
+Note: Google Test filter = Quilting.SubpixelSmoothingRadiusProducesFiniteSeams:SmoothCPulse.*
+[==========] Running 6 tests from 2 test suites.
+[----------] Global test environment set-up.
+[----------] 1 test from Quilting
+[ RUN      ] Quilting.SubpixelSmoothingRadiusProducesFiniteSeams
+[       OK ] Quilting.SubpixelSmoothingRadiusProducesFiniteSeams (79 ms)
+[----------] 1 test from Quilting (81 ms total)
+
+[----------] 5 tests from SmoothCPulse
+[ RUN      ] SmoothCPulse.ConstantFieldPreserved
+[       OK ] SmoothCPulse.ConstantFieldPreserved (9 ms)
+[ RUN      ] SmoothCPulse.IdentityWhenRadiusZero
+[       OK ] SmoothCPulse.IdentityWhenRadiusZero (2 ms)
+[ RUN      ] SmoothCPulse.SmoothingReducesContrast
+[       OK ] SmoothCPulse.SmoothingReducesContrast (1 ms)
+[ RUN      ] SmoothCPulse.SymmetryPreserved
+[       OK ] SmoothCPulse.SymmetryPreserved (1 ms)
+[ RUN      ] SmoothCPulse.NoNewExtremaCreated
+[       OK ] SmoothCPulse.NoNewExtremaCreated (2 ms)
+[----------] 5 tests from SmoothCPulse (17 ms total)
+
+[----------] Global test environment tear-down
+[==========] 6 tests from 2 test suites ran. (112 ms total)
+[  PASSED  ] 6 tests.

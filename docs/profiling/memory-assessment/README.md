@@ -7,6 +7,7 @@ The [October survey](../baselines/2026-10-08/README.md) is historical and is
 not overwritten by this study.
 
 - [Measured results and validation](../assessments/2026-11-27/README.md)
+- [Local fixes and validation](../fixes/2026-11-27/README.md)
 - [Source review of all 40 full-array candidates](inventory-review.md)
 - [Allocation and lifetime source audit](source-analysis.md)
 - [Local optimization issue drafts](optimization-followups.md)

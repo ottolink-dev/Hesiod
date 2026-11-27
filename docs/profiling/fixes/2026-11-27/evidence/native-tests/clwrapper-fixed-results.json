@@ -1,0 +1,23 @@
+[
+  {
+    "name": "clwrapper-fixed",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/build/assessment/bin/clwrapper_unit_tests",
+      "--gtest_output=json:/home/barrulus/dev/Hesiod-783/output/fixes/native-tests/clwrapper-fixed.json"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 1.1181376580061624
+  },
+  {
+    "name": "clwrapper-filter-repeat",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/build/assessment/bin/clwrapper_unit_tests",
+      "--gtest_filter=DeviceManagerTest.*",
+      "--gtest_repeat=20",
+      "--gtest_shuffle",
+      "--gtest_random_seed=783"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 2.4225164980016416
+  }
+]

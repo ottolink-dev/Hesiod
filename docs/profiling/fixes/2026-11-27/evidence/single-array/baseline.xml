@@ -1,0 +1,441 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites tests="74" failures="0" disabled="0" errors="0" time="0.389" timestamp="2026-11-27T12:34:29.266" name="AllTests">
+  <testsuite name="SingleArrayComputeTest" tests="2" failures="0" disabled="0" skipped="0" errors="0" time="0.002" timestamp="2026-11-27T12:34:29.266">
+    <testcase name="OutputOnlyCommunicatorKeepsExistingValues" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="147" status="run" result="completed" time="0.001" timestamp="2026-11-27T12:34:29.266" classname="SingleArrayComputeTest" />
+    <testcase name="DirectMixedShapesRetainLegacyResampling" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="167" status="run" result="completed" time="0." timestamp="2026-11-27T12:34:29.268" classname="SingleArrayComputeTest" />
+  </testsuite>
+  <testsuite name="StorageGridHaloStride/SingleArraySnapshotTest" tests="72" failures="0" disabled="0" skipped="0" errors="0" time="0.387" timestamp="2026-11-27T12:34:29.269">
+    <testcase name="PreservesSnapshotsOptionalPortsAndOutputReads/0" value_param="(0, 0, false, 1, false)" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="50" status="run" result="completed" time="0." timestamp="2026-11-27T12:34:29.269" classname="StorageGridHaloStride/SingleArraySnapshotTest">
+      <properties>
+        <property name="output_a_fingerprint" value="b5f7abcdb5c46e5e"/>
+        <property name="output_c_fingerprint" value="7704a9dd78055fab"/>
+      </properties>
+    </testcase>
+    <testcase name="PreservesSnapshotsOptionalPortsAndOutputReads/1" value_param="(0, 0, false, 1, true)" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="50" status="run" result="completed" time="0." timestamp="2026-11-27T12:34:29.269" classname="StorageGridHaloStride/SingleArraySnapshotTest">
+      <properties>
+        <property name="output_a_fingerprint" value="9aced89039bde24e"/>
+        <property name="output_c_fingerprint" value="f82af4f3d2cd429d"/>
+      </properties>
+    </testcase>
+    <testcase name="PreservesSnapshotsOptionalPortsAndOutputReads/2" value_param="(0, 0, false, 2, false)" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="50" status="run" result="completed" time="0." timestamp="2026-11-27T12:34:29.270" classname="StorageGridHaloStride/SingleArraySnapshotTest">
+      <properties>
+        <property name="output_a_fingerprint" value="b26a748543c809b"/>
+        <property name="output_c_fingerprint" value="836abf63316044b3"/>
+      </properties>
+    </testcase>
+    <testcase name="PreservesSnapshotsOptionalPortsAndOutputReads/3" value_param="(0, 0, false, 2, true)" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="50" status="run" result="completed" time="0." timestamp="2026-11-27T12:34:29.270" classname="StorageGridHaloStride/SingleArraySnapshotTest">
+      <properties>
+        <property name="output_a_fingerprint" value="664ce70243707423"/>
+        <property name="output_c_fingerprint" value="b12ecab8352d5054"/>
+      </properties>
+    </testcase>
+    <testcase name="PreservesSnapshotsOptionalPortsAndOutputReads/4" value_param="(0, 0, false, 3, false)" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="50" status="run" result="completed" time="0." timestamp="2026-11-27T12:34:29.270" classname="StorageGridHaloStride/SingleArraySnapshotTest">
+      <properties>
+        <property name="output_a_fingerprint" value="883dc17edfc1e099"/>
+        <property name="output_c_fingerprint" value="502760d2cef1d430"/>
+      </properties>
+    </testcase>
+    <testcase name="PreservesSnapshotsOptionalPortsAndOutputReads/5" value_param="(0, 0, false, 3, true)" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="50" status="run" result="completed" time="0." timestamp="2026-11-27T12:34:29.270" classname="StorageGridHaloStride/SingleArraySnapshotTest">
+      <properties>
+        <property name="output_a_fingerprint" value="664ce70243707423"/>
+        <property name="output_c_fingerprint" value="b12ecab8352d5054"/>
+      </properties>
+    </testcase>
+    <testcase name="PreservesSnapshotsOptionalPortsAndOutputReads/6" value_param="(0, 0, true, 1, false)" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="50" status="run" result="completed" time="0.02" timestamp="2026-11-27T12:34:29.270" classname="StorageGridHaloStride/SingleArraySnapshotTest">
+      <properties>
+        <property name="output_a_fingerprint" value="b5f7abcdb5c46e5e"/>
+        <property name="output_c_fingerprint" value="7704a9dd78055fab"/>
+      </properties>
+    </testcase>
+    <testcase name="PreservesSnapshotsOptionalPortsAndOutputReads/7" value_param="(0, 0, true, 1, true)" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="50" status="run" result="completed" time="0." timestamp="2026-11-27T12:34:29.291" classname="StorageGridHaloStride/SingleArraySnapshotTest">
+      <properties>
+        <property name="output_a_fingerprint" value="9aced89039bde24e"/>
+        <property name="output_c_fingerprint" value="f82af4f3d2cd429d"/>
+      </properties>
+    </testcase>
+    <testcase name="PreservesSnapshotsOptionalPortsAndOutputReads/8" value_param="(0, 0, true, 2, false)" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="50" status="run" result="completed" time="0.018" timestamp="2026-11-27T12:34:29.291" classname="StorageGridHaloStride/SingleArraySnapshotTest">
+      <properties>
+        <property name="output_a_fingerprint" value="b26a748543c809b"/>
+        <property name="output_c_fingerprint" value="836abf63316044b3"/>
+      </properties>
+    </testcase>
+    <testcase name="PreservesSnapshotsOptionalPortsAndOutputReads/9" value_param="(0, 0, true, 2, true)" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="50" status="run" result="completed" time="0." timestamp="2026-11-27T12:34:29.310" classname="StorageGridHaloStride/SingleArraySnapshotTest">
+      <properties>
+        <property name="output_a_fingerprint" value="664ce70243707423"/>
+        <property name="output_c_fingerprint" value="b12ecab8352d5054"/>
+      </properties>
+    </testcase>
+    <testcase name="PreservesSnapshotsOptionalPortsAndOutputReads/10" value_param="(0, 0, true, 3, false)" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="50" status="run" result="completed" time="0.02" timestamp="2026-11-27T12:34:29.310" classname="StorageGridHaloStride/SingleArraySnapshotTest">
+      <properties>
+        <property name="output_a_fingerprint" value="883dc17edfc1e099"/>
+        <property name="output_c_fingerprint" value="502760d2cef1d430"/>
+      </properties>
+    </testcase>
+    <testcase name="PreservesSnapshotsOptionalPortsAndOutputReads/11" value_param="(0, 0, true, 3, true)" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="50" status="run" result="completed" time="0." timestamp="2026-11-27T12:34:29.331" classname="StorageGridHaloStride/SingleArraySnapshotTest">
+      <properties>
+        <property name="output_a_fingerprint" value="664ce70243707423"/>
+        <property name="output_c_fingerprint" value="b12ecab8352d5054"/>
+      </properties>
+    </testcase>
+    <testcase name="PreservesSnapshotsOptionalPortsAndOutputReads/12" value_param="(0, 1, false, 1, false)" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="50" status="run" result="completed" time="0." timestamp="2026-11-27T12:34:29.331" classname="StorageGridHaloStride/SingleArraySnapshotTest">
+      <properties>
+        <property name="output_a_fingerprint" value="b5f7abcdb5c46e5e"/>
+        <property name="output_c_fingerprint" value="7704a9dd78055fab"/>
+      </properties>
+    </testcase>
+    <testcase name="PreservesSnapshotsOptionalPortsAndOutputReads/13" value_param="(0, 1, false, 1, true)" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="50" status="run" result="completed" time="0." timestamp="2026-11-27T12:34:29.332" classname="StorageGridHaloStride/SingleArraySnapshotTest">
+      <properties>
+        <property name="output_a_fingerprint" value="9aced89039bde24e"/>
+        <property name="output_c_fingerprint" value="f82af4f3d2cd429d"/>
+      </properties>
+    </testcase>
+    <testcase name="PreservesSnapshotsOptionalPortsAndOutputReads/14" value_param="(0, 1, false, 2, false)" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="50" status="run" result="completed" time="0." timestamp="2026-11-27T12:34:29.332" classname="StorageGridHaloStride/SingleArraySnapshotTest">
+      <properties>
+        <property name="output_a_fingerprint" value="b26a748543c809b"/>
+        <property name="output_c_fingerprint" value="836abf63316044b3"/>
+      </properties>
+    </testcase>
+    <testcase name="PreservesSnapshotsOptionalPortsAndOutputReads/15" value_param="(0, 1, false, 2, true)" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="50" status="run" result="completed" time="0." timestamp="2026-11-27T12:34:29.332" classname="StorageGridHaloStride/SingleArraySnapshotTest">
+      <properties>
+        <property name="output_a_fingerprint" value="664ce70243707423"/>
+        <property name="output_c_fingerprint" value="b12ecab8352d5054"/>
+      </properties>
+    </testcase>
+    <testcase name="PreservesSnapshotsOptionalPortsAndOutputReads/16" value_param="(0, 1, false, 3, false)" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="50" status="run" result="completed" time="0." timestamp="2026-11-27T12:34:29.332" classname="StorageGridHaloStride/SingleArraySnapshotTest">
+      <properties>
+        <property name="output_a_fingerprint" value="883dc17edfc1e099"/>
+        <property name="output_c_fingerprint" value="502760d2cef1d430"/>
+      </properties>
+    </testcase>
+    <testcase name="PreservesSnapshotsOptionalPortsAndOutputReads/17" value_param="(0, 1, false, 3, true)" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="50" status="run" result="completed" time="0." timestamp="2026-11-27T12:34:29.332" classname="StorageGridHaloStride/SingleArraySnapshotTest">
+      <properties>
+        <property name="output_a_fingerprint" value="664ce70243707423"/>
+        <property name="output_c_fingerprint" value="b12ecab8352d5054"/>
+      </properties>
+    </testcase>
+    <testcase name="PreservesSnapshotsOptionalPortsAndOutputReads/18" value_param="(0, 1, true, 1, false)" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="50" status="run" result="completed" time="0.018" timestamp="2026-11-27T12:34:29.332" classname="StorageGridHaloStride/SingleArraySnapshotTest">
+      <properties>
+        <property name="output_a_fingerprint" value="b5f7abcdb5c46e5e"/>
+        <property name="output_c_fingerprint" value="7704a9dd78055fab"/>
+      </properties>
+    </testcase>
+    <testcase name="PreservesSnapshotsOptionalPortsAndOutputReads/19" value_param="(0, 1, true, 1, true)" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="50" status="run" result="completed" time="0." timestamp="2026-11-27T12:34:29.351" classname="StorageGridHaloStride/SingleArraySnapshotTest">
+      <properties>
+        <property name="output_a_fingerprint" value="9aced89039bde24e"/>
+        <property name="output_c_fingerprint" value="f82af4f3d2cd429d"/>
+      </properties>
+    </testcase>
+    <testcase name="PreservesSnapshotsOptionalPortsAndOutputReads/20" value_param="(0, 1, true, 2, false)" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="50" status="run" result="completed" time="0.018" timestamp="2026-11-27T12:34:29.351" classname="StorageGridHaloStride/SingleArraySnapshotTest">
+      <properties>
+        <property name="output_a_fingerprint" value="b26a748543c809b"/>
+        <property name="output_c_fingerprint" value="836abf63316044b3"/>
+      </properties>
+    </testcase>
+    <testcase name="PreservesSnapshotsOptionalPortsAndOutputReads/21" value_param="(0, 1, true, 2, true)" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="50" status="run" result="completed" time="0." timestamp="2026-11-27T12:34:29.370" classname="StorageGridHaloStride/SingleArraySnapshotTest">
+      <properties>
+        <property name="output_a_fingerprint" value="664ce70243707423"/>
+        <property name="output_c_fingerprint" value="b12ecab8352d5054"/>
+      </properties>
+    </testcase>
+    <testcase name="PreservesSnapshotsOptionalPortsAndOutputReads/22" value_param="(0, 1, true, 3, false)" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="50" status="run" result="completed" time="0.019" timestamp="2026-11-27T12:34:29.371" classname="StorageGridHaloStride/SingleArraySnapshotTest">
+      <properties>
+        <property name="output_a_fingerprint" value="883dc17edfc1e099"/>
+        <property name="output_c_fingerprint" value="502760d2cef1d430"/>
+      </properties>
+    </testcase>
+    <testcase name="PreservesSnapshotsOptionalPortsAndOutputReads/23" value_param="(0, 1, true, 3, true)" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="50" status="run" result="completed" time="0." timestamp="2026-11-27T12:34:29.390" classname="StorageGridHaloStride/SingleArraySnapshotTest">
+      <properties>
+        <property name="output_a_fingerprint" value="664ce70243707423"/>
+        <property name="output_c_fingerprint" value="b12ecab8352d5054"/>
+      </properties>
+    </testcase>
+    <testcase name="PreservesSnapshotsOptionalPortsAndOutputReads/24" value_param="(1, 0, false, 1, false)" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="50" status="run" result="completed" time="0.003" timestamp="2026-11-27T12:34:29.390" classname="StorageGridHaloStride/SingleArraySnapshotTest">
+      <properties>
+        <property name="output_a_fingerprint" value="b5f7abcdb5c46e5e"/>
+        <property name="output_c_fingerprint" value="7704a9dd78055fab"/>
+      </properties>
+    </testcase>
+    <testcase name="PreservesSnapshotsOptionalPortsAndOutputReads/25" value_param="(1, 0, false, 1, true)" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="50" status="run" result="completed" time="0." timestamp="2026-11-27T12:34:29.394" classname="StorageGridHaloStride/SingleArraySnapshotTest">
+      <properties>
+        <property name="output_a_fingerprint" value="9aced89039bde24e"/>
+        <property name="output_c_fingerprint" value="f82af4f3d2cd429d"/>
+      </properties>
+    </testcase>
+    <testcase name="PreservesSnapshotsOptionalPortsAndOutputReads/26" value_param="(1, 0, false, 2, false)" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="50" status="run" result="completed" time="0." timestamp="2026-11-27T12:34:29.394" classname="StorageGridHaloStride/SingleArraySnapshotTest">
+      <properties>
+        <property name="output_a_fingerprint" value="b26a748543c809b"/>
+        <property name="output_c_fingerprint" value="836abf63316044b3"/>
+      </properties>
+    </testcase>
+    <testcase name="PreservesSnapshotsOptionalPortsAndOutputReads/27" value_param="(1, 0, false, 2, true)" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="50" status="run" result="completed" time="0." timestamp="2026-11-27T12:34:29.395" classname="StorageGridHaloStride/SingleArraySnapshotTest">
+      <properties>
+        <property name="output_a_fingerprint" value="664ce70243707423"/>
+        <property name="output_c_fingerprint" value="b12ecab8352d5054"/>
+      </properties>
+    </testcase>
+    <testcase name="PreservesSnapshotsOptionalPortsAndOutputReads/28" value_param="(1, 0, false, 3, false)" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="50" status="run" result="completed" time="0." timestamp="2026-11-27T12:34:29.396" classname="StorageGridHaloStride/SingleArraySnapshotTest">
+      <properties>
+        <property name="output_a_fingerprint" value="883dc17edfc1e099"/>
+        <property name="output_c_fingerprint" value="502760d2cef1d430"/>
+      </properties>
+    </testcase>
+    <testcase name="PreservesSnapshotsOptionalPortsAndOutputReads/29" value_param="(1, 0, false, 3, true)" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="50" status="run" result="completed" time="0." timestamp="2026-11-27T12:34:29.396" classname="StorageGridHaloStride/SingleArraySnapshotTest">
+      <properties>
+        <property name="output_a_fingerprint" value="664ce70243707423"/>
+        <property name="output_c_fingerprint" value="b12ecab8352d5054"/>
+      </properties>
+    </testcase>
+    <testcase name="PreservesSnapshotsOptionalPortsAndOutputReads/30" value_param="(1, 0, true, 1, false)" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="50" status="run" result="completed" time="0.019" timestamp="2026-11-27T12:34:29.397" classname="StorageGridHaloStride/SingleArraySnapshotTest">
+      <properties>
+        <property name="output_a_fingerprint" value="b5f7abcdb5c46e5e"/>
+        <property name="output_c_fingerprint" value="7704a9dd78055fab"/>
+      </properties>
+    </testcase>
+    <testcase name="PreservesSnapshotsOptionalPortsAndOutputReads/31" value_param="(1, 0, true, 1, true)" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="50" status="run" result="completed" time="0.001" timestamp="2026-11-27T12:34:29.416" classname="StorageGridHaloStride/SingleArraySnapshotTest">
+      <properties>
+        <property name="output_a_fingerprint" value="9aced89039bde24e"/>
+        <property name="output_c_fingerprint" value="f82af4f3d2cd429d"/>
+      </properties>
+    </testcase>
+    <testcase name="PreservesSnapshotsOptionalPortsAndOutputReads/32" value_param="(1, 0, true, 2, false)" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="50" status="run" result="completed" time="0.019" timestamp="2026-11-27T12:34:29.418" classname="StorageGridHaloStride/SingleArraySnapshotTest">
+      <properties>
+        <property name="output_a_fingerprint" value="b26a748543c809b"/>
+        <property name="output_c_fingerprint" value="836abf63316044b3"/>
+      </properties>
+    </testcase>
+    <testcase name="PreservesSnapshotsOptionalPortsAndOutputReads/33" value_param="(1, 0, true, 2, true)" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="50" status="run" result="completed" time="0.001" timestamp="2026-11-27T12:34:29.437" classname="StorageGridHaloStride/SingleArraySnapshotTest">
+      <properties>
+        <property name="output_a_fingerprint" value="664ce70243707423"/>
+        <property name="output_c_fingerprint" value="b12ecab8352d5054"/>
+      </properties>
+    </testcase>
+    <testcase name="PreservesSnapshotsOptionalPortsAndOutputReads/34" value_param="(1, 0, true, 3, false)" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="50" status="run" result="completed" time="0.019" timestamp="2026-11-27T12:34:29.439" classname="StorageGridHaloStride/SingleArraySnapshotTest">
+      <properties>
+        <property name="output_a_fingerprint" value="883dc17edfc1e099"/>
+        <property name="output_c_fingerprint" value="502760d2cef1d430"/>
+      </properties>
+    </testcase>
+    <testcase name="PreservesSnapshotsOptionalPortsAndOutputReads/35" value_param="(1, 0, true, 3, true)" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="50" status="run" result="completed" time="0." timestamp="2026-11-27T12:34:29.459" classname="StorageGridHaloStride/SingleArraySnapshotTest">
+      <properties>
+        <property name="output_a_fingerprint" value="664ce70243707423"/>
+        <property name="output_c_fingerprint" value="b12ecab8352d5054"/>
+      </properties>
+    </testcase>
+    <testcase name="PreservesSnapshotsOptionalPortsAndOutputReads/36" value_param="(1, 1, false, 1, false)" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="50" status="run" result="completed" time="0." timestamp="2026-11-27T12:34:29.460" classname="StorageGridHaloStride/SingleArraySnapshotTest">
+      <properties>
+        <property name="output_a_fingerprint" value="b5f7abcdb5c46e5e"/>
+        <property name="output_c_fingerprint" value="7704a9dd78055fab"/>
+      </properties>
+    </testcase>
+    <testcase name="PreservesSnapshotsOptionalPortsAndOutputReads/37" value_param="(1, 1, false, 1, true)" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="50" status="run" result="completed" time="0." timestamp="2026-11-27T12:34:29.460" classname="StorageGridHaloStride/SingleArraySnapshotTest">
+      <properties>
+        <property name="output_a_fingerprint" value="9aced89039bde24e"/>
+        <property name="output_c_fingerprint" value="f82af4f3d2cd429d"/>
+      </properties>
+    </testcase>
+    <testcase name="PreservesSnapshotsOptionalPortsAndOutputReads/38" value_param="(1, 1, false, 2, false)" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="50" status="run" result="completed" time="0.001" timestamp="2026-11-27T12:34:29.461" classname="StorageGridHaloStride/SingleArraySnapshotTest">
+      <properties>
+        <property name="output_a_fingerprint" value="b26a748543c809b"/>
+        <property name="output_c_fingerprint" value="836abf63316044b3"/>
+      </properties>
+    </testcase>
+    <testcase name="PreservesSnapshotsOptionalPortsAndOutputReads/39" value_param="(1, 1, false, 2, true)" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="50" status="run" result="completed" time="0." timestamp="2026-11-27T12:34:29.462" classname="StorageGridHaloStride/SingleArraySnapshotTest">
+      <properties>
+        <property name="output_a_fingerprint" value="664ce70243707423"/>
+        <property name="output_c_fingerprint" value="b12ecab8352d5054"/>
+      </properties>
+    </testcase>
+    <testcase name="PreservesSnapshotsOptionalPortsAndOutputReads/40" value_param="(1, 1, false, 3, false)" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="50" status="run" result="completed" time="0.001" timestamp="2026-11-27T12:34:29.463" classname="StorageGridHaloStride/SingleArraySnapshotTest">
+      <properties>
+        <property name="output_a_fingerprint" value="883dc17edfc1e099"/>
+        <property name="output_c_fingerprint" value="502760d2cef1d430"/>
+      </properties>
+    </testcase>
+    <testcase name="PreservesSnapshotsOptionalPortsAndOutputReads/41" value_param="(1, 1, false, 3, true)" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="50" status="run" result="completed" time="0." timestamp="2026-11-27T12:34:29.464" classname="StorageGridHaloStride/SingleArraySnapshotTest">
+      <properties>
+        <property name="output_a_fingerprint" value="664ce70243707423"/>
+        <property name="output_c_fingerprint" value="b12ecab8352d5054"/>
+      </properties>
+    </testcase>
+    <testcase name="PreservesSnapshotsOptionalPortsAndOutputReads/42" value_param="(1, 1, true, 1, false)" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="50" status="run" result="completed" time="0.019" timestamp="2026-11-27T12:34:29.465" classname="StorageGridHaloStride/SingleArraySnapshotTest">
+      <properties>
+        <property name="output_a_fingerprint" value="b5f7abcdb5c46e5e"/>
+        <property name="output_c_fingerprint" value="7704a9dd78055fab"/>
+      </properties>
+    </testcase>
+    <testcase name="PreservesSnapshotsOptionalPortsAndOutputReads/43" value_param="(1, 1, true, 1, true)" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="50" status="run" result="completed" time="0." timestamp="2026-11-27T12:34:29.484" classname="StorageGridHaloStride/SingleArraySnapshotTest">
+      <properties>
+        <property name="output_a_fingerprint" value="9aced89039bde24e"/>
+        <property name="output_c_fingerprint" value="f82af4f3d2cd429d"/>
+      </properties>
+    </testcase>
+    <testcase name="PreservesSnapshotsOptionalPortsAndOutputReads/44" value_param="(1, 1, true, 2, false)" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="50" status="run" result="completed" time="0.019" timestamp="2026-11-27T12:34:29.485" classname="StorageGridHaloStride/SingleArraySnapshotTest">
+      <properties>
+        <property name="output_a_fingerprint" value="b26a748543c809b"/>
+        <property name="output_c_fingerprint" value="836abf63316044b3"/>
+      </properties>
+    </testcase>
+    <testcase name="PreservesSnapshotsOptionalPortsAndOutputReads/45" value_param="(1, 1, true, 2, true)" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="50" status="run" result="completed" time="0." timestamp="2026-11-27T12:34:29.504" classname="StorageGridHaloStride/SingleArraySnapshotTest">
+      <properties>
+        <property name="output_a_fingerprint" value="664ce70243707423"/>
+        <property name="output_c_fingerprint" value="b12ecab8352d5054"/>
+      </properties>
+    </testcase>
+    <testcase name="PreservesSnapshotsOptionalPortsAndOutputReads/46" value_param="(1, 1, true, 3, false)" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="50" status="run" result="completed" time="0.02" timestamp="2026-11-27T12:34:29.505" classname="StorageGridHaloStride/SingleArraySnapshotTest">
+      <properties>
+        <property name="output_a_fingerprint" value="883dc17edfc1e099"/>
+        <property name="output_c_fingerprint" value="502760d2cef1d430"/>
+      </properties>
+    </testcase>
+    <testcase name="PreservesSnapshotsOptionalPortsAndOutputReads/47" value_param="(1, 1, true, 3, true)" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="50" status="run" result="completed" time="0.001" timestamp="2026-11-27T12:34:29.526" classname="StorageGridHaloStride/SingleArraySnapshotTest">
+      <properties>
+        <property name="output_a_fingerprint" value="664ce70243707423"/>
+        <property name="output_c_fingerprint" value="b12ecab8352d5054"/>
+      </properties>
+    </testcase>
+    <testcase name="PreservesSnapshotsOptionalPortsAndOutputReads/48" value_param="(2, 0, false, 1, false)" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="50" status="run" result="completed" time="0." timestamp="2026-11-27T12:34:29.527" classname="StorageGridHaloStride/SingleArraySnapshotTest">
+      <properties>
+        <property name="output_a_fingerprint" value="b5f7abcdb5c46e5e"/>
+        <property name="output_c_fingerprint" value="7704a9dd78055fab"/>
+      </properties>
+    </testcase>
+    <testcase name="PreservesSnapshotsOptionalPortsAndOutputReads/49" value_param="(2, 0, false, 1, true)" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="50" status="run" result="completed" time="0." timestamp="2026-11-27T12:34:29.528" classname="StorageGridHaloStride/SingleArraySnapshotTest">
+      <properties>
+        <property name="output_a_fingerprint" value="9aced89039bde24e"/>
+        <property name="output_c_fingerprint" value="f82af4f3d2cd429d"/>
+      </properties>
+    </testcase>
+    <testcase name="PreservesSnapshotsOptionalPortsAndOutputReads/50" value_param="(2, 0, false, 2, false)" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="50" status="run" result="completed" time="0." timestamp="2026-11-27T12:34:29.528" classname="StorageGridHaloStride/SingleArraySnapshotTest">
+      <properties>
+        <property name="output_a_fingerprint" value="b26a748543c809b"/>
+        <property name="output_c_fingerprint" value="836abf63316044b3"/>
+      </properties>
+    </testcase>
+    <testcase name="PreservesSnapshotsOptionalPortsAndOutputReads/51" value_param="(2, 0, false, 2, true)" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="50" status="run" result="completed" time="0." timestamp="2026-11-27T12:34:29.528" classname="StorageGridHaloStride/SingleArraySnapshotTest">
+      <properties>
+        <property name="output_a_fingerprint" value="664ce70243707423"/>
+        <property name="output_c_fingerprint" value="b12ecab8352d5054"/>
+      </properties>
+    </testcase>
+    <testcase name="PreservesSnapshotsOptionalPortsAndOutputReads/52" value_param="(2, 0, false, 3, false)" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="50" status="run" result="completed" time="0." timestamp="2026-11-27T12:34:29.529" classname="StorageGridHaloStride/SingleArraySnapshotTest">
+      <properties>
+        <property name="output_a_fingerprint" value="883dc17edfc1e099"/>
+        <property name="output_c_fingerprint" value="502760d2cef1d430"/>
+      </properties>
+    </testcase>
+    <testcase name="PreservesSnapshotsOptionalPortsAndOutputReads/53" value_param="(2, 0, false, 3, true)" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="50" status="run" result="completed" time="0." timestamp="2026-11-27T12:34:29.529" classname="StorageGridHaloStride/SingleArraySnapshotTest">
+      <properties>
+        <property name="output_a_fingerprint" value="664ce70243707423"/>
+        <property name="output_c_fingerprint" value="b12ecab8352d5054"/>
+      </properties>
+    </testcase>
+    <testcase name="PreservesSnapshotsOptionalPortsAndOutputReads/54" value_param="(2, 0, true, 1, false)" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="50" status="run" result="completed" time="0.022" timestamp="2026-11-27T12:34:29.529" classname="StorageGridHaloStride/SingleArraySnapshotTest">
+      <properties>
+        <property name="output_a_fingerprint" value="b5f7abcdb5c46e5e"/>
+        <property name="output_c_fingerprint" value="7704a9dd78055fab"/>
+      </properties>
+    </testcase>
+    <testcase name="PreservesSnapshotsOptionalPortsAndOutputReads/55" value_param="(2, 0, true, 1, true)" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="50" status="run" result="completed" time="0." timestamp="2026-11-27T12:34:29.552" classname="StorageGridHaloStride/SingleArraySnapshotTest">
+      <properties>
+        <property name="output_a_fingerprint" value="9aced89039bde24e"/>
+        <property name="output_c_fingerprint" value="f82af4f3d2cd429d"/>
+      </properties>
+    </testcase>
+    <testcase name="PreservesSnapshotsOptionalPortsAndOutputReads/56" value_param="(2, 0, true, 2, false)" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="50" status="run" result="completed" time="0.02" timestamp="2026-11-27T12:34:29.553" classname="StorageGridHaloStride/SingleArraySnapshotTest">
+      <properties>
+        <property name="output_a_fingerprint" value="b26a748543c809b"/>
+        <property name="output_c_fingerprint" value="836abf63316044b3"/>
+      </properties>
+    </testcase>
+    <testcase name="PreservesSnapshotsOptionalPortsAndOutputReads/57" value_param="(2, 0, true, 2, true)" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="50" status="run" result="completed" time="0." timestamp="2026-11-27T12:34:29.573" classname="StorageGridHaloStride/SingleArraySnapshotTest">
+      <properties>
+        <property name="output_a_fingerprint" value="664ce70243707423"/>
+        <property name="output_c_fingerprint" value="b12ecab8352d5054"/>
+      </properties>
+    </testcase>
+    <testcase name="PreservesSnapshotsOptionalPortsAndOutputReads/58" value_param="(2, 0, true, 3, false)" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="50" status="run" result="completed" time="0.021" timestamp="2026-11-27T12:34:29.574" classname="StorageGridHaloStride/SingleArraySnapshotTest">
+      <properties>
+        <property name="output_a_fingerprint" value="883dc17edfc1e099"/>
+        <property name="output_c_fingerprint" value="502760d2cef1d430"/>
+      </properties>
+    </testcase>
+    <testcase name="PreservesSnapshotsOptionalPortsAndOutputReads/59" value_param="(2, 0, true, 3, true)" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="50" status="run" result="completed" time="0." timestamp="2026-11-27T12:34:29.595" classname="StorageGridHaloStride/SingleArraySnapshotTest">
+      <properties>
+        <property name="output_a_fingerprint" value="664ce70243707423"/>
+        <property name="output_c_fingerprint" value="b12ecab8352d5054"/>
+      </properties>
+    </testcase>
+    <testcase name="PreservesSnapshotsOptionalPortsAndOutputReads/60" value_param="(2, 1, false, 1, false)" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="50" status="run" result="completed" time="0." timestamp="2026-11-27T12:34:29.595" classname="StorageGridHaloStride/SingleArraySnapshotTest">
+      <properties>
+        <property name="output_a_fingerprint" value="b5f7abcdb5c46e5e"/>
+        <property name="output_c_fingerprint" value="7704a9dd78055fab"/>
+      </properties>
+    </testcase>
+    <testcase name="PreservesSnapshotsOptionalPortsAndOutputReads/61" value_param="(2, 1, false, 1, true)" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="50" status="run" result="completed" time="0." timestamp="2026-11-27T12:34:29.596" classname="StorageGridHaloStride/SingleArraySnapshotTest">
+      <properties>
+        <property name="output_a_fingerprint" value="9aced89039bde24e"/>
+        <property name="output_c_fingerprint" value="f82af4f3d2cd429d"/>
+      </properties>
+    </testcase>
+    <testcase name="PreservesSnapshotsOptionalPortsAndOutputReads/62" value_param="(2, 1, false, 2, false)" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="50" status="run" result="completed" time="0." timestamp="2026-11-27T12:34:29.596" classname="StorageGridHaloStride/SingleArraySnapshotTest">
+      <properties>
+        <property name="output_a_fingerprint" value="b26a748543c809b"/>
+        <property name="output_c_fingerprint" value="836abf63316044b3"/>
+      </properties>
+    </testcase>
+    <testcase name="PreservesSnapshotsOptionalPortsAndOutputReads/63" value_param="(2, 1, false, 2, true)" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="50" status="run" result="completed" time="0." timestamp="2026-11-27T12:34:29.596" classname="StorageGridHaloStride/SingleArraySnapshotTest">
+      <properties>
+        <property name="output_a_fingerprint" value="664ce70243707423"/>
+        <property name="output_c_fingerprint" value="b12ecab8352d5054"/>
+      </properties>
+    </testcase>
+    <testcase name="PreservesSnapshotsOptionalPortsAndOutputReads/64" value_param="(2, 1, false, 3, false)" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="50" status="run" result="completed" time="0." timestamp="2026-11-27T12:34:29.596" classname="StorageGridHaloStride/SingleArraySnapshotTest">
+      <properties>
+        <property name="output_a_fingerprint" value="883dc17edfc1e099"/>
+        <property name="output_c_fingerprint" value="502760d2cef1d430"/>
+      </properties>
+    </testcase>
+    <testcase name="PreservesSnapshotsOptionalPortsAndOutputReads/65" value_param="(2, 1, false, 3, true)" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="50" status="run" result="completed" time="0." timestamp="2026-11-27T12:34:29.596" classname="StorageGridHaloStride/SingleArraySnapshotTest">
+      <properties>
+        <property name="output_a_fingerprint" value="664ce70243707423"/>
+        <property name="output_c_fingerprint" value="b12ecab8352d5054"/>
+      </properties>
+    </testcase>
+    <testcase name="PreservesSnapshotsOptionalPortsAndOutputReads/66" value_param="(2, 1, true, 1, false)" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="50" status="run" result="completed" time="0.018" timestamp="2026-11-27T12:34:29.597" classname="StorageGridHaloStride/SingleArraySnapshotTest">
+      <properties>
+        <property name="output_a_fingerprint" value="b5f7abcdb5c46e5e"/>
+        <property name="output_c_fingerprint" value="7704a9dd78055fab"/>
+      </properties>
+    </testcase>
+    <testcase name="PreservesSnapshotsOptionalPortsAndOutputReads/67" value_param="(2, 1, true, 1, true)" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="50" status="run" result="completed" time="0." timestamp="2026-11-27T12:34:29.616" classname="StorageGridHaloStride/SingleArraySnapshotTest">
+      <properties>
+        <property name="output_a_fingerprint" value="9aced89039bde24e"/>
+        <property name="output_c_fingerprint" value="f82af4f3d2cd429d"/>
+      </properties>
+    </testcase>
+    <testcase name="PreservesSnapshotsOptionalPortsAndOutputReads/68" value_param="(2, 1, true, 2, false)" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="50" status="run" result="completed" time="0.019" timestamp="2026-11-27T12:34:29.616" classname="StorageGridHaloStride/SingleArraySnapshotTest">
+      <properties>
+        <property name="output_a_fingerprint" value="b26a748543c809b"/>
+        <property name="output_c_fingerprint" value="836abf63316044b3"/>
+      </properties>
+    </testcase>
+    <testcase name="PreservesSnapshotsOptionalPortsAndOutputReads/69" value_param="(2, 1, true, 2, true)" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="50" status="run" result="completed" time="0." timestamp="2026-11-27T12:34:29.636" classname="StorageGridHaloStride/SingleArraySnapshotTest">
+      <properties>
+        <property name="output_a_fingerprint" value="664ce70243707423"/>
+        <property name="output_c_fingerprint" value="b12ecab8352d5054"/>
+      </properties>
+    </testcase>
+    <testcase name="PreservesSnapshotsOptionalPortsAndOutputReads/70" value_param="(2, 1, true, 3, false)" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="50" status="run" result="completed" time="0.019" timestamp="2026-11-27T12:34:29.636" classname="StorageGridHaloStride/SingleArraySnapshotTest">
+      <properties>
+        <property name="output_a_fingerprint" value="883dc17edfc1e099"/>
+        <property name="output_c_fingerprint" value="502760d2cef1d430"/>
+      </properties>
+    </testcase>
+    <testcase name="PreservesSnapshotsOptionalPortsAndOutputReads/71" value_param="(2, 1, true, 3, true)" file="/home/barrulus/dev/Hesiod-783/external/HighMap/tests/src/test_single_array_compute.cpp" line="50" status="run" result="completed" time="0." timestamp="2026-11-27T12:34:29.655" classname="StorageGridHaloStride/SingleArraySnapshotTest">
+      <properties>
+        <property name="output_a_fingerprint" value="664ce70243707423"/>
+        <property name="output_c_fingerprint" value="b12ecab8352d5054"/>
+      </properties>
+    </testcase>
+  </testsuite>
+</testsuites>

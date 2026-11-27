@@ -1,0 +1,8 @@
+{
+  "tests": 74,
+  "fingerprinted_matrix_cases": 72,
+  "exact_output_fingerprints_identical": true,
+  "baseline": "baseline.xml",
+  "fixed": "fixed.xml",
+  "baseline_library": "output/fixes/baseline/libhighmap.a"
+}
