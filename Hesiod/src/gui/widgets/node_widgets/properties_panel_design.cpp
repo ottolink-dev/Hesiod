@@ -1,6 +1,8 @@
 /* Copyright (c) 2025 Otto Link. Distributed under the terms of the GNU General
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
+#include <QMenu>
+
 #include "meta_qt/designs/industrial/industrial.hpp"
 #include "meta_qt/designs/stock/stock.hpp"
 #include "meta_qt/ui/design_registry.hpp"
@@ -55,6 +57,22 @@ const PropertiesPanelDesign &properties_panel_design()
   current.has_own_chrome = current.design == meta::qt::industrial::kDesignName;
 
   return current;
+}
+
+void style_panel_menu(QMenu &menu, const meta::qt::Theme &theme)
+{
+  menu.setWindowFlag(Qt::NoDropShadowWindowHint);
+  menu.setFont(meta::qt::ui_font(12));
+  menu.setStyleSheet(
+      QString("QMenu { background: %1; color: %2; border: 1px solid %3;"
+              " border-radius: 8px; padding: 6px; }"
+              "QMenu::item { padding: 7px 18px 7px 10px; border-radius: 4px; }"
+              "QMenu::item:selected { background: %4; }"
+              "QMenu::separator { height: 1px; background: %3; margin: 5px 8px; }")
+          .arg(theme.bar.name(),
+               theme.ink_primary.name(),
+               theme.field_border.name(),
+               theme.section_header_hover.name()));
 }
 
 } // namespace hesiod
