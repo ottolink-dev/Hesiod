@@ -1,0 +1,210 @@
+[
+  {
+    "case": "ExportAsset",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 1024,
+    "repeat": 1,
+    "policy": "ram-sequential",
+    "tiles": 1,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-baseline-calibration/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-baseline-calibration/runs/ExportAsset-full-ram-sequential-1024-t1-o0-r1/fixture.hsd",
+      "--shape=1024,1024",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "started_at": "2026-11-27T13:48:45+0000",
+    "graph_sha256": "55fb6ac140abca61d8083891f20beb0077fadcb91f543276ce8c3f7c50defc5a",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14644,
+    "process_peak_rss_kib": 1054776,
+    "process_user_seconds": 12.452976,
+    "process_system_seconds": 0.681126,
+    "wall_seconds": 13.016418801998952,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "ExportAsset",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": [
+      {
+        "path": "exports/result..glb",
+        "bytes": 46089492,
+        "sha256": "53d73f1e52d1c70f3b5d3d18bf0a10ff986b9f3f5c97e17a4c587eb67855c0e9"
+      },
+      {
+        "path": "exports/result..png",
+        "bytes": 3849729,
+        "sha256": "ee805df55dc5e8e9fbda90c94512963469d5dea1b8be6a6ecae5f1f96b20ae33"
+      },
+      {
+        "path": "exports/result._nmap.png",
+        "bytes": 4293976,
+        "sha256": "2def26ef57f6b1af23c1332528470f1aba766d77114a85cf7cc830d740818329"
+      }
+    ]
+  },
+  {
+    "case": "TextureQuiltingExpand",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 1024,
+    "repeat": 1,
+    "policy": "ram-sequential",
+    "tiles": 1,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-baseline-calibration/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-baseline-calibration/runs/TextureQuiltingExpand-full-ram-sequential-1024-t1-o0-r1/fixture.hsd",
+      "--shape=1024,1024",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "started_at": "2026-11-27T13:49:00+0000",
+    "graph_sha256": "166923220c4a4f10c82b2486b9e393601c056878a4d966949ec3b09b76845cd7",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14552,
+    "process_peak_rss_kib": 735444,
+    "process_user_seconds": 1.2600419999999999,
+    "process_system_seconds": 0.579275,
+    "wall_seconds": 1.754157732008025,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "TextureQuiltingExpand",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": []
+  },
+  {
+    "case": "TextureQuiltingShuffle",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 1024,
+    "repeat": 1,
+    "policy": "ram-sequential",
+    "tiles": 1,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-baseline-calibration/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-baseline-calibration/runs/TextureQuiltingShuffle-full-ram-sequential-1024-t1-o0-r1/fixture.hsd",
+      "--shape=1024,1024",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "started_at": "2026-11-27T13:48:58+0000",
+    "graph_sha256": "a2259c82fdd4cdd22e89b23bb5803ad5b65c61d6cb0ad2e61a8178be093b1999",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14632,
+    "process_peak_rss_kib": 699668,
+    "process_user_seconds": 1.154535,
+    "process_system_seconds": 0.593387,
+    "wall_seconds": 1.6831559779966483,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "TextureQuiltingShuffle",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": []
+  }
+]

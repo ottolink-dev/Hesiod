@@ -170,7 +170,52 @@ even-line endpoint expectation. Their failing logs remain separate evidence;
 none were silenced by changing tolerance or skipping numerical tests. The
 subsequent source/test fixes are listed above.
 
-Integrated application memory measurements follow after the 96-run sweep
-completes. Compact logs, output fingerprints, test reports, reproducers and
-raw library heap captures are retained in [evidence](evidence/). Intermediate
-binaries and full-resolution arrays remain under ignored `output/fixes/`.
+### Application peak RSS
+
+All 96 new fixed runs passed, covering 32 configurations with three repetitions
+per configuration. They are paired with 96 existing frozen-baseline observations;
+those old observations are reused, not counted as new executions. The matrix
+covers 1024²/2048², 1×1/4×4 grids, RAM/streamed disk storage, full/minimal
+ExportAsset and full Shuffle/Expand inputs. All 16 scaling guards and policy
+audits pass. Median peak RSS decreased in every cell, by 2.74%–23.78%.
+
+Selected **2048², RAM, 1×1** medians (MiB):
+
+| Case | Baseline | Fixed | Reduction |
+| --- | ---: | ---: | ---: |
+| ExportAsset (minimal) | 3,027.64 | 2,850.18 | 5.86% |
+| ExportAsset (full) | 3,283.96 | 3,106.29 | 5.41% |
+| TextureQuiltingShuffle | 1,741.37 | 1,437.78 | 17.43% |
+| TextureQuiltingExpand | 1,908.94 | 1,506.63 | 21.07% |
+
+See the [complete 32-cell CSV](evidence/memory/memory-fix-comparison.csv) and
+[paired-run verification](evidence/memory/memory-fix-comparison.json) for all
+medians, observed ranges and provenance. Across the tested 2048² configurations,
+Shuffle reductions are 17.4%–19.8% and Expand reductions are 20.5%–23.8%.
+
+All 48 exported GLB/PNG sets are byte-identical to their matching baseline.
+The comparator requires identical fixture bytes, policies, thread settings,
+relevant runner hashes and measurement methods. Reviewed application-data
+changes are limited to the corrected node catalogue, stepping-shore fixture and
+`git_version.txt`; the generated version label is consumed by About/splash UI.
+Unexpected data changes or differing export hashes fail the comparison. The
+first comparator invocation stopped on the version-label change; after source
+review confirmed its UI-only consumers, the explicit allowlist was updated and
+the comparator passed. The measurements were not rerun or replaced.
+
+A separate [three-run fresh-baseline check](evidence/memory/memory-baseline-calibration-comparison.json)
+uses the original executable and data, with its original source association
+recorded separately from the current orchestration checkout. Fixtures, policies
+and exported assets match. Fresh peaks are 0.11%–0.24% below the old medians and
+just outside their narrow three-observation min/max ranges. These are not new
+baseline repetitions or uncertainty estimates.
+
+RSS is whole-process resident memory, including startup and producers; disk
+page cache is excluded. These measurements do not attribute every byte to a
+node. Shared-host timings are descriptive, and no latency improvement is
+claimed. Full-resolution 4096² exports were not repeated in this fix matrix.
+
+Compact logs, output fingerprints, test reports, reproducers and raw library
+heap captures are retained in [evidence](evidence/). Compressed application-run
+archives omit executables, exports and caches. Large originals remain under
+ignored `output/fixes/`.

@@ -1,0 +1,1612 @@
+{
+  "reused_baseline_runs": 96,
+  "new_fixed_runs": 96,
+  "cells": [
+    {
+      "case": "ExportAsset",
+      "variant": "full",
+      "inputs_only": false,
+      "policy": "disk-sequential",
+      "tiles": 1,
+      "overlap": 0.0,
+      "size": 1024,
+      "repeats_per_version": 3,
+      "baseline_peak_mib": 952.85546875,
+      "fixed_peak_mib": 926.734375,
+      "fixed_to_baseline_peak_ratio": 0.972586510119665,
+      "peak_reduction_percent": 2.7413489880334985,
+      "baseline_peak_mib_range": [
+        952.76171875,
+        953.265625
+      ],
+      "baseline_wall_seconds_median": 11.405073902002187,
+      "fixed_peak_mib_range": [
+        925.9375,
+        926.95703125
+      ],
+      "fixed_wall_seconds_median": 11.292179290991044
+    },
+    {
+      "case": "ExportAsset",
+      "variant": "full",
+      "inputs_only": false,
+      "policy": "disk-sequential",
+      "tiles": 1,
+      "overlap": 0.0,
+      "size": 2048,
+      "repeats_per_version": 3,
+      "baseline_peak_mib": 3011.1796875,
+      "fixed_peak_mib": 2898.98046875,
+      "fixed_to_baseline_peak_ratio": 0.9627391154318153,
+      "peak_reduction_percent": 3.726088456818466,
+      "baseline_peak_mib_range": [
+        3010.65234375,
+        3011.19921875
+      ],
+      "baseline_wall_seconds_median": 117.89617485799681,
+      "fixed_peak_mib_range": [
+        2898.46484375,
+        2899.30859375
+      ],
+      "fixed_wall_seconds_median": 127.56046068000433
+    },
+    {
+      "case": "ExportAsset",
+      "variant": "full",
+      "inputs_only": false,
+      "policy": "disk-sequential",
+      "tiles": 4,
+      "overlap": 0.0,
+      "size": 1024,
+      "repeats_per_version": 3,
+      "baseline_peak_mib": 954.0390625,
+      "fixed_peak_mib": 925.0859375,
+      "fixed_to_baseline_peak_ratio": 0.9696520549964378,
+      "peak_reduction_percent": 3.0347945003562193,
+      "baseline_peak_mib_range": [
+        953.44921875,
+        954.19921875
+      ],
+      "baseline_wall_seconds_median": 11.155655143003969,
+      "fixed_peak_mib_range": [
+        924.9609375,
+        925.3203125
+      ],
+      "fixed_wall_seconds_median": 13.744455378997372
+    },
+    {
+      "case": "ExportAsset",
+      "variant": "full",
+      "inputs_only": false,
+      "policy": "disk-sequential",
+      "tiles": 4,
+      "overlap": 0.0,
+      "size": 2048,
+      "repeats_per_version": 3,
+      "baseline_peak_mib": 2978.06640625,
+      "fixed_peak_mib": 2866.03125,
+      "fixed_to_baseline_peak_ratio": 0.9623798999193321,
+      "peak_reduction_percent": 3.762010008066785,
+      "baseline_peak_mib_range": [
+        2977.578125,
+        2978.3203125
+      ],
+      "baseline_wall_seconds_median": 124.90148842900089,
+      "fixed_peak_mib_range": [
+        2864.93359375,
+        2866.12890625
+      ],
+      "fixed_wall_seconds_median": 122.68913589799195
+    },
+    {
+      "case": "ExportAsset",
+      "variant": "full",
+      "inputs_only": false,
+      "policy": "ram-sequential",
+      "tiles": 1,
+      "overlap": 0.0,
+      "size": 1024,
+      "repeats_per_version": 3,
+      "baseline_peak_mib": 1031.1796875,
+      "fixed_peak_mib": 986.6796875,
+      "fixed_to_baseline_peak_ratio": 0.9568455424991098,
+      "peak_reduction_percent": 4.31544575008902,
+      "baseline_peak_mib_range": [
+        1030.59375,
+        1031.25
+      ],
+      "baseline_wall_seconds_median": 12.117868322005961,
+      "fixed_peak_mib_range": [
+        986.5,
+        986.890625
+      ],
+      "fixed_wall_seconds_median": 12.580387847003294
+    },
+    {
+      "case": "ExportAsset",
+      "variant": "full",
+      "inputs_only": false,
+      "policy": "ram-sequential",
+      "tiles": 1,
+      "overlap": 0.0,
+      "size": 2048,
+      "repeats_per_version": 3,
+      "baseline_peak_mib": 3283.96484375,
+      "fixed_peak_mib": 3106.29296875,
+      "fixed_to_baseline_peak_ratio": 0.9458971446243881,
+      "peak_reduction_percent": 5.4102855375611885,
+      "baseline_peak_mib_range": [
+        3282.80078125,
+        3284.015625
+      ],
+      "baseline_wall_seconds_median": 135.07441029299662,
+      "fixed_peak_mib_range": [
+        3105.8984375,
+        3106.43359375
+      ],
+      "fixed_wall_seconds_median": 127.00379472399072
+    },
+    {
+      "case": "ExportAsset",
+      "variant": "full",
+      "inputs_only": false,
+      "policy": "ram-sequential",
+      "tiles": 4,
+      "overlap": 0.0,
+      "size": 1024,
+      "repeats_per_version": 3,
+      "baseline_peak_mib": 1008.87890625,
+      "fixed_peak_mib": 964.23046875,
+      "fixed_to_baseline_peak_ratio": 0.9557445029097118,
+      "peak_reduction_percent": 4.42554970902882,
+      "baseline_peak_mib_range": [
+        1008.8046875,
+        1008.984375
+      ],
+      "baseline_wall_seconds_median": 12.144958033000876,
+      "fixed_peak_mib_range": [
+        963.70703125,
+        964.4140625
+      ],
+      "fixed_wall_seconds_median": 10.96108119598648
+    },
+    {
+      "case": "ExportAsset",
+      "variant": "full",
+      "inputs_only": false,
+      "policy": "ram-sequential",
+      "tiles": 4,
+      "overlap": 0.0,
+      "size": 2048,
+      "repeats_per_version": 3,
+      "baseline_peak_mib": 3194.19140625,
+      "fixed_peak_mib": 3017.71875,
+      "fixed_to_baseline_peak_ratio": 0.9447520095681492,
+      "peak_reduction_percent": 5.52479904318508,
+      "baseline_peak_mib_range": [
+        3194.1015625,
+        3194.93359375
+      ],
+      "baseline_wall_seconds_median": 133.13937918800366,
+      "fixed_peak_mib_range": [
+        3017.484375,
+        3017.77734375
+      ],
+      "fixed_wall_seconds_median": 133.72215157200117
+    },
+    {
+      "case": "ExportAsset",
+      "variant": "minimal",
+      "inputs_only": false,
+      "policy": "disk-sequential",
+      "tiles": 1,
+      "overlap": 0.0,
+      "size": 1024,
+      "repeats_per_version": 3,
+      "baseline_peak_mib": 946.734375,
+      "fixed_peak_mib": 917.0703125,
+      "fixed_to_baseline_peak_ratio": 0.9686669637404896,
+      "peak_reduction_percent": 3.133303625951045,
+      "baseline_peak_mib_range": [
+        945.9375,
+        946.85546875
+      ],
+      "baseline_wall_seconds_median": 1.447462349999114,
+      "fixed_peak_mib_range": [
+        917.02734375,
+        918.359375
+      ],
+      "fixed_wall_seconds_median": 1.4089035969955148
+    },
+    {
+      "case": "ExportAsset",
+      "variant": "minimal",
+      "inputs_only": false,
+      "policy": "disk-sequential",
+      "tiles": 1,
+      "overlap": 0.0,
+      "size": 2048,
+      "repeats_per_version": 3,
+      "baseline_peak_mib": 2947.23828125,
+      "fixed_peak_mib": 2834.82421875,
+      "fixed_to_baseline_peak_ratio": 0.9618578303576044,
+      "peak_reduction_percent": 3.8142169642395585,
+      "baseline_peak_mib_range": [
+        2947.11328125,
+        2947.33984375
+      ],
+      "baseline_wall_seconds_median": 4.970252203005657,
+      "fixed_peak_mib_range": [
+        2834.43359375,
+        2835.07421875
+      ],
+      "fixed_wall_seconds_median": 5.091665716012358
+    },
+    {
+      "case": "ExportAsset",
+      "variant": "minimal",
+      "inputs_only": false,
+      "policy": "disk-sequential",
+      "tiles": 4,
+      "overlap": 0.0,
+      "size": 1024,
+      "repeats_per_version": 3,
+      "baseline_peak_mib": 946.78125,
+      "fixed_peak_mib": 918.21484375,
+      "fixed_to_baseline_peak_ratio": 0.9698278707462785,
+      "peak_reduction_percent": 3.017212925372148,
+      "baseline_peak_mib_range": [
+        945.66796875,
+        946.87890625
+      ],
+      "baseline_wall_seconds_median": 1.4027892400044948,
+      "fixed_peak_mib_range": [
+        917.23046875,
+        918.23046875
+      ],
+      "fixed_wall_seconds_median": 1.406019311005366
+    },
+    {
+      "case": "ExportAsset",
+      "variant": "minimal",
+      "inputs_only": false,
+      "policy": "disk-sequential",
+      "tiles": 4,
+      "overlap": 0.0,
+      "size": 2048,
+      "repeats_per_version": 3,
+      "baseline_peak_mib": 2947.37109375,
+      "fixed_peak_mib": 2834.6328125,
+      "fixed_to_baseline_peak_ratio": 0.9617495464045687,
+      "peak_reduction_percent": 3.8250453595431333,
+      "baseline_peak_mib_range": [
+        2946.96875,
+        2947.39453125
+      ],
+      "baseline_wall_seconds_median": 4.964866351998353,
+      "fixed_peak_mib_range": [
+        2834.59765625,
+        2834.7734375
+      ],
+      "fixed_wall_seconds_median": 5.127053453004919
+    },
+    {
+      "case": "ExportAsset",
+      "variant": "minimal",
+      "inputs_only": false,
+      "policy": "ram-sequential",
+      "tiles": 1,
+      "overlap": 0.0,
+      "size": 1024,
+      "repeats_per_version": 3,
+      "baseline_peak_mib": 966.36328125,
+      "fixed_peak_mib": 921.64453125,
+      "fixed_to_baseline_peak_ratio": 0.953724700774893,
+      "peak_reduction_percent": 4.627529922510698,
+      "baseline_peak_mib_range": [
+        966.24609375,
+        967.046875
+      ],
+      "baseline_wall_seconds_median": 1.434456204995513,
+      "fixed_peak_mib_range": [
+        921.27734375,
+        921.83203125
+      ],
+      "fixed_wall_seconds_median": 1.5722123390005436
+    },
+    {
+      "case": "ExportAsset",
+      "variant": "minimal",
+      "inputs_only": false,
+      "policy": "ram-sequential",
+      "tiles": 1,
+      "overlap": 0.0,
+      "size": 2048,
+      "repeats_per_version": 3,
+      "baseline_peak_mib": 3027.640625,
+      "fixed_peak_mib": 2850.1796875,
+      "fixed_to_baseline_peak_ratio": 0.9413863930762919,
+      "peak_reduction_percent": 5.861360692370809,
+      "baseline_peak_mib_range": [
+        3027.25,
+        3027.7109375
+      ],
+      "baseline_wall_seconds_median": 5.208086737002304,
+      "fixed_peak_mib_range": [
+        2849.83203125,
+        2850.83984375
+      ],
+      "fixed_wall_seconds_median": 5.046855597000103
+    },
+    {
+      "case": "ExportAsset",
+      "variant": "minimal",
+      "inputs_only": false,
+      "policy": "ram-sequential",
+      "tiles": 4,
+      "overlap": 0.0,
+      "size": 1024,
+      "repeats_per_version": 3,
+      "baseline_peak_mib": 966.63671875,
+      "fixed_peak_mib": 922.16015625,
+      "fixed_to_baseline_peak_ratio": 0.9539883374619634,
+      "peak_reduction_percent": 4.601166253803656,
+      "baseline_peak_mib_range": [
+        966.60546875,
+        967.0390625
+      ],
+      "baseline_wall_seconds_median": 1.4472850510064745,
+      "fixed_peak_mib_range": [
+        921.99609375,
+        922.47265625
+      ],
+      "fixed_wall_seconds_median": 1.4100402699987171
+    },
+    {
+      "case": "ExportAsset",
+      "variant": "minimal",
+      "inputs_only": false,
+      "policy": "ram-sequential",
+      "tiles": 4,
+      "overlap": 0.0,
+      "size": 2048,
+      "repeats_per_version": 3,
+      "baseline_peak_mib": 3027.4375,
+      "fixed_peak_mib": 2850.2109375,
+      "fixed_to_baseline_peak_ratio": 0.9414598773715395,
+      "peak_reduction_percent": 5.854012262846053,
+      "baseline_peak_mib_range": [
+        3027.2109375,
+        3027.80859375
+      ],
+      "baseline_wall_seconds_median": 5.160350887999812,
+      "fixed_peak_mib_range": [
+        2849.48046875,
+        2850.578125
+      ],
+      "fixed_wall_seconds_median": 5.153932159009855
+    },
+    {
+      "case": "TextureQuiltingExpand",
+      "variant": "full",
+      "inputs_only": false,
+      "policy": "disk-sequential",
+      "tiles": 1,
+      "overlap": 0.0,
+      "size": 1024,
+      "repeats_per_version": 3,
+      "baseline_peak_mib": 659.07421875,
+      "fixed_peak_mib": 568.34765625,
+      "fixed_to_baseline_peak_ratio": 0.8623424192315214,
+      "peak_reduction_percent": 13.765758076847856,
+      "baseline_peak_mib_range": [
+        658.3828125,
+        659.28515625
+      ],
+      "baseline_wall_seconds_median": 1.636616182004218,
+      "fixed_peak_mib_range": [
+        568.16796875,
+        568.57421875
+      ],
+      "fixed_wall_seconds_median": 1.4365056059905328
+    },
+    {
+      "case": "TextureQuiltingExpand",
+      "variant": "full",
+      "inputs_only": false,
+      "policy": "disk-sequential",
+      "tiles": 1,
+      "overlap": 0.0,
+      "size": 2048,
+      "repeats_per_version": 3,
+      "baseline_peak_mib": 1707.73046875,
+      "fixed_peak_mib": 1301.6875,
+      "fixed_to_baseline_peak_ratio": 0.7622324036607431,
+      "peak_reduction_percent": 23.776759633925693,
+      "baseline_peak_mib_range": [
+        1707.55859375,
+        1707.90625
+      ],
+      "baseline_wall_seconds_median": 7.053525069997704,
+      "fixed_peak_mib_range": [
+        1300.9296875,
+        1301.859375
+      ],
+      "fixed_wall_seconds_median": 6.230050418002065
+    },
+    {
+      "case": "TextureQuiltingExpand",
+      "variant": "full",
+      "inputs_only": false,
+      "policy": "disk-sequential",
+      "tiles": 4,
+      "overlap": 0.0,
+      "size": 1024,
+      "repeats_per_version": 3,
+      "baseline_peak_mib": 656.50390625,
+      "fixed_peak_mib": 567.14453125,
+      "fixed_to_baseline_peak_ratio": 0.8638859964894535,
+      "peak_reduction_percent": 13.611400351054648,
+      "baseline_peak_mib_range": [
+        655.87109375,
+        656.66015625
+      ],
+      "baseline_wall_seconds_median": 1.6321434630008298,
+      "fixed_peak_mib_range": [
+        566.83203125,
+        567.36328125
+      ],
+      "fixed_wall_seconds_median": 1.4398838720080676
+    },
+    {
+      "case": "TextureQuiltingExpand",
+      "variant": "full",
+      "inputs_only": false,
+      "policy": "disk-sequential",
+      "tiles": 4,
+      "overlap": 0.0,
+      "size": 2048,
+      "repeats_per_version": 3,
+      "baseline_peak_mib": 1619.69140625,
+      "fixed_peak_mib": 1252.88671875,
+      "fixed_to_baseline_peak_ratio": 0.7735342139344638,
+      "peak_reduction_percent": 22.646578606553625,
+      "baseline_peak_mib_range": [
+        1619.15234375,
+        1620.40625
+      ],
+      "baseline_wall_seconds_median": 7.309041919994343,
+      "fixed_peak_mib_range": [
+        1251.9296875,
+        1252.94140625
+      ],
+      "fixed_wall_seconds_median": 6.32180849899305
+    },
+    {
+      "case": "TextureQuiltingExpand",
+      "variant": "full",
+      "inputs_only": false,
+      "policy": "ram-sequential",
+      "tiles": 1,
+      "overlap": 0.0,
+      "size": 1024,
+      "repeats_per_version": 3,
+      "baseline_peak_mib": 719.94921875,
+      "fixed_peak_mib": 628.1796875,
+      "fixed_to_baseline_peak_ratio": 0.8725333275458881,
+      "peak_reduction_percent": 12.746667245411192,
+      "baseline_peak_mib_range": [
+        719.6953125,
+        719.98828125
+      ],
+      "baseline_wall_seconds_median": 1.5638206169969635,
+      "fixed_peak_mib_range": [
+        627.53515625,
+        628.57421875
+      ],
+      "fixed_wall_seconds_median": 1.437363101009396
+    },
+    {
+      "case": "TextureQuiltingExpand",
+      "variant": "full",
+      "inputs_only": false,
+      "policy": "ram-sequential",
+      "tiles": 1,
+      "overlap": 0.0,
+      "size": 2048,
+      "repeats_per_version": 3,
+      "baseline_peak_mib": 1908.94140625,
+      "fixed_peak_mib": 1506.6328125,
+      "fixed_to_baseline_peak_ratio": 0.7892504230707055,
+      "peak_reduction_percent": 21.074957692929452,
+      "baseline_peak_mib_range": [
+        1908.78125,
+        1909.296875
+      ],
+      "baseline_wall_seconds_median": 10.103509681001015,
+      "fixed_peak_mib_range": [
+        1506.52734375,
+        1506.97265625
+      ],
+      "fixed_wall_seconds_median": 6.199456883987295
+    },
+    {
+      "case": "TextureQuiltingExpand",
+      "variant": "full",
+      "inputs_only": false,
+      "policy": "ram-sequential",
+      "tiles": 4,
+      "overlap": 0.0,
+      "size": 1024,
+      "repeats_per_version": 3,
+      "baseline_peak_mib": 700.13671875,
+      "fixed_peak_mib": 607.1328125,
+      "fixed_to_baseline_peak_ratio": 0.8671632214690211,
+      "peak_reduction_percent": 13.283677853097887,
+      "baseline_peak_mib_range": [
+        699.953125,
+        700.34765625
+      ],
+      "baseline_wall_seconds_median": 1.5696827729989309,
+      "fixed_peak_mib_range": [
+        606.84375,
+        607.3671875
+      ],
+      "fixed_wall_seconds_median": 1.433274351991713
+    },
+    {
+      "case": "TextureQuiltingExpand",
+      "variant": "full",
+      "inputs_only": false,
+      "policy": "ram-sequential",
+      "tiles": 4,
+      "overlap": 0.0,
+      "size": 2048,
+      "repeats_per_version": 3,
+      "baseline_peak_mib": 1790.08984375,
+      "fixed_peak_mib": 1423.19140625,
+      "fixed_to_baseline_peak_ratio": 0.7950390932717675,
+      "peak_reduction_percent": 20.496090672823254,
+      "baseline_peak_mib_range": [
+        1789.921875,
+        1790.5234375
+      ],
+      "baseline_wall_seconds_median": 9.615370436004014,
+      "fixed_peak_mib_range": [
+        1422.8125,
+        1423.703125
+      ],
+      "fixed_wall_seconds_median": 6.313237360998755
+    },
+    {
+      "case": "TextureQuiltingShuffle",
+      "variant": "full",
+      "inputs_only": false,
+      "policy": "disk-sequential",
+      "tiles": 1,
+      "overlap": 0.0,
+      "size": 1024,
+      "repeats_per_version": 3,
+      "baseline_peak_mib": 624.30859375,
+      "fixed_peak_mib": 552.16796875,
+      "fixed_to_baseline_peak_ratio": 0.8844471696814601,
+      "peak_reduction_percent": 11.55528303185399,
+      "baseline_peak_mib_range": [
+        623.9609375,
+        624.484375
+      ],
+      "baseline_wall_seconds_median": 1.6996180659989477,
+      "fixed_peak_mib_range": [
+        552.015625,
+        552.66015625
+      ],
+      "fixed_wall_seconds_median": 1.4682369179936359
+    },
+    {
+      "case": "TextureQuiltingShuffle",
+      "variant": "full",
+      "inputs_only": false,
+      "policy": "disk-sequential",
+      "tiles": 1,
+      "overlap": 0.0,
+      "size": 2048,
+      "repeats_per_version": 3,
+      "baseline_peak_mib": 1522.67578125,
+      "fixed_peak_mib": 1232.6015625,
+      "fixed_to_baseline_peak_ratio": 0.8094970562204179,
+      "peak_reduction_percent": 19.05029437795821,
+      "baseline_peak_mib_range": [
+        1522.4765625,
+        1523.29296875
+      ],
+      "baseline_wall_seconds_median": 7.280693048000103,
+      "fixed_peak_mib_range": [
+        1232.48828125,
+        1232.63671875
+      ],
+      "fixed_wall_seconds_median": 6.886153542000102
+    },
+    {
+      "case": "TextureQuiltingShuffle",
+      "variant": "full",
+      "inputs_only": false,
+      "policy": "disk-sequential",
+      "tiles": 4,
+      "overlap": 0.0,
+      "size": 1024,
+      "repeats_per_version": 3,
+      "baseline_peak_mib": 623.71484375,
+      "fixed_peak_mib": 551.265625,
+      "fixed_to_baseline_peak_ratio": 0.8838424009369266,
+      "peak_reduction_percent": 11.615759906307343,
+      "baseline_peak_mib_range": [
+        623.66015625,
+        625.21484375
+      ],
+      "baseline_wall_seconds_median": 1.624282780001522,
+      "fixed_peak_mib_range": [
+        550.96484375,
+        551.46484375
+      ],
+      "fixed_wall_seconds_median": 1.444355366009404
+    },
+    {
+      "case": "TextureQuiltingShuffle",
+      "variant": "full",
+      "inputs_only": false,
+      "policy": "disk-sequential",
+      "tiles": 4,
+      "overlap": 0.0,
+      "size": 2048,
+      "repeats_per_version": 3,
+      "baseline_peak_mib": 1476.76953125,
+      "fixed_peak_mib": 1184.0625,
+      "fixed_to_baseline_peak_ratio": 0.8017923412854812,
+      "peak_reduction_percent": 19.820765871451883,
+      "baseline_peak_mib_range": [
+        1476.4375,
+        1476.8828125
+      ],
+      "baseline_wall_seconds_median": 7.233844419002708,
+      "fixed_peak_mib_range": [
+        1183.9296875,
+        1184.44140625
+      ],
+      "fixed_wall_seconds_median": 6.903405968012521
+    },
+    {
+      "case": "TextureQuiltingShuffle",
+      "variant": "full",
+      "inputs_only": false,
+      "policy": "ram-sequential",
+      "tiles": 1,
+      "overlap": 0.0,
+      "size": 1024,
+      "repeats_per_version": 3,
+      "baseline_peak_mib": 684.76171875,
+      "fixed_peak_mib": 611.671875,
+      "fixed_to_baseline_peak_ratio": 0.8932623688669074,
+      "peak_reduction_percent": 10.673763113309265,
+      "baseline_peak_mib_range": [
+        684.41796875,
+        684.83984375
+      ],
+      "baseline_wall_seconds_median": 1.6199625660010497,
+      "fixed_peak_mib_range": [
+        611.59765625,
+        611.7109375
+      ],
+      "fixed_wall_seconds_median": 1.4357262669946067
+    },
+    {
+      "case": "TextureQuiltingShuffle",
+      "variant": "full",
+      "inputs_only": false,
+      "policy": "ram-sequential",
+      "tiles": 1,
+      "overlap": 0.0,
+      "size": 2048,
+      "repeats_per_version": 3,
+      "baseline_peak_mib": 1741.3671875,
+      "fixed_peak_mib": 1437.78125,
+      "fixed_to_baseline_peak_ratio": 0.8256623073644541,
+      "peak_reduction_percent": 17.433769263554588,
+      "baseline_peak_mib_range": [
+        1741.28515625,
+        1741.7421875
+      ],
+      "baseline_wall_seconds_median": 7.347835983993718,
+      "fixed_peak_mib_range": [
+        1436.8359375,
+        1437.81640625
+      ],
+      "fixed_wall_seconds_median": 6.720297546009533
+    },
+    {
+      "case": "TextureQuiltingShuffle",
+      "variant": "full",
+      "inputs_only": false,
+      "policy": "ram-sequential",
+      "tiles": 4,
+      "overlap": 0.0,
+      "size": 1024,
+      "repeats_per_version": 3,
+      "baseline_peak_mib": 663.89453125,
+      "fixed_peak_mib": 589.12890625,
+      "fixed_to_baseline_peak_ratio": 0.8873832793000582,
+      "peak_reduction_percent": 11.261672069994177,
+      "baseline_peak_mib_range": [
+        663.56640625,
+        664.4140625
+      ],
+      "baseline_wall_seconds_median": 1.6821157159938593,
+      "fixed_peak_mib_range": [
+        589.0703125,
+        589.42578125
+      ],
+      "fixed_wall_seconds_median": 1.453426534004393
+    },
+    {
+      "case": "TextureQuiltingShuffle",
+      "variant": "full",
+      "inputs_only": false,
+      "policy": "ram-sequential",
+      "tiles": 4,
+      "overlap": 0.0,
+      "size": 2048,
+      "repeats_per_version": 3,
+      "baseline_peak_mib": 1648.89453125,
+      "fixed_peak_mib": 1353.26171875,
+      "fixed_to_baseline_peak_ratio": 0.8207084765598164,
+      "peak_reduction_percent": 17.929152344018362,
+      "baseline_peak_mib_range": [
+        1648.4375,
+        1649.23828125
+      ],
+      "baseline_wall_seconds_median": 7.427178455000103,
+      "fixed_peak_mib_range": [
+        1353.1015625,
+        1353.46484375
+      ],
+      "fixed_wall_seconds_median": 6.691450979997171
+    }
+  ],
+  "run_pairs": [
+    {
+      "run": "ExportAsset-full-disk-sequential-1024-t1-o0-r1",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-disk/runs/ExportAsset-full-disk-sequential-1024-t1-o0-r1/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-full-disk-sequential-1024-t1-o0-r1/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": true,
+      "identical_export_artifacts": true
+    },
+    {
+      "run": "ExportAsset-full-disk-sequential-1024-t1-o0-r2",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-disk/runs/ExportAsset-full-disk-sequential-1024-t1-o0-r2/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-full-disk-sequential-1024-t1-o0-r2/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": true,
+      "identical_export_artifacts": true
+    },
+    {
+      "run": "ExportAsset-full-disk-sequential-1024-t1-o0-r3",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-disk/runs/ExportAsset-full-disk-sequential-1024-t1-o0-r3/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-full-disk-sequential-1024-t1-o0-r3/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": true,
+      "identical_export_artifacts": true
+    },
+    {
+      "run": "ExportAsset-full-disk-sequential-1024-t4-o0-r1",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-disk/runs/ExportAsset-full-disk-sequential-1024-t4-o0-r1/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-full-disk-sequential-1024-t4-o0-r1/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": true,
+      "identical_export_artifacts": true
+    },
+    {
+      "run": "ExportAsset-full-disk-sequential-1024-t4-o0-r2",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-disk/runs/ExportAsset-full-disk-sequential-1024-t4-o0-r2/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-full-disk-sequential-1024-t4-o0-r2/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": true,
+      "identical_export_artifacts": true
+    },
+    {
+      "run": "ExportAsset-full-disk-sequential-1024-t4-o0-r3",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-disk/runs/ExportAsset-full-disk-sequential-1024-t4-o0-r3/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-full-disk-sequential-1024-t4-o0-r3/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": true,
+      "identical_export_artifacts": true
+    },
+    {
+      "run": "ExportAsset-full-disk-sequential-2048-t1-o0-r1",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-disk/runs/ExportAsset-full-disk-sequential-2048-t1-o0-r1/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-full-disk-sequential-2048-t1-o0-r1/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": true,
+      "identical_export_artifacts": true
+    },
+    {
+      "run": "ExportAsset-full-disk-sequential-2048-t1-o0-r2",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-disk/runs/ExportAsset-full-disk-sequential-2048-t1-o0-r2/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-full-disk-sequential-2048-t1-o0-r2/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": true,
+      "identical_export_artifacts": true
+    },
+    {
+      "run": "ExportAsset-full-disk-sequential-2048-t1-o0-r3",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-disk/runs/ExportAsset-full-disk-sequential-2048-t1-o0-r3/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-full-disk-sequential-2048-t1-o0-r3/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": true,
+      "identical_export_artifacts": true
+    },
+    {
+      "run": "ExportAsset-full-disk-sequential-2048-t4-o0-r1",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-disk/runs/ExportAsset-full-disk-sequential-2048-t4-o0-r1/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-full-disk-sequential-2048-t4-o0-r1/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": true,
+      "identical_export_artifacts": true
+    },
+    {
+      "run": "ExportAsset-full-disk-sequential-2048-t4-o0-r2",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-disk/runs/ExportAsset-full-disk-sequential-2048-t4-o0-r2/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-full-disk-sequential-2048-t4-o0-r2/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": true,
+      "identical_export_artifacts": true
+    },
+    {
+      "run": "ExportAsset-full-disk-sequential-2048-t4-o0-r3",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-disk/runs/ExportAsset-full-disk-sequential-2048-t4-o0-r3/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-full-disk-sequential-2048-t4-o0-r3/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": true,
+      "identical_export_artifacts": true
+    },
+    {
+      "run": "ExportAsset-full-ram-sequential-1024-t1-o0-r1",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-ram/runs/ExportAsset-full-ram-sequential-1024-t1-o0-r1/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-full-ram-sequential-1024-t1-o0-r1/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": true,
+      "identical_export_artifacts": true
+    },
+    {
+      "run": "ExportAsset-full-ram-sequential-1024-t1-o0-r2",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-ram/runs/ExportAsset-full-ram-sequential-1024-t1-o0-r2/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-full-ram-sequential-1024-t1-o0-r2/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": true,
+      "identical_export_artifacts": true
+    },
+    {
+      "run": "ExportAsset-full-ram-sequential-1024-t1-o0-r3",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-ram/runs/ExportAsset-full-ram-sequential-1024-t1-o0-r3/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-full-ram-sequential-1024-t1-o0-r3/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": true,
+      "identical_export_artifacts": true
+    },
+    {
+      "run": "ExportAsset-full-ram-sequential-1024-t4-o0-r1",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-ram/runs/ExportAsset-full-ram-sequential-1024-t4-o0-r1/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-full-ram-sequential-1024-t4-o0-r1/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": true,
+      "identical_export_artifacts": true
+    },
+    {
+      "run": "ExportAsset-full-ram-sequential-1024-t4-o0-r2",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-ram/runs/ExportAsset-full-ram-sequential-1024-t4-o0-r2/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-full-ram-sequential-1024-t4-o0-r2/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": true,
+      "identical_export_artifacts": true
+    },
+    {
+      "run": "ExportAsset-full-ram-sequential-1024-t4-o0-r3",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-ram/runs/ExportAsset-full-ram-sequential-1024-t4-o0-r3/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-full-ram-sequential-1024-t4-o0-r3/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": true,
+      "identical_export_artifacts": true
+    },
+    {
+      "run": "ExportAsset-full-ram-sequential-2048-t1-o0-r1",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-ram/runs/ExportAsset-full-ram-sequential-2048-t1-o0-r1/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-full-ram-sequential-2048-t1-o0-r1/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": true,
+      "identical_export_artifacts": true
+    },
+    {
+      "run": "ExportAsset-full-ram-sequential-2048-t1-o0-r2",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-ram/runs/ExportAsset-full-ram-sequential-2048-t1-o0-r2/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-full-ram-sequential-2048-t1-o0-r2/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": true,
+      "identical_export_artifacts": true
+    },
+    {
+      "run": "ExportAsset-full-ram-sequential-2048-t1-o0-r3",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-ram/runs/ExportAsset-full-ram-sequential-2048-t1-o0-r3/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-full-ram-sequential-2048-t1-o0-r3/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": true,
+      "identical_export_artifacts": true
+    },
+    {
+      "run": "ExportAsset-full-ram-sequential-2048-t4-o0-r1",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-ram/runs/ExportAsset-full-ram-sequential-2048-t4-o0-r1/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-full-ram-sequential-2048-t4-o0-r1/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": true,
+      "identical_export_artifacts": true
+    },
+    {
+      "run": "ExportAsset-full-ram-sequential-2048-t4-o0-r2",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-ram/runs/ExportAsset-full-ram-sequential-2048-t4-o0-r2/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-full-ram-sequential-2048-t4-o0-r2/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": true,
+      "identical_export_artifacts": true
+    },
+    {
+      "run": "ExportAsset-full-ram-sequential-2048-t4-o0-r3",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-ram/runs/ExportAsset-full-ram-sequential-2048-t4-o0-r3/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-full-ram-sequential-2048-t4-o0-r3/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": true,
+      "identical_export_artifacts": true
+    },
+    {
+      "run": "ExportAsset-minimal-disk-sequential-1024-t1-o0-r1",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-disk/runs/ExportAsset-minimal-disk-sequential-1024-t1-o0-r1/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-minimal-disk-sequential-1024-t1-o0-r1/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": true,
+      "identical_export_artifacts": true
+    },
+    {
+      "run": "ExportAsset-minimal-disk-sequential-1024-t1-o0-r2",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-disk/runs/ExportAsset-minimal-disk-sequential-1024-t1-o0-r2/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-minimal-disk-sequential-1024-t1-o0-r2/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": true,
+      "identical_export_artifacts": true
+    },
+    {
+      "run": "ExportAsset-minimal-disk-sequential-1024-t1-o0-r3",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-disk/runs/ExportAsset-minimal-disk-sequential-1024-t1-o0-r3/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-minimal-disk-sequential-1024-t1-o0-r3/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": true,
+      "identical_export_artifacts": true
+    },
+    {
+      "run": "ExportAsset-minimal-disk-sequential-1024-t4-o0-r1",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-disk/runs/ExportAsset-minimal-disk-sequential-1024-t4-o0-r1/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-minimal-disk-sequential-1024-t4-o0-r1/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": true,
+      "identical_export_artifacts": true
+    },
+    {
+      "run": "ExportAsset-minimal-disk-sequential-1024-t4-o0-r2",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-disk/runs/ExportAsset-minimal-disk-sequential-1024-t4-o0-r2/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-minimal-disk-sequential-1024-t4-o0-r2/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": true,
+      "identical_export_artifacts": true
+    },
+    {
+      "run": "ExportAsset-minimal-disk-sequential-1024-t4-o0-r3",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-disk/runs/ExportAsset-minimal-disk-sequential-1024-t4-o0-r3/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-minimal-disk-sequential-1024-t4-o0-r3/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": true,
+      "identical_export_artifacts": true
+    },
+    {
+      "run": "ExportAsset-minimal-disk-sequential-2048-t1-o0-r1",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-disk/runs/ExportAsset-minimal-disk-sequential-2048-t1-o0-r1/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-minimal-disk-sequential-2048-t1-o0-r1/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": true,
+      "identical_export_artifacts": true
+    },
+    {
+      "run": "ExportAsset-minimal-disk-sequential-2048-t1-o0-r2",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-disk/runs/ExportAsset-minimal-disk-sequential-2048-t1-o0-r2/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-minimal-disk-sequential-2048-t1-o0-r2/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": true,
+      "identical_export_artifacts": true
+    },
+    {
+      "run": "ExportAsset-minimal-disk-sequential-2048-t1-o0-r3",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-disk/runs/ExportAsset-minimal-disk-sequential-2048-t1-o0-r3/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-minimal-disk-sequential-2048-t1-o0-r3/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": true,
+      "identical_export_artifacts": true
+    },
+    {
+      "run": "ExportAsset-minimal-disk-sequential-2048-t4-o0-r1",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-disk/runs/ExportAsset-minimal-disk-sequential-2048-t4-o0-r1/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-minimal-disk-sequential-2048-t4-o0-r1/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": true,
+      "identical_export_artifacts": true
+    },
+    {
+      "run": "ExportAsset-minimal-disk-sequential-2048-t4-o0-r2",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-disk/runs/ExportAsset-minimal-disk-sequential-2048-t4-o0-r2/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-minimal-disk-sequential-2048-t4-o0-r2/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": true,
+      "identical_export_artifacts": true
+    },
+    {
+      "run": "ExportAsset-minimal-disk-sequential-2048-t4-o0-r3",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-disk/runs/ExportAsset-minimal-disk-sequential-2048-t4-o0-r3/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-minimal-disk-sequential-2048-t4-o0-r3/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": true,
+      "identical_export_artifacts": true
+    },
+    {
+      "run": "ExportAsset-minimal-ram-sequential-1024-t1-o0-r1",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-ram/runs/ExportAsset-minimal-ram-sequential-1024-t1-o0-r1/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-minimal-ram-sequential-1024-t1-o0-r1/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": true,
+      "identical_export_artifacts": true
+    },
+    {
+      "run": "ExportAsset-minimal-ram-sequential-1024-t1-o0-r2",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-ram/runs/ExportAsset-minimal-ram-sequential-1024-t1-o0-r2/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-minimal-ram-sequential-1024-t1-o0-r2/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": true,
+      "identical_export_artifacts": true
+    },
+    {
+      "run": "ExportAsset-minimal-ram-sequential-1024-t1-o0-r3",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-ram/runs/ExportAsset-minimal-ram-sequential-1024-t1-o0-r3/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-minimal-ram-sequential-1024-t1-o0-r3/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": true,
+      "identical_export_artifacts": true
+    },
+    {
+      "run": "ExportAsset-minimal-ram-sequential-1024-t4-o0-r1",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-ram/runs/ExportAsset-minimal-ram-sequential-1024-t4-o0-r1/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-minimal-ram-sequential-1024-t4-o0-r1/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": true,
+      "identical_export_artifacts": true
+    },
+    {
+      "run": "ExportAsset-minimal-ram-sequential-1024-t4-o0-r2",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-ram/runs/ExportAsset-minimal-ram-sequential-1024-t4-o0-r2/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-minimal-ram-sequential-1024-t4-o0-r2/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": true,
+      "identical_export_artifacts": true
+    },
+    {
+      "run": "ExportAsset-minimal-ram-sequential-1024-t4-o0-r3",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-ram/runs/ExportAsset-minimal-ram-sequential-1024-t4-o0-r3/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-minimal-ram-sequential-1024-t4-o0-r3/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": true,
+      "identical_export_artifacts": true
+    },
+    {
+      "run": "ExportAsset-minimal-ram-sequential-2048-t1-o0-r1",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-ram/runs/ExportAsset-minimal-ram-sequential-2048-t1-o0-r1/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-minimal-ram-sequential-2048-t1-o0-r1/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": true,
+      "identical_export_artifacts": true
+    },
+    {
+      "run": "ExportAsset-minimal-ram-sequential-2048-t1-o0-r2",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-ram/runs/ExportAsset-minimal-ram-sequential-2048-t1-o0-r2/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-minimal-ram-sequential-2048-t1-o0-r2/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": true,
+      "identical_export_artifacts": true
+    },
+    {
+      "run": "ExportAsset-minimal-ram-sequential-2048-t1-o0-r3",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-ram/runs/ExportAsset-minimal-ram-sequential-2048-t1-o0-r3/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-minimal-ram-sequential-2048-t1-o0-r3/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": true,
+      "identical_export_artifacts": true
+    },
+    {
+      "run": "ExportAsset-minimal-ram-sequential-2048-t4-o0-r1",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-ram/runs/ExportAsset-minimal-ram-sequential-2048-t4-o0-r1/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-minimal-ram-sequential-2048-t4-o0-r1/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": true,
+      "identical_export_artifacts": true
+    },
+    {
+      "run": "ExportAsset-minimal-ram-sequential-2048-t4-o0-r2",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-ram/runs/ExportAsset-minimal-ram-sequential-2048-t4-o0-r2/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-minimal-ram-sequential-2048-t4-o0-r2/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": true,
+      "identical_export_artifacts": true
+    },
+    {
+      "run": "ExportAsset-minimal-ram-sequential-2048-t4-o0-r3",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-ram/runs/ExportAsset-minimal-ram-sequential-2048-t4-o0-r3/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-minimal-ram-sequential-2048-t4-o0-r3/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": true,
+      "identical_export_artifacts": true
+    },
+    {
+      "run": "TextureQuiltingExpand-full-disk-sequential-1024-t1-o0-r1",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-disk/runs/TextureQuiltingExpand-full-disk-sequential-1024-t1-o0-r1/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingExpand-full-disk-sequential-1024-t1-o0-r1/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": false,
+      "identical_export_artifacts": null
+    },
+    {
+      "run": "TextureQuiltingExpand-full-disk-sequential-1024-t1-o0-r2",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-disk/runs/TextureQuiltingExpand-full-disk-sequential-1024-t1-o0-r2/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingExpand-full-disk-sequential-1024-t1-o0-r2/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": false,
+      "identical_export_artifacts": null
+    },
+    {
+      "run": "TextureQuiltingExpand-full-disk-sequential-1024-t1-o0-r3",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-disk/runs/TextureQuiltingExpand-full-disk-sequential-1024-t1-o0-r3/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingExpand-full-disk-sequential-1024-t1-o0-r3/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": false,
+      "identical_export_artifacts": null
+    },
+    {
+      "run": "TextureQuiltingExpand-full-disk-sequential-1024-t4-o0-r1",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-disk/runs/TextureQuiltingExpand-full-disk-sequential-1024-t4-o0-r1/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingExpand-full-disk-sequential-1024-t4-o0-r1/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": false,
+      "identical_export_artifacts": null
+    },
+    {
+      "run": "TextureQuiltingExpand-full-disk-sequential-1024-t4-o0-r2",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-disk/runs/TextureQuiltingExpand-full-disk-sequential-1024-t4-o0-r2/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingExpand-full-disk-sequential-1024-t4-o0-r2/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": false,
+      "identical_export_artifacts": null
+    },
+    {
+      "run": "TextureQuiltingExpand-full-disk-sequential-1024-t4-o0-r3",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-disk/runs/TextureQuiltingExpand-full-disk-sequential-1024-t4-o0-r3/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingExpand-full-disk-sequential-1024-t4-o0-r3/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": false,
+      "identical_export_artifacts": null
+    },
+    {
+      "run": "TextureQuiltingExpand-full-disk-sequential-2048-t1-o0-r1",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-disk/runs/TextureQuiltingExpand-full-disk-sequential-2048-t1-o0-r1/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingExpand-full-disk-sequential-2048-t1-o0-r1/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": false,
+      "identical_export_artifacts": null
+    },
+    {
+      "run": "TextureQuiltingExpand-full-disk-sequential-2048-t1-o0-r2",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-disk/runs/TextureQuiltingExpand-full-disk-sequential-2048-t1-o0-r2/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingExpand-full-disk-sequential-2048-t1-o0-r2/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": false,
+      "identical_export_artifacts": null
+    },
+    {
+      "run": "TextureQuiltingExpand-full-disk-sequential-2048-t1-o0-r3",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-disk/runs/TextureQuiltingExpand-full-disk-sequential-2048-t1-o0-r3/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingExpand-full-disk-sequential-2048-t1-o0-r3/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": false,
+      "identical_export_artifacts": null
+    },
+    {
+      "run": "TextureQuiltingExpand-full-disk-sequential-2048-t4-o0-r1",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-disk/runs/TextureQuiltingExpand-full-disk-sequential-2048-t4-o0-r1/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingExpand-full-disk-sequential-2048-t4-o0-r1/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": false,
+      "identical_export_artifacts": null
+    },
+    {
+      "run": "TextureQuiltingExpand-full-disk-sequential-2048-t4-o0-r2",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-disk/runs/TextureQuiltingExpand-full-disk-sequential-2048-t4-o0-r2/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingExpand-full-disk-sequential-2048-t4-o0-r2/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": false,
+      "identical_export_artifacts": null
+    },
+    {
+      "run": "TextureQuiltingExpand-full-disk-sequential-2048-t4-o0-r3",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-disk/runs/TextureQuiltingExpand-full-disk-sequential-2048-t4-o0-r3/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingExpand-full-disk-sequential-2048-t4-o0-r3/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": false,
+      "identical_export_artifacts": null
+    },
+    {
+      "run": "TextureQuiltingExpand-full-ram-sequential-1024-t1-o0-r1",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-ram/runs/TextureQuiltingExpand-full-ram-sequential-1024-t1-o0-r1/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingExpand-full-ram-sequential-1024-t1-o0-r1/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": false,
+      "identical_export_artifacts": null
+    },
+    {
+      "run": "TextureQuiltingExpand-full-ram-sequential-1024-t1-o0-r2",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-ram/runs/TextureQuiltingExpand-full-ram-sequential-1024-t1-o0-r2/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingExpand-full-ram-sequential-1024-t1-o0-r2/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": false,
+      "identical_export_artifacts": null
+    },
+    {
+      "run": "TextureQuiltingExpand-full-ram-sequential-1024-t1-o0-r3",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-ram/runs/TextureQuiltingExpand-full-ram-sequential-1024-t1-o0-r3/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingExpand-full-ram-sequential-1024-t1-o0-r3/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": false,
+      "identical_export_artifacts": null
+    },
+    {
+      "run": "TextureQuiltingExpand-full-ram-sequential-1024-t4-o0-r1",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-ram/runs/TextureQuiltingExpand-full-ram-sequential-1024-t4-o0-r1/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingExpand-full-ram-sequential-1024-t4-o0-r1/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": false,
+      "identical_export_artifacts": null
+    },
+    {
+      "run": "TextureQuiltingExpand-full-ram-sequential-1024-t4-o0-r2",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-ram/runs/TextureQuiltingExpand-full-ram-sequential-1024-t4-o0-r2/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingExpand-full-ram-sequential-1024-t4-o0-r2/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": false,
+      "identical_export_artifacts": null
+    },
+    {
+      "run": "TextureQuiltingExpand-full-ram-sequential-1024-t4-o0-r3",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-ram/runs/TextureQuiltingExpand-full-ram-sequential-1024-t4-o0-r3/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingExpand-full-ram-sequential-1024-t4-o0-r3/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": false,
+      "identical_export_artifacts": null
+    },
+    {
+      "run": "TextureQuiltingExpand-full-ram-sequential-2048-t1-o0-r1",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-ram/runs/TextureQuiltingExpand-full-ram-sequential-2048-t1-o0-r1/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingExpand-full-ram-sequential-2048-t1-o0-r1/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": false,
+      "identical_export_artifacts": null
+    },
+    {
+      "run": "TextureQuiltingExpand-full-ram-sequential-2048-t1-o0-r2",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-ram/runs/TextureQuiltingExpand-full-ram-sequential-2048-t1-o0-r2/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingExpand-full-ram-sequential-2048-t1-o0-r2/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": false,
+      "identical_export_artifacts": null
+    },
+    {
+      "run": "TextureQuiltingExpand-full-ram-sequential-2048-t1-o0-r3",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-ram/runs/TextureQuiltingExpand-full-ram-sequential-2048-t1-o0-r3/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingExpand-full-ram-sequential-2048-t1-o0-r3/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": false,
+      "identical_export_artifacts": null
+    },
+    {
+      "run": "TextureQuiltingExpand-full-ram-sequential-2048-t4-o0-r1",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-ram/runs/TextureQuiltingExpand-full-ram-sequential-2048-t4-o0-r1/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingExpand-full-ram-sequential-2048-t4-o0-r1/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": false,
+      "identical_export_artifacts": null
+    },
+    {
+      "run": "TextureQuiltingExpand-full-ram-sequential-2048-t4-o0-r2",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-ram/runs/TextureQuiltingExpand-full-ram-sequential-2048-t4-o0-r2/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingExpand-full-ram-sequential-2048-t4-o0-r2/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": false,
+      "identical_export_artifacts": null
+    },
+    {
+      "run": "TextureQuiltingExpand-full-ram-sequential-2048-t4-o0-r3",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-ram/runs/TextureQuiltingExpand-full-ram-sequential-2048-t4-o0-r3/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingExpand-full-ram-sequential-2048-t4-o0-r3/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": false,
+      "identical_export_artifacts": null
+    },
+    {
+      "run": "TextureQuiltingShuffle-full-disk-sequential-1024-t1-o0-r1",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-disk/runs/TextureQuiltingShuffle-full-disk-sequential-1024-t1-o0-r1/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingShuffle-full-disk-sequential-1024-t1-o0-r1/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": false,
+      "identical_export_artifacts": null
+    },
+    {
+      "run": "TextureQuiltingShuffle-full-disk-sequential-1024-t1-o0-r2",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-disk/runs/TextureQuiltingShuffle-full-disk-sequential-1024-t1-o0-r2/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingShuffle-full-disk-sequential-1024-t1-o0-r2/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": false,
+      "identical_export_artifacts": null
+    },
+    {
+      "run": "TextureQuiltingShuffle-full-disk-sequential-1024-t1-o0-r3",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-disk/runs/TextureQuiltingShuffle-full-disk-sequential-1024-t1-o0-r3/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingShuffle-full-disk-sequential-1024-t1-o0-r3/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": false,
+      "identical_export_artifacts": null
+    },
+    {
+      "run": "TextureQuiltingShuffle-full-disk-sequential-1024-t4-o0-r1",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-disk/runs/TextureQuiltingShuffle-full-disk-sequential-1024-t4-o0-r1/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingShuffle-full-disk-sequential-1024-t4-o0-r1/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": false,
+      "identical_export_artifacts": null
+    },
+    {
+      "run": "TextureQuiltingShuffle-full-disk-sequential-1024-t4-o0-r2",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-disk/runs/TextureQuiltingShuffle-full-disk-sequential-1024-t4-o0-r2/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingShuffle-full-disk-sequential-1024-t4-o0-r2/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": false,
+      "identical_export_artifacts": null
+    },
+    {
+      "run": "TextureQuiltingShuffle-full-disk-sequential-1024-t4-o0-r3",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-disk/runs/TextureQuiltingShuffle-full-disk-sequential-1024-t4-o0-r3/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingShuffle-full-disk-sequential-1024-t4-o0-r3/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": false,
+      "identical_export_artifacts": null
+    },
+    {
+      "run": "TextureQuiltingShuffle-full-disk-sequential-2048-t1-o0-r1",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-disk/runs/TextureQuiltingShuffle-full-disk-sequential-2048-t1-o0-r1/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingShuffle-full-disk-sequential-2048-t1-o0-r1/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": false,
+      "identical_export_artifacts": null
+    },
+    {
+      "run": "TextureQuiltingShuffle-full-disk-sequential-2048-t1-o0-r2",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-disk/runs/TextureQuiltingShuffle-full-disk-sequential-2048-t1-o0-r2/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingShuffle-full-disk-sequential-2048-t1-o0-r2/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": false,
+      "identical_export_artifacts": null
+    },
+    {
+      "run": "TextureQuiltingShuffle-full-disk-sequential-2048-t1-o0-r3",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-disk/runs/TextureQuiltingShuffle-full-disk-sequential-2048-t1-o0-r3/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingShuffle-full-disk-sequential-2048-t1-o0-r3/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": false,
+      "identical_export_artifacts": null
+    },
+    {
+      "run": "TextureQuiltingShuffle-full-disk-sequential-2048-t4-o0-r1",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-disk/runs/TextureQuiltingShuffle-full-disk-sequential-2048-t4-o0-r1/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingShuffle-full-disk-sequential-2048-t4-o0-r1/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": false,
+      "identical_export_artifacts": null
+    },
+    {
+      "run": "TextureQuiltingShuffle-full-disk-sequential-2048-t4-o0-r2",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-disk/runs/TextureQuiltingShuffle-full-disk-sequential-2048-t4-o0-r2/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingShuffle-full-disk-sequential-2048-t4-o0-r2/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": false,
+      "identical_export_artifacts": null
+    },
+    {
+      "run": "TextureQuiltingShuffle-full-disk-sequential-2048-t4-o0-r3",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-disk/runs/TextureQuiltingShuffle-full-disk-sequential-2048-t4-o0-r3/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingShuffle-full-disk-sequential-2048-t4-o0-r3/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": false,
+      "identical_export_artifacts": null
+    },
+    {
+      "run": "TextureQuiltingShuffle-full-ram-sequential-1024-t1-o0-r1",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-ram/runs/TextureQuiltingShuffle-full-ram-sequential-1024-t1-o0-r1/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingShuffle-full-ram-sequential-1024-t1-o0-r1/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": false,
+      "identical_export_artifacts": null
+    },
+    {
+      "run": "TextureQuiltingShuffle-full-ram-sequential-1024-t1-o0-r2",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-ram/runs/TextureQuiltingShuffle-full-ram-sequential-1024-t1-o0-r2/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingShuffle-full-ram-sequential-1024-t1-o0-r2/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": false,
+      "identical_export_artifacts": null
+    },
+    {
+      "run": "TextureQuiltingShuffle-full-ram-sequential-1024-t1-o0-r3",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-ram/runs/TextureQuiltingShuffle-full-ram-sequential-1024-t1-o0-r3/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingShuffle-full-ram-sequential-1024-t1-o0-r3/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": false,
+      "identical_export_artifacts": null
+    },
+    {
+      "run": "TextureQuiltingShuffle-full-ram-sequential-1024-t4-o0-r1",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-ram/runs/TextureQuiltingShuffle-full-ram-sequential-1024-t4-o0-r1/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingShuffle-full-ram-sequential-1024-t4-o0-r1/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": false,
+      "identical_export_artifacts": null
+    },
+    {
+      "run": "TextureQuiltingShuffle-full-ram-sequential-1024-t4-o0-r2",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-ram/runs/TextureQuiltingShuffle-full-ram-sequential-1024-t4-o0-r2/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingShuffle-full-ram-sequential-1024-t4-o0-r2/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": false,
+      "identical_export_artifacts": null
+    },
+    {
+      "run": "TextureQuiltingShuffle-full-ram-sequential-1024-t4-o0-r3",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-ram/runs/TextureQuiltingShuffle-full-ram-sequential-1024-t4-o0-r3/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingShuffle-full-ram-sequential-1024-t4-o0-r3/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": false,
+      "identical_export_artifacts": null
+    },
+    {
+      "run": "TextureQuiltingShuffle-full-ram-sequential-2048-t1-o0-r1",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-ram/runs/TextureQuiltingShuffle-full-ram-sequential-2048-t1-o0-r1/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingShuffle-full-ram-sequential-2048-t1-o0-r1/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": false,
+      "identical_export_artifacts": null
+    },
+    {
+      "run": "TextureQuiltingShuffle-full-ram-sequential-2048-t1-o0-r2",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-ram/runs/TextureQuiltingShuffle-full-ram-sequential-2048-t1-o0-r2/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingShuffle-full-ram-sequential-2048-t1-o0-r2/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": false,
+      "identical_export_artifacts": null
+    },
+    {
+      "run": "TextureQuiltingShuffle-full-ram-sequential-2048-t1-o0-r3",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-ram/runs/TextureQuiltingShuffle-full-ram-sequential-2048-t1-o0-r3/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingShuffle-full-ram-sequential-2048-t1-o0-r3/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": false,
+      "identical_export_artifacts": null
+    },
+    {
+      "run": "TextureQuiltingShuffle-full-ram-sequential-2048-t4-o0-r1",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-ram/runs/TextureQuiltingShuffle-full-ram-sequential-2048-t4-o0-r1/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingShuffle-full-ram-sequential-2048-t4-o0-r1/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": false,
+      "identical_export_artifacts": null
+    },
+    {
+      "run": "TextureQuiltingShuffle-full-ram-sequential-2048-t4-o0-r2",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-ram/runs/TextureQuiltingShuffle-full-ram-sequential-2048-t4-o0-r2/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingShuffle-full-ram-sequential-2048-t4-o0-r2/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": false,
+      "identical_export_artifacts": null
+    },
+    {
+      "run": "TextureQuiltingShuffle-full-ram-sequential-2048-t4-o0-r3",
+      "baseline_result": "/home/barrulus/dev/Hesiod-783/output/memory-ram/runs/TextureQuiltingShuffle-full-ram-sequential-2048-t4-o0-r3/result.json",
+      "fixed_result": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingShuffle-full-ram-sequential-2048-t4-o0-r3/result.json",
+      "identical_fixture_bytes": true,
+      "export_artifacts_checked": false,
+      "identical_export_artifacts": null
+    }
+  ],
+  "fixed_provenance": [
+    {
+      "reviewed_version_stamp": {
+        "file": "data/git_version.txt",
+        "baseline_text": "v0.6.0-377f6370-dirty\n",
+        "fixed_text": "v0.6.0-33c8c4d8\n",
+        "reason": "Generated version identity used by About/splash UI; expected to differ between the original and fixed executable builds, not a numerical source asset."
+      },
+      "data_changes": {
+        "data/bootstraps/stepping_shore.hsd": {
+          "baseline": "84baadbd9cc0247f6c583e8ac409d0a4de65bdea277651ed51939d1932cb2bd0",
+          "fixed": "37cd9c2330a7ad5ba843b61d26581771e99fc292fe01c1257c5a147b2ce79616"
+        },
+        "data/git_version.txt": {
+          "baseline": "2ad36d9ac80905258733f2aef1739346b90c8a072ab92e9068f485270b90926c",
+          "fixed": "7433bc9e324136c4536055bf6df59e00b1defa6b51adb95e05e6ebcb78a75de3"
+        },
+        "data/node_documentation.json": {
+          "baseline": "306d27901b064484ef424b2d49d9f1ee626182bd2ec0a97b81f92633770d9e47",
+          "fixed": "9025b17b3524dfd21aaa07a0274c2b34fc0e7c734f2f3b7750b60b9e53ca83b8"
+        }
+      },
+      "fixed_path": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export",
+      "binary_sha256": "b65f9a51d5f5d9a2d7874070d65cf1ba5a5c19660faa94ca0925916d8e7d6b27",
+      "git_head": "33c8c4d812c1934f22aa3be06d3f356778040e49",
+      "submodules": "149a4a9310d88c32bcbc3a81393636677569b376 external/GNode (v1.3-70-g149a4a9)\n 2f7873e7f216ba73deb27bd0fe015d8443c8ef35 external/GNode/external/demekgraph (v1.0-2-g2f7873e)\n 56f38eaad1648236c0b38a373802b0d6a6c2dfae external/GNodeGUI (remotes/origin/dev)\n d036c3efc42939cfb12d1d60cca54d543aff5f73 external/HighMap (heads/fix/783-memory-followups)\n 5c742c228bf9f5e71b6548b3f7d3a62486bb1f51 external/HighMap/external/CLWrapper (heads/fix/783-device-filter-tests)\n 27adbb9217e2a9e31b08fe32acc21df9d2b53e84 external/HighMap/external/CLWrapper/external/CLErrorLookup (heads/main)\n 0bfe2c6eb7b5405190a0cd5c29db0eac02949c15 external/HighMap/external/PointSampler (v1.0.0-3-g0bfe2c6)\n c98c690263bc62061fc2854e18157d6b2726ab66 external/Meta (remotes/origin/dev)\n 99603af99fa7682cfd00848e5a913e009210f22f external/QTerrainRenderer (remotes/origin/871-refactor-centralize-ui-style-and-visual-design-settings)\n e728b966003104c7fc21a007237bca10abf39b19 external/QTerrainRenderer/external/imgui (v1.62-4790-ge728b9660)\n 895843d8161213ba309e915aba3276c43ab54d4a external/QTextureDownloader (heads/main)\n b7d67237e8bdaa517d7fd6e4e84e1f6efa24f8c5 external/args (6.2.2-54-gb7d6723)"
+    },
+    {
+      "reviewed_version_stamp": {
+        "file": "data/git_version.txt",
+        "baseline_text": "v0.6.0-377f6370-dirty\n",
+        "fixed_text": "v0.6.0-33c8c4d8\n",
+        "reason": "Generated version identity used by About/splash UI; expected to differ between the original and fixed executable builds, not a numerical source asset."
+      },
+      "data_changes": {
+        "data/bootstraps/stepping_shore.hsd": {
+          "baseline": "84baadbd9cc0247f6c583e8ac409d0a4de65bdea277651ed51939d1932cb2bd0",
+          "fixed": "37cd9c2330a7ad5ba843b61d26581771e99fc292fe01c1257c5a147b2ce79616"
+        },
+        "data/git_version.txt": {
+          "baseline": "2ad36d9ac80905258733f2aef1739346b90c8a072ab92e9068f485270b90926c",
+          "fixed": "7433bc9e324136c4536055bf6df59e00b1defa6b51adb95e05e6ebcb78a75de3"
+        },
+        "data/node_documentation.json": {
+          "baseline": "306d27901b064484ef424b2d49d9f1ee626182bd2ec0a97b81f92633770d9e47",
+          "fixed": "9025b17b3524dfd21aaa07a0274c2b34fc0e7c734f2f3b7750b60b9e53ca83b8"
+        }
+      },
+      "fixed_path": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting",
+      "binary_sha256": "b65f9a51d5f5d9a2d7874070d65cf1ba5a5c19660faa94ca0925916d8e7d6b27",
+      "git_head": "33c8c4d812c1934f22aa3be06d3f356778040e49",
+      "submodules": "149a4a9310d88c32bcbc3a81393636677569b376 external/GNode (v1.3-70-g149a4a9)\n 2f7873e7f216ba73deb27bd0fe015d8443c8ef35 external/GNode/external/demekgraph (v1.0-2-g2f7873e)\n 56f38eaad1648236c0b38a373802b0d6a6c2dfae external/GNodeGUI (remotes/origin/dev)\n d036c3efc42939cfb12d1d60cca54d543aff5f73 external/HighMap (heads/fix/783-memory-followups)\n 5c742c228bf9f5e71b6548b3f7d3a62486bb1f51 external/HighMap/external/CLWrapper (heads/fix/783-device-filter-tests)\n 27adbb9217e2a9e31b08fe32acc21df9d2b53e84 external/HighMap/external/CLWrapper/external/CLErrorLookup (heads/main)\n 0bfe2c6eb7b5405190a0cd5c29db0eac02949c15 external/HighMap/external/PointSampler (v1.0.0-3-g0bfe2c6)\n c98c690263bc62061fc2854e18157d6b2726ab66 external/Meta (remotes/origin/dev)\n 99603af99fa7682cfd00848e5a913e009210f22f external/QTerrainRenderer (remotes/origin/871-refactor-centralize-ui-style-and-visual-design-settings)\n e728b966003104c7fc21a007237bca10abf39b19 external/QTerrainRenderer/external/imgui (v1.62-4790-ge728b9660)\n 895843d8161213ba309e915aba3276c43ab54d4a external/QTextureDownloader (heads/main)\n b7d67237e8bdaa517d7fd6e4e84e1f6efa24f8c5 external/args (6.2.2-54-gb7d6723)"
+    }
+  ],
+  "baseline_provenance": [
+    {
+      "path": "/home/barrulus/dev/Hesiod-783/output/memory-ram",
+      "binary_sha256": "0fa7fb40613cbb1af3401bf96e2490a8c68383a2b39f2021ff50f27a3110d4cc",
+      "git_head": "1a0a0de7262db0261264c8a8ad19ebdeaeac5eb2"
+    },
+    {
+      "path": "/home/barrulus/dev/Hesiod-783/output/memory-disk",
+      "binary_sha256": "0fa7fb40613cbb1af3401bf96e2490a8c68383a2b39f2021ff50f27a3110d4cc",
+      "git_head": "1a0a0de7262db0261264c8a8ad19ebdeaeac5eb2"
+    }
+  ],
+  "verification": "Exact same fixture bytes, run identities, threads, runtime policy, full recorded environment, environment overrides, fetched dependency revisions/statuses, measurement method, relevant runner source hashes and successful per-series policy audits. Binary changes are intentional and recorded. Existing baseline observations are reused, never counted as additional executions.",
+  "limitations": "Whole-process kernel peak RSS includes sources and startup, not allocation ownership or total host RAM. Disk page cache is excluded. Shared-host timings are descriptive. Quilting node completion is not numerical-output validation; separate native differential tests and application output comparisons provide that evidence."
+}
