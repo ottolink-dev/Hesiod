@@ -3,27 +3,44 @@
  * this software. */
 #include "hesiod/gui/widgets/controls/grip_splitter.hpp"
 #include "hesiod/app/hesiod_application.hpp"
+#include "hesiod/gui/widgets/controls/controls_style.hpp"
+#include "hesiod/gui/widgets/utils/gui_utils.hpp"
+
+#include <algorithm>
 
 namespace hesiod
 {
+
+void GripSplitterHandle::sync_motion()
+{
+  const bool active = this->hovered || this->pressed;
+  this->live.to(active ? 1.0 : 0.0,
+                active ? motion::hover_in : motion::hover_out,
+                active ? motion::enter() : motion::leave());
+  this->press_t.to(this->pressed ? 1.0 : 0.0,
+                   this->pressed ? motion::press_in : motion::press_out,
+                   motion::enter());
+}
 
 bool GripSplitterHandle::event(QEvent *event)
 {
   switch (event->type())
   {
   case QEvent::HoverEnter:
+    this->hovered = true;
+    this->sync_motion();
+    break;
   case QEvent::HoverLeave:
-    // hover only changes the look (paintEvent reads underMouse()); it must
-    // not count as a press, or the grip stays in its dragging state
-    this->update();
+    this->hovered = false;
+    this->sync_motion();
     break;
   case QEvent::MouseButtonPress:
     this->pressed = true;
-    this->update();
+    this->sync_motion();
     break;
   case QEvent::MouseButtonRelease:
     this->pressed = false;
-    this->update();
+    this->sync_motion();
     break;
   default:
     break;
@@ -39,12 +56,14 @@ void GripSplitterHandle::paintEvent(QPaintEvent *)
   painter.setRenderHint(QPainter::Antialiasing);
   painter.fillRect(rect(), colors.bg_deep); // the gap between cards
 
-  const bool active = this->underMouse() || this->pressed;
+  const qreal t = std::clamp(this->live.value(), 0.0, 1.0);
+  const qreal p = std::clamp(this->press_t.value(), 0.0, 1.0);
 
   // short rounded pill across the middle of the gap
-  const qreal thickness = 2.0;
-  const qreal length = active ? 36.0 : 24.0;
-  QRectF      pill;
+  const qreal thickness = controls::grip_thickness + controls::grip_thickness_pressed * p;
+  const qreal length = controls::grip_length + controls::grip_length_hover * t +
+                       controls::grip_length_pressed * p;
+  QRectF pill;
   if (orientation() == Qt::Horizontal)
     pill = QRectF((width() - thickness) / 2.0,
                   (height() - length) / 2.0,
@@ -56,9 +75,10 @@ void GripSplitterHandle::paintEvent(QPaintEvent *)
                   length,
                   thickness);
 
-  QColor color = active ? colors.accent : colors.border;
-  if (!active)
-    color.setAlphaF(0.55);
+  // gray at rest and in use: the grip brightens, it does not take a color
+  QColor rest = colors.border;
+  rest.setAlphaF(float(controls::grip_rest_alpha));
+  const QColor color = mix_colors(rest, colors.text_secondary, t);
 
   painter.setPen(Qt::NoPen);
   painter.setBrush(color);

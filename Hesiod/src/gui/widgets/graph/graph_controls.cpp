@@ -10,6 +10,7 @@
 #include "hesiod/gui/widgets/graph/graph_node_widget.hpp"
 #include "hesiod/gui/widgets/rail/snap_guide.hpp"
 #include "hesiod/gui/widgets/rail/tool_rail.hpp"
+#include "hesiod/gui/widgets/utils/gui_utils.hpp"
 #include "hesiod/model/graph_manager/graph_manager.hpp"
 
 namespace hesiod
@@ -56,6 +57,11 @@ GraphControls::GraphControls(GraphNodeWidget *graph) : QObject(graph), graph(gra
   // children of the view, not of its viewport: it scrolls its children along
   this->guide = new rail::SnapGuide(graph);
   this->rail = new rail::ToolRail(this, this->guide, graph);
+  this->updating_t.on_tick = [this]()
+  {
+    if (this->rail)
+      this->rail->update();
+  };
   this->rail->icon_painter =
       [this](QPainter &p, int tool, const QRectF &r, const QColor &ink)
   {
@@ -63,14 +69,14 @@ GraphControls::GraphControls(GraphNodeWidget *graph) : QObject(graph), graph(gra
     if (!name)
       return;
 
-    // the stop button is lit while the graph is updated, dim otherwise
+    // the stop button warms into the building color while the graph updates
     QColor color = ink;
     if (tool == ToolStop)
     {
-      if (this->updating)
-        color = HSD_CTX.app_settings.colors.building;
-      else
-        color.setAlphaF(color.alphaF() * 0.35);
+      const qreal u = std::clamp(this->updating_t.value(), 0.0, 1.0);
+      QColor      dim = ink;
+      dim.setAlphaF(dim.alphaF() * 0.35);
+      color = mix_colors(dim, HSD_CTX.app_settings.colors.building, u);
     }
     rail::paint_svg(p, name, r.center(), std::min(r.width(), r.height()), color);
   };
@@ -112,7 +118,9 @@ void GraphControls::set_updating(bool new_state)
     return;
 
   this->updating = new_state;
-  this->rail->update();
+  this->updating_t.to(new_state ? 1.0 : 0.0,
+                      new_state ? motion::stop_warm_in : motion::stop_warm_out,
+                      new_state ? motion::enter() : motion::change());
 }
 
 bool GraphControls::eventFilter(QObject *watched, QEvent *event)

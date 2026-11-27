@@ -5,6 +5,7 @@
 
 #include "nlohmann/json.hpp"
 
+#include "hesiod/gui/motion/motion.hpp"
 #include "hesiod/gui/widgets/rail/rail_owner.hpp"
 
 namespace hesiod
@@ -46,6 +47,7 @@ private:
   rail::ToolRail  *rail = nullptr;
   rail::SnapGuide *guide = nullptr;
   bool             updating = false;
+  Anim             updating_t{0.0};
 };
 
 } // namespace hesiod

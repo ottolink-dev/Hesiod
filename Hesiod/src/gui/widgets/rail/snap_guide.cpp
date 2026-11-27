@@ -6,7 +6,6 @@
 
 #include <QPainter>
 #include <QPainterPath>
-#include <QVariantAnimation>
 
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/widgets/rail/rail_style.hpp"
@@ -21,30 +20,45 @@ SnapGuide::SnapGuide(QWidget *parent) : QWidget(parent)
   this->setAttribute(Qt::WA_NoSystemBackground);
   this->hide();
 
-  this->fade = new QVariantAnimation(this);
-  this->fade->setEasingCurve(QEasingCurve::OutCubic);
-  QObject::connect(this->fade,
-                   &QVariantAnimation::valueChanged,
-                   this,
-                   [this](const QVariant &v)
-                   {
-                     this->opacity = v.toReal();
-                     this->update();
-                   });
-  QObject::connect(this->fade,
-                   &QVariantAnimation::finished,
-                   this,
-                   [this]()
-                   {
-                     if (this->opacity <= 0.01)
-                       this->hide();
-                   });
+  this->fade.on_done = [this]()
+  {
+    if (this->fade.value() <= 0.01)
+    {
+      this->has_target = false;
+      this->hide();
+    }
+  };
+}
+
+QRectF SnapGuide::current_rect() const
+{
+  const qreal t = std::clamp(this->glide.value(), 0.0, 1.0);
+  return QRectF(
+      this->from_rect.x() + (this->to_rect.x() - this->from_rect.x()) * t,
+      this->from_rect.y() + (this->to_rect.y() - this->from_rect.y()) * t,
+      this->from_rect.width() + (this->to_rect.width() - this->from_rect.width()) * t,
+      this->from_rect.height() + (this->to_rect.height() - this->from_rect.height()) * t);
 }
 
 void SnapGuide::set_target(const QRectF &rect)
 {
-  this->target = rect;
-  this->update();
+  if (!this->has_target)
+  {
+    this->from_rect = rect;
+    this->to_rect = rect;
+    this->has_target = true;
+    this->glide.set(1.0);
+    this->update();
+    return;
+  }
+
+  if (this->to_rect == rect)
+    return;
+
+  this->from_rect = this->current_rect();
+  this->to_rect = rect;
+  this->glide.set(0.0);
+  this->glide.to(1.0, motion::snap_glide, motion::enter());
 }
 
 void SnapGuide::appear()
@@ -52,30 +66,33 @@ void SnapGuide::appear()
   this->setGeometry(this->parentWidget()->rect());
   this->show();
   this->raise();
-  this->run_fade(1.0);
+  this->fade.to(1.0, motion::snap_in, motion::enter());
 }
 
-void SnapGuide::vanish() { this->run_fade(0.0); }
+void SnapGuide::vanish() { this->fade.to(0.0, motion::snap_out, motion::leave()); }
 
 void SnapGuide::paintEvent(QPaintEvent *)
 {
-  if (this->target.isNull())
+  if (!this->has_target)
+    return;
+
+  const QRectF box = this->current_rect();
+  if (box.isNull())
     return;
 
   const QColor accent = HSD_CTX.app_settings.colors.accent;
   QPainter     p(this);
   p.setRenderHint(QPainter::Antialiasing);
-  p.setOpacity(this->opacity);
+  p.setOpacity(std::clamp(this->fade.value(), 0.0, 1.0));
 
   QColor fill = accent;
   fill.setAlphaF(0.16);
   QColor edge = accent;
   edge.setAlphaF(0.75);
 
-  const qreal  r = std::min(10.0,
-                           std::min(this->target.width(), this->target.height()) / 2);
+  const qreal  r = std::min(10.0, std::min(box.width(), box.height()) / 2.0);
   QPainterPath outline;
-  outline.addRoundedRect(this->target.adjusted(0.75, 0.75, -0.75, -0.75), r, r);
+  outline.addRoundedRect(box.adjusted(0.75, 0.75, -0.75, -0.75), r, r);
 
   // a whole number of dashes around it (those of Qt::DashLine, a little longer
   // or shorter to fit): otherwise one is cut where the outline starts
@@ -91,15 +108,6 @@ void SnapGuide::paintEvent(QPaintEvent *)
   p.setPen(pen);
   p.setBrush(fill);
   p.drawPath(outline);
-}
-
-void SnapGuide::run_fade(qreal to)
-{
-  this->fade->stop();
-  this->fade->setStartValue(this->opacity);
-  this->fade->setEndValue(to);
-  this->fade->setDuration(anim_ms(140));
-  this->fade->start();
 }
 
 } // namespace hesiod::rail

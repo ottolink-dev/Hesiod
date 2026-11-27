@@ -1,10 +1,10 @@
 /* Copyright (c) 2025 Otto Link. Distributed under the terms of the GNU General
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
+#include <algorithm>
 #include <cmath>
 
 #include <QPainter>
-#include <QVariantAnimation>
 
 #include "meta_qt/ui/theme.hpp"
 
@@ -26,17 +26,6 @@ ViewportRail::ViewportRail(rail::RailOwner *owner,
   // below the 3D view's gizmo
   this->default_edge = Edge::Right;
   this->default_offset = 140.0;
-
-  this->view_anim = new QVariantAnimation(this);
-  this->view_anim->setEasingCurve(QEasingCurve::OutCubic);
-  QObject::connect(this->view_anim,
-                   &QVariantAnimation::valueChanged,
-                   this,
-                   [this](const QVariant &v)
-                   {
-                     this->view_t = v.toReal();
-                     this->update();
-                   });
 }
 
 void ViewportRail::set_resolution_text(const QString &text)
@@ -47,23 +36,21 @@ void ViewportRail::set_resolution_text(const QString &text)
 
 void ViewportRail::set_view_mode(int type, bool animate)
 {
-  const qreal to = type == 0 ? 0.0 : 1.0;
-  this->view_anim->stop();
-  if (!animate || anim_ms(1) == 0)
-  {
-    this->view_t = to;
-    this->update();
-    return;
-  }
-  this->view_anim->setStartValue(this->view_t);
-  this->view_anim->setEndValue(to);
-  this->view_anim->setDuration(anim_ms(220));
-  this->view_anim->start();
+  const double to = type == 0 ? 0.0 : 1.0;
+  if (!animate || !motion::enabled())
+    this->view_t.set(to);
+  else
+    this->view_t.to(to, motion::toggle, motion::spring());
+}
+
+bool ViewportRail::uses_hover_pill(const Item &item) const
+{
+  return item.tool != ToolView2D && item.tool != ToolView3D;
 }
 
 void ViewportRail::paint_under_tools(QPainter &p, const QPointF &origin)
 {
-  // the 2D / 3D switch: a shallow track and a highlight sliding between its
+  // the 2D / 3D switch: a shallow track and a highlight springing between its
   // two cells
   const int i2d = this->index_of(ToolView2D);
   const int i3d = this->index_of(ToolView3D);
@@ -78,7 +65,7 @@ void ViewportRail::paint_under_tools(QPainter &p, const QPointF &origin)
   p.setBrush(mix_colors(surface_color(), colors.bg_deep, 0.55));
   p.drawRoundedRect(a.united(b), cell_radius, cell_radius);
 
-  const qreal  t = this->view_t;
+  const qreal t = std::clamp(this->view_t.value(), -view_overshoot, 1.0 + view_overshoot);
   const QRectF knob(a.left() + (b.left() - a.left()) * t,
                     a.top() + (b.top() - a.top()) * t,
                     a.width(),
@@ -92,17 +79,35 @@ void ViewportRail::paint_under_tools(QPainter &p, const QPointF &origin)
 bool ViewportRail::paint_cell(QPainter     &p,
                               const Item   &item,
                               const QRectF &cell,
-                              bool          hover)
+                              qreal         heat)
 {
   if (item.tool != ToolView2D && item.tool != ToolView3D)
     return false;
 
   const auto &colors = HSD_CTX.app_settings.colors;
-  const qreal on = item.tool == ToolView3D ? this->view_t : 1.0 - this->view_t;
-  QColor      ink = mix_colors(
-      mix_colors(surface_color(), colors.text_primary, hover ? 0.9 : 0.55),
-      colors.accent.lighter(150),
-      on);
+  const qreal vt = std::clamp(this->view_t.value(), 0.0, 1.0);
+  const qreal on = item.tool == ToolView3D ? vt : 1.0 - vt;
+
+  // a quiet hover tint on the resting side of the 2D/3D switch
+  if (heat > 0.002 && on < 0.99)
+  {
+    QColor h = mix_colors(surface_color(), colors.text_primary, view_hover_tone);
+    h.setAlphaF(heat * (1.0 - on));
+    p.setPen(Qt::NoPen);
+    p.setBrush(h);
+    p.drawRoundedRect(cell.adjusted(view_hover_inset,
+                                    view_hover_inset,
+                                    -view_hover_inset,
+                                    -view_hover_inset),
+                      this->cell_radius() - 1,
+                      this->cell_radius() - 1);
+  }
+
+  QColor ink = mix_colors(mix_colors(surface_color(),
+                                     colors.text_primary,
+                                     view_ink_rest + view_ink_hover * heat),
+                          colors.accent.lighter(150),
+                          on);
   p.setPen(ink);
   p.setFont(meta::qt::ui_font(int(std::round(11 * rail_scale())), true));
   p.drawText(cell, Qt::AlignCenter, item.tool == ToolView2D ? "2D" : "3D");

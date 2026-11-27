@@ -7,6 +7,8 @@
 #include <QSplitterHandle>
 #include <QWidget>
 
+#include "hesiod/gui/motion/motion.hpp"
+
 namespace hesiod
 {
 
@@ -30,7 +32,12 @@ protected:
   void paintEvent(QPaintEvent *event) override;
 
 private:
+  void sync_motion();
+
+  bool hovered = false;
   bool pressed = false;
+  Anim live{this};    // 0 at rest, 1 under the pointer or being dragged
+  Anim press_t{this}; // 0 hovering, 1 actively dragged
 };
 
 // =====================================
