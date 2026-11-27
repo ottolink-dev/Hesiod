@@ -1,0 +1,36 @@
+{
+  "cases": [
+    "TextureQuiltingShuffle",
+    "TextureQuiltingExpand",
+    "Abs"
+  ],
+  "variants": [
+    "minimal",
+    "full"
+  ],
+  "include_inputs": true,
+  "sizes": [
+    4096
+  ],
+  "tiles": [
+    1,
+    4
+  ],
+  "overlaps": [
+    0.0
+  ],
+  "policies": [
+    "ram-sequential",
+    "disk-sequential"
+  ],
+  "threads": 1,
+  "repeats": 3,
+  "timeout": 600.0,
+  "max_hours": 8,
+  "max_rss_mib": 12288.0,
+  "max_disk_gib": 32.0,
+  "scaling_slack": 1.25,
+  "absolute_slack_mib": 32,
+  "check_min_size": 512,
+  "check": false
+}
