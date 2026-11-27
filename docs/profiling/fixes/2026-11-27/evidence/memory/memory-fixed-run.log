@@ -1,0 +1,20 @@
+{"launch": ["/nix/store/p7r9fcn9aac2ipqjx5mcy16k4pr75697-python3-3.11.18/bin/python3", "scripts/profiling/memory_study.py", "run", "--binary", "build/assessment/bin/hesiod", "--output", "output/fixes/memory-fixed-quilting", "--cases", "TextureQuiltingShuffle", "TextureQuiltingExpand", "--variants", "full", "--sizes", "1024", "2048", "--tiles", "1", "4", "--overlaps", "0", "--policies", "ram-sequential", "disk-sequential", "--repeats", "3", "--check", "--max-disk-gib", "32"], "resources": {"utc": "2026-11-27T13:09:00.681629+00:00", "phase": "memory-fixed-quilting", "available_kib": 55259588, "swap_free_kib": 59380320, "disk_free_bytes": 338403569664}}
+memory-fixed-quilting {'audited_runs': 48, 'complete': True, 'failure_count': 0, 'passed': True}
+COMPLETE memory-fixed-quilting
+{"launch": ["/nix/store/p7r9fcn9aac2ipqjx5mcy16k4pr75697-python3-3.11.18/bin/python3", "scripts/profiling/memory_study.py", "run", "--binary", "build/assessment/bin/hesiod", "--output", "output/fixes/memory-fixed-export", "--cases", "ExportAsset", "--variants", "minimal", "full", "--sizes", "1024", "2048", "--tiles", "1", "4", "--overlaps", "0", "--policies", "ram-sequential", "disk-sequential", "--repeats", "3", "--check", "--max-disk-gib", "32"], "resources": {"utc": "2026-11-27T13:12:17.488912+00:00", "phase": "memory-fixed-export", "available_kib": 55106616, "swap_free_kib": 59406168, "disk_free_bytes": 337060413440}}
+memory-fixed-export {'audited_runs': 48, 'complete': True, 'failure_count': 0, 'passed': True}
+COMPLETE memory-fixed-export
+Traceback (most recent call last):
+  File "/home/barrulus/dev/Hesiod-783/output/fixes/compare_memory_fixes.py", line 81, in <module>
+    if __name__=='__main__': main()
+                             ^^^^^^
+  File "/home/barrulus/dev/Hesiod-783/output/fixes/compare_memory_fixes.py", line 60, in main
+    assert set(data_changes)<=allowed_data_changes, f'unreviewed data changes: {set(data_changes)-allowed_data_changes}'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: unreviewed data changes: {'data/git_version.txt'}
+Traceback (most recent call last):
+  File "/home/barrulus/dev/Hesiod-783/output/fixes/run_fixed_memory.py", line 23, in <module>
+    subprocess.run([sys.executable,'output/fixes/compare_memory_fixes.py'],cwd=ROOT,check=True)
+  File "/nix/store/p7r9fcn9aac2ipqjx5mcy16k4pr75697-python3-3.11.18/lib/python3.11/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/nix/store/p7r9fcn9aac2ipqjx5mcy16k4pr75697-python3-3.11.18/bin/python3', 'output/fixes/compare_memory_fixes.py']' returned non-zero exit status 1.

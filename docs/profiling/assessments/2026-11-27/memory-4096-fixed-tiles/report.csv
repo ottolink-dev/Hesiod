@@ -1,0 +1,7 @@
+case,variant,inputs_only,policy,tiles,overlap,size,planned,successful,status,process_peak_mib_median,process_peak_mib_min,process_peak_mib_max,wall_seconds_median
+Abs,full,False,disk-sequential,8,0.0,4096,3,3,complete,341.44140625,341.4375,341.4609375,0.6605111719982233
+Abs,full,True,disk-sequential,8,0.0,4096,3,3,complete,340.4921875,340.39453125,340.671875,0.6016631359962048
+TextureQuiltingExpand,full,False,disk-sequential,8,0.0,4096,3,3,complete,5445.1875,5444.84375,5445.49609375,42.51618747400062
+TextureQuiltingExpand,full,True,disk-sequential,8,0.0,4096,3,3,complete,360.72265625,360.51953125,361.01953125,7.31146712199552
+TextureQuiltingShuffle,full,False,disk-sequential,8,0.0,4096,3,3,complete,4891.359375,4891.0,4891.859375,43.772107805001724
+TextureQuiltingShuffle,full,True,disk-sequential,8,0.0,4096,3,3,complete,360.40625,360.234375,360.6796875,7.310109397003544

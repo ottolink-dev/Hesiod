@@ -1,0 +1,17 @@
+case,variant,inputs_only,policy,tiles,overlap,size,planned,successful,status,process_peak_mib_median,process_peak_mib_min,process_peak_mib_max,wall_seconds_median
+ExportAsset,full,False,disk-sequential,1,0.0,1024,3,3,complete,926.734375,925.9375,926.95703125,11.292179290991044
+ExportAsset,full,False,disk-sequential,1,0.0,2048,3,3,complete,2898.98046875,2898.46484375,2899.30859375,127.56046068000433
+ExportAsset,full,False,disk-sequential,4,0.0,1024,3,3,complete,925.0859375,924.9609375,925.3203125,13.744455378997372
+ExportAsset,full,False,disk-sequential,4,0.0,2048,3,3,complete,2866.03125,2864.93359375,2866.12890625,122.68913589799195
+ExportAsset,full,False,ram-sequential,1,0.0,1024,3,3,complete,986.6796875,986.5,986.890625,12.580387847003294
+ExportAsset,full,False,ram-sequential,1,0.0,2048,3,3,complete,3106.29296875,3105.8984375,3106.43359375,127.00379472399072
+ExportAsset,full,False,ram-sequential,4,0.0,1024,3,3,complete,964.23046875,963.70703125,964.4140625,10.96108119598648
+ExportAsset,full,False,ram-sequential,4,0.0,2048,3,3,complete,3017.71875,3017.484375,3017.77734375,133.72215157200117
+ExportAsset,minimal,False,disk-sequential,1,0.0,1024,3,3,complete,917.0703125,917.02734375,918.359375,1.4089035969955148
+ExportAsset,minimal,False,disk-sequential,1,0.0,2048,3,3,complete,2834.82421875,2834.43359375,2835.07421875,5.091665716012358
+ExportAsset,minimal,False,disk-sequential,4,0.0,1024,3,3,complete,918.21484375,917.23046875,918.23046875,1.406019311005366
+ExportAsset,minimal,False,disk-sequential,4,0.0,2048,3,3,complete,2834.6328125,2834.59765625,2834.7734375,5.127053453004919
+ExportAsset,minimal,False,ram-sequential,1,0.0,1024,3,3,complete,921.64453125,921.27734375,921.83203125,1.5722123390005436
+ExportAsset,minimal,False,ram-sequential,1,0.0,2048,3,3,complete,2850.1796875,2849.83203125,2850.83984375,5.046855597000103
+ExportAsset,minimal,False,ram-sequential,4,0.0,1024,3,3,complete,922.16015625,921.99609375,922.47265625,1.4100402699987171
+ExportAsset,minimal,False,ram-sequential,4,0.0,2048,3,3,complete,2850.2109375,2849.48046875,2850.578125,5.153932159009855

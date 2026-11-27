@@ -1,0 +1,209 @@
+{
+  "tests": 16,
+  "failures": 0,
+  "disabled": 0,
+  "errors": 0,
+  "timestamp": "2026-11-27T12:57:10Z",
+  "time": "0.998s",
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "DeviceManagerTest",
+      "tests": 9,
+      "failures": 0,
+      "disabled": 0,
+      "errors": 0,
+      "timestamp": "2026-11-27T12:57:10Z",
+      "time": "0.218s",
+      "testsuite": [
+        {
+          "name": "IsReadyTest",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/HighMap\/external\/CLWrapper\/tests\/unit_tests\/test_device_manager.cpp",
+          "line": 33,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:57:10Z",
+          "time": "0.138s",
+          "classname": "DeviceManagerTest"
+        },
+        {
+          "name": "GetDeviceTest",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/HighMap\/external\/CLWrapper\/tests\/unit_tests\/test_device_manager.cpp",
+          "line": 38,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:57:10Z",
+          "time": "0s",
+          "classname": "DeviceManagerTest"
+        },
+        {
+          "name": "AvailableDevicesTest",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/HighMap\/external\/CLWrapper\/tests\/unit_tests\/test_device_manager.cpp",
+          "line": 44,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:57:10Z",
+          "time": "0s",
+          "classname": "DeviceManagerTest"
+        },
+        {
+          "name": "DeviceMetadataTest",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/HighMap\/external\/CLWrapper\/tests\/unit_tests\/test_device_manager.cpp",
+          "line": 56,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:57:10Z",
+          "time": "0s",
+          "classname": "DeviceManagerTest"
+        },
+        {
+          "name": "PlatformMetadataTest",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/HighMap\/external\/CLWrapper\/tests\/unit_tests\/test_device_manager.cpp",
+          "line": 77,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:57:10Z",
+          "time": "0s",
+          "classname": "DeviceManagerTest"
+        },
+        {
+          "name": "SetDeviceBoundsCheckingTest",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/HighMap\/external\/CLWrapper\/tests\/unit_tests\/test_device_manager.cpp",
+          "line": 90,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:57:10Z",
+          "time": "0s",
+          "classname": "DeviceManagerTest"
+        },
+        {
+          "name": "SetDeviceTypeFilterAutoRediscoveryTest",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/HighMap\/external\/CLWrapper\/tests\/unit_tests\/test_device_manager.cpp",
+          "line": 106,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:57:10Z",
+          "time": "0.001s",
+          "classname": "DeviceManagerTest"
+        },
+        {
+          "name": "CpuDeviceTypeFilterAutoRediscoveryWhenAvailable",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/HighMap\/external\/CLWrapper\/tests\/unit_tests\/test_device_manager.cpp",
+          "line": 120,
+          "status": "RUN",
+          "result": "SKIPPED",
+          "timestamp": "2026-11-27T12:57:10Z",
+          "time": "0s",
+          "classname": "DeviceManagerTest",
+          "skipped": [
+            {
+              "message": "\/home\/barrulus\/dev\/Hesiod-783\/external\/HighMap\/external\/CLWrapper\/tests\/unit_tests\/test_device_manager.cpp:134\nNo CPU OpenCL device is available; generic filter rediscovery is covered separately.\n"
+            }
+          ]
+        },
+        {
+          "name": "DeviceSwitchAndExecutionTest",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/HighMap\/external\/CLWrapper\/tests\/unit_tests\/test_device_manager.cpp",
+          "line": 143,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:57:10Z",
+          "time": "0.077s",
+          "classname": "DeviceManagerTest"
+        }
+      ]
+    },
+    {
+      "name": "KernelManagerTest",
+      "tests": 3,
+      "failures": 0,
+      "disabled": 0,
+      "errors": 0,
+      "timestamp": "2026-11-27T12:57:10Z",
+      "time": "0.225s",
+      "testsuite": [
+        {
+          "name": "SingletonInstanceTest",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/HighMap\/external\/CLWrapper\/tests\/unit_tests\/test_kernel_manager.cpp",
+          "line": 6,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:57:10Z",
+          "time": "0s",
+          "classname": "KernelManagerTest"
+        },
+        {
+          "name": "AddKernelTest",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/HighMap\/external\/CLWrapper\/tests\/unit_tests\/test_kernel_manager.cpp",
+          "line": 22,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:57:10Z",
+          "time": "0.114s",
+          "classname": "KernelManagerTest"
+        },
+        {
+          "name": "SourceStackingTest",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/HighMap\/external\/CLWrapper\/tests\/unit_tests\/test_kernel_manager.cpp",
+          "line": 43,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:57:11Z",
+          "time": "0.11s",
+          "classname": "KernelManagerTest"
+        }
+      ]
+    },
+    {
+      "name": "RunTest",
+      "tests": 4,
+      "failures": 0,
+      "disabled": 0,
+      "errors": 0,
+      "timestamp": "2026-11-27T12:57:11Z",
+      "time": "0.554s",
+      "testsuite": [
+        {
+          "name": "BufferBindingAndExecution",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/HighMap\/external\/CLWrapper\/tests\/unit_tests\/test_run.cpp",
+          "line": 8,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:57:11Z",
+          "time": "0.112s",
+          "classname": "RunTest"
+        },
+        {
+          "name": "ImageBindingAndExecution",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/HighMap\/external\/CLWrapper\/tests\/unit_tests\/test_run.cpp",
+          "line": 46,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:57:11Z",
+          "time": "0.111s",
+          "classname": "RunTest"
+        },
+        {
+          "name": "InOutImageSharingAndPingPong",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/HighMap\/external\/CLWrapper\/tests\/unit_tests\/test_run.cpp",
+          "line": 92,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:57:11Z",
+          "time": "0.108s",
+          "classname": "RunTest"
+        },
+        {
+          "name": "SharedQueueAsyncAcrossRuns",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/HighMap\/external\/CLWrapper\/tests\/unit_tests\/test_run.cpp",
+          "line": 154,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:57:11Z",
+          "time": "0.221s",
+          "classname": "RunTest"
+        }
+      ]
+    }
+  ]
+}

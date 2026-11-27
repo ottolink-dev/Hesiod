@@ -1,0 +1,3002 @@
+
+Repeating all tests (iteration 1) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (16 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (50 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (29 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (46 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (27 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (30 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (23 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (54 ms)
+[----------] 10 tests from ParallelGraphUpdate (278 ms total)
+
+[==========] 10 tests from 1 test suite ran. (278 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 2) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (20 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (26 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (12 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (37 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (48 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (24 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (59 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (54 ms)
+[----------] 10 tests from ParallelGraphUpdate (284 ms total)
+
+[==========] 10 tests from 1 test suite ran. (284 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 3) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (20 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (12 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (28 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (34 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (36 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (20 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (25 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (55 ms)
+[----------] 10 tests from ParallelGraphUpdate (235 ms total)
+
+[==========] 10 tests from 1 test suite ran. (236 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 4) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (26 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (41 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (19 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (35 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (58 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (19 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (47 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (51 ms)
+[----------] 10 tests from ParallelGraphUpdate (300 ms total)
+
+[==========] 10 tests from 1 test suite ran. (301 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 5) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (25 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (49 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (16 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (27 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (31 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (17 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (24 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (53 ms)
+[----------] 10 tests from ParallelGraphUpdate (248 ms total)
+
+[==========] 10 tests from 1 test suite ran. (248 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 6) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (13 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (40 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (22 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (41 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (36 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (32 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (36 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (53 ms)
+[----------] 10 tests from ParallelGraphUpdate (277 ms total)
+
+[==========] 10 tests from 1 test suite ran. (277 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 7) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (12 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (12 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (17 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (35 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (19 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (15 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (12 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (55 ms)
+[----------] 10 tests from ParallelGraphUpdate (182 ms total)
+
+[==========] 10 tests from 1 test suite ran. (182 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 8) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (21 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (22 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (11 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (28 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (46 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (22 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (22 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (52 ms)
+[----------] 10 tests from ParallelGraphUpdate (228 ms total)
+
+[==========] 10 tests from 1 test suite ran. (228 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 9) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (15 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (12 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (37 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (43 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (26 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (18 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (59 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (51 ms)
+[----------] 10 tests from ParallelGraphUpdate (267 ms total)
+
+[==========] 10 tests from 1 test suite ran. (267 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 10) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (25 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (12 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (11 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (50 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (51 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (19 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (53 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (53 ms)
+[----------] 10 tests from ParallelGraphUpdate (280 ms total)
+
+[==========] 10 tests from 1 test suite ran. (280 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 11) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (17 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (15 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (20 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (19 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (31 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (10 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (20 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (60 ms)
+[----------] 10 tests from ParallelGraphUpdate (197 ms total)
+
+[==========] 10 tests from 1 test suite ran. (197 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 12) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (9 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (13 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (38 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (33 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (44 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (20 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (36 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (61 ms)
+[----------] 10 tests from ParallelGraphUpdate (259 ms total)
+
+[==========] 10 tests from 1 test suite ran. (259 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 13) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (28 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (12 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (16 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (41 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (29 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (18 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (13 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (52 ms)
+[----------] 10 tests from ParallelGraphUpdate (213 ms total)
+
+[==========] 10 tests from 1 test suite ran. (213 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 14) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (19 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (39 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (27 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (21 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (38 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (14 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (16 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (55 ms)
+[----------] 10 tests from ParallelGraphUpdate (234 ms total)
+
+[==========] 10 tests from 1 test suite ran. (234 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 15) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (17 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (29 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (21 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (49 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (39 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (15 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (26 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (52 ms)
+[----------] 10 tests from ParallelGraphUpdate (252 ms total)
+
+[==========] 10 tests from 1 test suite ran. (252 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 16) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (10 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (18 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (21 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (28 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (32 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (13 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (55 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (53 ms)
+[----------] 10 tests from ParallelGraphUpdate (235 ms total)
+
+[==========] 10 tests from 1 test suite ran. (235 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 17) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (30 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (14 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (23 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (19 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (26 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (19 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (13 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (52 ms)
+[----------] 10 tests from ParallelGraphUpdate (201 ms total)
+
+[==========] 10 tests from 1 test suite ran. (201 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 18) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (16 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (17 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (19 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (35 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (38 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (17 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (51 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (54 ms)
+[----------] 10 tests from ParallelGraphUpdate (253 ms total)
+
+[==========] 10 tests from 1 test suite ran. (253 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 19) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (7 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (8 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (12 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (33 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (23 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (14 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (91 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (55 ms)
+[----------] 10 tests from ParallelGraphUpdate (248 ms total)
+
+[==========] 10 tests from 1 test suite ran. (248 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 20) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (14 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (40 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (17 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (37 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (29 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (16 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (21 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (52 ms)
+[----------] 10 tests from ParallelGraphUpdate (234 ms total)
+
+[==========] 10 tests from 1 test suite ran. (234 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 21) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (8 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (20 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (30 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (35 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (24 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (17 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (13 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (57 ms)
+[----------] 10 tests from ParallelGraphUpdate (214 ms total)
+
+[==========] 10 tests from 1 test suite ran. (214 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 22) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (22 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (37 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (13 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (45 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (29 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (21 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (11 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (56 ms)
+[----------] 10 tests from ParallelGraphUpdate (239 ms total)
+
+[==========] 10 tests from 1 test suite ran. (239 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 23) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (9 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (10 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (23 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (37 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (26 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (27 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (26 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (51 ms)
+[----------] 10 tests from ParallelGraphUpdate (214 ms total)
+
+[==========] 10 tests from 1 test suite ran. (214 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 24) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (20 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (38 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (17 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (44 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (43 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (28 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (21 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (56 ms)
+[----------] 10 tests from ParallelGraphUpdate (270 ms total)
+
+[==========] 10 tests from 1 test suite ran. (271 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 25) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (17 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (43 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (4 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (17 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (41 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (25 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (20 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (43 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (54 ms)
+[----------] 10 tests from ParallelGraphUpdate (269 ms total)
+
+[==========] 10 tests from 1 test suite ran. (269 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 26) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (29 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (15 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (30 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (31 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (32 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (22 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (18 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (53 ms)
+[----------] 10 tests from ParallelGraphUpdate (235 ms total)
+
+[==========] 10 tests from 1 test suite ran. (235 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 27) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (8 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (46 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (19 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (49 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (44 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (11 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (28 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (53 ms)
+[----------] 10 tests from ParallelGraphUpdate (263 ms total)
+
+[==========] 10 tests from 1 test suite ran. (263 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 28) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (12 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (35 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (22 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (39 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (43 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (11 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (25 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (54 ms)
+[----------] 10 tests from ParallelGraphUpdate (245 ms total)
+
+[==========] 10 tests from 1 test suite ran. (245 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 29) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (15 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (14 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (22 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (32 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (38 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (12 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (21 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (54 ms)
+[----------] 10 tests from ParallelGraphUpdate (214 ms total)
+
+[==========] 10 tests from 1 test suite ran. (214 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 30) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (23 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (40 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (25 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (50 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (48 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (16 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (49 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (57 ms)
+[----------] 10 tests from ParallelGraphUpdate (314 ms total)
+
+[==========] 10 tests from 1 test suite ran. (314 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 31) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (11 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (26 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (1 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (28 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (34 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (34 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (16 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (11 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (52 ms)
+[----------] 10 tests from ParallelGraphUpdate (218 ms total)
+
+[==========] 10 tests from 1 test suite ran. (218 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 32) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (20 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (22 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (18 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (26 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (36 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (19 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (44 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (57 ms)
+[----------] 10 tests from ParallelGraphUpdate (248 ms total)
+
+[==========] 10 tests from 1 test suite ran. (248 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 33) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (13 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (14 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (18 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (37 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (45 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (13 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (25 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (54 ms)
+[----------] 10 tests from ParallelGraphUpdate (223 ms total)
+
+[==========] 10 tests from 1 test suite ran. (223 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 34) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (14 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (7 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (23 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (30 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (23 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (12 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (33 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (53 ms)
+[----------] 10 tests from ParallelGraphUpdate (200 ms total)
+
+[==========] 10 tests from 1 test suite ran. (200 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 35) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (23 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (37 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (12 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (31 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (28 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (14 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (9 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (56 ms)
+[----------] 10 tests from ParallelGraphUpdate (214 ms total)
+
+[==========] 10 tests from 1 test suite ran. (214 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 36) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (12 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (14 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (26 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (45 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (31 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (16 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (9 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (53 ms)
+[----------] 10 tests from ParallelGraphUpdate (211 ms total)
+
+[==========] 10 tests from 1 test suite ran. (211 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 37) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (29 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (22 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (22 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (40 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (27 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (21 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (43 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (52 ms)
+[----------] 10 tests from ParallelGraphUpdate (260 ms total)
+
+[==========] 10 tests from 1 test suite ran. (260 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 38) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (19 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (16 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (18 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (34 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (44 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (13 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (17 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (54 ms)
+[----------] 10 tests from ParallelGraphUpdate (218 ms total)
+
+[==========] 10 tests from 1 test suite ran. (218 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 39) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (10 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (62 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (20 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (29 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (38 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (18 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (13 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (57 ms)
+[----------] 10 tests from ParallelGraphUpdate (251 ms total)
+
+[==========] 10 tests from 1 test suite ran. (251 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 40) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (17 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (11 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (18 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (28 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (35 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (10 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (45 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (54 ms)
+[----------] 10 tests from ParallelGraphUpdate (224 ms total)
+
+[==========] 10 tests from 1 test suite ran. (224 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 41) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (10 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (21 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (20 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (35 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (34 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (15 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (22 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (53 ms)
+[----------] 10 tests from ParallelGraphUpdate (214 ms total)
+
+[==========] 10 tests from 1 test suite ran. (214 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 42) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (11 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (50 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (20 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (41 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (49 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (15 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (14 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (54 ms)
+[----------] 10 tests from ParallelGraphUpdate (259 ms total)
+
+[==========] 10 tests from 1 test suite ran. (259 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 43) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (15 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (18 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (13 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (30 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (52 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (19 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (22 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (57 ms)
+[----------] 10 tests from ParallelGraphUpdate (229 ms total)
+
+[==========] 10 tests from 1 test suite ran. (230 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 44) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (16 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (9 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (13 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (27 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (32 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (20 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (15 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (60 ms)
+[----------] 10 tests from ParallelGraphUpdate (197 ms total)
+
+[==========] 10 tests from 1 test suite ran. (197 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 45) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (15 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (46 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (8 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (35 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (24 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (12 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (9 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (53 ms)
+[----------] 10 tests from ParallelGraphUpdate (206 ms total)
+
+[==========] 10 tests from 1 test suite ran. (206 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 46) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (33 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (55 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (20 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (22 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (28 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (8 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (22 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (50 ms)
+[----------] 10 tests from ParallelGraphUpdate (243 ms total)
+
+[==========] 10 tests from 1 test suite ran. (243 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 47) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (17 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (35 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (16 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (31 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (29 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (20 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (14 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (52 ms)
+[----------] 10 tests from ParallelGraphUpdate (218 ms total)
+
+[==========] 10 tests from 1 test suite ran. (218 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 48) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (14 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (24 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (8 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (53 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (29 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (22 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (33 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (54 ms)
+[----------] 10 tests from ParallelGraphUpdate (243 ms total)
+
+[==========] 10 tests from 1 test suite ran. (243 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 49) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (18 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (13 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (11 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (49 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (38 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (20 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (43 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (53 ms)
+[----------] 10 tests from ParallelGraphUpdate (249 ms total)
+
+[==========] 10 tests from 1 test suite ran. (249 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 50) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (18 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (48 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (15 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (26 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (35 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (11 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (65 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (52 ms)
+[----------] 10 tests from ParallelGraphUpdate (274 ms total)
+
+[==========] 10 tests from 1 test suite ran. (274 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 51) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (18 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (13 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (12 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (43 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (31 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (32 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (16 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (53 ms)
+[----------] 10 tests from ParallelGraphUpdate (223 ms total)
+
+[==========] 10 tests from 1 test suite ran. (223 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 52) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (9 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (30 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (18 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (37 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (28 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (24 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (13 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (53 ms)
+[----------] 10 tests from ParallelGraphUpdate (215 ms total)
+
+[==========] 10 tests from 1 test suite ran. (215 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 53) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (6 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (15 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (6 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (27 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (32 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (26 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (43 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (53 ms)
+[----------] 10 tests from ParallelGraphUpdate (212 ms total)
+
+[==========] 10 tests from 1 test suite ran. (212 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 54) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (15 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (53 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (42 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (31 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (31 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (21 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (58 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (54 ms)
+[----------] 10 tests from ParallelGraphUpdate (310 ms total)
+
+[==========] 10 tests from 1 test suite ran. (310 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 55) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (11 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (15 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (19 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (23 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (25 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (15 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (31 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (58 ms)
+[----------] 10 tests from ParallelGraphUpdate (201 ms total)
+
+[==========] 10 tests from 1 test suite ran. (201 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 56) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (17 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (38 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (13 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (35 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (41 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (23 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (30 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (54 ms)
+[----------] 10 tests from ParallelGraphUpdate (256 ms total)
+
+[==========] 10 tests from 1 test suite ran. (256 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 57) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (9 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (16 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (17 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (36 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (39 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (23 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (35 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (52 ms)
+[----------] 10 tests from ParallelGraphUpdate (230 ms total)
+
+[==========] 10 tests from 1 test suite ran. (231 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 58) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (15 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (40 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (11 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (31 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (16 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (7 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (8 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (53 ms)
+[----------] 10 tests from ParallelGraphUpdate (188 ms total)
+
+[==========] 10 tests from 1 test suite ran. (188 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 59) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (12 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (32 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (18 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (27 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (32 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (19 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (35 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (63 ms)
+[----------] 10 tests from ParallelGraphUpdate (243 ms total)
+
+[==========] 10 tests from 1 test suite ran. (243 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 60) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (14 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (17 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (14 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (38 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (24 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (14 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (21 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (52 ms)
+[----------] 10 tests from ParallelGraphUpdate (198 ms total)
+
+[==========] 10 tests from 1 test suite ran. (198 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 61) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (15 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (36 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (3 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (19 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (25 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (29 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (18 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (18 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (52 ms)
+[----------] 10 tests from ParallelGraphUpdate (219 ms total)
+
+[==========] 10 tests from 1 test suite ran. (219 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 62) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (12 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (16 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (10 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (20 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (24 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (21 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (26 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (57 ms)
+[----------] 10 tests from ParallelGraphUpdate (190 ms total)
+
+[==========] 10 tests from 1 test suite ran. (190 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 63) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (22 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (31 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (14 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (26 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (26 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (12 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (32 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (53 ms)
+[----------] 10 tests from ParallelGraphUpdate (222 ms total)
+
+[==========] 10 tests from 1 test suite ran. (222 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 64) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (11 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (17 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (13 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (17 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (24 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (13 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (13 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (53 ms)
+[----------] 10 tests from ParallelGraphUpdate (167 ms total)
+
+[==========] 10 tests from 1 test suite ran. (167 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 65) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (15 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (22 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (7 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (37 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (34 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (22 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (16 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (54 ms)
+[----------] 10 tests from ParallelGraphUpdate (212 ms total)
+
+[==========] 10 tests from 1 test suite ran. (212 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 66) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (10 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (10 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (13 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (28 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (32 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (8 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (64 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (53 ms)
+[----------] 10 tests from ParallelGraphUpdate (223 ms total)
+
+[==========] 10 tests from 1 test suite ran. (223 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 67) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (10 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (45 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (18 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (30 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (29 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (12 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (17 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (52 ms)
+[----------] 10 tests from ParallelGraphUpdate (217 ms total)
+
+[==========] 10 tests from 1 test suite ran. (217 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 68) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (13 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (21 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (11 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (20 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (42 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (17 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (5 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (53 ms)
+[----------] 10 tests from ParallelGraphUpdate (186 ms total)
+
+[==========] 10 tests from 1 test suite ran. (186 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 69) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (10 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (33 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (18 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (40 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (24 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (8 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (10 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (55 ms)
+[----------] 10 tests from ParallelGraphUpdate (203 ms total)
+
+[==========] 10 tests from 1 test suite ran. (203 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 70) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (9 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (18 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (14 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (29 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (22 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (20 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (18 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (52 ms)
+[----------] 10 tests from ParallelGraphUpdate (186 ms total)
+
+[==========] 10 tests from 1 test suite ran. (186 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 71) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (14 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (15 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (1 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (15 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (29 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (57 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (17 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (37 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (54 ms)
+[----------] 10 tests from ParallelGraphUpdate (245 ms total)
+
+[==========] 10 tests from 1 test suite ran. (245 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 72) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (16 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (31 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (10 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (20 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (27 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (16 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (21 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (55 ms)
+[----------] 10 tests from ParallelGraphUpdate (200 ms total)
+
+[==========] 10 tests from 1 test suite ran. (200 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 73) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (8 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (28 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (18 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (19 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (27 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (23 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (19 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (55 ms)
+[----------] 10 tests from ParallelGraphUpdate (200 ms total)
+
+[==========] 10 tests from 1 test suite ran. (200 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 74) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (14 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (38 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (22 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (32 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (33 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (14 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (10 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (55 ms)
+[----------] 10 tests from ParallelGraphUpdate (224 ms total)
+
+[==========] 10 tests from 1 test suite ran. (224 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 75) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (12 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (41 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (9 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (33 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (31 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (13 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (33 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (55 ms)
+[----------] 10 tests from ParallelGraphUpdate (231 ms total)
+
+[==========] 10 tests from 1 test suite ran. (231 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 76) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (9 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (13 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (22 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (22 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (44 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (16 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (17 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (60 ms)
+[----------] 10 tests from ParallelGraphUpdate (206 ms total)
+
+[==========] 10 tests from 1 test suite ran. (206 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 77) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (14 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (23 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (17 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (46 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (27 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (11 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (29 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (55 ms)
+[----------] 10 tests from ParallelGraphUpdate (225 ms total)
+
+[==========] 10 tests from 1 test suite ran. (225 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 78) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (10 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (14 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (16 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (30 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (32 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (26 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (24 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (1 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (57 ms)
+[----------] 10 tests from ParallelGraphUpdate (215 ms total)
+
+[==========] 10 tests from 1 test suite ran. (215 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 79) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (16 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (25 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (21 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (41 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (62 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (26 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (21 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (51 ms)
+[----------] 10 tests from ParallelGraphUpdate (268 ms total)
+
+[==========] 10 tests from 1 test suite ran. (268 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 80) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (15 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (17 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (18 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (31 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (37 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (17 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (21 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (55 ms)
+[----------] 10 tests from ParallelGraphUpdate (217 ms total)
+
+[==========] 10 tests from 1 test suite ran. (217 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 81) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (10 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (18 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (14 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (32 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (42 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (20 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (12 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (54 ms)
+[----------] 10 tests from ParallelGraphUpdate (206 ms total)
+
+[==========] 10 tests from 1 test suite ran. (207 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 82) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (9 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (15 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (17 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (31 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (31 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (17 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (34 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (51 ms)
+[----------] 10 tests from ParallelGraphUpdate (209 ms total)
+
+[==========] 10 tests from 1 test suite ran. (209 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 83) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (14 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (13 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (15 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (27 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (23 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (15 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (21 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (51 ms)
+[----------] 10 tests from ParallelGraphUpdate (184 ms total)
+
+[==========] 10 tests from 1 test suite ran. (184 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 84) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (13 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (21 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (15 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (16 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (29 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (14 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (14 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (57 ms)
+[----------] 10 tests from ParallelGraphUpdate (183 ms total)
+
+[==========] 10 tests from 1 test suite ran. (183 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 85) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (15 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (18 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (36 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (37 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (25 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (6 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (11 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (53 ms)
+[----------] 10 tests from ParallelGraphUpdate (207 ms total)
+
+[==========] 10 tests from 1 test suite ran. (207 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 86) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (10 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (14 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (19 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (23 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (25 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (12 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (14 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (55 ms)
+[----------] 10 tests from ParallelGraphUpdate (177 ms total)
+
+[==========] 10 tests from 1 test suite ran. (177 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 87) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (11 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (10 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (8 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (20 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (32 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (16 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (13 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (55 ms)
+[----------] 10 tests from ParallelGraphUpdate (169 ms total)
+
+[==========] 10 tests from 1 test suite ran. (169 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 88) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (10 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (9 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (18 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (30 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (29 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (30 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (24 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (55 ms)
+[----------] 10 tests from ParallelGraphUpdate (209 ms total)
+
+[==========] 10 tests from 1 test suite ran. (209 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 89) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (19 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (43 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (1 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (20 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (47 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (37 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (9 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (23 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (60 ms)
+[----------] 10 tests from ParallelGraphUpdate (264 ms total)
+
+[==========] 10 tests from 1 test suite ran. (264 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 90) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (11 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (27 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (6 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (21 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (46 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (7 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (17 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (58 ms)
+[----------] 10 tests from ParallelGraphUpdate (197 ms total)
+
+[==========] 10 tests from 1 test suite ran. (197 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 91) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (12 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (27 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (17 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (32 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (21 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (23 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (20 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (55 ms)
+[----------] 10 tests from ParallelGraphUpdate (212 ms total)
+
+[==========] 10 tests from 1 test suite ran. (212 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 92) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (15 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (15 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (18 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (32 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (24 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (16 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (18 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (52 ms)
+[----------] 10 tests from ParallelGraphUpdate (195 ms total)
+
+[==========] 10 tests from 1 test suite ran. (196 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 93) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (22 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (22 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (19 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (16 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (41 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (10 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (12 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (56 ms)
+[----------] 10 tests from ParallelGraphUpdate (204 ms total)
+
+[==========] 10 tests from 1 test suite ran. (205 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 94) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (18 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (37 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (8 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (17 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (20 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (11 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (48 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (52 ms)
+[----------] 10 tests from ParallelGraphUpdate (215 ms total)
+
+[==========] 10 tests from 1 test suite ran. (216 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 95) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (22 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (30 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (11 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (30 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (27 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (8 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (10 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (52 ms)
+[----------] 10 tests from ParallelGraphUpdate (193 ms total)
+
+[==========] 10 tests from 1 test suite ran. (193 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 96) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (12 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (37 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (9 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (19 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (32 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (10 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (14 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (60 ms)
+[----------] 10 tests from ParallelGraphUpdate (198 ms total)
+
+[==========] 10 tests from 1 test suite ran. (198 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 97) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (14 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (15 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (10 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (29 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (37 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (11 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (12 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (53 ms)
+[----------] 10 tests from ParallelGraphUpdate (186 ms total)
+
+[==========] 10 tests from 1 test suite ran. (186 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 98) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (18 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (12 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (1 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (14 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (33 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (26 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (13 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (56 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (54 ms)
+[----------] 10 tests from ParallelGraphUpdate (232 ms total)
+
+[==========] 10 tests from 1 test suite ran. (232 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 99) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (22 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (14 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (10 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (41 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (29 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (22 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (32 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (52 ms)
+[----------] 10 tests from ParallelGraphUpdate (227 ms total)
+
+[==========] 10 tests from 1 test suite ran. (227 ms total)
+[  PASSED  ] 10 tests.
+
+Repeating all tests (iteration 100) . . .
+
+Note: Google Test filter = ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[==========] Running 10 tests from 1 test suite.
+[----------] 10 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (12 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (12 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (15 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (33 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (24 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (12 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (21 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (55 ms)
+[----------] 10 tests from ParallelGraphUpdate (188 ms total)
+
+[----------] Global test environment tear-down
+[==========] 10 tests from 1 test suite ran. (189 ms total)
+[  PASSED  ] 10 tests.

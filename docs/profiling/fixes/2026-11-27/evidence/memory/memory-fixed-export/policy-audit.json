@@ -1,0 +1,688 @@
+{
+  "source": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export",
+  "method": "Read every result command, app log and per-run isolated hesiod.json; require intended sequential-policy marker and flag, no conflicting policy, configured OpenMP thread count and startup max-thread log before concurrent graph workers start (worker trace lines can interleave), no IPC flag and successful workload exit.",
+  "planned_runs": 48,
+  "audited_runs": 48,
+  "complete": true,
+  "failure_count": 0,
+  "failures": [],
+  "policy_counts": {
+    "ram-sequential": 24,
+    "disk-sequential": 24
+  },
+  "checks": [
+    {
+      "run": "ExportAsset-full-disk-sequential-1024-t1-o0-r1",
+      "intended_policy": "disk-sequential",
+      "correct_policy_marker": true,
+      "no_conflicting_policy_marker": true,
+      "correct_policy_flag": true,
+      "no_conflicting_policy_flag": true,
+      "isolated_omp_setting_matches": true,
+      "observed_startup_openmp_max_threads": [
+        1
+      ],
+      "no_ipc_flag": true,
+      "successful_workload": true
+    },
+    {
+      "run": "ExportAsset-full-disk-sequential-1024-t1-o0-r2",
+      "intended_policy": "disk-sequential",
+      "correct_policy_marker": true,
+      "no_conflicting_policy_marker": true,
+      "correct_policy_flag": true,
+      "no_conflicting_policy_flag": true,
+      "isolated_omp_setting_matches": true,
+      "observed_startup_openmp_max_threads": [
+        1
+      ],
+      "no_ipc_flag": true,
+      "successful_workload": true
+    },
+    {
+      "run": "ExportAsset-full-disk-sequential-1024-t1-o0-r3",
+      "intended_policy": "disk-sequential",
+      "correct_policy_marker": true,
+      "no_conflicting_policy_marker": true,
+      "correct_policy_flag": true,
+      "no_conflicting_policy_flag": true,
+      "isolated_omp_setting_matches": true,
+      "observed_startup_openmp_max_threads": [
+        1
+      ],
+      "no_ipc_flag": true,
+      "successful_workload": true
+    },
+    {
+      "run": "ExportAsset-full-disk-sequential-1024-t4-o0-r1",
+      "intended_policy": "disk-sequential",
+      "correct_policy_marker": true,
+      "no_conflicting_policy_marker": true,
+      "correct_policy_flag": true,
+      "no_conflicting_policy_flag": true,
+      "isolated_omp_setting_matches": true,
+      "observed_startup_openmp_max_threads": [
+        1
+      ],
+      "no_ipc_flag": true,
+      "successful_workload": true
+    },
+    {
+      "run": "ExportAsset-full-disk-sequential-1024-t4-o0-r2",
+      "intended_policy": "disk-sequential",
+      "correct_policy_marker": true,
+      "no_conflicting_policy_marker": true,
+      "correct_policy_flag": true,
+      "no_conflicting_policy_flag": true,
+      "isolated_omp_setting_matches": true,
+      "observed_startup_openmp_max_threads": [
+        1
+      ],
+      "no_ipc_flag": true,
+      "successful_workload": true
+    },
+    {
+      "run": "ExportAsset-full-disk-sequential-1024-t4-o0-r3",
+      "intended_policy": "disk-sequential",
+      "correct_policy_marker": true,
+      "no_conflicting_policy_marker": true,
+      "correct_policy_flag": true,
+      "no_conflicting_policy_flag": true,
+      "isolated_omp_setting_matches": true,
+      "observed_startup_openmp_max_threads": [
+        1
+      ],
+      "no_ipc_flag": true,
+      "successful_workload": true
+    },
+    {
+      "run": "ExportAsset-full-disk-sequential-2048-t1-o0-r1",
+      "intended_policy": "disk-sequential",
+      "correct_policy_marker": true,
+      "no_conflicting_policy_marker": true,
+      "correct_policy_flag": true,
+      "no_conflicting_policy_flag": true,
+      "isolated_omp_setting_matches": true,
+      "observed_startup_openmp_max_threads": [
+        1
+      ],
+      "no_ipc_flag": true,
+      "successful_workload": true
+    },
+    {
+      "run": "ExportAsset-full-disk-sequential-2048-t1-o0-r2",
+      "intended_policy": "disk-sequential",
+      "correct_policy_marker": true,
+      "no_conflicting_policy_marker": true,
+      "correct_policy_flag": true,
+      "no_conflicting_policy_flag": true,
+      "isolated_omp_setting_matches": true,
+      "observed_startup_openmp_max_threads": [
+        1
+      ],
+      "no_ipc_flag": true,
+      "successful_workload": true
+    },
+    {
+      "run": "ExportAsset-full-disk-sequential-2048-t1-o0-r3",
+      "intended_policy": "disk-sequential",
+      "correct_policy_marker": true,
+      "no_conflicting_policy_marker": true,
+      "correct_policy_flag": true,
+      "no_conflicting_policy_flag": true,
+      "isolated_omp_setting_matches": true,
+      "observed_startup_openmp_max_threads": [
+        1
+      ],
+      "no_ipc_flag": true,
+      "successful_workload": true
+    },
+    {
+      "run": "ExportAsset-full-disk-sequential-2048-t4-o0-r1",
+      "intended_policy": "disk-sequential",
+      "correct_policy_marker": true,
+      "no_conflicting_policy_marker": true,
+      "correct_policy_flag": true,
+      "no_conflicting_policy_flag": true,
+      "isolated_omp_setting_matches": true,
+      "observed_startup_openmp_max_threads": [
+        1
+      ],
+      "no_ipc_flag": true,
+      "successful_workload": true
+    },
+    {
+      "run": "ExportAsset-full-disk-sequential-2048-t4-o0-r2",
+      "intended_policy": "disk-sequential",
+      "correct_policy_marker": true,
+      "no_conflicting_policy_marker": true,
+      "correct_policy_flag": true,
+      "no_conflicting_policy_flag": true,
+      "isolated_omp_setting_matches": true,
+      "observed_startup_openmp_max_threads": [
+        1
+      ],
+      "no_ipc_flag": true,
+      "successful_workload": true
+    },
+    {
+      "run": "ExportAsset-full-disk-sequential-2048-t4-o0-r3",
+      "intended_policy": "disk-sequential",
+      "correct_policy_marker": true,
+      "no_conflicting_policy_marker": true,
+      "correct_policy_flag": true,
+      "no_conflicting_policy_flag": true,
+      "isolated_omp_setting_matches": true,
+      "observed_startup_openmp_max_threads": [
+        1
+      ],
+      "no_ipc_flag": true,
+      "successful_workload": true
+    },
+    {
+      "run": "ExportAsset-full-ram-sequential-1024-t1-o0-r1",
+      "intended_policy": "ram-sequential",
+      "correct_policy_marker": true,
+      "no_conflicting_policy_marker": true,
+      "correct_policy_flag": true,
+      "no_conflicting_policy_flag": true,
+      "isolated_omp_setting_matches": true,
+      "observed_startup_openmp_max_threads": [
+        1
+      ],
+      "no_ipc_flag": true,
+      "successful_workload": true
+    },
+    {
+      "run": "ExportAsset-full-ram-sequential-1024-t1-o0-r2",
+      "intended_policy": "ram-sequential",
+      "correct_policy_marker": true,
+      "no_conflicting_policy_marker": true,
+      "correct_policy_flag": true,
+      "no_conflicting_policy_flag": true,
+      "isolated_omp_setting_matches": true,
+      "observed_startup_openmp_max_threads": [
+        1
+      ],
+      "no_ipc_flag": true,
+      "successful_workload": true
+    },
+    {
+      "run": "ExportAsset-full-ram-sequential-1024-t1-o0-r3",
+      "intended_policy": "ram-sequential",
+      "correct_policy_marker": true,
+      "no_conflicting_policy_marker": true,
+      "correct_policy_flag": true,
+      "no_conflicting_policy_flag": true,
+      "isolated_omp_setting_matches": true,
+      "observed_startup_openmp_max_threads": [
+        1
+      ],
+      "no_ipc_flag": true,
+      "successful_workload": true
+    },
+    {
+      "run": "ExportAsset-full-ram-sequential-1024-t4-o0-r1",
+      "intended_policy": "ram-sequential",
+      "correct_policy_marker": true,
+      "no_conflicting_policy_marker": true,
+      "correct_policy_flag": true,
+      "no_conflicting_policy_flag": true,
+      "isolated_omp_setting_matches": true,
+      "observed_startup_openmp_max_threads": [
+        1
+      ],
+      "no_ipc_flag": true,
+      "successful_workload": true
+    },
+    {
+      "run": "ExportAsset-full-ram-sequential-1024-t4-o0-r2",
+      "intended_policy": "ram-sequential",
+      "correct_policy_marker": true,
+      "no_conflicting_policy_marker": true,
+      "correct_policy_flag": true,
+      "no_conflicting_policy_flag": true,
+      "isolated_omp_setting_matches": true,
+      "observed_startup_openmp_max_threads": [
+        1
+      ],
+      "no_ipc_flag": true,
+      "successful_workload": true
+    },
+    {
+      "run": "ExportAsset-full-ram-sequential-1024-t4-o0-r3",
+      "intended_policy": "ram-sequential",
+      "correct_policy_marker": true,
+      "no_conflicting_policy_marker": true,
+      "correct_policy_flag": true,
+      "no_conflicting_policy_flag": true,
+      "isolated_omp_setting_matches": true,
+      "observed_startup_openmp_max_threads": [
+        1
+      ],
+      "no_ipc_flag": true,
+      "successful_workload": true
+    },
+    {
+      "run": "ExportAsset-full-ram-sequential-2048-t1-o0-r1",
+      "intended_policy": "ram-sequential",
+      "correct_policy_marker": true,
+      "no_conflicting_policy_marker": true,
+      "correct_policy_flag": true,
+      "no_conflicting_policy_flag": true,
+      "isolated_omp_setting_matches": true,
+      "observed_startup_openmp_max_threads": [
+        1
+      ],
+      "no_ipc_flag": true,
+      "successful_workload": true
+    },
+    {
+      "run": "ExportAsset-full-ram-sequential-2048-t1-o0-r2",
+      "intended_policy": "ram-sequential",
+      "correct_policy_marker": true,
+      "no_conflicting_policy_marker": true,
+      "correct_policy_flag": true,
+      "no_conflicting_policy_flag": true,
+      "isolated_omp_setting_matches": true,
+      "observed_startup_openmp_max_threads": [
+        1
+      ],
+      "no_ipc_flag": true,
+      "successful_workload": true
+    },
+    {
+      "run": "ExportAsset-full-ram-sequential-2048-t1-o0-r3",
+      "intended_policy": "ram-sequential",
+      "correct_policy_marker": true,
+      "no_conflicting_policy_marker": true,
+      "correct_policy_flag": true,
+      "no_conflicting_policy_flag": true,
+      "isolated_omp_setting_matches": true,
+      "observed_startup_openmp_max_threads": [
+        1
+      ],
+      "no_ipc_flag": true,
+      "successful_workload": true
+    },
+    {
+      "run": "ExportAsset-full-ram-sequential-2048-t4-o0-r1",
+      "intended_policy": "ram-sequential",
+      "correct_policy_marker": true,
+      "no_conflicting_policy_marker": true,
+      "correct_policy_flag": true,
+      "no_conflicting_policy_flag": true,
+      "isolated_omp_setting_matches": true,
+      "observed_startup_openmp_max_threads": [
+        1
+      ],
+      "no_ipc_flag": true,
+      "successful_workload": true
+    },
+    {
+      "run": "ExportAsset-full-ram-sequential-2048-t4-o0-r2",
+      "intended_policy": "ram-sequential",
+      "correct_policy_marker": true,
+      "no_conflicting_policy_marker": true,
+      "correct_policy_flag": true,
+      "no_conflicting_policy_flag": true,
+      "isolated_omp_setting_matches": true,
+      "observed_startup_openmp_max_threads": [
+        1
+      ],
+      "no_ipc_flag": true,
+      "successful_workload": true
+    },
+    {
+      "run": "ExportAsset-full-ram-sequential-2048-t4-o0-r3",
+      "intended_policy": "ram-sequential",
+      "correct_policy_marker": true,
+      "no_conflicting_policy_marker": true,
+      "correct_policy_flag": true,
+      "no_conflicting_policy_flag": true,
+      "isolated_omp_setting_matches": true,
+      "observed_startup_openmp_max_threads": [
+        1
+      ],
+      "no_ipc_flag": true,
+      "successful_workload": true
+    },
+    {
+      "run": "ExportAsset-minimal-disk-sequential-1024-t1-o0-r1",
+      "intended_policy": "disk-sequential",
+      "correct_policy_marker": true,
+      "no_conflicting_policy_marker": true,
+      "correct_policy_flag": true,
+      "no_conflicting_policy_flag": true,
+      "isolated_omp_setting_matches": true,
+      "observed_startup_openmp_max_threads": [
+        1
+      ],
+      "no_ipc_flag": true,
+      "successful_workload": true
+    },
+    {
+      "run": "ExportAsset-minimal-disk-sequential-1024-t1-o0-r2",
+      "intended_policy": "disk-sequential",
+      "correct_policy_marker": true,
+      "no_conflicting_policy_marker": true,
+      "correct_policy_flag": true,
+      "no_conflicting_policy_flag": true,
+      "isolated_omp_setting_matches": true,
+      "observed_startup_openmp_max_threads": [
+        1
+      ],
+      "no_ipc_flag": true,
+      "successful_workload": true
+    },
+    {
+      "run": "ExportAsset-minimal-disk-sequential-1024-t1-o0-r3",
+      "intended_policy": "disk-sequential",
+      "correct_policy_marker": true,
+      "no_conflicting_policy_marker": true,
+      "correct_policy_flag": true,
+      "no_conflicting_policy_flag": true,
+      "isolated_omp_setting_matches": true,
+      "observed_startup_openmp_max_threads": [
+        1
+      ],
+      "no_ipc_flag": true,
+      "successful_workload": true
+    },
+    {
+      "run": "ExportAsset-minimal-disk-sequential-1024-t4-o0-r1",
+      "intended_policy": "disk-sequential",
+      "correct_policy_marker": true,
+      "no_conflicting_policy_marker": true,
+      "correct_policy_flag": true,
+      "no_conflicting_policy_flag": true,
+      "isolated_omp_setting_matches": true,
+      "observed_startup_openmp_max_threads": [
+        1
+      ],
+      "no_ipc_flag": true,
+      "successful_workload": true
+    },
+    {
+      "run": "ExportAsset-minimal-disk-sequential-1024-t4-o0-r2",
+      "intended_policy": "disk-sequential",
+      "correct_policy_marker": true,
+      "no_conflicting_policy_marker": true,
+      "correct_policy_flag": true,
+      "no_conflicting_policy_flag": true,
+      "isolated_omp_setting_matches": true,
+      "observed_startup_openmp_max_threads": [
+        1
+      ],
+      "no_ipc_flag": true,
+      "successful_workload": true
+    },
+    {
+      "run": "ExportAsset-minimal-disk-sequential-1024-t4-o0-r3",
+      "intended_policy": "disk-sequential",
+      "correct_policy_marker": true,
+      "no_conflicting_policy_marker": true,
+      "correct_policy_flag": true,
+      "no_conflicting_policy_flag": true,
+      "isolated_omp_setting_matches": true,
+      "observed_startup_openmp_max_threads": [
+        1
+      ],
+      "no_ipc_flag": true,
+      "successful_workload": true
+    },
+    {
+      "run": "ExportAsset-minimal-disk-sequential-2048-t1-o0-r1",
+      "intended_policy": "disk-sequential",
+      "correct_policy_marker": true,
+      "no_conflicting_policy_marker": true,
+      "correct_policy_flag": true,
+      "no_conflicting_policy_flag": true,
+      "isolated_omp_setting_matches": true,
+      "observed_startup_openmp_max_threads": [
+        1
+      ],
+      "no_ipc_flag": true,
+      "successful_workload": true
+    },
+    {
+      "run": "ExportAsset-minimal-disk-sequential-2048-t1-o0-r2",
+      "intended_policy": "disk-sequential",
+      "correct_policy_marker": true,
+      "no_conflicting_policy_marker": true,
+      "correct_policy_flag": true,
+      "no_conflicting_policy_flag": true,
+      "isolated_omp_setting_matches": true,
+      "observed_startup_openmp_max_threads": [
+        1
+      ],
+      "no_ipc_flag": true,
+      "successful_workload": true
+    },
+    {
+      "run": "ExportAsset-minimal-disk-sequential-2048-t1-o0-r3",
+      "intended_policy": "disk-sequential",
+      "correct_policy_marker": true,
+      "no_conflicting_policy_marker": true,
+      "correct_policy_flag": true,
+      "no_conflicting_policy_flag": true,
+      "isolated_omp_setting_matches": true,
+      "observed_startup_openmp_max_threads": [
+        1
+      ],
+      "no_ipc_flag": true,
+      "successful_workload": true
+    },
+    {
+      "run": "ExportAsset-minimal-disk-sequential-2048-t4-o0-r1",
+      "intended_policy": "disk-sequential",
+      "correct_policy_marker": true,
+      "no_conflicting_policy_marker": true,
+      "correct_policy_flag": true,
+      "no_conflicting_policy_flag": true,
+      "isolated_omp_setting_matches": true,
+      "observed_startup_openmp_max_threads": [
+        1
+      ],
+      "no_ipc_flag": true,
+      "successful_workload": true
+    },
+    {
+      "run": "ExportAsset-minimal-disk-sequential-2048-t4-o0-r2",
+      "intended_policy": "disk-sequential",
+      "correct_policy_marker": true,
+      "no_conflicting_policy_marker": true,
+      "correct_policy_flag": true,
+      "no_conflicting_policy_flag": true,
+      "isolated_omp_setting_matches": true,
+      "observed_startup_openmp_max_threads": [
+        1
+      ],
+      "no_ipc_flag": true,
+      "successful_workload": true
+    },
+    {
+      "run": "ExportAsset-minimal-disk-sequential-2048-t4-o0-r3",
+      "intended_policy": "disk-sequential",
+      "correct_policy_marker": true,
+      "no_conflicting_policy_marker": true,
+      "correct_policy_flag": true,
+      "no_conflicting_policy_flag": true,
+      "isolated_omp_setting_matches": true,
+      "observed_startup_openmp_max_threads": [
+        1
+      ],
+      "no_ipc_flag": true,
+      "successful_workload": true
+    },
+    {
+      "run": "ExportAsset-minimal-ram-sequential-1024-t1-o0-r1",
+      "intended_policy": "ram-sequential",
+      "correct_policy_marker": true,
+      "no_conflicting_policy_marker": true,
+      "correct_policy_flag": true,
+      "no_conflicting_policy_flag": true,
+      "isolated_omp_setting_matches": true,
+      "observed_startup_openmp_max_threads": [
+        1
+      ],
+      "no_ipc_flag": true,
+      "successful_workload": true
+    },
+    {
+      "run": "ExportAsset-minimal-ram-sequential-1024-t1-o0-r2",
+      "intended_policy": "ram-sequential",
+      "correct_policy_marker": true,
+      "no_conflicting_policy_marker": true,
+      "correct_policy_flag": true,
+      "no_conflicting_policy_flag": true,
+      "isolated_omp_setting_matches": true,
+      "observed_startup_openmp_max_threads": [
+        1
+      ],
+      "no_ipc_flag": true,
+      "successful_workload": true
+    },
+    {
+      "run": "ExportAsset-minimal-ram-sequential-1024-t1-o0-r3",
+      "intended_policy": "ram-sequential",
+      "correct_policy_marker": true,
+      "no_conflicting_policy_marker": true,
+      "correct_policy_flag": true,
+      "no_conflicting_policy_flag": true,
+      "isolated_omp_setting_matches": true,
+      "observed_startup_openmp_max_threads": [
+        1
+      ],
+      "no_ipc_flag": true,
+      "successful_workload": true
+    },
+    {
+      "run": "ExportAsset-minimal-ram-sequential-1024-t4-o0-r1",
+      "intended_policy": "ram-sequential",
+      "correct_policy_marker": true,
+      "no_conflicting_policy_marker": true,
+      "correct_policy_flag": true,
+      "no_conflicting_policy_flag": true,
+      "isolated_omp_setting_matches": true,
+      "observed_startup_openmp_max_threads": [
+        1
+      ],
+      "no_ipc_flag": true,
+      "successful_workload": true
+    },
+    {
+      "run": "ExportAsset-minimal-ram-sequential-1024-t4-o0-r2",
+      "intended_policy": "ram-sequential",
+      "correct_policy_marker": true,
+      "no_conflicting_policy_marker": true,
+      "correct_policy_flag": true,
+      "no_conflicting_policy_flag": true,
+      "isolated_omp_setting_matches": true,
+      "observed_startup_openmp_max_threads": [
+        1
+      ],
+      "no_ipc_flag": true,
+      "successful_workload": true
+    },
+    {
+      "run": "ExportAsset-minimal-ram-sequential-1024-t4-o0-r3",
+      "intended_policy": "ram-sequential",
+      "correct_policy_marker": true,
+      "no_conflicting_policy_marker": true,
+      "correct_policy_flag": true,
+      "no_conflicting_policy_flag": true,
+      "isolated_omp_setting_matches": true,
+      "observed_startup_openmp_max_threads": [
+        1
+      ],
+      "no_ipc_flag": true,
+      "successful_workload": true
+    },
+    {
+      "run": "ExportAsset-minimal-ram-sequential-2048-t1-o0-r1",
+      "intended_policy": "ram-sequential",
+      "correct_policy_marker": true,
+      "no_conflicting_policy_marker": true,
+      "correct_policy_flag": true,
+      "no_conflicting_policy_flag": true,
+      "isolated_omp_setting_matches": true,
+      "observed_startup_openmp_max_threads": [
+        1
+      ],
+      "no_ipc_flag": true,
+      "successful_workload": true
+    },
+    {
+      "run": "ExportAsset-minimal-ram-sequential-2048-t1-o0-r2",
+      "intended_policy": "ram-sequential",
+      "correct_policy_marker": true,
+      "no_conflicting_policy_marker": true,
+      "correct_policy_flag": true,
+      "no_conflicting_policy_flag": true,
+      "isolated_omp_setting_matches": true,
+      "observed_startup_openmp_max_threads": [
+        1
+      ],
+      "no_ipc_flag": true,
+      "successful_workload": true
+    },
+    {
+      "run": "ExportAsset-minimal-ram-sequential-2048-t1-o0-r3",
+      "intended_policy": "ram-sequential",
+      "correct_policy_marker": true,
+      "no_conflicting_policy_marker": true,
+      "correct_policy_flag": true,
+      "no_conflicting_policy_flag": true,
+      "isolated_omp_setting_matches": true,
+      "observed_startup_openmp_max_threads": [
+        1
+      ],
+      "no_ipc_flag": true,
+      "successful_workload": true
+    },
+    {
+      "run": "ExportAsset-minimal-ram-sequential-2048-t4-o0-r1",
+      "intended_policy": "ram-sequential",
+      "correct_policy_marker": true,
+      "no_conflicting_policy_marker": true,
+      "correct_policy_flag": true,
+      "no_conflicting_policy_flag": true,
+      "isolated_omp_setting_matches": true,
+      "observed_startup_openmp_max_threads": [
+        1
+      ],
+      "no_ipc_flag": true,
+      "successful_workload": true
+    },
+    {
+      "run": "ExportAsset-minimal-ram-sequential-2048-t4-o0-r2",
+      "intended_policy": "ram-sequential",
+      "correct_policy_marker": true,
+      "no_conflicting_policy_marker": true,
+      "correct_policy_flag": true,
+      "no_conflicting_policy_flag": true,
+      "isolated_omp_setting_matches": true,
+      "observed_startup_openmp_max_threads": [
+        1
+      ],
+      "no_ipc_flag": true,
+      "successful_workload": true
+    },
+    {
+      "run": "ExportAsset-minimal-ram-sequential-2048-t4-o0-r3",
+      "intended_policy": "ram-sequential",
+      "correct_policy_marker": true,
+      "no_conflicting_policy_marker": true,
+      "correct_policy_flag": true,
+      "no_conflicting_policy_flag": true,
+      "isolated_omp_setting_matches": true,
+      "observed_startup_openmp_max_threads": [
+        1
+      ],
+      "no_ipc_flag": true,
+      "successful_workload": true
+    }
+  ],
+  "passed": true
+}

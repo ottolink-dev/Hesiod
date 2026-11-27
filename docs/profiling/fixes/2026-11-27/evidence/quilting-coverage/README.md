@@ -1,0 +1,3 @@
+# HighMap #593: unmodified wrapper coverage bug
+
+Unchanged d73 baseline constant 37×29 input with 12×8 patches, seed 123 and overlap 0 or strictly positive.01: core tiling 3×3 gives 36×24/864 cells. Shuffle and Blend then request 37×29 crop and return empty. Expand ratio 2, keep_input_shape=false requests 74×58 from 72×56 and returns empty. Logs include validation warnings and exact shapes. Integer division before ceil occurs in quilting.cpp:244–245, 342–343, 386–387. This separate follow-up remains unfixed to preserve memory-patch output compatibility; acceptance should cover all three wrappers, non-divisible dimensions and deterministic/seam compatibility.

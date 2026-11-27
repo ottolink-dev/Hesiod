@@ -1,0 +1,1086 @@
+[
+  {
+    "path": "Hesiod/data/benchmarks/bench_coherent_noise.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/benchmarks/bench_depression_filling.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/benchmarks/bench_export_streamed.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/benchmarks/bench_local_min_max.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/bootstraps/_default.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/bootstraps/facing_strata.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/bootstraps/island.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/bootstraps/meander.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/bootstraps/stepping_shore.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/bootstraps/texturing_101.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/bootstraps/valley_head.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/bootstraps/yukon_valley.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/default.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/Abs.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/AbsSmooth.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/AreaRemove.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/Badlands.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/Band.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/BasaltField.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/Blend.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/Blend3.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/BlendPoissonBf.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/BlenderBridge.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/Brush.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/Bulkify.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/Bump.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/BumpLorentzian.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/CellularNoise.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/Clamp.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/ClampOblique.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/Cloud.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/CloudFromCsv.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/CloudLattice.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/CloudMerge.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/CloudRandom.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/CloudRandomDensity.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/CloudRandomDistance.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/CloudRandomPowerLaw.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/CloudRandomWeibull.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/CloudRemapValues.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/CloudSDF.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/CloudSetValuesFromBorderDistance.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/CloudSetValuesFromHeightmap.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/CloudSetValuesFromMinDistance.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/CloudShuffle.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/CloudToArrayInterp.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/CloudToPath.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/CloudToVectors.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/CoastalErosionDiffusion.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/CoastalErosionProfile.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/CoherentNoise.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/ColorAdjust.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/ColorizeGradient.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/ColorizeSolid.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/CombineMask.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/Compare.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/Cone.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/ConeComplex.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/ConeSigmoid.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/Constant.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/ConvolveSVD.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/Cos.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/Crater.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/Curvatures.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/Debug.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/DepositionFillHoles.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/DepressionFilling.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/DirectionalBlur.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/DistanceTransform.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/Equalize.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/ExpandShrink.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/ExportAsset.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/ExportCloud.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/ExportCloudToPly.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/ExportHeightmap.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/ExportNormalMap.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/ExportPath.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/ExportPointsToPly.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/ExportScene.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/ExportTexture.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/ExportTiled.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/Falloff.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/FillTalus.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/FindCutPath.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/FlatbedCarve.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/FloodingFromBoundaries.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/FloodingFromPoint.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/FloodingLakeSystem.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/FloodingUniformLevel.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/FlowSimulation.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/FlowSimulationViscous.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/Fold.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/GaborWaveFbm.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/Gain.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/GammaCorrection.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/GammaCorrectionLocal.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/GaussianDecay.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/GaussianPulse.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/Gavoronoise.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/Gradient.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/GradientAngle.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/GradientNorm.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/GradientTalus.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/HeightmapToKernel.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/HeightmapToMask.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/HeightmapToNormalMap.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/HeightmapToRGBA.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/HemisphereFieldFbm.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/HydraulicParticle.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/HydraulicProcedural.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/HydraulicSaleve.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/HydraulicStreamLog.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/ImportHeightmap.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/ImportTexture.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/Inverse.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/Island.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/IslandChain.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/IslandLandMask.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/Jagged.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/KernelCupola.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/KernelDiskSmooth.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/KernelGabor.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/KernelPrim.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/KmeansClustering2.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/KmeansClustering3.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/Laplace.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/Lerp.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/LocalMetrics.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/MakeBinary.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/MakePeriodic.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/MakePeriodicStitching.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/Median3x3.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/MergeWaterDepths.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/MixNormalMap.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/MixTexture.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/Mixer.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/MorphologicalGradient.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/MorphologicalOperators.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/MountainCone.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/MountainInselberg.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/MountainStump.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/MountainTibesti.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/Multisteps.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/Noise.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/NoiseFbm.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/NoiseIq.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/NoiseJordan.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/NoiseParberry.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/NoisePingpong.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/NoiseRidged.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/NoiseSwiss.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/NormalMapToHeightmap.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/Paraboloid.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/Path.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/PathDecimate.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/PathDig.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/PathFind.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/PathFractalize.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/PathFromCsv.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/PathInflate.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/PathMeanderize.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/PathResample.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/PathSDF.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/PathShuffle.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/PathSmooth.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/PathToCloud.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/PathToHeightmap.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/Phasor.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/Plateau.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/Plates.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/PolarShape.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/PolygonField.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/PolygonFieldFbm.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/PostProcess.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/Preview.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/ProjectTalus.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/QuiltingBlend.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/QuiltingExpand.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/QuiltingShuffle.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/RadialDisplacementToXy.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/RecastCliff.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/Recurve.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/RecurveKura.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/RelativeDistanceFromSkeleton.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/Remap.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/Rescale.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/ReverseAboveTheshold.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/ReverseAboveThreshold.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/Ridgelines.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/Rift.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/Rifts.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/Rifts_autosave.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/Rotate.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/RotateDisplacement.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/Rugosity.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/Saturate.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/ScanMask.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/SelectAngle.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/SelectBlobLog.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/SelectCavities.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/SelectInterval.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/SelectInwardOutward.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/SelectMidrange.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/SelectMultiband3.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/SelectRivers.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/SelectSlope.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/SelectSoilFlow.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/SelectSoilRocks.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/SelectSoilWeathered.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/SelectThreshold.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/SelectTransitions.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/SelectValley.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/SelectValue.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/SetAlpha.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/SetBorders.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/ShatteredPeak.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/ShiftElevation.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/Skeleton.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/Slope.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/SmoothCpulse.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/SmoothFill.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/SmoothFillHoles.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/SmoothFillSmearPeaks.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/Smoothstep.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/SnowMeltingMap.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/SnowSimulation.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/SpectralEqualizer.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/Stamping.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/Step.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/Strata.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/StrataCells.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/StrataPlates.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/StrataTerrace.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/TextureAdvectionParticle.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/TextureQuiltingExpand.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/TextureQuiltingShuffle.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/TextureSelectColor.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/TextureSplitChannels.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/TextureToHeightmap.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/TextureUvChecker.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/Thermal.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/ThermalFlatten.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/ThermalScree.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/Thru.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/Toggle.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/Transfer.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/Translate.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/ValleyFill.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/ValleyWidth.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/Vorolines.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/VorolinesFbm.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/Voronoi.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/VoronoiFbm.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/Voronoise.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/Vororand.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/Warp.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/WaterDepthDryOut.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/WaterDepthFromMask.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/WaterElevationFromDepth.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/WaterMask.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/WatershedRidge.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/WaveDune.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/WaveSine.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/WaveSquare.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/WaveTriangular.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/WaveletNoise.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/White.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/WhiteDensityMap.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/WhiteSparse.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/ZeroedEdges.hsd",
+    "errors": []
+  },
+  {
+    "path": "Hesiod/data/examples/Zoom.hsd",
+    "errors": []
+  }
+]

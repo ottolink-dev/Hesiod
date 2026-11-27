@@ -1,0 +1,18 @@
+{
+  "command": [
+    "build/gnode-sanitizers/bin/gnode_unit_tests",
+    "--gtest_output=xml:output/fixes/gnode-sanitizers/final-full.xml"
+  ],
+  "exit": 0,
+  "elapsed_seconds": 6.678220748901367,
+  "source_sha256": {
+    "external/GNode/GNode/include/gnode/graph_worker.hpp": "d15f601603197b20c5e5a76e6dc3b619452cb16cb1f3f0f5cff3c3bbe736ba6f",
+    "external/GNode/GNode/src/graph_worker.cpp": "458a5390ce353c65f8aeca057896ac8721a632b3df74e1c219c9a4964486439d",
+    "external/GNode/tests/unit_tests/src/parallel_update.cpp": "d41449ffe2899c24cafccbfc3a2d77ffe741874bfe7164453a1f6e54382e0938"
+  },
+  "environment_overrides": {
+    "ASAN_OPTIONS": "detect_leaks=0:halt_on_error=1:abort_on_error=1:detect_stack_use_after_return=1:fast_unwind_on_malloc=0",
+    "UBSAN_OPTIONS": "print_stacktrace=1:halt_on_error=1",
+    "OMP_NUM_THREADS": "1"
+  }
+}

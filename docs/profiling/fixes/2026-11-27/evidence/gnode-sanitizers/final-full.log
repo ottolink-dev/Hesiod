@@ -1,0 +1,158 @@
+[==========] Running 60 tests from 11 test suites.
+[----------] Global test environment set-up.
+[----------] 5 tests from AsyncVsSequentialUpdate
+[ RUN      ] AsyncVsSequentialUpdate.FullUpdateSmallRandomGraph
+[       OK ] AsyncVsSequentialUpdate.FullUpdateSmallRandomGraph (27 ms)
+[ RUN      ] AsyncVsSequentialUpdate.FullUpdateLargeRandomGraphMultipleThreads
+[       OK ] AsyncVsSequentialUpdate.FullUpdateLargeRandomGraphMultipleThreads (158 ms)
+[ RUN      ] AsyncVsSequentialUpdate.FullUpdateVariousThreadCounts
+[       OK ] AsyncVsSequentialUpdate.FullUpdateVariousThreadCounts (161 ms)
+[ RUN      ] AsyncVsSequentialUpdate.SelectiveUpdateFromSingleValueNode
+[       OK ] AsyncVsSequentialUpdate.SelectiveUpdateFromSingleValueNode (72 ms)
+[ RUN      ] AsyncVsSequentialUpdate.SelectiveUpdateFromMultipleValueNodes
+[       OK ] AsyncVsSequentialUpdate.SelectiveUpdateFromMultipleValueNodes (89 ms)
+[----------] 5 tests from AsyncVsSequentialUpdate (510 ms total)
+
+[----------] 3 tests from GraphCycle
+[ RUN      ] GraphCycle.Reachability
+[       OK ] GraphCycle.Reachability (0 ms)
+[ RUN      ] GraphCycle.DetectSimpleCycle
+[       OK ] GraphCycle.DetectSimpleCycle (0 ms)
+[ RUN      ] GraphCycle.DetectIndirectCycle
+[       OK ] GraphCycle.DetectIndirectCycle (0 ms)
+[----------] 3 tests from GraphCycle (1 ms total)
+
+[----------] 4 tests from GraphUpdate
+[ RUN      ] GraphUpdate.DeepPropagation
+[       OK ] GraphUpdate.DeepPropagation (14 ms)
+[ RUN      ] GraphUpdate.DisconnectedNodes
+[       OK ] GraphUpdate.DisconnectedNodes (0 ms)
+[ RUN      ] GraphUpdate.IncrementalUpdate
+[       OK ] GraphUpdate.IncrementalUpdate (0 ms)
+[ RUN      ] GraphUpdate.SimpleChain
+[       OK ] GraphUpdate.SimpleChain (0 ms)
+[----------] 4 tests from GraphUpdate (15 ms total)
+
+[----------] 7 tests from EventSystem
+[ RUN      ] EventSystem.BasicSubscriptionAndNotify
+[       OK ] EventSystem.BasicSubscriptionAndNotify (0 ms)
+[ RUN      ] EventSystem.MultipleSubscribers
+[       OK ] EventSystem.MultipleSubscribers (0 ms)
+[ RUN      ] EventSystem.AutomaticDisconnection
+[       OK ] EventSystem.AutomaticDisconnection (0 ms)
+[ RUN      ] EventSystem.ManualDisconnection
+[       OK ] EventSystem.ManualDisconnection (0 ms)
+[ RUN      ] EventSystem.OutlivedEventConnection
+[       OK ] EventSystem.OutlivedEventConnection (0 ms)
+[ RUN      ] EventSystem.NodeEvents
+[       OK ] EventSystem.NodeEvents (0 ms)
+[ RUN      ] EventSystem.GraphEvents
+[       OK ] EventSystem.GraphEvents (0 ms)
+[----------] 7 tests from EventSystem (1 ms total)
+
+[----------] 2 tests from GraphStress
+[ RUN      ] GraphStress.IncrementalUpdate5000Nodes
+[       OK ] GraphStress.IncrementalUpdate5000Nodes (2941 ms)
+[ RUN      ] GraphStress.RandomDAG_Correctness
+[       OK ] GraphStress.RandomDAG_Correctness (2165 ms)
+[----------] 2 tests from GraphStress (5106 ms total)
+
+[----------] 19 tests from ParallelGraphUpdate
+[ RUN      ] ParallelGraphUpdate.DiamondConvergenceAndSpeedup
+[       OK ] ParallelGraphUpdate.DiamondConvergenceAndSpeedup (42 ms)
+[ RUN      ] ParallelGraphUpdate.AsyncFutureBasic
+[       OK ] ParallelGraphUpdate.AsyncFutureBasic (5 ms)
+[ RUN      ] ParallelGraphUpdate.SelectiveNodesUpdate
+[       OK ] ParallelGraphUpdate.SelectiveNodesUpdate (5 ms)
+[ RUN      ] ParallelGraphUpdate.Cancellation
+[       OK ] ParallelGraphUpdate.Cancellation (4 ms)
+[ RUN      ] ParallelGraphUpdate.CancellationWithConcurrentDownstreamScheduling
+[       OK ] ParallelGraphUpdate.CancellationWithConcurrentDownstreamScheduling (68 ms)
+[ RUN      ] ParallelGraphUpdate.ExceptionPropagation
+[       OK ] ParallelGraphUpdate.ExceptionPropagation (4 ms)
+[ RUN      ] ParallelGraphUpdate.CancellationFollowedByFailureInRunningNode
+[       OK ] ParallelGraphUpdate.CancellationFollowedByFailureInRunningNode (116 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExecution
+[       OK ] ParallelGraphUpdate.GraphWorkerExecution (4 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerRapidCoalescing
+[       OK ] ParallelGraphUpdate.GraphWorkerRapidCoalescing (9 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad
+[       OK ] ParallelGraphUpdate.GraphWorkerDestroyUnderLoad (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel
+[       OK ] ParallelGraphUpdate.GraphWorkerMultiGraphSelectiveCancel (4 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInStartNext (8 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerExceptionInFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerExceptionInFinish (7 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerHoldAndResume
+[       OK ] ParallelGraphUpdate.GraphWorkerHoldAndResume (3 ms)
+[ RUN      ] ParallelGraphUpdate.ThreadPoolDetachedEnqueue
+[       OK ] ParallelGraphUpdate.ThreadPoolDetachedEnqueue (0 ms)
+[ RUN      ] ParallelGraphUpdate.MissingNodeIdInDirtyList
+[       OK ] ParallelGraphUpdate.MissingNodeIdInDirtyList (0 ms)
+[ RUN      ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish
+[       OK ] ParallelGraphUpdate.GraphWorkerStressRequestStopFinish (40 ms)
+[ RUN      ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction
+[       OK ] ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction (0 ms)
+[ RUN      ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback
+[       OK ] ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback (50 ms)
+[----------] 19 tests from ParallelGraphUpdate (380 ms total)
+
+[----------] 15 tests from SubGraphTest
+[ RUN      ] SubGraphTest.BasicHierarchicalEvaluation
+[       OK ] SubGraphTest.BasicHierarchicalEvaluation (1 ms)
+[ RUN      ] SubGraphTest.NestedSubGraphs
+[       OK ] SubGraphTest.NestedSubGraphs (1 ms)
+[ RUN      ] SubGraphTest.AsyncStressParallelSubgraphs
+[       OK ] SubGraphTest.AsyncStressParallelSubgraphs (226 ms)
+[ RUN      ] SubGraphTest.AsyncNestedSubGraphsStress
+[       OK ] SubGraphTest.AsyncNestedSubGraphsStress (53 ms)
+[ RUN      ] SubGraphTest.AsyncRapidConcurrentTriggers
+[       OK ] SubGraphTest.AsyncRapidConcurrentTriggers (74 ms)
+[ RUN      ] SubGraphTest.ExceptionPropagationSync
+[       OK ] SubGraphTest.ExceptionPropagationSync (0 ms)
+[ RUN      ] SubGraphTest.ExceptionPropagationAsync
+[       OK ] SubGraphTest.ExceptionPropagationAsync (1 ms)
+[ RUN      ] SubGraphTest.NestedSubGraphExceptionPropagationAsync
+[       OK ] SubGraphTest.NestedSubGraphExceptionPropagationAsync (2 ms)
+[ RUN      ] SubGraphTest.AsyncStressParallelSubgraphsWithExceptions
+[       OK ] SubGraphTest.AsyncStressParallelSubgraphsWithExceptions (173 ms)
+[ RUN      ] SubGraphTest.AsyncRecoveryAfterExceptionStress
+[       OK ] SubGraphTest.AsyncRecoveryAfterExceptionStress (29 ms)
+[ RUN      ] SubGraphTest.AutoBindPorts
+[       OK ] SubGraphTest.AutoBindPorts (0 ms)
+[ RUN      ] SubGraphTest.LifecycleHooksPropagation
+[       OK ] SubGraphTest.LifecycleHooksPropagation (0 ms)
+[ RUN      ] SubGraphTest.RebindSubgraph
+[       OK ] SubGraphTest.RebindSubgraph (0 ms)
+[ RUN      ] SubGraphTest.AutoBindPortsRemoval
+[       OK ] SubGraphTest.AutoBindPortsRemoval (0 ms)
+[ RUN      ] SubGraphTest.RemoveOrphanLinksAfterPortRemoval
+[       OK ] SubGraphTest.RemoveOrphanLinksAfterPortRemoval (0 ms)
+[----------] 15 tests from SubGraphTest (568 ms total)
+
+[----------] 1 test from Ports
+[ RUN      ] Ports.Validation
+[       OK ] Ports.Validation (0 ms)
+[----------] 1 test from Ports (0 ms total)
+
+[----------] 1 test from GraphLinks
+[ RUN      ] GraphLinks.InvalidPorts
+[       OK ] GraphLinks.InvalidPorts (0 ms)
+[----------] 1 test from GraphLinks (0 ms total)
+
+[----------] 2 tests from GraphExceptions
+[ RUN      ] GraphExceptions.GetNodeRefMissing
+[       OK ] GraphExceptions.GetNodeRefMissing (0 ms)
+[ RUN      ] GraphExceptions.UpdateMissingNode
+[       OK ] GraphExceptions.UpdateMissingNode (0 ms)
+[----------] 2 tests from GraphExceptions (0 ms total)
+
+[----------] 1 test from NodeExceptions
+[ RUN      ] NodeExceptions.GetValueRefExceptions
+[       OK ] NodeExceptions.GetValueRefExceptions (0 ms)
+[----------] 1 test from NodeExceptions (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 60 tests from 11 test suites ran. (6586 ms total)
+[  PASSED  ] 60 tests.

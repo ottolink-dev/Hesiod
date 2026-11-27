@@ -334,11 +334,11 @@ def test_real_16bit_heightmap_decode():
         tiny_spec = {
             "config": {"shape": [64, 64], "tiling": [1, 1], "overlap": 0.0},
             "nodes": [
-                {"id": "noise", "type": "NoiseFbm", "params": {"kw": [4, 4], "seed": 42}},
-                {"id": "exp", "type": "ExportHeightmap"},
+                {"id": "noise", "type": "CoherentNoise", "params": {"kw": [4, 4], "seed": 42}},
+                {"id": "exp", "type": "ExportHeightmap", "params": {
+                    "fname": {"value": "heightmap.png"}, "auto_export": True, "format": "png (16 bit)"}},
             ],
             "links": [["noise.output", "exp.input"]],
-            "export": [{"node": "noise", "port": "output", "path": "heightmap.png"}],
         }
         with open(tiny_spec_path, "w") as f_:
             _json.dump(tiny_spec, f_)

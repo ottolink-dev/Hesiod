@@ -1,0 +1,47 @@
+{
+  "method": "Python integer IEEE-754 binary32 exponent classification on dimensions-validated raw float32 payloads; compiled production fast-math flags do not affect this audit",
+  "files": {
+    "baseline.bin": {
+      "arrays": 32400,
+      "float_cells": 79868656,
+      "nonfinite_cells": 0,
+      "empty_arrays": 1544,
+      "bytes": 319733824
+    },
+    "new.bin": {
+      "arrays": 32400,
+      "float_cells": 79868656,
+      "nonfinite_cells": 0,
+      "empty_arrays": 1544,
+      "bytes": 319733824
+    },
+    "baseline-1.bin": {
+      "arrays": 22,
+      "float_cells": 23068672,
+      "nonfinite_cells": 0,
+      "empty_arrays": 0,
+      "bytes": 92274864
+    },
+    "new-1.bin": {
+      "arrays": 22,
+      "float_cells": 23068672,
+      "nonfinite_cells": 0,
+      "empty_arrays": 0,
+      "bytes": 92274864
+    },
+    "baseline-2.bin": {
+      "arrays": 22,
+      "float_cells": 23068672,
+      "nonfinite_cells": 0,
+      "empty_arrays": 0,
+      "bytes": 92274864
+    },
+    "new-2.bin": {
+      "arrays": 22,
+      "float_cells": 23068672,
+      "nonfinite_cells": 0,
+      "empty_arrays": 0,
+      "bytes": 92274864
+    }
+  }
+}

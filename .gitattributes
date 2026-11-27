@@ -1,0 +1,6 @@
+# Keep frozen run evidence available without overwhelming the source PR diff.
+docs/profiling/assessments/2026-11-27/** linguist-generated=true
+docs/profiling/assessments/2026-11-27/**/*.md linguist-generated=false
+docs/profiling/fixes/2026-11-27/evidence/** linguist-generated=true
+docs/profiling/fixes/2026-11-27/evidence/**/*.md linguist-generated=false
+docs/profiling/fixes/2026-11-27/publication/*.json linguist-generated=true

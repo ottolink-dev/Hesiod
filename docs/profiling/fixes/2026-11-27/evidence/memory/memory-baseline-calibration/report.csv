@@ -1,0 +1,4 @@
+case,variant,inputs_only,policy,tiles,overlap,size,planned,successful,status,process_peak_mib_median,process_peak_mib_min,process_peak_mib_max,wall_seconds_median
+ExportAsset,full,False,ram-sequential,1,0.0,1024,1,1,complete,1030.0546875,1030.0546875,1030.0546875,13.016418801998952
+TextureQuiltingExpand,full,False,ram-sequential,1,0.0,1024,1,1,complete,718.20703125,718.20703125,718.20703125,1.754157732008025
+TextureQuiltingShuffle,full,False,ram-sequential,1,0.0,1024,1,1,complete,683.26953125,683.26953125,683.26953125,1.6831559779966483

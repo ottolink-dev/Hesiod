@@ -1,0 +1,3290 @@
+[
+  {
+    "case": "ExportAsset",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 1024,
+    "repeat": 1,
+    "policy": "disk-sequential",
+    "tiles": 1,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-full-disk-sequential-1024-t1-o0-r1/fixture.hsd",
+      "--shape=1024,1024",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--min-memory"
+    ],
+    "started_at": "2026-11-27T13:12:45+0000",
+    "graph_sha256": "55fb6ac140abca61d8083891f20beb0077fadcb91f543276ce8c3f7c50defc5a",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14556,
+    "process_peak_rss_kib": 948160,
+    "process_user_seconds": 10.709894,
+    "process_system_seconds": 0.610267,
+    "wall_seconds": 11.293286262996844,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "ExportAsset",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": [
+      {
+        "path": "exports/result..glb",
+        "bytes": 46089492,
+        "sha256": "53d73f1e52d1c70f3b5d3d18bf0a10ff986b9f3f5c97e17a4c587eb67855c0e9"
+      },
+      {
+        "path": "exports/result..png",
+        "bytes": 3849729,
+        "sha256": "ee805df55dc5e8e9fbda90c94512963469d5dea1b8be6a6ecae5f1f96b20ae33"
+      },
+      {
+        "path": "exports/result._nmap.png",
+        "bytes": 4293976,
+        "sha256": "2def26ef57f6b1af23c1332528470f1aba766d77114a85cf7cc830d740818329"
+      }
+    ]
+  },
+  {
+    "case": "ExportAsset",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 1024,
+    "repeat": 2,
+    "policy": "disk-sequential",
+    "tiles": 1,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-full-disk-sequential-1024-t1-o0-r2/fixture.hsd",
+      "--shape=1024,1024",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--min-memory"
+    ],
+    "started_at": "2026-11-27T13:13:52+0000",
+    "graph_sha256": "55fb6ac140abca61d8083891f20beb0077fadcb91f543276ce8c3f7c50defc5a",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14648,
+    "process_peak_rss_kib": 948976,
+    "process_user_seconds": 10.694455,
+    "process_system_seconds": 0.700224,
+    "wall_seconds": 11.292179290991044,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "ExportAsset",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": [
+      {
+        "path": "exports/result..glb",
+        "bytes": 46089492,
+        "sha256": "53d73f1e52d1c70f3b5d3d18bf0a10ff986b9f3f5c97e17a4c587eb67855c0e9"
+      },
+      {
+        "path": "exports/result..png",
+        "bytes": 3849729,
+        "sha256": "ee805df55dc5e8e9fbda90c94512963469d5dea1b8be6a6ecae5f1f96b20ae33"
+      },
+      {
+        "path": "exports/result._nmap.png",
+        "bytes": 4293976,
+        "sha256": "2def26ef57f6b1af23c1332528470f1aba766d77114a85cf7cc830d740818329"
+      }
+    ]
+  },
+  {
+    "case": "ExportAsset",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 1024,
+    "repeat": 3,
+    "policy": "disk-sequential",
+    "tiles": 1,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-full-disk-sequential-1024-t1-o0-r3/fixture.hsd",
+      "--shape=1024,1024",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--min-memory"
+    ],
+    "started_at": "2026-11-27T13:14:47+0000",
+    "graph_sha256": "55fb6ac140abca61d8083891f20beb0077fadcb91f543276ce8c3f7c50defc5a",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14520,
+    "process_peak_rss_kib": 949204,
+    "process_user_seconds": 10.546545,
+    "process_system_seconds": 0.61309,
+    "wall_seconds": 11.081036784002208,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "ExportAsset",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": [
+      {
+        "path": "exports/result..glb",
+        "bytes": 46089492,
+        "sha256": "53d73f1e52d1c70f3b5d3d18bf0a10ff986b9f3f5c97e17a4c587eb67855c0e9"
+      },
+      {
+        "path": "exports/result..png",
+        "bytes": 3849729,
+        "sha256": "ee805df55dc5e8e9fbda90c94512963469d5dea1b8be6a6ecae5f1f96b20ae33"
+      },
+      {
+        "path": "exports/result._nmap.png",
+        "bytes": 4293976,
+        "sha256": "2def26ef57f6b1af23c1332528470f1aba766d77114a85cf7cc830d740818329"
+      }
+    ]
+  },
+  {
+    "case": "ExportAsset",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 1024,
+    "repeat": 1,
+    "policy": "disk-sequential",
+    "tiles": 4,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-full-disk-sequential-1024-t4-o0-r1/fixture.hsd",
+      "--shape=1024,1024",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--min-memory"
+    ],
+    "started_at": "2026-11-27T13:12:58+0000",
+    "graph_sha256": "55fb6ac140abca61d8083891f20beb0077fadcb91f543276ce8c3f7c50defc5a",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14632,
+    "process_peak_rss_kib": 947528,
+    "process_user_seconds": 15.678319,
+    "process_system_seconds": 0.5920219999999999,
+    "wall_seconds": 16.278660791009315,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "ExportAsset",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": [
+      {
+        "path": "exports/result..glb",
+        "bytes": 46089492,
+        "sha256": "53d73f1e52d1c70f3b5d3d18bf0a10ff986b9f3f5c97e17a4c587eb67855c0e9"
+      },
+      {
+        "path": "exports/result..png",
+        "bytes": 4183661,
+        "sha256": "8ab114e4161d02898730aa93636c21c4bd49f17e25be797e088ad65838345f2c"
+      },
+      {
+        "path": "exports/result._nmap.png",
+        "bytes": 4402938,
+        "sha256": "3c0b06420ca321e2553a28bc9bd300f17bb95c4126d572b879278019f3e8a886"
+      }
+    ]
+  },
+  {
+    "case": "ExportAsset",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 1024,
+    "repeat": 2,
+    "policy": "disk-sequential",
+    "tiles": 4,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-full-disk-sequential-1024-t4-o0-r2/fixture.hsd",
+      "--shape=1024,1024",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--min-memory"
+    ],
+    "started_at": "2026-11-27T13:14:05+0000",
+    "graph_sha256": "55fb6ac140abca61d8083891f20beb0077fadcb91f543276ce8c3f7c50defc5a",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14664,
+    "process_peak_rss_kib": 947288,
+    "process_user_seconds": 13.145087,
+    "process_system_seconds": 0.597403,
+    "wall_seconds": 13.744455378997372,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "ExportAsset",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": [
+      {
+        "path": "exports/result..glb",
+        "bytes": 46089492,
+        "sha256": "53d73f1e52d1c70f3b5d3d18bf0a10ff986b9f3f5c97e17a4c587eb67855c0e9"
+      },
+      {
+        "path": "exports/result..png",
+        "bytes": 4183661,
+        "sha256": "8ab114e4161d02898730aa93636c21c4bd49f17e25be797e088ad65838345f2c"
+      },
+      {
+        "path": "exports/result._nmap.png",
+        "bytes": 4402938,
+        "sha256": "3c0b06420ca321e2553a28bc9bd300f17bb95c4126d572b879278019f3e8a886"
+      }
+    ]
+  },
+  {
+    "case": "ExportAsset",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 1024,
+    "repeat": 3,
+    "policy": "disk-sequential",
+    "tiles": 4,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-full-disk-sequential-1024-t4-o0-r3/fixture.hsd",
+      "--shape=1024,1024",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--min-memory"
+    ],
+    "started_at": "2026-11-27T13:14:59+0000",
+    "graph_sha256": "55fb6ac140abca61d8083891f20beb0077fadcb91f543276ce8c3f7c50defc5a",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14644,
+    "process_peak_rss_kib": 947160,
+    "process_user_seconds": 10.579493,
+    "process_system_seconds": 0.547918,
+    "wall_seconds": 11.094200094987173,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "ExportAsset",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": [
+      {
+        "path": "exports/result..glb",
+        "bytes": 46089492,
+        "sha256": "53d73f1e52d1c70f3b5d3d18bf0a10ff986b9f3f5c97e17a4c587eb67855c0e9"
+      },
+      {
+        "path": "exports/result..png",
+        "bytes": 4183661,
+        "sha256": "8ab114e4161d02898730aa93636c21c4bd49f17e25be797e088ad65838345f2c"
+      },
+      {
+        "path": "exports/result._nmap.png",
+        "bytes": 4402938,
+        "sha256": "3c0b06420ca321e2553a28bc9bd300f17bb95c4126d572b879278019f3e8a886"
+      }
+    ]
+  },
+  {
+    "case": "ExportAsset",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 2048,
+    "repeat": 1,
+    "policy": "disk-sequential",
+    "tiles": 1,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-full-disk-sequential-2048-t1-o0-r1/fixture.hsd",
+      "--shape=2048,2048",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--min-memory"
+    ],
+    "started_at": "2026-11-27T13:20:07+0000",
+    "graph_sha256": "55fb6ac140abca61d8083891f20beb0077fadcb91f543276ce8c3f7c50defc5a",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14648,
+    "process_peak_rss_kib": 2968028,
+    "process_user_seconds": 126.075004,
+    "process_system_seconds": 2.12634,
+    "wall_seconds": 127.56046068000433,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "ExportAsset",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": [
+      {
+        "path": "exports/result..glb",
+        "bytes": 184452380,
+        "sha256": "94e7777ab8afd7ce068058078476b4ab5db10d5dcb6a7b0e543647a0bfb6a48c"
+      },
+      {
+        "path": "exports/result..png",
+        "bytes": 13599328,
+        "sha256": "88da246284a6566ba691e2f2d69d418a6e3456fe2ae307b344b1d4c6e1f12196"
+      },
+      {
+        "path": "exports/result._nmap.png",
+        "bytes": 15477166,
+        "sha256": "0763e010a7992257683b8a0a1ce3778690304e0cb0d923d00a118cfc27995d34"
+      }
+    ]
+  },
+  {
+    "case": "ExportAsset",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 2048,
+    "repeat": 2,
+    "policy": "disk-sequential",
+    "tiles": 1,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-full-disk-sequential-2048-t1-o0-r2/fixture.hsd",
+      "--shape=2048,2048",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--min-memory"
+    ],
+    "started_at": "2026-11-27T13:28:35+0000",
+    "graph_sha256": "55fb6ac140abca61d8083891f20beb0077fadcb91f543276ce8c3f7c50defc5a",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14640,
+    "process_peak_rss_kib": 2968556,
+    "process_user_seconds": 119.770979,
+    "process_system_seconds": 2.288648,
+    "wall_seconds": 121.42909965298895,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "ExportAsset",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": [
+      {
+        "path": "exports/result..glb",
+        "bytes": 184452380,
+        "sha256": "94e7777ab8afd7ce068058078476b4ab5db10d5dcb6a7b0e543647a0bfb6a48c"
+      },
+      {
+        "path": "exports/result..png",
+        "bytes": 13599328,
+        "sha256": "88da246284a6566ba691e2f2d69d418a6e3456fe2ae307b344b1d4c6e1f12196"
+      },
+      {
+        "path": "exports/result._nmap.png",
+        "bytes": 15477166,
+        "sha256": "0763e010a7992257683b8a0a1ce3778690304e0cb0d923d00a118cfc27995d34"
+      }
+    ]
+  },
+  {
+    "case": "ExportAsset",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 2048,
+    "repeat": 3,
+    "policy": "disk-sequential",
+    "tiles": 1,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-full-disk-sequential-2048-t1-o0-r3/fixture.hsd",
+      "--shape=2048,2048",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--min-memory"
+    ],
+    "started_at": "2026-11-27T13:37:21+0000",
+    "graph_sha256": "55fb6ac140abca61d8083891f20beb0077fadcb91f543276ce8c3f7c50defc5a",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14644,
+    "process_peak_rss_kib": 2968892,
+    "process_user_seconds": 164.606899,
+    "process_system_seconds": 2.490324,
+    "wall_seconds": 164.68641591299092,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "ExportAsset",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": [
+      {
+        "path": "exports/result..glb",
+        "bytes": 184452380,
+        "sha256": "94e7777ab8afd7ce068058078476b4ab5db10d5dcb6a7b0e543647a0bfb6a48c"
+      },
+      {
+        "path": "exports/result..png",
+        "bytes": 13599328,
+        "sha256": "88da246284a6566ba691e2f2d69d418a6e3456fe2ae307b344b1d4c6e1f12196"
+      },
+      {
+        "path": "exports/result._nmap.png",
+        "bytes": 15477166,
+        "sha256": "0763e010a7992257683b8a0a1ce3778690304e0cb0d923d00a118cfc27995d34"
+      }
+    ]
+  },
+  {
+    "case": "ExportAsset",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 2048,
+    "repeat": 1,
+    "policy": "disk-sequential",
+    "tiles": 4,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-full-disk-sequential-2048-t4-o0-r1/fixture.hsd",
+      "--shape=2048,2048",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--min-memory"
+    ],
+    "started_at": "2026-11-27T13:22:20+0000",
+    "graph_sha256": "55fb6ac140abca61d8083891f20beb0077fadcb91f543276ce8c3f7c50defc5a",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14560,
+    "process_peak_rss_kib": 2934816,
+    "process_user_seconds": 117.662689,
+    "process_system_seconds": 2.068804,
+    "wall_seconds": 118.9981500809954,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "ExportAsset",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": [
+      {
+        "path": "exports/result..glb",
+        "bytes": 184452380,
+        "sha256": "94e7777ab8afd7ce068058078476b4ab5db10d5dcb6a7b0e543647a0bfb6a48c"
+      },
+      {
+        "path": "exports/result..png",
+        "bytes": 14952897,
+        "sha256": "3db1ad26981433d38a3d6cfa24dd30762f446db71df33cf41547b016de0ad6ff"
+      },
+      {
+        "path": "exports/result._nmap.png",
+        "bytes": 15922732,
+        "sha256": "424a318f9891dc3203a8f0cf9c48c8ce73028eeb7597e4332cce407ea084645d"
+      }
+    ]
+  },
+  {
+    "case": "ExportAsset",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 2048,
+    "repeat": 2,
+    "policy": "disk-sequential",
+    "tiles": 4,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-full-disk-sequential-2048-t4-o0-r2/fixture.hsd",
+      "--shape=2048,2048",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--min-memory"
+    ],
+    "started_at": "2026-11-27T13:30:41+0000",
+    "graph_sha256": "55fb6ac140abca61d8083891f20beb0077fadcb91f543276ce8c3f7c50defc5a",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14648,
+    "process_peak_rss_kib": 2933692,
+    "process_user_seconds": 121.401152,
+    "process_system_seconds": 2.009922,
+    "wall_seconds": 122.68913589799195,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "ExportAsset",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": [
+      {
+        "path": "exports/result..glb",
+        "bytes": 184452380,
+        "sha256": "94e7777ab8afd7ce068058078476b4ab5db10d5dcb6a7b0e543647a0bfb6a48c"
+      },
+      {
+        "path": "exports/result..png",
+        "bytes": 14952897,
+        "sha256": "3db1ad26981433d38a3d6cfa24dd30762f446db71df33cf41547b016de0ad6ff"
+      },
+      {
+        "path": "exports/result._nmap.png",
+        "bytes": 15922732,
+        "sha256": "424a318f9891dc3203a8f0cf9c48c8ce73028eeb7597e4332cce407ea084645d"
+      }
+    ]
+  },
+  {
+    "case": "ExportAsset",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 2048,
+    "repeat": 3,
+    "policy": "disk-sequential",
+    "tiles": 4,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-full-disk-sequential-2048-t4-o0-r3/fixture.hsd",
+      "--shape=2048,2048",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--min-memory"
+    ],
+    "started_at": "2026-11-27T13:40:11+0000",
+    "graph_sha256": "55fb6ac140abca61d8083891f20beb0077fadcb91f543276ce8c3f7c50defc5a",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14644,
+    "process_peak_rss_kib": 2934916,
+    "process_user_seconds": 133.213621,
+    "process_system_seconds": 2.270142,
+    "wall_seconds": 134.70874717499828,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "ExportAsset",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": [
+      {
+        "path": "exports/result..glb",
+        "bytes": 184452380,
+        "sha256": "94e7777ab8afd7ce068058078476b4ab5db10d5dcb6a7b0e543647a0bfb6a48c"
+      },
+      {
+        "path": "exports/result..png",
+        "bytes": 14952897,
+        "sha256": "3db1ad26981433d38a3d6cfa24dd30762f446db71df33cf41547b016de0ad6ff"
+      },
+      {
+        "path": "exports/result._nmap.png",
+        "bytes": 15922732,
+        "sha256": "424a318f9891dc3203a8f0cf9c48c8ce73028eeb7597e4332cce407ea084645d"
+      }
+    ]
+  },
+  {
+    "case": "ExportAsset",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 1024,
+    "repeat": 1,
+    "policy": "ram-sequential",
+    "tiles": 1,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-full-ram-sequential-1024-t1-o0-r1/fixture.hsd",
+      "--shape=1024,1024",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "started_at": "2026-11-27T13:12:20+0000",
+    "graph_sha256": "55fb6ac140abca61d8083891f20beb0077fadcb91f543276ce8c3f7c50defc5a",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14644,
+    "process_peak_rss_kib": 1010576,
+    "process_user_seconds": 10.680536,
+    "process_system_seconds": 0.515709,
+    "wall_seconds": 11.180470951003372,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "ExportAsset",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": [
+      {
+        "path": "exports/result..glb",
+        "bytes": 46089492,
+        "sha256": "53d73f1e52d1c70f3b5d3d18bf0a10ff986b9f3f5c97e17a4c587eb67855c0e9"
+      },
+      {
+        "path": "exports/result..png",
+        "bytes": 3849729,
+        "sha256": "ee805df55dc5e8e9fbda90c94512963469d5dea1b8be6a6ecae5f1f96b20ae33"
+      },
+      {
+        "path": "exports/result._nmap.png",
+        "bytes": 4293976,
+        "sha256": "2def26ef57f6b1af23c1332528470f1aba766d77114a85cf7cc830d740818329"
+      }
+    ]
+  },
+  {
+    "case": "ExportAsset",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 1024,
+    "repeat": 2,
+    "policy": "ram-sequential",
+    "tiles": 1,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-full-ram-sequential-1024-t1-o0-r2/fixture.hsd",
+      "--shape=1024,1024",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "started_at": "2026-11-27T13:13:16+0000",
+    "graph_sha256": "55fb6ac140abca61d8083891f20beb0077fadcb91f543276ce8c3f7c50defc5a",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14708,
+    "process_peak_rss_kib": 1010176,
+    "process_user_seconds": 17.297924,
+    "process_system_seconds": 0.575901,
+    "wall_seconds": 17.838777400000254,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "ExportAsset",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": [
+      {
+        "path": "exports/result..glb",
+        "bytes": 46089492,
+        "sha256": "53d73f1e52d1c70f3b5d3d18bf0a10ff986b9f3f5c97e17a4c587eb67855c0e9"
+      },
+      {
+        "path": "exports/result..png",
+        "bytes": 3849729,
+        "sha256": "ee805df55dc5e8e9fbda90c94512963469d5dea1b8be6a6ecae5f1f96b20ae33"
+      },
+      {
+        "path": "exports/result._nmap.png",
+        "bytes": 4293976,
+        "sha256": "2def26ef57f6b1af23c1332528470f1aba766d77114a85cf7cc830d740818329"
+      }
+    ]
+  },
+  {
+    "case": "ExportAsset",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 1024,
+    "repeat": 3,
+    "policy": "ram-sequential",
+    "tiles": 1,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-full-ram-sequential-1024-t1-o0-r3/fixture.hsd",
+      "--shape=1024,1024",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "started_at": "2026-11-27T13:14:20+0000",
+    "graph_sha256": "55fb6ac140abca61d8083891f20beb0077fadcb91f543276ce8c3f7c50defc5a",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14644,
+    "process_peak_rss_kib": 1010360,
+    "process_user_seconds": 12.03778,
+    "process_system_seconds": 0.570041,
+    "wall_seconds": 12.580387847003294,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "ExportAsset",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": [
+      {
+        "path": "exports/result..glb",
+        "bytes": 46089492,
+        "sha256": "53d73f1e52d1c70f3b5d3d18bf0a10ff986b9f3f5c97e17a4c587eb67855c0e9"
+      },
+      {
+        "path": "exports/result..png",
+        "bytes": 3849729,
+        "sha256": "ee805df55dc5e8e9fbda90c94512963469d5dea1b8be6a6ecae5f1f96b20ae33"
+      },
+      {
+        "path": "exports/result._nmap.png",
+        "bytes": 4293976,
+        "sha256": "2def26ef57f6b1af23c1332528470f1aba766d77114a85cf7cc830d740818329"
+      }
+    ]
+  },
+  {
+    "case": "ExportAsset",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 1024,
+    "repeat": 1,
+    "policy": "ram-sequential",
+    "tiles": 4,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-full-ram-sequential-1024-t4-o0-r1/fixture.hsd",
+      "--shape=1024,1024",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "started_at": "2026-11-27T13:12:32+0000",
+    "graph_sha256": "55fb6ac140abca61d8083891f20beb0077fadcb91f543276ce8c3f7c50defc5a",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14644,
+    "process_peak_rss_kib": 987372,
+    "process_user_seconds": 10.428311,
+    "process_system_seconds": 0.48402399999999995,
+    "wall_seconds": 10.883318621999933,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "ExportAsset",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": [
+      {
+        "path": "exports/result..glb",
+        "bytes": 46089492,
+        "sha256": "53d73f1e52d1c70f3b5d3d18bf0a10ff986b9f3f5c97e17a4c587eb67855c0e9"
+      },
+      {
+        "path": "exports/result..png",
+        "bytes": 4183661,
+        "sha256": "8ab114e4161d02898730aa93636c21c4bd49f17e25be797e088ad65838345f2c"
+      },
+      {
+        "path": "exports/result._nmap.png",
+        "bytes": 4402938,
+        "sha256": "3c0b06420ca321e2553a28bc9bd300f17bb95c4126d572b879278019f3e8a886"
+      }
+    ]
+  },
+  {
+    "case": "ExportAsset",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 1024,
+    "repeat": 2,
+    "policy": "ram-sequential",
+    "tiles": 4,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-full-ram-sequential-1024-t4-o0-r2/fixture.hsd",
+      "--shape=1024,1024",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "started_at": "2026-11-27T13:13:35+0000",
+    "graph_sha256": "55fb6ac140abca61d8083891f20beb0077fadcb91f543276ce8c3f7c50defc5a",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14648,
+    "process_peak_rss_kib": 987560,
+    "process_user_seconds": 14.290247,
+    "process_system_seconds": 0.556549,
+    "wall_seconds": 14.848682766998536,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "ExportAsset",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": [
+      {
+        "path": "exports/result..glb",
+        "bytes": 46089492,
+        "sha256": "53d73f1e52d1c70f3b5d3d18bf0a10ff986b9f3f5c97e17a4c587eb67855c0e9"
+      },
+      {
+        "path": "exports/result..png",
+        "bytes": 4183661,
+        "sha256": "8ab114e4161d02898730aa93636c21c4bd49f17e25be797e088ad65838345f2c"
+      },
+      {
+        "path": "exports/result._nmap.png",
+        "bytes": 4402938,
+        "sha256": "3c0b06420ca321e2553a28bc9bd300f17bb95c4126d572b879278019f3e8a886"
+      }
+    ]
+  },
+  {
+    "case": "ExportAsset",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 1024,
+    "repeat": 3,
+    "policy": "ram-sequential",
+    "tiles": 4,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-full-ram-sequential-1024-t4-o0-r3/fixture.hsd",
+      "--shape=1024,1024",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "started_at": "2026-11-27T13:14:34+0000",
+    "graph_sha256": "55fb6ac140abca61d8083891f20beb0077fadcb91f543276ce8c3f7c50defc5a",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14648,
+    "process_peak_rss_kib": 986836,
+    "process_user_seconds": 10.489835,
+    "process_system_seconds": 0.557916,
+    "wall_seconds": 10.96108119598648,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "ExportAsset",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": [
+      {
+        "path": "exports/result..glb",
+        "bytes": 46089492,
+        "sha256": "53d73f1e52d1c70f3b5d3d18bf0a10ff986b9f3f5c97e17a4c587eb67855c0e9"
+      },
+      {
+        "path": "exports/result..png",
+        "bytes": 4183661,
+        "sha256": "8ab114e4161d02898730aa93636c21c4bd49f17e25be797e088ad65838345f2c"
+      },
+      {
+        "path": "exports/result._nmap.png",
+        "bytes": 4402938,
+        "sha256": "3c0b06420ca321e2553a28bc9bd300f17bb95c4126d572b879278019f3e8a886"
+      }
+    ]
+  },
+  {
+    "case": "ExportAsset",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 2048,
+    "repeat": 1,
+    "policy": "ram-sequential",
+    "tiles": 1,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-full-ram-sequential-2048-t1-o0-r1/fixture.hsd",
+      "--shape=2048,2048",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "started_at": "2026-11-27T13:15:16+0000",
+    "graph_sha256": "55fb6ac140abca61d8083891f20beb0077fadcb91f543276ce8c3f7c50defc5a",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14552,
+    "process_peak_rss_kib": 3180844,
+    "process_user_seconds": 134.355345,
+    "process_system_seconds": 1.7584279999999999,
+    "wall_seconds": 135.51844653599255,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "ExportAsset",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": [
+      {
+        "path": "exports/result..glb",
+        "bytes": 184452380,
+        "sha256": "94e7777ab8afd7ce068058078476b4ab5db10d5dcb6a7b0e543647a0bfb6a48c"
+      },
+      {
+        "path": "exports/result..png",
+        "bytes": 13599328,
+        "sha256": "88da246284a6566ba691e2f2d69d418a6e3456fe2ae307b344b1d4c6e1f12196"
+      },
+      {
+        "path": "exports/result._nmap.png",
+        "bytes": 15477166,
+        "sha256": "0763e010a7992257683b8a0a1ce3778690304e0cb0d923d00a118cfc27995d34"
+      }
+    ]
+  },
+  {
+    "case": "ExportAsset",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 2048,
+    "repeat": 2,
+    "policy": "ram-sequential",
+    "tiles": 1,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-full-ram-sequential-2048-t1-o0-r2/fixture.hsd",
+      "--shape=2048,2048",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "started_at": "2026-11-27T13:24:24+0000",
+    "graph_sha256": "55fb6ac140abca61d8083891f20beb0077fadcb91f543276ce8c3f7c50defc5a",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14644,
+    "process_peak_rss_kib": 3180440,
+    "process_user_seconds": 119.707005,
+    "process_system_seconds": 1.7013989999999999,
+    "wall_seconds": 120.80118438099453,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "ExportAsset",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": [
+      {
+        "path": "exports/result..glb",
+        "bytes": 184452380,
+        "sha256": "94e7777ab8afd7ce068058078476b4ab5db10d5dcb6a7b0e543647a0bfb6a48c"
+      },
+      {
+        "path": "exports/result..png",
+        "bytes": 13599328,
+        "sha256": "88da246284a6566ba691e2f2d69d418a6e3456fe2ae307b344b1d4c6e1f12196"
+      },
+      {
+        "path": "exports/result._nmap.png",
+        "bytes": 15477166,
+        "sha256": "0763e010a7992257683b8a0a1ce3778690304e0cb0d923d00a118cfc27995d34"
+      }
+    ]
+  },
+  {
+    "case": "ExportAsset",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 2048,
+    "repeat": 3,
+    "policy": "ram-sequential",
+    "tiles": 1,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-full-ram-sequential-2048-t1-o0-r3/fixture.hsd",
+      "--shape=2048,2048",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "started_at": "2026-11-27T13:32:49+0000",
+    "graph_sha256": "55fb6ac140abca61d8083891f20beb0077fadcb91f543276ce8c3f7c50defc5a",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14648,
+    "process_peak_rss_kib": 3180988,
+    "process_user_seconds": 125.861685,
+    "process_system_seconds": 1.757245,
+    "wall_seconds": 127.00379472399072,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "ExportAsset",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": [
+      {
+        "path": "exports/result..glb",
+        "bytes": 184452380,
+        "sha256": "94e7777ab8afd7ce068058078476b4ab5db10d5dcb6a7b0e543647a0bfb6a48c"
+      },
+      {
+        "path": "exports/result..png",
+        "bytes": 13599328,
+        "sha256": "88da246284a6566ba691e2f2d69d418a6e3456fe2ae307b344b1d4c6e1f12196"
+      },
+      {
+        "path": "exports/result._nmap.png",
+        "bytes": 15477166,
+        "sha256": "0763e010a7992257683b8a0a1ce3778690304e0cb0d923d00a118cfc27995d34"
+      }
+    ]
+  },
+  {
+    "case": "ExportAsset",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 2048,
+    "repeat": 1,
+    "policy": "ram-sequential",
+    "tiles": 4,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-full-ram-sequential-2048-t4-o0-r1/fixture.hsd",
+      "--shape=2048,2048",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "started_at": "2026-11-27T13:17:37+0000",
+    "graph_sha256": "55fb6ac140abca61d8083891f20beb0077fadcb91f543276ce8c3f7c50defc5a",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14632,
+    "process_peak_rss_kib": 3090204,
+    "process_user_seconds": 143.623717,
+    "process_system_seconds": 1.5917759999999999,
+    "wall_seconds": 144.65389315600623,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "ExportAsset",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": [
+      {
+        "path": "exports/result..glb",
+        "bytes": 184452380,
+        "sha256": "94e7777ab8afd7ce068058078476b4ab5db10d5dcb6a7b0e543647a0bfb6a48c"
+      },
+      {
+        "path": "exports/result..png",
+        "bytes": 14952897,
+        "sha256": "3db1ad26981433d38a3d6cfa24dd30762f446db71df33cf41547b016de0ad6ff"
+      },
+      {
+        "path": "exports/result._nmap.png",
+        "bytes": 15922732,
+        "sha256": "424a318f9891dc3203a8f0cf9c48c8ce73028eeb7597e4332cce407ea084645d"
+      }
+    ]
+  },
+  {
+    "case": "ExportAsset",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 2048,
+    "repeat": 2,
+    "policy": "ram-sequential",
+    "tiles": 4,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-full-ram-sequential-2048-t4-o0-r2/fixture.hsd",
+      "--shape=2048,2048",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "started_at": "2026-11-27T13:26:30+0000",
+    "graph_sha256": "55fb6ac140abca61d8083891f20beb0077fadcb91f543276ce8c3f7c50defc5a",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14560,
+    "process_peak_rss_kib": 3089904,
+    "process_user_seconds": 118.266068,
+    "process_system_seconds": 1.691214,
+    "wall_seconds": 119.3945248050004,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 0
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "ExportAsset",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": [
+      {
+        "path": "exports/result..glb",
+        "bytes": 184452380,
+        "sha256": "94e7777ab8afd7ce068058078476b4ab5db10d5dcb6a7b0e543647a0bfb6a48c"
+      },
+      {
+        "path": "exports/result..png",
+        "bytes": 14952897,
+        "sha256": "3db1ad26981433d38a3d6cfa24dd30762f446db71df33cf41547b016de0ad6ff"
+      },
+      {
+        "path": "exports/result._nmap.png",
+        "bytes": 15922732,
+        "sha256": "424a318f9891dc3203a8f0cf9c48c8ce73028eeb7597e4332cce407ea084645d"
+      }
+    ]
+  },
+  {
+    "case": "ExportAsset",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 2048,
+    "repeat": 3,
+    "policy": "ram-sequential",
+    "tiles": 4,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-full-ram-sequential-2048-t4-o0-r3/fixture.hsd",
+      "--shape=2048,2048",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "started_at": "2026-11-27T13:35:02+0000",
+    "graph_sha256": "55fb6ac140abca61d8083891f20beb0077fadcb91f543276ce8c3f7c50defc5a",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14664,
+    "process_peak_rss_kib": 3090144,
+    "process_user_seconds": 132.638733,
+    "process_system_seconds": 1.674791,
+    "wall_seconds": 133.72215157200117,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "ExportAsset",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": [
+      {
+        "path": "exports/result..glb",
+        "bytes": 184452380,
+        "sha256": "94e7777ab8afd7ce068058078476b4ab5db10d5dcb6a7b0e543647a0bfb6a48c"
+      },
+      {
+        "path": "exports/result..png",
+        "bytes": 14952897,
+        "sha256": "3db1ad26981433d38a3d6cfa24dd30762f446db71df33cf41547b016de0ad6ff"
+      },
+      {
+        "path": "exports/result._nmap.png",
+        "bytes": 15922732,
+        "sha256": "424a318f9891dc3203a8f0cf9c48c8ce73028eeb7597e4332cce407ea084645d"
+      }
+    ]
+  },
+  {
+    "case": "ExportAsset",
+    "variant": "minimal",
+    "inputs_only": false,
+    "size": 1024,
+    "repeat": 1,
+    "policy": "disk-sequential",
+    "tiles": 1,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-minimal-disk-sequential-1024-t1-o0-r1/fixture.hsd",
+      "--shape=1024,1024",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--min-memory"
+    ],
+    "started_at": "2026-11-27T13:12:43+0000",
+    "graph_sha256": "c3f8f358d76c16625c68fbb52159e67aa4e317cc9b9daf9bd6dcff0295540ca1",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14640,
+    "process_peak_rss_kib": 940400,
+    "process_user_seconds": 0.825938,
+    "process_system_seconds": 0.45148299999999997,
+    "wall_seconds": 1.3964011460047914,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportAsset",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": [
+      {
+        "path": "exports/result..glb",
+        "bytes": 46089436,
+        "sha256": "461d38be7128cfb739dae97a82dbbd32538df54992ed7e892af3dffb36940bb8"
+      },
+      {
+        "path": "exports/result._nmap.png",
+        "bytes": 4266327,
+        "sha256": "fc5eb77967eb644aef2f3577c83ea0bb56976e9de3ee6049413be72bdf8929c7"
+      }
+    ]
+  },
+  {
+    "case": "ExportAsset",
+    "variant": "minimal",
+    "inputs_only": false,
+    "size": 1024,
+    "repeat": 2,
+    "policy": "disk-sequential",
+    "tiles": 1,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-minimal-disk-sequential-1024-t1-o0-r2/fixture.hsd",
+      "--shape=1024,1024",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--min-memory"
+    ],
+    "started_at": "2026-11-27T13:13:50+0000",
+    "graph_sha256": "c3f8f358d76c16625c68fbb52159e67aa4e317cc9b9daf9bd6dcff0295540ca1",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14636,
+    "process_peak_rss_kib": 939036,
+    "process_user_seconds": 0.9197679999999999,
+    "process_system_seconds": 0.5290739999999999,
+    "wall_seconds": 1.5646194539876888,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportAsset",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": [
+      {
+        "path": "exports/result..glb",
+        "bytes": 46089436,
+        "sha256": "461d38be7128cfb739dae97a82dbbd32538df54992ed7e892af3dffb36940bb8"
+      },
+      {
+        "path": "exports/result._nmap.png",
+        "bytes": 4266327,
+        "sha256": "fc5eb77967eb644aef2f3577c83ea0bb56976e9de3ee6049413be72bdf8929c7"
+      }
+    ]
+  },
+  {
+    "case": "ExportAsset",
+    "variant": "minimal",
+    "inputs_only": false,
+    "size": 1024,
+    "repeat": 3,
+    "policy": "disk-sequential",
+    "tiles": 1,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-minimal-disk-sequential-1024-t1-o0-r3/fixture.hsd",
+      "--shape=1024,1024",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--min-memory"
+    ],
+    "started_at": "2026-11-27T13:14:45+0000",
+    "graph_sha256": "c3f8f358d76c16625c68fbb52159e67aa4e317cc9b9daf9bd6dcff0295540ca1",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14560,
+    "process_peak_rss_kib": 939080,
+    "process_user_seconds": 0.8312609999999999,
+    "process_system_seconds": 0.467528,
+    "wall_seconds": 1.4089035969955148,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportAsset",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": [
+      {
+        "path": "exports/result..glb",
+        "bytes": 46089436,
+        "sha256": "461d38be7128cfb739dae97a82dbbd32538df54992ed7e892af3dffb36940bb8"
+      },
+      {
+        "path": "exports/result._nmap.png",
+        "bytes": 4266327,
+        "sha256": "fc5eb77967eb644aef2f3577c83ea0bb56976e9de3ee6049413be72bdf8929c7"
+      }
+    ]
+  },
+  {
+    "case": "ExportAsset",
+    "variant": "minimal",
+    "inputs_only": false,
+    "size": 1024,
+    "repeat": 1,
+    "policy": "disk-sequential",
+    "tiles": 4,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-minimal-disk-sequential-1024-t4-o0-r1/fixture.hsd",
+      "--shape=1024,1024",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--min-memory"
+    ],
+    "started_at": "2026-11-27T13:12:56+0000",
+    "graph_sha256": "c3f8f358d76c16625c68fbb52159e67aa4e317cc9b9daf9bd6dcff0295540ca1",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14632,
+    "process_peak_rss_kib": 939244,
+    "process_user_seconds": 0.860753,
+    "process_system_seconds": 0.439998,
+    "wall_seconds": 1.406019311005366,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportAsset",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": [
+      {
+        "path": "exports/result..glb",
+        "bytes": 46089436,
+        "sha256": "461d38be7128cfb739dae97a82dbbd32538df54992ed7e892af3dffb36940bb8"
+      },
+      {
+        "path": "exports/result._nmap.png",
+        "bytes": 4266327,
+        "sha256": "fc5eb77967eb644aef2f3577c83ea0bb56976e9de3ee6049413be72bdf8929c7"
+      }
+    ]
+  },
+  {
+    "case": "ExportAsset",
+    "variant": "minimal",
+    "inputs_only": false,
+    "size": 1024,
+    "repeat": 2,
+    "policy": "disk-sequential",
+    "tiles": 4,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-minimal-disk-sequential-1024-t4-o0-r2/fixture.hsd",
+      "--shape=1024,1024",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--min-memory"
+    ],
+    "started_at": "2026-11-27T13:14:03+0000",
+    "graph_sha256": "c3f8f358d76c16625c68fbb52159e67aa4e317cc9b9daf9bd6dcff0295540ca1",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14600,
+    "process_peak_rss_kib": 940252,
+    "process_user_seconds": 0.805314,
+    "process_system_seconds": 0.487139,
+    "wall_seconds": 1.3574923800042598,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportAsset",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": [
+      {
+        "path": "exports/result..glb",
+        "bytes": 46089436,
+        "sha256": "461d38be7128cfb739dae97a82dbbd32538df54992ed7e892af3dffb36940bb8"
+      },
+      {
+        "path": "exports/result._nmap.png",
+        "bytes": 4266327,
+        "sha256": "fc5eb77967eb644aef2f3577c83ea0bb56976e9de3ee6049413be72bdf8929c7"
+      }
+    ]
+  },
+  {
+    "case": "ExportAsset",
+    "variant": "minimal",
+    "inputs_only": false,
+    "size": 1024,
+    "repeat": 3,
+    "policy": "disk-sequential",
+    "tiles": 4,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-minimal-disk-sequential-1024-t4-o0-r3/fixture.hsd",
+      "--shape=1024,1024",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--min-memory"
+    ],
+    "started_at": "2026-11-27T13:14:58+0000",
+    "graph_sha256": "c3f8f358d76c16625c68fbb52159e67aa4e317cc9b9daf9bd6dcff0295540ca1",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14648,
+    "process_peak_rss_kib": 940268,
+    "process_user_seconds": 0.796833,
+    "process_system_seconds": 0.49219599999999997,
+    "wall_seconds": 1.407814103004057,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportAsset",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": [
+      {
+        "path": "exports/result..glb",
+        "bytes": 46089436,
+        "sha256": "461d38be7128cfb739dae97a82dbbd32538df54992ed7e892af3dffb36940bb8"
+      },
+      {
+        "path": "exports/result._nmap.png",
+        "bytes": 4266327,
+        "sha256": "fc5eb77967eb644aef2f3577c83ea0bb56976e9de3ee6049413be72bdf8929c7"
+      }
+    ]
+  },
+  {
+    "case": "ExportAsset",
+    "variant": "minimal",
+    "inputs_only": false,
+    "size": 2048,
+    "repeat": 1,
+    "policy": "disk-sequential",
+    "tiles": 1,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-minimal-disk-sequential-2048-t1-o0-r1/fixture.hsd",
+      "--shape=2048,2048",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--min-memory"
+    ],
+    "started_at": "2026-11-27T13:20:02+0000",
+    "graph_sha256": "c3f8f358d76c16625c68fbb52159e67aa4e317cc9b9daf9bd6dcff0295540ca1",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14644,
+    "process_peak_rss_kib": 2903116,
+    "process_user_seconds": 3.444112,
+    "process_system_seconds": 1.397076,
+    "wall_seconds": 4.907781418995,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportAsset",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": [
+      {
+        "path": "exports/result..glb",
+        "bytes": 184452324,
+        "sha256": "5bb44125c3df5f77980af46ed897268b13586b8204cd1d8691565ac508a77941"
+      },
+      {
+        "path": "exports/result._nmap.png",
+        "bytes": 15050100,
+        "sha256": "912650ec603d4cd42acfcafc0184903e6c7224ed85ac17c8cf5a778bc9e57dad"
+      }
+    ]
+  },
+  {
+    "case": "ExportAsset",
+    "variant": "minimal",
+    "inputs_only": false,
+    "size": 2048,
+    "repeat": 2,
+    "policy": "disk-sequential",
+    "tiles": 1,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-minimal-disk-sequential-2048-t1-o0-r2/fixture.hsd",
+      "--shape=2048,2048",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--min-memory"
+    ],
+    "started_at": "2026-11-27T13:28:29+0000",
+    "graph_sha256": "c3f8f358d76c16625c68fbb52159e67aa4e317cc9b9daf9bd6dcff0295540ca1",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14644,
+    "process_peak_rss_kib": 2902460,
+    "process_user_seconds": 3.434947,
+    "process_system_seconds": 1.581494,
+    "wall_seconds": 5.091665716012358,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportAsset",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": [
+      {
+        "path": "exports/result..glb",
+        "bytes": 184452324,
+        "sha256": "5bb44125c3df5f77980af46ed897268b13586b8204cd1d8691565ac508a77941"
+      },
+      {
+        "path": "exports/result._nmap.png",
+        "bytes": 15050100,
+        "sha256": "912650ec603d4cd42acfcafc0184903e6c7224ed85ac17c8cf5a778bc9e57dad"
+      }
+    ]
+  },
+  {
+    "case": "ExportAsset",
+    "variant": "minimal",
+    "inputs_only": false,
+    "size": 2048,
+    "repeat": 3,
+    "policy": "disk-sequential",
+    "tiles": 1,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-minimal-disk-sequential-2048-t1-o0-r3/fixture.hsd",
+      "--shape=2048,2048",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--min-memory"
+    ],
+    "started_at": "2026-11-27T13:37:16+0000",
+    "graph_sha256": "c3f8f358d76c16625c68fbb52159e67aa4e317cc9b9daf9bd6dcff0295540ca1",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14648,
+    "process_peak_rss_kib": 2902860,
+    "process_user_seconds": 3.592586,
+    "process_system_seconds": 1.512052,
+    "wall_seconds": 5.189560472994344,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportAsset",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": [
+      {
+        "path": "exports/result..glb",
+        "bytes": 184452324,
+        "sha256": "5bb44125c3df5f77980af46ed897268b13586b8204cd1d8691565ac508a77941"
+      },
+      {
+        "path": "exports/result._nmap.png",
+        "bytes": 15050100,
+        "sha256": "912650ec603d4cd42acfcafc0184903e6c7224ed85ac17c8cf5a778bc9e57dad"
+      }
+    ]
+  },
+  {
+    "case": "ExportAsset",
+    "variant": "minimal",
+    "inputs_only": false,
+    "size": 2048,
+    "repeat": 1,
+    "policy": "disk-sequential",
+    "tiles": 4,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-minimal-disk-sequential-2048-t4-o0-r1/fixture.hsd",
+      "--shape=2048,2048",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--min-memory"
+    ],
+    "started_at": "2026-11-27T13:22:14+0000",
+    "graph_sha256": "c3f8f358d76c16625c68fbb52159e67aa4e317cc9b9daf9bd6dcff0295540ca1",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14644,
+    "process_peak_rss_kib": 2902664,
+    "process_user_seconds": 3.5936310000000002,
+    "process_system_seconds": 1.399039,
+    "wall_seconds": 5.127053453004919,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportAsset",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": [
+      {
+        "path": "exports/result..glb",
+        "bytes": 184452324,
+        "sha256": "5bb44125c3df5f77980af46ed897268b13586b8204cd1d8691565ac508a77941"
+      },
+      {
+        "path": "exports/result._nmap.png",
+        "bytes": 15050100,
+        "sha256": "912650ec603d4cd42acfcafc0184903e6c7224ed85ac17c8cf5a778bc9e57dad"
+      }
+    ]
+  },
+  {
+    "case": "ExportAsset",
+    "variant": "minimal",
+    "inputs_only": false,
+    "size": 2048,
+    "repeat": 2,
+    "policy": "disk-sequential",
+    "tiles": 4,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-minimal-disk-sequential-2048-t4-o0-r2/fixture.hsd",
+      "--shape=2048,2048",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--min-memory"
+    ],
+    "started_at": "2026-11-27T13:30:36+0000",
+    "graph_sha256": "c3f8f358d76c16625c68fbb52159e67aa4e317cc9b9daf9bd6dcff0295540ca1",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14648,
+    "process_peak_rss_kib": 2902808,
+    "process_user_seconds": 3.501768,
+    "process_system_seconds": 1.418666,
+    "wall_seconds": 5.026510245006648,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportAsset",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": [
+      {
+        "path": "exports/result..glb",
+        "bytes": 184452324,
+        "sha256": "5bb44125c3df5f77980af46ed897268b13586b8204cd1d8691565ac508a77941"
+      },
+      {
+        "path": "exports/result._nmap.png",
+        "bytes": 15050100,
+        "sha256": "912650ec603d4cd42acfcafc0184903e6c7224ed85ac17c8cf5a778bc9e57dad"
+      }
+    ]
+  },
+  {
+    "case": "ExportAsset",
+    "variant": "minimal",
+    "inputs_only": false,
+    "size": 2048,
+    "repeat": 3,
+    "policy": "disk-sequential",
+    "tiles": 4,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-minimal-disk-sequential-2048-t4-o0-r3/fixture.hsd",
+      "--shape=2048,2048",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--min-memory"
+    ],
+    "started_at": "2026-11-27T13:40:06+0000",
+    "graph_sha256": "c3f8f358d76c16625c68fbb52159e67aa4e317cc9b9daf9bd6dcff0295540ca1",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14520,
+    "process_peak_rss_kib": 2902628,
+    "process_user_seconds": 3.626849,
+    "process_system_seconds": 1.520108,
+    "wall_seconds": 5.251124080008594,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportAsset",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": [
+      {
+        "path": "exports/result..glb",
+        "bytes": 184452324,
+        "sha256": "5bb44125c3df5f77980af46ed897268b13586b8204cd1d8691565ac508a77941"
+      },
+      {
+        "path": "exports/result._nmap.png",
+        "bytes": 15050100,
+        "sha256": "912650ec603d4cd42acfcafc0184903e6c7224ed85ac17c8cf5a778bc9e57dad"
+      }
+    ]
+  },
+  {
+    "case": "ExportAsset",
+    "variant": "minimal",
+    "inputs_only": false,
+    "size": 1024,
+    "repeat": 1,
+    "policy": "ram-sequential",
+    "tiles": 1,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-minimal-ram-sequential-1024-t1-o0-r1/fixture.hsd",
+      "--shape=1024,1024",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "started_at": "2026-11-27T13:12:18+0000",
+    "graph_sha256": "c3f8f358d76c16625c68fbb52159e67aa4e317cc9b9daf9bd6dcff0295540ca1",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14648,
+    "process_peak_rss_kib": 943956,
+    "process_user_seconds": 0.814912,
+    "process_system_seconds": 0.47339899999999996,
+    "wall_seconds": 1.4110935279895784,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportAsset",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": [
+      {
+        "path": "exports/result..glb",
+        "bytes": 46089436,
+        "sha256": "461d38be7128cfb739dae97a82dbbd32538df54992ed7e892af3dffb36940bb8"
+      },
+      {
+        "path": "exports/result._nmap.png",
+        "bytes": 4266327,
+        "sha256": "fc5eb77967eb644aef2f3577c83ea0bb56976e9de3ee6049413be72bdf8929c7"
+      }
+    ]
+  },
+  {
+    "case": "ExportAsset",
+    "variant": "minimal",
+    "inputs_only": false,
+    "size": 1024,
+    "repeat": 2,
+    "policy": "ram-sequential",
+    "tiles": 1,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-minimal-ram-sequential-1024-t1-o0-r2/fixture.hsd",
+      "--shape=1024,1024",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "started_at": "2026-11-27T13:13:14+0000",
+    "graph_sha256": "c3f8f358d76c16625c68fbb52159e67aa4e317cc9b9daf9bd6dcff0295540ca1",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14632,
+    "process_peak_rss_kib": 943388,
+    "process_user_seconds": 0.9768479999999999,
+    "process_system_seconds": 0.5138119999999999,
+    "wall_seconds": 1.5722123390005436,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportAsset",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": [
+      {
+        "path": "exports/result..glb",
+        "bytes": 46089436,
+        "sha256": "461d38be7128cfb739dae97a82dbbd32538df54992ed7e892af3dffb36940bb8"
+      },
+      {
+        "path": "exports/result._nmap.png",
+        "bytes": 4266327,
+        "sha256": "fc5eb77967eb644aef2f3577c83ea0bb56976e9de3ee6049413be72bdf8929c7"
+      }
+    ]
+  },
+  {
+    "case": "ExportAsset",
+    "variant": "minimal",
+    "inputs_only": false,
+    "size": 1024,
+    "repeat": 3,
+    "policy": "ram-sequential",
+    "tiles": 1,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-minimal-ram-sequential-1024-t1-o0-r3/fixture.hsd",
+      "--shape=1024,1024",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "started_at": "2026-11-27T13:14:18+0000",
+    "graph_sha256": "c3f8f358d76c16625c68fbb52159e67aa4e317cc9b9daf9bd6dcff0295540ca1",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14556,
+    "process_peak_rss_kib": 943764,
+    "process_user_seconds": 0.981363,
+    "process_system_seconds": 0.49340399999999995,
+    "wall_seconds": 1.5984051180130336,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportAsset",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": [
+      {
+        "path": "exports/result..glb",
+        "bytes": 46089436,
+        "sha256": "461d38be7128cfb739dae97a82dbbd32538df54992ed7e892af3dffb36940bb8"
+      },
+      {
+        "path": "exports/result._nmap.png",
+        "bytes": 4266327,
+        "sha256": "fc5eb77967eb644aef2f3577c83ea0bb56976e9de3ee6049413be72bdf8929c7"
+      }
+    ]
+  },
+  {
+    "case": "ExportAsset",
+    "variant": "minimal",
+    "inputs_only": false,
+    "size": 1024,
+    "repeat": 1,
+    "policy": "ram-sequential",
+    "tiles": 4,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-minimal-ram-sequential-1024-t4-o0-r1/fixture.hsd",
+      "--shape=1024,1024",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "started_at": "2026-11-27T13:12:31+0000",
+    "graph_sha256": "c3f8f358d76c16625c68fbb52159e67aa4e317cc9b9daf9bd6dcff0295540ca1",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14648,
+    "process_peak_rss_kib": 944124,
+    "process_user_seconds": 0.8404659999999999,
+    "process_system_seconds": 0.447353,
+    "wall_seconds": 1.4076519310037838,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportAsset",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": [
+      {
+        "path": "exports/result..glb",
+        "bytes": 46089436,
+        "sha256": "461d38be7128cfb739dae97a82dbbd32538df54992ed7e892af3dffb36940bb8"
+      },
+      {
+        "path": "exports/result._nmap.png",
+        "bytes": 4266327,
+        "sha256": "fc5eb77967eb644aef2f3577c83ea0bb56976e9de3ee6049413be72bdf8929c7"
+      }
+    ]
+  },
+  {
+    "case": "ExportAsset",
+    "variant": "minimal",
+    "inputs_only": false,
+    "size": 1024,
+    "repeat": 2,
+    "policy": "ram-sequential",
+    "tiles": 4,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-minimal-ram-sequential-1024-t4-o0-r2/fixture.hsd",
+      "--shape=1024,1024",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "started_at": "2026-11-27T13:13:34+0000",
+    "graph_sha256": "c3f8f358d76c16625c68fbb52159e67aa4e317cc9b9daf9bd6dcff0295540ca1",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14644,
+    "process_peak_rss_kib": 944292,
+    "process_user_seconds": 0.846949,
+    "process_system_seconds": 0.544549,
+    "wall_seconds": 1.479091981993406,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportAsset",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": [
+      {
+        "path": "exports/result..glb",
+        "bytes": 46089436,
+        "sha256": "461d38be7128cfb739dae97a82dbbd32538df54992ed7e892af3dffb36940bb8"
+      },
+      {
+        "path": "exports/result._nmap.png",
+        "bytes": 4266327,
+        "sha256": "fc5eb77967eb644aef2f3577c83ea0bb56976e9de3ee6049413be72bdf8929c7"
+      }
+    ]
+  },
+  {
+    "case": "ExportAsset",
+    "variant": "minimal",
+    "inputs_only": false,
+    "size": 1024,
+    "repeat": 3,
+    "policy": "ram-sequential",
+    "tiles": 4,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-minimal-ram-sequential-1024-t4-o0-r3/fixture.hsd",
+      "--shape=1024,1024",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "started_at": "2026-11-27T13:14:33+0000",
+    "graph_sha256": "c3f8f358d76c16625c68fbb52159e67aa4e317cc9b9daf9bd6dcff0295540ca1",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14524,
+    "process_peak_rss_kib": 944612,
+    "process_user_seconds": 0.826405,
+    "process_system_seconds": 0.496266,
+    "wall_seconds": 1.4100402699987171,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportAsset",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": [
+      {
+        "path": "exports/result..glb",
+        "bytes": 46089436,
+        "sha256": "461d38be7128cfb739dae97a82dbbd32538df54992ed7e892af3dffb36940bb8"
+      },
+      {
+        "path": "exports/result._nmap.png",
+        "bytes": 4266327,
+        "sha256": "fc5eb77967eb644aef2f3577c83ea0bb56976e9de3ee6049413be72bdf8929c7"
+      }
+    ]
+  },
+  {
+    "case": "ExportAsset",
+    "variant": "minimal",
+    "inputs_only": false,
+    "size": 2048,
+    "repeat": 1,
+    "policy": "ram-sequential",
+    "tiles": 1,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-minimal-ram-sequential-2048-t1-o0-r1/fixture.hsd",
+      "--shape=2048,2048",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "started_at": "2026-11-27T13:15:11+0000",
+    "graph_sha256": "c3f8f358d76c16625c68fbb52159e67aa4e317cc9b9daf9bd6dcff0295540ca1",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14636,
+    "process_peak_rss_kib": 2918228,
+    "process_user_seconds": 3.69022,
+    "process_system_seconds": 1.372541,
+    "wall_seconds": 5.166001306002727,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportAsset",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": [
+      {
+        "path": "exports/result..glb",
+        "bytes": 184452324,
+        "sha256": "5bb44125c3df5f77980af46ed897268b13586b8204cd1d8691565ac508a77941"
+      },
+      {
+        "path": "exports/result._nmap.png",
+        "bytes": 15050100,
+        "sha256": "912650ec603d4cd42acfcafc0184903e6c7224ed85ac17c8cf5a778bc9e57dad"
+      }
+    ]
+  },
+  {
+    "case": "ExportAsset",
+    "variant": "minimal",
+    "inputs_only": false,
+    "size": 2048,
+    "repeat": 2,
+    "policy": "ram-sequential",
+    "tiles": 1,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-minimal-ram-sequential-2048-t1-o0-r2/fixture.hsd",
+      "--shape=2048,2048",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "started_at": "2026-11-27T13:24:19+0000",
+    "graph_sha256": "c3f8f358d76c16625c68fbb52159e67aa4e317cc9b9daf9bd6dcff0295540ca1",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14644,
+    "process_peak_rss_kib": 2919260,
+    "process_user_seconds": 3.461778,
+    "process_system_seconds": 1.375766,
+    "wall_seconds": 4.967437024999526,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportAsset",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": [
+      {
+        "path": "exports/result..glb",
+        "bytes": 184452324,
+        "sha256": "5bb44125c3df5f77980af46ed897268b13586b8204cd1d8691565ac508a77941"
+      },
+      {
+        "path": "exports/result._nmap.png",
+        "bytes": 15050100,
+        "sha256": "912650ec603d4cd42acfcafc0184903e6c7224ed85ac17c8cf5a778bc9e57dad"
+      }
+    ]
+  },
+  {
+    "case": "ExportAsset",
+    "variant": "minimal",
+    "inputs_only": false,
+    "size": 2048,
+    "repeat": 3,
+    "policy": "ram-sequential",
+    "tiles": 1,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-minimal-ram-sequential-2048-t1-o0-r3/fixture.hsd",
+      "--shape=2048,2048",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "started_at": "2026-11-27T13:32:44+0000",
+    "graph_sha256": "c3f8f358d76c16625c68fbb52159e67aa4e317cc9b9daf9bd6dcff0295540ca1",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14552,
+    "process_peak_rss_kib": 2918584,
+    "process_user_seconds": 3.502435,
+    "process_system_seconds": 1.420918,
+    "wall_seconds": 5.046855597000103,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportAsset",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": [
+      {
+        "path": "exports/result..glb",
+        "bytes": 184452324,
+        "sha256": "5bb44125c3df5f77980af46ed897268b13586b8204cd1d8691565ac508a77941"
+      },
+      {
+        "path": "exports/result._nmap.png",
+        "bytes": 15050100,
+        "sha256": "912650ec603d4cd42acfcafc0184903e6c7224ed85ac17c8cf5a778bc9e57dad"
+      }
+    ]
+  },
+  {
+    "case": "ExportAsset",
+    "variant": "minimal",
+    "inputs_only": false,
+    "size": 2048,
+    "repeat": 1,
+    "policy": "ram-sequential",
+    "tiles": 4,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-minimal-ram-sequential-2048-t4-o0-r1/fixture.hsd",
+      "--shape=2048,2048",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "started_at": "2026-11-27T13:17:32+0000",
+    "graph_sha256": "c3f8f358d76c16625c68fbb52159e67aa4e317cc9b9daf9bd6dcff0295540ca1",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14668,
+    "process_peak_rss_kib": 2917868,
+    "process_user_seconds": 3.634742,
+    "process_system_seconds": 1.470242,
+    "wall_seconds": 5.174999114999082,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportAsset",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": [
+      {
+        "path": "exports/result..glb",
+        "bytes": 184452324,
+        "sha256": "5bb44125c3df5f77980af46ed897268b13586b8204cd1d8691565ac508a77941"
+      },
+      {
+        "path": "exports/result._nmap.png",
+        "bytes": 15050100,
+        "sha256": "912650ec603d4cd42acfcafc0184903e6c7224ed85ac17c8cf5a778bc9e57dad"
+      }
+    ]
+  },
+  {
+    "case": "ExportAsset",
+    "variant": "minimal",
+    "inputs_only": false,
+    "size": 2048,
+    "repeat": 2,
+    "policy": "ram-sequential",
+    "tiles": 4,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-minimal-ram-sequential-2048-t4-o0-r2/fixture.hsd",
+      "--shape=2048,2048",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "started_at": "2026-11-27T13:26:25+0000",
+    "graph_sha256": "c3f8f358d76c16625c68fbb52159e67aa4e317cc9b9daf9bd6dcff0295540ca1",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14644,
+    "process_peak_rss_kib": 2918992,
+    "process_user_seconds": 3.4520239999999998,
+    "process_system_seconds": 1.434057,
+    "wall_seconds": 4.95766807399923,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportAsset",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": [
+      {
+        "path": "exports/result..glb",
+        "bytes": 184452324,
+        "sha256": "5bb44125c3df5f77980af46ed897268b13586b8204cd1d8691565ac508a77941"
+      },
+      {
+        "path": "exports/result._nmap.png",
+        "bytes": 15050100,
+        "sha256": "912650ec603d4cd42acfcafc0184903e6c7224ed85ac17c8cf5a778bc9e57dad"
+      }
+    ]
+  },
+  {
+    "case": "ExportAsset",
+    "variant": "minimal",
+    "inputs_only": false,
+    "size": 2048,
+    "repeat": 3,
+    "policy": "ram-sequential",
+    "tiles": 4,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-export/runs/ExportAsset-minimal-ram-sequential-2048-t4-o0-r3/fixture.hsd",
+      "--shape=2048,2048",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "started_at": "2026-11-27T13:34:56+0000",
+    "graph_sha256": "c3f8f358d76c16625c68fbb52159e67aa4e317cc9b9daf9bd6dcff0295540ca1",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14648,
+    "process_peak_rss_kib": 2918616,
+    "process_user_seconds": 3.562516,
+    "process_system_seconds": 1.484427,
+    "wall_seconds": 5.153932159009855,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportAsset",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": [
+      {
+        "path": "exports/result..glb",
+        "bytes": 184452324,
+        "sha256": "5bb44125c3df5f77980af46ed897268b13586b8204cd1d8691565ac508a77941"
+      },
+      {
+        "path": "exports/result._nmap.png",
+        "bytes": 15050100,
+        "sha256": "912650ec603d4cd42acfcafc0184903e6c7224ed85ac17c8cf5a778bc9e57dad"
+      }
+    ]
+  }
+]

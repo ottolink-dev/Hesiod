@@ -1,0 +1,5 @@
+* -text
+*.csv whitespace=cr-at-eol
+# Preserve raw tool logs byte for byte, including their trailing spaces.
+*.log whitespace=-blank-at-eol,-blank-at-eof
+*.xml whitespace=-blank-at-eol,-blank-at-eof

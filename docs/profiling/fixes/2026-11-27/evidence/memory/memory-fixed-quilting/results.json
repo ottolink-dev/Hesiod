@@ -1,0 +1,3074 @@
+[
+  {
+    "case": "TextureQuiltingExpand",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 1024,
+    "repeat": 1,
+    "policy": "disk-sequential",
+    "tiles": 1,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingExpand-full-disk-sequential-1024-t1-o0-r1/fixture.hsd",
+      "--shape=1024,1024",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--min-memory"
+    ],
+    "started_at": "2026-11-27T13:09:11+0000",
+    "graph_sha256": "166923220c4a4f10c82b2486b9e393601c056878a4d966949ec3b09b76845cd7",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14644,
+    "process_peak_rss_kib": 582220,
+    "process_user_seconds": 1.025346,
+    "process_system_seconds": 0.46740899999999996,
+    "wall_seconds": 1.4365056059905328,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "TextureQuiltingExpand",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": []
+  },
+  {
+    "case": "TextureQuiltingExpand",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 1024,
+    "repeat": 2,
+    "policy": "disk-sequential",
+    "tiles": 1,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingExpand-full-disk-sequential-1024-t1-o0-r2/fixture.hsd",
+      "--shape=1024,1024",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--min-memory"
+    ],
+    "started_at": "2026-11-27T13:09:23+0000",
+    "graph_sha256": "166923220c4a4f10c82b2486b9e393601c056878a4d966949ec3b09b76845cd7",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14648,
+    "process_peak_rss_kib": 581988,
+    "process_user_seconds": 1.034256,
+    "process_system_seconds": 0.45557699999999995,
+    "wall_seconds": 1.4290060729981633,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "TextureQuiltingExpand",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": []
+  },
+  {
+    "case": "TextureQuiltingExpand",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 1024,
+    "repeat": 3,
+    "policy": "disk-sequential",
+    "tiles": 1,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingExpand-full-disk-sequential-1024-t1-o0-r3/fixture.hsd",
+      "--shape=1024,1024",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--min-memory"
+    ],
+    "started_at": "2026-11-27T13:09:35+0000",
+    "graph_sha256": "166923220c4a4f10c82b2486b9e393601c056878a4d966949ec3b09b76845cd7",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14644,
+    "process_peak_rss_kib": 581804,
+    "process_user_seconds": 1.02334,
+    "process_system_seconds": 0.46515199999999995,
+    "wall_seconds": 1.4438883019902278,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "TextureQuiltingExpand",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": []
+  },
+  {
+    "case": "TextureQuiltingExpand",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 1024,
+    "repeat": 1,
+    "policy": "disk-sequential",
+    "tiles": 4,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingExpand-full-disk-sequential-1024-t4-o0-r1/fixture.hsd",
+      "--shape=1024,1024",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--min-memory"
+    ],
+    "started_at": "2026-11-27T13:09:12+0000",
+    "graph_sha256": "166923220c4a4f10c82b2486b9e393601c056878a4d966949ec3b09b76845cd7",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14636,
+    "process_peak_rss_kib": 580756,
+    "process_user_seconds": 1.050375,
+    "process_system_seconds": 0.416701,
+    "wall_seconds": 1.4445270779979182,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 0
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "TextureQuiltingExpand",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": []
+  },
+  {
+    "case": "TextureQuiltingExpand",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 1024,
+    "repeat": 2,
+    "policy": "disk-sequential",
+    "tiles": 4,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingExpand-full-disk-sequential-1024-t4-o0-r2/fixture.hsd",
+      "--shape=1024,1024",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--min-memory"
+    ],
+    "started_at": "2026-11-27T13:09:24+0000",
+    "graph_sha256": "166923220c4a4f10c82b2486b9e393601c056878a4d966949ec3b09b76845cd7",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14648,
+    "process_peak_rss_kib": 580980,
+    "process_user_seconds": 1.050805,
+    "process_system_seconds": 0.428599,
+    "wall_seconds": 1.3860206459939945,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "TextureQuiltingExpand",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": []
+  },
+  {
+    "case": "TextureQuiltingExpand",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 1024,
+    "repeat": 3,
+    "policy": "disk-sequential",
+    "tiles": 4,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingExpand-full-disk-sequential-1024-t4-o0-r3/fixture.hsd",
+      "--shape=1024,1024",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--min-memory"
+    ],
+    "started_at": "2026-11-27T13:09:36+0000",
+    "graph_sha256": "166923220c4a4f10c82b2486b9e393601c056878a4d966949ec3b09b76845cd7",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14644,
+    "process_peak_rss_kib": 580436,
+    "process_user_seconds": 1.052048,
+    "process_system_seconds": 0.44547899999999996,
+    "wall_seconds": 1.4398838720080676,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "TextureQuiltingExpand",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": []
+  },
+  {
+    "case": "TextureQuiltingExpand",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 2048,
+    "repeat": 1,
+    "policy": "disk-sequential",
+    "tiles": 1,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingExpand-full-disk-sequential-2048-t1-o0-r1/fixture.hsd",
+      "--shape=2048,2048",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--min-memory"
+    ],
+    "started_at": "2026-11-27T13:10:18+0000",
+    "graph_sha256": "166923220c4a4f10c82b2486b9e393601c056878a4d966949ec3b09b76845cd7",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14648,
+    "process_peak_rss_kib": 1332152,
+    "process_user_seconds": 5.903556,
+    "process_system_seconds": 1.206966,
+    "wall_seconds": 6.230050418002065,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "TextureQuiltingExpand",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": []
+  },
+  {
+    "case": "TextureQuiltingExpand",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 2048,
+    "repeat": 2,
+    "policy": "disk-sequential",
+    "tiles": 1,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingExpand-full-disk-sequential-2048-t1-o0-r2/fixture.hsd",
+      "--shape=2048,2048",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--min-memory"
+    ],
+    "started_at": "2026-11-27T13:11:12+0000",
+    "graph_sha256": "166923220c4a4f10c82b2486b9e393601c056878a4d966949ec3b09b76845cd7",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14644,
+    "process_peak_rss_kib": 1332928,
+    "process_user_seconds": 5.945169,
+    "process_system_seconds": 1.173143,
+    "wall_seconds": 6.736349664992304,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "TextureQuiltingExpand",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": []
+  },
+  {
+    "case": "TextureQuiltingExpand",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 2048,
+    "repeat": 3,
+    "policy": "disk-sequential",
+    "tiles": 1,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingExpand-full-disk-sequential-2048-t1-o0-r3/fixture.hsd",
+      "--shape=2048,2048",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--min-memory"
+    ],
+    "started_at": "2026-11-27T13:12:04+0000",
+    "graph_sha256": "166923220c4a4f10c82b2486b9e393601c056878a4d966949ec3b09b76845cd7",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14644,
+    "process_peak_rss_kib": 1333104,
+    "process_user_seconds": 5.91217,
+    "process_system_seconds": 1.141012,
+    "wall_seconds": 6.180034357996192,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "TextureQuiltingExpand",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": []
+  },
+  {
+    "case": "TextureQuiltingExpand",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 2048,
+    "repeat": 1,
+    "policy": "disk-sequential",
+    "tiles": 4,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingExpand-full-disk-sequential-2048-t4-o0-r1/fixture.hsd",
+      "--shape=2048,2048",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--min-memory"
+    ],
+    "started_at": "2026-11-27T13:10:24+0000",
+    "graph_sha256": "166923220c4a4f10c82b2486b9e393601c056878a4d966949ec3b09b76845cd7",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14648,
+    "process_peak_rss_kib": 1282956,
+    "process_user_seconds": 6.068777,
+    "process_system_seconds": 1.133455,
+    "wall_seconds": 6.421833296990371,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "TextureQuiltingExpand",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": []
+  },
+  {
+    "case": "TextureQuiltingExpand",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 2048,
+    "repeat": 2,
+    "policy": "disk-sequential",
+    "tiles": 4,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingExpand-full-disk-sequential-2048-t4-o0-r2/fixture.hsd",
+      "--shape=2048,2048",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--min-memory"
+    ],
+    "started_at": "2026-11-27T13:11:19+0000",
+    "graph_sha256": "166923220c4a4f10c82b2486b9e393601c056878a4d966949ec3b09b76845cd7",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14636,
+    "process_peak_rss_kib": 1283012,
+    "process_user_seconds": 5.975546,
+    "process_system_seconds": 1.094162,
+    "wall_seconds": 6.32180849899305,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "TextureQuiltingExpand",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": []
+  },
+  {
+    "case": "TextureQuiltingExpand",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 2048,
+    "repeat": 3,
+    "policy": "disk-sequential",
+    "tiles": 4,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingExpand-full-disk-sequential-2048-t4-o0-r3/fixture.hsd",
+      "--shape=2048,2048",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--min-memory"
+    ],
+    "started_at": "2026-11-27T13:12:11+0000",
+    "graph_sha256": "166923220c4a4f10c82b2486b9e393601c056878a4d966949ec3b09b76845cd7",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14648,
+    "process_peak_rss_kib": 1281976,
+    "process_user_seconds": 5.833992,
+    "process_system_seconds": 1.164494,
+    "wall_seconds": 6.156910984005663,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "TextureQuiltingExpand",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": []
+  },
+  {
+    "case": "TextureQuiltingExpand",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 1024,
+    "repeat": 1,
+    "policy": "ram-sequential",
+    "tiles": 1,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingExpand-full-ram-sequential-1024-t1-o0-r1/fixture.hsd",
+      "--shape=1024,1024",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "started_at": "2026-11-27T13:09:08+0000",
+    "graph_sha256": "166923220c4a4f10c82b2486b9e393601c056878a4d966949ec3b09b76845cd7",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14668,
+    "process_peak_rss_kib": 643660,
+    "process_user_seconds": 1.025638,
+    "process_system_seconds": 0.43245,
+    "wall_seconds": 1.3801117330003763,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "TextureQuiltingExpand",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": []
+  },
+  {
+    "case": "TextureQuiltingExpand",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 1024,
+    "repeat": 2,
+    "policy": "ram-sequential",
+    "tiles": 1,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingExpand-full-ram-sequential-1024-t1-o0-r2/fixture.hsd",
+      "--shape=1024,1024",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "started_at": "2026-11-27T13:09:20+0000",
+    "graph_sha256": "166923220c4a4f10c82b2486b9e393601c056878a4d966949ec3b09b76845cd7",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14548,
+    "process_peak_rss_kib": 643256,
+    "process_user_seconds": 1.042071,
+    "process_system_seconds": 0.41608999999999996,
+    "wall_seconds": 1.437363101009396,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "TextureQuiltingExpand",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": []
+  },
+  {
+    "case": "TextureQuiltingExpand",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 1024,
+    "repeat": 3,
+    "policy": "ram-sequential",
+    "tiles": 1,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingExpand-full-ram-sequential-1024-t1-o0-r3/fixture.hsd",
+      "--shape=1024,1024",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "started_at": "2026-11-27T13:09:32+0000",
+    "graph_sha256": "166923220c4a4f10c82b2486b9e393601c056878a4d966949ec3b09b76845cd7",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14644,
+    "process_peak_rss_kib": 642596,
+    "process_user_seconds": 1.006592,
+    "process_system_seconds": 0.460798,
+    "wall_seconds": 1.4412850170047022,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "TextureQuiltingExpand",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": []
+  },
+  {
+    "case": "TextureQuiltingExpand",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 1024,
+    "repeat": 1,
+    "policy": "ram-sequential",
+    "tiles": 4,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingExpand-full-ram-sequential-1024-t4-o0-r1/fixture.hsd",
+      "--shape=1024,1024",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "started_at": "2026-11-27T13:09:09+0000",
+    "graph_sha256": "166923220c4a4f10c82b2486b9e393601c056878a4d966949ec3b09b76845cd7",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14632,
+    "process_peak_rss_kib": 621944,
+    "process_user_seconds": 1.039072,
+    "process_system_seconds": 0.41803599999999996,
+    "wall_seconds": 1.3918152309925063,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "TextureQuiltingExpand",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": []
+  },
+  {
+    "case": "TextureQuiltingExpand",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 1024,
+    "repeat": 2,
+    "policy": "ram-sequential",
+    "tiles": 4,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingExpand-full-ram-sequential-1024-t4-o0-r2/fixture.hsd",
+      "--shape=1024,1024",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "started_at": "2026-11-27T13:09:21+0000",
+    "graph_sha256": "166923220c4a4f10c82b2486b9e393601c056878a4d966949ec3b09b76845cd7",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14644,
+    "process_peak_rss_kib": 621408,
+    "process_user_seconds": 1.039557,
+    "process_system_seconds": 0.42723099999999997,
+    "wall_seconds": 1.433274351991713,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "TextureQuiltingExpand",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": []
+  },
+  {
+    "case": "TextureQuiltingExpand",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 1024,
+    "repeat": 3,
+    "policy": "ram-sequential",
+    "tiles": 4,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingExpand-full-ram-sequential-1024-t4-o0-r3/fixture.hsd",
+      "--shape=1024,1024",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "started_at": "2026-11-27T13:09:33+0000",
+    "graph_sha256": "166923220c4a4f10c82b2486b9e393601c056878a4d966949ec3b09b76845cd7",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14548,
+    "process_peak_rss_kib": 621704,
+    "process_user_seconds": 1.010605,
+    "process_system_seconds": 0.443619,
+    "wall_seconds": 1.439385580990347,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "TextureQuiltingExpand",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": []
+  },
+  {
+    "case": "TextureQuiltingExpand",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 2048,
+    "repeat": 1,
+    "policy": "ram-sequential",
+    "tiles": 1,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingExpand-full-ram-sequential-2048-t1-o0-r1/fixture.hsd",
+      "--shape=2048,2048",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "started_at": "2026-11-27T13:10:05+0000",
+    "graph_sha256": "166923220c4a4f10c82b2486b9e393601c056878a4d966949ec3b09b76845cd7",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14600,
+    "process_peak_rss_kib": 1542684,
+    "process_user_seconds": 6.111419,
+    "process_system_seconds": 0.8701399999999999,
+    "wall_seconds": 6.201934138996876,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "TextureQuiltingExpand",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": []
+  },
+  {
+    "case": "TextureQuiltingExpand",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 2048,
+    "repeat": 2,
+    "policy": "ram-sequential",
+    "tiles": 1,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingExpand-full-ram-sequential-2048-t1-o0-r2/fixture.hsd",
+      "--shape=2048,2048",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "started_at": "2026-11-27T13:10:59+0000",
+    "graph_sha256": "166923220c4a4f10c82b2486b9e393601c056878a4d966949ec3b09b76845cd7",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14640,
+    "process_peak_rss_kib": 1543140,
+    "process_user_seconds": 5.89055,
+    "process_system_seconds": 0.82056,
+    "wall_seconds": 5.934394670999609,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "TextureQuiltingExpand",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": []
+  },
+  {
+    "case": "TextureQuiltingExpand",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 2048,
+    "repeat": 3,
+    "policy": "ram-sequential",
+    "tiles": 1,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingExpand-full-ram-sequential-2048-t1-o0-r3/fixture.hsd",
+      "--shape=2048,2048",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "started_at": "2026-11-27T13:11:52+0000",
+    "graph_sha256": "166923220c4a4f10c82b2486b9e393601c056878a4d966949ec3b09b76845cd7",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14668,
+    "process_peak_rss_kib": 1542792,
+    "process_user_seconds": 6.117652,
+    "process_system_seconds": 0.8427969999999999,
+    "wall_seconds": 6.199456883987295,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "TextureQuiltingExpand",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": []
+  },
+  {
+    "case": "TextureQuiltingExpand",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 2048,
+    "repeat": 1,
+    "policy": "ram-sequential",
+    "tiles": 4,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingExpand-full-ram-sequential-2048-t4-o0-r1/fixture.hsd",
+      "--shape=2048,2048",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "started_at": "2026-11-27T13:10:12+0000",
+    "graph_sha256": "166923220c4a4f10c82b2486b9e393601c056878a4d966949ec3b09b76845cd7",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14632,
+    "process_peak_rss_kib": 1457872,
+    "process_user_seconds": 6.106442,
+    "process_system_seconds": 0.9259219999999999,
+    "wall_seconds": 6.3257732189958915,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "TextureQuiltingExpand",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": []
+  },
+  {
+    "case": "TextureQuiltingExpand",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 2048,
+    "repeat": 2,
+    "policy": "ram-sequential",
+    "tiles": 4,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingExpand-full-ram-sequential-2048-t4-o0-r2/fixture.hsd",
+      "--shape=2048,2048",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "started_at": "2026-11-27T13:11:05+0000",
+    "graph_sha256": "166923220c4a4f10c82b2486b9e393601c056878a4d966949ec3b09b76845cd7",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14648,
+    "process_peak_rss_kib": 1457348,
+    "process_user_seconds": 6.14138,
+    "process_system_seconds": 0.9039159999999999,
+    "wall_seconds": 6.313237360998755,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "TextureQuiltingExpand",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": []
+  },
+  {
+    "case": "TextureQuiltingExpand",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 2048,
+    "repeat": 3,
+    "policy": "ram-sequential",
+    "tiles": 4,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingExpand-full-ram-sequential-2048-t4-o0-r3/fixture.hsd",
+      "--shape=2048,2048",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "started_at": "2026-11-27T13:11:58+0000",
+    "graph_sha256": "166923220c4a4f10c82b2486b9e393601c056878a4d966949ec3b09b76845cd7",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14560,
+    "process_peak_rss_kib": 1456960,
+    "process_user_seconds": 6.034389,
+    "process_system_seconds": 0.928489,
+    "wall_seconds": 6.173631508005201,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "TextureQuiltingExpand",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": []
+  },
+  {
+    "case": "TextureQuiltingShuffle",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 1024,
+    "repeat": 1,
+    "policy": "disk-sequential",
+    "tiles": 1,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingShuffle-full-disk-sequential-1024-t1-o0-r1/fixture.hsd",
+      "--shape=1024,1024",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--min-memory"
+    ],
+    "started_at": "2026-11-27T13:09:05+0000",
+    "graph_sha256": "a2259c82fdd4cdd22e89b23bb5803ad5b65c61d6cb0ad2e61a8178be093b1999",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14644,
+    "process_peak_rss_kib": 565264,
+    "process_user_seconds": 1.034442,
+    "process_system_seconds": 0.479784,
+    "wall_seconds": 1.4710046740074176,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "TextureQuiltingShuffle",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": []
+  },
+  {
+    "case": "TextureQuiltingShuffle",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 1024,
+    "repeat": 2,
+    "policy": "disk-sequential",
+    "tiles": 1,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingShuffle-full-disk-sequential-1024-t1-o0-r2/fixture.hsd",
+      "--shape=1024,1024",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--min-memory"
+    ],
+    "started_at": "2026-11-27T13:09:17+0000",
+    "graph_sha256": "a2259c82fdd4cdd22e89b23bb5803ad5b65c61d6cb0ad2e61a8178be093b1999",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14640,
+    "process_peak_rss_kib": 565420,
+    "process_user_seconds": 1.079703,
+    "process_system_seconds": 0.43038,
+    "wall_seconds": 1.440182353995624,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 0
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "TextureQuiltingShuffle",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": []
+  },
+  {
+    "case": "TextureQuiltingShuffle",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 1024,
+    "repeat": 3,
+    "policy": "disk-sequential",
+    "tiles": 1,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingShuffle-full-disk-sequential-1024-t1-o0-r3/fixture.hsd",
+      "--shape=1024,1024",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--min-memory"
+    ],
+    "started_at": "2026-11-27T13:09:29+0000",
+    "graph_sha256": "a2259c82fdd4cdd22e89b23bb5803ad5b65c61d6cb0ad2e61a8178be093b1999",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14644,
+    "process_peak_rss_kib": 565924,
+    "process_user_seconds": 1.056375,
+    "process_system_seconds": 0.469087,
+    "wall_seconds": 1.4682369179936359,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "TextureQuiltingShuffle",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": []
+  },
+  {
+    "case": "TextureQuiltingShuffle",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 1024,
+    "repeat": 1,
+    "policy": "disk-sequential",
+    "tiles": 4,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingShuffle-full-disk-sequential-1024-t4-o0-r1/fixture.hsd",
+      "--shape=1024,1024",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--min-memory"
+    ],
+    "started_at": "2026-11-27T13:09:06+0000",
+    "graph_sha256": "a2259c82fdd4cdd22e89b23bb5803ad5b65c61d6cb0ad2e61a8178be093b1999",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14644,
+    "process_peak_rss_kib": 564188,
+    "process_user_seconds": 1.047247,
+    "process_system_seconds": 0.429126,
+    "wall_seconds": 1.4083277660101885,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "TextureQuiltingShuffle",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": []
+  },
+  {
+    "case": "TextureQuiltingShuffle",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 1024,
+    "repeat": 2,
+    "policy": "disk-sequential",
+    "tiles": 4,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingShuffle-full-disk-sequential-1024-t4-o0-r2/fixture.hsd",
+      "--shape=1024,1024",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--min-memory"
+    ],
+    "started_at": "2026-11-27T13:09:18+0000",
+    "graph_sha256": "a2259c82fdd4cdd22e89b23bb5803ad5b65c61d6cb0ad2e61a8178be093b1999",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14644,
+    "process_peak_rss_kib": 564496,
+    "process_user_seconds": 1.078573,
+    "process_system_seconds": 0.443376,
+    "wall_seconds": 1.506640026011155,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "TextureQuiltingShuffle",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": []
+  },
+  {
+    "case": "TextureQuiltingShuffle",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 1024,
+    "repeat": 3,
+    "policy": "disk-sequential",
+    "tiles": 4,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingShuffle-full-disk-sequential-1024-t4-o0-r3/fixture.hsd",
+      "--shape=1024,1024",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--min-memory"
+    ],
+    "started_at": "2026-11-27T13:09:30+0000",
+    "graph_sha256": "a2259c82fdd4cdd22e89b23bb5803ad5b65c61d6cb0ad2e61a8178be093b1999",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14640,
+    "process_peak_rss_kib": 564700,
+    "process_user_seconds": 1.038638,
+    "process_system_seconds": 0.45543,
+    "wall_seconds": 1.444355366009404,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "TextureQuiltingShuffle",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": []
+  },
+  {
+    "case": "TextureQuiltingShuffle",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 2048,
+    "repeat": 1,
+    "policy": "disk-sequential",
+    "tiles": 1,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingShuffle-full-disk-sequential-2048-t1-o0-r1/fixture.hsd",
+      "--shape=2048,2048",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--min-memory"
+    ],
+    "started_at": "2026-11-27T13:09:51+0000",
+    "graph_sha256": "a2259c82fdd4cdd22e89b23bb5803ad5b65c61d6cb0ad2e61a8178be093b1999",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14640,
+    "process_peak_rss_kib": 1262220,
+    "process_user_seconds": 6.395282,
+    "process_system_seconds": 1.302552,
+    "wall_seconds": 6.886153542000102,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "TextureQuiltingShuffle",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": []
+  },
+  {
+    "case": "TextureQuiltingShuffle",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 2048,
+    "repeat": 2,
+    "policy": "disk-sequential",
+    "tiles": 1,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingShuffle-full-disk-sequential-2048-t1-o0-r2/fixture.hsd",
+      "--shape=2048,2048",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--min-memory"
+    ],
+    "started_at": "2026-11-27T13:10:44+0000",
+    "graph_sha256": "a2259c82fdd4cdd22e89b23bb5803ad5b65c61d6cb0ad2e61a8178be093b1999",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14644,
+    "process_peak_rss_kib": 1262184,
+    "process_user_seconds": 6.537864,
+    "process_system_seconds": 1.259067,
+    "wall_seconds": 6.936460067998269,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "TextureQuiltingShuffle",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": []
+  },
+  {
+    "case": "TextureQuiltingShuffle",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 2048,
+    "repeat": 3,
+    "policy": "disk-sequential",
+    "tiles": 1,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingShuffle-full-disk-sequential-2048-t1-o0-r3/fixture.hsd",
+      "--shape=2048,2048",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--min-memory"
+    ],
+    "started_at": "2026-11-27T13:11:38+0000",
+    "graph_sha256": "a2259c82fdd4cdd22e89b23bb5803ad5b65c61d6cb0ad2e61a8178be093b1999",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14648,
+    "process_peak_rss_kib": 1262068,
+    "process_user_seconds": 6.389128,
+    "process_system_seconds": 1.253822,
+    "wall_seconds": 6.856538055013516,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "TextureQuiltingShuffle",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": []
+  },
+  {
+    "case": "TextureQuiltingShuffle",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 2048,
+    "repeat": 1,
+    "policy": "disk-sequential",
+    "tiles": 4,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingShuffle-full-disk-sequential-2048-t4-o0-r1/fixture.hsd",
+      "--shape=2048,2048",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--min-memory"
+    ],
+    "started_at": "2026-11-27T13:09:58+0000",
+    "graph_sha256": "a2259c82fdd4cdd22e89b23bb5803ad5b65c61d6cb0ad2e61a8178be093b1999",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14532,
+    "process_peak_rss_kib": 1212344,
+    "process_user_seconds": 6.469088,
+    "process_system_seconds": 1.208625,
+    "wall_seconds": 6.903405968012521,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "TextureQuiltingShuffle",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": []
+  },
+  {
+    "case": "TextureQuiltingShuffle",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 2048,
+    "repeat": 2,
+    "policy": "disk-sequential",
+    "tiles": 4,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingShuffle-full-disk-sequential-2048-t4-o0-r2/fixture.hsd",
+      "--shape=2048,2048",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--min-memory"
+    ],
+    "started_at": "2026-11-27T13:10:51+0000",
+    "graph_sha256": "a2259c82fdd4cdd22e89b23bb5803ad5b65c61d6cb0ad2e61a8178be093b1999",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14640,
+    "process_peak_rss_kib": 1212868,
+    "process_user_seconds": 6.357149,
+    "process_system_seconds": 1.16655,
+    "wall_seconds": 7.815090438001789,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "TextureQuiltingShuffle",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": []
+  },
+  {
+    "case": "TextureQuiltingShuffle",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 2048,
+    "repeat": 3,
+    "policy": "disk-sequential",
+    "tiles": 4,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingShuffle-full-disk-sequential-2048-t4-o0-r3/fixture.hsd",
+      "--shape=2048,2048",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--min-memory"
+    ],
+    "started_at": "2026-11-27T13:11:45+0000",
+    "graph_sha256": "a2259c82fdd4cdd22e89b23bb5803ad5b65c61d6cb0ad2e61a8178be093b1999",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14648,
+    "process_peak_rss_kib": 1212480,
+    "process_user_seconds": 6.362946,
+    "process_system_seconds": 1.147656,
+    "wall_seconds": 6.701312293997034,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "TextureQuiltingShuffle",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": []
+  },
+  {
+    "case": "TextureQuiltingShuffle",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 1024,
+    "repeat": 1,
+    "policy": "ram-sequential",
+    "tiles": 1,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingShuffle-full-ram-sequential-1024-t1-o0-r1/fixture.hsd",
+      "--shape=1024,1024",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "started_at": "2026-11-27T13:09:02+0000",
+    "graph_sha256": "a2259c82fdd4cdd22e89b23bb5803ad5b65c61d6cb0ad2e61a8178be093b1999",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14548,
+    "process_peak_rss_kib": 626392,
+    "process_user_seconds": 1.047812,
+    "process_system_seconds": 0.497322,
+    "wall_seconds": 1.5467767469963292,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 0
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "TextureQuiltingShuffle",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": []
+  },
+  {
+    "case": "TextureQuiltingShuffle",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 1024,
+    "repeat": 2,
+    "policy": "ram-sequential",
+    "tiles": 1,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingShuffle-full-ram-sequential-1024-t1-o0-r2/fixture.hsd",
+      "--shape=1024,1024",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "started_at": "2026-11-27T13:09:14+0000",
+    "graph_sha256": "a2259c82fdd4cdd22e89b23bb5803ad5b65c61d6cb0ad2e61a8178be093b1999",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14544,
+    "process_peak_rss_kib": 626352,
+    "process_user_seconds": 1.045369,
+    "process_system_seconds": 0.42438299999999995,
+    "wall_seconds": 1.3768807239976013,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "TextureQuiltingShuffle",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": []
+  },
+  {
+    "case": "TextureQuiltingShuffle",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 1024,
+    "repeat": 3,
+    "policy": "ram-sequential",
+    "tiles": 1,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingShuffle-full-ram-sequential-1024-t1-o0-r3/fixture.hsd",
+      "--shape=1024,1024",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "started_at": "2026-11-27T13:09:26+0000",
+    "graph_sha256": "a2259c82fdd4cdd22e89b23bb5803ad5b65c61d6cb0ad2e61a8178be093b1999",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14644,
+    "process_peak_rss_kib": 626276,
+    "process_user_seconds": 1.04933,
+    "process_system_seconds": 0.40288799999999997,
+    "wall_seconds": 1.4357262669946067,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "TextureQuiltingShuffle",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": []
+  },
+  {
+    "case": "TextureQuiltingShuffle",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 1024,
+    "repeat": 1,
+    "policy": "ram-sequential",
+    "tiles": 4,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingShuffle-full-ram-sequential-1024-t4-o0-r1/fixture.hsd",
+      "--shape=1024,1024",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "started_at": "2026-11-27T13:09:03+0000",
+    "graph_sha256": "a2259c82fdd4cdd22e89b23bb5803ad5b65c61d6cb0ad2e61a8178be093b1999",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14644,
+    "process_peak_rss_kib": 603268,
+    "process_user_seconds": 1.079408,
+    "process_system_seconds": 0.39828199999999997,
+    "wall_seconds": 1.4691717170062475,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "TextureQuiltingShuffle",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": []
+  },
+  {
+    "case": "TextureQuiltingShuffle",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 1024,
+    "repeat": 2,
+    "policy": "ram-sequential",
+    "tiles": 4,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingShuffle-full-ram-sequential-1024-t4-o0-r2/fixture.hsd",
+      "--shape=1024,1024",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "started_at": "2026-11-27T13:09:15+0000",
+    "graph_sha256": "a2259c82fdd4cdd22e89b23bb5803ad5b65c61d6cb0ad2e61a8178be093b1999",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14560,
+    "process_peak_rss_kib": 603208,
+    "process_user_seconds": 1.044382,
+    "process_system_seconds": 0.40658299999999997,
+    "wall_seconds": 1.4346426100091776,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "TextureQuiltingShuffle",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": []
+  },
+  {
+    "case": "TextureQuiltingShuffle",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 1024,
+    "repeat": 3,
+    "policy": "ram-sequential",
+    "tiles": 4,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingShuffle-full-ram-sequential-1024-t4-o0-r3/fixture.hsd",
+      "--shape=1024,1024",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "started_at": "2026-11-27T13:09:27+0000",
+    "graph_sha256": "a2259c82fdd4cdd22e89b23bb5803ad5b65c61d6cb0ad2e61a8178be093b1999",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14644,
+    "process_peak_rss_kib": 603572,
+    "process_user_seconds": 1.082221,
+    "process_system_seconds": 0.401526,
+    "wall_seconds": 1.453426534004393,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 0
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "TextureQuiltingShuffle",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": []
+  },
+  {
+    "case": "TextureQuiltingShuffle",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 2048,
+    "repeat": 1,
+    "policy": "ram-sequential",
+    "tiles": 1,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingShuffle-full-ram-sequential-2048-t1-o0-r1/fixture.hsd",
+      "--shape=2048,2048",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "started_at": "2026-11-27T13:09:38+0000",
+    "graph_sha256": "a2259c82fdd4cdd22e89b23bb5803ad5b65c61d6cb0ad2e61a8178be093b1999",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14560,
+    "process_peak_rss_kib": 1472324,
+    "process_user_seconds": 6.539378,
+    "process_system_seconds": 1.132965,
+    "wall_seconds": 6.902311393991113,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "TextureQuiltingShuffle",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": []
+  },
+  {
+    "case": "TextureQuiltingShuffle",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 2048,
+    "repeat": 2,
+    "policy": "ram-sequential",
+    "tiles": 1,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingShuffle-full-ram-sequential-2048-t1-o0-r2/fixture.hsd",
+      "--shape=2048,2048",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "started_at": "2026-11-27T13:10:31+0000",
+    "graph_sha256": "a2259c82fdd4cdd22e89b23bb5803ad5b65c61d6cb0ad2e61a8178be093b1999",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14644,
+    "process_peak_rss_kib": 1472288,
+    "process_user_seconds": 6.36582,
+    "process_system_seconds": 1.101166,
+    "wall_seconds": 6.720297546009533,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "TextureQuiltingShuffle",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": []
+  },
+  {
+    "case": "TextureQuiltingShuffle",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 2048,
+    "repeat": 3,
+    "policy": "ram-sequential",
+    "tiles": 1,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingShuffle-full-ram-sequential-2048-t1-o0-r3/fixture.hsd",
+      "--shape=2048,2048",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "started_at": "2026-11-27T13:11:25+0000",
+    "graph_sha256": "a2259c82fdd4cdd22e89b23bb5803ad5b65c61d6cb0ad2e61a8178be093b1999",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14644,
+    "process_peak_rss_kib": 1471320,
+    "process_user_seconds": 6.3734,
+    "process_system_seconds": 1.092487,
+    "wall_seconds": 6.712476757005788,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "TextureQuiltingShuffle",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": []
+  },
+  {
+    "case": "TextureQuiltingShuffle",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 2048,
+    "repeat": 1,
+    "policy": "ram-sequential",
+    "tiles": 4,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingShuffle-full-ram-sequential-2048-t4-o0-r1/fixture.hsd",
+      "--shape=2048,2048",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "started_at": "2026-11-27T13:09:45+0000",
+    "graph_sha256": "a2259c82fdd4cdd22e89b23bb5803ad5b65c61d6cb0ad2e61a8178be093b1999",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14632,
+    "process_peak_rss_kib": 1385576,
+    "process_user_seconds": 6.56846,
+    "process_system_seconds": 0.8910309999999999,
+    "wall_seconds": 6.691450979997171,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 0
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "TextureQuiltingShuffle",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": []
+  },
+  {
+    "case": "TextureQuiltingShuffle",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 2048,
+    "repeat": 2,
+    "policy": "ram-sequential",
+    "tiles": 4,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingShuffle-full-ram-sequential-2048-t4-o0-r2/fixture.hsd",
+      "--shape=2048,2048",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "started_at": "2026-11-27T13:10:38+0000",
+    "graph_sha256": "a2259c82fdd4cdd22e89b23bb5803ad5b65c61d6cb0ad2e61a8178be093b1999",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14664,
+    "process_peak_rss_kib": 1385740,
+    "process_user_seconds": 6.538538,
+    "process_system_seconds": 0.8956949999999999,
+    "wall_seconds": 6.722210564010311,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "TextureQuiltingShuffle",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": []
+  },
+  {
+    "case": "TextureQuiltingShuffle",
+    "variant": "full",
+    "inputs_only": false,
+    "size": 2048,
+    "repeat": 3,
+    "policy": "ram-sequential",
+    "tiles": 4,
+    "overlap": 0.0,
+    "status": "ok",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/memory-fixed-quilting/runs/TextureQuiltingShuffle-full-ram-sequential-2048-t4-o0-r3/fixture.hsd",
+      "--shape=2048,2048",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "started_at": "2026-11-27T13:11:32+0000",
+    "graph_sha256": "a2259c82fdd4cdd22e89b23bb5803ad5b65c61d6cb0ad2e61a8178be093b1999",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14644,
+    "process_peak_rss_kib": 1385948,
+    "process_user_seconds": 6.325287,
+    "process_system_seconds": 0.842082,
+    "wall_seconds": 6.406082179993973,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "TextureQuiltingShuffle",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": []
+  }
+]

@@ -1,0 +1,63 @@
+memory-baseline-calibration {'audited_runs': 3, 'complete': True, 'failure_count': 0, 'passed': True}
+[
+  {
+    "case": "ExportAsset",
+    "baseline_repeat_count": 3,
+    "baseline_peak_mib_range": [
+      1030.59375,
+      1031.25
+    ],
+    "baseline_peak_mib_median": 1031.1796875,
+    "fresh_peak_mib": 1030.0546875,
+    "fresh_peak_within_existing_range": false,
+    "fresh_to_existing_median_ratio": 0.9989090165238539,
+    "identical_fixture_bytes": true,
+    "identical_export_artifacts": true,
+    "baseline_result_paths": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/runs/ExportAsset-full-ram-sequential-1024-t1-o0-r1/result.json",
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/runs/ExportAsset-full-ram-sequential-1024-t1-o0-r2/result.json",
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/runs/ExportAsset-full-ram-sequential-1024-t1-o0-r3/result.json"
+    ],
+    "fresh_result_path": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-baseline-calibration/runs/ExportAsset-full-ram-sequential-1024-t1-o0-r1/result.json"
+  },
+  {
+    "case": "TextureQuiltingExpand",
+    "baseline_repeat_count": 3,
+    "baseline_peak_mib_range": [
+      719.6953125,
+      719.98828125
+    ],
+    "baseline_peak_mib_median": 719.94921875,
+    "fresh_peak_mib": 718.20703125,
+    "fresh_peak_within_existing_range": false,
+    "fresh_to_existing_median_ratio": 0.9975801244662438,
+    "identical_fixture_bytes": true,
+    "identical_export_artifacts": null,
+    "baseline_result_paths": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/runs/TextureQuiltingExpand-full-ram-sequential-1024-t1-o0-r1/result.json",
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/runs/TextureQuiltingExpand-full-ram-sequential-1024-t1-o0-r2/result.json",
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/runs/TextureQuiltingExpand-full-ram-sequential-1024-t1-o0-r3/result.json"
+    ],
+    "fresh_result_path": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-baseline-calibration/runs/TextureQuiltingExpand-full-ram-sequential-1024-t1-o0-r1/result.json"
+  },
+  {
+    "case": "TextureQuiltingShuffle",
+    "baseline_repeat_count": 3,
+    "baseline_peak_mib_range": [
+      684.41796875,
+      684.83984375
+    ],
+    "baseline_peak_mib_median": 684.76171875,
+    "fresh_peak_mib": 683.26953125,
+    "fresh_peak_within_existing_range": false,
+    "fresh_to_existing_median_ratio": 0.9978208660631265,
+    "identical_fixture_bytes": true,
+    "identical_export_artifacts": null,
+    "baseline_result_paths": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/runs/TextureQuiltingShuffle-full-ram-sequential-1024-t1-o0-r1/result.json",
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/runs/TextureQuiltingShuffle-full-ram-sequential-1024-t1-o0-r2/result.json",
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/runs/TextureQuiltingShuffle-full-ram-sequential-1024-t1-o0-r3/result.json"
+    ],
+    "fresh_result_path": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-baseline-calibration/runs/TextureQuiltingShuffle-full-ram-sequential-1024-t1-o0-r1/result.json"
+  }
+]

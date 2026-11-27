@@ -2612,13 +2612,6 @@
                     },
                     {
                         "link_type": 2,
-                        "node_in_id": "17",
-                        "node_out_id": "10",
-                        "port_in_id": "input",
-                        "port_out_id": "output"
-                    },
-                    {
-                        "link_type": 2,
                         "node_in_id": "9",
                         "node_out_id": "12",
                         "port_in_id": "dx",

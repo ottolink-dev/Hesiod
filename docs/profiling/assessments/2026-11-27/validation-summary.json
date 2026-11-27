@@ -1,0 +1,167 @@
+{
+  "source_base": "377f6370",
+  "build": {
+    "type": "RelWithDebInfo",
+    "tracy": false,
+    "native_build": "passed after repairing two stale test include paths",
+    "test_only_repairs": [
+      "tests/gui/test_autosave.cpp",
+      "tests/gui/test_graph_editor.cpp"
+    ],
+    "root": "build/assessment",
+    "logs": [
+      "configure.log",
+      "build.log",
+      "build-repaired-tests.log",
+      "build-extra-tests.log"
+    ]
+  },
+  "ctest": {
+    "passed": 6,
+    "failed": 0,
+    "seconds": 2.95,
+    "qt_cases": {
+      "graph_editor": 38,
+      "autosave": 23,
+      "brush_storage": 10
+    },
+    "nanoflann_cases": 12
+  },
+  "ui_palette": {
+    "failed_checks": 0
+  },
+  "profiling_unittest": {
+    "passed": 34,
+    "failed": 0,
+    "log": "python-profiling-final.log",
+    "tooling_commit": "1a0a0de7"
+  },
+  "ci_unittest": {
+    "total": 22,
+    "passed": 15,
+    "skipped": 7,
+    "skip_reason": "requires Apple linker tools"
+  },
+  "pytest_native": {
+    "passed": 151,
+    "failed": 17,
+    "skipped": 7,
+    "subtests_passed": 29,
+    "failure_reason": "16 pre-existing hsd catalogue/fixture failures (including removed NoiseFbm/NoiseIq references and three native-dependent tests); one stale documentation navigation expectation",
+    "baseline_without_native": {
+      "passed": 132,
+      "failed": 14,
+      "skipped": 8
+    },
+    "final_log": "pytest-final.log"
+  },
+  "check_port_links": {
+    "failed": 108,
+    "by_node": {
+      "ExportForest": 15,
+      "ExportRocks": 15,
+      "ExportScene": 2,
+      "ForestProcess": 1,
+      "NodeIn": 15,
+      "NodeOut": 15,
+      "Preview": 2,
+      "RocksProcess": 1,
+      "SeedForest": 13,
+      "TerrainMerge": 15,
+      "TerrainTexture": 14
+    },
+    "note": "unchanged upstream production code; catalogue/live node mismatch"
+  },
+  "day1_checksums": {
+    "passed": 23,
+    "failed": 0
+  },
+  "shipped_fixture_lint": {
+    "total": 271,
+    "passed": 270,
+    "failed": 1,
+    "file": "Hesiod/data/bootstraps/stepping_shore.hsd",
+    "reason": "duplicate UI edge10.output->17.input absent from model edge list"
+  },
+  "gnode": {
+    "full_rerun_passed": 58,
+    "initial_exit": 139,
+    "full_repeat_exit": 134,
+    "isolated_repeat_exit": 139,
+    "status": "flaky crash",
+    "isolated_command": "OMP_NUM_THREADS=1 build/assessment/bin/gnode_unit_tests --gtest_filter=ParallelGraphUpdate.GraphWorkerHoldAndResume --gtest_repeat=20",
+    "isolated_crash_iteration": 8,
+    "sanitizer_followup": {
+      "scope": "Pinned GNode standalone lifecycle test diagnostic; no production source edits and no Hesiod build reconfiguration",
+      "gnode_revision": "ae0e10b07c01bc8130c01d96fe1994a5f4a3a2a2",
+      "build_type": "Debug",
+      "compiler": "GCC16.2.0",
+      "sanitizers": [
+        "address",
+        "undefined"
+      ],
+      "compile_workers": 2,
+      "build_start_utc": "2026-11-27T00:31:56Z",
+      "build_observed_complete_utc": "2026-11-27T00:33:10Z",
+      "test_start_utc": "2026-11-27T00:33:20Z",
+      "test_end_utc": "2026-11-27T00:33:20Z",
+      "command": [
+        "timeout",
+        "120",
+        "build/gnode-sanitizers/bin/gnode_unit_tests",
+        "--gtest_filter=ParallelGraphUpdate.GraphWorkerHoldAndResume",
+        "--gtest_repeat=20"
+      ],
+      "environment": {
+        "ASAN_OPTIONS": "detect_leaks=0:halt_on_error=1:abort_on_error=1:detect_stack_use_after_return=1:fast_unwind_on_malloc=0",
+        "UBSAN_OPTIONS": "print_stacktrace=1:halt_on_error=1",
+        "OMP_NUM_THREADS": "1"
+      },
+      "exit_code": 134,
+      "observed_iteration_at_failure": 11,
+      "diagnostic": "AddressSanitizer: stack-use-after-return",
+      "access": "WRITE of size1 by background thread T226",
+      "access_location": "external/GNode/GNode/src/graph_worker.cpp:390 (GraphWorker::start_next, start_next_pending=false)",
+      "expired_object": "worker in ParallelGraphUpdate_GraphWorkerHoldAndResume_Test::TestBody at parallel_update.cpp:478",
+      "thread_creation_path": [
+        "GraphWorker::schedule_start_next graph_worker.cpp:383",
+        "GraphWorker::request graph_worker.cpp:371",
+        "GraphWorkerHoldAndResume TestBody parallel_update.cpp:489"
+      ],
+      "log": "hold-resume.log",
+      "limitations": [
+        "Observed in isolated GNode default-callback test path; does not establish occurrence in Hesiod application execution.",
+        "No production fix attempted; repeated-test iteration at failure may vary."
+      ]
+    }
+  },
+  "valgrind_profile_highmap": {
+    "exit": 0,
+    "errors": 0,
+    "definitely_lost_bytes": 0,
+    "indirectly_lost_bytes": 0,
+    "possibly_lost_bytes": 0
+  },
+  "highmap_tests": {
+    "tests": 904,
+    "failures": 0,
+    "disabled": 0,
+    "time": "22.037s",
+    "exit": 0
+  },
+  "meta_unittests": {
+    "tests": 59,
+    "failures": 0,
+    "disabled": 0,
+    "time": "0.014s",
+    "exit": 0
+  },
+  "clwrapper_unit_tests": {
+    "tests": 15,
+    "failures": 1,
+    "disabled": 0,
+    "time": "1.079s",
+    "exit": 1,
+    "failure_reason": "DeviceManagerTest.SetDeviceTypeFilterAutoRediscoveryTest requests CPU OpenCL device unavailable on this GPU-only ICD host"
+  }
+}

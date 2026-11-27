@@ -1,0 +1,26 @@
+[
+  {
+    "name": "highmap_tests",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/build/assessment/bin/highmap_tests",
+      "--gtest_output=json:/home/barrulus/dev/Hesiod-783/output/fixes/native-tests/frozen-highmap_tests.json"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 23.36912949400721
+  },
+  {
+    "name": "ctest",
+    "command": [
+      "ctest",
+      "--test-dir",
+      "/home/barrulus/dev/Hesiod-783/build/assessment",
+      "--output-on-failure",
+      "--timeout",
+      "180",
+      "--output-junit",
+      "/home/barrulus/dev/Hesiod-783/output/fixes/native-tests/frozen-ctest.xml"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 5.0786409200081835
+  }
+]

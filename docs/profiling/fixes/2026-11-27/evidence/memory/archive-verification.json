@@ -1,0 +1,28 @@
+{
+  "manifest_files_verified": 39,
+  "archive_counts": {
+    "memory-baseline-calibration": {
+      "members": 64,
+      "results": 3,
+      "fixtures": 3,
+      "measurements": 3
+    },
+    "memory-fixed-export": {
+      "members": 468,
+      "results": 48,
+      "fixtures": 48,
+      "measurements": 48
+    },
+    "memory-fixed-quilting": {
+      "members": 468,
+      "results": 48,
+      "fixtures": 48,
+      "measurements": 48
+    }
+  },
+  "all_member_contents_read": true,
+  "only_source_catalog_json_data_included": true,
+  "no_executables_runtime_assets_exports_or_caches": true,
+  "all_passed": true,
+  "gzip_stream_crc_checked": true
+}

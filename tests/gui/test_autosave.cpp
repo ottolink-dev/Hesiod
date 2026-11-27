@@ -14,7 +14,7 @@
 #include "hesiod/app/app_settings.hpp"
 #include "hesiod/app/autosave_manager.hpp"
 #include "hesiod/app/hesiod_application.hpp"
-#include "hesiod/model/graph/graph_manager.hpp"
+#include "hesiod/model/graph_manager/graph_manager.hpp"
 #include "hesiod/model/graph/graph_node.hpp"
 #include "hesiod/model/project_model.hpp"
 #include "hesiod/model/utils.hpp"

@@ -1,0 +1,248 @@
+Test project /home/barrulus/dev/Hesiod-783/build/assessment
+      Start  1: clwrapper_unit_tests
+ 1/66 Test  #1: clwrapper_unit_tests ................................................***Failed    0.92 sec
+Running main() from /home/barrulus/dev/Hesiod-783/output/validation/googletest/googletest/src/gtest_main.cc
+[==========] Running 15 tests from 3 test suites.
+[----------] Global test environment set-up.
+[----------] 8 tests from DeviceManagerTest
+[ RUN      ] DeviceManagerTest.IsReadyTest
+[clwrap] [12:51:13] [---T---] DeviceManager::DeviceManager
+[clwrap] [12:51:13] [---T---] initializing OpenCL devices...
+[clwrap] [12:51:13] [---T---] checking device performances...
+[clwrap] [12:51:13] [---T---] checking platform: NVIDIA Corporation - NVIDIA CUDA
+[clwrap] [12:51:13] [---T---] rating - device: NVIDIA GeForce RTX 5060 Laptop GPU, score: 1000052.6580820961
+[clwrap] [12:51:13] [---I---] Selected OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:51:13] [---I---] - device Name: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:51:13] [---I---]  - device Vendor: NVIDIA Corporation
+[clwrap] [12:51:13] [---I---]  - device Version: OpenCL 3.0 CUDA
+[clwrap] [12:51:13] [---I---]  - device Type: GPU
+[       OK ] DeviceManagerTest.IsReadyTest (70 ms)
+[ RUN      ] DeviceManagerTest.GetDeviceTest
+[       OK ] DeviceManagerTest.GetDeviceTest (0 ms)
+[ RUN      ] DeviceManagerTest.AvailableDevicesTest
+[       OK ] DeviceManagerTest.AvailableDevicesTest (0 ms)
+[ RUN      ] DeviceManagerTest.DeviceMetadataTest
+[       OK ] DeviceManagerTest.DeviceMetadataTest (0 ms)
+[ RUN      ] DeviceManagerTest.PlatformMetadataTest
+[       OK ] DeviceManagerTest.PlatformMetadataTest (0 ms)
+[ RUN      ] DeviceManagerTest.SetDeviceBoundsCheckingTest
+[clwrap] [12:51:13] [---E---] Platform ID 999999 is out of bounds (total platforms: 1)
+[clwrap] [12:51:13] [---E---] Device index 999999 is out of bounds for platform 0 (total devices: 1)
+[clwrap] [12:51:13] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[       OK ] DeviceManagerTest.SetDeviceBoundsCheckingTest (0 ms)
+[ RUN      ] DeviceManagerTest.SetDeviceTypeFilterAutoRediscoveryTest
+[clwrap] [12:51:13] [---T---] initializing OpenCL devices...
+[clwrap] [12:51:13] [---T---] checking device performances...
+[clwrap] [12:51:13] [---T---] checking platform: NVIDIA Corporation - NVIDIA CUDA
+unknown file: Failure
+C++ exception with description "No OpenCL devices matching the device type filter were found!" thrown in the test body.
+
+[  FAILED  ] DeviceManagerTest.SetDeviceTypeFilterAutoRediscoveryTest (0 ms)
+[ RUN      ] DeviceManagerTest.DeviceSwitchAndExecutionTest
+[clwrap] [12:51:13] [---T---] loading kernel sources
+[clwrap] [12:51:13] [---T---] program building skipped, kernel sources are empty
+[clwrap] [12:51:13] [---E---] Device index 0 is out of bounds for platform 0 (total devices: 0)
+[       OK ] DeviceManagerTest.DeviceSwitchAndExecutionTest (0 ms)
+[----------] 8 tests from DeviceManagerTest (70 ms total)
+
+[----------] 3 tests from KernelManagerTest
+[ RUN      ] KernelManagerTest.SingletonInstanceTest
+[       OK ] KernelManagerTest.SingletonInstanceTest (0 ms)
+[ RUN      ] KernelManagerTest.AddKernelTest
+[clwrap] [12:51:13] [---T---] loading kernel sources
+[clwrap] [12:51:13] [---T---] building OpenCL kernels
+[clwrap] [12:51:13] [---T---] build options: 
+[clwrap] [12:51:13] [---T---] available kernels: simple_add
+[       OK ] KernelManagerTest.AddKernelTest (71 ms)
+[ RUN      ] KernelManagerTest.SourceStackingTest
+[clwrap] [12:51:13] [---T---] loading kernel sources
+[clwrap] [12:51:13] [---T---] building OpenCL kernels
+[clwrap] [12:51:13] [---T---] build options: 
+[clwrap] [12:51:13] [---T---] available kernels: add_kernel;sub_kernel
+[       OK ] KernelManagerTest.SourceStackingTest (116 ms)
+[----------] 3 tests from KernelManagerTest (187 ms total)
+
+[----------] 4 tests from RunTest
+[ RUN      ] RunTest.BufferBindingAndExecution
+[clwrap] [12:51:13] [---T---] loading kernel sources
+[clwrap] [12:51:14] [---T---] building OpenCL kernels
+[clwrap] [12:51:14] [---T---] build options: 
+[clwrap] [12:51:14] [---T---] available kernels: vector_add
+[clwrap] [12:51:14] [---T---] Run::Run [vector_add]
+[       OK ] RunTest.BufferBindingAndExecution (114 ms)
+[ RUN      ] RunTest.ImageBindingAndExecution
+[clwrap] [12:51:14] [---T---] loading kernel sources
+[clwrap] [12:51:14] [---T---] building OpenCL kernels
+[clwrap] [12:51:14] [---T---] build options: 
+[clwrap] [12:51:14] [---T---] available kernels: img_test
+[clwrap] [12:51:14] [---T---] Run::Run [img_test]
+[       OK ] RunTest.ImageBindingAndExecution (112 ms)
+[ RUN      ] RunTest.InOutImageSharingAndPingPong
+[clwrap] [12:51:14] [---T---] loading kernel sources
+[clwrap] [12:51:14] [---T---] building OpenCL kernels
+[clwrap] [12:51:14] [---T---] build options: 
+[clwrap] [12:51:14] [---T---] available kernels: img_scale
+[clwrap] [12:51:14] [---T---] Run::Run [img_scale]
+[clwrap] [12:51:14] [---T---] Run::Run [img_scale]
+[       OK ] RunTest.InOutImageSharingAndPingPong (112 ms)
+[ RUN      ] RunTest.SharedQueueAsyncAcrossRuns
+[clwrap] [12:51:14] [---T---] loading kernel sources
+[clwrap] [12:51:14] [---T---] building OpenCL kernels
+[clwrap] [12:51:14] [---T---] build options: 
+[clwrap] [12:51:14] [---T---] available kernels: img_scale;img_add_one
+[clwrap] [12:51:14] [---T---] Run::Run [img_scale]
+[clwrap] [12:51:14] [---T---] Run::Run [img_add_one] (shared queue)
+[clwrap] [12:51:14] [---T---] loading kernel sources
+[clwrap] [12:51:14] [---T---] building OpenCL kernels
+[clwrap] [12:51:14] [---T---] build options: 
+[clwrap] [12:51:14] [---T---] available kernels: vec_scale
+[clwrap] [12:51:14] [---T---] Run::Run [vec_scale]
+[       OK ] RunTest.SharedQueueAsyncAcrossRuns (228 ms)
+[----------] 4 tests from RunTest (568 ms total)
+
+[----------] Global test environment tear-down
+[==========] 15 tests from 3 test suites ran. (827 ms total)
+[  PASSED  ] 14 tests.
+[  FAILED  ] 1 test, listed below:
+[  FAILED  ] DeviceManagerTest.SetDeviceTypeFilterAutoRediscoveryTest
+
+ 1 FAILED TEST
+
+      Start  2: unit_tests_build
+ 2/66 Test  #2: unit_tests_build ....................................................   Passed    0.06 sec
+      Start  3: unit_tests_run
+ 3/66 Test  #3: unit_tests_run ......................................................   Passed    0.77 sec
+      Start  4: AttributeTest.ConstructionAndValue
+ 4/66 Test  #4: AttributeTest.ConstructionAndValue ..................................   Passed    0.02 sec
+      Start  5: AttributeTest.TypeErasedAccess
+ 5/66 Test  #5: AttributeTest.TypeErasedAccess ......................................   Passed    0.02 sec
+      Start  6: AttributeTest.EventNotification
+ 6/66 Test  #6: AttributeTest.EventNotification .....................................   Passed    0.01 sec
+      Start  7: AttributeTest.MetadataAndStateSeparation
+ 7/66 Test  #7: AttributeTest.MetadataAndStateSeparation ............................   Passed    0.01 sec
+      Start  8: AttributeTest.PresetComment
+ 8/66 Test  #8: AttributeTest.PresetComment .........................................   Passed    0.01 sec
+      Start  9: AttributeContainerTest.AddAndLookup
+ 9/66 Test  #9: AttributeContainerTest.AddAndLookup .................................   Passed    0.01 sec
+      Start 10: AttributeContainerTest.TryAdd
+10/66 Test #10: AttributeContainerTest.TryAdd .......................................   Passed    0.01 sec
+      Start 11: AttributeContainerTest.InsertionOrder
+11/66 Test #11: AttributeContainerTest.InsertionOrder ...............................   Passed    0.01 sec
+      Start 12: SerializationTest.FullModeRoundTrip
+12/66 Test #12: SerializationTest.FullModeRoundTrip .................................   Passed    0.01 sec
+      Start 13: SerializationTest.StateModeEmitsOnlyValueAndState
+13/66 Test #13: SerializationTest.StateModeEmitsOnlyValueAndState ...................   Passed    0.01 sec
+      Start 14: SerializationTest.StateModeIgnoresMetadataAndSkipsUndeclared
+14/66 Test #14: SerializationTest.StateModeIgnoresMetadataAndSkipsUndeclared ........   Passed    0.01 sec
+      Start 15: SerializationTest.StateModeReconstructsDynamicStateAttributes
+15/66 Test #15: SerializationTest.StateModeReconstructsDynamicStateAttributes .......   Passed    0.01 sec
+      Start 16: SerializationTest.ContainerStateModeRoundTrip
+16/66 Test #16: SerializationTest.ContainerStateModeRoundTrip .......................   Passed    0.01 sec
+      Start 17: SerializationTest.ContainerGroupFullModeRoundTrip
+17/66 Test #17: SerializationTest.ContainerGroupFullModeRoundTrip ...................   Passed    0.01 sec
+      Start 18: SerializationTest.ContainerGroupStateMode
+18/66 Test #18: SerializationTest.ContainerGroupStateMode ...........................   Passed    0.01 sec
+      Start 19: SerializationTest.ContainerGroupClear
+19/66 Test #19: SerializationTest.ContainerGroupClear ...............................   Passed    0.01 sec
+      Start 20: SerializationTest.MetadataAndStateRestoredBeforeValueNotification
+20/66 Test #20: SerializationTest.MetadataAndStateRestoredBeforeValueNotification ...   Passed    0.01 sec
+      Start 21: AttributeFactoryTest.CreateBuiltinTypes
+21/66 Test #21: AttributeFactoryTest.CreateBuiltinTypes .............................   Passed    0.01 sec
+      Start 22: EventTest.SubscribeAndNotify
+22/66 Test #22: EventTest.SubscribeAndNotify ........................................   Passed    0.01 sec
+      Start 23: EventTest.Unsubscribe
+23/66 Test #23: EventTest.Unsubscribe ...............................................   Passed    0.01 sec
+      Start 24: EventTest.TeardownSafety
+24/66 Test #24: EventTest.TeardownSafety ............................................   Passed    0.01 sec
+      Start 25: ContainerGroupSyncTest.DetectSharedAttributes
+25/66 Test #25: ContainerGroupSyncTest.DetectSharedAttributes .......................   Passed    0.01 sec
+      Start 26: ContainerGroupSyncTest.BasicSynchronizationAndIndependence
+26/66 Test #26: ContainerGroupSyncTest.BasicSynchronizationAndIndependence ..........   Passed    0.01 sec
+      Start 27: ContainerGroupSyncTest.EventNotificationOnSync
+27/66 Test #27: ContainerGroupSyncTest.EventNotificationOnSync ......................   Passed    0.01 sec
+      Start 28: ContainerGroupSyncTest.EnableDisableSynchronization
+28/66 Test #28: ContainerGroupSyncTest.EnableDisableSynchronization .................   Passed    0.01 sec
+      Start 29: ContainerGroupSyncTest.SynchronizeAllAndClear
+29/66 Test #29: ContainerGroupSyncTest.SynchronizeAllAndClear .......................   Passed    0.01 sec
+      Start 30: ContainerGroupSyncTest.DynamicAdditionOfContainersAndAttributes
+30/66 Test #30: ContainerGroupSyncTest.DynamicAdditionOfContainersAndAttributes .....   Passed    0.01 sec
+      Start 31: ContainerGroupSyncTest.EraseContainerMaintainsSync
+31/66 Test #31: ContainerGroupSyncTest.EraseContainerMaintainsSync ..................   Passed    0.01 sec
+      Start 32: ContainerGroupSyncTest.JsonRoundTripPreservesSync
+32/66 Test #32: ContainerGroupSyncTest.JsonRoundTripPreservesSync ...................   Passed    0.01 sec
+      Start 33: ContainerGroupSyncTest.SetCurrentToFirst
+33/66 Test #33: ContainerGroupSyncTest.SetCurrentToFirst ............................   Passed    0.01 sec
+      Start 34: GradientMetricsTest.StopAndPresetEquality
+34/66 Test #34: GradientMetricsTest.StopAndPresetEquality ...........................   Passed    0.01 sec
+      Start 35: GradientMetricsTest.SampleInterpolatesAndClamps
+35/66 Test #35: GradientMetricsTest.SampleInterpolatesAndClamps .....................   Passed    0.01 sec
+      Start 36: GradientMetricsTest.SampleHoldsEndColorsOutsideStopRange
+36/66 Test #36: GradientMetricsTest.SampleHoldsEndColorsOutsideStopRange ............   Passed    0.01 sec
+      Start 37: GradientMetricsTest.LuminanceOrdersDarkToLight
+37/66 Test #37: GradientMetricsTest.LuminanceOrdersDarkToLight ......................   Passed    0.01 sec
+      Start 38: GradientMetricsTest.HueOfPrimaries
+38/66 Test #38: GradientMetricsTest.HueOfPrimaries ..................................   Passed    0.01 sec
+      Start 39: GradientMetricsTest.HueAveragesAcrossWrapAround
+39/66 Test #39: GradientMetricsTest.HueAveragesAcrossWrapAround .....................   Passed    0.01 sec
+      Start 40: GradientMetricsTest.AchromaticGradientHasNoHue
+40/66 Test #40: GradientMetricsTest.AchromaticGradientHasNoHue ......................   Passed    0.01 sec
+      Start 41: GradientLibraryTest.AddMakesNamesUnique
+41/66 Test #41: GradientLibraryTest.AddMakesNamesUnique .............................   Passed    0.01 sec
+      Start 42: GradientLibraryTest.AddSortsStopsByPosition
+42/66 Test #42: GradientLibraryTest.AddSortsStopsByPosition .........................   Passed    0.01 sec
+      Start 43: GradientLibraryTest.UpdateRenameRemove
+43/66 Test #43: GradientLibraryTest.UpdateRenameRemove ..............................   Passed    0.01 sec
+      Start 44: GradientLibraryTest.FavoritesFollowRenameAndRemoval
+44/66 Test #44: GradientLibraryTest.FavoritesFollowRenameAndRemoval .................   Passed    0.01 sec
+      Start 45: GradientLibraryTest.ChangedFiresOncePerEffectiveMutation
+45/66 Test #45: GradientLibraryTest.ChangedFiresOncePerEffectiveMutation ............   Passed    0.01 sec
+      Start 46: GradientLibraryTest.JsonRoundTrip
+46/66 Test #46: GradientLibraryTest.JsonRoundTrip ...................................   Passed    0.01 sec
+      Start 47: GradientLibraryTest.AutosaveAndLoad
+47/66 Test #47: GradientLibraryTest.AutosaveAndLoad .................................   Passed    0.01 sec
+      Start 48: GradientLibraryTest.CorruptFileLeavesStateUntouched
+48/66 Test #48: GradientLibraryTest.CorruptFileLeavesStateUntouched .................   Passed    0.01 sec
+      Start 49: GradientLibraryTest.ImportPolicy
+49/66 Test #49: GradientLibraryTest.ImportPolicy ....................................   Passed    0.01 sec
+      Start 50: GradientLibraryTest.ParsesHesiodFileShapes
+50/66 Test #50: GradientLibraryTest.ParsesHesiodFileShapes ..........................   Passed    0.01 sec
+      Start 51: GradientLibraryTest.SortNamesRoundTrip
+51/66 Test #51: GradientLibraryTest.SortNamesRoundTrip ..............................   Passed    0.01 sec
+      Start 52: DesignRegistryTest.RegistrationAndLookup
+52/66 Test #52: DesignRegistryTest.RegistrationAndLookup ............................   Passed    0.01 sec
+      Start 53: DesignRegistryTest.FallbackChainAndWildcards
+53/66 Test #53: DesignRegistryTest.FallbackChainAndWildcards ........................   Passed    0.02 sec
+      Start 54: DesignRegistryTest.CanRenderRejectionFallback
+54/66 Test #54: DesignRegistryTest.CanRenderRejectionFallback .......................   Passed    0.02 sec
+      Start 55: DesignRegistryTest.CycleDetectionInFallbacks
+55/66 Test #55: DesignRegistryTest.CycleDetectionInFallbacks ........................   Passed    0.01 sec
+      Start 56: DesignRegistryTest.SectionFactoryResolution
+56/66 Test #56: DesignRegistryTest.SectionFactoryResolution .........................   Passed    0.01 sec
+      Start 57: DesignRegistryTest.ContainerWidgetDesignIntegration
+57/66 Test #57: DesignRegistryTest.ContainerWidgetDesignIntegration .................   Passed    0.02 sec
+      Start 58: GradientPickerTest.MergesHostAndLibraryPresets
+58/66 Test #58: GradientPickerTest.MergesHostAndLibraryPresets ......................   Passed    0.02 sec
+      Start 59: GradientPickerTest.FavoritesPinnedFirstThenSortKey
+59/66 Test #59: GradientPickerTest.FavoritesPinnedFirstThenSortKey ..................   Passed    0.02 sec
+      Start 60: GradientPickerTest.LuminanceSortGoesDarkToLight
+60/66 Test #60: GradientPickerTest.LuminanceSortGoesDarkToLight .....................   Passed    0.02 sec
+      Start 61: GradientPickerTest.SaveCurrentAsPresetAvoidsHostNames
+61/66 Test #61: GradientPickerTest.SaveCurrentAsPresetAvoidsHostNames ...............   Passed    0.02 sec
+      Start 62: GradientPickerTest.LibraryChangesRebuildTheGrid
+62/66 Test #62: GradientPickerTest.LibraryChangesRebuildTheGrid .....................   Passed    0.02 sec
+      Start 63: graph_editor
+63/66 Test #63: graph_editor ........................................................   Passed    0.29 sec
+      Start 64: profiling_highmap
+64/66 Test #64: profiling_highmap ...................................................   Passed    0.07 sec
+      Start 65: autosave
+65/66 Test #65: autosave ............................................................   Passed    0.57 sec
+      Start 66: brush_storage
+66/66 Test #66: brush_storage .......................................................   Passed    1.04 sec
+
+98% tests passed, 1 tests failed out of 66
+
+Total Test time (real) =   4.62 sec
+
+The following tests FAILED:
+	  1 - clwrapper_unit_tests (Failed)
+Errors while running CTest

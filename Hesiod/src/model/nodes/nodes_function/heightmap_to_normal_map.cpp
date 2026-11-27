@@ -46,10 +46,6 @@ void compute_heightmap_to_normal_map_node(BaseNode &node)
     hmap::Array   array = p_in->to_array(node.cfg().cm_cpu);
     hmap::Texture tn    = hmap::normal_map(array);
 
-    hmap::Array nx = tn.channel(0);
-    hmap::Array ny = tn.channel(1);
-    hmap::Array nz = tn.channel(2);
-
     for (int nch = 0; nch < 3; ++nch)
       p_nmap->channel(nch).from_array(tn.channel(nch), node.cfg().cm_cpu);
 

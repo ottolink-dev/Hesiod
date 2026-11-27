@@ -1,0 +1,37 @@
+[
+  {
+    "name": "gnode_unit_tests",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/build/assessment/bin/gnode_unit_tests",
+      "--gtest_output=json:/home/barrulus/dev/Hesiod-783/output/fixes/native-tests/gnode_unit_tests.json"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 0.7661492569895927
+  },
+  {
+    "name": "meta_unittests",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/build/assessment/bin/meta_unittests",
+      "--gtest_output=json:/home/barrulus/dev/Hesiod-783/output/fixes/native-tests/meta_unittests.json"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 0.06591203299467452
+  },
+  {
+    "name": "clwrapper_unit_tests",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/build/assessment/bin/clwrapper_unit_tests",
+      "--gtest_output=json:/home/barrulus/dev/Hesiod-783/output/fixes/native-tests/clwrapper_unit_tests.json"
+    ],
+    "exit": 1,
+    "elapsed_seconds": 1.1186013599945
+  },
+  {
+    "name": "hesiod_ui_palette_test",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/build/assessment/bin/hesiod_ui_palette_test"
+    ],
+    "exit": 0,
+    "elapsed_seconds": 2.4235974500043085
+  }
+]

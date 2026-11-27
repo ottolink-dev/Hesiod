@@ -1,0 +1,128 @@
+Running main() from /home/barrulus/dev/Hesiod-783/output/validation/googletest/googletest/src/gtest_main.cc
+[==========] Running 16 tests from 3 test suites.
+[----------] Global test environment set-up.
+[----------] 9 tests from DeviceManagerTest
+[ RUN      ] DeviceManagerTest.IsReadyTest
+[clwrap] [12:57:10] [---T---] DeviceManager::DeviceManager
+[clwrap] [12:57:10] [---T---] initializing OpenCL devices...
+[clwrap] [12:57:10] [---T---] checking device performances...
+[clwrap] [12:57:10] [---T---] checking platform: NVIDIA Corporation - NVIDIA CUDA
+[clwrap] [12:57:10] [---T---] rating - device: NVIDIA GeForce RTX 5060 Laptop GPU, score: 1000052.6580820961
+[clwrap] [12:57:10] [---I---] Selected OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:10] [---I---] - device Name: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:10] [---I---]  - device Vendor: NVIDIA Corporation
+[clwrap] [12:57:10] [---I---]  - device Version: OpenCL 3.0 CUDA
+[clwrap] [12:57:10] [---I---]  - device Type: GPU
+[       OK ] DeviceManagerTest.IsReadyTest (138 ms)
+[ RUN      ] DeviceManagerTest.GetDeviceTest
+[       OK ] DeviceManagerTest.GetDeviceTest (0 ms)
+[ RUN      ] DeviceManagerTest.AvailableDevicesTest
+[       OK ] DeviceManagerTest.AvailableDevicesTest (0 ms)
+[ RUN      ] DeviceManagerTest.DeviceMetadataTest
+[       OK ] DeviceManagerTest.DeviceMetadataTest (0 ms)
+[ RUN      ] DeviceManagerTest.PlatformMetadataTest
+[       OK ] DeviceManagerTest.PlatformMetadataTest (0 ms)
+[ RUN      ] DeviceManagerTest.SetDeviceBoundsCheckingTest
+[clwrap] [12:57:10] [---E---] Platform ID 999999 is out of bounds (total platforms: 1)
+[clwrap] [12:57:10] [---E---] Device index 999999 is out of bounds for platform 0 (total devices: 1)
+[clwrap] [12:57:10] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[       OK ] DeviceManagerTest.SetDeviceBoundsCheckingTest (0 ms)
+[ RUN      ] DeviceManagerTest.SetDeviceTypeFilterAutoRediscoveryTest
+[clwrap] [12:57:10] [---T---] initializing OpenCL devices...
+[clwrap] [12:57:10] [---T---] checking device performances...
+[clwrap] [12:57:10] [---T---] checking platform: NVIDIA Corporation - NVIDIA CUDA
+[clwrap] [12:57:10] [---T---] rating - device: NVIDIA GeForce RTX 5060 Laptop GPU, score: 1000052.6580820961
+[clwrap] [12:57:10] [---I---] Selected OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:10] [---I---] - device Name: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:10] [---I---]  - device Vendor: NVIDIA Corporation
+[clwrap] [12:57:10] [---I---]  - device Version: OpenCL 3.0 CUDA
+[clwrap] [12:57:10] [---I---]  - device Type: GPU
+[clwrap] [12:57:10] [---T---] initializing OpenCL devices...
+[clwrap] [12:57:10] [---T---] checking device performances...
+[clwrap] [12:57:10] [---T---] checking platform: NVIDIA Corporation - NVIDIA CUDA
+[clwrap] [12:57:10] [---T---] rating - device: NVIDIA GeForce RTX 5060 Laptop GPU, score: 1000052.6580820961
+[clwrap] [12:57:10] [---I---] Selected OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:10] [---I---] - device Name: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:10] [---I---]  - device Vendor: NVIDIA Corporation
+[clwrap] [12:57:10] [---I---]  - device Version: OpenCL 3.0 CUDA
+[clwrap] [12:57:10] [---I---]  - device Type: GPU
+[clwrap] [12:57:10] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[       OK ] DeviceManagerTest.SetDeviceTypeFilterAutoRediscoveryTest (1 ms)
+[ RUN      ] DeviceManagerTest.CpuDeviceTypeFilterAutoRediscoveryWhenAvailable
+/home/barrulus/dev/Hesiod-783/external/HighMap/external/CLWrapper/tests/unit_tests/test_device_manager.cpp:134: Skipped
+No CPU OpenCL device is available; generic filter rediscovery is covered separately.
+
+[  SKIPPED ] DeviceManagerTest.CpuDeviceTypeFilterAutoRediscoveryWhenAvailable (0 ms)
+[ RUN      ] DeviceManagerTest.DeviceSwitchAndExecutionTest
+[clwrap] [12:57:10] [---T---] loading kernel sources
+[clwrap] [12:57:10] [---T---] program building skipped, kernel sources are empty
+[clwrap] [12:57:10] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:57:10] [---T---] loading kernel sources
+[clwrap] [12:57:10] [---T---] building OpenCL kernels
+[clwrap] [12:57:10] [---T---] build options: 
+[clwrap] [12:57:10] [---T---] available kernels: simple_add
+[clwrap] [12:57:10] [---T---] Run::Run [simple_add]
+[clwrap] [12:57:10] [---T---] OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[       OK ] DeviceManagerTest.DeviceSwitchAndExecutionTest (77 ms)
+[----------] 9 tests from DeviceManagerTest (218 ms total)
+
+[----------] 3 tests from KernelManagerTest
+[ RUN      ] KernelManagerTest.SingletonInstanceTest
+[       OK ] KernelManagerTest.SingletonInstanceTest (0 ms)
+[ RUN      ] KernelManagerTest.AddKernelTest
+[clwrap] [12:57:10] [---T---] loading kernel sources
+[clwrap] [12:57:10] [---T---] building OpenCL kernels
+[clwrap] [12:57:10] [---T---] build options: 
+[clwrap] [12:57:11] [---T---] available kernels: simple_add
+[       OK ] KernelManagerTest.AddKernelTest (114 ms)
+[ RUN      ] KernelManagerTest.SourceStackingTest
+[clwrap] [12:57:11] [---T---] loading kernel sources
+[clwrap] [12:57:11] [---T---] building OpenCL kernels
+[clwrap] [12:57:11] [---T---] build options: 
+[clwrap] [12:57:11] [---T---] available kernels: add_kernel;sub_kernel
+[       OK ] KernelManagerTest.SourceStackingTest (110 ms)
+[----------] 3 tests from KernelManagerTest (225 ms total)
+
+[----------] 4 tests from RunTest
+[ RUN      ] RunTest.BufferBindingAndExecution
+[clwrap] [12:57:11] [---T---] loading kernel sources
+[clwrap] [12:57:11] [---T---] building OpenCL kernels
+[clwrap] [12:57:11] [---T---] build options: 
+[clwrap] [12:57:11] [---T---] available kernels: vector_add
+[clwrap] [12:57:11] [---T---] Run::Run [vector_add]
+[       OK ] RunTest.BufferBindingAndExecution (112 ms)
+[ RUN      ] RunTest.ImageBindingAndExecution
+[clwrap] [12:57:11] [---T---] loading kernel sources
+[clwrap] [12:57:11] [---T---] building OpenCL kernels
+[clwrap] [12:57:11] [---T---] build options: 
+[clwrap] [12:57:11] [---T---] available kernels: img_test
+[clwrap] [12:57:11] [---T---] Run::Run [img_test]
+[       OK ] RunTest.ImageBindingAndExecution (111 ms)
+[ RUN      ] RunTest.InOutImageSharingAndPingPong
+[clwrap] [12:57:11] [---T---] loading kernel sources
+[clwrap] [12:57:11] [---T---] building OpenCL kernels
+[clwrap] [12:57:11] [---T---] build options: 
+[clwrap] [12:57:11] [---T---] available kernels: img_scale
+[clwrap] [12:57:11] [---T---] Run::Run [img_scale]
+[clwrap] [12:57:11] [---T---] Run::Run [img_scale]
+[       OK ] RunTest.InOutImageSharingAndPingPong (108 ms)
+[ RUN      ] RunTest.SharedQueueAsyncAcrossRuns
+[clwrap] [12:57:11] [---T---] loading kernel sources
+[clwrap] [12:57:11] [---T---] building OpenCL kernels
+[clwrap] [12:57:11] [---T---] build options: 
+[clwrap] [12:57:11] [---T---] available kernels: img_scale;img_add_one
+[clwrap] [12:57:11] [---T---] Run::Run [img_scale]
+[clwrap] [12:57:11] [---T---] Run::Run [img_add_one] (shared queue)
+[clwrap] [12:57:11] [---T---] loading kernel sources
+[clwrap] [12:57:11] [---T---] building OpenCL kernels
+[clwrap] [12:57:11] [---T---] build options: 
+[clwrap] [12:57:11] [---T---] available kernels: vec_scale
+[clwrap] [12:57:11] [---T---] Run::Run [vec_scale]
+[       OK ] RunTest.SharedQueueAsyncAcrossRuns (221 ms)
+[----------] 4 tests from RunTest (554 ms total)
+
+[----------] Global test environment tear-down
+[==========] 16 tests from 3 test suites ran. (998 ms total)
+[  PASSED  ] 15 tests.
+[  SKIPPED ] 1 test, listed below:
+[  SKIPPED ] DeviceManagerTest.CpuDeviceTypeFilterAutoRediscoveryWhenAvailable

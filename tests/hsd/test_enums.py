@@ -1,5 +1,6 @@
 import os
 import sys
+import json
 import pytest
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "..", "scripts"))
@@ -35,9 +36,9 @@ def test_resolve_stamping_blend_method_maximum(catalog):
     assert catalog.resolve("Stamping", "blend_method", "maximum") == 1
 
 
-def test_resolve_noisefbm_noise_type_opensimplex2(catalog):
+def test_resolve_coherent_noise_noise_type_opensimplex2(catalog):
     # noise_type_map_fbm: "OpenSimplex2" -> 4
-    assert catalog.resolve("NoiseFbm", "noise_type", "OpenSimplex2") == 4
+    assert catalog.resolve("CoherentNoise", "noise_type", "OpenSimplex2") == 4
 
 
 def test_resolve_gain_post_mix_method_replace(catalog):
@@ -69,17 +70,37 @@ def test_map_for_uncatalogued_node_returns_none(catalog):
     assert catalog.map_for("CloudRandom", "method") is None
 
 
-def test_map_for_noiseiq_noise_type_not_none(catalog):
-    # Regression: NoiseIq and NoiseJordan share setup_noise_iq_node. A one-to-one
-    # func->type map dropped NoiseIq; the one-to-many fix must give both noise_type.
-    assert catalog.map_for("NoiseIq", "noise_type") is not None
-    assert catalog.map_for("NoiseJordan", "noise_type") is not None
+def test_shared_setup_function_maps_enum_to_every_registered_type(tmp_path, monkeypatch):
+    # Exercise the parser's one-to-many regression independently of production
+    # node names, which may be consolidated or renamed.
+    from hsd import enum_catalog_build as builder
+
+    (tmp_path / "node_factory.cpp").write_text(
+        "SETUP_NODE(NoiseVariantA, shared_noise);\n"
+        "SETUP_NODE(NoiseVariantB, shared_noise);\n")
+    (tmp_path / "shared_noise.cpp").write_text('''
+void setup_shared_noise_node(BaseNode &node) {
+    add_enum(node, "noise_type", "Noise type", enum_mappings.noise_type_map, "Perlin");
+}
+''')
+    documentation = tmp_path / "nodes.json"
+    documentation.write_text(json.dumps({
+        name: {"parameters": {"noise_type": {"type": "Enumeration"}}}
+        for name in ("NoiseVariantA", "NoiseVariantB")
+    }))
+    monkeypatch.setattr(builder, "NODES_DIR", tmp_path)
+    monkeypatch.setattr(builder, "NODE_DOC_JSON", documentation)
+
+    assert builder.build_node_param({"noise_type_map": {"Perlin": 0}}) == {
+        "NoiseVariantA": {"noise_type": "noise_type_map"},
+        "NoiseVariantB": {"noise_type": "noise_type_map"},
+    }
 
 
-def test_noisefbm_has_no_post_mix_method(catalog):
-    # Regression: the cpp parser over-claimed post_mix_method on NoiseFbm, which
+def test_coherent_noise_has_no_post_mix_method(catalog):
+    # Regression: the cpp parser over-claimed post_mix_method on CoherentNoise, which
     # has no such param per node_documentation.json. The doc-param filter drops it.
-    assert catalog.map_for("NoiseFbm", "post_mix_method") is None
+    assert catalog.map_for("CoherentNoise", "post_mix_method") is None
 
 
 # ---------------------------------------------------------------------------

@@ -29,7 +29,7 @@ def _project(graph, config=None):
 def test_build_minimal_graph():
     cfg = {"shape": [512, 512], "tiling": [1, 1], "overlap": 0.0}
     g = Graph(config=cfg)
-    g.add_node("noise", "NoiseFbm", {"kw": {"label": "kw", "type": 17,
+    g.add_node("noise", "CoherentNoise", {"kw": {"label": "kw", "type": 17,
                "type_string": "Wavenumber", "value": [4, 4]}})
     g.add_node("exp", "ExportHeightmap", {})
     g.link("noise", "output", "exp", "input")
@@ -39,10 +39,10 @@ def test_build_minimal_graph():
 
     gm = hsd["graph_manager"]["graph_nodes"]["graph"]
     assert len(gm["nodes"]) == 2
-    assert {n["label"] for n in gm["nodes"]} == {"NoiseFbm", "ExportHeightmap"}
+    assert {n["label"] for n in gm["nodes"]} == {"CoherentNoise", "ExportHeightmap"}
     assert gm["model_config"]["shape.x"] == 512
     # export wired to the model id of the 'noise' node
-    noise_id = next(n["id"] for n in gm["nodes"] if n["label"] == "NoiseFbm")
+    noise_id = next(n["id"] for n in gm["nodes"] if n["label"] == "CoherentNoise")
     ep = hsd["graph_manager"]["export_param"]
     assert ep["ids"] == [["graph", noise_id, "output"]]
     assert ep["export_path"] == "out.png"

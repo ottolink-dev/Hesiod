@@ -1,0 +1,3 @@
+# Preserve all assessment artifact bytes for checksums and exact regeneration.
+* -text
+*.csv whitespace=cr-at-eol

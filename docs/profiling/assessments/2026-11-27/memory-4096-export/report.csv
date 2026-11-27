@@ -1,0 +1,3 @@
+case,variant,inputs_only,policy,tiles,overlap,size,planned,successful,status,process_peak_mib_median,process_peak_mib_min,process_peak_mib_max,wall_seconds_median
+ExportAsset,full,False,ram-sequential,1,0.0,4096,3,3,complete,11604.01171875,11603.25390625,11604.62109375,1599.8155591439936
+ExportAsset,minimal,False,ram-sequential,1,0.0,4096,3,3,complete,10964.2265625,10962.7578125,10964.28125,19.985350164999545

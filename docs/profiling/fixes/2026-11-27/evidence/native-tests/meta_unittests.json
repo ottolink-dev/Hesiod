@@ -1,0 +1,711 @@
+{
+  "tests": 59,
+  "failures": 0,
+  "disabled": 0,
+  "errors": 0,
+  "timestamp": "2026-11-27T12:46:42Z",
+  "time": "0.025s",
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "AttributeTest",
+      "tests": 5,
+      "failures": 0,
+      "disabled": 0,
+      "errors": 0,
+      "timestamp": "2026-11-27T12:46:42Z",
+      "time": "0s",
+      "testsuite": [
+        {
+          "name": "ConstructionAndValue",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/Meta\/tests\/unittests\/test_attribute.cpp",
+          "line": 7,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "AttributeTest"
+        },
+        {
+          "name": "TypeErasedAccess",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/Meta\/tests\/unittests\/test_attribute.cpp",
+          "line": 19,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "AttributeTest"
+        },
+        {
+          "name": "EventNotification",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/Meta\/tests\/unittests\/test_attribute.cpp",
+          "line": 31,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "AttributeTest"
+        },
+        {
+          "name": "MetadataAndStateSeparation",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/Meta\/tests\/unittests\/test_attribute.cpp",
+          "line": 42,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "AttributeTest"
+        },
+        {
+          "name": "PresetComment",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/Meta\/tests\/unittests\/test_attribute.cpp",
+          "line": 63,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "AttributeTest"
+        }
+      ]
+    },
+    {
+      "name": "AttributeContainerTest",
+      "tests": 3,
+      "failures": 0,
+      "disabled": 0,
+      "errors": 0,
+      "timestamp": "2026-11-27T12:46:42Z",
+      "time": "0s",
+      "testsuite": [
+        {
+          "name": "AddAndLookup",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/Meta\/tests\/unittests\/test_attribute_container.cpp",
+          "line": 7,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "AttributeContainerTest"
+        },
+        {
+          "name": "TryAdd",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/Meta\/tests\/unittests\/test_attribute_container.cpp",
+          "line": 34,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "AttributeContainerTest"
+        },
+        {
+          "name": "InsertionOrder",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/Meta\/tests\/unittests\/test_attribute_container.cpp",
+          "line": 45,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "AttributeContainerTest"
+        }
+      ]
+    },
+    {
+      "name": "SerializationTest",
+      "tests": 9,
+      "failures": 0,
+      "disabled": 0,
+      "errors": 0,
+      "timestamp": "2026-11-27T12:46:42Z",
+      "time": "0.001s",
+      "testsuite": [
+        {
+          "name": "FullModeRoundTrip",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/Meta\/tests\/unittests\/test_serialization.cpp",
+          "line": 7,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "SerializationTest"
+        },
+        {
+          "name": "StateModeEmitsOnlyValueAndState",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/Meta\/tests\/unittests\/test_serialization.cpp",
+          "line": 35,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "SerializationTest"
+        },
+        {
+          "name": "StateModeIgnoresMetadataAndSkipsUndeclared",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/Meta\/tests\/unittests\/test_serialization.cpp",
+          "line": 53,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "SerializationTest"
+        },
+        {
+          "name": "StateModeReconstructsDynamicStateAttributes",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/Meta\/tests\/unittests\/test_serialization.cpp",
+          "line": 89,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "SerializationTest"
+        },
+        {
+          "name": "ContainerStateModeRoundTrip",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/Meta\/tests\/unittests\/test_serialization.cpp",
+          "line": 110,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "SerializationTest"
+        },
+        {
+          "name": "ContainerGroupFullModeRoundTrip",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/Meta\/tests\/unittests\/test_serialization.cpp",
+          "line": 132,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "SerializationTest"
+        },
+        {
+          "name": "ContainerGroupStateMode",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/Meta\/tests\/unittests\/test_serialization.cpp",
+          "line": 181,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "SerializationTest"
+        },
+        {
+          "name": "ContainerGroupClear",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/Meta\/tests\/unittests\/test_serialization.cpp",
+          "line": 211,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "SerializationTest"
+        },
+        {
+          "name": "MetadataAndStateRestoredBeforeValueNotification",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/Meta\/tests\/unittests\/test_serialization.cpp",
+          "line": 228,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "SerializationTest"
+        }
+      ]
+    },
+    {
+      "name": "AttributeFactoryTest",
+      "tests": 1,
+      "failures": 0,
+      "disabled": 0,
+      "errors": 0,
+      "timestamp": "2026-11-27T12:46:42Z",
+      "time": "0s",
+      "testsuite": [
+        {
+          "name": "CreateBuiltinTypes",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/Meta\/tests\/unittests\/test_attribute_factory.cpp",
+          "line": 7,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "AttributeFactoryTest"
+        }
+      ]
+    },
+    {
+      "name": "EventTest",
+      "tests": 3,
+      "failures": 0,
+      "disabled": 0,
+      "errors": 0,
+      "timestamp": "2026-11-27T12:46:42Z",
+      "time": "0s",
+      "testsuite": [
+        {
+          "name": "SubscribeAndNotify",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/Meta\/tests\/unittests\/test_event.cpp",
+          "line": 7,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "EventTest"
+        },
+        {
+          "name": "Unsubscribe",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/Meta\/tests\/unittests\/test_event.cpp",
+          "line": 21,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "EventTest"
+        },
+        {
+          "name": "TeardownSafety",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/Meta\/tests\/unittests\/test_event.cpp",
+          "line": 37,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "EventTest"
+        }
+      ]
+    },
+    {
+      "name": "ContainerGroupSyncTest",
+      "tests": 9,
+      "failures": 0,
+      "disabled": 0,
+      "errors": 0,
+      "timestamp": "2026-11-27T12:46:42Z",
+      "time": "0s",
+      "testsuite": [
+        {
+          "name": "DetectSharedAttributes",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/Meta\/tests\/unittests\/test_container_group_sync.cpp",
+          "line": 8,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "ContainerGroupSyncTest"
+        },
+        {
+          "name": "BasicSynchronizationAndIndependence",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/Meta\/tests\/unittests\/test_container_group_sync.cpp",
+          "line": 49,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "ContainerGroupSyncTest"
+        },
+        {
+          "name": "EventNotificationOnSync",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/Meta\/tests\/unittests\/test_container_group_sync.cpp",
+          "line": 95,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "ContainerGroupSyncTest"
+        },
+        {
+          "name": "EnableDisableSynchronization",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/Meta\/tests\/unittests\/test_container_group_sync.cpp",
+          "line": 129,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "ContainerGroupSyncTest"
+        },
+        {
+          "name": "SynchronizeAllAndClear",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/Meta\/tests\/unittests\/test_container_group_sync.cpp",
+          "line": 158,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "ContainerGroupSyncTest"
+        },
+        {
+          "name": "DynamicAdditionOfContainersAndAttributes",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/Meta\/tests\/unittests\/test_container_group_sync.cpp",
+          "line": 188,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "ContainerGroupSyncTest"
+        },
+        {
+          "name": "EraseContainerMaintainsSync",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/Meta\/tests\/unittests\/test_container_group_sync.cpp",
+          "line": 216,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "ContainerGroupSyncTest"
+        },
+        {
+          "name": "JsonRoundTripPreservesSync",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/Meta\/tests\/unittests\/test_container_group_sync.cpp",
+          "line": 241,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "ContainerGroupSyncTest"
+        },
+        {
+          "name": "SetCurrentToFirst",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/Meta\/tests\/unittests\/test_container_group_sync.cpp",
+          "line": 278,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "ContainerGroupSyncTest"
+        }
+      ]
+    },
+    {
+      "name": "GradientMetricsTest",
+      "tests": 7,
+      "failures": 0,
+      "disabled": 0,
+      "errors": 0,
+      "timestamp": "2026-11-27T12:46:42Z",
+      "time": "0s",
+      "testsuite": [
+        {
+          "name": "StopAndPresetEquality",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/Meta\/tests\/unittests\/test_gradient_metrics.cpp",
+          "line": 22,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "GradientMetricsTest"
+        },
+        {
+          "name": "SampleInterpolatesAndClamps",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/Meta\/tests\/unittests\/test_gradient_metrics.cpp",
+          "line": 35,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "GradientMetricsTest"
+        },
+        {
+          "name": "SampleHoldsEndColorsOutsideStopRange",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/Meta\/tests\/unittests\/test_gradient_metrics.cpp",
+          "line": 53,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "GradientMetricsTest"
+        },
+        {
+          "name": "LuminanceOrdersDarkToLight",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/Meta\/tests\/unittests\/test_gradient_metrics.cpp",
+          "line": 62,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "GradientMetricsTest"
+        },
+        {
+          "name": "HueOfPrimaries",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/Meta\/tests\/unittests\/test_gradient_metrics.cpp",
+          "line": 80,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "GradientMetricsTest"
+        },
+        {
+          "name": "HueAveragesAcrossWrapAround",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/Meta\/tests\/unittests\/test_gradient_metrics.cpp",
+          "line": 95,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "GradientMetricsTest"
+        },
+        {
+          "name": "AchromaticGradientHasNoHue",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/Meta\/tests\/unittests\/test_gradient_metrics.cpp",
+          "line": 104,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "GradientMetricsTest"
+        }
+      ]
+    },
+    {
+      "name": "GradientLibraryTest",
+      "tests": 11,
+      "failures": 0,
+      "disabled": 0,
+      "errors": 0,
+      "timestamp": "2026-11-27T12:46:42Z",
+      "time": "0.004s",
+      "testsuite": [
+        {
+          "name": "AddMakesNamesUnique",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/Meta\/tests\/unittests\/test_gradient_library.cpp",
+          "line": 34,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "GradientLibraryTest"
+        },
+        {
+          "name": "AddSortsStopsByPosition",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/Meta\/tests\/unittests\/test_gradient_library.cpp",
+          "line": 52,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "GradientLibraryTest"
+        },
+        {
+          "name": "UpdateRenameRemove",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/Meta\/tests\/unittests\/test_gradient_library.cpp",
+          "line": 64,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "GradientLibraryTest"
+        },
+        {
+          "name": "FavoritesFollowRenameAndRemoval",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/Meta\/tests\/unittests\/test_gradient_library.cpp",
+          "line": 92,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "GradientLibraryTest"
+        },
+        {
+          "name": "ChangedFiresOncePerEffectiveMutation",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/Meta\/tests\/unittests\/test_gradient_library.cpp",
+          "line": 114,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "GradientLibraryTest"
+        },
+        {
+          "name": "JsonRoundTrip",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/Meta\/tests\/unittests\/test_gradient_library.cpp",
+          "line": 136,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "GradientLibraryTest"
+        },
+        {
+          "name": "AutosaveAndLoad",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/Meta\/tests\/unittests\/test_gradient_library.cpp",
+          "line": 167,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0.002s",
+          "classname": "GradientLibraryTest"
+        },
+        {
+          "name": "CorruptFileLeavesStateUntouched",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/Meta\/tests\/unittests\/test_gradient_library.cpp",
+          "line": 207,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "GradientLibraryTest"
+        },
+        {
+          "name": "ImportPolicy",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/Meta\/tests\/unittests\/test_gradient_library.cpp",
+          "line": 231,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "GradientLibraryTest"
+        },
+        {
+          "name": "ParsesHesiodFileShapes",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/Meta\/tests\/unittests\/test_gradient_library.cpp",
+          "line": 266,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "GradientLibraryTest"
+        },
+        {
+          "name": "SortNamesRoundTrip",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/Meta\/tests\/unittests\/test_gradient_library.cpp",
+          "line": 321,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "GradientLibraryTest"
+        }
+      ]
+    },
+    {
+      "name": "DesignRegistryTest",
+      "tests": 6,
+      "failures": 0,
+      "disabled": 0,
+      "errors": 0,
+      "timestamp": "2026-11-27T12:46:42Z",
+      "time": "0.007s",
+      "testsuite": [
+        {
+          "name": "RegistrationAndLookup",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/Meta\/tests\/unittests\/test_design_registry.cpp",
+          "line": 60,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "DesignRegistryTest"
+        },
+        {
+          "name": "FallbackChainAndWildcards",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/Meta\/tests\/unittests\/test_design_registry.cpp",
+          "line": 77,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0.004s",
+          "classname": "DesignRegistryTest"
+        },
+        {
+          "name": "CanRenderRejectionFallback",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/Meta\/tests\/unittests\/test_design_registry.cpp",
+          "line": 100,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0.001s",
+          "classname": "DesignRegistryTest"
+        },
+        {
+          "name": "CycleDetectionInFallbacks",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/Meta\/tests\/unittests\/test_design_registry.cpp",
+          "line": 123,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "DesignRegistryTest"
+        },
+        {
+          "name": "SectionFactoryResolution",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/Meta\/tests\/unittests\/test_design_registry.cpp",
+          "line": 140,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "DesignRegistryTest"
+        },
+        {
+          "name": "ContainerWidgetDesignIntegration",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/Meta\/tests\/unittests\/test_design_registry.cpp",
+          "line": 170,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0s",
+          "classname": "DesignRegistryTest"
+        }
+      ]
+    },
+    {
+      "name": "GradientPickerTest",
+      "tests": 5,
+      "failures": 0,
+      "disabled": 0,
+      "errors": 0,
+      "timestamp": "2026-11-27T12:46:42Z",
+      "time": "0.01s",
+      "testsuite": [
+        {
+          "name": "MergesHostAndLibraryPresets",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/Meta\/tests\/unittests\/test_gradient_picker.cpp",
+          "line": 71,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0.003s",
+          "classname": "GradientPickerTest"
+        },
+        {
+          "name": "FavoritesPinnedFirstThenSortKey",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/Meta\/tests\/unittests\/test_gradient_picker.cpp",
+          "line": 90,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0.002s",
+          "classname": "GradientPickerTest"
+        },
+        {
+          "name": "LuminanceSortGoesDarkToLight",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/Meta\/tests\/unittests\/test_gradient_picker.cpp",
+          "line": 116,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0.001s",
+          "classname": "GradientPickerTest"
+        },
+        {
+          "name": "SaveCurrentAsPresetAvoidsHostNames",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/Meta\/tests\/unittests\/test_gradient_picker.cpp",
+          "line": 133,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0.001s",
+          "classname": "GradientPickerTest"
+        },
+        {
+          "name": "LibraryChangesRebuildTheGrid",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/Meta\/tests\/unittests\/test_gradient_picker.cpp",
+          "line": 157,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:46:42Z",
+          "time": "0.001s",
+          "classname": "GradientPickerTest"
+        }
+      ]
+    }
+  ]
+}

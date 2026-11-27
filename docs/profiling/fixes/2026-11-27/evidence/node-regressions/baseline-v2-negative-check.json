@@ -1,0 +1,389 @@
+{
+  "passed": false,
+  "cases": 74,
+  "checks": [
+    {
+      "case": "ExportAsset-minimal-t1",
+      "passed": true,
+      "relation": "exact PNG/CSV bytes or normalized GLB chunks match baseline"
+    },
+    {
+      "case": "ExportAsset-full-t1",
+      "passed": true,
+      "relation": "exact PNG/CSV bytes or normalized GLB chunks match baseline"
+    },
+    {
+      "case": "HeightmapToNormalMap-full-t1",
+      "passed": true,
+      "relation": "exact PNG/CSV bytes or normalized GLB chunks match baseline"
+    },
+    {
+      "case": "CloudRandomDistance-density-t1",
+      "passed": true,
+      "relation": "exact PNG/CSV bytes or normalized GLB chunks match baseline"
+    },
+    {
+      "case": "CloudRandomDistance-no-density-t1",
+      "passed": true,
+      "relation": "exact PNG/CSV bytes or normalized GLB chunks match baseline"
+    },
+    {
+      "case": "QuiltingShuffle-full-t1",
+      "passed": true,
+      "relation": "exact PNG/CSV bytes or normalized GLB chunks match baseline"
+    },
+    {
+      "case": "QuiltingExpand-full-t1",
+      "passed": true,
+      "relation": "exact PNG/CSV bytes or normalized GLB chunks match baseline"
+    },
+    {
+      "case": "TextureQuiltingShuffle-full-t1",
+      "passed": true,
+      "relation": "exact PNG/CSV bytes or normalized GLB chunks match baseline"
+    },
+    {
+      "case": "TextureQuiltingExpand-full-t1",
+      "passed": true,
+      "relation": "exact PNG/CSV bytes or normalized GLB chunks match baseline"
+    },
+    {
+      "case": "ExportNormalMap-8-t1-none-flags",
+      "passed": true,
+      "relation": "exact PNG/CSV bytes or normalized GLB chunks match baseline"
+    },
+    {
+      "case": "ExportNormalMap-8-t1-x-flags",
+      "passed": false,
+      "relation": "fixed export flags equal independently pre-reflected baseline input; old flags differ"
+    },
+    {
+      "case": "ExportNormalMap-8-t1-x-source",
+      "passed": true,
+      "relation": "exact PNG/CSV bytes or normalized GLB chunks match baseline"
+    },
+    {
+      "case": "ExportNormalMap-8-t1-y-flags",
+      "passed": false,
+      "relation": "fixed export flags equal independently pre-reflected baseline input; old flags differ"
+    },
+    {
+      "case": "ExportNormalMap-8-t1-y-source",
+      "passed": true,
+      "relation": "exact PNG/CSV bytes or normalized GLB chunks match baseline"
+    },
+    {
+      "case": "ExportNormalMap-8-t1-xy-flags",
+      "passed": false,
+      "relation": "fixed export flags equal independently pre-reflected baseline input; old flags differ"
+    },
+    {
+      "case": "ExportNormalMap-8-t1-xy-source",
+      "passed": true,
+      "relation": "exact PNG/CSV bytes or normalized GLB chunks match baseline"
+    },
+    {
+      "case": "ExportNormalMap-16-t1-none-flags",
+      "passed": true,
+      "relation": "exact PNG/CSV bytes or normalized GLB chunks match baseline"
+    },
+    {
+      "case": "ExportNormalMap-16-t1-x-flags",
+      "passed": false,
+      "relation": "fixed export flags equal independently pre-reflected baseline input; old flags differ"
+    },
+    {
+      "case": "ExportNormalMap-16-t1-x-source",
+      "passed": true,
+      "relation": "exact PNG/CSV bytes or normalized GLB chunks match baseline"
+    },
+    {
+      "case": "ExportNormalMap-16-t1-y-flags",
+      "passed": false,
+      "relation": "fixed export flags equal independently pre-reflected baseline input; old flags differ"
+    },
+    {
+      "case": "ExportNormalMap-16-t1-y-source",
+      "passed": true,
+      "relation": "exact PNG/CSV bytes or normalized GLB chunks match baseline"
+    },
+    {
+      "case": "ExportNormalMap-16-t1-xy-flags",
+      "passed": false,
+      "relation": "fixed export flags equal independently pre-reflected baseline input; old flags differ"
+    },
+    {
+      "case": "ExportNormalMap-16-t1-xy-source",
+      "passed": true,
+      "relation": "exact PNG/CSV bytes or normalized GLB chunks match baseline"
+    },
+    {
+      "case": "ExportTiled-8-t1-none-flags",
+      "passed": true,
+      "relation": "exact PNG/CSV bytes or normalized GLB chunks match baseline"
+    },
+    {
+      "case": "ExportTiled-8-t1-x-flags",
+      "passed": false,
+      "relation": "fixed export flags equal independently pre-reflected baseline input; old flags differ"
+    },
+    {
+      "case": "ExportTiled-8-t1-x-source",
+      "passed": true,
+      "relation": "exact PNG/CSV bytes or normalized GLB chunks match baseline"
+    },
+    {
+      "case": "ExportTiled-8-t1-y-flags",
+      "passed": false,
+      "relation": "fixed export flags equal independently pre-reflected baseline input; old flags differ"
+    },
+    {
+      "case": "ExportTiled-8-t1-y-source",
+      "passed": true,
+      "relation": "exact PNG/CSV bytes or normalized GLB chunks match baseline"
+    },
+    {
+      "case": "ExportTiled-8-t1-xy-flags",
+      "passed": false,
+      "relation": "fixed export flags equal independently pre-reflected baseline input; old flags differ"
+    },
+    {
+      "case": "ExportTiled-8-t1-xy-source",
+      "passed": true,
+      "relation": "exact PNG/CSV bytes or normalized GLB chunks match baseline"
+    },
+    {
+      "case": "ExportTiled-16-t1-none-flags",
+      "passed": true,
+      "relation": "exact PNG/CSV bytes or normalized GLB chunks match baseline"
+    },
+    {
+      "case": "ExportTiled-16-t1-x-flags",
+      "passed": false,
+      "relation": "fixed export flags equal independently pre-reflected baseline input; old flags differ"
+    },
+    {
+      "case": "ExportTiled-16-t1-x-source",
+      "passed": true,
+      "relation": "exact PNG/CSV bytes or normalized GLB chunks match baseline"
+    },
+    {
+      "case": "ExportTiled-16-t1-y-flags",
+      "passed": false,
+      "relation": "fixed export flags equal independently pre-reflected baseline input; old flags differ"
+    },
+    {
+      "case": "ExportTiled-16-t1-y-source",
+      "passed": true,
+      "relation": "exact PNG/CSV bytes or normalized GLB chunks match baseline"
+    },
+    {
+      "case": "ExportTiled-16-t1-xy-flags",
+      "passed": false,
+      "relation": "fixed export flags equal independently pre-reflected baseline input; old flags differ"
+    },
+    {
+      "case": "ExportTiled-16-t1-xy-source",
+      "passed": true,
+      "relation": "exact PNG/CSV bytes or normalized GLB chunks match baseline"
+    },
+    {
+      "case": "ExportAsset-minimal-t4",
+      "passed": true,
+      "relation": "exact PNG/CSV bytes or normalized GLB chunks match baseline"
+    },
+    {
+      "case": "ExportAsset-full-t4",
+      "passed": true,
+      "relation": "exact PNG/CSV bytes or normalized GLB chunks match baseline"
+    },
+    {
+      "case": "HeightmapToNormalMap-full-t4",
+      "passed": true,
+      "relation": "exact PNG/CSV bytes or normalized GLB chunks match baseline"
+    },
+    {
+      "case": "CloudRandomDistance-density-t4",
+      "passed": true,
+      "relation": "exact PNG/CSV bytes or normalized GLB chunks match baseline"
+    },
+    {
+      "case": "CloudRandomDistance-no-density-t4",
+      "passed": true,
+      "relation": "exact PNG/CSV bytes or normalized GLB chunks match baseline"
+    },
+    {
+      "case": "QuiltingShuffle-full-t4",
+      "passed": true,
+      "relation": "exact PNG/CSV bytes or normalized GLB chunks match baseline"
+    },
+    {
+      "case": "QuiltingExpand-full-t4",
+      "passed": true,
+      "relation": "exact PNG/CSV bytes or normalized GLB chunks match baseline"
+    },
+    {
+      "case": "TextureQuiltingShuffle-full-t4",
+      "passed": true,
+      "relation": "exact PNG/CSV bytes or normalized GLB chunks match baseline"
+    },
+    {
+      "case": "TextureQuiltingExpand-full-t4",
+      "passed": true,
+      "relation": "exact PNG/CSV bytes or normalized GLB chunks match baseline"
+    },
+    {
+      "case": "ExportNormalMap-8-t4-none-flags",
+      "passed": true,
+      "relation": "exact PNG/CSV bytes or normalized GLB chunks match baseline"
+    },
+    {
+      "case": "ExportNormalMap-8-t4-x-flags",
+      "passed": false,
+      "relation": "fixed export flags equal independently pre-reflected baseline input; old flags differ"
+    },
+    {
+      "case": "ExportNormalMap-8-t4-x-source",
+      "passed": true,
+      "relation": "exact PNG/CSV bytes or normalized GLB chunks match baseline"
+    },
+    {
+      "case": "ExportNormalMap-8-t4-y-flags",
+      "passed": false,
+      "relation": "fixed export flags equal independently pre-reflected baseline input; old flags differ"
+    },
+    {
+      "case": "ExportNormalMap-8-t4-y-source",
+      "passed": true,
+      "relation": "exact PNG/CSV bytes or normalized GLB chunks match baseline"
+    },
+    {
+      "case": "ExportNormalMap-8-t4-xy-flags",
+      "passed": false,
+      "relation": "fixed export flags equal independently pre-reflected baseline input; old flags differ"
+    },
+    {
+      "case": "ExportNormalMap-8-t4-xy-source",
+      "passed": true,
+      "relation": "exact PNG/CSV bytes or normalized GLB chunks match baseline"
+    },
+    {
+      "case": "ExportNormalMap-16-t4-none-flags",
+      "passed": true,
+      "relation": "exact PNG/CSV bytes or normalized GLB chunks match baseline"
+    },
+    {
+      "case": "ExportNormalMap-16-t4-x-flags",
+      "passed": false,
+      "relation": "fixed export flags equal independently pre-reflected baseline input; old flags differ"
+    },
+    {
+      "case": "ExportNormalMap-16-t4-x-source",
+      "passed": true,
+      "relation": "exact PNG/CSV bytes or normalized GLB chunks match baseline"
+    },
+    {
+      "case": "ExportNormalMap-16-t4-y-flags",
+      "passed": false,
+      "relation": "fixed export flags equal independently pre-reflected baseline input; old flags differ"
+    },
+    {
+      "case": "ExportNormalMap-16-t4-y-source",
+      "passed": true,
+      "relation": "exact PNG/CSV bytes or normalized GLB chunks match baseline"
+    },
+    {
+      "case": "ExportNormalMap-16-t4-xy-flags",
+      "passed": false,
+      "relation": "fixed export flags equal independently pre-reflected baseline input; old flags differ"
+    },
+    {
+      "case": "ExportNormalMap-16-t4-xy-source",
+      "passed": true,
+      "relation": "exact PNG/CSV bytes or normalized GLB chunks match baseline"
+    },
+    {
+      "case": "ExportTiled-8-t4-none-flags",
+      "passed": true,
+      "relation": "exact PNG/CSV bytes or normalized GLB chunks match baseline"
+    },
+    {
+      "case": "ExportTiled-8-t4-x-flags",
+      "passed": false,
+      "relation": "fixed export flags equal independently pre-reflected baseline input; old flags differ"
+    },
+    {
+      "case": "ExportTiled-8-t4-x-source",
+      "passed": true,
+      "relation": "exact PNG/CSV bytes or normalized GLB chunks match baseline"
+    },
+    {
+      "case": "ExportTiled-8-t4-y-flags",
+      "passed": false,
+      "relation": "fixed export flags equal independently pre-reflected baseline input; old flags differ"
+    },
+    {
+      "case": "ExportTiled-8-t4-y-source",
+      "passed": true,
+      "relation": "exact PNG/CSV bytes or normalized GLB chunks match baseline"
+    },
+    {
+      "case": "ExportTiled-8-t4-xy-flags",
+      "passed": false,
+      "relation": "fixed export flags equal independently pre-reflected baseline input; old flags differ"
+    },
+    {
+      "case": "ExportTiled-8-t4-xy-source",
+      "passed": true,
+      "relation": "exact PNG/CSV bytes or normalized GLB chunks match baseline"
+    },
+    {
+      "case": "ExportTiled-16-t4-none-flags",
+      "passed": true,
+      "relation": "exact PNG/CSV bytes or normalized GLB chunks match baseline"
+    },
+    {
+      "case": "ExportTiled-16-t4-x-flags",
+      "passed": false,
+      "relation": "fixed export flags equal independently pre-reflected baseline input; old flags differ"
+    },
+    {
+      "case": "ExportTiled-16-t4-x-source",
+      "passed": true,
+      "relation": "exact PNG/CSV bytes or normalized GLB chunks match baseline"
+    },
+    {
+      "case": "ExportTiled-16-t4-y-flags",
+      "passed": false,
+      "relation": "fixed export flags equal independently pre-reflected baseline input; old flags differ"
+    },
+    {
+      "case": "ExportTiled-16-t4-y-source",
+      "passed": true,
+      "relation": "exact PNG/CSV bytes or normalized GLB chunks match baseline"
+    },
+    {
+      "case": "ExportTiled-16-t4-xy-flags",
+      "passed": false,
+      "relation": "fixed export flags equal independently pre-reflected baseline input; old flags differ"
+    },
+    {
+      "case": "ExportTiled-16-t4-xy-source",
+      "passed": true,
+      "relation": "exact PNG/CSV bytes or normalized GLB chunks match baseline"
+    }
+  ],
+  "baseline": {
+    "binary": "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+    "binary_sha256": "0fa7fb40613cbb1af3401bf96e2490a8c68383a2b39f2021ff50f27a3110d4cc",
+    "script_sha256": "b20029725e0fa1966e0b4334549a068526223147280f124aa4db9f5e16ec95f0",
+    "size": 128
+  },
+  "candidate": {
+    "binary": "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+    "binary_sha256": "0fa7fb40613cbb1af3401bf96e2490a8c68383a2b39f2021ff50f27a3110d4cc",
+    "script_sha256": "b20029725e0fa1966e0b4334549a068526223147280f124aa4db9f5e16ec95f0",
+    "size": 128
+  },
+  "scope": "128-square deterministic CPU graphs, sequential tiles; no tolerance; no performance claim"
+}

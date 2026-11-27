@@ -1,0 +1,17 @@
+case,variant,inputs_only,policy,tiles,overlap,size,planned,successful,status,process_peak_mib_median,process_peak_mib_min,process_peak_mib_max,wall_seconds_median
+TextureQuiltingExpand,full,False,disk-sequential,1,0.0,1024,3,3,complete,568.34765625,568.16796875,568.57421875,1.4365056059905328
+TextureQuiltingExpand,full,False,disk-sequential,1,0.0,2048,3,3,complete,1301.6875,1300.9296875,1301.859375,6.230050418002065
+TextureQuiltingExpand,full,False,disk-sequential,4,0.0,1024,3,3,complete,567.14453125,566.83203125,567.36328125,1.4398838720080676
+TextureQuiltingExpand,full,False,disk-sequential,4,0.0,2048,3,3,complete,1252.88671875,1251.9296875,1252.94140625,6.32180849899305
+TextureQuiltingExpand,full,False,ram-sequential,1,0.0,1024,3,3,complete,628.1796875,627.53515625,628.57421875,1.437363101009396
+TextureQuiltingExpand,full,False,ram-sequential,1,0.0,2048,3,3,complete,1506.6328125,1506.52734375,1506.97265625,6.199456883987295
+TextureQuiltingExpand,full,False,ram-sequential,4,0.0,1024,3,3,complete,607.1328125,606.84375,607.3671875,1.433274351991713
+TextureQuiltingExpand,full,False,ram-sequential,4,0.0,2048,3,3,complete,1423.19140625,1422.8125,1423.703125,6.313237360998755
+TextureQuiltingShuffle,full,False,disk-sequential,1,0.0,1024,3,3,complete,552.16796875,552.015625,552.66015625,1.4682369179936359
+TextureQuiltingShuffle,full,False,disk-sequential,1,0.0,2048,3,3,complete,1232.6015625,1232.48828125,1232.63671875,6.886153542000102
+TextureQuiltingShuffle,full,False,disk-sequential,4,0.0,1024,3,3,complete,551.265625,550.96484375,551.46484375,1.444355366009404
+TextureQuiltingShuffle,full,False,disk-sequential,4,0.0,2048,3,3,complete,1184.0625,1183.9296875,1184.44140625,6.903405968012521
+TextureQuiltingShuffle,full,False,ram-sequential,1,0.0,1024,3,3,complete,611.671875,611.59765625,611.7109375,1.4357262669946067
+TextureQuiltingShuffle,full,False,ram-sequential,1,0.0,2048,3,3,complete,1437.78125,1436.8359375,1437.81640625,6.720297546009533
+TextureQuiltingShuffle,full,False,ram-sequential,4,0.0,1024,3,3,complete,589.12890625,589.0703125,589.42578125,1.453426534004393
+TextureQuiltingShuffle,full,False,ram-sequential,4,0.0,2048,3,3,complete,1353.26171875,1353.1015625,1353.46484375,6.691450979997171

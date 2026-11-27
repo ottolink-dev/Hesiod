@@ -199,6 +199,12 @@ that every node passed. Rebuild a report without executing workloads using
 
 ## Published baselines
 
+The [focused memory assessment](memory-assessment/README.md) continues issue
+783 with fresh-process peak RSS, controlled tiling/storage/input comparisons,
+allocation-stack evidence and local optimization issue drafts. It keeps
+allocation attribution separate from process memory and includes an optional
+memory-scaling regression check.
+
 [Day 1 — 8 October 2026](baselines/2026-10-08/README.md) preserves the initial
 273-node successful sweep, all coverage gaps, earlier pilot, failure
 investigations and provenance. These historical measurements are not results

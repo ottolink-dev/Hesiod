@@ -1,0 +1,9 @@
+{
+  "measured_binary_sha256": "0fa7fb40613cbb1af3401bf96e2490a8c68383a2b39f2021ff50f27a3110d4cc",
+  "measured_binary_source_git_head": "1a0a0de7262db0261264c8a8ad19ebdeaeac5eb2",
+  "measured_binary_source_submodules": "ae0e10b07c01bc8130c01d96fe1994a5f4a3a2a2 external/GNode (v1.3-69-gae0e10b)\n 2f7873e7f216ba73deb27bd0fe015d8443c8ef35 external/GNode/external/demekgraph (v1.0-2-g2f7873e)\n 56f38eaad1648236c0b38a373802b0d6a6c2dfae external/GNodeGUI (remotes/origin/dev)\n d73e05adee1a04cc1e955d3f3162398a37f1c17d external/HighMap (remotes/origin/feat/noise-slope)\n 11df0a949485c384b421a6dbad950549e21dc6a5 external/HighMap/external/CLWrapper (remotes/origin/dev)\n 27adbb9217e2a9e31b08fe32acc21df9d2b53e84 external/HighMap/external/CLWrapper/external/CLErrorLookup (heads/main)\n 0bfe2c6eb7b5405190a0cd5c29db0eac02949c15 external/HighMap/external/PointSampler (v1.0.0-3-g0bfe2c6)\n c98c690263bc62061fc2854e18157d6b2726ab66 external/Meta (remotes/origin/dev)\n 99603af99fa7682cfd00848e5a913e009210f22f external/QTerrainRenderer (remotes/origin/871-refactor-centralize-ui-style-and-visual-design-settings)\n e728b966003104c7fc21a007237bca10abf39b19 external/QTerrainRenderer/external/imgui (v1.62-4790-ge728b9660)\n 895843d8161213ba309e915aba3276c43ab54d4a external/QTextureDownloader (heads/main)\n b7d67237e8bdaa517d7fd6e4e84e1f6efa24f8c5 external/args (6.2.2-54-gb7d6723)",
+  "original_binary_provenance_path": "/home/barrulus/dev/Hesiod-783/output/memory-ram/provenance.json",
+  "current_orchestrator_git_head": "3d59df9b51b8b2c0247d30cebec990ea71966c05",
+  "current_run_provenance_path": "/home/barrulus/dev/Hesiod-783/output/fixes/memory-baseline-calibration/provenance.json",
+  "git_head_field_semantics": "The runner provenance git_head describes the current orchestration worktree. The measured executable belongs to the original assessment source and binary hash identified here."
+}

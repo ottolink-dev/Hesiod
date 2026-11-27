@@ -1,0 +1,52 @@
+Running main() from /home/barrulus/dev/Hesiod-783/output/validation/googletest/googletest/src/gtest_main.cc
+[==========] Running 19 tests from 2 test suites.
+[----------] Global test environment set-up.
+[----------] 11 tests from MatchHistogram
+[ RUN      ] MatchHistogram.Identity
+[       OK ] MatchHistogram.Identity (0 ms)
+[ RUN      ] MatchHistogram.ConstantReference
+[       OK ] MatchHistogram.ConstantReference (0 ms)
+[ RUN      ] MatchHistogram.SortedRanks
+[       OK ] MatchHistogram.SortedRanks (0 ms)
+[ RUN      ] MatchHistogram.ReverseOrdering
+[       OK ] MatchHistogram.ReverseOrdering (0 ms)
+[ RUN      ] MatchHistogram.Interpolation
+[       OK ] MatchHistogram.Interpolation (0 ms)
+[ RUN      ] MatchHistogram.RandomMonotonicity
+[       OK ] MatchHistogram.RandomMonotonicity (0 ms)
+[ RUN      ] MatchHistogram.SingleValueInput
+[       OK ] MatchHistogram.SingleValueInput (0 ms)
+[ RUN      ] MatchHistogram.SingleInputUsesOddReferenceMedian
+[       OK ] MatchHistogram.SingleInputUsesOddReferenceMedian (0 ms)
+[ RUN      ] MatchHistogram.SingleInputInterpolatesEvenReferenceMedian
+[       OK ] MatchHistogram.SingleInputInterpolatesEvenReferenceMedian (0 ms)
+[ RUN      ] MatchHistogram.SingleReferenceMapsEveryInput
+[       OK ] MatchHistogram.SingleReferenceMapsEveryInput (0 ms)
+[ RUN      ] MatchHistogram.EmptyInputAndReferenceAreNoOps
+hmap [warn ] [filters.cpp             :552] Array is empty or uninitialized (shape: 0x0, buffer size: 0)
+hmap [warn ] [filters.cpp             :552] Array is empty or uninitialized (shape: 0x0, buffer size: 0)
+[       OK ] MatchHistogram.EmptyInputAndReferenceAreNoOps (0 ms)
+[----------] 11 tests from MatchHistogram (0 ms total)
+
+[----------] 8 tests from RemoveEndpoints
+[ RUN      ] RemoveEndpoints.SingleEndpoint
+[       OK ] RemoveEndpoints.SingleEndpoint (0 ms)
+[ RUN      ] RemoveEndpoints.TwoIterations
+[       OK ] RemoveEndpoints.TwoIterations (0 ms)
+[ RUN      ] RemoveEndpoints.TwoIterationsPreserveOddLengthCenter
+[       OK ] RemoveEndpoints.TwoIterationsPreserveOddLengthCenter (0 ms)
+[ RUN      ] RemoveEndpoints.RemoveLonelyPixel
+[       OK ] RemoveEndpoints.RemoveLonelyPixel (0 ms)
+[ RUN      ] RemoveEndpoints.KeepBranch
+[       OK ] RemoveEndpoints.KeepBranch (0 ms)
+[ RUN      ] RemoveEndpoints.CustomBackground
+[       OK ] RemoveEndpoints.CustomBackground (0 ms)
+[ RUN      ] RemoveEndpoints.ZeroIterations
+[       OK ] RemoveEndpoints.ZeroIterations (0 ms)
+[ RUN      ] RemoveEndpoints.DiagonalConnectivity
+[       OK ] RemoveEndpoints.DiagonalConnectivity (0 ms)
+[----------] 8 tests from RemoveEndpoints (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 19 tests from 2 test suites ran. (0 ms total)
+[  PASSED  ] 19 tests.

@@ -1,0 +1,29 @@
+{
+  "source_repositories": [
+    {
+      "path": ".",
+      "branch": "fix/783-memory-followups",
+      "commit": "33c8c4d812c1934f22aa3be06d3f356778040e49",
+      "tree": "3e943887cce3b61c74cec552717dad726fd1831b"
+    },
+    {
+      "path": "external/HighMap",
+      "branch": "fix/783-memory-followups",
+      "commit": "d036c3efc42939cfb12d1d60cca54d543aff5f73",
+      "tree": "ae0569cf8e7de40a828f7f6e1afd418f2ad52fb7"
+    },
+    {
+      "path": "external/GNode",
+      "branch": "fix/34-worker-callback-lifetime",
+      "commit": "149a4a9310d88c32bcbc3a81393636677569b376",
+      "tree": "c756723454a75d49ff64ec6cc47861e3d36c5f1e"
+    },
+    {
+      "path": "external/HighMap/external/CLWrapper",
+      "branch": "fix/783-device-filter-tests",
+      "commit": "5c742c228bf9f5e71b6548b3f7d3a62486bb1f51",
+      "tree": "9545e16c316e46c13229b88ac4312b0c3f82a454"
+    }
+  ],
+  "note": "Production source snapshot before final rebuild/validation; later parent documentation commits do not change this measured code. All commits remain local."
+}

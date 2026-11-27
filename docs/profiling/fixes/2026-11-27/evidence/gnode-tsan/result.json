@@ -1,0 +1,14 @@
+{
+  "command": [
+    "build/gnode-tsan/bin/gnode_unit_tests",
+    "--gtest_filter=ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback",
+    "--gtest_repeat=20",
+    "--gtest_break_on_failure"
+  ],
+  "exit": 0,
+  "elapsed_seconds": 1.91830243098957,
+  "environment_overrides": {
+    "TSAN_OPTIONS": "halt_on_error=1:exitcode=66",
+    "OMP_NUM_THREADS": "1"
+  }
+}
