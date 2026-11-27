@@ -6,20 +6,20 @@ from hsd.catalog import Catalog, TYPE_MAP
 
 def test_catalog_loads_default_path():
     cat = Catalog.load()
-    assert cat.has_node("NoiseFbm")
+    assert cat.has_node("CoherentNoise")
     assert not cat.has_node("NoSuchNode")
 
 
 def test_catalog_ports_have_datatypes():
     cat = Catalog.load()
-    out = cat.port("NoiseFbm", "output")
+    out = cat.port("CoherentNoise", "output")
     assert out["type"] == "output"
     assert out["data_type"] == "VirtualArray"
 
 
 def test_catalog_params_expose_type_strings():
     cat = Catalog.load()
-    params = cat.params("NoiseFbm")
+    params = cat.params("CoherentNoise")
     assert params["kw"]["type"] == "Wavenumber"
 
 

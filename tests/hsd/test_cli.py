@@ -12,7 +12,7 @@ def test_build_writes_hsd(tmp_path, capsys):
     assert rc == 0
     hsd = json.load(open(out))
     assert {n["label"] for n in hsd["graph_manager"]["graph_nodes"]["graph"]["nodes"]} \
-        == {"NoiseFbm", "HydraulicParticle", "ColorizeGradient"}
+        == {"CoherentNoise", "HydraulicParticle", "ColorizeGradient"}
 
 
 def test_build_reports_validation_errors(tmp_path):
@@ -46,7 +46,7 @@ def test_make_builds_without_run_flag(tmp_path):
 
 
 def test_nodes_show(capsys):
-    rc = main(["nodes", "--show", "NoiseFbm"])
+    rc = main(["nodes", "--show", "CoherentNoise"])
     out = capsys.readouterr().out
     assert rc == 0
     assert "output" in out and "VirtualArray" in out
@@ -66,9 +66,9 @@ def test_nodes_show_enum_choices(capsys):
     assert "[" in out and "|" in out
 
 
-def test_nodes_show_enum_choices_noisefbm(capsys):
-    """--show lists noise_type choices for NoiseFbm."""
-    rc = main(["nodes", "--show", "NoiseFbm"])
+def test_nodes_show_enum_choices_coherent_noise(capsys):
+    """--show lists noise_type choices for CoherentNoise."""
+    rc = main(["nodes", "--show", "CoherentNoise"])
     out = capsys.readouterr().out
     assert rc == 0
     assert "noise_type: Enumeration" in out

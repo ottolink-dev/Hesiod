@@ -15,10 +15,10 @@ def test_compile_fixture_to_hsd():
 
     g = hsd["graph_manager"]["graph_nodes"]["graph"]
     labels = {n["label"] for n in g["nodes"]}
-    assert labels == {"NoiseFbm", "HydraulicParticle", "ColorizeGradient"}
+    assert labels == {"CoherentNoise", "HydraulicParticle", "ColorizeGradient"}
 
-    # overridden params became value objects on the NoiseFbm node
-    noise = next(n for n in g["nodes"] if n["label"] == "NoiseFbm")
+    # overridden params became value objects on the CoherentNoise node
+    noise = next(n for n in g["nodes"] if n["label"] == "CoherentNoise")
     assert noise["kw"]["type_string"] == "Wavenumber" and noise["kw"]["value"] == [4, 4]
     assert noise["seed"]["type_string"] == "Random seed number" and noise["seed"]["value"] == 1
     # un-overridden params are omitted (tolerant loader fills them)
@@ -33,8 +33,8 @@ def test_compile_enum_string_param():
     """Blend.blending_method as plain string compiles to the correct value object."""
     spec = Spec.from_dict({
         "nodes": [
-            {"id": "a", "type": "NoiseFbm"},
-            {"id": "b", "type": "NoiseFbm"},
+            {"id": "a", "type": "CoherentNoise"},
+            {"id": "b", "type": "CoherentNoise"},
             {"id": "bl", "type": "Blend", "params": {"blending_method": "maximum"}},
         ],
         "links": [

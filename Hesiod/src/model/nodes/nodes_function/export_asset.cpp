@@ -181,79 +181,81 @@ void compute_export_asset_node(BaseNode &node)
 
   std::string nmap_fname = fname + "_nmap.png";
 
-  hmap::Texture nvec = [&]
+  // Only the written filename is needed during mesh serialization.
   {
-    HSD_PROFILE_ZONE("ExportAsset::normal_map");
-    return hmap::normal_map(array);
-  }();
+    hmap::Texture nvec = [&]
+    {
+      HSD_PROFILE_ZONE("ExportAsset::normal_map");
+      return hmap::normal_map(array);
+    }();
 
-  hmap::Array nx = nvec.channel(0);
-  hmap::Array ny = nvec.channel(1);
-  hmap::Array nz = nvec.channel(2);
-  hmap::Array alpha(node.cfg().shape, 1.f);
+    hmap::Array alpha(node.cfg().shape, 1.f);
 
-  hmap::VirtualTexture normal_map(CONFIG_TEX(node));
-  {
-    HSD_PROFILE_ZONE("ExportAsset::normal_map_to_virtual");
-    normal_map.from_arrays({&nx, &ny, &nz, &alpha}, node.cfg().cm_cpu);
-  }
+    hmap::VirtualTexture normal_map(CONFIG_TEX(node));
+    {
+      HSD_PROFILE_ZONE("ExportAsset::normal_map_to_virtual");
+      normal_map.from_arrays(
+          {&nvec.channel(0), &nvec.channel(1), &nvec.channel(2), &alpha},
+          node.cfg().cm_cpu);
+    }
 
-  // --- Blend detail normal map
+    // --- Blend detail normal map
 
-  if (p_nmap)
-  {
-    HSD_PROFILE_ZONE("ExportAsset::blend_normal_map");
-    hmap::Texture t_nmap = p_nmap->to_texture(p_nmap->shape, node.cfg().cm_cpu);
-    if (flip_x)
-      hmap::flip_lr(t_nmap);
-    if (flip_y)
-      hmap::flip_ud(t_nmap);
-    hmap::VirtualTexture             flipped_nmap(CONFIG_TEX(node));
-    std::vector<const hmap::Array *> nmap_ptrs;
-    for (auto &c : t_nmap.channels)
-      nmap_ptrs.push_back(&c);
-    flipped_nmap.from_arrays(nmap_ptrs, node.cfg().cm_cpu);
+    if (p_nmap)
+    {
+      HSD_PROFILE_ZONE("ExportAsset::blend_normal_map");
+      hmap::Texture t_nmap = p_nmap->to_texture(p_nmap->shape, node.cfg().cm_cpu);
+      if (flip_x)
+        hmap::flip_lr(t_nmap);
+      if (flip_y)
+        hmap::flip_ud(t_nmap);
+      hmap::VirtualTexture             flipped_nmap(CONFIG_TEX(node));
+      std::vector<const hmap::Array *> nmap_ptrs;
+      for (auto &c : t_nmap.channels)
+        nmap_ptrs.push_back(&c);
+      flipped_nmap.from_arrays(nmap_ptrs, node.cfg().cm_cpu);
 
-    std::vector<const hmap::VirtualArray *> inputs;
-    for (auto *p : normal_map.channels_ptr())
-      inputs.push_back(p);
-    for (auto *p : flipped_nmap.channels_ptr())
-      inputs.push_back(p);
+      std::vector<const hmap::VirtualArray *> inputs;
+      for (auto *p : normal_map.channels_ptr())
+        inputs.push_back(p);
+      for (auto *p : flipped_nmap.channels_ptr())
+        inputs.push_back(p);
 
-    hmap::for_each_tile(
-        inputs,
-        normal_map.channels_ptr(),
-        [&](std::vector<const hmap::Array *> p_arrays_in,
-            std::vector<hmap::Array *>       p_arrays_out,
-            const hmap::UvTile &)
-        {
-          const size_t  n_ch = p_arrays_out.size();
-          hmap::Texture tex_base;
-          hmap::Texture tex_detail;
-          tex_base.channels.reserve(n_ch);
-          tex_detail.channels.reserve(n_ch);
-          for (size_t ch = 0; ch < n_ch; ++ch)
+      hmap::for_each_tile(
+          inputs,
+          normal_map.channels_ptr(),
+          [&](std::vector<const hmap::Array *> p_arrays_in,
+              std::vector<hmap::Array *>       p_arrays_out,
+              const hmap::UvTile &)
           {
-            tex_base.channels.push_back(*p_arrays_in[ch]);
-            tex_detail.channels.push_back(*p_arrays_in[n_ch + ch]);
-          }
+            const size_t  n_ch = p_arrays_out.size();
+            hmap::Texture tex_base;
+            hmap::Texture tex_detail;
+            tex_base.channels.reserve(n_ch);
+            tex_detail.channels.reserve(n_ch);
+            for (size_t ch = 0; ch < n_ch; ++ch)
+            {
+              tex_base.channels.push_back(*p_arrays_in[ch]);
+              tex_detail.channels.push_back(*p_arrays_in[n_ch + ch]);
+            }
 
-          hmap::Texture tex_out = hmap::mix_normal_map(tex_base,
-                                                       tex_detail,
-                                                       detail_scale,
-                                                       blending_method);
+            hmap::Texture tex_out = hmap::mix_normal_map(tex_base,
+                                                         tex_detail,
+                                                         detail_scale,
+                                                         blending_method);
 
-          for (size_t ch = 0; ch < n_ch && ch < tex_out.channels.size(); ++ch)
-            *p_arrays_out[ch] = std::move(tex_out.channels[ch]);
-        },
-        node.cfg().cm_cpu);
+            for (size_t ch = 0; ch < n_ch && ch < tex_out.channels.size(); ++ch)
+              *p_arrays_out[ch] = std::move(tex_out.channels[ch]);
+          },
+          node.cfg().cm_cpu);
 
-    normal_map.sync_overlap_buffers();
-  }
+      normal_map.sync_overlap_buffers();
+    }
 
-  {
-    HSD_PROFILE_ZONE("ExportAsset::normal_map_write");
-    normal_map.to_png(nmap_fname, node.cfg().cm_cpu, CV_16U);
+    {
+      HSD_PROFILE_ZONE("ExportAsset::normal_map_write");
+      normal_map.to_png(nmap_fname, node.cfg().cm_cpu, CV_16U);
+    }
   }
 
   // --- Export asset

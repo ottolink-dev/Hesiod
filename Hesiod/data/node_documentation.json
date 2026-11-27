@@ -6958,6 +6958,57 @@
             }
         }
     },
+    "ExportForest": {
+        "category": "Export",
+        "description": "Exports a forest as CSV or PLY.",
+        "label": "ExportForest",
+        "parameter_groups": [
+            {
+                "keys": [
+                    "fname",
+                    "pattern",
+                    "auto_export"
+                ],
+                "name": "csv"
+            },
+            {
+                "keys": [
+                    "fname",
+                    "pattern",
+                    "auto_export"
+                ],
+                "name": "ply"
+            }
+        ],
+        "parameters": {
+            "auto_export": {
+                "description": "No description",
+                "key": "auto_export",
+                "label": "Auto Export on Node Update",
+                "type": "Bool"
+            },
+            "fname": {
+                "description": "No description",
+                "key": "fname",
+                "label": "fname",
+                "type": "Filename"
+            },
+            "pattern": {
+                "description": "No description",
+                "key": "pattern",
+                "label": "Filename Pattern",
+                "type": "String"
+            }
+        },
+        "ports": {
+            "input": {
+                "caption": "input",
+                "data_type": "Forest",
+                "description": "No description",
+                "type": "input"
+            }
+        }
+    },
     "ExportHeightmap": {
         "category": "Export",
         "description": "ExportHeightmap is an operator for exporting a heightmap in various file formats.",
@@ -7322,6 +7373,57 @@
             }
         }
     },
+    "ExportRocks": {
+        "category": "Export",
+        "description": "Exports a rock field as CSV or PLY.",
+        "label": "ExportRocks",
+        "parameter_groups": [
+            {
+                "keys": [
+                    "fname",
+                    "pattern",
+                    "auto_export"
+                ],
+                "name": "csv"
+            },
+            {
+                "keys": [
+                    "fname",
+                    "pattern",
+                    "auto_export"
+                ],
+                "name": "ply"
+            }
+        ],
+        "parameters": {
+            "auto_export": {
+                "description": "No description",
+                "key": "auto_export",
+                "label": "Auto Export on Node Update",
+                "type": "Bool"
+            },
+            "fname": {
+                "description": "No description",
+                "key": "fname",
+                "label": "fname",
+                "type": "Filename"
+            },
+            "pattern": {
+                "description": "No description",
+                "key": "pattern",
+                "label": "Filename Pattern",
+                "type": "String"
+            }
+        },
+        "ports": {
+            "input": {
+                "caption": "input",
+                "data_type": "RockField",
+                "description": "No description",
+                "type": "input"
+            }
+        }
+    },
     "ExportScene": {
         "category": "WIP",
         "description": "Exports full terrain scenes including heightmaps, water meshes, scatter instances, paths, and textures to USD or standard formats.",
@@ -7411,6 +7513,12 @@
                 "description": "No description",
                 "type": "input"
             },
+            "forest": {
+                "caption": "forest",
+                "data_type": "Forest",
+                "description": "Forest to include in the scene.",
+                "type": "input"
+            },
             "heightmap": {
                 "caption": "heightmap",
                 "data_type": "VirtualArray",
@@ -7427,6 +7535,12 @@
                 "caption": "path 2",
                 "data_type": "Path",
                 "description": "No description",
+                "type": "input"
+            },
+            "rocks": {
+                "caption": "rocks",
+                "data_type": "RockField",
+                "description": "Rock field to include in the scene.",
                 "type": "input"
             },
             "texture": {
@@ -9273,6 +9387,12 @@
             }
         },
         "ports": {
+            "density": {
+                "caption": "density",
+                "data_type": "VirtualArray",
+                "description": "Density map of the processed instances.",
+                "type": "output"
+            },
             "density_mask": {
                 "caption": "density_mask",
                 "data_type": "VirtualArray",
@@ -17070,6 +17190,84 @@
             }
         }
     },
+    "NodeIn": {
+        "category": "Graph IO",
+        "description": "Exposes a named input slot from the containing graph. The value port type follows the Data Type setting; documented ports show the default VirtualArray configuration.",
+        "label": "NodeIn",
+        "parameter_groups": [
+            {
+                "keys": [
+                    "slot_name",
+                    "data_type"
+                ],
+                "name": "main"
+            }
+        ],
+        "parameters": {
+            "data_type": {
+                "description": "No description",
+                "key": "data_type",
+                "label": "Data Type",
+                "type": "Choice"
+            },
+            "slot_name": {
+                "description": "No description",
+                "key": "slot_name",
+                "label": "Port Name",
+                "type": "String"
+            }
+        },
+        "ports": {
+            "mask": {
+                "caption": "mask",
+                "data_type": "VirtualArray",
+                "description": "No description",
+                "type": "output"
+            },
+            "value": {
+                "caption": "value",
+                "data_type": "VirtualArray",
+                "description": "No description",
+                "type": "output"
+            }
+        }
+    },
+    "NodeOut": {
+        "category": "Graph IO",
+        "description": "Exposes a named output slot of the containing graph. The value port type follows the Data Type setting; documented ports show the default VirtualArray configuration.",
+        "label": "NodeOut",
+        "parameter_groups": [
+            {
+                "keys": [
+                    "slot_name",
+                    "data_type"
+                ],
+                "name": "main"
+            }
+        ],
+        "parameters": {
+            "data_type": {
+                "description": "No description",
+                "key": "data_type",
+                "label": "Data Type",
+                "type": "Choice"
+            },
+            "slot_name": {
+                "description": "No description",
+                "key": "slot_name",
+                "label": "Port Name",
+                "type": "String"
+            }
+        },
+        "ports": {
+            "value": {
+                "caption": "value",
+                "data_type": "VirtualArray",
+                "description": "No description",
+                "type": "input"
+            }
+        }
+    },
     "NormalMapToHeightmap": {
         "category": "WIP",
         "description": "Reconstructs an elevation heightmap from an input normal map using Poisson surface integration.",
@@ -19336,6 +19534,12 @@
                 "description": "TODO",
                 "type": "input"
             },
+            "forest": {
+                "caption": "forest",
+                "data_type": "Forest",
+                "description": "Forest to include in the scene.",
+                "type": "input"
+            },
             "normal map": {
                 "caption": "normal map",
                 "data_type": "VirtualTexture",
@@ -19346,6 +19550,12 @@
                 "caption": "path",
                 "data_type": "Path",
                 "description": "No description",
+                "type": "input"
+            },
+            "rocks": {
+                "caption": "rocks",
+                "data_type": "RockField",
+                "description": "Rock field to include in the scene.",
                 "type": "input"
             },
             "scalar": {
@@ -21492,6 +21702,12 @@
             }
         },
         "ports": {
+            "density": {
+                "caption": "density",
+                "data_type": "VirtualArray",
+                "description": "Density map of the processed instances.",
+                "type": "output"
+            },
             "density_mask": {
                 "caption": "density_mask",
                 "data_type": "VirtualArray",
@@ -22001,6 +22217,192 @@
                 "data_type": "VirtualArray",
                 "description": "TODO",
                 "type": "output"
+            }
+        }
+    },
+    "SeedForest": {
+        "category": "Flora",
+        "description": "Seeds a forest using elevation, secondary density and exclusion masks, and produces its density map.",
+        "label": "SeedForest",
+        "parameter_groups": [
+            {
+                "keys": [
+                    "tree_count",
+                    "species_count",
+                    "radius_min",
+                    "radius_max",
+                    "cluster_spread",
+                    "points_per_cluster",
+                    "seed",
+                    "weight_elev",
+                    "weight_talus",
+                    "weight_angle",
+                    "weight_twi",
+                    "weight_secondary",
+                    "min_elev",
+                    "max_elev",
+                    "elev_transition_width",
+                    "min_slope",
+                    "max_slope",
+                    "angle",
+                    "angle_width",
+                    "exclusion_threshold"
+                ],
+                "name": "main"
+            }
+        ],
+        "parameters": {
+            "angle": {
+                "description": "No description",
+                "key": "angle",
+                "label": "Aspect Angle",
+                "type": "Float"
+            },
+            "angle_width": {
+                "description": "No description",
+                "key": "angle_width",
+                "label": "Angle Tolerance",
+                "type": "Float"
+            },
+            "cluster_spread": {
+                "description": "No description",
+                "key": "cluster_spread",
+                "label": "Cluster Spread",
+                "type": "Float"
+            },
+            "elev_transition_width": {
+                "description": "No description",
+                "key": "elev_transition_width",
+                "label": "Transition Width",
+                "type": "Float"
+            },
+            "exclusion_threshold": {
+                "description": "No description",
+                "key": "exclusion_threshold",
+                "label": "Exclusion Threshold",
+                "type": "Float"
+            },
+            "max_elev": {
+                "description": "No description",
+                "key": "max_elev",
+                "label": "Max Elevation",
+                "type": "Float"
+            },
+            "max_slope": {
+                "description": "No description",
+                "key": "max_slope",
+                "label": "Max Slope",
+                "type": "Float"
+            },
+            "min_elev": {
+                "description": "No description",
+                "key": "min_elev",
+                "label": "Min Elevation",
+                "type": "Float"
+            },
+            "min_slope": {
+                "description": "No description",
+                "key": "min_slope",
+                "label": "Min Slope",
+                "type": "Float"
+            },
+            "points_per_cluster": {
+                "description": "No description",
+                "key": "points_per_cluster",
+                "label": "Points per Cluster",
+                "type": "Integer"
+            },
+            "radius_max": {
+                "description": "No description",
+                "key": "radius_max",
+                "label": "Max Radius",
+                "type": "Float"
+            },
+            "radius_min": {
+                "description": "No description",
+                "key": "radius_min",
+                "label": "Min Radius",
+                "type": "Float"
+            },
+            "seed": {
+                "description": "No description",
+                "key": "seed",
+                "label": "Seed",
+                "type": "Random seed number"
+            },
+            "species_count": {
+                "description": "No description",
+                "key": "species_count",
+                "label": "Species Count",
+                "type": "Integer"
+            },
+            "tree_count": {
+                "description": "No description",
+                "key": "tree_count",
+                "label": "Tree Count",
+                "type": "Integer"
+            },
+            "weight_angle": {
+                "description": "No description",
+                "key": "weight_angle",
+                "label": "Aspect Angle",
+                "type": "Float"
+            },
+            "weight_elev": {
+                "description": "No description",
+                "key": "weight_elev",
+                "label": "Elevation",
+                "type": "Float"
+            },
+            "weight_secondary": {
+                "description": "No description",
+                "key": "weight_secondary",
+                "label": "Secondary",
+                "type": "Float"
+            },
+            "weight_talus": {
+                "description": "No description",
+                "key": "weight_talus",
+                "label": "Slope",
+                "type": "Float"
+            },
+            "weight_twi": {
+                "description": "No description",
+                "key": "weight_twi",
+                "label": "TWI",
+                "type": "Float"
+            }
+        },
+        "ports": {
+            "density": {
+                "caption": "density",
+                "data_type": "VirtualArray",
+                "description": "No description",
+                "type": "output"
+            },
+            "elevation": {
+                "caption": "elevation",
+                "data_type": "VirtualArray",
+                "description": "No description",
+                "type": "input"
+            },
+            "exclusion_mask": {
+                "caption": "exclusion_mask",
+                "data_type": "VirtualArray",
+                "description": "No description",
+                "type": "input"
+            },
+            "forest": {
+                "caption": "forest",
+                "data_type": "Forest",
+                "description": "No description",
+                "type": "output"
+            },
+            "secondary_density": {
+                "caption": "secondary_density",
+                "data_type": "VirtualArray",
+                "description": "No description",
+                "type": "input"
             }
         }
     },
@@ -25535,6 +25937,284 @@
             "output": {
                 "caption": "output",
                 "data_type": "VirtualArray",
+                "description": "No description",
+                "type": "output"
+            }
+        }
+    },
+    "TerrainMerge": {
+        "category": "Graph IO",
+        "description": "Aligns and blends connected terrain graph slots into an output heightmap.",
+        "label": "TerrainMerge",
+        "parameter_groups": [
+            {
+                "keys": [
+                    "align_enabled",
+                    "align_mode",
+                    "align_huber_delta",
+                    "align_max_iterations",
+                    "align_coarse_size",
+                    "blend_mode",
+                    "blend_param"
+                ],
+                "name": "main"
+            }
+        ],
+        "parameters": {
+            "align_coarse_size": {
+                "description": "No description",
+                "key": "align_coarse_size",
+                "label": "Coarse Size",
+                "type": "Integer"
+            },
+            "align_enabled": {
+                "description": "No description",
+                "key": "align_enabled",
+                "label": "Enable Alignment",
+                "type": "Bool"
+            },
+            "align_huber_delta": {
+                "description": "No description",
+                "key": "align_huber_delta",
+                "label": "Huber Delta",
+                "type": "Float"
+            },
+            "align_max_iterations": {
+                "description": "No description",
+                "key": "align_max_iterations",
+                "label": "Max Iterations",
+                "type": "Integer"
+            },
+            "align_mode": {
+                "description": "No description",
+                "key": "align_mode",
+                "label": "Alignment Mode",
+                "type": "Enumeration"
+            },
+            "blend_mode": {
+                "description": "No description",
+                "key": "blend_mode",
+                "label": "Blending Mode",
+                "type": "Enumeration"
+            },
+            "blend_param": {
+                "description": "No description",
+                "key": "blend_param",
+                "label": "Blending Parameter",
+                "type": "Float"
+            }
+        },
+        "ports": {
+            "output": {
+                "caption": "output",
+                "data_type": "VirtualArray",
+                "description": "No description",
+                "type": "output"
+            }
+        }
+    },
+    "TerrainTexture": {
+        "category": "Texture",
+        "description": "Creates a terrain texture from elevation, snow, deposition and noise inputs.",
+        "label": "TerrainTexture",
+        "parameter_groups": [
+            {
+                "keys": [
+                    "grass",
+                    "dry_grass",
+                    "soil",
+                    "sediment",
+                    "rock",
+                    "ridge",
+                    "snow",
+                    "rock_slope",
+                    "rock_edge",
+                    "strata",
+                    "streaks",
+                    "streak_length",
+                    "flow",
+                    "flow_width",
+                    "deposition_amount",
+                    "snow_line",
+                    "snow_amount",
+                    "seed",
+                    "noise_scale",
+                    "color_noise",
+                    "detail",
+                    "cavity",
+                    "radius"
+                ],
+                "name": "main"
+            }
+        ],
+        "parameters": {
+            "cavity": {
+                "description": "No description",
+                "key": "cavity",
+                "label": "Cavity Shading",
+                "type": "Float"
+            },
+            "color_noise": {
+                "description": "No description",
+                "key": "color_noise",
+                "label": "Color Noise",
+                "type": "Float"
+            },
+            "deposition_amount": {
+                "description": "No description",
+                "key": "deposition_amount",
+                "label": "Deposition",
+                "type": "Float"
+            },
+            "detail": {
+                "description": "No description",
+                "key": "detail",
+                "label": "Relief Detail",
+                "type": "Float"
+            },
+            "dry_grass": {
+                "description": "No description",
+                "key": "dry_grass",
+                "label": "Dry Grass",
+                "type": "Color"
+            },
+            "flow": {
+                "description": "No description",
+                "key": "flow",
+                "label": "Flow Channels",
+                "type": "Float"
+            },
+            "flow_width": {
+                "description": "No description",
+                "key": "flow_width",
+                "label": "Channel Width",
+                "type": "Float"
+            },
+            "grass": {
+                "description": "No description",
+                "key": "grass",
+                "label": "Grass",
+                "type": "Color"
+            },
+            "noise_scale": {
+                "description": "No description",
+                "key": "noise_scale",
+                "label": "Noise Scale",
+                "type": "Float"
+            },
+            "radius": {
+                "description": "No description",
+                "key": "radius",
+                "label": "Region Radius",
+                "type": "Float"
+            },
+            "ridge": {
+                "description": "No description",
+                "key": "ridge",
+                "label": "Ridge",
+                "type": "Color"
+            },
+            "rock": {
+                "description": "No description",
+                "key": "rock",
+                "label": "Rock",
+                "type": "Color"
+            },
+            "rock_edge": {
+                "description": "No description",
+                "key": "rock_edge",
+                "label": "Edge Softness",
+                "type": "Float"
+            },
+            "rock_slope": {
+                "description": "No description",
+                "key": "rock_slope",
+                "label": "Rock Slope",
+                "type": "Float"
+            },
+            "sediment": {
+                "description": "No description",
+                "key": "sediment",
+                "label": "Sediment",
+                "type": "Color"
+            },
+            "seed": {
+                "description": "No description",
+                "key": "seed",
+                "label": "Seed",
+                "type": "Random seed number"
+            },
+            "snow": {
+                "description": "No description",
+                "key": "snow",
+                "label": "Snow",
+                "type": "Color"
+            },
+            "snow_amount": {
+                "description": "No description",
+                "key": "snow_amount",
+                "label": "Snow",
+                "type": "Float"
+            },
+            "snow_line": {
+                "description": "No description",
+                "key": "snow_line",
+                "label": "Snow Line",
+                "type": "Float"
+            },
+            "soil": {
+                "description": "No description",
+                "key": "soil",
+                "label": "Soil",
+                "type": "Color"
+            },
+            "strata": {
+                "description": "No description",
+                "key": "strata",
+                "label": "Strata",
+                "type": "Float"
+            },
+            "streak_length": {
+                "description": "No description",
+                "key": "streak_length",
+                "label": "Streak Length",
+                "type": "Float"
+            },
+            "streaks": {
+                "description": "No description",
+                "key": "streaks",
+                "label": "Ridge Streaks",
+                "type": "Float"
+            }
+        },
+        "ports": {
+            "deposition": {
+                "caption": "deposition",
+                "data_type": "VirtualArray",
+                "description": "No description",
+                "type": "input"
+            },
+            "elevation": {
+                "caption": "elevation",
+                "data_type": "VirtualArray",
+                "description": "No description",
+                "type": "input"
+            },
+            "noise": {
+                "caption": "noise",
+                "data_type": "VirtualArray",
+                "description": "No description",
+                "type": "input"
+            },
+            "snow": {
+                "caption": "snow",
+                "data_type": "VirtualArray",
+                "description": "No description",
+                "type": "input"
+            },
+            "texture": {
+                "caption": "texture",
+                "data_type": "VirtualTexture",
                 "description": "No description",
                 "type": "output"
             }

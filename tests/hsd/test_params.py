@@ -62,10 +62,10 @@ def test_enumeration_invalid_choice_raises_enum_error(ec):
 
 
 def test_enumeration_uncatalogued_param_raises_param_error(ec):
-    # "NoiseFbm" has no Enumeration params → resolve returns None → ParamError
+    # CoherentNoise.kw is not an enum → resolve returns None → ParamError
     with pytest.raises(ParamError, match="auto-resolvable"):
         value_object("kw", "Enumeration", "something",
-                     node_type="NoiseFbm", enum_catalog=ec)
+                     node_type="CoherentNoise", enum_catalog=ec)
 
 
 def test_enumeration_no_catalog_raises_param_error():
