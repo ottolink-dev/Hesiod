@@ -1,12 +1,41 @@
 # Memory follow-up implementation
 
-Local fixes for [Hesiod #783](https://github.com/ottolink-dev/Hesiod/issues/783),
+Fixes for [Hesiod #783](https://github.com/ottolink-dev/Hesiod/issues/783),
 following the [frozen baseline assessment](../../assessments/2026-11-27/README.md).
-The original assessment and its measurements remain unchanged. This branch
-implements 21 tracked findings locally; two follow-ups remain. All code and
-submodule commits stay local. The issue checklist remains open for review.
-See [issue/commit mapping](evidence/issue-status.json) and
-[source provenance](evidence/source-provenance.json).
+The measured implementation addressed 21 tracked findings; two follow-ups remain.
+The changes are now being prepared for review against `dev`. The original
+assessment and all evidence records below remain unchanged, including their
+historical commit IDs and issue status. See [issue/commit mapping](evidence/issue-status.json)
+and [source provenance](evidence/source-provenance.json).
+
+## Publication port to dev
+
+The publication branch starts from upstream `dev` commit
+`697ad0ae03ff79aff4bd1e5b57a5d2349916fc1d`. It ports only the assessment, fixes,
+regression tools and evidence from the measured branch. ExportAsset retains
+upstream `dev`'s `for_each_tile` normal-map blending API inside the shortened
+normal-map lifetime scope. Other upstream submodule changes, including GNodeGUI,
+are preserved; dependency publication branches supply the corresponding fixes.
+
+The native tests, exact output comparisons and memory measurements below were
+run on the main-based implementation identified in the evidence. They have
+**not been rerun on this dev port** and do not establish its native correctness
+or memory usage. Integration build and native validation remain pending before
+this draft is ready to merge.
+
+The dev port passes 160 Python tests and 29 subtests, with ten skips: seven need
+Apple linker tools and three need a native Hesiod binary. The 34 profiling
+unittests also pass. Commands run from the publication checkout, using the
+existing validation environment, were:
+
+```sh
+env -u HESIOD_BIN /path/to/validation/venv/bin/python -m pytest tests -q -rs
+/path/to/validation/venv/bin/python -m unittest discover -s tests/profiling -v
+```
+
+A separate integrity check confirmed that all 243 assessment and fix-evidence
+files are byte-identical to the measured branch. Only this report's publication
+context and its checksum were updated; historical evidence was not rewritten.
 
 ## Changes
 
