@@ -14,8 +14,10 @@ def test_build_nav_summary_groups_by_primary_and_secondary():
     }
     out = build_nav_summary(data)
 
-    # categories overview link is first
-    assert out.splitlines()[0] == "* [Categories](categories.md)"
+    # the reference landing page precedes the categories overview
+    assert out.splitlines()[:2] == [
+        "* [Node Reference](index.md)", "* [Categories](categories.md)",
+    ]
     # a primary-only category lists nodes one level deep
     assert "* Boundaries" in out
     assert "    * [Border](nodes/Border.md)" in out

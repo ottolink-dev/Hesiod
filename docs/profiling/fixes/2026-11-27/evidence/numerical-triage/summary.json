@@ -1,0 +1,28 @@
+{
+  "baseline_library": "output/fixes/baseline/libhighmap.a",
+  "baseline_commit": "d73e05adee1a04cc1e955d3f3162398a37f1c17d",
+  "baseline_probe": {
+    "command": "timeout 10 output/fixes/numerical-triage/repro-baseline",
+    "expected_exit_code": 1,
+    "singleton_42_reference_7": "NaN (bits4290772992), finite=0, equals7=0",
+    "endpoint_foreground_counts_by_iterations": [
+      4,
+      2,
+      0
+    ]
+  },
+  "fix_594": {
+    "semantics": "Define singleton input as interpolated reference median; preserve existing rank mapping for larger inputs and empty no-op validation.",
+    "tests_passed": 11
+  },
+  "fix_595": {
+    "semantics": "Correct even four-pixel line expectation to zero after two simultaneous sweeps; add odd five-pixel case retaining center after two sweeps and empty after three.",
+    "production_algorithm_changed": false,
+    "tests_passed": 8
+  },
+  "focused_command": "timeout 30 output/fixes/numerical-triage/focused-tests --gtest_color=no --gtest_output=json:output/fixes/numerical-triage/focused-results.json",
+  "focused_exit_code": 0,
+  "focused_total_passed": 19,
+  "build": "python3 output/fixes/numerical-triage/build_focused_tests.py",
+  "build_notes": "Separate test/filter/assert objects linked over saved baseline library; production flags for filters, IEEE-preserving flags for tests/assert helper; no shared build mutation."
+}

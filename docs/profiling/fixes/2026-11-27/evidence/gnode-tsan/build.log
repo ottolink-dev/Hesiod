@@ -1,0 +1,40 @@
+[1/25] Building CXX object GNode/CMakeFiles/gnode.dir/src/graph.cpp.o
+In file included from /home/barrulus/dev/Hesiod-783/external/GNode/external/demekgraph/updated/include/layout.hpp:13,
+                 from /home/barrulus/dev/Hesiod-783/external/GNode/GNode/src/graph.cpp:18:
+/home/barrulus/dev/Hesiod-783/external/GNode/external/demekgraph/updated/include/layering.hpp: In member function ‘void detail::network_simplex_layering::optimize_edge_length(const detail::subgraph&, detail::hierarchy&)’:
+/home/barrulus/dev/Hesiod-783/external/GNode/external/demekgraph/updated/include/layering.hpp:634:13: warning: variable ‘iters’ set but not used [-Wunused-but-set-variable=]
+  634 |         int iters = 0;
+      |             ^~~~~
+In file included from /home/barrulus/dev/Hesiod-783/external/GNode/external/demekgraph/updated/include/layout.hpp:15:
+/home/barrulus/dev/Hesiod-783/external/GNode/external/demekgraph/updated/include/crossing.hpp: In member function ‘void detail::barycentric_heuristic::transpose(detail::hierarchy&)’:
+/home/barrulus/dev/Hesiod-783/external/GNode/external/demekgraph/updated/include/crossing.hpp:244:13: warning: variable ‘k’ set but not used [-Wunused-but-set-variable=]
+  244 |         int k = 0;
+      |             ^
+/home/barrulus/dev/Hesiod-783/external/GNode/external/demekgraph/updated/include/crossing.hpp: In member function ‘void detail::barycentric_heuristic::fast_transpose(detail::hierarchy&)’:
+/home/barrulus/dev/Hesiod-783/external/GNode/external/demekgraph/updated/include/crossing.hpp:268:13: warning: variable ‘iters’ set but not used [-Wunused-but-set-variable=]
+  268 |         int iters = 0;
+      |             ^~~~~
+[2/25] Building CXX object _deps/googletest-build/googletest/CMakeFiles/gtest.dir/src/gtest-all.cc.o
+[3/25] Building CXX object GNode/CMakeFiles/gnode.dir/src/graph_worker.cpp.o
+[4/25] Building CXX object GNode/CMakeFiles/gnode.dir/src/link.cpp.o
+[5/25] Building CXX object GNode/CMakeFiles/gnode.dir/src/logger.cpp.o
+[6/25] Building CXX object GNode/CMakeFiles/gnode.dir/src/node.cpp.o
+[7/25] Building CXX object GNode/CMakeFiles/gnode.dir/src/thread_pool.cpp.o
+[8/25] Linking CXX static library lib/libgtest.a
+[9/25] Building CXX object GNode/CMakeFiles/gnode.dir/src/subgraph.cpp.o
+[10/25] Linking CXX static library GNode/libgnode.a
+[11/25] Building CXX object _deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/src/gtest_main.cc.o
+[12/25] Building CXX object tests/unit_tests/CMakeFiles/gnode_unit_tests.dir/src/cycle_detection.cpp.o
+[13/25] Building CXX object tests/unit_tests/CMakeFiles/gnode_unit_tests.dir/src/async_vs_sync.cpp.o
+[14/25] Building CXX object tests/unit_tests/CMakeFiles/gnode_unit_tests.dir/src/deep_propagation.cpp.o
+[15/25] Building CXX object tests/unit_tests/CMakeFiles/gnode_unit_tests.dir/src/disconnected_nodes.cpp.o
+[16/25] Building CXX object tests/unit_tests/CMakeFiles/gnode_unit_tests.dir/src/incremental_update.cpp.o
+[17/25] Building CXX object tests/unit_tests/CMakeFiles/gnode_unit_tests.dir/src/event_system.cpp.o
+[18/25] Building CXX object tests/unit_tests/CMakeFiles/gnode_unit_tests.dir/src/main.cpp.o
+[19/25] Building CXX object tests/unit_tests/CMakeFiles/gnode_unit_tests.dir/src/random_dag.cpp.o
+[20/25] Building CXX object tests/unit_tests/CMakeFiles/gnode_unit_tests.dir/src/parallel_update.cpp.o
+[21/25] Building CXX object tests/unit_tests/CMakeFiles/gnode_unit_tests.dir/src/simple_chain.cpp.o
+[22/25] Building CXX object tests/unit_tests/CMakeFiles/gnode_unit_tests.dir/src/validation.cpp.o
+[23/25] Linking CXX static library lib/libgtest_main.a
+[24/25] Building CXX object tests/unit_tests/CMakeFiles/gnode_unit_tests.dir/src/subgraph_test.cpp.o
+[25/25] Linking CXX executable bin/gnode_unit_tests

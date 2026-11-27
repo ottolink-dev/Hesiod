@@ -178,11 +178,6 @@ void compute_texture_quilting_expand_node(BaseNode &node)
       if (pt_in_vec[k])
       {
         // rebuild the texture from Heightmap
-        hmap::VirtualArray r(CONFIG(node));
-        hmap::VirtualArray g(CONFIG(node));
-        hmap::VirtualArray b(CONFIG(node));
-        hmap::VirtualArray a(CONFIG(node));
-
         for (int nch = 0; nch < 4; ++nch)
           pt_out_vec[k]->channel(nch).from_array(*secondary_arrays_ptr[current_idx + nch],
                                                  node.cfg().cm_cpu);

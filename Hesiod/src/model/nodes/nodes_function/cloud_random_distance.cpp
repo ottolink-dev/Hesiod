@@ -46,14 +46,6 @@ void compute_cloud_random_distance_node(BaseNode &node)
 
   if (p_density)
   {
-    // TODO distribute
-    hmap::Array density_array = p_density->to_array(node.cfg().cm_cpu);
-
-    *p_cloud = hmap::random_cloud_distance(node.val<float>(A_DISTANCE_MIN),
-                                           node.val<float>(A_DISTANCE_MAX),
-                                           density_array,
-                                           node.val<int>(A_SEED));
-
     std::vector<hmap::Cloud> clouds;
     std::mutex               mtx;
 

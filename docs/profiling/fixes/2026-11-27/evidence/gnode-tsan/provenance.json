@@ -1,0 +1,24 @@
+{
+  "linked_libraries": "\tlinux-vdso.so.1 (0x0000790f424bb000)\n\tlibtsan.so.2 => /nix/store/myhwfdgqm39yms5clinafii9i1nmq43h-gcc-16.2.0-lib/lib/libtsan.so.2 (0x0000790f41200000)\n\tlibspdlog.so.1.17 => /nix/store/01lipxh8i6vf770jr55adpfm2yjrmins-spdlog-1.17.0/lib/libspdlog.so.1.17 (0x0000790f4117d000)\n\tlibfmt.so.12 => /nix/store/q7d5mip18lxgbbmm2aa2kyhzng4vbnjn-fmt-12.2.0/lib/libfmt.so.12 (0x0000790f422da000)\n\tlibstdc++.so.6 => /nix/store/myhwfdgqm39yms5clinafii9i1nmq43h-gcc-16.2.0-lib/lib/libstdc++.so.6 (0x0000790f40e00000)\n\tlibm.so.6 => /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/libm.so.6 (0x0000790f40cdf000)\n\tlibgcc_s.so.1 => /nix/store/myhwfdgqm39yms5clinafii9i1nmq43h-gcc-16.2.0-lib/lib/libgcc_s.so.1 (0x0000790f422ac000)\n\tlibc.so.6 => /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/libc.so.6 (0x0000790f40a00000)\n\tlibdl.so.2 => /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/libdl.so.2 (0x0000790f41178000)\n\tlibrt.so.1 => /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/librt.so.1 (0x0000790f41173000)\n\tlibpthread.so.0 => /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/libpthread.so.0 (0x0000790f4116e000)\n\t/nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2 => /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib64/ld-linux-x86-64.so.2 (0x0000790f424bd000)\n",
+  "distinct_sanitizer_flag_lines": [
+    "FLAGS = -fsanitize=thread -fno-omit-frame-pointer -Wall -Wextra -g",
+    "FLAGS = -fsanitize=thread -fno-omit-frame-pointer -Wall -Wextra -g -std=c++20 -Wall -Wshadow -Wundef -Wno-error=dangling-else -DGTEST_HAS_PTHREAD=1 -fexceptions -Wextra -Wno-unused-parameter -Wno-missing-field-initializers",
+    "LANGUAGE_COMPILE_FLAGS = -fsanitize=thread -fno-omit-frame-pointer -Wall -Wextra -g",
+    "LINK_FLAGS = -fsanitize=thread -Wl,--dependency-file=tests/unit_tests/CMakeFiles/gnode_unit_tests.dir/link.d"
+  ],
+  "source_commit": "149a4a9310d88c32bcbc3a81393636677569b376",
+  "binary_sha256": "cdaf7cbfe42800f9f8dcf8b398b7198efd4778b2b1e28c43d6ed8792ec3a0760",
+  "compiler": "/nix/store/ii6p6kc1brz3vycqg88q4zb4xd2dmqwp-gcc-wrapper-16.2.0/bin/g++",
+  "compiler_version": "g++ (GCC) 16.2.0",
+  "cached_flags": {
+    "CMAKE_BUILD_TYPE": "Debug",
+    "CMAKE_CXX_FLAGS": "-fsanitize=thread -fno-omit-frame-pointer",
+    "CMAKE_CXX_FLAGS_DEBUG": "-g",
+    "CMAKE_EXE_LINKER_FLAGS": "-fsanitize=thread"
+  },
+  "source_sha256": {
+    "external/GNode/GNode/include/gnode/graph_worker.hpp": "d15f601603197b20c5e5a76e6dc3b619452cb16cb1f3f0f5cff3c3bbe736ba6f",
+    "external/GNode/GNode/src/graph_worker.cpp": "458a5390ce353c65f8aeca057896ac8721a632b3df74e1c219c9a4964486439d",
+    "external/GNode/tests/unit_tests/src/parallel_update.cpp": "d41449ffe2899c24cafccbfc3a2d77ffe741874bfe7164453a1f6e54382e0938"
+  }
+}

@@ -1,0 +1,276 @@
+{
+  "kind": "derived changed-grid fixed-512x512-tile-core comparison",
+  "reuses_lower_size_runs": true,
+  "verification": {
+    "binary_sha256": "0fa7fb40613cbb1af3401bf96e2490a8c68383a2b39f2021ff50f27a3110d4cc",
+    "identical_provenance_fields": [
+      "binary_sha256",
+      "script_sha256",
+      "data_sha256",
+      "environment_overrides",
+      "backend",
+      "graph_scheduling"
+    ],
+    "identical_settings_for_each_shared_policy": true,
+    "identical_threads": 1,
+    "identical_repeats": 3,
+    "identical_fixture_bytes_per_case_variant_mode": true,
+    "all_source_policy_audits_pass": true,
+    "source_configs": {
+      "memory-disk": {
+        "cases": [
+          "ExportAsset",
+          "TextureQuiltingShuffle",
+          "TextureQuiltingExpand",
+          "Abs"
+        ],
+        "variants": [
+          "minimal",
+          "full"
+        ],
+        "include_inputs": true,
+        "sizes": [
+          512,
+          1024,
+          2048
+        ],
+        "tiles": [
+          1,
+          4
+        ],
+        "overlaps": [
+          0.0,
+          0.1
+        ],
+        "policies": [
+          "disk-sequential"
+        ],
+        "threads": 1,
+        "repeats": 3,
+        "timeout": 600,
+        "max_hours": 8,
+        "max_rss_mib": 6144,
+        "max_disk_gib": 32.0,
+        "scaling_slack": 1.25,
+        "absolute_slack_mib": 32,
+        "check_min_size": 512,
+        "check": true
+      },
+      "memory-4096-fixed-tiles": {
+        "cases": [
+          "TextureQuiltingShuffle",
+          "TextureQuiltingExpand",
+          "Abs"
+        ],
+        "variants": [
+          "full"
+        ],
+        "include_inputs": true,
+        "sizes": [
+          4096
+        ],
+        "tiles": [
+          8
+        ],
+        "overlaps": [
+          0.0
+        ],
+        "policies": [
+          "disk-sequential"
+        ],
+        "threads": 1,
+        "repeats": 3,
+        "timeout": 600.0,
+        "max_hours": 8,
+        "max_rss_mib": 12288.0,
+        "max_disk_gib": 32.0,
+        "scaling_slack": 1.25,
+        "absolute_slack_mib": 32,
+        "check_min_size": 512,
+        "check": false
+      }
+    },
+    "source_result_files": [
+      {
+        "path": "/home/barrulus/dev/Hesiod-783/output/memory-disk/results.json",
+        "sha256": "c63b27f73ebc632d22db03e86688b799c1eae8d3217076524e1cab804a320257"
+      },
+      {
+        "path": "/home/barrulus/dev/Hesiod-783/output/memory-4096-fixed-tiles/results.json",
+        "sha256": "38de1b2b9986add76e6ff13bc0b07b532434830fea671b5f94fb9f6e59b9576c"
+      }
+    ],
+    "caveat": "Different size/grid CLI settings are explicit. Resource stop guards and timeouts differ; every selected run completed successfully. Wall times were measured on a shared host, not controlled performance tests."
+  },
+  "pairs": [
+    {
+      "case": "TextureQuiltingShuffle",
+      "variant": "full",
+      "inputs_only": false,
+      "policy": "disk-sequential",
+      "overlap": 0,
+      "low_size": 2048,
+      "high_size": 4096,
+      "low_grid": [
+        4,
+        4
+      ],
+      "high_grid": [
+        8,
+        8
+      ],
+      "tile_core": [
+        512,
+        512
+      ],
+      "low_repeats": 3,
+      "high_repeats": 3,
+      "low_peak_mib_median": 1476.76953125,
+      "high_peak_mib_median": 4891.359375,
+      "process_peak_ratio": 3.3122022573554504,
+      "pixel_ratio": 4,
+      "total_tile_count_ratio": 4
+    },
+    {
+      "case": "TextureQuiltingShuffle",
+      "variant": "full",
+      "inputs_only": true,
+      "policy": "disk-sequential",
+      "overlap": 0,
+      "low_size": 2048,
+      "high_size": 4096,
+      "low_grid": [
+        4,
+        4
+      ],
+      "high_grid": [
+        8,
+        8
+      ],
+      "tile_core": [
+        512,
+        512
+      ],
+      "low_repeats": 3,
+      "high_repeats": 3,
+      "low_peak_mib_median": 360.375,
+      "high_peak_mib_median": 360.40625,
+      "process_peak_ratio": 1.000086715227194,
+      "pixel_ratio": 4,
+      "total_tile_count_ratio": 4
+    },
+    {
+      "case": "TextureQuiltingExpand",
+      "variant": "full",
+      "inputs_only": false,
+      "policy": "disk-sequential",
+      "overlap": 0,
+      "low_size": 2048,
+      "high_size": 4096,
+      "low_grid": [
+        4,
+        4
+      ],
+      "high_grid": [
+        8,
+        8
+      ],
+      "tile_core": [
+        512,
+        512
+      ],
+      "low_repeats": 3,
+      "high_repeats": 3,
+      "low_peak_mib_median": 1619.69140625,
+      "high_peak_mib_median": 5445.1875,
+      "process_peak_ratio": 3.361867253841275,
+      "pixel_ratio": 4,
+      "total_tile_count_ratio": 4
+    },
+    {
+      "case": "TextureQuiltingExpand",
+      "variant": "full",
+      "inputs_only": true,
+      "policy": "disk-sequential",
+      "overlap": 0,
+      "low_size": 2048,
+      "high_size": 4096,
+      "low_grid": [
+        4,
+        4
+      ],
+      "high_grid": [
+        8,
+        8
+      ],
+      "tile_core": [
+        512,
+        512
+      ],
+      "low_repeats": 3,
+      "high_repeats": 3,
+      "low_peak_mib_median": 359.99609375,
+      "high_peak_mib_median": 360.72265625,
+      "process_peak_ratio": 1.0020182510660922,
+      "pixel_ratio": 4,
+      "total_tile_count_ratio": 4
+    },
+    {
+      "case": "Abs",
+      "variant": "full",
+      "inputs_only": false,
+      "policy": "disk-sequential",
+      "overlap": 0,
+      "low_size": 2048,
+      "high_size": 4096,
+      "low_grid": [
+        4,
+        4
+      ],
+      "high_grid": [
+        8,
+        8
+      ],
+      "tile_core": [
+        512,
+        512
+      ],
+      "low_repeats": 3,
+      "high_repeats": 3,
+      "low_peak_mib_median": 341.94921875,
+      "high_peak_mib_median": 341.44140625,
+      "process_peak_ratio": 0.998514947623345,
+      "pixel_ratio": 4,
+      "total_tile_count_ratio": 4
+    },
+    {
+      "case": "Abs",
+      "variant": "full",
+      "inputs_only": true,
+      "policy": "disk-sequential",
+      "overlap": 0,
+      "low_size": 2048,
+      "high_size": 4096,
+      "low_grid": [
+        4,
+        4
+      ],
+      "high_grid": [
+        8,
+        8
+      ],
+      "tile_core": [
+        512,
+        512
+      ],
+      "low_repeats": 3,
+      "high_repeats": 3,
+      "low_peak_mib_median": 340.3359375,
+      "high_peak_mib_median": 340.4921875,
+      "process_peak_ratio": 1.0004591052039575,
+      "pixel_ratio": 4,
+      "total_tile_count_ratio": 4
+    }
+  ],
+  "limitations": "Six descriptive paired medians, separate from same-grid growth guards. Whole-process RSS includes startup and concurrent graph sources, excludes filesystem page cache; constant tile core does not imply a constant total-RAM workload. Numerical output correctness is not assessed."
+}

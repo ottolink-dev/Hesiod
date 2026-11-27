@@ -1,0 +1,69 @@
+{
+  "suites": {
+    "HighMap": {
+      "tests": 996,
+      "failures": 0,
+      "disabled": 0,
+      "errors": 0,
+      "time": "22.888s",
+      "report": "frozen-highmap_tests.json"
+    },
+    "GNode": {
+      "tests": 60,
+      "failures": 0,
+      "disabled": 0,
+      "errors": 0,
+      "time": "0.739s",
+      "report": "gnode_unit_tests.json"
+    },
+    "Meta": {
+      "tests": 59,
+      "failures": 0,
+      "disabled": 0,
+      "errors": 0,
+      "time": "0.025s",
+      "report": "meta_unittests.json"
+    },
+    "CLWrapper": {
+      "tests": 16,
+      "failures": 0,
+      "disabled": 0,
+      "errors": 0,
+      "time": "0.998s",
+      "report": "clwrapper-fixed.json",
+      "skipped_cpu_capability_tests": 1
+    }
+  },
+  "ctest": {
+    "passed": 66,
+    "total": 66,
+    "report": "frozen-ctest.xml"
+  },
+  "ui_palette": {
+    "passed": true,
+    "report": "hesiod_ui_palette_test.log"
+  },
+  "gnode_asan_ubsan": {
+    "full_suite_passed": 60,
+    "lifecycle_repetitions": 100,
+    "cases_per_repetition": 10,
+    "runtime_options": "../gnode-sanitizers/final-result.json"
+  },
+  "gnode_tsan": {
+    "lifecycle_repetitions": 20,
+    "cases_per_repetition": 10,
+    "result": "../gnode-tsan/result.json",
+    "build_provenance": "../gnode-tsan/provenance.json"
+  },
+  "clwrapper_device_shuffle": {
+    "repetitions": 20,
+    "passed_per_repetition": 8,
+    "cpu_capability_skips_per_repetition": 1,
+    "report": "clwrapper-filter-repeat.log"
+  },
+  "historical_failures_retained": {
+    "highmap_before_triage": "highmap_tests.json",
+    "clwrapper_before_capability_fix": "clwrapper_unit_tests.json",
+    "ctest_before_capability_fix": "ctest.xml"
+  }
+}

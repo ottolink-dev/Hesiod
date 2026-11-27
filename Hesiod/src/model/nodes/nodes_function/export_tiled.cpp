@@ -111,7 +111,7 @@ void compute_export_tiled_node(BaseNode &node)
   // export
   hmap::export_tiled(export_path.string(),
                      "png",
-                     p_in->to_array(node.cfg().cm_cpu),
+                     array,
                      tiling,
                      node.val<int>(A_LEADING_ZEROS),
                      bit_depth,

@@ -1,0 +1,16 @@
+overlap=0
+core: 36x24 864 cells
+hmap [warn ] [methods.cpp             :123] Invalid slice [0, 37, 0, 29] for array shape (36, 24)
+hmap [warn ] [methods.cpp             :123] Invalid slice [0, 37, 0, 29] for array shape (36, 24)
+hmap [warn ] [methods.cpp             :123] Invalid slice [0, 74, 0, 58] for array shape (72, 56)
+0x0 0 cells
+0x0 0 cells
+0x0 0 cells
+overlap=0.01
+core: 36x24 864 cells
+hmap [warn ] [methods.cpp             :123] Invalid slice [0, 37, 0, 29] for array shape (36, 24)
+hmap [warn ] [methods.cpp             :123] Invalid slice [0, 37, 0, 29] for array shape (36, 24)
+hmap [warn ] [methods.cpp             :123] Invalid slice [0, 74, 0, 58] for array shape (72, 56)
+0x0 0 cells
+0x0 0 cells
+0x0 0 cells

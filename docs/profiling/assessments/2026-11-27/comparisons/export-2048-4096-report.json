@@ -1,0 +1,242 @@
+{
+  "kind": "derived same-grid 2048-to-4096 comparisons",
+  "reuses_lower_size_runs": true,
+  "config": {
+    "cases": [
+      "ExportAsset"
+    ],
+    "variants": [
+      "minimal",
+      "full"
+    ],
+    "include_inputs": false,
+    "sizes": [
+      2048,
+      4096
+    ],
+    "tiles": [
+      1
+    ],
+    "overlaps": [
+      0.0
+    ],
+    "policies": [
+      "ram-sequential"
+    ],
+    "threads": 1,
+    "repeats": 3,
+    "timeout": 2400.0,
+    "max_hours": 8,
+    "max_rss_mib": 16384.0,
+    "max_disk_gib": 32.0,
+    "scaling_slack": 1.25,
+    "absolute_slack_mib": 32,
+    "check_min_size": 512,
+    "check": false
+  },
+  "verification": {
+    "binary_sha256": "0fa7fb40613cbb1af3401bf96e2490a8c68383a2b39f2021ff50f27a3110d4cc",
+    "identical_provenance_fields": [
+      "binary_sha256",
+      "script_sha256",
+      "data_sha256",
+      "environment_overrides",
+      "backend",
+      "graph_scheduling"
+    ],
+    "identical_settings_for_each_shared_policy": true,
+    "identical_threads": 1,
+    "identical_repeats": 3,
+    "identical_fixture_bytes_per_case_variant_mode": true,
+    "all_source_policy_audits_pass": true,
+    "source_configs": {
+      "memory-ram": {
+        "cases": [
+          "ExportAsset",
+          "TextureQuiltingShuffle",
+          "TextureQuiltingExpand",
+          "Abs"
+        ],
+        "variants": [
+          "minimal",
+          "full"
+        ],
+        "include_inputs": true,
+        "sizes": [
+          512,
+          1024,
+          2048
+        ],
+        "tiles": [
+          1,
+          4
+        ],
+        "overlaps": [
+          0.0,
+          0.1
+        ],
+        "policies": [
+          "ram-sequential"
+        ],
+        "threads": 1,
+        "repeats": 3,
+        "timeout": 600,
+        "max_hours": 8,
+        "max_rss_mib": 6144,
+        "max_disk_gib": 32.0,
+        "scaling_slack": 1.25,
+        "absolute_slack_mib": 32,
+        "check_min_size": 512,
+        "check": true
+      },
+      "memory-4096-export": {
+        "cases": [
+          "ExportAsset"
+        ],
+        "variants": [
+          "minimal",
+          "full"
+        ],
+        "include_inputs": false,
+        "sizes": [
+          4096
+        ],
+        "tiles": [
+          1
+        ],
+        "overlaps": [
+          0.0
+        ],
+        "policies": [
+          "ram-sequential"
+        ],
+        "threads": 1,
+        "repeats": 3,
+        "timeout": 2400.0,
+        "max_hours": 8,
+        "max_rss_mib": 16384.0,
+        "max_disk_gib": 32.0,
+        "scaling_slack": 1.25,
+        "absolute_slack_mib": 32,
+        "check_min_size": 512,
+        "check": false
+      }
+    },
+    "source_result_files": [
+      {
+        "path": "/home/barrulus/dev/Hesiod-783/output/memory-ram/results.json",
+        "sha256": "7a04fbf49ef58a708f7b082cdb321f2127cb51435917728cb486ed9d968ee54b"
+      },
+      {
+        "path": "/home/barrulus/dev/Hesiod-783/output/memory-4096-export/results.json",
+        "sha256": "bae24955e52ba8aa523697c8a96b488b51d22c058ad1ecca1709d9ebae2fdcd9"
+      }
+    ],
+    "caveat": "Different size/grid CLI settings are explicit. Resource stop guards and timeouts differ; every selected run completed successfully. Wall times were measured on a shared host, not controlled performance tests."
+  },
+  "report": {
+    "complete": true,
+    "memory_scaling_check": "pass",
+    "cells": [
+      {
+        "case": "ExportAsset",
+        "variant": "full",
+        "inputs_only": false,
+        "policy": "ram-sequential",
+        "tiles": 1,
+        "overlap": 0.0,
+        "size": 2048,
+        "planned": 3,
+        "successful": 3,
+        "status": "complete",
+        "process_peak_mib_median": 3283.96484375,
+        "process_peak_mib_min": 3282.80078125,
+        "process_peak_mib_max": 3284.015625,
+        "wall_seconds_median": 135.07441029299662
+      },
+      {
+        "case": "ExportAsset",
+        "variant": "full",
+        "inputs_only": false,
+        "policy": "ram-sequential",
+        "tiles": 1,
+        "overlap": 0.0,
+        "size": 4096,
+        "planned": 3,
+        "successful": 3,
+        "status": "complete",
+        "process_peak_mib_median": 11604.01171875,
+        "process_peak_mib_min": 11603.25390625,
+        "process_peak_mib_max": 11604.62109375,
+        "wall_seconds_median": 1599.8155591439936
+      },
+      {
+        "case": "ExportAsset",
+        "variant": "minimal",
+        "inputs_only": false,
+        "policy": "ram-sequential",
+        "tiles": 1,
+        "overlap": 0.0,
+        "size": 2048,
+        "planned": 3,
+        "successful": 3,
+        "status": "complete",
+        "process_peak_mib_median": 3027.640625,
+        "process_peak_mib_min": 3027.25,
+        "process_peak_mib_max": 3027.7109375,
+        "wall_seconds_median": 5.208086737002304
+      },
+      {
+        "case": "ExportAsset",
+        "variant": "minimal",
+        "inputs_only": false,
+        "policy": "ram-sequential",
+        "tiles": 1,
+        "overlap": 0.0,
+        "size": 4096,
+        "planned": 3,
+        "successful": 3,
+        "status": "complete",
+        "process_peak_mib_median": 10964.2265625,
+        "process_peak_mib_min": 10962.7578125,
+        "process_peak_mib_max": 10964.28125,
+        "wall_seconds_median": 19.985350164999545
+      }
+    ],
+    "comparisons": [
+      {
+        "case": "ExportAsset",
+        "variant": "full",
+        "inputs_only": false,
+        "policy": "ram-sequential",
+        "tiles": 1,
+        "overlap": 0.0,
+        "small_size": 2048,
+        "large_size": 4096,
+        "status": "pass",
+        "process_peak_ratio": 3.5335371329673664,
+        "pixel_ratio": 4.0,
+        "pixel_normalized_peak_ratio": 0.8833842832418416,
+        "limit_mib": 16451.82421875,
+        "observed_mib": 11604.01171875
+      },
+      {
+        "case": "ExportAsset",
+        "variant": "minimal",
+        "inputs_only": false,
+        "policy": "ram-sequential",
+        "tiles": 1,
+        "overlap": 0.0,
+        "small_size": 2048,
+        "large_size": 4096,
+        "status": "pass",
+        "process_peak_ratio": 3.621376484370565,
+        "pixel_ratio": 4.0,
+        "pixel_normalized_peak_ratio": 0.9053441210926413,
+        "limit_mib": 15170.203125,
+        "observed_mib": 10964.2265625
+      }
+    ],
+    "limitations": "Whole-process kernel peak RSS including startup and source nodes; not per-node allocation totals or GPU VRAM. Scalar RSS guards can miss localized growth hidden by fixed process overhead. Node completion does not establish numerical output correctness."
+  }
+}

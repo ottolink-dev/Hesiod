@@ -1,0 +1,16 @@
+{
+  "baseline_highmap": "d73e05adee1a04cc1e955d3f3162398a37f1c17d",
+  "cases": 30,
+  "float_cells": 23040,
+  "widths": [
+    0.01,
+    0.1,
+    0.2,
+    0.5,
+    1.0
+  ],
+  "overloads": 6,
+  "baseline_sha256": "f135b4c21d8a5907642ae29e157692a7947a31696423804899e908b0d6613f89",
+  "fixed_sha256": "f135b4c21d8a5907642ae29e157692a7947a31696423804899e908b0d6613f89",
+  "bytes": 92160
+}

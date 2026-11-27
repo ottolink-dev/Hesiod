@@ -13,7 +13,7 @@ def test_parse_fixture():
     assert [g.id for g in spec.graphs] == ["graph"]
     g = spec.graphs[0]
     assert [n.id for n in g.nodes] == ["noise", "ero", "col"]
-    assert g.nodes[0].type == "NoiseFbm"
+    assert g.nodes[0].type == "CoherentNoise"
     assert g.nodes[0].params == {"kw": [4, 4], "seed": 1}
     assert g.links[0] == ("noise", "output", "ero", "input")
     # the flat export list folds into a FlattenSpec keyed by ("graph", node, port)

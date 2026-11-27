@@ -1,0 +1,43 @@
+Running main() from /home/barrulus/dev/Hesiod-783/output/validation/googletest/googletest/src/gtest_main.cc
+Note: Google Test filter = Quilting.*
+[==========] Running 13 tests from 1 test suite.
+[----------] Global test environment set-up.
+[----------] 13 tests from Quilting
+[ RUN      ] Quilting.InvalidParametersReturnEmptyArray
+hmap [warn ] [quilting.cpp            :34] Invalid array shape (0, 16): dimensions must be positive
+hmap [warn ] [quilting.cpp            :34] Invalid array shape (0, 2): dimensions must be positive
+hmap [warn ] [quilting.cpp            :38] Array is empty or uninitialized (shape: 0x0, buffer size: 0)
+hmap [warn ] [quilting.cpp            :278] Array is empty or uninitialized (shape: 0x0, buffer size: 0)
+hmap [warn ] [quilting.cpp            :383] Array is empty or uninitialized (shape: 0x0, buffer size: 0)
+[       OK ] Quilting.InvalidParametersReturnEmptyArray (1 ms)
+[ RUN      ] Quilting.BasicQuiltingAndShape
+[       OK ] Quilting.BasicQuiltingAndShape (4 ms)
+[ RUN      ] Quilting.SecondaryArrays
+[       OK ] Quilting.SecondaryArrays (6 ms)
+[ RUN      ] Quilting.QuiltingBlend
+[       OK ] Quilting.QuiltingBlend (4 ms)
+[ RUN      ] Quilting.QuiltingExpand
+[       OK ] Quilting.QuiltingExpand (8 ms)
+[ RUN      ] Quilting.QuiltingShuffle
+[       OK ] Quilting.QuiltingShuffle (3 ms)
+[ RUN      ] Quilting.FindVerticalCutPathOptimality
+[       OK ] Quilting.FindVerticalCutPathOptimality (0 ms)
+[ RUN      ] Quilting.ZeroOverlapQuilting
+[       OK ] Quilting.ZeroOverlapQuilting (1 ms)
+[ RUN      ] Quilting.SecondaryChannelsShareGuideSeamsAndTransforms
+[       OK ] Quilting.SecondaryChannelsShareGuideSeamsAndTransforms (149 ms)
+[ RUN      ] Quilting.SecondaryAliasesAreNotOverwrittenUntilAllSourcesAreConsumed
+[       OK ] Quilting.SecondaryAliasesAreNotOverwrittenUntilAllSourcesAreConsumed (24 ms)
+[ RUN      ] Quilting.ExpandAndShufflePreserveSecondaryChannelAlignment
+[       OK ] Quilting.ExpandAndShufflePreserveSecondaryChannelAlignment (24 ms)
+[ RUN      ] Quilting.MismatchedSecondaryShapesReturnEmptyWithoutMutation
+hmap [warn ] [quilting.cpp            :49] Array shape mismatch: lhs is (48, 32) [size: 1536], rhs is (32, 32) [size: 1024]
+hmap [warn ] [quilting.cpp            :49] Array shape mismatch: lhs is (32, 32) [size: 1024], rhs is (48, 32) [size: 1536]
+[       OK ] Quilting.MismatchedSecondaryShapesReturnEmptyWithoutMutation (2 ms)
+[ RUN      ] Quilting.RandomPatchSecondaryOwnershipPreservesSources
+[       OK ] Quilting.RandomPatchSecondaryOwnershipPreservesSources (19 ms)
+[----------] 13 tests from Quilting (250 ms total)
+
+[----------] Global test environment tear-down
+[==========] 13 tests from 1 test suite ran. (251 ms total)
+[  PASSED  ] 13 tests.

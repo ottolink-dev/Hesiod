@@ -28,6 +28,7 @@
 #include "hesiod/gui/widgets/node_widgets/node_attributes_widget.hpp"
 #include "hesiod/gui/widgets/node_widgets/properties_panel_design.hpp"
 #include "hesiod/gui/widgets/node_widgets/properties_panel_header.hpp"
+#include "hesiod/gui/widgets/post_process/post_process_dock.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/constants/node_preset_manager.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
@@ -157,21 +158,7 @@ QWidget *NodeAttributesWidget::create_toolbar()
   overflow_menu->addAction(doc_act);
 
   if (panel.has_own_chrome)
-  {
-    const auto &theme = *panel.theme;
-    overflow_menu->setWindowFlag(Qt::NoDropShadowWindowHint);
-    overflow_menu->setFont(meta::qt::ui_font(12));
-    overflow_menu->setStyleSheet(
-        QString("QMenu { background: %1; color: %2; border: 1px solid %3;"
-                " border-radius: 8px; padding: 6px; }"
-                "QMenu::item { padding: 7px 18px 7px 10px; border-radius: 4px; }"
-                "QMenu::item:selected { background: %4; }"
-                "QMenu::separator { height: 1px; background: %3; margin: 5px 8px; }")
-            .arg(theme.bar.name(),
-                 theme.ink_primary.name(),
-                 theme.field_border.name(),
-                 theme.section_header_hover.name()));
-  }
+    style_panel_menu(*overflow_menu, *panel.theme);
 
   overflow_btn->setMenu(overflow_menu);
   layout->addWidget(overflow_btn);
@@ -339,10 +326,26 @@ void NodeAttributesWidget::sync_from_model()
   if (this->meta_widget)
     this->meta_widget->on_sync_widget_from_model();
 
+  // after the container switch above, so the chain is rebuilt for the right one
+  if (this->post_dock)
+    this->post_dock->sync_from_model();
+
   this->is_switching_container_programmatically = false;
 }
 
 bool NodeAttributesWidget::is_meta_backed() const { return this->meta_widget != nullptr; }
+
+PostProcessDock *NodeAttributesWidget::release_post_dock()
+{
+  if (!this->post_dock)
+    return nullptr;
+
+  if (this->layout())
+    this->layout()->removeWidget(this->post_dock);
+
+  this->post_dock->setParent(nullptr);
+  return this->post_dock;
+}
 
 void NodeAttributesWidget::setup_layout()
 {
@@ -511,6 +514,22 @@ void NodeAttributesWidget::setup_layout()
           "Post-Process.*|Default Noise|Default Mask Definition|Mask "
           "Preprocessing|Advanced")};
 
+  // The shared post-processing attributes are not rows in the list: they are
+  // the output chain after the sections, see PostProcessDock. Declining
+  // them here keeps them out of the sections without touching their metadata,
+  // which the node documentation still reads the category from.
+  const bool has_output_chain = PostProcessDock::is_needed(*p_node);
+
+  if (has_output_chain)
+    options.row_renderer = [design = panel.design, row_ctx](
+                               meta::AbstractAttribute *p_attr) -> meta::qt::MetaWidget *
+    {
+      if (!p_attr || is_post_effect_attribute(p_attr->name()))
+        return nullptr;
+
+      return meta::qt::render_row(p_attr, design, row_ctx);
+    };
+
   this->meta_widget = meta::qt::render(p_node->get_meta_group(),
                                        options,
                                        this,
@@ -518,6 +537,14 @@ void NodeAttributesWidget::setup_layout()
 
   if (this->meta_widget && this->meta_widget->layout())
     this->meta_widget->layout()->setAlignment(Qt::AlignTop);
+
+  // ...which leaves the section they were alone in with nothing to show. A
+  // node's own attributes filed under the same name keep theirs.
+  if (has_output_chain)
+    for (auto *section :
+         this->meta_widget->findChildren<meta::qt::CollapsibleSection *>())
+      if (section->content_layout && section->content_layout->count() == 0)
+        section->hide();
 
   for (auto *stacked : this->meta_widget->findChildren<QStackedWidget *>())
   {
@@ -528,6 +555,25 @@ void NodeAttributesWidget::setup_layout()
         if (page->layout())
           page->layout()->setAlignment(Qt::AlignTop);
       }
+    }
+
+    // A stack is as tall as its tallest page. That goes unnoticed while the
+    // stack is the last thing in the panel, and leaves a hole above the output
+    // chain now that something follows it. Only the page on show gets a say.
+    if (has_output_chain)
+    {
+      const auto fit_to_current_page = [stacked]()
+      {
+        for (int i = 0; i < stacked->count(); ++i)
+          if (auto *page = stacked->widget(i))
+            page->setSizePolicy(page->sizePolicy().horizontalPolicy(),
+                                i == stacked->currentIndex() ? QSizePolicy::Preferred
+                                                             : QSizePolicy::Ignored);
+        stacked->updateGeometry();
+      };
+
+      fit_to_current_page();
+      this->connect(stacked, &QStackedWidget::currentChanged, this, fit_to_current_page);
     }
   }
 
@@ -561,62 +607,95 @@ void NodeAttributesWidget::setup_layout()
     return {name, &p_current->get_meta_group().current()};
   };
 
+  // Named so that everything in this widget that edits the node records its
+  // edits for undo and triggers the recompute in the same way.
+  const auto on_edit_started = [this, get_container_info]()
+  {
+    auto [name, container] = get_container_info();
+    if (container)
+    {
+      this->state_before_edit = container->json_to(meta::SerializationMode::state);
+      this->is_in_edit = true;
+    }
+  };
+
+  const auto on_edit_ended = [this, get_container_info]()
+  {
+    auto [name, container] = get_container_info();
+    if (container && this->is_in_edit)
+    {
+      nlohmann::json new_state = container->json_to(meta::SerializationMode::state);
+      if (new_state != this->state_before_edit)
+      {
+        if (QUndoStack *stack = UndoManager::instance().get_stack())
+        {
+          stack->push(new ChangeNodeAttributeCommand(this->p_graph_node,
+                                                     this->node_id,
+                                                     name,
+                                                     this->state_before_edit,
+                                                     new_state));
+        }
+      }
+    }
+    this->is_in_edit = false;
+  };
+
+  const auto recompute = [this]()
+  {
+    auto gno = this->p_graph_node.lock();
+    if (!gno)
+      return;
+    if (auto *p_node = gno->get_node_ref_by_id<BaseNode>(this->node_id))
+      p_node->on_settings_changed();
+    gno->update(this->node_id);
+  };
+
+  // Recompute on value_changed or edit_ended depending on app settings.
+  const bool live_update = HSD_CTX.app_settings.node_editor.live_update;
+
   this->connect(this->meta_widget,
                 &meta::qt::MetaWidget::edit_started,
                 this,
-                [this, get_container_info]()
-                {
-                  auto [name, container] = get_container_info();
-                  if (container)
-                  {
-                    this->state_before_edit = container->json_to(
-                        meta::SerializationMode::state);
-                    this->is_in_edit = true;
-                  }
-                });
-
-  this->connect(
-      this->meta_widget,
-      &meta::qt::MetaWidget::edit_ended,
-      this,
-      [this, get_container_info]()
-      {
-        auto [name, container] = get_container_info();
-        if (container && this->is_in_edit)
-        {
-          nlohmann::json new_state = container->json_to(meta::SerializationMode::state);
-          if (new_state != this->state_before_edit)
-          {
-            if (QUndoStack *stack = UndoManager::instance().get_stack())
-            {
-              stack->push(new ChangeNodeAttributeCommand(this->p_graph_node,
-                                                         this->node_id,
-                                                         name,
-                                                         this->state_before_edit,
-                                                         new_state));
-            }
-          }
-        }
-        this->is_in_edit = false;
-      });
-
-  // Recompute on value_changed or edit_ended depending on app settings.
-  auto signal = HSD_CTX.app_settings.node_editor.live_update
-                    ? &meta::qt::MetaWidget::value_changed
-                    : &meta::qt::MetaWidget::edit_ended;
+                on_edit_started);
 
   this->connect(this->meta_widget,
-                signal,
+                &meta::qt::MetaWidget::edit_ended,
                 this,
-                [this]()
-                {
-                  auto gno = this->p_graph_node.lock();
-                  if (!gno)
-                    return;
-                  if (auto *p_node = gno->get_node_ref_by_id<BaseNode>(this->node_id))
-                    p_node->on_settings_changed();
-                  gno->update(this->node_id);
-                });
+                on_edit_ended);
+
+  this->connect(this->meta_widget,
+                live_update ? &meta::qt::MetaWidget::value_changed
+                            : &meta::qt::MetaWidget::edit_ended,
+                this,
+                recompute);
+
+  // --- output chain
+
+  if (has_output_chain)
+  {
+    // by value rather than through `this`, so the chain finds its node on its
+    // own wherever it ends up in the panel
+    this->post_dock = new PostProcessDock(
+        [graph = this->p_graph_node, id = this->node_id]() -> BaseNode *
+        {
+          auto gno = graph.lock();
+          return gno ? gno->get_node_ref_by_id<BaseNode>(id) : nullptr;
+        },
+        panel.design,
+        row_ctx,
+        panel.has_own_chrome,
+        this);
+
+    this->connect(this->post_dock, &PostProcessDock::edit_started, this, on_edit_started);
+
+    this->connect(this->post_dock, &PostProcessDock::edit_ended, this, on_edit_ended);
+
+    this->connect(this->post_dock,
+                  live_update ? &PostProcessDock::value_changed
+                              : &PostProcessDock::edit_ended,
+                  this,
+                  recompute);
+  }
 
   if (auto *group_widget = dynamic_cast<meta::qt::ContainerGroupWidget *>(
           this->meta_widget))
@@ -652,6 +731,10 @@ void NodeAttributesWidget::setup_layout()
                     const std::string old_container = this->current_container_name;
                     this->current_container_name = new_container;
 
+                    // each container has its own chain
+                    if (this->post_dock)
+                      this->post_dock->sync_from_model();
+
                     if (old_container != new_container && !old_container.empty())
                     {
                       if (QUndoStack *stack = UndoManager::instance().get_stack())
@@ -674,6 +757,9 @@ void NodeAttributesWidget::setup_layout()
       { QMetaObject::invokeMethod(this, "sync_from_model", Qt::QueuedConnection); });
 
   main_layout->addWidget(this->meta_widget);
+
+  if (this->post_dock)
+    main_layout->addWidget(this->post_dock);
 }
 
 } // namespace hesiod

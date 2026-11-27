@@ -93,13 +93,9 @@ void compute_export_normal_map_node(BaseNode &node)
     hmap::flip_ud(array);
 
   if (node.val<bool>(A_16BIT))
-    hmap::export_normal_map_png(export_path.string(),
-                                p_in->to_array(node.cfg().cm_cpu),
-                                CV_16U);
+    hmap::export_normal_map_png(export_path.string(), array, CV_16U);
   else
-    hmap::export_normal_map_png(export_path.string(),
-                                p_in->to_array(node.cfg().cm_cpu),
-                                CV_8U);
+    hmap::export_normal_map_png(export_path.string(), array, CV_8U);
 }
 
 } // namespace hesiod

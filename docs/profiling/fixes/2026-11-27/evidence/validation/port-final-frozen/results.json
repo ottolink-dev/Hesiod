@@ -1,0 +1,29 @@
+[
+  {
+    "case": "valid",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/candidate-final/bin/hesiod",
+      "--check-port-links"
+    ],
+    "returncode": 0,
+    "diagnostic_behavior_passed": true
+  },
+  {
+    "case": "missing-node",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/candidate-final/bin/hesiod",
+      "--check-port-links"
+    ],
+    "returncode": 1,
+    "diagnostic_behavior_passed": true
+  },
+  {
+    "case": "missing-port",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/candidate-final/bin/hesiod",
+      "--check-port-links"
+    ],
+    "returncode": 1,
+    "diagnostic_behavior_passed": true
+  }
+]

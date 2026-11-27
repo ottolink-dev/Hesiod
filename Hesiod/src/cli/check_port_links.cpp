@@ -109,6 +109,17 @@ void sweep_all_node_types(const PortCatalog &catalog)
       continue;
     }
 
+    const bool documented = catalog.find(node_type) != nullptr;
+    if (!documented)
+    {
+      // The menu deliberately fails open for undocumented types. That is not
+      // evidence that every port type exists: report the missing metadata once
+      // and still exercise the live selection safety/oracle below.
+      Logger::log()->error("check-port-links: missing port documentation for '{}'",
+                           node_type);
+      failures++;
+    }
+
     for (const std::string &data_type : data_types)
       for (gnode::PortType wanted : {gnode::PortType::IN, gnode::PortType::OUT})
       {
@@ -118,7 +129,7 @@ void sweep_all_node_types(const PortCatalog &catalog)
                                                                         wanted);
 
         // Agreement: catalog and live node must say the same thing.
-        if (offered != selected.has_value())
+        if (documented && offered != selected.has_value())
         {
           Logger::log()->error(
               "check-port-links: {} [{}, want {}]: catalog offered={} but live "
@@ -201,6 +212,7 @@ void sweep_all_node_types(const PortCatalog &catalog)
 int run_check_port_links()
 {
   failures = 0;
+  conventional_rule_changed_outcome = 0;
 
   const PortCatalog catalog = PortCatalog::from_documentation();
   Logger::log()->info("check-port-links: catalog has {} node types", catalog.size());
@@ -233,6 +245,22 @@ int run_check_port_links()
 
   // Unknown node type fails OPEN (never hide a real node if docs drift).
   expect_offerable(catalog, "NoSuchNodeType", "VirtualArray", gnode::PortType::IN, true);
+
+  // Recently added scene/instance ports must stay visible in typed menus.
+  for (const std::string node_type : {"ExportScene", "Preview"})
+  {
+    expect_offerable(catalog, node_type, "Forest", gnode::PortType::IN, true);
+    expect_offerable(catalog, node_type, "RockField", gnode::PortType::IN, true);
+  }
+  for (const std::string node_type : {"ForestProcess", "RocksProcess"})
+    expect_offerable(catalog, node_type, "VirtualArray", gnode::PortType::OUT, true);
+
+  // Boundary metadata describes the initial VirtualArray configuration. The
+  // live selector remains authoritative after the user changes the port type.
+  expect_offerable(catalog, "NodeIn", "VirtualArray", gnode::PortType::OUT, true);
+  expect_offerable(catalog, "NodeIn", "VirtualArray", gnode::PortType::IN, false);
+  expect_offerable(catalog, "NodeOut", "VirtualArray", gnode::PortType::IN, true);
+  expect_offerable(catalog, "NodeOut", "VirtualArray", gnode::PortType::OUT, false);
 
   // --- pinned port-selection cases (live node, true declaration order)
 

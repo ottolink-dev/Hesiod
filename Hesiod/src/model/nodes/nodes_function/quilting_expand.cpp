@@ -63,19 +63,17 @@ void compute_quilting_expand_node(BaseNode &node)
     // --- work on a single array (i.e. not-tiled algo)
 
     hmap::Array in_array  = p_in->to_array(node.cfg().cm_cpu);
-    hmap::Array out_array = hmap::Array(p_out->shape);
-
-    out_array = hmap::quilting_expand(in_array,
-                                      node.val<float>(A_EXPANSION_RATIO),
-                                      patch_base_shape,
-                                      node.val<float>(A_OVERLAP),
-                                      node.val<int>(A_SEED),
-                                      {},   // no secondary arrays
-                                      true, // keep_input_shape
-                                      node.val<bool>(A_PATCH_FLIP),
-                                      node.val<bool>(A_PATCH_ROTATE),
-                                      node.val<bool>(A_PATCH_TRANSPOSE),
-                                      node.val<float>(A_FILTER_WIDTH_RATIO));
+    hmap::Array out_array = hmap::quilting_expand(in_array,
+                                                  node.val<float>(A_EXPANSION_RATIO),
+                                                  patch_base_shape,
+                                                  node.val<float>(A_OVERLAP),
+                                                  node.val<int>(A_SEED),
+                                                  {},   // no secondary arrays
+                                                  true, // keep_input_shape
+                                                  node.val<bool>(A_PATCH_FLIP),
+                                                  node.val<bool>(A_PATCH_ROTATE),
+                                                  node.val<bool>(A_PATCH_TRANSPOSE),
+                                                  node.val<float>(A_FILTER_WIDTH_RATIO));
 
     p_out->from_array(out_array, node.cfg().cm_cpu);
   }

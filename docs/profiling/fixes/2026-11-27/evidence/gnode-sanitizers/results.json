@@ -1,0 +1,29 @@
+{
+  "environment_overrides": {
+    "ASAN_OPTIONS": "detect_leaks=0:halt_on_error=1:abort_on_error=1:detect_stack_use_after_return=1:fast_unwind_on_malloc=0",
+    "UBSAN_OPTIONS": "print_stacktrace=1:halt_on_error=1",
+    "OMP_NUM_THREADS": "1"
+  },
+  "runs": [
+    {
+      "name": "full",
+      "command": [
+        "build/gnode-sanitizers/bin/gnode_unit_tests",
+        "--gtest_output=xml:output/fixes/gnode-sanitizers/full.xml"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 10.586609601974487
+    },
+    {
+      "name": "lifecycle-repeat",
+      "command": [
+        "build/gnode-sanitizers/bin/gnode_unit_tests",
+        "--gtest_filter=ParallelGraphUpdate.GraphWorker*:ParallelGraphUpdate.PostedCallbacksAreDiscardedAfterDestruction:ParallelGraphUpdate.DestructionWaitsForRunningPostedCallback",
+        "--gtest_repeat=100",
+        "--gtest_break_on_failure"
+      ],
+      "exit": 0,
+      "elapsed_seconds": 22.726781129837036
+    }
+  ]
+}

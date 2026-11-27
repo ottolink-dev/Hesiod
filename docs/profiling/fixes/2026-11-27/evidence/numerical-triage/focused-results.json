@@ -1,0 +1,223 @@
+{
+  "tests": 19,
+  "failures": 0,
+  "disabled": 0,
+  "errors": 0,
+  "timestamp": "2026-11-27T12:57:36Z",
+  "time": "0s",
+  "name": "AllTests",
+  "testsuites": [
+    {
+      "name": "MatchHistogram",
+      "tests": 11,
+      "failures": 0,
+      "disabled": 0,
+      "errors": 0,
+      "timestamp": "2026-11-27T12:57:36Z",
+      "time": "0s",
+      "testsuite": [
+        {
+          "name": "Identity",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/HighMap\/tests\/src\/test_math_histogram.cpp",
+          "line": 10,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:57:36Z",
+          "time": "0s",
+          "classname": "MatchHistogram"
+        },
+        {
+          "name": "ConstantReference",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/HighMap\/tests\/src\/test_math_histogram.cpp",
+          "line": 26,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:57:36Z",
+          "time": "0s",
+          "classname": "MatchHistogram"
+        },
+        {
+          "name": "SortedRanks",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/HighMap\/tests\/src\/test_math_histogram.cpp",
+          "line": 49,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:57:36Z",
+          "time": "0s",
+          "classname": "MatchHistogram"
+        },
+        {
+          "name": "ReverseOrdering",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/HighMap\/tests\/src\/test_math_histogram.cpp",
+          "line": 72,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:57:36Z",
+          "time": "0s",
+          "classname": "MatchHistogram"
+        },
+        {
+          "name": "Interpolation",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/HighMap\/tests\/src\/test_math_histogram.cpp",
+          "line": 95,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:57:36Z",
+          "time": "0s",
+          "classname": "MatchHistogram"
+        },
+        {
+          "name": "RandomMonotonicity",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/HighMap\/tests\/src\/test_math_histogram.cpp",
+          "line": 115,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:57:36Z",
+          "time": "0s",
+          "classname": "MatchHistogram"
+        },
+        {
+          "name": "SingleValueInput",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/HighMap\/tests\/src\/test_math_histogram.cpp",
+          "line": 129,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:57:36Z",
+          "time": "0s",
+          "classname": "MatchHistogram"
+        },
+        {
+          "name": "SingleInputUsesOddReferenceMedian",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/HighMap\/tests\/src\/test_math_histogram.cpp",
+          "line": 149,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:57:36Z",
+          "time": "0s",
+          "classname": "MatchHistogram"
+        },
+        {
+          "name": "SingleInputInterpolatesEvenReferenceMedian",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/HighMap\/tests\/src\/test_math_histogram.cpp",
+          "line": 157,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:57:36Z",
+          "time": "0s",
+          "classname": "MatchHistogram"
+        },
+        {
+          "name": "SingleReferenceMapsEveryInput",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/HighMap\/tests\/src\/test_math_histogram.cpp",
+          "line": 165,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:57:36Z",
+          "time": "0s",
+          "classname": "MatchHistogram"
+        },
+        {
+          "name": "EmptyInputAndReferenceAreNoOps",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/HighMap\/tests\/src\/test_math_histogram.cpp",
+          "line": 174,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:57:36Z",
+          "time": "0s",
+          "classname": "MatchHistogram"
+        }
+      ]
+    },
+    {
+      "name": "RemoveEndpoints",
+      "tests": 8,
+      "failures": 0,
+      "disabled": 0,
+      "errors": 0,
+      "timestamp": "2026-11-27T12:57:36Z",
+      "time": "0s",
+      "testsuite": [
+        {
+          "name": "SingleEndpoint",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/HighMap\/tests\/src\/test_remove_endpoints.cpp",
+          "line": 8,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:57:36Z",
+          "time": "0s",
+          "classname": "RemoveEndpoints"
+        },
+        {
+          "name": "TwoIterations",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/HighMap\/tests\/src\/test_remove_endpoints.cpp",
+          "line": 30,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:57:36Z",
+          "time": "0s",
+          "classname": "RemoveEndpoints"
+        },
+        {
+          "name": "TwoIterationsPreserveOddLengthCenter",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/HighMap\/tests\/src\/test_remove_endpoints.cpp",
+          "line": 51,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:57:36Z",
+          "time": "0s",
+          "classname": "RemoveEndpoints"
+        },
+        {
+          "name": "RemoveLonelyPixel",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/HighMap\/tests\/src\/test_remove_endpoints.cpp",
+          "line": 73,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:57:36Z",
+          "time": "0s",
+          "classname": "RemoveEndpoints"
+        },
+        {
+          "name": "KeepBranch",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/HighMap\/tests\/src\/test_remove_endpoints.cpp",
+          "line": 93,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:57:36Z",
+          "time": "0s",
+          "classname": "RemoveEndpoints"
+        },
+        {
+          "name": "CustomBackground",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/HighMap\/tests\/src\/test_remove_endpoints.cpp",
+          "line": 107,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:57:36Z",
+          "time": "0s",
+          "classname": "RemoveEndpoints"
+        },
+        {
+          "name": "ZeroIterations",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/HighMap\/tests\/src\/test_remove_endpoints.cpp",
+          "line": 127,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:57:36Z",
+          "time": "0s",
+          "classname": "RemoveEndpoints"
+        },
+        {
+          "name": "DiagonalConnectivity",
+          "file": "\/home\/barrulus\/dev\/Hesiod-783\/external\/HighMap\/tests\/src\/test_remove_endpoints.cpp",
+          "line": 140,
+          "status": "RUN",
+          "result": "COMPLETED",
+          "timestamp": "2026-11-27T12:57:36Z",
+          "time": "0s",
+          "classname": "RemoveEndpoints"
+        }
+      ]
+    }
+  ]
+}

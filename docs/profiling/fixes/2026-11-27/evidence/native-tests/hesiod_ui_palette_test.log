@@ -1,0 +1,229 @@
+  ok   the executable directory resolves consistently before QApplication
+
+[interface scale: validation]
+  ok   an in-range factor is kept
+  ok   NaN falls back to 1.00
+  ok   infinity falls back to 1.00
+  ok   negative infinity falls back to 1.00
+  ok   a too-large factor clamps to the maximum and is reported as corrected
+  ok   a too-small factor clamps to the minimum
+  ok   a negative factor clamps up
+  ok   zero clamps up
+  ok   sanitize is idempotent for 0.500000
+  ok   sanitize is idempotent for 0.830000
+  ok   sanitize is idempotent for 1.000000
+  ok   sanitize is idempotent for 1.250000
+  ok   sanitize is idempotent for 2.400000
+  ok   sanitize is idempotent for 3.000000
+
+[interface scale: repeated changes and reset]
+  ok   setting 1.250000 reads back unchanged
+  ok   setting 1.500000 reads back unchanged
+  ok   setting 0.750000 reads back unchanged
+  ok   setting 2.000000 reads back unchanged
+  ok   setting 2.000000 reads back unchanged
+  ok   setting 1.000000 reads back unchanged
+  ok   reset to 1.00 after five changes lands exactly on 1.00
+  ok   the factor does not depend on the previous value
+
+[interface scale: malformed persisted values]
+  ok   a missing config gives 1.00
+  ok   an empty path gives 1.00
+  ok   a truncated config gives 1.00 instead of throwing
+  ok   a config without app_settings gives 1.00
+  ok   a config without the key gives 1.00
+  ok   a string factor gives 1.00
+  ok   a null factor gives 1.00
+  ok   an object factor gives 1.00
+[hesiod] [12:46:44] [---W---] ui_scale: persisted interface scale 1000000000.0 is out of the supported [0.5, 3] range, using 3
+  ok   an absurd factor clamps to the maximum rather than making the app unusable
+[hesiod] [12:46:44] [---W---] ui_scale: persisted interface scale -2 is out of the supported [0.5, 3] range, using 0.5
+  ok   a negative factor clamps to the minimum
+  ok   a good factor still reads back
+
+[interface scale: environment override]
+[hesiod] [12:46:44] [---I---] ui_scale: interface scale 1.5 applied via QT_SCALE_FACTOR
+  ok   with nothing in the environment there is no override
+  ok   the preference is both configured and effective
+  ok   QT_SCALE_FACTOR is set from the preference
+  ok   session_scale reports the applied factor
+[hesiod] [12:46:44] [---I---] ui_scale: QT_SCALE_FACTOR=2.5 is set in the environment; the interface scale setting (1.25) is not applied, the process runs at 2.5
+  ok   an existing QT_SCALE_FACTOR is flagged as an override
+  ok   the external value is preserved, not overwritten
+  ok   the preference is still reported separately
+  ok   the effective factor is the environment's
+  ok   session_scale no longer claims the preference is active
+  ok   the override is visible to the settings dialog
+[hesiod] [12:46:44] [---I---] ui_scale: QT_SCALE_FACTOR=not-a-number is set in the environment; the interface scale setting (2) is not applied, the process runs at 1
+  ok   an unparseable override is still an override
+  ok   an unparseable override means the process runs at 1.00
+  ok   an unparseable override is still left alone
+[hesiod] [12:46:44] [---I---] ui_scale: QT_SCALE_FACTOR=0 is set in the environment; the interface scale setting (2) is not applied, the process runs at 1
+  ok   a zero override means 1.00
+[hesiod] [12:46:44] [---I---] ui_scale: QT_SCALE_FACTOR=-1 is set in the environment; the interface scale setting (2) is not applied, the process runs at 1
+  ok   a negative override means 1.00
+[hesiod] [12:46:44] [---I---] ui_scale: QT_SCALE_FACTOR=5 is set in the environment; the interface scale setting (1) is not applied, the process runs at 5
+  ok   an override beyond our supported range is reported as-is, not clamped
+  ok   and is not rewritten into our range
+[hesiod] [12:46:44] [---I---] ui_scale: interface scale 0.5 applied via QT_SCALE_FACTOR
+  ok   a fractional scale reaches Qt unchanged
+  ok   the factor is never written in exponent form
+  ok   the factor never carries a locale decimal comma
+[hesiod] [12:46:44] [---I---] ui_scale: interface scale 0.75 applied via QT_SCALE_FACTOR
+  ok   a fractional scale reaches Qt unchanged
+  ok   the factor is never written in exponent form
+  ok   the factor never carries a locale decimal comma
+[hesiod] [12:46:44] [---I---] ui_scale: interface scale 0.9 applied via QT_SCALE_FACTOR
+  ok   a fractional scale reaches Qt unchanged
+  ok   the factor is never written in exponent form
+  ok   the factor never carries a locale decimal comma
+[hesiod] [12:46:44] [---I---] ui_scale: interface scale 1.05 applied via QT_SCALE_FACTOR
+  ok   a fractional scale reaches Qt unchanged
+  ok   the factor is never written in exponent form
+  ok   the factor never carries a locale decimal comma
+[hesiod] [12:46:44] [---I---] ui_scale: interface scale 1.25 applied via QT_SCALE_FACTOR
+  ok   a fractional scale reaches Qt unchanged
+  ok   the factor is never written in exponent form
+  ok   the factor never carries a locale decimal comma
+[hesiod] [12:46:44] [---I---] ui_scale: interface scale 2.5 applied via QT_SCALE_FACTOR
+  ok   a fractional scale reaches Qt unchanged
+  ok   the factor is never written in exponent form
+  ok   the factor never carries a locale decimal comma
+[hesiod] [12:46:44] [---I---] ui_scale: interface scale 3 applied via QT_SCALE_FACTOR
+  ok   a fractional scale reaches Qt unchanged
+  ok   the factor is never written in exponent form
+  ok   the factor never carries a locale decimal comma
+
+[interface scale: executable path]
+  ok   the executable directory resolves without argv[0]
+  ok   it names a directory that exists
+  ok   it matches what Qt reports once the application exists
+  ok   a bare argv[0] does not move the resolved directory
+  ok   a relative argv[0] does not move it either
+  ok   the resolved config path names hesiod.json
+
+[settings dialog: scrolling and screen cap]
+  ok   the content is inside a scroll area
+  ok   the scroll area resizes its widget to the viewport, so rows reflow
+  ok   the settings pane is the scrolled widget
+  ok   the dialog has a button box
+  ok   OK sits outside the scroll area, so it cannot scroll out of reach
+  ok   the OK button exists
+  ok   the stub content really is taller than the test screen
+  ok   the dialog is not taller than the screen
+  ok   the dialog is not wider than the screen
+  ok   the whole dialog sits inside the screen rectangle
+  ok   the content scrolls rather than being clipped
+  ok   the last row can be scrolled to
+  ok   OK is visible
+  ok   OK stays inside the dialog no matter how far the content is scrolled
+  ok   a pane wider than the screen does not widen the dialog past it
+  ok   a pane wider than the screen can be scrolled sideways
+  ok   OK is still reachable with horizontal overflow
+  ok   on this process's real screen the dialog is not taller than it
+  ok   and not wider than it
+  ok   OK is on screen at this process's interface scale
+
+[windows: fractional-scale child redraws]
+  ok   the unfiltered child update exercises a partial paint
+  ok   a child update reaches the window backing store
+  ok   integer-DPR windows retain partial child updates
+  ok   the window does not repaint while idle
+
+[menus: fractional-scale redraws]
+  ok   changing the highlighted menu item repaints
+  ok   a small dirty region repaints
+  ok   the popup does not repaint while idle
+
+[sidebar: categories and node coverage]
+  ok   one rail button per top-level category
+  ok   every rail button names a real category
+  ok   every node in the inventory is reachable from the rail
+  ok   no node type is missing from the flyouts
+  ok   the flyout menus contain exactly the inventory's nodes
+  ok   the Erosion category exists
+  ok   Erosion has one submenu per subcategory
+  ok   a node two levels deep is present in the flyout tree
+  ok   an uncoloured category still gets a rail button
+  ok   an uncoloured category still lists its nodes
+  ok   a node on a category root is a direct flyout entry
+
+[sidebar: node creation]
+  ok   the Thermal action exists
+  ok   erosion category is open
+  ok   erosion button is open before selection
+  ok   triggering a flyout entry requests one node
+  ok   the requested node type is the one that was picked
+  ok   selecting a node closes the flyout
+  ok   selecting a node unmarks the rail button as open
+  ok   a nested entry requests a node too
+
+[sidebar: search]
+  ok   the rail has a search field
+  ok   the search field is backed by a completer
+  ok   search matches anywhere in the entry, not just as a prefix
+  ok   search is case insensitive
+  ok   searching a node name finds it
+  ok   searching a category finds every node in it
+  ok   a nonsense query finds nothing
+  ok   Enter on an exact node name creates it
+  ok   the field clears after creating a node
+
+[sidebar: flyout geometry at scale]
+  ok   the flyout opened
+  ok   the rail knows which flyout is open
+  ok   the open category is marked on the rail
+  ok   the flyout stays inside the available screen area
+  ok   the flyout is never taller than the screen (it scrolls instead)
+  ok   closing the flyout hides it
+  ok   the rail forgets the closed flyout
+  ok   the rail button returns to its resting state
+  ok   the category rail lives in a scroll area
+  ok   categories that do not fit can be scrolled to
+
+[sidebar: animations]
+  ok   a resting button uses the surface
+  ok   with animations on the hover colour is faded into, not jumped to
+  ok   disabling animations lands on the hover colour at once
+  ok   with animations off, leaving settles immediately too
+  ok   and entering settles immediately too
+
+[sidebar: hover quick leave]
+  ok   button starts at base surface
+  ok   HoverEnter transitions button to hover surface
+  ok   HoverLeave immediately reverses highlight to base surface
+  ok   EnterEvent transitions button to hover surface
+  ok   LeaveEvent reverses highlight to base surface
+  ok   category 0 is open
+  ok   open button has selected surface
+  ok   category 0 is closed
+  ok   closing flyout returns button to resting surface when not hovered
+  ok   animated button starts at base surface
+  ok   instant enter and leave with animations on settles on base surface, not hover surface
+  ok   partway enter and leave with animations on settles back to base surface
+
+[sidebar: live restyle]
+  ok   a settings change reaches a sidebar that is already open
+  ok   the rail buttons repaint with the new surface
+  ok   spacing and sizing follow the new style
+  ok   repeated restyles converge instead of compounding
+
+[real Qt DPI in this process]
+  ..   QT_SCALE_FACTOR='' devicePixelRatio 1 available logical geometry 800x800
+  ok   the screen reports a usable device pixel ratio
+  ok   a rail button's logical height is the style's, whatever the scale
+  ok   the style itself was not rewritten by being applied
+  ok   nor was the flyout row height
+  ok   every category flyout opens inside the available screen area
+  ok   no flyout is taller than the screen
+  ..   1 of 10 flyouts wanted more height than the screen has
+  ok   the 160-node category really does overflow the screen, so the clamp above was exercised rather than trivially true
+
+[sidebar: rendered references]
+  ok   rendered ui-palette-rail-dpr1_00.png
+  ..   flyout logical size 157x100
+  ok   rendered ui-palette-flyout
+  ok   rendered ui-palette-flyout-nodes
+  ok   rendered ui-settings-dialog
+
+ALL PASSED: 0 failing check(s)

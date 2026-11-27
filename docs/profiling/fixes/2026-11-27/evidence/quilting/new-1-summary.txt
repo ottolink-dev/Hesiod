@@ -1,0 +1,982 @@
+reading file "/home/barrulus/dev/Hesiod-783/output/fixes/quilting/new-1.zst" - please wait, this might take some time...
+Debuggee command was: /home/barrulus/dev/Hesiod-783/output/fixes/quilting/new /home/barrulus/dev/Hesiod-783/output/fixes/quilting/new-1.bin 1
+finished reading file, now analyzing data:
+
+MOST CALLS TO ALLOCATION FUNCTIONS
+1674 calls to allocation functions with 0B peak consumption from
+google::protobuf::internal::ArenaStringPtr::MutableNoCopy[abi:cxx11](google::protobuf::Arena*)
+  in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+1078 calls with 0B peak consumption from:
+    google::protobuf::internal::TcParser::FastBS1(google::protobuf::MessageLite*, char const*, google::protobuf::internal::ParseContext*, google::protobuf::internal::TcFieldData, google::protobuf::internal::TcParseTableBase const*, unsigned long)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    google::protobuf::internal::TcParser::FastMtR1(google::protobuf::MessageLite*, char const*, google::protobuf::internal::ParseContext*, google::protobuf::internal::TcFieldData, google::protobuf::internal::TcParseTableBase const*, unsigned long)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    google::protobuf::internal::TcParser::FastMtR1(google::protobuf::MessageLite*, char const*, google::protobuf::internal::ParseContext*, google::protobuf::internal::TcFieldData, google::protobuf::internal::TcParseTableBase const*, unsigned long)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    bool google::protobuf::internal::MergeFromImpl<>(std::basic_string_view<>, google::protobuf::MessageLite*, google::protobuf::internal::TcParseTableBase const*, google::protobuf::MessageLite::ParseFlags)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    google::protobuf::EncodedDescriptorDatabase::Add(void const*, int)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    google::protobuf::DescriptorPool::InternalAddGeneratedFile(void const*, int)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    google::protobuf::internal::AddDescriptors(google::protobuf::internal::DescriptorTable const*)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    call_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_start_user
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+172 calls with 0B peak consumption from:
+    google::protobuf::internal::TcParser::FastBS1(google::protobuf::MessageLite*, char const*, google::protobuf::internal::ParseContext*, google::protobuf::internal::TcFieldData, google::protobuf::internal::TcParseTableBase const*, unsigned long)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    google::protobuf::internal::TcParser::FastMtR1(google::protobuf::MessageLite*, char const*, google::protobuf::internal::ParseContext*, google::protobuf::internal::TcFieldData, google::protobuf::internal::TcParseTableBase const*, unsigned long)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    google::protobuf::internal::TcParser::FastMtR1(google::protobuf::MessageLite*, char const*, google::protobuf::internal::ParseContext*, google::protobuf::internal::TcFieldData, google::protobuf::internal::TcParseTableBase const*, unsigned long)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    google::protobuf::internal::TcParser::FastMtR1(google::protobuf::MessageLite*, char const*, google::protobuf::internal::ParseContext*, google::protobuf::internal::TcFieldData, google::protobuf::internal::TcParseTableBase const*, unsigned long)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    bool google::protobuf::internal::MergeFromImpl<>(std::basic_string_view<>, google::protobuf::MessageLite*, google::protobuf::internal::TcParseTableBase const*, google::protobuf::MessageLite::ParseFlags)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    google::protobuf::EncodedDescriptorDatabase::Add(void const*, int)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    google::protobuf::DescriptorPool::InternalAddGeneratedFile(void const*, int)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    google::protobuf::internal::AddDescriptors(google::protobuf::internal::DescriptorTable const*)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    call_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_start_user
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+112 calls with 0B peak consumption from:
+    google::protobuf::internal::TcParser::FastBS1(google::protobuf::MessageLite*, char const*, google::protobuf::internal::ParseContext*, google::protobuf::internal::TcFieldData, google::protobuf::internal::TcParseTableBase const*, unsigned long)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    google::protobuf::internal::TcParser::FastMtR1(google::protobuf::MessageLite*, char const*, google::protobuf::internal::ParseContext*, google::protobuf::internal::TcFieldData, google::protobuf::internal::TcParseTableBase const*, unsigned long)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    bool google::protobuf::internal::MergeFromImpl<>(std::basic_string_view<>, google::protobuf::MessageLite*, google::protobuf::internal::TcParseTableBase const*, google::protobuf::MessageLite::ParseFlags)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    google::protobuf::EncodedDescriptorDatabase::Add(void const*, int)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    google::protobuf::DescriptorPool::InternalAddGeneratedFile(void const*, int)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    google::protobuf::internal::AddDescriptors(google::protobuf::internal::DescriptorTable const*)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    call_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_start_user
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+86 calls with 0B peak consumption from:
+    google::protobuf::internal::TcParser::FastBS1(google::protobuf::MessageLite*, char const*, google::protobuf::internal::ParseContext*, google::protobuf::internal::TcFieldData, google::protobuf::internal::TcParseTableBase const*, unsigned long)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    google::protobuf::internal::TcParser::FastMtR1(google::protobuf::MessageLite*, char const*, google::protobuf::internal::ParseContext*, google::protobuf::internal::TcFieldData, google::protobuf::internal::TcParseTableBase const*, unsigned long)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    google::protobuf::internal::TcParser::FastMtR1(google::protobuf::MessageLite*, char const*, google::protobuf::internal::ParseContext*, google::protobuf::internal::TcFieldData, google::protobuf::internal::TcParseTableBase const*, unsigned long)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    bool google::protobuf::internal::MergeFromImpl<>(std::basic_string_view<>, google::protobuf::MessageLite*, google::protobuf::internal::TcParseTableBase const*, google::protobuf::MessageLite::ParseFlags)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    google::protobuf::EncodedDescriptorDatabase::Add(void const*, int)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    google::protobuf::DescriptorPool::InternalAddGeneratedFile(void const*, int)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    google::protobuf::internal::AddDescriptors(google::protobuf::internal::DescriptorTable const*)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    google::protobuf::internal::AddDescriptors(google::protobuf::internal::DescriptorTable const*)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    call_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_start_user
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+43 calls with 0B peak consumption from:
+    google::protobuf::internal::TcParser::FastBS1(google::protobuf::MessageLite*, char const*, google::protobuf::internal::ParseContext*, google::protobuf::internal::TcFieldData, google::protobuf::internal::TcParseTableBase const*, unsigned long)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    google::protobuf::internal::TcParser::FastMtR1(google::protobuf::MessageLite*, char const*, google::protobuf::internal::ParseContext*, google::protobuf::internal::TcFieldData, google::protobuf::internal::TcParseTableBase const*, unsigned long)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    google::protobuf::internal::TcParser::FastMtR1(google::protobuf::MessageLite*, char const*, google::protobuf::internal::ParseContext*, google::protobuf::internal::TcFieldData, google::protobuf::internal::TcParseTableBase const*, unsigned long)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    bool google::protobuf::internal::MergeFromImpl<>(std::basic_string_view<>, google::protobuf::MessageLite*, google::protobuf::internal::TcParseTableBase const*, google::protobuf::MessageLite::ParseFlags)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    google::protobuf::EncodedDescriptorDatabase::Add(void const*, int)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    google::protobuf::DescriptorPool::InternalAddGeneratedFile(void const*, int)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    google::protobuf::internal::AddDescriptors(google::protobuf::internal::DescriptorTable const*)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    google::protobuf::internal::AddDescriptors(google::protobuf::internal::DescriptorTable const*)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    google::protobuf::internal::AddDescriptors(google::protobuf::internal::DescriptorTable const*)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    call_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_start_user
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+  and 183 from 15 other places
+
+1240 calls to allocation functions with 109.12K peak consumption from
+_asn1_add_static_node
+  in /nix/store/xwichq09hbc163klzdlbkmz0r8bb6sng-libtasn1-4.21.0/lib/libtasn1.so.6
+477 calls with 83.95K peak consumption from:
+    asn1_array2tree
+      in /nix/store/xwichq09hbc163klzdlbkmz0r8bb6sng-libtasn1-4.21.0/lib/libtasn1.so.6
+    _gnutls_global_init
+      in /nix/store/ig6jj8rp18mdzzjy0z1yjrnx881r5sqv-gnutls-3.8.13/lib/libgnutls.so.30
+    lib_init
+      in /nix/store/ig6jj8rp18mdzzjy0z1yjrnx881r5sqv-gnutls-3.8.13/lib/libgnutls.so.30
+    call_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_start_user
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+477 calls with 0B peak consumption from:
+    asn1_array2tree
+      in /nix/store/xwichq09hbc163klzdlbkmz0r8bb6sng-libtasn1-4.21.0/lib/libtasn1.so.6
+    _gnutls_global_init
+      in /nix/store/ig6jj8rp18mdzzjy0z1yjrnx881r5sqv-gnutls-3.8.13/lib/libgnutls.so.30
+    lib_init
+      in /nix/store/ig6jj8rp18mdzzjy0z1yjrnx881r5sqv-gnutls-3.8.13/lib/libgnutls.so.30
+    call_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_start_user
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+143 calls with 25.17K peak consumption from:
+    asn1_array2tree
+      in /nix/store/xwichq09hbc163klzdlbkmz0r8bb6sng-libtasn1-4.21.0/lib/libtasn1.so.6
+    _gnutls_global_init
+      in /nix/store/ig6jj8rp18mdzzjy0z1yjrnx881r5sqv-gnutls-3.8.13/lib/libgnutls.so.30
+    lib_init
+      in /nix/store/ig6jj8rp18mdzzjy0z1yjrnx881r5sqv-gnutls-3.8.13/lib/libgnutls.so.30
+    call_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_start_user
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+143 calls with 0B peak consumption from:
+    asn1_array2tree
+      in /nix/store/xwichq09hbc163klzdlbkmz0r8bb6sng-libtasn1-4.21.0/lib/libtasn1.so.6
+    _gnutls_global_init
+      in /nix/store/ig6jj8rp18mdzzjy0z1yjrnx881r5sqv-gnutls-3.8.13/lib/libgnutls.so.30
+    lib_init
+      in /nix/store/ig6jj8rp18mdzzjy0z1yjrnx881r5sqv-gnutls-3.8.13/lib/libgnutls.so.30
+    call_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_start_user
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+
+1106 calls to allocation functions with 0B peak consumption from
+google::protobuf::MessageLite::New(google::protobuf::Arena*) const
+  in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+435 calls with 0B peak consumption from:
+    google::protobuf::internal::TcParser::AddMessage(google::protobuf::internal::ClassData const*, google::protobuf::internal::RepeatedPtrFieldBase&, google::protobuf::Arena*)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    google::protobuf::internal::TcParser::FastMtR1(google::protobuf::MessageLite*, char const*, google::protobuf::internal::ParseContext*, google::protobuf::internal::TcFieldData, google::protobuf::internal::TcParseTableBase const*, unsigned long)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    google::protobuf::internal::TcParser::FastMtR1(google::protobuf::MessageLite*, char const*, google::protobuf::internal::ParseContext*, google::protobuf::internal::TcFieldData, google::protobuf::internal::TcParseTableBase const*, unsigned long)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    bool google::protobuf::internal::MergeFromImpl<>(std::basic_string_view<>, google::protobuf::MessageLite*, google::protobuf::internal::TcParseTableBase const*, google::protobuf::MessageLite::ParseFlags)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    google::protobuf::EncodedDescriptorDatabase::Add(void const*, int)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    google::protobuf::DescriptorPool::InternalAddGeneratedFile(void const*, int)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    google::protobuf::internal::AddDescriptors(google::protobuf::internal::DescriptorTable const*)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    call_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_start_user
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+143 calls with 0B peak consumption from:
+    google::protobuf::internal::TcParser::AddMessage(google::protobuf::internal::ClassData const*, google::protobuf::internal::RepeatedPtrFieldBase&, google::protobuf::Arena*)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    google::protobuf::internal::TcParser::FastMtR1(google::protobuf::MessageLite*, char const*, google::protobuf::internal::ParseContext*, google::protobuf::internal::TcFieldData, google::protobuf::internal::TcParseTableBase const*, unsigned long)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    google::protobuf::internal::TcParser::FastMtR1(google::protobuf::MessageLite*, char const*, google::protobuf::internal::ParseContext*, google::protobuf::internal::TcFieldData, google::protobuf::internal::TcParseTableBase const*, unsigned long)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    bool google::protobuf::internal::MergeFromImpl<>(std::basic_string_view<>, google::protobuf::MessageLite*, google::protobuf::internal::TcParseTableBase const*, google::protobuf::MessageLite::ParseFlags)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    google::protobuf::EncodedDescriptorDatabase::Add(void const*, int)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    google::protobuf::DescriptorPool::InternalAddGeneratedFile(void const*, int)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    google::protobuf::internal::AddDescriptors(google::protobuf::internal::DescriptorTable const*)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    call_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_start_user
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+91 calls with 0B peak consumption from:
+    google::protobuf::internal::TcParser::AddMessage(google::protobuf::internal::ClassData const*, google::protobuf::internal::RepeatedPtrFieldBase&, google::protobuf::Arena*)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    google::protobuf::internal::TcParser::FastMtR1(google::protobuf::MessageLite*, char const*, google::protobuf::internal::ParseContext*, google::protobuf::internal::TcFieldData, google::protobuf::internal::TcParseTableBase const*, unsigned long)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    google::protobuf::internal::TcParser::FastMtR1(google::protobuf::MessageLite*, char const*, google::protobuf::internal::ParseContext*, google::protobuf::internal::TcFieldData, google::protobuf::internal::TcParseTableBase const*, unsigned long)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    google::protobuf::internal::TcParser::FastMtR1(google::protobuf::MessageLite*, char const*, google::protobuf::internal::ParseContext*, google::protobuf::internal::TcFieldData, google::protobuf::internal::TcParseTableBase const*, unsigned long)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    bool google::protobuf::internal::MergeFromImpl<>(std::basic_string_view<>, google::protobuf::MessageLite*, google::protobuf::internal::TcParseTableBase const*, google::protobuf::MessageLite::ParseFlags)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    google::protobuf::EncodedDescriptorDatabase::Add(void const*, int)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    google::protobuf::DescriptorPool::InternalAddGeneratedFile(void const*, int)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    google::protobuf::internal::AddDescriptors(google::protobuf::internal::DescriptorTable const*)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    call_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_start_user
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+90 calls with 0B peak consumption from:
+    google::protobuf::internal::TcParser::AddMessage(google::protobuf::internal::ClassData const*, google::protobuf::internal::RepeatedPtrFieldBase&, google::protobuf::Arena*)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    google::protobuf::internal::TcParser::FastMtR1(google::protobuf::MessageLite*, char const*, google::protobuf::internal::ParseContext*, google::protobuf::internal::TcFieldData, google::protobuf::internal::TcParseTableBase const*, unsigned long)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    google::protobuf::internal::TcParser::FastMtR1(google::protobuf::MessageLite*, char const*, google::protobuf::internal::ParseContext*, google::protobuf::internal::TcFieldData, google::protobuf::internal::TcParseTableBase const*, unsigned long)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    bool google::protobuf::internal::MergeFromImpl<>(std::basic_string_view<>, google::protobuf::MessageLite*, google::protobuf::internal::TcParseTableBase const*, google::protobuf::MessageLite::ParseFlags)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    google::protobuf::EncodedDescriptorDatabase::Add(void const*, int)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    google::protobuf::DescriptorPool::InternalAddGeneratedFile(void const*, int)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    google::protobuf::internal::AddDescriptors(google::protobuf::internal::DescriptorTable const*)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    call_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_start_user
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+87 calls with 0B peak consumption from:
+    google::protobuf::internal::TcParser::AddMessage(google::protobuf::internal::ClassData const*, google::protobuf::internal::RepeatedPtrFieldBase&, google::protobuf::Arena*)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    google::protobuf::internal::TcParser::FastMtR1(google::protobuf::MessageLite*, char const*, google::protobuf::internal::ParseContext*, google::protobuf::internal::TcFieldData, google::protobuf::internal::TcParseTableBase const*, unsigned long)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    bool google::protobuf::internal::MergeFromImpl<>(std::basic_string_view<>, google::protobuf::MessageLite*, google::protobuf::internal::TcParseTableBase const*, google::protobuf::MessageLite::ParseFlags)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    google::protobuf::EncodedDescriptorDatabase::Add(void const*, int)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    google::protobuf::DescriptorPool::InternalAddGeneratedFile(void const*, int)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    google::protobuf::internal::AddDescriptors(google::protobuf::internal::DescriptorTable const*)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    call_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_start_user
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+  and 260 from 21 other places
+
+674 calls to allocation functions with 11.20K peak consumption from
+zxing::qrcode::Version::buildVersions()
+  in /nix/store/a73vc11j945pphw69vlv9nbi2d2c0hbj-opencv-4.13.0/lib/libopencv_wechat_qrcode.so.413
+1 calls with 0B peak consumption from:
+    _GLOBAL__sub_I_version.cpp
+      in /nix/store/a73vc11j945pphw69vlv9nbi2d2c0hbj-opencv-4.13.0/lib/libopencv_wechat_qrcode.so.413
+    call_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_start_user
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+1 calls with 8B peak consumption from:
+    _GLOBAL__sub_I_version.cpp
+      in /nix/store/a73vc11j945pphw69vlv9nbi2d2c0hbj-opencv-4.13.0/lib/libopencv_wechat_qrcode.so.413
+    call_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_start_user
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+1 calls with 8B peak consumption from:
+    _GLOBAL__sub_I_version.cpp
+      in /nix/store/a73vc11j945pphw69vlv9nbi2d2c0hbj-opencv-4.13.0/lib/libopencv_wechat_qrcode.so.413
+    call_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_start_user
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+1 calls with 0B peak consumption from:
+    _GLOBAL__sub_I_version.cpp
+      in /nix/store/a73vc11j945pphw69vlv9nbi2d2c0hbj-opencv-4.13.0/lib/libopencv_wechat_qrcode.so.413
+    call_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_start_user
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+1 calls with 32B peak consumption from:
+    _GLOBAL__sub_I_version.cpp
+      in /nix/store/a73vc11j945pphw69vlv9nbi2d2c0hbj-opencv-4.13.0/lib/libopencv_wechat_qrcode.so.413
+    call_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_start_user
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+  and 669 from 669 other places
+
+598 calls to allocation functions with 43.06K peak consumption from
+std::__new_allocator<>::allocate(unsigned long, void const*)
+  at /nix/store/rp1zq1p0rjfdg99rb2cfs14871y6cqaj-gcc-16.2.0/include/c++/16.2.0/bits/new_allocator.h:162
+  in /home/barrulus/dev/Hesiod-783/output/fixes/quilting/new
+std::allocator<>::allocate(unsigned long)
+  at /nix/store/rp1zq1p0rjfdg99rb2cfs14871y6cqaj-gcc-16.2.0/include/c++/16.2.0/bits/allocator.h:206
+std::allocator_traits<>::allocate(std::allocator<>&, unsigned long)
+  at /nix/store/rp1zq1p0rjfdg99rb2cfs14871y6cqaj-gcc-16.2.0/include/c++/16.2.0/bits/alloc_traits.h:638
+std::_Rb_tree<>::_M_get_node()
+  at /nix/store/rp1zq1p0rjfdg99rb2cfs14871y6cqaj-gcc-16.2.0/include/c++/16.2.0/bits/stl_tree.h:1170
+std::_Rb_tree_node<>* std::_Rb_tree<>::_M_create_node<>(std::pair<> const&)
+  at /nix/store/rp1zq1p0rjfdg99rb2cfs14871y6cqaj-gcc-16.2.0/include/c++/16.2.0/bits/stl_tree.h:1253
+std::_Rb_tree_node<>* std::_Rb_tree<>::_Alloc_node::operator()<>(std::pair<> const&) const
+  at /nix/store/rp1zq1p0rjfdg99rb2cfs14871y6cqaj-gcc-16.2.0/include/c++/16.2.0/bits/stl_tree.h:1136
+std::_Rb_tree_iterator<> std::_Rb_tree<>::_M_insert_<>(std::_Rb_tree_node_base*, std::_Rb_tree_node_base*, std::pair<> const&, std::_Rb_tree<>::_Alloc_node&)
+  at /nix/store/rp1zq1p0rjfdg99rb2cfs14871y6cqaj-gcc-16.2.0/include/c++/16.2.0/bits/stl_tree.h:2522
+std::_Rb_tree_iterator<> std::_Rb_tree<>::_M_insert_unique_<>(std::_Rb_tree_const_iterator<>, std::pair<> const&, std::_Rb_tree<>::_Alloc_node&)
+  at /nix/store/rp1zq1p0rjfdg99rb2cfs14871y6cqaj-gcc-16.2.0/include/c++/16.2.0/bits/stl_tree.h:3077
+std::enable_if<>::type std::_Rb_tree<>::_M_insert_range_unique<>(std::pair<> const*, std::pair<> const*)
+  at /nix/store/rp1zq1p0rjfdg99rb2cfs14871y6cqaj-gcc-16.2.0/include/c++/16.2.0/bits/stl_tree.h:1747
+std::map<>::map(std::initializer_list<>, std::less<> const&, std::allocator<> const&)
+  at /nix/store/rp1zq1p0rjfdg99rb2cfs14871y6cqaj-gcc-16.2.0/include/c++/16.2.0/bits/stl_map.h:248
+__static_initialization_and_destruction_0
+  at /home/barrulus/dev/Hesiod-783/external/HighMap/HighMap/include/highmap/colormaps.hpp:128
+13 calls with 936B peak consumption from:
+    __libc_start_main_alias_2
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/libc.so.6
+    _start
+      in /home/barrulus/dev/Hesiod-783/output/fixes/quilting/new
+13 calls with 936B peak consumption from:
+    __libc_start_main_alias_2
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/libc.so.6
+    _start
+      in /home/barrulus/dev/Hesiod-783/output/fixes/quilting/new
+13 calls with 936B peak consumption from:
+    __libc_start_main_alias_2
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/libc.so.6
+    _start
+      in /home/barrulus/dev/Hesiod-783/output/fixes/quilting/new
+13 calls with 936B peak consumption from:
+    __libc_start_main_alias_2
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/libc.so.6
+    _start
+      in /home/barrulus/dev/Hesiod-783/output/fixes/quilting/new
+13 calls with 936B peak consumption from:
+    __libc_start_main_alias_2
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/libc.so.6
+    _start
+      in /home/barrulus/dev/Hesiod-783/output/fixes/quilting/new
+  and 533 from 41 other places
+
+
+PEAK MEMORY CONSUMERS
+223.54M peak memory consumed over 547 calls from
+std::__new_allocator<>::allocate(unsigned long, void const*)
+  at /nix/store/rp1zq1p0rjfdg99rb2cfs14871y6cqaj-gcc-16.2.0/include/c++/16.2.0/bits/new_allocator.h:162
+  in /home/barrulus/dev/Hesiod-783/output/fixes/quilting/new
+std::allocator<>::allocate(unsigned long)
+  at /nix/store/rp1zq1p0rjfdg99rb2cfs14871y6cqaj-gcc-16.2.0/include/c++/16.2.0/bits/allocator.h:206
+std::allocator_traits<>::allocate(std::allocator<>&, unsigned long)
+  at /nix/store/rp1zq1p0rjfdg99rb2cfs14871y6cqaj-gcc-16.2.0/include/c++/16.2.0/bits/alloc_traits.h:638
+std::_Vector_base<>::_M_allocate(unsigned long)
+  at /nix/store/rp1zq1p0rjfdg99rb2cfs14871y6cqaj-gcc-16.2.0/include/c++/16.2.0/bits/stl_vector.h:389
+std::vector<>::_M_default_append(unsigned long)
+  at /nix/store/rp1zq1p0rjfdg99rb2cfs14871y6cqaj-gcc-16.2.0/include/c++/16.2.0/bits/vector.tcc:857
+std::vector<>::resize(unsigned long)
+  at /nix/store/rp1zq1p0rjfdg99rb2cfs14871y6cqaj-gcc-16.2.0/include/c++/16.2.0/bits/stl_vector.h:1136
+hmap::Array::Array(glm::vec<>)
+  at /home/barrulus/dev/Hesiod-783/external/HighMap/HighMap/src/array/array.cpp:28
+114.62M consumed over 20 calls from:
+    hmap::quilting_shuffle(hmap::Array const&, glm::vec<>, float, unsigned int, std::vector<>, bool, bool, bool, float)
+      at /home/barrulus/dev/Hesiod-783/external/HighMap/HighMap/src/synthesis/quilting.cpp:398
+      in /home/barrulus/dev/Hesiod-783/output/fixes/quilting/new
+    main
+      at /home/barrulus/dev/Hesiod-783/output/fixes/quilting/compare.cpp:37
+      in /home/barrulus/dev/Hesiod-783/output/fixes/quilting/new
+83.89M consumed over 20 calls from:
+    input(glm::vec<>, int)
+      at /home/barrulus/dev/Hesiod-783/output/fixes/quilting/compare.cpp:8
+      in /home/barrulus/dev/Hesiod-783/output/fixes/quilting/new
+    main
+      at /home/barrulus/dev/Hesiod-783/output/fixes/quilting/compare.cpp:30
+      in /home/barrulus/dev/Hesiod-783/output/fixes/quilting/new
+5.73M consumed over 1 calls from:
+    hmap::quilting(std::vector<> const&, glm::vec<>, glm::vec<>, float, unsigned int, std::vector<>, bool, bool, bool, float)
+      at /home/barrulus/dev/Hesiod-783/external/HighMap/HighMap/src/synthesis/quilting.cpp:71
+      in /home/barrulus/dev/Hesiod-783/output/fixes/quilting/new
+    hmap::quilting_shuffle(hmap::Array const&, glm::vec<>, float, unsigned int, std::vector<>, bool, bool, bool, float)
+      at /home/barrulus/dev/Hesiod-783/external/HighMap/HighMap/src/synthesis/quilting.cpp:398
+      in /home/barrulus/dev/Hesiod-783/output/fixes/quilting/new
+    main
+      at /home/barrulus/dev/Hesiod-783/output/fixes/quilting/compare.cpp:37
+      in /home/barrulus/dev/Hesiod-783/output/fixes/quilting/new
+4.19M consumed over 1 calls from:
+    input(glm::vec<>, int)
+      at /home/barrulus/dev/Hesiod-783/output/fixes/quilting/compare.cpp:8
+      in /home/barrulus/dev/Hesiod-783/output/fixes/quilting/new
+    main
+      at /home/barrulus/dev/Hesiod-783/output/fixes/quilting/compare.cpp:28
+      in /home/barrulus/dev/Hesiod-783/output/fixes/quilting/new
+4.19M consumed over 1 calls from:
+    input(glm::vec<>, int)
+      at /home/barrulus/dev/Hesiod-783/output/fixes/quilting/compare.cpp:8
+      in /home/barrulus/dev/Hesiod-783/output/fixes/quilting/new
+    main
+      at /home/barrulus/dev/Hesiod-783/output/fixes/quilting/compare.cpp:28
+      in /home/barrulus/dev/Hesiod-783/output/fixes/quilting/new
+  and 10.91M from 30 other places
+
+109.12K peak memory consumed over 1240 calls from
+_asn1_add_static_node
+  in /nix/store/xwichq09hbc163klzdlbkmz0r8bb6sng-libtasn1-4.21.0/lib/libtasn1.so.6
+83.95K consumed over 477 calls from:
+    asn1_array2tree
+      in /nix/store/xwichq09hbc163klzdlbkmz0r8bb6sng-libtasn1-4.21.0/lib/libtasn1.so.6
+    _gnutls_global_init
+      in /nix/store/ig6jj8rp18mdzzjy0z1yjrnx881r5sqv-gnutls-3.8.13/lib/libgnutls.so.30
+    lib_init
+      in /nix/store/ig6jj8rp18mdzzjy0z1yjrnx881r5sqv-gnutls-3.8.13/lib/libgnutls.so.30
+    call_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_start_user
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+25.17K consumed over 143 calls from:
+    asn1_array2tree
+      in /nix/store/xwichq09hbc163klzdlbkmz0r8bb6sng-libtasn1-4.21.0/lib/libtasn1.so.6
+    _gnutls_global_init
+      in /nix/store/ig6jj8rp18mdzzjy0z1yjrnx881r5sqv-gnutls-3.8.13/lib/libgnutls.so.30
+    lib_init
+      in /nix/store/ig6jj8rp18mdzzjy0z1yjrnx881r5sqv-gnutls-3.8.13/lib/libgnutls.so.30
+    call_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_start_user
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+
+73.73K peak memory consumed over 1 calls from
+_GLOBAL__sub_I_eh_alloc.cc
+  in /nix/store/myhwfdgqm39yms5clinafii9i1nmq43h-gcc-16.2.0-lib/lib/libstdc++.so.6
+73.73K consumed over 1 calls from:
+    call_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_start_user
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+
+43.06K peak memory consumed over 598 calls from
+std::__new_allocator<>::allocate(unsigned long, void const*)
+  at /nix/store/rp1zq1p0rjfdg99rb2cfs14871y6cqaj-gcc-16.2.0/include/c++/16.2.0/bits/new_allocator.h:162
+  in /home/barrulus/dev/Hesiod-783/output/fixes/quilting/new
+std::allocator<>::allocate(unsigned long)
+  at /nix/store/rp1zq1p0rjfdg99rb2cfs14871y6cqaj-gcc-16.2.0/include/c++/16.2.0/bits/allocator.h:206
+std::allocator_traits<>::allocate(std::allocator<>&, unsigned long)
+  at /nix/store/rp1zq1p0rjfdg99rb2cfs14871y6cqaj-gcc-16.2.0/include/c++/16.2.0/bits/alloc_traits.h:638
+std::_Rb_tree<>::_M_get_node()
+  at /nix/store/rp1zq1p0rjfdg99rb2cfs14871y6cqaj-gcc-16.2.0/include/c++/16.2.0/bits/stl_tree.h:1170
+std::_Rb_tree_node<>* std::_Rb_tree<>::_M_create_node<>(std::pair<> const&)
+  at /nix/store/rp1zq1p0rjfdg99rb2cfs14871y6cqaj-gcc-16.2.0/include/c++/16.2.0/bits/stl_tree.h:1253
+std::_Rb_tree_node<>* std::_Rb_tree<>::_Alloc_node::operator()<>(std::pair<> const&) const
+  at /nix/store/rp1zq1p0rjfdg99rb2cfs14871y6cqaj-gcc-16.2.0/include/c++/16.2.0/bits/stl_tree.h:1136
+std::_Rb_tree_iterator<> std::_Rb_tree<>::_M_insert_<>(std::_Rb_tree_node_base*, std::_Rb_tree_node_base*, std::pair<> const&, std::_Rb_tree<>::_Alloc_node&)
+  at /nix/store/rp1zq1p0rjfdg99rb2cfs14871y6cqaj-gcc-16.2.0/include/c++/16.2.0/bits/stl_tree.h:2522
+std::_Rb_tree_iterator<> std::_Rb_tree<>::_M_insert_unique_<>(std::_Rb_tree_const_iterator<>, std::pair<> const&, std::_Rb_tree<>::_Alloc_node&)
+  at /nix/store/rp1zq1p0rjfdg99rb2cfs14871y6cqaj-gcc-16.2.0/include/c++/16.2.0/bits/stl_tree.h:3077
+std::enable_if<>::type std::_Rb_tree<>::_M_insert_range_unique<>(std::pair<> const*, std::pair<> const*)
+  at /nix/store/rp1zq1p0rjfdg99rb2cfs14871y6cqaj-gcc-16.2.0/include/c++/16.2.0/bits/stl_tree.h:1747
+std::map<>::map(std::initializer_list<>, std::less<> const&, std::allocator<> const&)
+  at /nix/store/rp1zq1p0rjfdg99rb2cfs14871y6cqaj-gcc-16.2.0/include/c++/16.2.0/bits/stl_map.h:248
+__static_initialization_and_destruction_0
+  at /home/barrulus/dev/Hesiod-783/external/HighMap/HighMap/include/highmap/colormaps.hpp:128
+936B consumed over 13 calls from:
+    __libc_start_main_alias_2
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/libc.so.6
+    _start
+      in /home/barrulus/dev/Hesiod-783/output/fixes/quilting/new
+936B consumed over 13 calls from:
+    __libc_start_main_alias_2
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/libc.so.6
+    _start
+      in /home/barrulus/dev/Hesiod-783/output/fixes/quilting/new
+936B consumed over 13 calls from:
+    __libc_start_main_alias_2
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/libc.so.6
+    _start
+      in /home/barrulus/dev/Hesiod-783/output/fixes/quilting/new
+936B consumed over 13 calls from:
+    __libc_start_main_alias_2
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/libc.so.6
+    _start
+      in /home/barrulus/dev/Hesiod-783/output/fixes/quilting/new
+936B consumed over 13 calls from:
+    __libc_start_main_alias_2
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/libc.so.6
+    _start
+      in /home/barrulus/dev/Hesiod-783/output/fixes/quilting/new
+  and 38.38K from 41 other places
+
+17.76K peak memory consumed over 8 calls from
+_gfortrani_xmalloc
+  in /nix/store/bjj7kcc0da6rs1c9cxdz90m1cbzk7lga-gfortran-16.2.0-lib/lib/libgfortran.so.5
+8.19K consumed over 1 calls from:
+    fd_to_stream
+      in /nix/store/bjj7kcc0da6rs1c9cxdz90m1cbzk7lga-gfortran-16.2.0-lib/lib/libgfortran.so.5
+    _gfortrani_init_units
+      in /nix/store/bjj7kcc0da6rs1c9cxdz90m1cbzk7lga-gfortran-16.2.0-lib/lib/libgfortran.so.5
+    init
+      in /nix/store/bjj7kcc0da6rs1c9cxdz90m1cbzk7lga-gfortran-16.2.0-lib/lib/libgfortran.so.5
+    call_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_start_user
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+8.19K consumed over 1 calls from:
+    fd_to_stream
+      in /nix/store/bjj7kcc0da6rs1c9cxdz90m1cbzk7lga-gfortran-16.2.0-lib/lib/libgfortran.so.5
+    _gfortrani_init_units
+      in /nix/store/bjj7kcc0da6rs1c9cxdz90m1cbzk7lga-gfortran-16.2.0-lib/lib/libgfortran.so.5
+    init
+      in /nix/store/bjj7kcc0da6rs1c9cxdz90m1cbzk7lga-gfortran-16.2.0-lib/lib/libgfortran.so.5
+    call_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_start_user
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+512B consumed over 1 calls from:
+    _gfortrani_fbuf_init
+      in /nix/store/bjj7kcc0da6rs1c9cxdz90m1cbzk7lga-gfortran-16.2.0-lib/lib/libgfortran.so.5
+    _gfortrani_init_units
+      in /nix/store/bjj7kcc0da6rs1c9cxdz90m1cbzk7lga-gfortran-16.2.0-lib/lib/libgfortran.so.5
+    init
+      in /nix/store/bjj7kcc0da6rs1c9cxdz90m1cbzk7lga-gfortran-16.2.0-lib/lib/libgfortran.so.5
+    call_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_start_user
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+512B consumed over 1 calls from:
+    _gfortrani_fbuf_init
+      in /nix/store/bjj7kcc0da6rs1c9cxdz90m1cbzk7lga-gfortran-16.2.0-lib/lib/libgfortran.so.5
+    _gfortrani_init_units
+      in /nix/store/bjj7kcc0da6rs1c9cxdz90m1cbzk7lga-gfortran-16.2.0-lib/lib/libgfortran.so.5
+    init
+      in /nix/store/bjj7kcc0da6rs1c9cxdz90m1cbzk7lga-gfortran-16.2.0-lib/lib/libgfortran.so.5
+    call_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_start_user
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+256B consumed over 1 calls from:
+    _gfortrani_fbuf_init
+      in /nix/store/bjj7kcc0da6rs1c9cxdz90m1cbzk7lga-gfortran-16.2.0-lib/lib/libgfortran.so.5
+    _gfortrani_init_units
+      in /nix/store/bjj7kcc0da6rs1c9cxdz90m1cbzk7lga-gfortran-16.2.0-lib/lib/libgfortran.so.5
+    init
+      in /nix/store/bjj7kcc0da6rs1c9cxdz90m1cbzk7lga-gfortran-16.2.0-lib/lib/libgfortran.so.5
+    call_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_start_user
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+  and 96B from 3 other places
+
+
+MOST TEMPORARY ALLOCATIONS
+235 temporary allocations of 361 allocations in total (65.10%) from
+absl::lts_20260817::StrCat[abi:cxx11](absl::lts_20260817::AlphaNum const&, absl::lts_20260817::AlphaNum const&, absl::lts_20260817::AlphaNum const&)
+  in /nix/store/2j001l3cw8ypi2xxnm2asaqsg772nc1l-abseil-cpp-20260817.0/lib/libabsl_strings.so.2608.0.0
+107 temporary allocations of 107 allocations in total (100.00%) from:
+    google::protobuf::EncodedDescriptorDatabase::DescriptorIndex::AddSymbol(std::basic_string_view<>)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    google::protobuf::EncodedDescriptorDatabase::Add(void const*, int)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    google::protobuf::DescriptorPool::InternalAddGeneratedFile(void const*, int)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    google::protobuf::internal::AddDescriptors(google::protobuf::internal::DescriptorTable const*)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    call_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_start_user
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+97 temporary allocations of 97 allocations in total (100.00%) from:
+    google::protobuf::EncodedDescriptorDatabase::DescriptorIndex::AddSymbol(std::basic_string_view<>)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    google::protobuf::EncodedDescriptorDatabase::Add(void const*, int)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    google::protobuf::DescriptorPool::InternalAddGeneratedFile(void const*, int)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    google::protobuf::internal::AddDescriptors(google::protobuf::internal::DescriptorTable const*)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    call_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_start_user
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+11 temporary allocations of 11 allocations in total (100.00%) from:
+    google::protobuf::EncodedDescriptorDatabase::DescriptorIndex::AddSymbol(std::basic_string_view<>)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    google::protobuf::EncodedDescriptorDatabase::Add(void const*, int)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    google::protobuf::DescriptorPool::InternalAddGeneratedFile(void const*, int)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    google::protobuf::internal::AddDescriptors(google::protobuf::internal::DescriptorTable const*)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    google::protobuf::internal::AddDescriptors(google::protobuf::internal::DescriptorTable const*)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    call_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_start_user
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+8 temporary allocations of 8 allocations in total (100.00%) from:
+    google::protobuf::EncodedDescriptorDatabase::DescriptorIndex::AddSymbol(std::basic_string_view<>)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    google::protobuf::EncodedDescriptorDatabase::Add(void const*, int)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    google::protobuf::DescriptorPool::InternalAddGeneratedFile(void const*, int)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    google::protobuf::internal::AddDescriptors(google::protobuf::internal::DescriptorTable const*)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    google::protobuf::internal::AddDescriptors(google::protobuf::internal::DescriptorTable const*)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    call_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_start_user
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+4 temporary allocations of 4 allocations in total (100.00%) from:
+    google::protobuf::EncodedDescriptorDatabase::DescriptorIndex::AddSymbol(std::basic_string_view<>)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    google::protobuf::EncodedDescriptorDatabase::Add(void const*, int)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    google::protobuf::DescriptorPool::InternalAddGeneratedFile(void const*, int)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    google::protobuf::internal::AddDescriptors(google::protobuf::internal::DescriptorTable const*)
+      in /nix/store/a6ydzdxz1678c5vdsfkddkfx7kqhymx4-protobuf-36.2-lib/lib/libprotobuf.so.36.2.0
+    call_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_start_user
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+  and 8B from 12 other places
+
+167 temporary allocations of 547 allocations in total (30.53%) from
+std::__new_allocator<>::allocate(unsigned long, void const*)
+  at /nix/store/rp1zq1p0rjfdg99rb2cfs14871y6cqaj-gcc-16.2.0/include/c++/16.2.0/bits/new_allocator.h:162
+  in /home/barrulus/dev/Hesiod-783/output/fixes/quilting/new
+std::allocator<>::allocate(unsigned long)
+  at /nix/store/rp1zq1p0rjfdg99rb2cfs14871y6cqaj-gcc-16.2.0/include/c++/16.2.0/bits/allocator.h:206
+std::allocator_traits<>::allocate(std::allocator<>&, unsigned long)
+  at /nix/store/rp1zq1p0rjfdg99rb2cfs14871y6cqaj-gcc-16.2.0/include/c++/16.2.0/bits/alloc_traits.h:638
+std::_Vector_base<>::_M_allocate(unsigned long)
+  at /nix/store/rp1zq1p0rjfdg99rb2cfs14871y6cqaj-gcc-16.2.0/include/c++/16.2.0/bits/stl_vector.h:389
+std::vector<>::_M_default_append(unsigned long)
+  at /nix/store/rp1zq1p0rjfdg99rb2cfs14871y6cqaj-gcc-16.2.0/include/c++/16.2.0/bits/vector.tcc:857
+std::vector<>::resize(unsigned long)
+  at /nix/store/rp1zq1p0rjfdg99rb2cfs14871y6cqaj-gcc-16.2.0/include/c++/16.2.0/bits/stl_vector.h:1136
+hmap::Array::Array(glm::vec<>)
+  at /home/barrulus/dev/Hesiod-783/external/HighMap/HighMap/src/array/array.cpp:28
+100 temporary allocations of 100 allocations in total (100.00%) from:
+    hmap::transpose(hmap::Array const&)
+      at /home/barrulus/dev/Hesiod-783/external/HighMap/HighMap/src/transform/transform.cpp:341
+      in /home/barrulus/dev/Hesiod-783/output/fixes/quilting/new
+    hmap::helper_flip_rot_transpose(hmap::Array&, bool, int, bool)
+      at /home/barrulus/dev/Hesiod-783/external/HighMap/HighMap/src/operator/stitching_helpers.cpp:163
+      in /home/barrulus/dev/Hesiod-783/output/fixes/quilting/new
+    hmap::helper_flip_rot_transpose(hmap::Array&, bool, int, bool)
+      at /home/barrulus/dev/Hesiod-783/external/HighMap/HighMap/src/operator/stitching_helpers.cpp:146
+    hmap::get_random_patch(hmap::Array const&, glm::vec<>, std::mersenne_twister_engine<>&, bool, bool, bool, std::vector<>*, std::vector<>*)
+      at /home/barrulus/dev/Hesiod-783/external/HighMap/HighMap/src/operator/stitching_helpers.cpp:204
+    hmap::quilting(std::vector<> const&, glm::vec<>, glm::vec<>, float, unsigned int, std::vector<>, bool, bool, bool, float)
+      at /home/barrulus/dev/Hesiod-783/external/HighMap/HighMap/src/synthesis/quilting.cpp:188
+      in /home/barrulus/dev/Hesiod-783/output/fixes/quilting/new
+    hmap::quilting_shuffle(hmap::Array const&, glm::vec<>, float, unsigned int, std::vector<>, bool, bool, bool, float)
+      at /home/barrulus/dev/Hesiod-783/external/HighMap/HighMap/src/synthesis/quilting.cpp:398
+      in /home/barrulus/dev/Hesiod-783/output/fixes/quilting/new
+    main
+      at /home/barrulus/dev/Hesiod-783/output/fixes/quilting/compare.cpp:37
+      in /home/barrulus/dev/Hesiod-783/output/fixes/quilting/new
+60 temporary allocations of 180 allocations in total (33.33%) from:
+    hmap::Array::extract_slice(glm::vec<>) const
+      at /home/barrulus/dev/Hesiod-783/external/HighMap/HighMap/src/array/methods.cpp:125
+      in /home/barrulus/dev/Hesiod-783/output/fixes/quilting/new
+    hmap::get_random_patch(hmap::Array const&, glm::vec<>, std::mersenne_twister_engine<>&, bool, bool, bool, std::vector<>*, std::vector<>*)
+      at /home/barrulus/dev/Hesiod-783/external/HighMap/HighMap/src/operator/stitching_helpers.cpp:197
+      in /home/barrulus/dev/Hesiod-783/output/fixes/quilting/new
+    hmap::quilting(std::vector<> const&, glm::vec<>, glm::vec<>, float, unsigned int, std::vector<>, bool, bool, bool, float)
+      at /home/barrulus/dev/Hesiod-783/external/HighMap/HighMap/src/synthesis/quilting.cpp:188
+      in /home/barrulus/dev/Hesiod-783/output/fixes/quilting/new
+    hmap::quilting_shuffle(hmap::Array const&, glm::vec<>, float, unsigned int, std::vector<>, bool, bool, bool, float)
+      at /home/barrulus/dev/Hesiod-783/external/HighMap/HighMap/src/synthesis/quilting.cpp:398
+      in /home/barrulus/dev/Hesiod-783/output/fixes/quilting/new
+    main
+      at /home/barrulus/dev/Hesiod-783/output/fixes/quilting/compare.cpp:37
+      in /home/barrulus/dev/Hesiod-783/output/fixes/quilting/new
+5 temporary allocations of 5 allocations in total (100.00%) from:
+    hmap::transpose(hmap::Array const&)
+      at /home/barrulus/dev/Hesiod-783/external/HighMap/HighMap/src/transform/transform.cpp:341
+      in /home/barrulus/dev/Hesiod-783/output/fixes/quilting/new
+    hmap::helper_flip_rot_transpose(hmap::Array&, bool, int, bool)
+      at /home/barrulus/dev/Hesiod-783/external/HighMap/HighMap/src/operator/stitching_helpers.cpp:163
+      in /home/barrulus/dev/Hesiod-783/output/fixes/quilting/new
+    hmap::helper_flip_rot_transpose(hmap::Array&, bool, int, bool)
+      at /home/barrulus/dev/Hesiod-783/external/HighMap/HighMap/src/operator/stitching_helpers.cpp:146
+    hmap::get_random_patch(hmap::Array const&, glm::vec<>, std::mersenne_twister_engine<>&, bool, bool, bool, std::vector<>*, std::vector<>*)
+      at /home/barrulus/dev/Hesiod-783/external/HighMap/HighMap/src/operator/stitching_helpers.cpp:204
+    hmap::quilting(std::vector<> const&, glm::vec<>, glm::vec<>, float, unsigned int, std::vector<>, bool, bool, bool, float)
+      at /home/barrulus/dev/Hesiod-783/external/HighMap/HighMap/src/synthesis/quilting.cpp:109
+      in /home/barrulus/dev/Hesiod-783/output/fixes/quilting/new
+    hmap::quilting_shuffle(hmap::Array const&, glm::vec<>, float, unsigned int, std::vector<>, bool, bool, bool, float)
+      at /home/barrulus/dev/Hesiod-783/external/HighMap/HighMap/src/synthesis/quilting.cpp:398
+      in /home/barrulus/dev/Hesiod-783/output/fixes/quilting/new
+    main
+      at /home/barrulus/dev/Hesiod-783/output/fixes/quilting/compare.cpp:37
+      in /home/barrulus/dev/Hesiod-783/output/fixes/quilting/new
+2 temporary allocations of 9 allocations in total (22.22%) from:
+    hmap::Array::extract_slice(glm::vec<>) const
+      at /home/barrulus/dev/Hesiod-783/external/HighMap/HighMap/src/array/methods.cpp:125
+      in /home/barrulus/dev/Hesiod-783/output/fixes/quilting/new
+    hmap::get_random_patch(hmap::Array const&, glm::vec<>, std::mersenne_twister_engine<>&, bool, bool, bool, std::vector<>*, std::vector<>*)
+      at /home/barrulus/dev/Hesiod-783/external/HighMap/HighMap/src/operator/stitching_helpers.cpp:197
+      in /home/barrulus/dev/Hesiod-783/output/fixes/quilting/new
+    hmap::quilting(std::vector<> const&, glm::vec<>, glm::vec<>, float, unsigned int, std::vector<>, bool, bool, bool, float)
+      at /home/barrulus/dev/Hesiod-783/external/HighMap/HighMap/src/synthesis/quilting.cpp:109
+      in /home/barrulus/dev/Hesiod-783/output/fixes/quilting/new
+    hmap::quilting_shuffle(hmap::Array const&, glm::vec<>, float, unsigned int, std::vector<>, bool, bool, bool, float)
+      at /home/barrulus/dev/Hesiod-783/external/HighMap/HighMap/src/synthesis/quilting.cpp:398
+      in /home/barrulus/dev/Hesiod-783/output/fixes/quilting/new
+    main
+      at /home/barrulus/dev/Hesiod-783/output/fixes/quilting/compare.cpp:37
+      in /home/barrulus/dev/Hesiod-783/output/fixes/quilting/new
+  and 0B from 30 other places
+
+21 temporary allocations of 59 allocations in total (35.59%) from
+g_malloc
+  in /nix/store/rj0sh9bqfc62j2jvh6zahd0a9rpnwgw9-glib-2.90.0/lib/libglib-2.0.so.0
+1 temporary allocations of 1 allocations in total (100.00%) from:
+    g_slice_alloc
+      in /nix/store/rj0sh9bqfc62j2jvh6zahd0a9rpnwgw9-glib-2.90.0/lib/libglib-2.0.so.0
+    g_slist_prepend
+      in /nix/store/rj0sh9bqfc62j2jvh6zahd0a9rpnwgw9-glib-2.90.0/lib/libglib-2.0.so.0
+    g_type_class_get.localalias
+      in /nix/store/rj0sh9bqfc62j2jvh6zahd0a9rpnwgw9-glib-2.90.0/lib/libgobject-2.0.so.0
+    _g_param_spec_types_init
+      in /nix/store/rj0sh9bqfc62j2jvh6zahd0a9rpnwgw9-glib-2.90.0/lib/libgobject-2.0.so.0
+    gobject_init_ctor
+      in /nix/store/rj0sh9bqfc62j2jvh6zahd0a9rpnwgw9-glib-2.90.0/lib/libgobject-2.0.so.0
+    call_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_start_user
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+1 temporary allocations of 1 allocations in total (100.00%) from:
+    g_slice_alloc
+      in /nix/store/rj0sh9bqfc62j2jvh6zahd0a9rpnwgw9-glib-2.90.0/lib/libglib-2.0.so.0
+    g_slist_prepend
+      in /nix/store/rj0sh9bqfc62j2jvh6zahd0a9rpnwgw9-glib-2.90.0/lib/libglib-2.0.so.0
+    g_type_class_get.localalias
+      in /nix/store/rj0sh9bqfc62j2jvh6zahd0a9rpnwgw9-glib-2.90.0/lib/libgobject-2.0.so.0
+    _g_param_spec_types_init
+      in /nix/store/rj0sh9bqfc62j2jvh6zahd0a9rpnwgw9-glib-2.90.0/lib/libgobject-2.0.so.0
+    gobject_init_ctor
+      in /nix/store/rj0sh9bqfc62j2jvh6zahd0a9rpnwgw9-glib-2.90.0/lib/libgobject-2.0.so.0
+    call_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_start_user
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+1 temporary allocations of 1 allocations in total (100.00%) from:
+    g_slice_alloc
+      in /nix/store/rj0sh9bqfc62j2jvh6zahd0a9rpnwgw9-glib-2.90.0/lib/libglib-2.0.so.0
+    g_slist_prepend
+      in /nix/store/rj0sh9bqfc62j2jvh6zahd0a9rpnwgw9-glib-2.90.0/lib/libglib-2.0.so.0
+    g_type_class_get.localalias
+      in /nix/store/rj0sh9bqfc62j2jvh6zahd0a9rpnwgw9-glib-2.90.0/lib/libgobject-2.0.so.0
+    _g_param_spec_types_init
+      in /nix/store/rj0sh9bqfc62j2jvh6zahd0a9rpnwgw9-glib-2.90.0/lib/libgobject-2.0.so.0
+    gobject_init_ctor
+      in /nix/store/rj0sh9bqfc62j2jvh6zahd0a9rpnwgw9-glib-2.90.0/lib/libgobject-2.0.so.0
+    call_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_start_user
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+1 temporary allocations of 1 allocations in total (100.00%) from:
+    g_slice_alloc
+      in /nix/store/rj0sh9bqfc62j2jvh6zahd0a9rpnwgw9-glib-2.90.0/lib/libglib-2.0.so.0
+    g_slist_prepend
+      in /nix/store/rj0sh9bqfc62j2jvh6zahd0a9rpnwgw9-glib-2.90.0/lib/libglib-2.0.so.0
+    g_type_class_get.localalias
+      in /nix/store/rj0sh9bqfc62j2jvh6zahd0a9rpnwgw9-glib-2.90.0/lib/libgobject-2.0.so.0
+    _g_param_spec_types_init
+      in /nix/store/rj0sh9bqfc62j2jvh6zahd0a9rpnwgw9-glib-2.90.0/lib/libgobject-2.0.so.0
+    gobject_init_ctor
+      in /nix/store/rj0sh9bqfc62j2jvh6zahd0a9rpnwgw9-glib-2.90.0/lib/libgobject-2.0.so.0
+    call_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_start_user
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+1 temporary allocations of 1 allocations in total (100.00%) from:
+    g_slice_alloc
+      in /nix/store/rj0sh9bqfc62j2jvh6zahd0a9rpnwgw9-glib-2.90.0/lib/libglib-2.0.so.0
+    g_slist_prepend
+      in /nix/store/rj0sh9bqfc62j2jvh6zahd0a9rpnwgw9-glib-2.90.0/lib/libglib-2.0.so.0
+    g_type_class_get.localalias
+      in /nix/store/rj0sh9bqfc62j2jvh6zahd0a9rpnwgw9-glib-2.90.0/lib/libgobject-2.0.so.0
+    _g_param_spec_types_init
+      in /nix/store/rj0sh9bqfc62j2jvh6zahd0a9rpnwgw9-glib-2.90.0/lib/libgobject-2.0.so.0
+    gobject_init_ctor
+      in /nix/store/rj0sh9bqfc62j2jvh6zahd0a9rpnwgw9-glib-2.90.0/lib/libgobject-2.0.so.0
+    call_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_start_user
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+  and 16B from 54 other places
+
+18 temporary allocations of 18 allocations in total (100.00%) from
+cv::utils::getConfigurationParameterBool(char const*, bool)
+  in /nix/store/a73vc11j945pphw69vlv9nbi2d2c0hbj-opencv-4.13.0/lib/libopencv_core.so.413
+1 temporary allocations of 1 allocations in total (100.00%) from:
+    _GLOBAL__sub_I_ocl.cpp
+      in /nix/store/a73vc11j945pphw69vlv9nbi2d2c0hbj-opencv-4.13.0/lib/libopencv_core.so.413
+    call_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_start_user
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+1 temporary allocations of 1 allocations in total (100.00%) from:
+    _GLOBAL__sub_I_cap.cpp
+      in /nix/store/a73vc11j945pphw69vlv9nbi2d2c0hbj-opencv-4.13.0/lib/libopencv_videoio.so.413
+    call_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_start_user
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+1 temporary allocations of 1 allocations in total (100.00%) from:
+    _GLOBAL__sub_I_cap.cpp
+      in /nix/store/a73vc11j945pphw69vlv9nbi2d2c0hbj-opencv-4.13.0/lib/libopencv_videoio.so.413
+    call_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_start_user
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+1 temporary allocations of 1 allocations in total (100.00%) from:
+    _GLOBAL__sub_I_cap.cpp
+      in /nix/store/a73vc11j945pphw69vlv9nbi2d2c0hbj-opencv-4.13.0/lib/libopencv_videoio.so.413
+    call_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_start_user
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+1 temporary allocations of 1 allocations in total (100.00%) from:
+    _GLOBAL__sub_I_trace.cpp
+      in /nix/store/a73vc11j945pphw69vlv9nbi2d2c0hbj-opencv-4.13.0/lib/libopencv_core.so.413
+    call_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_start_user
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+  and 13B from 13 other places
+
+14 temporary allocations of 14 allocations in total (100.00%) from
+cv::utils::getConfigurationParameterSizeT(char const*, unsigned long)
+  in /nix/store/a73vc11j945pphw69vlv9nbi2d2c0hbj-opencv-4.13.0/lib/libopencv_core.so.413
+1 temporary allocations of 1 allocations in total (100.00%) from:
+    _GLOBAL__sub_I_kmeans.cpp
+      in /nix/store/a73vc11j945pphw69vlv9nbi2d2c0hbj-opencv-4.13.0/lib/libopencv_core.so.413
+    call_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_start_user
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+1 temporary allocations of 1 allocations in total (100.00%) from:
+    _GLOBAL__sub_I_ocl.cpp
+      in /nix/store/a73vc11j945pphw69vlv9nbi2d2c0hbj-opencv-4.13.0/lib/libopencv_core.so.413
+    call_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_start_user
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+1 temporary allocations of 1 allocations in total (100.00%) from:
+    _GLOBAL__sub_I_parallel_impl.cpp
+      in /nix/store/a73vc11j945pphw69vlv9nbi2d2c0hbj-opencv-4.13.0/lib/libopencv_core.so.413
+    call_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_start_user
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+1 temporary allocations of 1 allocations in total (100.00%) from:
+    _GLOBAL__sub_I_parallel_impl.cpp
+      in /nix/store/a73vc11j945pphw69vlv9nbi2d2c0hbj-opencv-4.13.0/lib/libopencv_core.so.413
+    call_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_start_user
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+1 temporary allocations of 1 allocations in total (100.00%) from:
+    _GLOBAL__sub_I_parallel_impl.cpp
+      in /nix/store/a73vc11j945pphw69vlv9nbi2d2c0hbj-opencv-4.13.0/lib/libopencv_core.so.413
+    call_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_init
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+    _dl_start_user
+      in /nix/store/r3hvhzl5fxhrgn0rfy5g7rda17702pj4-glibc-2.44-57/lib/ld-linux-x86-64.so.2
+  and 9B from 9 other places
+
+
+total runtime: 0.88s.
+calls to allocation functions: 9122 (10413/s)
+temporary memory allocations: 485 (553/s)
+peak heap memory consumption: 223.96M
+peak RSS (including heaptrack overhead): 290.12M
+total memory leaked: 258.11K
+suppressed leaks: 6.24K

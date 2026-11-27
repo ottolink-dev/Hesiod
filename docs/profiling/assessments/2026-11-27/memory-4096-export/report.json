@@ -1,0 +1,40 @@
+{
+  "complete": true,
+  "memory_scaling_check": "incomplete",
+  "cells": [
+    {
+      "case": "ExportAsset",
+      "variant": "full",
+      "inputs_only": false,
+      "policy": "ram-sequential",
+      "tiles": 1,
+      "overlap": 0.0,
+      "size": 4096,
+      "planned": 3,
+      "successful": 3,
+      "status": "complete",
+      "process_peak_mib_median": 11604.01171875,
+      "process_peak_mib_min": 11603.25390625,
+      "process_peak_mib_max": 11604.62109375,
+      "wall_seconds_median": 1599.8155591439936
+    },
+    {
+      "case": "ExportAsset",
+      "variant": "minimal",
+      "inputs_only": false,
+      "policy": "ram-sequential",
+      "tiles": 1,
+      "overlap": 0.0,
+      "size": 4096,
+      "planned": 3,
+      "successful": 3,
+      "status": "complete",
+      "process_peak_mib_median": 10964.2265625,
+      "process_peak_mib_min": 10962.7578125,
+      "process_peak_mib_max": 10964.28125,
+      "wall_seconds_median": 19.985350164999545
+    }
+  ],
+  "comparisons": [],
+  "limitations": "Whole-process kernel peak RSS including startup and source nodes; not per-node allocation totals or GPU VRAM. Scalar RSS guards can miss localized growth hidden by fixed process overhead. Node completion does not establish numerical output correctness."
+}

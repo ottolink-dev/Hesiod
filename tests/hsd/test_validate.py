@@ -1,12 +1,27 @@
 import os, sys
+import json
+from pathlib import Path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "..", "scripts"))
 
 from hsd.catalog import Catalog
 from hsd.spec import Spec
-from hsd.validate import validate_spec
+from hsd.validate import consistency_errors, validate_spec
 
 CAT = Catalog.load()
 FIX = os.path.join(os.path.dirname(__file__), "fixtures", "first_terrain.json")
+
+
+def test_stepping_shore_has_matching_edges_and_rejects_duplicate_ui_edge():
+    fixture = Path(__file__).resolve().parents[2] / "Hesiod/data/bootstraps/stepping_shore.hsd"
+    project = json.loads(fixture.read_text())
+    assert consistency_errors(project) == []
+
+    links = project["graph_tabs_widget"]["graph_node_widgets"]["graph"]["links"]
+    edge = next(link for link in links if (link["node_out_id"], link["port_out_id"],
+                                          link["node_in_id"], link["port_in_id"])
+                == ("10", "output", "17", "input"))
+    links.append(dict(edge))
+    assert any("link mismatch" in error for error in consistency_errors(project))
 
 
 def test_good_spec_has_no_errors():
@@ -21,7 +36,7 @@ def test_unknown_node_type():
 
 
 def test_unknown_param():
-    spec = Spec.from_dict({"nodes": [{"id": "n", "type": "NoiseFbm",
+    spec = Spec.from_dict({"nodes": [{"id": "n", "type": "CoherentNoise",
                                       "params": {"not_a_param": 1}}]})
     errs = validate_spec(spec, CAT)
     assert any("not_a_param" in e["problem"] for e in errs)
@@ -53,7 +68,7 @@ def test_unknown_type_link_no_secondary_error():
 
 
 def test_dangling_export():
-    spec = Spec.from_dict({"nodes": [{"id": "n", "type": "NoiseFbm"}],
+    spec = Spec.from_dict({"nodes": [{"id": "n", "type": "CoherentNoise"}],
                            "export": [{"node": "missing", "port": "output",
                                        "path": "o.png"}]})
     errs = validate_spec(spec, CAT)

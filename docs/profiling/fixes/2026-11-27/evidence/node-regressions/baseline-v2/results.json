@@ -1,0 +1,5188 @@
+{
+  "ExportAsset-minimal-t1": {
+    "kind": "unchanged",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/ExportAsset-minimal-t1/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "c3f8f358d76c16625c68fbb52159e67aa4e317cc9b9daf9bd6dcff0295540ca1",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14648,
+    "process_peak_rss_kib": 358152,
+    "process_user_seconds": 0.170047,
+    "process_system_seconds": 0.331499,
+    "wall_seconds": 0.5628996379964519,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportAsset",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result..glb": {
+        "bytes": 715964,
+        "sha256": "261e7d2b9a70df0ba8f43855dd91cb2b51cf1bb2923f5c2496e1936557aa5cac",
+        "normalized_chunks": [
+          [
+            1313821514,
+            "a44b0fe32bf5d38c2af3dc641af2a6793e1b4b9e0bf0f65afb52d462bfca3c1e"
+          ],
+          [
+            5130562,
+            "bebd44f99dffb35851c5196287535d934098aa26bf39b80f8fab6c2ea5482f5d"
+          ]
+        ]
+      },
+      "result._nmap.png": {
+        "bytes": 87244,
+        "sha256": "ea647971c2fbfd3e67bba1d80c472826846c29499ac68b51e2f1b7d286bdda67",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "3feb91b8186ad21f713745ab55ee17b7ab2721d9fd0bae13c14adde56d71825e"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportAsset-full-t1": {
+    "kind": "unchanged",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/ExportAsset-full-t1/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "55fb6ac140abca61d8083891f20beb0077fadcb91f543276ce8c3f7c50defc5a",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14640,
+    "process_peak_rss_kib": 359936,
+    "process_user_seconds": 0.19372499999999998,
+    "process_system_seconds": 0.242411,
+    "wall_seconds": 0.5615256799937924,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "ExportAsset",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result..glb": {
+        "bytes": 716020,
+        "sha256": "fdbd16bf433dd4ac828ffc608865744775053d4bfb30da99ddbf02c40d10140f",
+        "normalized_chunks": [
+          [
+            1313821514,
+            "7315497dfda9b7d5c6bacd4fbb4ea535e173f2d10086c49aec078910f97b8b77"
+          ],
+          [
+            5130562,
+            "1c2a1986e2b3cb51870633c5fd83e937f8fe37f31da2baaf2dcddf6739a1507c"
+          ]
+        ]
+      },
+      "result..png": {
+        "bytes": 81561,
+        "sha256": "6526e3bea908ef0ba6254d132b3084e24a9583037c79f8009a7c6dd4c2df6a38",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "fc464d8922c312b80681f897b2f89ee31a2ad4fd17031621f0ab21fabc773b0c"
+      },
+      "result._nmap.png": {
+        "bytes": 87854,
+        "sha256": "0e4d3532f716bb83588ec95d9d470e8d845e6c9d4d79259ca20c22b0e7c9e41a",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "6a12b1d2ee1a06c538f7330edeab388e1f3506274075fa091e45b8d43c519bf9"
+      }
+    },
+    "status": "ok"
+  },
+  "HeightmapToNormalMap-full-t1": {
+    "kind": "unchanged",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/HeightmapToNormalMap-full-t1/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "e3efd112e761c04ad6a3a95a97f81bae78aab5833897ebb96141ba0827ed5c89",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14644,
+    "process_peak_rss_kib": 347704,
+    "process_user_seconds": 0.169975,
+    "process_system_seconds": 0.23876499999999998,
+    "wall_seconds": 0.4993771830049809,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "HeightmapToNormalMap",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ExportTexture",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "export-normal_map.png": {
+        "bytes": 87244,
+        "sha256": "ea647971c2fbfd3e67bba1d80c472826846c29499ac68b51e2f1b7d286bdda67",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "3feb91b8186ad21f713745ab55ee17b7ab2721d9fd0bae13c14adde56d71825e"
+      }
+    },
+    "status": "ok"
+  },
+  "CloudRandomDistance-density-t1": {
+    "kind": "unchanged",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/CloudRandomDistance-density-t1/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "b91c89fec607bffdba90c75833fc0fb1b192adfb0c589fc91e4eaa84be2e0401",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14636,
+    "process_peak_rss_kib": 344864,
+    "process_user_seconds": 0.157196,
+    "process_system_seconds": 0.25174599999999997,
+    "wall_seconds": 0.4979803189926315,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "CloudRandomDistance",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ExportCloud",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "export-cloud.csv": {
+        "bytes": 3312,
+        "sha256": "c4926fa5ac7cb0d1f3f3df9551a8eee3ef4a3eff767f300be1fc716634b8809c"
+      }
+    },
+    "status": "ok"
+  },
+  "CloudRandomDistance-no-density-t1": {
+    "kind": "unchanged",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/CloudRandomDistance-no-density-t1/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "36fbbab1fb44e99cda38d28fb2d5a06917ed57e5199007d2dec4b19954f3f489",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14644,
+    "process_peak_rss_kib": 344692,
+    "process_user_seconds": 0.174589,
+    "process_system_seconds": 0.236637,
+    "wall_seconds": 0.4383631350065116,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "CloudRandomDistance",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportCloud",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "export-cloud.csv": {
+        "bytes": 9720,
+        "sha256": "4c309dbcc3a92ee6d02830e7b615a2d57a2173caeb554c6a1aa4412661bdf2e6"
+      }
+    },
+    "status": "ok"
+  },
+  "QuiltingShuffle-full-t1": {
+    "kind": "unchanged",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/QuiltingShuffle-full-t1/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "a4c6db0f0322d16784f882941e42583397acd4126d9a71d62adb4543c08e87ab",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14636,
+    "process_peak_rss_kib": 346868,
+    "process_user_seconds": 0.163467,
+    "process_system_seconds": 0.249666,
+    "wall_seconds": 0.43824081200000364,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "QuiltingShuffle",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ExportHeightmap",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "export-output.png": {
+        "bytes": 27889,
+        "sha256": "a6f952e466dd95a69493c9071a2a524d0f8ed10d79d53c228ad195e7c982001c",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "118ca3ec1849bbbe589afe36b7466676a8ee27b747a5cef85098a038947831df"
+      }
+    },
+    "status": "ok"
+  },
+  "QuiltingExpand-full-t1": {
+    "kind": "unchanged",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/QuiltingExpand-full-t1/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "5f4ae651aea7f12cf740c73d1b077fab6677968cf8acd08239c798bfb7a44869",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14648,
+    "process_peak_rss_kib": 346896,
+    "process_user_seconds": 0.18661899999999998,
+    "process_system_seconds": 0.231518,
+    "wall_seconds": 0.500503576011397,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "QuiltingExpand",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ExportHeightmap",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "export-output.png": {
+        "bytes": 29830,
+        "sha256": "d3f18b8d33afb74908a330db7cd5297e7c68e8153ee66c08557b9249f9f09db8",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "3b6c2d06766d4b8bdefe5a7649ee7d6d84904f4f7f89d7b932b4fab06d5839ee"
+      }
+    },
+    "status": "ok"
+  },
+  "TextureQuiltingShuffle-full-t1": {
+    "kind": "unchanged",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/TextureQuiltingShuffle-full-t1/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "8290d169fdad709734c063b3965dcfd4f5bc7c58c339c89724cadb73c83244b7",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14644,
+    "process_peak_rss_kib": 355848,
+    "process_user_seconds": 0.185638,
+    "process_system_seconds": 0.24129399999999998,
+    "wall_seconds": 0.43712260099709965,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "TextureQuiltingShuffle",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "6",
+        "type": "ExportHeightmap",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "7",
+        "type": "ExportTexture",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "8",
+        "type": "ExportTexture",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "9",
+        "type": "ExportTexture",
+        "occurrences": 0
+      },
+      {
+        "graph": "graph",
+        "id": "10",
+        "type": "ExportTexture",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "11",
+        "type": "ExportTexture",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "export-heightmap.png": {
+        "bytes": 27889,
+        "sha256": "a6f952e466dd95a69493c9071a2a524d0f8ed10d79d53c228ad195e7c982001c",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "118ca3ec1849bbbe589afe36b7466676a8ee27b747a5cef85098a038947831df"
+      },
+      "export-texture.png": {
+        "bytes": 67781,
+        "sha256": "0a885cc065728618bc2ee6ab135fb280522c51ad4e52bea9c3a9ea66d6819463",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "2587e33ca79778c5827eafa4d49f62332ef5f695020fb922dfe2971109b05713"
+      },
+      "export-texture_A_out.png": {
+        "bytes": 63117,
+        "sha256": "bcef777f76bcf5205618b3de3c05662136d4895188f7a5cbb9df8b4a5f5a64a1",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "04c63a700d04f0be05103303e9691ec8818a7d211b6163c64656f35782f6903e"
+      },
+      "export-texture_B_out.png": {
+        "bytes": 67781,
+        "sha256": "0a885cc065728618bc2ee6ab135fb280522c51ad4e52bea9c3a9ea66d6819463",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "2587e33ca79778c5827eafa4d49f62332ef5f695020fb922dfe2971109b05713"
+      },
+      "export-texture_C_out.png": {
+        "bytes": 63117,
+        "sha256": "bcef777f76bcf5205618b3de3c05662136d4895188f7a5cbb9df8b4a5f5a64a1",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "04c63a700d04f0be05103303e9691ec8818a7d211b6163c64656f35782f6903e"
+      },
+      "export-texture_D_out.png": {
+        "bytes": 67781,
+        "sha256": "0a885cc065728618bc2ee6ab135fb280522c51ad4e52bea9c3a9ea66d6819463",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "2587e33ca79778c5827eafa4d49f62332ef5f695020fb922dfe2971109b05713"
+      }
+    },
+    "status": "ok"
+  },
+  "TextureQuiltingExpand-full-t1": {
+    "kind": "unchanged",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/TextureQuiltingExpand-full-t1/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "ba48c978c6d392c7038c7a0625d65345af515e798de15e15ec46e581ad9c6f21",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14636,
+    "process_peak_rss_kib": 356288,
+    "process_user_seconds": 0.1745,
+    "process_system_seconds": 0.249222,
+    "wall_seconds": 0.5005491119954968,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "TextureQuiltingExpand",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "6",
+        "type": "ExportHeightmap",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "7",
+        "type": "ExportTexture",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "8",
+        "type": "ExportTexture",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "9",
+        "type": "ExportTexture",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "10",
+        "type": "ExportTexture",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "11",
+        "type": "ExportTexture",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "export-heightmap.png": {
+        "bytes": 29830,
+        "sha256": "d3f18b8d33afb74908a330db7cd5297e7c68e8153ee66c08557b9249f9f09db8",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "3b6c2d06766d4b8bdefe5a7649ee7d6d84904f4f7f89d7b932b4fab06d5839ee"
+      },
+      "export-texture.png": {
+        "bytes": 69388,
+        "sha256": "56f8469cd24eada8781293bc34e89e7bd3377923f06758b01d3b761751674289",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "2d8e9b63dbf1dbc26507c68661c65d2e51fd02a809bfbf7606eeb35ba8dd54ab"
+      },
+      "export-texture_A_out.png": {
+        "bytes": 64812,
+        "sha256": "b8a6ea2790ec2dce38b588d48b741a564e7bf6b08203a7640f991fe26905796d",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "2750e766af3582ba3b1640fdc23e9d059b69d1e75786adb54ad5f4aa819b371f"
+      },
+      "export-texture_B_out.png": {
+        "bytes": 69388,
+        "sha256": "56f8469cd24eada8781293bc34e89e7bd3377923f06758b01d3b761751674289",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "2d8e9b63dbf1dbc26507c68661c65d2e51fd02a809bfbf7606eeb35ba8dd54ab"
+      },
+      "export-texture_C_out.png": {
+        "bytes": 64812,
+        "sha256": "b8a6ea2790ec2dce38b588d48b741a564e7bf6b08203a7640f991fe26905796d",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "2750e766af3582ba3b1640fdc23e9d059b69d1e75786adb54ad5f4aa819b371f"
+      },
+      "export-texture_D_out.png": {
+        "bytes": 69388,
+        "sha256": "56f8469cd24eada8781293bc34e89e7bd3377923f06758b01d3b761751674289",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "2d8e9b63dbf1dbc26507c68661c65d2e51fd02a809bfbf7606eeb35ba8dd54ab"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportNormalMap-8-t1-none-flags": {
+    "kind": "unchanged",
+    "prefix": "ExportNormalMap-8-t1",
+    "axis": "none",
+    "method": "flags",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/ExportNormalMap-8-t1-none-flags/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "d1e72b03f5aab3e2fcdd4bc9fc15796e24af1c890c5c304abb65d1c58a73b26d",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14648,
+    "process_peak_rss_kib": 348860,
+    "process_user_seconds": 0.182085,
+    "process_system_seconds": 0.22949,
+    "wall_seconds": 0.5005191270029172,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "Brush",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportNormalMap",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result.png": {
+        "bytes": 9758,
+        "sha256": "6a2bea6a320ff3685faffbeba5a908cf06803922b311a68bd82191f047a0158b",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 8,
+        "pixels_sha256": "a39b522c7222352352b15bbe52a57e3d9c43e271aa01ffcf6916834febc9be48"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportNormalMap-8-t1-x-flags": {
+    "kind": "flip",
+    "prefix": "ExportNormalMap-8-t1",
+    "axis": "x",
+    "method": "flags",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/ExportNormalMap-8-t1-x-flags/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "b5c0c878f7999866e7147cfd8bc36ea82d0748f83cb3e022b2404d8e4dc2a9c3",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14564,
+    "process_peak_rss_kib": 349332,
+    "process_user_seconds": 0.172482,
+    "process_system_seconds": 0.239805,
+    "wall_seconds": 0.5005621390009765,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "Brush",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportNormalMap",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result.png": {
+        "bytes": 9758,
+        "sha256": "6a2bea6a320ff3685faffbeba5a908cf06803922b311a68bd82191f047a0158b",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 8,
+        "pixels_sha256": "a39b522c7222352352b15bbe52a57e3d9c43e271aa01ffcf6916834febc9be48"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportNormalMap-8-t1-x-source": {
+    "kind": "flip",
+    "prefix": "ExportNormalMap-8-t1",
+    "axis": "x",
+    "method": "source",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/ExportNormalMap-8-t1-x-source/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "76197b4057032136bf9ba003b5375bb1c42dc765ca38917ff6499973439bd81d",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14604,
+    "process_peak_rss_kib": 349268,
+    "process_user_seconds": 0.165967,
+    "process_system_seconds": 0.249127,
+    "wall_seconds": 0.499969289987348,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "Brush",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportNormalMap",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result.png": {
+        "bytes": 10551,
+        "sha256": "836007f27d036aef911e996a1734b83ec0f475edd85751427007afc8f669abc2",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 8,
+        "pixels_sha256": "9a9523f7e86a0df2853d2acdea2f4435366271b523564979aa73ce9a2eb5a789"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportNormalMap-8-t1-y-flags": {
+    "kind": "flip",
+    "prefix": "ExportNormalMap-8-t1",
+    "axis": "y",
+    "method": "flags",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/ExportNormalMap-8-t1-y-flags/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "2e75ac4708f2d4c801c781ef756f07a40fc4250e44b556875c3fb27fe421b8d6",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14644,
+    "process_peak_rss_kib": 349428,
+    "process_user_seconds": 0.16616499999999998,
+    "process_system_seconds": 0.246686,
+    "wall_seconds": 0.4367029650020413,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "Brush",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportNormalMap",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result.png": {
+        "bytes": 9758,
+        "sha256": "6a2bea6a320ff3685faffbeba5a908cf06803922b311a68bd82191f047a0158b",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 8,
+        "pixels_sha256": "a39b522c7222352352b15bbe52a57e3d9c43e271aa01ffcf6916834febc9be48"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportNormalMap-8-t1-y-source": {
+    "kind": "flip",
+    "prefix": "ExportNormalMap-8-t1",
+    "axis": "y",
+    "method": "source",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/ExportNormalMap-8-t1-y-source/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "e555f7092f63cafaf299832129ab28e3da15188875a17b50f2b95d0fde1cb2f4",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14556,
+    "process_peak_rss_kib": 349380,
+    "process_user_seconds": 0.171338,
+    "process_system_seconds": 0.23945899999999998,
+    "wall_seconds": 0.49960770799953025,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "Brush",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportNormalMap",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result.png": {
+        "bytes": 9518,
+        "sha256": "30d54b20193e9f30724a932b315d9631fc6481541f09154e578989dc7ae52a57",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 8,
+        "pixels_sha256": "97828729d1582e1f2c5291154b2c1922bdd6186846a5696f4fc91867881a2299"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportNormalMap-8-t1-xy-flags": {
+    "kind": "flip",
+    "prefix": "ExportNormalMap-8-t1",
+    "axis": "xy",
+    "method": "flags",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/ExportNormalMap-8-t1-xy-flags/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "b04fadbaebfacf04b70cc63f3caf1bd0d989df81a9cb404f1c0fb70f242c6367",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14644,
+    "process_peak_rss_kib": 349252,
+    "process_user_seconds": 0.179036,
+    "process_system_seconds": 0.231392,
+    "wall_seconds": 0.5003818039986072,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "Brush",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportNormalMap",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result.png": {
+        "bytes": 9758,
+        "sha256": "6a2bea6a320ff3685faffbeba5a908cf06803922b311a68bd82191f047a0158b",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 8,
+        "pixels_sha256": "a39b522c7222352352b15bbe52a57e3d9c43e271aa01ffcf6916834febc9be48"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportNormalMap-8-t1-xy-source": {
+    "kind": "flip",
+    "prefix": "ExportNormalMap-8-t1",
+    "axis": "xy",
+    "method": "source",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/ExportNormalMap-8-t1-xy-source/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "7562309b1df0776517b24e9f3d89e3465d1bf879aa492a094239c26e92dd2a95",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14652,
+    "process_peak_rss_kib": 349780,
+    "process_user_seconds": 0.172945,
+    "process_system_seconds": 0.23546199999999998,
+    "wall_seconds": 0.436570969002787,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "Brush",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportNormalMap",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result.png": {
+        "bytes": 10646,
+        "sha256": "a599434923584d6a26c80208650b83d8e8e7d2cd26a65aecebff460368f4c19d",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 8,
+        "pixels_sha256": "f90ad1526ee6465c9d9d80044cdf883a715c201ef7d686acecd54908dcf75629"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportNormalMap-16-t1-none-flags": {
+    "kind": "unchanged",
+    "prefix": "ExportNormalMap-16-t1",
+    "axis": "none",
+    "method": "flags",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/ExportNormalMap-16-t1-none-flags/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "619ce35dbaddb9a497422cc452c6225eed290f92da8209f9280e6c47160173b6",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14532,
+    "process_peak_rss_kib": 348968,
+    "process_user_seconds": 0.186198,
+    "process_system_seconds": 0.23138899999999998,
+    "wall_seconds": 0.4395644799951697,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "Brush",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportNormalMap",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result.png": {
+        "bytes": 63288,
+        "sha256": "c2da03f57ff66db0c322857339826d9a02e5bd4568f7fc18e0419abfd46f7703",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "7d122d985d02c7260d3669cee69541b5ade3665391fb4acb1f2f6deb34a508cb"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportNormalMap-16-t1-x-flags": {
+    "kind": "flip",
+    "prefix": "ExportNormalMap-16-t1",
+    "axis": "x",
+    "method": "flags",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/ExportNormalMap-16-t1-x-flags/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "49cdd0e0c079526dfd22ee949b6a5e4811c6c95027e3aed70fe82d09c9a7101b",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14532,
+    "process_peak_rss_kib": 349092,
+    "process_user_seconds": 0.163675,
+    "process_system_seconds": 0.24314999999999998,
+    "wall_seconds": 0.43730712099932134,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "Brush",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportNormalMap",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result.png": {
+        "bytes": 63288,
+        "sha256": "c2da03f57ff66db0c322857339826d9a02e5bd4568f7fc18e0419abfd46f7703",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "7d122d985d02c7260d3669cee69541b5ade3665391fb4acb1f2f6deb34a508cb"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportNormalMap-16-t1-x-source": {
+    "kind": "flip",
+    "prefix": "ExportNormalMap-16-t1",
+    "axis": "x",
+    "method": "source",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/ExportNormalMap-16-t1-x-source/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "9626972eba8683dfd7e9d0337f2e225c0835d9d7998b02e3c33682254384688c",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14644,
+    "process_peak_rss_kib": 349820,
+    "process_user_seconds": 0.173561,
+    "process_system_seconds": 0.23549599999999998,
+    "wall_seconds": 0.4987303559901193,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "Brush",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportNormalMap",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result.png": {
+        "bytes": 64222,
+        "sha256": "a72eb656fcedcf51806abb1b80d49683a169dbe3c76cd5a18d46add3512f4b0b",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "39fbe03a6ecc47492970fb7b9a91cc0a7f4beab52648e6f824490f04d14ff4d3"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportNormalMap-16-t1-y-flags": {
+    "kind": "flip",
+    "prefix": "ExportNormalMap-16-t1",
+    "axis": "y",
+    "method": "flags",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/ExportNormalMap-16-t1-y-flags/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "e87a937288ee9c4fbe0d4b30228cdae98329e4efb4da30f607c6089c8249a391",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14652,
+    "process_peak_rss_kib": 349264,
+    "process_user_seconds": 0.174701,
+    "process_system_seconds": 0.240193,
+    "wall_seconds": 0.5026618109986885,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "Brush",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportNormalMap",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result.png": {
+        "bytes": 63288,
+        "sha256": "c2da03f57ff66db0c322857339826d9a02e5bd4568f7fc18e0419abfd46f7703",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "7d122d985d02c7260d3669cee69541b5ade3665391fb4acb1f2f6deb34a508cb"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportNormalMap-16-t1-y-source": {
+    "kind": "flip",
+    "prefix": "ExportNormalMap-16-t1",
+    "axis": "y",
+    "method": "source",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/ExportNormalMap-16-t1-y-source/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "aebe234f3c207321349d978f1d1dd3b08211991e564dde0963f6598e9b5b01e3",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14648,
+    "process_peak_rss_kib": 349300,
+    "process_user_seconds": 0.175058,
+    "process_system_seconds": 0.240508,
+    "wall_seconds": 0.5019109610002488,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "Brush",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportNormalMap",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result.png": {
+        "bytes": 62633,
+        "sha256": "7136096b9e01962b210841ff0d5105b6092a9ff283d7a780b5fa5d18be7b3fdb",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "e5400518e3a64466600dd4c4945e5d58775aa4802d1ed3255d0809f1c7a0c1b4"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportNormalMap-16-t1-xy-flags": {
+    "kind": "flip",
+    "prefix": "ExportNormalMap-16-t1",
+    "axis": "xy",
+    "method": "flags",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/ExportNormalMap-16-t1-xy-flags/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "bcd2400db9c96e6e16fdbdc62aff930437e5a427ae5a51107dd4800ff1016b7e",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14648,
+    "process_peak_rss_kib": 348708,
+    "process_user_seconds": 0.178421,
+    "process_system_seconds": 0.242832,
+    "wall_seconds": 0.5014649299992016,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "Brush",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportNormalMap",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result.png": {
+        "bytes": 63288,
+        "sha256": "c2da03f57ff66db0c322857339826d9a02e5bd4568f7fc18e0419abfd46f7703",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "7d122d985d02c7260d3669cee69541b5ade3665391fb4acb1f2f6deb34a508cb"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportNormalMap-16-t1-xy-source": {
+    "kind": "flip",
+    "prefix": "ExportNormalMap-16-t1",
+    "axis": "xy",
+    "method": "source",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/ExportNormalMap-16-t1-xy-source/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "cf6a9786796a430f795a43bbe4e35675433fce634d6b34875d6cea82d8deecad",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14644,
+    "process_peak_rss_kib": 349396,
+    "process_user_seconds": 0.170538,
+    "process_system_seconds": 0.24098,
+    "wall_seconds": 0.5015683710080339,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "Brush",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportNormalMap",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result.png": {
+        "bytes": 64365,
+        "sha256": "ced8e09fdd7aa30824a02047207b4817083f846e56160897502355efd1c013c6",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "c6f33bd5e4d952feb02ee9ddff73a291960ab9541d0aefc51fc9d314511d1846"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportTiled-8-t1-none-flags": {
+    "kind": "unchanged",
+    "prefix": "ExportTiled-8-t1",
+    "axis": "none",
+    "method": "flags",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/ExportTiled-8-t1-none-flags/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "369025cf4733760d24a71de792c4dd642b811fee2e1a4356423274f44e96843c",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14648,
+    "process_peak_rss_kib": 348068,
+    "process_user_seconds": 0.16944299999999998,
+    "process_system_seconds": 0.240092,
+    "wall_seconds": 0.4989908340066904,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "Brush",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportTiled",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result.png_000_000.png": {
+        "bytes": 885,
+        "sha256": "033320d994202951903854c56b9dcfecca2c1eacda34df669a715fe475d35d14",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 8,
+        "pixels_sha256": "b31943731688b3e290d7fd55e8f53127df63c93b833da86e5890b76cb477822c"
+      },
+      "result.png_000_001.png": {
+        "bytes": 907,
+        "sha256": "e0a2f7c4ca8bc5337b9f85b87eefba6635a30f69b3c71ba3f8d0d06f76913883",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 8,
+        "pixels_sha256": "b7d6ad3081973ccfa6da5724c6828c1500f8aa3a0124eebb1b302995574c7d32"
+      },
+      "result.png_001_000.png": {
+        "bytes": 925,
+        "sha256": "27b741a3069a500af369b4fbfed6777d6c91246f16deaf55f7ad293c09cbf0c1",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 8,
+        "pixels_sha256": "928bf6ad8285eeedcde6315253425c80f458fcdbf05db916bea5b5b1eec89624"
+      },
+      "result.png_001_001.png": {
+        "bytes": 935,
+        "sha256": "61fe3219bc1a791b2e565b732473350c3b77aab5f74f65ef1f7589c08704e4a9",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 8,
+        "pixels_sha256": "d49ecee29e7242ffbaad9e2690ebb4d20eae57abc127c25869a6df0f2cad99a8"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportTiled-8-t1-x-flags": {
+    "kind": "flip",
+    "prefix": "ExportTiled-8-t1",
+    "axis": "x",
+    "method": "flags",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/ExportTiled-8-t1-x-flags/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "68c9a3b73ca74f5e4078ca00424d37ab97b58e2aec4b5fbaf855554360189741",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14644,
+    "process_peak_rss_kib": 348336,
+    "process_user_seconds": 0.16860799999999998,
+    "process_system_seconds": 0.245056,
+    "wall_seconds": 0.5010225270088995,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "Brush",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportTiled",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result.png_000_000.png": {
+        "bytes": 885,
+        "sha256": "033320d994202951903854c56b9dcfecca2c1eacda34df669a715fe475d35d14",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 8,
+        "pixels_sha256": "b31943731688b3e290d7fd55e8f53127df63c93b833da86e5890b76cb477822c"
+      },
+      "result.png_000_001.png": {
+        "bytes": 907,
+        "sha256": "e0a2f7c4ca8bc5337b9f85b87eefba6635a30f69b3c71ba3f8d0d06f76913883",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 8,
+        "pixels_sha256": "b7d6ad3081973ccfa6da5724c6828c1500f8aa3a0124eebb1b302995574c7d32"
+      },
+      "result.png_001_000.png": {
+        "bytes": 925,
+        "sha256": "27b741a3069a500af369b4fbfed6777d6c91246f16deaf55f7ad293c09cbf0c1",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 8,
+        "pixels_sha256": "928bf6ad8285eeedcde6315253425c80f458fcdbf05db916bea5b5b1eec89624"
+      },
+      "result.png_001_001.png": {
+        "bytes": 935,
+        "sha256": "61fe3219bc1a791b2e565b732473350c3b77aab5f74f65ef1f7589c08704e4a9",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 8,
+        "pixels_sha256": "d49ecee29e7242ffbaad9e2690ebb4d20eae57abc127c25869a6df0f2cad99a8"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportTiled-8-t1-x-source": {
+    "kind": "flip",
+    "prefix": "ExportTiled-8-t1",
+    "axis": "x",
+    "method": "source",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/ExportTiled-8-t1-x-source/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "4018366675adb84562a407b68fe2fdd2501c3333b3273d37cc75d2a8b12c4a87",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14652,
+    "process_peak_rss_kib": 348588,
+    "process_user_seconds": 0.16159099999999998,
+    "process_system_seconds": 0.248715,
+    "wall_seconds": 0.4368271589919459,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "Brush",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportTiled",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result.png_000_000.png": {
+        "bytes": 965,
+        "sha256": "2e3e52a7f6f819155360ded7f74ab488816e0bfc5818f21408395fd283350c22",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 8,
+        "pixels_sha256": "b350f0ef0a15889605993b7bc4d9f499651e57c6a3da21d807328f4bac789df7"
+      },
+      "result.png_000_001.png": {
+        "bytes": 970,
+        "sha256": "9d39f87ae6e305fa9e1973538adda93879136f6f472db8cf213d9725c7832b46",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 8,
+        "pixels_sha256": "ba80fa3a9a56444b875d30d3341cdc976f39b639e164fd973edd4fc43ee53a80"
+      },
+      "result.png_001_000.png": {
+        "bytes": 935,
+        "sha256": "0f78697cce9d719f509973784217cad3eefb042ce38ae082717cfa22f36b69c7",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 8,
+        "pixels_sha256": "51694a019f2b97ab55fd3e4bea0cf0c8d101b67d23e159ef0cb6b2290fed6eb8"
+      },
+      "result.png_001_001.png": {
+        "bytes": 953,
+        "sha256": "9f8e24f5251e61749a545685fe22b0dd4860bd52aa6bc191e59beb6caf3baabd",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 8,
+        "pixels_sha256": "45ec597bf9ce88257ebbb3f579f65d88251d8526a2b6d2805be69e4031cf9206"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportTiled-8-t1-y-flags": {
+    "kind": "flip",
+    "prefix": "ExportTiled-8-t1",
+    "axis": "y",
+    "method": "flags",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/ExportTiled-8-t1-y-flags/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "2072a256f1483f4b84e840b54d95e739a17227c3958e2babfd9e3d09f8dae30a",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14636,
+    "process_peak_rss_kib": 348348,
+    "process_user_seconds": 0.16924899999999998,
+    "process_system_seconds": 0.246548,
+    "wall_seconds": 0.43632114700449165,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "Brush",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportTiled",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result.png_000_000.png": {
+        "bytes": 885,
+        "sha256": "033320d994202951903854c56b9dcfecca2c1eacda34df669a715fe475d35d14",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 8,
+        "pixels_sha256": "b31943731688b3e290d7fd55e8f53127df63c93b833da86e5890b76cb477822c"
+      },
+      "result.png_000_001.png": {
+        "bytes": 907,
+        "sha256": "e0a2f7c4ca8bc5337b9f85b87eefba6635a30f69b3c71ba3f8d0d06f76913883",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 8,
+        "pixels_sha256": "b7d6ad3081973ccfa6da5724c6828c1500f8aa3a0124eebb1b302995574c7d32"
+      },
+      "result.png_001_000.png": {
+        "bytes": 925,
+        "sha256": "27b741a3069a500af369b4fbfed6777d6c91246f16deaf55f7ad293c09cbf0c1",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 8,
+        "pixels_sha256": "928bf6ad8285eeedcde6315253425c80f458fcdbf05db916bea5b5b1eec89624"
+      },
+      "result.png_001_001.png": {
+        "bytes": 935,
+        "sha256": "61fe3219bc1a791b2e565b732473350c3b77aab5f74f65ef1f7589c08704e4a9",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 8,
+        "pixels_sha256": "d49ecee29e7242ffbaad9e2690ebb4d20eae57abc127c25869a6df0f2cad99a8"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportTiled-8-t1-y-source": {
+    "kind": "flip",
+    "prefix": "ExportTiled-8-t1",
+    "axis": "y",
+    "method": "source",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/ExportTiled-8-t1-y-source/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "a270e82e5b15aaa838c305197d6027568cfcedd663ae02fc397f8c0e3f0b5393",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14548,
+    "process_peak_rss_kib": 347892,
+    "process_user_seconds": 0.171426,
+    "process_system_seconds": 0.24478599999999998,
+    "wall_seconds": 0.5001366239885101,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "Brush",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportTiled",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result.png_000_000.png": {
+        "bytes": 907,
+        "sha256": "d0a7b5d2fa9e3e014dd0ec8f0b13bd229f3ce2fe67d1f1f43cee660fcd315f1c",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 8,
+        "pixels_sha256": "f849a2342a5e6f6c95c39eebb48e9ae0bf92789e08e9ce58dc99d0b78769b25c"
+      },
+      "result.png_000_001.png": {
+        "bytes": 885,
+        "sha256": "95cc79d45e7e2451b0306db302356ac72fd17f05afd3a12b8cdec546fd51ff8e",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 8,
+        "pixels_sha256": "5391394cb44f9027b43091dae51326c3f155712e4354a412298bbec239b66120"
+      },
+      "result.png_001_000.png": {
+        "bytes": 935,
+        "sha256": "ed34e62ad09314c3ab5763d8447957b65aa79c814a701e9662cd8f5c974c6268",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 8,
+        "pixels_sha256": "50c3295e02a39f7edaa6dc49a57e2277ed38f57ed024d75c24cd56755a3e5ef6"
+      },
+      "result.png_001_001.png": {
+        "bytes": 925,
+        "sha256": "35c9a0b1af3c312db657b4d5020992b8ce310d9be3bcb8e7b3a321e049c6db1d",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 8,
+        "pixels_sha256": "dc85dc377c4634f36d169dba3dc493077670862b001d529b44df4c3b97697206"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportTiled-8-t1-xy-flags": {
+    "kind": "flip",
+    "prefix": "ExportTiled-8-t1",
+    "axis": "xy",
+    "method": "flags",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/ExportTiled-8-t1-xy-flags/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "679de5754bde88d756344035f0862b5ac1f536110236c8a4510f667b6393f09c",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14648,
+    "process_peak_rss_kib": 348732,
+    "process_user_seconds": 0.181108,
+    "process_system_seconds": 0.23047099999999998,
+    "wall_seconds": 0.500174335000338,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "Brush",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportTiled",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result.png_000_000.png": {
+        "bytes": 885,
+        "sha256": "033320d994202951903854c56b9dcfecca2c1eacda34df669a715fe475d35d14",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 8,
+        "pixels_sha256": "b31943731688b3e290d7fd55e8f53127df63c93b833da86e5890b76cb477822c"
+      },
+      "result.png_000_001.png": {
+        "bytes": 907,
+        "sha256": "e0a2f7c4ca8bc5337b9f85b87eefba6635a30f69b3c71ba3f8d0d06f76913883",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 8,
+        "pixels_sha256": "b7d6ad3081973ccfa6da5724c6828c1500f8aa3a0124eebb1b302995574c7d32"
+      },
+      "result.png_001_000.png": {
+        "bytes": 925,
+        "sha256": "27b741a3069a500af369b4fbfed6777d6c91246f16deaf55f7ad293c09cbf0c1",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 8,
+        "pixels_sha256": "928bf6ad8285eeedcde6315253425c80f458fcdbf05db916bea5b5b1eec89624"
+      },
+      "result.png_001_001.png": {
+        "bytes": 935,
+        "sha256": "61fe3219bc1a791b2e565b732473350c3b77aab5f74f65ef1f7589c08704e4a9",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 8,
+        "pixels_sha256": "d49ecee29e7242ffbaad9e2690ebb4d20eae57abc127c25869a6df0f2cad99a8"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportTiled-8-t1-xy-source": {
+    "kind": "flip",
+    "prefix": "ExportTiled-8-t1",
+    "axis": "xy",
+    "method": "source",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/ExportTiled-8-t1-xy-source/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "6dae16aec1b6596c66cf2feed142ab2273b346e47848e2535d987e3987591e06",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14648,
+    "process_peak_rss_kib": 348728,
+    "process_user_seconds": 0.171898,
+    "process_system_seconds": 0.246478,
+    "wall_seconds": 0.5015378489915747,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "Brush",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportTiled",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result.png_000_000.png": {
+        "bytes": 970,
+        "sha256": "e4701f7f474c317b0f139818c4c80714cedf3b7adc4146785da8d662d5d3df10",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 8,
+        "pixels_sha256": "280133b3b86fc72f778eb100c956a2b7da0a50e348e749ea90ed72075dbe955d"
+      },
+      "result.png_000_001.png": {
+        "bytes": 965,
+        "sha256": "de7565bc79a3ca2fd9b31df54ab02c007a846a1a4270128b17e2469750b33be4",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 8,
+        "pixels_sha256": "a8f799713e6811efa40631d54fe5b77e2a504c5c060ceaa1bfa924ba0ffd27ce"
+      },
+      "result.png_001_000.png": {
+        "bytes": 953,
+        "sha256": "df36b354d1e8e073b9ac5f2a5203a5c9e476b0e64fa163206392daa74e2b5b8b",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 8,
+        "pixels_sha256": "ead66db772e560c3576b62cf066066f3efcc3cb66580c58bd2135d21e8aba667"
+      },
+      "result.png_001_001.png": {
+        "bytes": 935,
+        "sha256": "5133e8a95bafcaadd68b10e8d8b97ac4299198ca25d05a43bb241233f9c6cc6d",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 8,
+        "pixels_sha256": "27b61c20febc481106e347d7b468fe893871a101cbfd84acc9396bbd76b09405"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportTiled-16-t1-none-flags": {
+    "kind": "unchanged",
+    "prefix": "ExportTiled-16-t1",
+    "axis": "none",
+    "method": "flags",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/ExportTiled-16-t1-none-flags/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "3bcdd4763442ec4ff0d1527ebc856abdd0721fc4ef6e4e577a46ecfc750955ca",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14652,
+    "process_peak_rss_kib": 348720,
+    "process_user_seconds": 0.169199,
+    "process_system_seconds": 0.242034,
+    "wall_seconds": 0.49899909101077355,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "Brush",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportTiled",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result.png_000_000.png": {
+        "bytes": 5843,
+        "sha256": "0b5c844a5d2db441ccd7fcde05a0bd310de4243655bd7f48b4a17c8f5684d8df",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "2f58f80233f59a1e3bfe75d0121cd391e09d0bed634443c32f71c8db5a77bb62"
+      },
+      "result.png_000_001.png": {
+        "bytes": 5843,
+        "sha256": "6af5d7ad035b87646cadcddbf6f6197e949c67098d672decf5de2de2e296a510",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "bb544a7aa1def86057077985abb0c2a04dcbae77025140e201a10e87db1f1348"
+      },
+      "result.png_001_000.png": {
+        "bytes": 5878,
+        "sha256": "211e199d2067d82fea7d24d24c9c172ba37dc92df525b849a854dafbd7a83fb8",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "8e65d903dc0075dd6332daeb3ab488061490fd271394420a142e7f14682a9211"
+      },
+      "result.png_001_001.png": {
+        "bytes": 5894,
+        "sha256": "9d12edb8d5e0437884ee2c098e84ae261284686017413c6928b0b66f71137a08",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "4669fdec0575108723d5a59ff8101b29f27940d112cc201579162bf99ce820e3"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportTiled-16-t1-x-flags": {
+    "kind": "flip",
+    "prefix": "ExportTiled-16-t1",
+    "axis": "x",
+    "method": "flags",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/ExportTiled-16-t1-x-flags/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "ec46fc5fbe9a5d532f6a03b41918b735ea4a4707ca81e4df824ac9060739b5d5",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14648,
+    "process_peak_rss_kib": 348728,
+    "process_user_seconds": 0.167125,
+    "process_system_seconds": 0.243536,
+    "wall_seconds": 0.43689996100147255,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "Brush",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportTiled",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result.png_000_000.png": {
+        "bytes": 5843,
+        "sha256": "0b5c844a5d2db441ccd7fcde05a0bd310de4243655bd7f48b4a17c8f5684d8df",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "2f58f80233f59a1e3bfe75d0121cd391e09d0bed634443c32f71c8db5a77bb62"
+      },
+      "result.png_000_001.png": {
+        "bytes": 5843,
+        "sha256": "6af5d7ad035b87646cadcddbf6f6197e949c67098d672decf5de2de2e296a510",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "bb544a7aa1def86057077985abb0c2a04dcbae77025140e201a10e87db1f1348"
+      },
+      "result.png_001_000.png": {
+        "bytes": 5878,
+        "sha256": "211e199d2067d82fea7d24d24c9c172ba37dc92df525b849a854dafbd7a83fb8",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "8e65d903dc0075dd6332daeb3ab488061490fd271394420a142e7f14682a9211"
+      },
+      "result.png_001_001.png": {
+        "bytes": 5894,
+        "sha256": "9d12edb8d5e0437884ee2c098e84ae261284686017413c6928b0b66f71137a08",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "4669fdec0575108723d5a59ff8101b29f27940d112cc201579162bf99ce820e3"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportTiled-16-t1-x-source": {
+    "kind": "flip",
+    "prefix": "ExportTiled-16-t1",
+    "axis": "x",
+    "method": "source",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/ExportTiled-16-t1-x-source/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "e983df04a5d1f52c406e5020f62343b1b669fb5bc424b8092621329955975058",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14652,
+    "process_peak_rss_kib": 348448,
+    "process_user_seconds": 0.18071199999999998,
+    "process_system_seconds": 0.23749199999999998,
+    "wall_seconds": 0.437727995988098,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "Brush",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportTiled",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result.png_000_000.png": {
+        "bytes": 5916,
+        "sha256": "bbc5777754782be20580247b19282db0ccb6b153617b34598f16f06069e1e7d5",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "ac8bf6700535e3541466900f63b664eb4bac9953a3e1901fe830d6bd094e4eac"
+      },
+      "result.png_000_001.png": {
+        "bytes": 5933,
+        "sha256": "e370d8cc2ef9bcf2eb557726d74c8f94490c692a0c460d368b9dfb7a7af95ae5",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "ba66b314ea9b5e0950c88266a6cb43b2fdde364eb749dd83f037fb13fad6902a"
+      },
+      "result.png_001_000.png": {
+        "bytes": 5897,
+        "sha256": "f07dd84dfcef8e001a36a62a8bc085d584769e776b9a768a0d7004c71c709c83",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "bd39ddec27a8fd73438d61466ad381930b33d0841c180676e27073a196c38252"
+      },
+      "result.png_001_001.png": {
+        "bytes": 5895,
+        "sha256": "33f02003e046d956b57d37fa759beeaa26f23e05ae58131c259047f4423f369d",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "0670fab934182ca1ef4c79ed27abe618c61c5a6ef0dd3064100d3eb641d04431"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportTiled-16-t1-y-flags": {
+    "kind": "flip",
+    "prefix": "ExportTiled-16-t1",
+    "axis": "y",
+    "method": "flags",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/ExportTiled-16-t1-y-flags/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "d0d575018877bc9520cdc330ece3c28b3983ea3d9d11a15b15e98c07ecc2cd82",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14712,
+    "process_peak_rss_kib": 348472,
+    "process_user_seconds": 0.179316,
+    "process_system_seconds": 0.23514,
+    "wall_seconds": 0.43885703399428166,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "Brush",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportTiled",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result.png_000_000.png": {
+        "bytes": 5843,
+        "sha256": "0b5c844a5d2db441ccd7fcde05a0bd310de4243655bd7f48b4a17c8f5684d8df",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "2f58f80233f59a1e3bfe75d0121cd391e09d0bed634443c32f71c8db5a77bb62"
+      },
+      "result.png_000_001.png": {
+        "bytes": 5843,
+        "sha256": "6af5d7ad035b87646cadcddbf6f6197e949c67098d672decf5de2de2e296a510",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "bb544a7aa1def86057077985abb0c2a04dcbae77025140e201a10e87db1f1348"
+      },
+      "result.png_001_000.png": {
+        "bytes": 5878,
+        "sha256": "211e199d2067d82fea7d24d24c9c172ba37dc92df525b849a854dafbd7a83fb8",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "8e65d903dc0075dd6332daeb3ab488061490fd271394420a142e7f14682a9211"
+      },
+      "result.png_001_001.png": {
+        "bytes": 5894,
+        "sha256": "9d12edb8d5e0437884ee2c098e84ae261284686017413c6928b0b66f71137a08",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "4669fdec0575108723d5a59ff8101b29f27940d112cc201579162bf99ce820e3"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportTiled-16-t1-y-source": {
+    "kind": "flip",
+    "prefix": "ExportTiled-16-t1",
+    "axis": "y",
+    "method": "source",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/ExportTiled-16-t1-y-source/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "6c751122c422bcc67aa8491d5ff6c60e86bbf5539037364e1a855d61851f97f4",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14652,
+    "process_peak_rss_kib": 348000,
+    "process_user_seconds": 0.173737,
+    "process_system_seconds": 0.23868399999999998,
+    "wall_seconds": 0.49974986400047783,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "Brush",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportTiled",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result.png_000_000.png": {
+        "bytes": 5843,
+        "sha256": "f908b0a1d384a4333dfd3e4e2d6bd8e6c2f37c42857a932cacedd0f5ff910fd7",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "70adef8ed7b7c1be65b6e08fedb29aeaf86ab2450a7ecd16c49b720ed841de0d"
+      },
+      "result.png_000_001.png": {
+        "bytes": 5843,
+        "sha256": "a02d48c1249045b97ac367b181f5079655fe30ac5065d590e10db3259c36d5d9",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "fc37b5d1062eb53024791bf4d685fc18fdcce285a7834929c301d545d213f587"
+      },
+      "result.png_001_000.png": {
+        "bytes": 5894,
+        "sha256": "79a9981b8966c7d26c3b889120c7efdc252d4c6760b566cb2a510d65077344af",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "e8b33898bdd0ec41fa5d2508f986fd1ffffa6ce705787213366c2af7853a7dc8"
+      },
+      "result.png_001_001.png": {
+        "bytes": 5878,
+        "sha256": "2d678a6babcc6c59113db795cbd20bab56b477ca1ac02e09ee5c8c51e25da507",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "195c68da1b69ba8e48d2c87c71733b5171313d736ce7c681077664442bf2dfb0"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportTiled-16-t1-xy-flags": {
+    "kind": "flip",
+    "prefix": "ExportTiled-16-t1",
+    "axis": "xy",
+    "method": "flags",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/ExportTiled-16-t1-xy-flags/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "088a1ade4150088572168da176a52ac64028a140bebe26e2be0f8dbee7518180",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14652,
+    "process_peak_rss_kib": 348560,
+    "process_user_seconds": 0.178167,
+    "process_system_seconds": 0.23199399999999998,
+    "wall_seconds": 0.5016615670028841,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "Brush",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportTiled",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result.png_000_000.png": {
+        "bytes": 5843,
+        "sha256": "0b5c844a5d2db441ccd7fcde05a0bd310de4243655bd7f48b4a17c8f5684d8df",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "2f58f80233f59a1e3bfe75d0121cd391e09d0bed634443c32f71c8db5a77bb62"
+      },
+      "result.png_000_001.png": {
+        "bytes": 5843,
+        "sha256": "6af5d7ad035b87646cadcddbf6f6197e949c67098d672decf5de2de2e296a510",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "bb544a7aa1def86057077985abb0c2a04dcbae77025140e201a10e87db1f1348"
+      },
+      "result.png_001_000.png": {
+        "bytes": 5878,
+        "sha256": "211e199d2067d82fea7d24d24c9c172ba37dc92df525b849a854dafbd7a83fb8",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "8e65d903dc0075dd6332daeb3ab488061490fd271394420a142e7f14682a9211"
+      },
+      "result.png_001_001.png": {
+        "bytes": 5894,
+        "sha256": "9d12edb8d5e0437884ee2c098e84ae261284686017413c6928b0b66f71137a08",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "4669fdec0575108723d5a59ff8101b29f27940d112cc201579162bf99ce820e3"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportTiled-16-t1-xy-source": {
+    "kind": "flip",
+    "prefix": "ExportTiled-16-t1",
+    "axis": "xy",
+    "method": "source",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/ExportTiled-16-t1-xy-source/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "a211c555f5c26ee10cd6554439008881226a81836c2740c8868b3d14225afab5",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14648,
+    "process_peak_rss_kib": 348876,
+    "process_user_seconds": 0.17292,
+    "process_system_seconds": 0.237943,
+    "wall_seconds": 0.4996439529932104,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "Brush",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportTiled",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result.png_000_000.png": {
+        "bytes": 5933,
+        "sha256": "65b6c8693abd5454a928e5efd8fede8e6c9a96c4293a27bc77eedaf335f6497f",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "4d2cc9b656139b21d7650cab50d63e038a0ba39fd9141b83b141372f758b739b"
+      },
+      "result.png_000_001.png": {
+        "bytes": 5916,
+        "sha256": "29870f5e232b3c1b524972c5b2457a2d7407702750c09d27bda892403d1a4de3",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "91e853e9b7b45a9eb529a9add4c439753f4c32d9913d427f9036b95893640ae6"
+      },
+      "result.png_001_000.png": {
+        "bytes": 5895,
+        "sha256": "691ac55532bed7e7969750d073002526aba5362b8ce6e31ba2918f22cb2d45b1",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "96db4d22c4ab24f2b3c83213709d2c27016ade7d1234489548440727d39a2811"
+      },
+      "result.png_001_001.png": {
+        "bytes": 5897,
+        "sha256": "0672cfde18b69f8312316f8d68093752133f7cbe9468dd8c11c22b2b91fe120c",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "b05bf478222e51980b14ab2cf69471023e263381193d35bb6eb0dc77f9d0d28c"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportAsset-minimal-t4": {
+    "kind": "unchanged",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/ExportAsset-minimal-t4/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "c3f8f358d76c16625c68fbb52159e67aa4e317cc9b9daf9bd6dcff0295540ca1",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14648,
+    "process_peak_rss_kib": 358388,
+    "process_user_seconds": 0.176397,
+    "process_system_seconds": 0.24947899999999998,
+    "wall_seconds": 0.4913139200070873,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportAsset",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result..glb": {
+        "bytes": 715964,
+        "sha256": "261e7d2b9a70df0ba8f43855dd91cb2b51cf1bb2923f5c2496e1936557aa5cac",
+        "normalized_chunks": [
+          [
+            1313821514,
+            "a44b0fe32bf5d38c2af3dc641af2a6793e1b4b9e0bf0f65afb52d462bfca3c1e"
+          ],
+          [
+            5130562,
+            "bebd44f99dffb35851c5196287535d934098aa26bf39b80f8fab6c2ea5482f5d"
+          ]
+        ]
+      },
+      "result._nmap.png": {
+        "bytes": 87244,
+        "sha256": "ea647971c2fbfd3e67bba1d80c472826846c29499ac68b51e2f1b7d286bdda67",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "3feb91b8186ad21f713745ab55ee17b7ab2721d9fd0bae13c14adde56d71825e"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportAsset-full-t4": {
+    "kind": "unchanged",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/ExportAsset-full-t4/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "55fb6ac140abca61d8083891f20beb0077fadcb91f543276ce8c3f7c50defc5a",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14528,
+    "process_peak_rss_kib": 359552,
+    "process_user_seconds": 0.19408999999999998,
+    "process_system_seconds": 0.237803,
+    "wall_seconds": 0.49780578499485273,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 0
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "ExportAsset",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result..glb": {
+        "bytes": 716020,
+        "sha256": "fdbd16bf433dd4ac828ffc608865744775053d4bfb30da99ddbf02c40d10140f",
+        "normalized_chunks": [
+          [
+            1313821514,
+            "7315497dfda9b7d5c6bacd4fbb4ea535e173f2d10086c49aec078910f97b8b77"
+          ],
+          [
+            5130562,
+            "1c2a1986e2b3cb51870633c5fd83e937f8fe37f31da2baaf2dcddf6739a1507c"
+          ]
+        ]
+      },
+      "result..png": {
+        "bytes": 86206,
+        "sha256": "467732b59d1ccebcd263deaed1f5c79b8ff2f72d79d09f8a155787c5f5abe82f",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "f68973e018b73010153d45ab8cca4dcd40412d4b679120a3d17038bdc4d9c162"
+      },
+      "result._nmap.png": {
+        "bytes": 89409,
+        "sha256": "5bb7eb9b34077bd2055d426d495002001667495f3ff649ffaca73448735c06d6",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "729b47e3776a80011afeeca23a36e69d09875f5e6847dfb28955e38715039e3c"
+      }
+    },
+    "status": "ok"
+  },
+  "HeightmapToNormalMap-full-t4": {
+    "kind": "unchanged",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/HeightmapToNormalMap-full-t4/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "e3efd112e761c04ad6a3a95a97f81bae78aab5833897ebb96141ba0827ed5c89",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14652,
+    "process_peak_rss_kib": 346568,
+    "process_user_seconds": 0.17288599999999998,
+    "process_system_seconds": 0.23299999999999998,
+    "wall_seconds": 0.49955560099624563,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "HeightmapToNormalMap",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ExportTexture",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "export-normal_map.png": {
+        "bytes": 87244,
+        "sha256": "ea647971c2fbfd3e67bba1d80c472826846c29499ac68b51e2f1b7d286bdda67",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "3feb91b8186ad21f713745ab55ee17b7ab2721d9fd0bae13c14adde56d71825e"
+      }
+    },
+    "status": "ok"
+  },
+  "CloudRandomDistance-density-t4": {
+    "kind": "unchanged",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/CloudRandomDistance-density-t4/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "b91c89fec607bffdba90c75833fc0fb1b192adfb0c589fc91e4eaa84be2e0401",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14648,
+    "process_peak_rss_kib": 345256,
+    "process_user_seconds": 0.16963,
+    "process_system_seconds": 0.23918699999999998,
+    "wall_seconds": 0.4380289830005495,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "CloudRandomDistance",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ExportCloud",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "export-cloud.csv": {
+        "bytes": 4176,
+        "sha256": "2078df1e174a0b970625f2e8b55fd1b18992fb4eb46b8a16612c2c44cbe2d096"
+      }
+    },
+    "status": "ok"
+  },
+  "CloudRandomDistance-no-density-t4": {
+    "kind": "unchanged",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/CloudRandomDistance-no-density-t4/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "36fbbab1fb44e99cda38d28fb2d5a06917ed57e5199007d2dec4b19954f3f489",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14712,
+    "process_peak_rss_kib": 344528,
+    "process_user_seconds": 0.165054,
+    "process_system_seconds": 0.244969,
+    "wall_seconds": 0.4368731540016597,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "CloudRandomDistance",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportCloud",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "export-cloud.csv": {
+        "bytes": 9720,
+        "sha256": "4c309dbcc3a92ee6d02830e7b615a2d57a2173caeb554c6a1aa4412661bdf2e6"
+      }
+    },
+    "status": "ok"
+  },
+  "QuiltingShuffle-full-t4": {
+    "kind": "unchanged",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/QuiltingShuffle-full-t4/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "a4c6db0f0322d16784f882941e42583397acd4126d9a71d62adb4543c08e87ab",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14612,
+    "process_peak_rss_kib": 346592,
+    "process_user_seconds": 0.16905099999999998,
+    "process_system_seconds": 0.24512799999999998,
+    "wall_seconds": 0.43979154800763354,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "QuiltingShuffle",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ExportHeightmap",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "export-output.png": {
+        "bytes": 27889,
+        "sha256": "a6f952e466dd95a69493c9071a2a524d0f8ed10d79d53c228ad195e7c982001c",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "118ca3ec1849bbbe589afe36b7466676a8ee27b747a5cef85098a038947831df"
+      }
+    },
+    "status": "ok"
+  },
+  "QuiltingExpand-full-t4": {
+    "kind": "unchanged",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/QuiltingExpand-full-t4/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "5f4ae651aea7f12cf740c73d1b077fab6677968cf8acd08239c798bfb7a44869",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14532,
+    "process_peak_rss_kib": 346216,
+    "process_user_seconds": 0.179474,
+    "process_system_seconds": 0.234017,
+    "wall_seconds": 0.49946583100245334,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "QuiltingExpand",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ExportHeightmap",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "export-output.png": {
+        "bytes": 29830,
+        "sha256": "d3f18b8d33afb74908a330db7cd5297e7c68e8153ee66c08557b9249f9f09db8",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "3b6c2d06766d4b8bdefe5a7649ee7d6d84904f4f7f89d7b932b4fab06d5839ee"
+      }
+    },
+    "status": "ok"
+  },
+  "TextureQuiltingShuffle-full-t4": {
+    "kind": "unchanged",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/TextureQuiltingShuffle-full-t4/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "8290d169fdad709734c063b3965dcfd4f5bc7c58c339c89724cadb73c83244b7",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14652,
+    "process_peak_rss_kib": 355248,
+    "process_user_seconds": 0.188715,
+    "process_system_seconds": 0.234902,
+    "wall_seconds": 0.49741614099184517,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "TextureQuiltingShuffle",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "6",
+        "type": "ExportHeightmap",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "7",
+        "type": "ExportTexture",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "8",
+        "type": "ExportTexture",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "9",
+        "type": "ExportTexture",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "10",
+        "type": "ExportTexture",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "11",
+        "type": "ExportTexture",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "export-heightmap.png": {
+        "bytes": 27889,
+        "sha256": "a6f952e466dd95a69493c9071a2a524d0f8ed10d79d53c228ad195e7c982001c",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "118ca3ec1849bbbe589afe36b7466676a8ee27b747a5cef85098a038947831df"
+      },
+      "export-texture.png": {
+        "bytes": 76137,
+        "sha256": "779cbf584ac08cb3054a7f496fcc6f336837c0f344f15057e1aaceaf8cc9ac73",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "15fa12b3de68cc877635c1df5521402e28493bdcca8532f262b7d9ee5c9443b1"
+      },
+      "export-texture_A_out.png": {
+        "bytes": 73696,
+        "sha256": "2cd72f77d9b40d8d9e9aba1e0009b44fddd1970c137c1f6657a01c3b20447a0e",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "5c217de00a521fa7bd0089b35e09cc5526fb45fe9ac37d91ea6f6d793d1514dd"
+      },
+      "export-texture_B_out.png": {
+        "bytes": 76137,
+        "sha256": "779cbf584ac08cb3054a7f496fcc6f336837c0f344f15057e1aaceaf8cc9ac73",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "15fa12b3de68cc877635c1df5521402e28493bdcca8532f262b7d9ee5c9443b1"
+      },
+      "export-texture_C_out.png": {
+        "bytes": 73696,
+        "sha256": "2cd72f77d9b40d8d9e9aba1e0009b44fddd1970c137c1f6657a01c3b20447a0e",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "5c217de00a521fa7bd0089b35e09cc5526fb45fe9ac37d91ea6f6d793d1514dd"
+      },
+      "export-texture_D_out.png": {
+        "bytes": 76137,
+        "sha256": "779cbf584ac08cb3054a7f496fcc6f336837c0f344f15057e1aaceaf8cc9ac73",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "15fa12b3de68cc877635c1df5521402e28493bdcca8532f262b7d9ee5c9443b1"
+      }
+    },
+    "status": "ok"
+  },
+  "TextureQuiltingExpand-full-t4": {
+    "kind": "unchanged",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/TextureQuiltingExpand-full-t4/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "ba48c978c6d392c7038c7a0625d65345af515e798de15e15ec46e581ad9c6f21",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14652,
+    "process_peak_rss_kib": 355800,
+    "process_user_seconds": 0.19788799999999998,
+    "process_system_seconds": 0.235115,
+    "wall_seconds": 0.49880373499763664,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "TextureQuiltingExpand",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "6",
+        "type": "ExportHeightmap",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "7",
+        "type": "ExportTexture",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "8",
+        "type": "ExportTexture",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "9",
+        "type": "ExportTexture",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "10",
+        "type": "ExportTexture",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "11",
+        "type": "ExportTexture",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "export-heightmap.png": {
+        "bytes": 29830,
+        "sha256": "d3f18b8d33afb74908a330db7cd5297e7c68e8153ee66c08557b9249f9f09db8",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "3b6c2d06766d4b8bdefe5a7649ee7d6d84904f4f7f89d7b932b4fab06d5839ee"
+      },
+      "export-texture.png": {
+        "bytes": 80007,
+        "sha256": "fda3ee5faab10c8cb5b6c4faa8dbeb4f025c04b0c496a767641be2795c90391f",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "d9b76f2c8e257a2cc614304f4ef2457619c8f6e89a2646ec52b2ace672f30618"
+      },
+      "export-texture_A_out.png": {
+        "bytes": 75618,
+        "sha256": "342139f1f3b0a81f861dd2b284f4a9ebe5ded1d7a234dc89aeef386c181dbb83",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "ece5d32ce9c0412340397d8a3c359e4769d12e3e9270fe9616a8f647b3e12fcb"
+      },
+      "export-texture_B_out.png": {
+        "bytes": 80007,
+        "sha256": "fda3ee5faab10c8cb5b6c4faa8dbeb4f025c04b0c496a767641be2795c90391f",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "d9b76f2c8e257a2cc614304f4ef2457619c8f6e89a2646ec52b2ace672f30618"
+      },
+      "export-texture_C_out.png": {
+        "bytes": 75618,
+        "sha256": "342139f1f3b0a81f861dd2b284f4a9ebe5ded1d7a234dc89aeef386c181dbb83",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "ece5d32ce9c0412340397d8a3c359e4769d12e3e9270fe9616a8f647b3e12fcb"
+      },
+      "export-texture_D_out.png": {
+        "bytes": 80007,
+        "sha256": "fda3ee5faab10c8cb5b6c4faa8dbeb4f025c04b0c496a767641be2795c90391f",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "d9b76f2c8e257a2cc614304f4ef2457619c8f6e89a2646ec52b2ace672f30618"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportNormalMap-8-t4-none-flags": {
+    "kind": "unchanged",
+    "prefix": "ExportNormalMap-8-t4",
+    "axis": "none",
+    "method": "flags",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/ExportNormalMap-8-t4-none-flags/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "d1e72b03f5aab3e2fcdd4bc9fc15796e24af1c890c5c304abb65d1c58a73b26d",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14648,
+    "process_peak_rss_kib": 349816,
+    "process_user_seconds": 0.177468,
+    "process_system_seconds": 0.230659,
+    "wall_seconds": 0.43684797099558637,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "Brush",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportNormalMap",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result.png": {
+        "bytes": 9758,
+        "sha256": "6a2bea6a320ff3685faffbeba5a908cf06803922b311a68bd82191f047a0158b",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 8,
+        "pixels_sha256": "a39b522c7222352352b15bbe52a57e3d9c43e271aa01ffcf6916834febc9be48"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportNormalMap-8-t4-x-flags": {
+    "kind": "flip",
+    "prefix": "ExportNormalMap-8-t4",
+    "axis": "x",
+    "method": "flags",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/ExportNormalMap-8-t4-x-flags/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "b5c0c878f7999866e7147cfd8bc36ea82d0748f83cb3e022b2404d8e4dc2a9c3",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14644,
+    "process_peak_rss_kib": 349512,
+    "process_user_seconds": 0.17396299999999998,
+    "process_system_seconds": 0.23724699999999999,
+    "wall_seconds": 0.49924090900458395,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "Brush",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportNormalMap",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result.png": {
+        "bytes": 9758,
+        "sha256": "6a2bea6a320ff3685faffbeba5a908cf06803922b311a68bd82191f047a0158b",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 8,
+        "pixels_sha256": "a39b522c7222352352b15bbe52a57e3d9c43e271aa01ffcf6916834febc9be48"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportNormalMap-8-t4-x-source": {
+    "kind": "flip",
+    "prefix": "ExportNormalMap-8-t4",
+    "axis": "x",
+    "method": "source",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/ExportNormalMap-8-t4-x-source/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "76197b4057032136bf9ba003b5375bb1c42dc765ca38917ff6499973439bd81d",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14648,
+    "process_peak_rss_kib": 349244,
+    "process_user_seconds": 0.172488,
+    "process_system_seconds": 0.236928,
+    "wall_seconds": 0.437313065995113,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "Brush",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportNormalMap",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result.png": {
+        "bytes": 10551,
+        "sha256": "836007f27d036aef911e996a1734b83ec0f475edd85751427007afc8f669abc2",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 8,
+        "pixels_sha256": "9a9523f7e86a0df2853d2acdea2f4435366271b523564979aa73ce9a2eb5a789"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportNormalMap-8-t4-y-flags": {
+    "kind": "flip",
+    "prefix": "ExportNormalMap-8-t4",
+    "axis": "y",
+    "method": "flags",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/ExportNormalMap-8-t4-y-flags/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "2e75ac4708f2d4c801c781ef756f07a40fc4250e44b556875c3fb27fe421b8d6",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14712,
+    "process_peak_rss_kib": 349512,
+    "process_user_seconds": 0.16680299999999998,
+    "process_system_seconds": 0.243951,
+    "wall_seconds": 0.499264943995513,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "Brush",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportNormalMap",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result.png": {
+        "bytes": 9758,
+        "sha256": "6a2bea6a320ff3685faffbeba5a908cf06803922b311a68bd82191f047a0158b",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 8,
+        "pixels_sha256": "a39b522c7222352352b15bbe52a57e3d9c43e271aa01ffcf6916834febc9be48"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportNormalMap-8-t4-y-source": {
+    "kind": "flip",
+    "prefix": "ExportNormalMap-8-t4",
+    "axis": "y",
+    "method": "source",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/ExportNormalMap-8-t4-y-source/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "e555f7092f63cafaf299832129ab28e3da15188875a17b50f2b95d0fde1cb2f4",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14648,
+    "process_peak_rss_kib": 349520,
+    "process_user_seconds": 0.17461,
+    "process_system_seconds": 0.24088199999999999,
+    "wall_seconds": 0.5011186340125278,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "Brush",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportNormalMap",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result.png": {
+        "bytes": 9518,
+        "sha256": "30d54b20193e9f30724a932b315d9631fc6481541f09154e578989dc7ae52a57",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 8,
+        "pixels_sha256": "97828729d1582e1f2c5291154b2c1922bdd6186846a5696f4fc91867881a2299"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportNormalMap-8-t4-xy-flags": {
+    "kind": "flip",
+    "prefix": "ExportNormalMap-8-t4",
+    "axis": "xy",
+    "method": "flags",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/ExportNormalMap-8-t4-xy-flags/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "b04fadbaebfacf04b70cc63f3caf1bd0d989df81a9cb404f1c0fb70f242c6367",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14648,
+    "process_peak_rss_kib": 349352,
+    "process_user_seconds": 0.173153,
+    "process_system_seconds": 0.235194,
+    "wall_seconds": 0.4371613020048244,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "Brush",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportNormalMap",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result.png": {
+        "bytes": 9758,
+        "sha256": "6a2bea6a320ff3685faffbeba5a908cf06803922b311a68bd82191f047a0158b",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 8,
+        "pixels_sha256": "a39b522c7222352352b15bbe52a57e3d9c43e271aa01ffcf6916834febc9be48"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportNormalMap-8-t4-xy-source": {
+    "kind": "flip",
+    "prefix": "ExportNormalMap-8-t4",
+    "axis": "xy",
+    "method": "source",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/ExportNormalMap-8-t4-xy-source/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "7562309b1df0776517b24e9f3d89e3465d1bf879aa492a094239c26e92dd2a95",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14648,
+    "process_peak_rss_kib": 349656,
+    "process_user_seconds": 0.166594,
+    "process_system_seconds": 0.24451699999999998,
+    "wall_seconds": 0.43527516699396074,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "Brush",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportNormalMap",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result.png": {
+        "bytes": 10646,
+        "sha256": "a599434923584d6a26c80208650b83d8e8e7d2cd26a65aecebff460368f4c19d",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 8,
+        "pixels_sha256": "f90ad1526ee6465c9d9d80044cdf883a715c201ef7d686acecd54908dcf75629"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportNormalMap-16-t4-none-flags": {
+    "kind": "unchanged",
+    "prefix": "ExportNormalMap-16-t4",
+    "axis": "none",
+    "method": "flags",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/ExportNormalMap-16-t4-none-flags/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "619ce35dbaddb9a497422cc452c6225eed290f92da8209f9280e6c47160173b6",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14652,
+    "process_peak_rss_kib": 349368,
+    "process_user_seconds": 0.172947,
+    "process_system_seconds": 0.239008,
+    "wall_seconds": 0.49420925200683996,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "Brush",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportNormalMap",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result.png": {
+        "bytes": 63288,
+        "sha256": "c2da03f57ff66db0c322857339826d9a02e5bd4568f7fc18e0419abfd46f7703",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "7d122d985d02c7260d3669cee69541b5ade3665391fb4acb1f2f6deb34a508cb"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportNormalMap-16-t4-x-flags": {
+    "kind": "flip",
+    "prefix": "ExportNormalMap-16-t4",
+    "axis": "x",
+    "method": "flags",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/ExportNormalMap-16-t4-x-flags/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "49cdd0e0c079526dfd22ee949b6a5e4811c6c95027e3aed70fe82d09c9a7101b",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14640,
+    "process_peak_rss_kib": 349736,
+    "process_user_seconds": 0.15803499999999998,
+    "process_system_seconds": 0.252531,
+    "wall_seconds": 0.49897971599421,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "Brush",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportNormalMap",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result.png": {
+        "bytes": 63288,
+        "sha256": "c2da03f57ff66db0c322857339826d9a02e5bd4568f7fc18e0419abfd46f7703",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "7d122d985d02c7260d3669cee69541b5ade3665391fb4acb1f2f6deb34a508cb"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportNormalMap-16-t4-x-source": {
+    "kind": "flip",
+    "prefix": "ExportNormalMap-16-t4",
+    "axis": "x",
+    "method": "source",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/ExportNormalMap-16-t4-x-source/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "9626972eba8683dfd7e9d0337f2e225c0835d9d7998b02e3c33682254384688c",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14548,
+    "process_peak_rss_kib": 349360,
+    "process_user_seconds": 0.178202,
+    "process_system_seconds": 0.23502599999999998,
+    "wall_seconds": 0.43630173899873625,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "Brush",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportNormalMap",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result.png": {
+        "bytes": 64222,
+        "sha256": "a72eb656fcedcf51806abb1b80d49683a169dbe3c76cd5a18d46add3512f4b0b",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "39fbe03a6ecc47492970fb7b9a91cc0a7f4beab52648e6f824490f04d14ff4d3"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportNormalMap-16-t4-y-flags": {
+    "kind": "flip",
+    "prefix": "ExportNormalMap-16-t4",
+    "axis": "y",
+    "method": "flags",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/ExportNormalMap-16-t4-y-flags/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "e87a937288ee9c4fbe0d4b30228cdae98329e4efb4da30f607c6089c8249a391",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14648,
+    "process_peak_rss_kib": 349504,
+    "process_user_seconds": 0.161721,
+    "process_system_seconds": 0.24823199999999998,
+    "wall_seconds": 0.498840927000856,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "Brush",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportNormalMap",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result.png": {
+        "bytes": 63288,
+        "sha256": "c2da03f57ff66db0c322857339826d9a02e5bd4568f7fc18e0419abfd46f7703",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "7d122d985d02c7260d3669cee69541b5ade3665391fb4acb1f2f6deb34a508cb"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportNormalMap-16-t4-y-source": {
+    "kind": "flip",
+    "prefix": "ExportNormalMap-16-t4",
+    "axis": "y",
+    "method": "source",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/ExportNormalMap-16-t4-y-source/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "aebe234f3c207321349d978f1d1dd3b08211991e564dde0963f6598e9b5b01e3",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14648,
+    "process_peak_rss_kib": 349288,
+    "process_user_seconds": 0.173178,
+    "process_system_seconds": 0.24753599999999998,
+    "wall_seconds": 0.5006027760100551,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "Brush",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportNormalMap",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result.png": {
+        "bytes": 62633,
+        "sha256": "7136096b9e01962b210841ff0d5105b6092a9ff283d7a780b5fa5d18be7b3fdb",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "e5400518e3a64466600dd4c4945e5d58775aa4802d1ed3255d0809f1c7a0c1b4"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportNormalMap-16-t4-xy-flags": {
+    "kind": "flip",
+    "prefix": "ExportNormalMap-16-t4",
+    "axis": "xy",
+    "method": "flags",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/ExportNormalMap-16-t4-xy-flags/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "bcd2400db9c96e6e16fdbdc62aff930437e5a427ae5a51107dd4800ff1016b7e",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14712,
+    "process_peak_rss_kib": 349440,
+    "process_user_seconds": 0.178051,
+    "process_system_seconds": 0.24579499999999999,
+    "wall_seconds": 0.5002608909999253,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "Brush",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportNormalMap",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result.png": {
+        "bytes": 63288,
+        "sha256": "c2da03f57ff66db0c322857339826d9a02e5bd4568f7fc18e0419abfd46f7703",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "7d122d985d02c7260d3669cee69541b5ade3665391fb4acb1f2f6deb34a508cb"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportNormalMap-16-t4-xy-source": {
+    "kind": "flip",
+    "prefix": "ExportNormalMap-16-t4",
+    "axis": "xy",
+    "method": "source",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/ExportNormalMap-16-t4-xy-source/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "cf6a9786796a430f795a43bbe4e35675433fce634d6b34875d6cea82d8deecad",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14552,
+    "process_peak_rss_kib": 349620,
+    "process_user_seconds": 0.18170799999999998,
+    "process_system_seconds": 0.23665599999999998,
+    "wall_seconds": 0.5007837370067136,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "Brush",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportNormalMap",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result.png": {
+        "bytes": 64365,
+        "sha256": "ced8e09fdd7aa30824a02047207b4817083f846e56160897502355efd1c013c6",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "c6f33bd5e4d952feb02ee9ddff73a291960ab9541d0aefc51fc9d314511d1846"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportTiled-8-t4-none-flags": {
+    "kind": "unchanged",
+    "prefix": "ExportTiled-8-t4",
+    "axis": "none",
+    "method": "flags",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/ExportTiled-8-t4-none-flags/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "369025cf4733760d24a71de792c4dd642b811fee2e1a4356423274f44e96843c",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14636,
+    "process_peak_rss_kib": 348972,
+    "process_user_seconds": 0.180067,
+    "process_system_seconds": 0.24521099999999998,
+    "wall_seconds": 0.5022627229918726,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "Brush",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportTiled",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result.png_000_000.png": {
+        "bytes": 885,
+        "sha256": "033320d994202951903854c56b9dcfecca2c1eacda34df669a715fe475d35d14",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 8,
+        "pixels_sha256": "b31943731688b3e290d7fd55e8f53127df63c93b833da86e5890b76cb477822c"
+      },
+      "result.png_000_001.png": {
+        "bytes": 907,
+        "sha256": "e0a2f7c4ca8bc5337b9f85b87eefba6635a30f69b3c71ba3f8d0d06f76913883",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 8,
+        "pixels_sha256": "b7d6ad3081973ccfa6da5724c6828c1500f8aa3a0124eebb1b302995574c7d32"
+      },
+      "result.png_001_000.png": {
+        "bytes": 925,
+        "sha256": "27b741a3069a500af369b4fbfed6777d6c91246f16deaf55f7ad293c09cbf0c1",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 8,
+        "pixels_sha256": "928bf6ad8285eeedcde6315253425c80f458fcdbf05db916bea5b5b1eec89624"
+      },
+      "result.png_001_001.png": {
+        "bytes": 935,
+        "sha256": "61fe3219bc1a791b2e565b732473350c3b77aab5f74f65ef1f7589c08704e4a9",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 8,
+        "pixels_sha256": "d49ecee29e7242ffbaad9e2690ebb4d20eae57abc127c25869a6df0f2cad99a8"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportTiled-8-t4-x-flags": {
+    "kind": "flip",
+    "prefix": "ExportTiled-8-t4",
+    "axis": "x",
+    "method": "flags",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/ExportTiled-8-t4-x-flags/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "68c9a3b73ca74f5e4078ca00424d37ab97b58e2aec4b5fbaf855554360189741",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14552,
+    "process_peak_rss_kib": 348216,
+    "process_user_seconds": 0.183452,
+    "process_system_seconds": 0.23691199999999998,
+    "wall_seconds": 0.5010730709909694,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "Brush",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportTiled",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result.png_000_000.png": {
+        "bytes": 885,
+        "sha256": "033320d994202951903854c56b9dcfecca2c1eacda34df669a715fe475d35d14",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 8,
+        "pixels_sha256": "b31943731688b3e290d7fd55e8f53127df63c93b833da86e5890b76cb477822c"
+      },
+      "result.png_000_001.png": {
+        "bytes": 907,
+        "sha256": "e0a2f7c4ca8bc5337b9f85b87eefba6635a30f69b3c71ba3f8d0d06f76913883",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 8,
+        "pixels_sha256": "b7d6ad3081973ccfa6da5724c6828c1500f8aa3a0124eebb1b302995574c7d32"
+      },
+      "result.png_001_000.png": {
+        "bytes": 925,
+        "sha256": "27b741a3069a500af369b4fbfed6777d6c91246f16deaf55f7ad293c09cbf0c1",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 8,
+        "pixels_sha256": "928bf6ad8285eeedcde6315253425c80f458fcdbf05db916bea5b5b1eec89624"
+      },
+      "result.png_001_001.png": {
+        "bytes": 935,
+        "sha256": "61fe3219bc1a791b2e565b732473350c3b77aab5f74f65ef1f7589c08704e4a9",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 8,
+        "pixels_sha256": "d49ecee29e7242ffbaad9e2690ebb4d20eae57abc127c25869a6df0f2cad99a8"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportTiled-8-t4-x-source": {
+    "kind": "flip",
+    "prefix": "ExportTiled-8-t4",
+    "axis": "x",
+    "method": "source",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/ExportTiled-8-t4-x-source/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "4018366675adb84562a407b68fe2fdd2501c3333b3273d37cc75d2a8b12c4a87",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14636,
+    "process_peak_rss_kib": 348876,
+    "process_user_seconds": 0.18157399999999999,
+    "process_system_seconds": 0.236541,
+    "wall_seconds": 0.5006305299903033,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "Brush",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportTiled",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result.png_000_000.png": {
+        "bytes": 965,
+        "sha256": "2e3e52a7f6f819155360ded7f74ab488816e0bfc5818f21408395fd283350c22",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 8,
+        "pixels_sha256": "b350f0ef0a15889605993b7bc4d9f499651e57c6a3da21d807328f4bac789df7"
+      },
+      "result.png_000_001.png": {
+        "bytes": 970,
+        "sha256": "9d39f87ae6e305fa9e1973538adda93879136f6f472db8cf213d9725c7832b46",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 8,
+        "pixels_sha256": "ba80fa3a9a56444b875d30d3341cdc976f39b639e164fd973edd4fc43ee53a80"
+      },
+      "result.png_001_000.png": {
+        "bytes": 935,
+        "sha256": "0f78697cce9d719f509973784217cad3eefb042ce38ae082717cfa22f36b69c7",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 8,
+        "pixels_sha256": "51694a019f2b97ab55fd3e4bea0cf0c8d101b67d23e159ef0cb6b2290fed6eb8"
+      },
+      "result.png_001_001.png": {
+        "bytes": 953,
+        "sha256": "9f8e24f5251e61749a545685fe22b0dd4860bd52aa6bc191e59beb6caf3baabd",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 8,
+        "pixels_sha256": "45ec597bf9ce88257ebbb3f579f65d88251d8526a2b6d2805be69e4031cf9206"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportTiled-8-t4-y-flags": {
+    "kind": "flip",
+    "prefix": "ExportTiled-8-t4",
+    "axis": "y",
+    "method": "flags",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/ExportTiled-8-t4-y-flags/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "2072a256f1483f4b84e840b54d95e739a17227c3958e2babfd9e3d09f8dae30a",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14708,
+    "process_peak_rss_kib": 348980,
+    "process_user_seconds": 0.167061,
+    "process_system_seconds": 0.24361,
+    "wall_seconds": 0.497802441008389,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "Brush",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportTiled",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result.png_000_000.png": {
+        "bytes": 885,
+        "sha256": "033320d994202951903854c56b9dcfecca2c1eacda34df669a715fe475d35d14",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 8,
+        "pixels_sha256": "b31943731688b3e290d7fd55e8f53127df63c93b833da86e5890b76cb477822c"
+      },
+      "result.png_000_001.png": {
+        "bytes": 907,
+        "sha256": "e0a2f7c4ca8bc5337b9f85b87eefba6635a30f69b3c71ba3f8d0d06f76913883",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 8,
+        "pixels_sha256": "b7d6ad3081973ccfa6da5724c6828c1500f8aa3a0124eebb1b302995574c7d32"
+      },
+      "result.png_001_000.png": {
+        "bytes": 925,
+        "sha256": "27b741a3069a500af369b4fbfed6777d6c91246f16deaf55f7ad293c09cbf0c1",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 8,
+        "pixels_sha256": "928bf6ad8285eeedcde6315253425c80f458fcdbf05db916bea5b5b1eec89624"
+      },
+      "result.png_001_001.png": {
+        "bytes": 935,
+        "sha256": "61fe3219bc1a791b2e565b732473350c3b77aab5f74f65ef1f7589c08704e4a9",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 8,
+        "pixels_sha256": "d49ecee29e7242ffbaad9e2690ebb4d20eae57abc127c25869a6df0f2cad99a8"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportTiled-8-t4-y-source": {
+    "kind": "flip",
+    "prefix": "ExportTiled-8-t4",
+    "axis": "y",
+    "method": "source",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/ExportTiled-8-t4-y-source/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "a270e82e5b15aaa838c305197d6027568cfcedd663ae02fc397f8c0e3f0b5393",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14648,
+    "process_peak_rss_kib": 349044,
+    "process_user_seconds": 0.171476,
+    "process_system_seconds": 0.242786,
+    "wall_seconds": 0.4373951279994799,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "Brush",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportTiled",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result.png_000_000.png": {
+        "bytes": 907,
+        "sha256": "d0a7b5d2fa9e3e014dd0ec8f0b13bd229f3ce2fe67d1f1f43cee660fcd315f1c",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 8,
+        "pixels_sha256": "f849a2342a5e6f6c95c39eebb48e9ae0bf92789e08e9ce58dc99d0b78769b25c"
+      },
+      "result.png_000_001.png": {
+        "bytes": 885,
+        "sha256": "95cc79d45e7e2451b0306db302356ac72fd17f05afd3a12b8cdec546fd51ff8e",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 8,
+        "pixels_sha256": "5391394cb44f9027b43091dae51326c3f155712e4354a412298bbec239b66120"
+      },
+      "result.png_001_000.png": {
+        "bytes": 935,
+        "sha256": "ed34e62ad09314c3ab5763d8447957b65aa79c814a701e9662cd8f5c974c6268",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 8,
+        "pixels_sha256": "50c3295e02a39f7edaa6dc49a57e2277ed38f57ed024d75c24cd56755a3e5ef6"
+      },
+      "result.png_001_001.png": {
+        "bytes": 925,
+        "sha256": "35c9a0b1af3c312db657b4d5020992b8ce310d9be3bcb8e7b3a321e049c6db1d",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 8,
+        "pixels_sha256": "dc85dc377c4634f36d169dba3dc493077670862b001d529b44df4c3b97697206"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportTiled-8-t4-xy-flags": {
+    "kind": "flip",
+    "prefix": "ExportTiled-8-t4",
+    "axis": "xy",
+    "method": "flags",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/ExportTiled-8-t4-xy-flags/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "679de5754bde88d756344035f0862b5ac1f536110236c8a4510f667b6393f09c",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14636,
+    "process_peak_rss_kib": 348692,
+    "process_user_seconds": 0.172169,
+    "process_system_seconds": 0.240946,
+    "wall_seconds": 0.49872441998741124,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "Brush",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportTiled",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result.png_000_000.png": {
+        "bytes": 885,
+        "sha256": "033320d994202951903854c56b9dcfecca2c1eacda34df669a715fe475d35d14",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 8,
+        "pixels_sha256": "b31943731688b3e290d7fd55e8f53127df63c93b833da86e5890b76cb477822c"
+      },
+      "result.png_000_001.png": {
+        "bytes": 907,
+        "sha256": "e0a2f7c4ca8bc5337b9f85b87eefba6635a30f69b3c71ba3f8d0d06f76913883",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 8,
+        "pixels_sha256": "b7d6ad3081973ccfa6da5724c6828c1500f8aa3a0124eebb1b302995574c7d32"
+      },
+      "result.png_001_000.png": {
+        "bytes": 925,
+        "sha256": "27b741a3069a500af369b4fbfed6777d6c91246f16deaf55f7ad293c09cbf0c1",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 8,
+        "pixels_sha256": "928bf6ad8285eeedcde6315253425c80f458fcdbf05db916bea5b5b1eec89624"
+      },
+      "result.png_001_001.png": {
+        "bytes": 935,
+        "sha256": "61fe3219bc1a791b2e565b732473350c3b77aab5f74f65ef1f7589c08704e4a9",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 8,
+        "pixels_sha256": "d49ecee29e7242ffbaad9e2690ebb4d20eae57abc127c25869a6df0f2cad99a8"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportTiled-8-t4-xy-source": {
+    "kind": "flip",
+    "prefix": "ExportTiled-8-t4",
+    "axis": "xy",
+    "method": "source",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/ExportTiled-8-t4-xy-source/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "6dae16aec1b6596c66cf2feed142ab2273b346e47848e2535d987e3987591e06",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14716,
+    "process_peak_rss_kib": 348756,
+    "process_user_seconds": 0.160999,
+    "process_system_seconds": 0.251012,
+    "wall_seconds": 0.4369812689983519,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "Brush",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportTiled",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result.png_000_000.png": {
+        "bytes": 970,
+        "sha256": "e4701f7f474c317b0f139818c4c80714cedf3b7adc4146785da8d662d5d3df10",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 8,
+        "pixels_sha256": "280133b3b86fc72f778eb100c956a2b7da0a50e348e749ea90ed72075dbe955d"
+      },
+      "result.png_000_001.png": {
+        "bytes": 965,
+        "sha256": "de7565bc79a3ca2fd9b31df54ab02c007a846a1a4270128b17e2469750b33be4",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 8,
+        "pixels_sha256": "a8f799713e6811efa40631d54fe5b77e2a504c5c060ceaa1bfa924ba0ffd27ce"
+      },
+      "result.png_001_000.png": {
+        "bytes": 953,
+        "sha256": "df36b354d1e8e073b9ac5f2a5203a5c9e476b0e64fa163206392daa74e2b5b8b",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 8,
+        "pixels_sha256": "ead66db772e560c3576b62cf066066f3efcc3cb66580c58bd2135d21e8aba667"
+      },
+      "result.png_001_001.png": {
+        "bytes": 935,
+        "sha256": "5133e8a95bafcaadd68b10e8d8b97ac4299198ca25d05a43bb241233f9c6cc6d",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 8,
+        "pixels_sha256": "27b61c20febc481106e347d7b468fe893871a101cbfd84acc9396bbd76b09405"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportTiled-16-t4-none-flags": {
+    "kind": "unchanged",
+    "prefix": "ExportTiled-16-t4",
+    "axis": "none",
+    "method": "flags",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/ExportTiled-16-t4-none-flags/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "3bcdd4763442ec4ff0d1527ebc856abdd0721fc4ef6e4e577a46ecfc750955ca",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14648,
+    "process_peak_rss_kib": 348244,
+    "process_user_seconds": 0.169174,
+    "process_system_seconds": 0.24129799999999998,
+    "wall_seconds": 0.5000722069962649,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "Brush",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportTiled",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result.png_000_000.png": {
+        "bytes": 5843,
+        "sha256": "0b5c844a5d2db441ccd7fcde05a0bd310de4243655bd7f48b4a17c8f5684d8df",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "2f58f80233f59a1e3bfe75d0121cd391e09d0bed634443c32f71c8db5a77bb62"
+      },
+      "result.png_000_001.png": {
+        "bytes": 5843,
+        "sha256": "6af5d7ad035b87646cadcddbf6f6197e949c67098d672decf5de2de2e296a510",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "bb544a7aa1def86057077985abb0c2a04dcbae77025140e201a10e87db1f1348"
+      },
+      "result.png_001_000.png": {
+        "bytes": 5878,
+        "sha256": "211e199d2067d82fea7d24d24c9c172ba37dc92df525b849a854dafbd7a83fb8",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "8e65d903dc0075dd6332daeb3ab488061490fd271394420a142e7f14682a9211"
+      },
+      "result.png_001_001.png": {
+        "bytes": 5894,
+        "sha256": "9d12edb8d5e0437884ee2c098e84ae261284686017413c6928b0b66f71137a08",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "4669fdec0575108723d5a59ff8101b29f27940d112cc201579162bf99ce820e3"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportTiled-16-t4-x-flags": {
+    "kind": "flip",
+    "prefix": "ExportTiled-16-t4",
+    "axis": "x",
+    "method": "flags",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/ExportTiled-16-t4-x-flags/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "ec46fc5fbe9a5d532f6a03b41918b735ea4a4707ca81e4df824ac9060739b5d5",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14668,
+    "process_peak_rss_kib": 348360,
+    "process_user_seconds": 0.17237,
+    "process_system_seconds": 0.246802,
+    "wall_seconds": 0.5022996000043349,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "Brush",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportTiled",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result.png_000_000.png": {
+        "bytes": 5843,
+        "sha256": "0b5c844a5d2db441ccd7fcde05a0bd310de4243655bd7f48b4a17c8f5684d8df",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "2f58f80233f59a1e3bfe75d0121cd391e09d0bed634443c32f71c8db5a77bb62"
+      },
+      "result.png_000_001.png": {
+        "bytes": 5843,
+        "sha256": "6af5d7ad035b87646cadcddbf6f6197e949c67098d672decf5de2de2e296a510",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "bb544a7aa1def86057077985abb0c2a04dcbae77025140e201a10e87db1f1348"
+      },
+      "result.png_001_000.png": {
+        "bytes": 5878,
+        "sha256": "211e199d2067d82fea7d24d24c9c172ba37dc92df525b849a854dafbd7a83fb8",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "8e65d903dc0075dd6332daeb3ab488061490fd271394420a142e7f14682a9211"
+      },
+      "result.png_001_001.png": {
+        "bytes": 5894,
+        "sha256": "9d12edb8d5e0437884ee2c098e84ae261284686017413c6928b0b66f71137a08",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "4669fdec0575108723d5a59ff8101b29f27940d112cc201579162bf99ce820e3"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportTiled-16-t4-x-source": {
+    "kind": "flip",
+    "prefix": "ExportTiled-16-t4",
+    "axis": "x",
+    "method": "source",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/ExportTiled-16-t4-x-source/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "e983df04a5d1f52c406e5020f62343b1b669fb5bc424b8092621329955975058",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14648,
+    "process_peak_rss_kib": 348140,
+    "process_user_seconds": 0.181753,
+    "process_system_seconds": 0.22955099999999998,
+    "wall_seconds": 0.49860504201205913,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "Brush",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportTiled",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result.png_000_000.png": {
+        "bytes": 5916,
+        "sha256": "bbc5777754782be20580247b19282db0ccb6b153617b34598f16f06069e1e7d5",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "ac8bf6700535e3541466900f63b664eb4bac9953a3e1901fe830d6bd094e4eac"
+      },
+      "result.png_000_001.png": {
+        "bytes": 5933,
+        "sha256": "e370d8cc2ef9bcf2eb557726d74c8f94490c692a0c460d368b9dfb7a7af95ae5",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "ba66b314ea9b5e0950c88266a6cb43b2fdde364eb749dd83f037fb13fad6902a"
+      },
+      "result.png_001_000.png": {
+        "bytes": 5897,
+        "sha256": "f07dd84dfcef8e001a36a62a8bc085d584769e776b9a768a0d7004c71c709c83",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "bd39ddec27a8fd73438d61466ad381930b33d0841c180676e27073a196c38252"
+      },
+      "result.png_001_001.png": {
+        "bytes": 5895,
+        "sha256": "33f02003e046d956b57d37fa759beeaa26f23e05ae58131c259047f4423f369d",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "0670fab934182ca1ef4c79ed27abe618c61c5a6ef0dd3064100d3eb641d04431"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportTiled-16-t4-y-flags": {
+    "kind": "flip",
+    "prefix": "ExportTiled-16-t4",
+    "axis": "y",
+    "method": "flags",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/ExportTiled-16-t4-y-flags/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "d0d575018877bc9520cdc330ece3c28b3983ea3d9d11a15b15e98c07ecc2cd82",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14652,
+    "process_peak_rss_kib": 348316,
+    "process_user_seconds": 0.183814,
+    "process_system_seconds": 0.230395,
+    "wall_seconds": 0.5010416779987281,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "Brush",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportTiled",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result.png_000_000.png": {
+        "bytes": 5843,
+        "sha256": "0b5c844a5d2db441ccd7fcde05a0bd310de4243655bd7f48b4a17c8f5684d8df",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "2f58f80233f59a1e3bfe75d0121cd391e09d0bed634443c32f71c8db5a77bb62"
+      },
+      "result.png_000_001.png": {
+        "bytes": 5843,
+        "sha256": "6af5d7ad035b87646cadcddbf6f6197e949c67098d672decf5de2de2e296a510",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "bb544a7aa1def86057077985abb0c2a04dcbae77025140e201a10e87db1f1348"
+      },
+      "result.png_001_000.png": {
+        "bytes": 5878,
+        "sha256": "211e199d2067d82fea7d24d24c9c172ba37dc92df525b849a854dafbd7a83fb8",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "8e65d903dc0075dd6332daeb3ab488061490fd271394420a142e7f14682a9211"
+      },
+      "result.png_001_001.png": {
+        "bytes": 5894,
+        "sha256": "9d12edb8d5e0437884ee2c098e84ae261284686017413c6928b0b66f71137a08",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "4669fdec0575108723d5a59ff8101b29f27940d112cc201579162bf99ce820e3"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportTiled-16-t4-y-source": {
+    "kind": "flip",
+    "prefix": "ExportTiled-16-t4",
+    "axis": "y",
+    "method": "source",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/ExportTiled-16-t4-y-source/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "6c751122c422bcc67aa8491d5ff6c60e86bbf5539037364e1a855d61851f97f4",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14652,
+    "process_peak_rss_kib": 348684,
+    "process_user_seconds": 0.176871,
+    "process_system_seconds": 0.23938199999999998,
+    "wall_seconds": 0.5008566190081183,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "Brush",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportTiled",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result.png_000_000.png": {
+        "bytes": 5843,
+        "sha256": "f908b0a1d384a4333dfd3e4e2d6bd8e6c2f37c42857a932cacedd0f5ff910fd7",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "70adef8ed7b7c1be65b6e08fedb29aeaf86ab2450a7ecd16c49b720ed841de0d"
+      },
+      "result.png_000_001.png": {
+        "bytes": 5843,
+        "sha256": "a02d48c1249045b97ac367b181f5079655fe30ac5065d590e10db3259c36d5d9",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "fc37b5d1062eb53024791bf4d685fc18fdcce285a7834929c301d545d213f587"
+      },
+      "result.png_001_000.png": {
+        "bytes": 5894,
+        "sha256": "79a9981b8966c7d26c3b889120c7efdc252d4c6760b566cb2a510d65077344af",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "e8b33898bdd0ec41fa5d2508f986fd1ffffa6ce705787213366c2af7853a7dc8"
+      },
+      "result.png_001_001.png": {
+        "bytes": 5878,
+        "sha256": "2d678a6babcc6c59113db795cbd20bab56b477ca1ac02e09ee5c8c51e25da507",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "195c68da1b69ba8e48d2c87c71733b5171313d736ce7c681077664442bf2dfb0"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportTiled-16-t4-xy-flags": {
+    "kind": "flip",
+    "prefix": "ExportTiled-16-t4",
+    "axis": "xy",
+    "method": "flags",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/ExportTiled-16-t4-xy-flags/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "088a1ade4150088572168da176a52ac64028a140bebe26e2be0f8dbee7518180",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14652,
+    "process_peak_rss_kib": 348264,
+    "process_user_seconds": 0.173435,
+    "process_system_seconds": 0.238596,
+    "wall_seconds": 0.5005462120025186,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "Brush",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportTiled",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result.png_000_000.png": {
+        "bytes": 5843,
+        "sha256": "0b5c844a5d2db441ccd7fcde05a0bd310de4243655bd7f48b4a17c8f5684d8df",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "2f58f80233f59a1e3bfe75d0121cd391e09d0bed634443c32f71c8db5a77bb62"
+      },
+      "result.png_000_001.png": {
+        "bytes": 5843,
+        "sha256": "6af5d7ad035b87646cadcddbf6f6197e949c67098d672decf5de2de2e296a510",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "bb544a7aa1def86057077985abb0c2a04dcbae77025140e201a10e87db1f1348"
+      },
+      "result.png_001_000.png": {
+        "bytes": 5878,
+        "sha256": "211e199d2067d82fea7d24d24c9c172ba37dc92df525b849a854dafbd7a83fb8",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "8e65d903dc0075dd6332daeb3ab488061490fd271394420a142e7f14682a9211"
+      },
+      "result.png_001_001.png": {
+        "bytes": 5894,
+        "sha256": "9d12edb8d5e0437884ee2c098e84ae261284686017413c6928b0b66f71137a08",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "4669fdec0575108723d5a59ff8101b29f27940d112cc201579162bf99ce820e3"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportTiled-16-t4-xy-source": {
+    "kind": "flip",
+    "prefix": "ExportTiled-16-t4",
+    "axis": "xy",
+    "method": "source",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/memory-ram/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/baseline-v2/ExportTiled-16-t4-xy-source/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "a211c555f5c26ee10cd6554439008881226a81836c2740c8868b3d14225afab5",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14648,
+    "process_peak_rss_kib": 348804,
+    "process_user_seconds": 0.17835499999999999,
+    "process_system_seconds": 0.23896299999999998,
+    "wall_seconds": 0.499999420993845,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; numerical output correctness is not assessed",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "Brush",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "ExportTiled",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result.png_000_000.png": {
+        "bytes": 5933,
+        "sha256": "65b6c8693abd5454a928e5efd8fede8e6c9a96c4293a27bc77eedaf335f6497f",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "4d2cc9b656139b21d7650cab50d63e038a0ba39fd9141b83b141372f758b739b"
+      },
+      "result.png_000_001.png": {
+        "bytes": 5916,
+        "sha256": "29870f5e232b3c1b524972c5b2457a2d7407702750c09d27bda892403d1a4de3",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "91e853e9b7b45a9eb529a9add4c439753f4c32d9913d427f9036b95893640ae6"
+      },
+      "result.png_001_000.png": {
+        "bytes": 5895,
+        "sha256": "691ac55532bed7e7969750d073002526aba5362b8ce6e31ba2918f22cb2d45b1",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "96db4d22c4ab24f2b3c83213709d2c27016ade7d1234489548440727d39a2811"
+      },
+      "result.png_001_001.png": {
+        "bytes": 5897,
+        "sha256": "0672cfde18b69f8312316f8d68093752133f7cbe9468dd8c11c22b2b91fe120c",
+        "dimensions": [
+          64,
+          64
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "b05bf478222e51980b14ab2cf69471023e263381193d35bb6eb0dc77f9d0d28c"
+      }
+    },
+    "status": "ok"
+  }
+}

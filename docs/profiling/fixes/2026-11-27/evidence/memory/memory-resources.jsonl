@@ -1,0 +1,3 @@
+{"utc": "2026-11-27T13:09:00.681629+00:00", "phase": "memory-fixed-quilting", "available_kib": 55259588, "swap_free_kib": 59380320, "disk_free_bytes": 338403569664}
+{"utc": "2026-11-27T13:12:17.488912+00:00", "phase": "memory-fixed-export", "available_kib": 55106616, "swap_free_kib": 59406168, "disk_free_bytes": 337060413440}
+{"utc": "2026-11-27T13:48:44.710293+00:00", "phase": "memory-baseline-calibration", "available_kib": 56155720, "disk_free_bytes": 329231519744}

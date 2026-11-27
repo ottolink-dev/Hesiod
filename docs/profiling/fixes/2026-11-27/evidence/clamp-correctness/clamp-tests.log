@@ -1,0 +1,85 @@
+Running main() from /home/barrulus/dev/Hesiod-783/output/validation/googletest/googletest/src/gtest_main.cc
+Note: Google Test filter = Range*
+[==========] Running 21 tests from 12 test suites.
+[----------] Global test environment set-up.
+[----------] 2 tests from RangeChop
+[ RUN      ] RangeChop.BasicThreshold
+[       OK ] RangeChop.BasicThreshold (0 ms)
+[ RUN      ] RangeChop.AllBelowThreshold
+[       OK ] RangeChop.AllBelowThreshold (0 ms)
+[----------] 2 tests from RangeChop (0 ms total)
+
+[----------] 1 test from RangeChopMaxSmooth
+[ RUN      ] RangeChopMaxSmooth.BehaviorRegions
+[       OK ] RangeChopMaxSmooth.BehaviorRegions (0 ms)
+[----------] 1 test from RangeChopMaxSmooth (0 ms total)
+
+[----------] 3 tests from RangeClamp
+[ RUN      ] RangeClamp.Basic
+[       OK ] RangeClamp.Basic (0 ms)
+[ RUN      ] RangeClamp.SymmetricMode
+[       OK ] RangeClamp.SymmetricMode (0 ms)
+[ RUN      ] RangeClamp.PositiveOnly
+[       OK ] RangeClamp.PositiveOnly (0 ms)
+[----------] 3 tests from RangeClamp (0 ms total)
+
+[----------] 1 test from RangeClampMax
+[ RUN      ] RangeClampMax.Scalar
+[       OK ] RangeClampMax.Scalar (0 ms)
+[----------] 1 test from RangeClampMax (0 ms total)
+
+[----------] 1 test from RangeClampMin
+[ RUN      ] RangeClampMin.Scalar
+[       OK ] RangeClampMin.Scalar (0 ms)
+[----------] 1 test from RangeClampMin (0 ms total)
+
+[----------] 2 tests from RangeClampSmooth
+[ RUN      ] RangeClampSmooth.NoCrashes
+[       OK ] RangeClampSmooth.NoCrashes (0 ms)
+[ RUN      ] RangeClampSmooth.ZeroWidthUsesHardBoundsForEveryOverload
+[       OK ] RangeClampSmooth.ZeroWidthUsesHardBoundsForEveryOverload (0 ms)
+[----------] 2 tests from RangeClampSmooth (0 ms total)
+
+[----------] 1 test from RangeMaximum
+[ RUN      ] RangeMaximum.ArrayArray
+[       OK ] RangeMaximum.ArrayArray (0 ms)
+[----------] 1 test from RangeMaximum (0 ms total)
+
+[----------] 1 test from RangeMinimum
+[ RUN      ] RangeMinimum.ArrayArray
+[       OK ] RangeMinimum.ArrayArray (0 ms)
+[----------] 1 test from RangeMinimum (0 ms total)
+
+[----------] 1 test from RangeMaxMinSmooth
+[ RUN      ] RangeMaxMinSmooth.Consistency
+[       OK ] RangeMaxMinSmooth.Consistency (0 ms)
+[----------] 1 test from RangeMaxMinSmooth (0 ms total)
+
+[----------] 3 tests from RangeRemap
+[ RUN      ] RangeRemap.NormalizeRange
+[       OK ] RangeRemap.NormalizeRange (0 ms)
+[ RUN      ] RangeRemap.FlatArray
+[       OK ] RangeRemap.FlatArray (0 ms)
+[ RUN      ] RangeRemap.ExplicitRange
+[       OK ] RangeRemap.ExplicitRange (0 ms)
+[----------] 3 tests from RangeRemap (0 ms total)
+
+[----------] 2 tests from RangeRescale
+[ RUN      ] RangeRescale.ScalingOnly
+[       OK ] RangeRescale.ScalingOnly (0 ms)
+[ RUN      ] RangeRescale.WithReference
+[       OK ] RangeRescale.WithReference (0 ms)
+[----------] 2 tests from RangeRescale (0 ms total)
+
+[----------] 3 tests from RangeNormalizeAndClip
+[ RUN      ] RangeNormalizeAndClip.WithoutSmoothing
+[       OK ] RangeNormalizeAndClip.WithoutSmoothing (0 ms)
+[ RUN      ] RangeNormalizeAndClip.WithSmoothing
+[       OK ] RangeNormalizeAndClip.WithSmoothing (0 ms)
+[ RUN      ] RangeNormalizeAndClip.Range01
+[       OK ] RangeNormalizeAndClip.Range01 (0 ms)
+[----------] 3 tests from RangeNormalizeAndClip (0 ms total)
+
+[----------] Global test environment tear-down
+[==========] 21 tests from 12 test suites ran. (0 ms total)
+[  PASSED  ] 21 tests.

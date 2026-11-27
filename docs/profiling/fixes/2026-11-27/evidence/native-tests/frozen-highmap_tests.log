@@ -1,0 +1,2720 @@
+[clwrap] [13:07:38] [---T---] DeviceManager::DeviceManager
+[clwrap] [13:07:38] [---T---] initializing OpenCL devices...
+[clwrap] [13:07:38] [---T---] checking device performances...
+[clwrap] [13:07:38] [---T---] checking platform: NVIDIA Corporation - NVIDIA CUDA
+[clwrap] [13:07:38] [---T---] rating - device: NVIDIA GeForce RTX 5060 Laptop GPU, score: 1000052.6580820961
+[clwrap] [13:07:38] [---I---] Selected OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [13:07:38] [---I---] - device Name: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [13:07:38] [---I---]  - device Vendor: NVIDIA Corporation
+[clwrap] [13:07:38] [---I---]  - device Version: OpenCL 3.0 CUDA
+[clwrap] [13:07:38] [---I---]  - device Type: GPU
+[clwrap] [13:07:38] [---T---] loading kernel sources
+[clwrap] [13:07:38] [---T---] program building skipped, kernel sources are empty
+[clwrap] [13:07:38] [---T---] loading kernel sources
+[clwrap] [13:07:39] [---T---] building OpenCL kernels
+[clwrap] [13:07:39] [---T---] build options: -cl-fast-relaxed-math -cl-mad-enable -cl-no-signed-zeros -cl-denorms-are-zero -cl-finite-math-only 
+[clwrap] [13:07:39] [---T---] available kernels: noise;noise_fbm;noise_slope;gabor_wave;gabor_wave_fbm;gavoronoise;gavoronoise_with_base;hemisphere_field;hemisphere_field_fbm;laplacian_fract;mountain_range_radial;phase_averaging;phase_field;polygon_field;polygon_field_fbm;wavelet_noise;vorolines;voronoi_edge_distance;voronoi;voronoi_fbm;voronoise;voronoise_fbm;vororand;aeolian_shadow_map;aeolian_transport;aeolian_stabilize_sediment;mcdonald_solve;mcdonald_filter;mcdonald_debris;hydraulic_musgrave;hydraulic_particle;hydraulic_schott;hydraulic_schott_erosion;hydraulic_vpipes_flow_pass;hydraulic_vpipes_water_pass;hydraulic_vpipes_erosion_pass;hydraulic_vpipes_sediment_transport_pass;hydraulic_vpipes_rain_pass;rifts;strata;strata_cells;strata_terrace;thermal;thermal_with_bedrock;thermal_auto_bedrock;thermal_conserve;thermal_flatten;thermal_inflate;thermal_olsen;thermal_rib;thermal_ridge;thermal_schott;thermal_scree;bilateral_filter;directional_blur;distance_shaper_rt;expand;laplace;mean_shift;median_3x3;normal_displacement;plateau_post;smooth_cpulse;sparse_max_convolution;sparse_max_convolution_with_size;water_depth_filter;coastal_fetch;coastal_fetch_directional;flow_accum_stochastic_solve;flow_accum_stochastic_normalize;flow_direction_d8;generate_riverbed;shallow_viscous_flow;snow_simulation;curvature_quadric;local_max;local_max_octagon;local_max_square;local_mean;local_min;local_min_octagon;local_min_square;local_relief;local_skewness;local_variance;local_z_score;ridge_accentuate;ruggedness;rugosity_post;topographic_position_index;advection_particle;poisson_compute_laplacian;blend_poisson_red_black;eulerian_transport;harmonic_interpolation_red_black;harmonic_interpolation_red_black_diff;harmonic_interpolation_red_black_diff_aniso;interpolate_array_bicubic;interpolate_array_bilinear;interpolate_array_nearest;interpolate_array_lagrange;jagged;jump_flooding;project_talus_along_direction;rotate_hmap;sdf_2d_polyline;sdf_2d_polyline_bezier;thinning;relative_distance_from_skeleton;voronoi_shrink;voronoi_shrink_points;warp_xy;warp_x;warp_y;terrain_fallline_walk;terrain_shade;rock_simulate_physics;scatter_to_heightmap
+[==========] Running 996 tests from 167 test suites.
+[----------] Global test environment set-up.
+[----------] 2 tests from Advection
+[ RUN      ] Advection.MultiField
+Max deterministic diff (1 particle): 0
+[       OK ] Advection.MultiField (88 ms)
+[ RUN      ] Advection.Multiscale
+[       OK ] Advection.Multiscale (92 ms)
+[----------] 2 tests from Advection (181 ms total)
+
+[----------] 2 tests from AlphaModelTest
+[ RUN      ] AlphaModelTest.InvalidInputs
+hmap [warn ] [alpha_model.cpp         :35] Array is empty or uninitialized (shape: 0x0, buffer size: 0)
+[       OK ] AlphaModelTest.InvalidInputs (0 ms)
+[ RUN      ] AlphaModelTest.BasicNetworkGeneration
+[       OK ] AlphaModelTest.BasicNetworkGeneration (0 ms)
+[----------] 2 tests from AlphaModelTest (0 ms total)
+
+[----------] 3 tests from GraphDijkstraTest
+[ RUN      ] GraphDijkstraTest.PathWithIntermediateZero
+[       OK ] GraphDijkstraTest.PathWithIntermediateZero (0 ms)
+[ RUN      ] GraphDijkstraTest.SameSourceAndTarget
+[       OK ] GraphDijkstraTest.SameSourceAndTarget (0 ms)
+[ RUN      ] GraphDijkstraTest.DisconnectedGraph
+[       OK ] GraphDijkstraTest.DisconnectedGraph (0 ms)
+[----------] 3 tests from GraphDijkstraTest (0 ms total)
+
+[----------] 7 tests from AreaRemove
+[ RUN      ] AreaRemove.NoRemovalWhenBelowThreshold
+[       OK ] AreaRemove.NoRemovalWhenBelowThreshold (0 ms)
+[ RUN      ] AreaRemove.RemoveSinglePixel
+[       OK ] AreaRemove.RemoveSinglePixel (0 ms)
+[ RUN      ] AreaRemove.KeepLargeComponentRemoveSmallOnes
+[       OK ] AreaRemove.KeepLargeComponentRemoveSmallOnes (0 ms)
+[ RUN      ] AreaRemove.BackgroundIsIgnored
+[       OK ] AreaRemove.BackgroundIsIgnored (0 ms)
+[ RUN      ] AreaRemove.MultipleDisconnectedComponents
+[       OK ] AreaRemove.MultipleDisconnectedComponents (0 ms)
+[ RUN      ] AreaRemove.DiagonalConnectivityMatters
+[       OK ] AreaRemove.DiagonalConnectivityMatters (0 ms)
+[ RUN      ] AreaRemove.EmptyAreaMapReturnsOriginal
+[       OK ] AreaRemove.EmptyAreaMapReturnsOriginal (0 ms)
+[----------] 7 tests from AreaRemove (0 ms total)
+
+[----------] 5 tests from ArrayIO
+[ RUN      ] ArrayIO.ConstructorExrNoRemapFlag
+[       OK ] ArrayIO.ConstructorExrNoRemapFlag (45 ms)
+[ RUN      ] ArrayIO.ConstructorNonExrRemapEnabled
+[ WARN:0@0.454] global loadsave.cpp:1089 imwrite_ Unsupported depth image for selected encoder is fallbacked to CV_8U.
+[       OK ] ArrayIO.ConstructorNonExrRemapEnabled (0 ms)
+[ RUN      ] ArrayIO.ConstructorTiffRoundTrip
+[       OK ] ArrayIO.ConstructorTiffRoundTrip (0 ms)
+[ RUN      ] ArrayIO.ExrVsPngDynamicRange
+[       OK ] ArrayIO.ExrVsPngDynamicRange (0 ms)
+[ RUN      ] ArrayIO.ConstantArrayConstructor
+[       OK ] ArrayIO.ConstantArrayConstructor (0 ms)
+[----------] 5 tests from ArrayIO (45 ms total)
+
+[----------] 6 tests from AssertAlmostEqual
+[ RUN      ] AssertAlmostEqual.RejectsNonfiniteOperandsInEitherOrder
+[       OK ] AssertAlmostEqual.RejectsNonfiniteOperandsInEitherOrder (0 ms)
+[ RUN      ] AssertAlmostEqual.RejectsNonfiniteTolerance
+[       OK ] AssertAlmostEqual.RejectsNonfiniteTolerance (0 ms)
+[ RUN      ] AssertAlmostEqual.ZeroFieldComparisonIsSymmetric
+[       OK ] AssertAlmostEqual.ZeroFieldComparisonIsSymmetric (0 ms)
+[ RUN      ] AssertAlmostEqual.PreservesRelativeL1ErrorAndTolerance
+[       OK ] AssertAlmostEqual.PreservesRelativeL1ErrorAndTolerance (0 ms)
+[ RUN      ] AssertAlmostEqual.FiniteExtremesDoNotOverflowNormalization
+[       OK ] AssertAlmostEqual.FiniteExtremesDoNotOverflowNormalization (0 ms)
+[ RUN      ] AssertAlmostEqual.SuccessfulComparisonResetsReusedResults
+[       OK ] AssertAlmostEqual.SuccessfulComparisonResetsReusedResults (0 ms)
+[----------] 6 tests from AssertAlmostEqual (0 ms total)
+
+[----------] 9 tests from AutoCorrLengthScale
+[ RUN      ] AutoCorrLengthScale.FlatArrayReturnsMaxDimension
+[       OK ] AutoCorrLengthScale.FlatArrayReturnsMaxDimension (0 ms)
+[ RUN      ] AutoCorrLengthScale.RandomNoiseHasShortLengthScale
+[       OK ] AutoCorrLengthScale.RandomNoiseHasShortLengthScale (0 ms)
+[ RUN      ] AutoCorrLengthScale.SmoothFieldHasLargeLengthScale
+[       OK ] AutoCorrLengthScale.SmoothFieldHasLargeLengthScale (0 ms)
+[ RUN      ] AutoCorrLengthScale.IncreasesWithSmoothing
+[       OK ] AutoCorrLengthScale.IncreasesWithSmoothing (0 ms)
+[ RUN      ] AutoCorrLengthScale.LinearGradientHighCorrelation
+[       OK ] AutoCorrLengthScale.LinearGradientHighCorrelation (0 ms)
+[ RUN      ] AutoCorrLengthScale.PeriodicSignal
+[       OK ] AutoCorrLengthScale.PeriodicSignal (0 ms)
+[ RUN      ] AutoCorrLengthScale.InvariantToOffset
+[       OK ] AutoCorrLengthScale.InvariantToOffset (0 ms)
+[ RUN      ] AutoCorrLengthScale.InvariantToScaling
+[       OK ] AutoCorrLengthScale.InvariantToScaling (0 ms)
+[ RUN      ] AutoCorrLengthScale.MaxLagFractionLimitsResult
+[       OK ] AutoCorrLengthScale.MaxLagFractionLimitsResult (0 ms)
+[----------] 9 tests from AutoCorrLengthScale (0 ms total)
+
+[----------] 2 tests from AutoCorrLengthScaleAxial
+[ RUN      ] AutoCorrLengthScaleAxial.DetectsAnisotropy
+[       OK ] AutoCorrLengthScaleAxial.DetectsAnisotropy (0 ms)
+[ RUN      ] AutoCorrLengthScaleAxial.MatchesScalarForIsotropicField
+[       OK ] AutoCorrLengthScaleAxial.MatchesScalarForIsotropicField (0 ms)
+[----------] 2 tests from AutoCorrLengthScaleAxial (0 ms total)
+
+[----------] 3 tests from Band
+[ RUN      ] Band.CoreIsOneFalloffToZero
+[       OK ] Band.CoreIsOneFalloffToZero (0 ms)
+[ RUN      ] Band.ZeroLengthIsRadialBump
+[       OK ] Band.ZeroLengthIsRadialBump (0 ms)
+[ RUN      ] Band.LatitudeBandPolarCap
+[       OK ] Band.LatitudeBandPolarCap (0 ms)
+[----------] 3 tests from Band (0 ms total)
+
+[----------] 19 tests from Blending
+[ RUN      ] Blending.BlendExclusion
+[       OK ] Blending.BlendExclusion (0 ms)
+[ RUN      ] Blending.BlendNegate
+[       OK ] Blending.BlendNegate (0 ms)
+[ RUN      ] Blending.BlendOverlay
+[       OK ] Blending.BlendOverlay (0 ms)
+[ RUN      ] Blending.BlendSoft
+[       OK ] Blending.BlendSoft (0 ms)
+[ RUN      ] Blending.Mixer
+[       OK ] Blending.Mixer (0 ms)
+[ RUN      ] Blending.Transfer
+[       OK ] Blending.Transfer (0 ms)
+[ RUN      ] Blending.BlendGradients
+[       OK ] Blending.BlendGradients (0 ms)
+[ RUN      ] Blending.BlendPowerLaw
+[       OK ] Blending.BlendPowerLaw (0 ms)
+[ RUN      ] Blending.BlendTerrainsNonOverlapping
+[       OK ] Blending.BlendTerrainsNonOverlapping (0 ms)
+[ RUN      ] Blending.BlendTerrainsBasicModes
+[       OK ] Blending.BlendTerrainsBasicModes (0 ms)
+[ RUN      ] Blending.BlendTerrainsDistance
+[       OK ] Blending.BlendTerrainsDistance (0 ms)
+[ RUN      ] Blending.BlendTerrainsVirtualArrayConsistency
+[       OK ] Blending.BlendTerrainsVirtualArrayConsistency (0 ms)
+[ RUN      ] Blending.AlignTerrainsOffset
+[       OK ] Blending.AlignTerrainsOffset (0 ms)
+[ RUN      ] Blending.AlignTerrainsPlane
+[       OK ] Blending.AlignTerrainsPlane (0 ms)
+[ RUN      ] Blending.AlignTerrainsRobustOutliers
+[       OK ] Blending.AlignTerrainsRobustOutliers (0 ms)
+[ RUN      ] Blending.AlignTerrainsVirtualArrayConsistency
+[       OK ] Blending.AlignTerrainsVirtualArrayConsistency (0 ms)
+[ RUN      ] Blending.BlendTerrainsHeightAndSlope
+[       OK ] Blending.BlendTerrainsHeightAndSlope (1 ms)
+[ RUN      ] Blending.BlendTerrainsSeamlessAndMultiscale
+[       OK ] Blending.BlendTerrainsSeamlessAndMultiscale (2 ms)
+[ RUN      ] Blending.BlendTerrainsPoisson
+[       OK ] Blending.BlendTerrainsPoisson (1 ms)
+[----------] 19 tests from Blending (4 ms total)
+
+[----------] 8 tests from BoundaryTest
+[ RUN      ] BoundaryTest.DomainBoundaryEnumValues
+[       OK ] BoundaryTest.DomainBoundaryEnumValues (0 ms)
+[ RUN      ] BoundaryTest.PickBoundaryCellFlatArray
+[       OK ] BoundaryTest.PickBoundaryCellFlatArray (0 ms)
+[ RUN      ] BoundaryTest.GenerateBufferedArrayPivotCentered
+[       OK ] BoundaryTest.GenerateBufferedArrayPivotCentered (0 ms)
+[ RUN      ] BoundaryTest.FalloffWithAndWithoutNoise
+[       OK ] BoundaryTest.FalloffWithAndWithoutNoise (0 ms)
+[ RUN      ] BoundaryTest.MakePeriodicStitchingContinuity
+[       OK ] BoundaryTest.MakePeriodicStitchingContinuity (1 ms)
+[ RUN      ] BoundaryTest.SetBordersBboxFullDomain
+[       OK ] BoundaryTest.SetBordersBboxFullDomain (0 ms)
+[ RUN      ] BoundaryTest.SetBordersBboxSubdomain
+[       OK ] BoundaryTest.SetBordersBboxSubdomain (0 ms)
+[ RUN      ] BoundaryTest.ExtrapolateBorders
+[       OK ] BoundaryTest.ExtrapolateBorders (0 ms)
+[----------] 8 tests from BoundaryTest (1 ms total)
+
+[----------] 2 tests from BVH2DTest
+[ RUN      ] BVH2DTest.EmptyBVHHandlesGracefully
+[       OK ] BVH2DTest.EmptyBVHHandlesGracefully (0 ms)
+[ RUN      ] BVH2DTest.SingleSegmentOverlapAndContainment
+[       OK ] BVH2DTest.SingleSegmentOverlapAndContainment (0 ms)
+[----------] 2 tests from BVH2DTest (0 ms total)
+
+[----------] 11 tests from BVH2DPathSDF
+[ RUN      ] BVH2DPathSDF.OpenPathMatchesBruteForceAndBVH
+[       OK ] BVH2DPathSDF.OpenPathMatchesBruteForceAndBVH (0 ms)
+[ RUN      ] BVH2DPathSDF.ClosedPathMatchesBruteForceAndBVH
+[       OK ] BVH2DPathSDF.ClosedPathMatchesBruteForceAndBVH (0 ms)
+[ RUN      ] BVH2DPathSDF.PolylineFunctionsEquivalenceAndWarp
+[       OK ] BVH2DPathSDF.PolylineFunctionsEquivalenceAndWarp (0 ms)
+[ RUN      ] BVH2DPathSDF.ComplexMultiSegmentPathEquivalence
+[       OK ] BVH2DPathSDF.ComplexMultiSegmentPathEquivalence (1 ms)
+[ RUN      ] BVH2DPathSDF.BezierMatchesBruteForceAndBVH
+[       OK ] BVH2DPathSDF.BezierMatchesBruteForceAndBVH (1 ms)
+[ RUN      ] BVH2DPathSDF.BezierColinearPointsNoNaN
+[       OK ] BVH2DPathSDF.BezierColinearPointsNoNaN (0 ms)
+[ RUN      ] BVH2DPathSDF.BezierClosedPathSigned
+[       OK ] BVH2DPathSDF.BezierClosedPathSigned (0 ms)
+[ RUN      ] BVH2DPathSDF.BezierEvenPointCountHandled
+[       OK ] BVH2DPathSDF.BezierEvenPointCountHandled (0 ms)
+[ RUN      ] BVH2DPathSDF.GpuBezierMatchesCpu
+[       OK ] BVH2DPathSDF.GpuBezierMatchesCpu (0 ms)
+[ RUN      ] BVH2DPathSDF.GpuPathSdfToArrayMatchesCpu
+[       OK ] BVH2DPathSDF.GpuPathSdfToArrayMatchesCpu (0 ms)
+[ RUN      ] BVH2DPathSDF.PathSdfBezierToArrayMatchesSdf2DPolylineBezier
+[       OK ] BVH2DPathSDF.PathSdfBezierToArrayMatchesSdf2DPolylineBezier (0 ms)
+[----------] 11 tests from BVH2DPathSDF (4 ms total)
+
+[----------] 2 tests from BVH2DGraphSDF
+[ RUN      ] BVH2DGraphSDF.MatchesBruteForceAndBVH
+[       OK ] BVH2DGraphSDF.MatchesBruteForceAndBVH (0 ms)
+[ RUN      ] BVH2DGraphSDF.EmptyGraphYieldsLargeDistance
+[       OK ] BVH2DGraphSDF.EmptyGraphYieldsLargeDistance (0 ms)
+[----------] 2 tests from BVH2DGraphSDF (0 ms total)
+
+[----------] 5 tests from Canyonize
+[ RUN      ] Canyonize.EmptyArray
+hmap [warn ] [canyonize.cpp           :36] Array is empty or uninitialized (shape: 0x0, buffer size: 0)
+[       OK ] Canyonize.EmptyArray (0 ms)
+[ RUN      ] Canyonize.PreservesShapeAndRange
+[       OK ] Canyonize.PreservesShapeAndRange (0 ms)
+[ RUN      ] Canyonize.FlattenBottom
+[       OK ] Canyonize.FlattenBottom (0 ms)
+[ RUN      ] Canyonize.MaskedCanyonize
+[       OK ] Canyonize.MaskedCanyonize (0 ms)
+[ RUN      ] Canyonize.LateralNoiseModulation
+[       OK ] Canyonize.LateralNoiseModulation (1 ms)
+[----------] 5 tests from Canyonize (3 ms total)
+
+[----------] 4 tests from CellPath
+[ RUN      ] CellPath.ConstructionAndContainerInterface
+[       OK ] CellPath.ConstructionAndContainerInterface (0 ms)
+[ RUN      ] CellPath.BresenhamLine
+[       OK ] CellPath.BresenhamLine (0 ms)
+[ RUN      ] CellPath.AdjacencyCheckAndEnforcement
+[       OK ] CellPath.AdjacencyCheckAndEnforcement (0 ms)
+[ RUN      ] CellPath.AddNoiseDeformation
+[       OK ] CellPath.AddNoiseDeformation (0 ms)
+[----------] 4 tests from CellPath (0 ms total)
+
+[----------] 8 tests from ChebyshevEvaluator
+[ RUN      ] ChebyshevEvaluator.EmptyPolynomial
+[       OK ] ChebyshevEvaluator.EmptyPolynomial (0 ms)
+[ RUN      ] ChebyshevEvaluator.ConstantPolynomial
+[       OK ] ChebyshevEvaluator.ConstantPolynomial (0 ms)
+[ RUN      ] ChebyshevEvaluator.FirstOrderPolynomial
+[       OK ] ChebyshevEvaluator.FirstOrderPolynomial (0 ms)
+[ RUN      ] ChebyshevEvaluator.SecondOrderPolynomial
+[       OK ] ChebyshevEvaluator.SecondOrderPolynomial (0 ms)
+[ RUN      ] ChebyshevEvaluator.MixedPolynomial
+[       OK ] ChebyshevEvaluator.MixedPolynomial (0 ms)
+[ RUN      ] ChebyshevEvaluator.CompareAgainstReferenceImplementation
+[       OK ] ChebyshevEvaluator.CompareAgainstReferenceImplementation (0 ms)
+[ RUN      ] ChebyshevEvaluator.BatchEvaluation
+[       OK ] ChebyshevEvaluator.BatchEvaluation (0 ms)
+[ RUN      ] ChebyshevEvaluator.LargeNumberOfEvaluations
+[       OK ] ChebyshevEvaluator.LargeNumberOfEvaluations (2 ms)
+[----------] 8 tests from ChebyshevEvaluator (2 ms total)
+
+[----------] 6 tests from Circus
+[ RUN      ] Circus.BasicShapeAndBounds
+[       OK ] Circus.BasicShapeAndBounds (0 ms)
+[ RUN      ] Circus.CenterDepressionAndExitAndRidge
+[       OK ] Circus.CenterDepressionAndExitAndRidge (0 ms)
+[ RUN      ] Circus.Rotation
+[       OK ] Circus.Rotation (1 ms)
+[ RUN      ] Circus.MaskOutput
+[       OK ] Circus.MaskOutput (0 ms)
+[ RUN      ] Circus.ContinuityAcrossRim
+[       OK ] Circus.ContinuityAcrossRim (2 ms)
+[ RUN      ] Circus.NoiseModulation
+[       OK ] Circus.NoiseModulation (0 ms)
+[----------] 6 tests from Circus (5 ms total)
+
+[----------] 34 tests from CloudTest
+[ RUN      ] CloudTest.DefaultConstructorEmpty
+[       OK ] CloudTest.DefaultConstructorEmpty (0 ms)
+[ RUN      ] CloudTest.ConstructFromXY
+[       OK ] CloudTest.ConstructFromXY (0 ms)
+[ RUN      ] CloudTest.ConstructFromXYV
+[       OK ] CloudTest.ConstructFromXYV (0 ms)
+[ RUN      ] CloudTest.RandomConstructorDeterministic
+[       OK ] CloudTest.RandomConstructorDeterministic (0 ms)
+[ RUN      ] CloudTest.PushBackIncreasesSize
+[       OK ] CloudTest.PushBackIncreasesSize (0 ms)
+[ RUN      ] CloudTest.EraseReducesSize
+[       OK ] CloudTest.EraseReducesSize (0 ms)
+[ RUN      ] CloudTest.ClearEmptiesCloud
+[       OK ] CloudTest.ClearEmptiesCloud (0 ms)
+[ RUN      ] CloudTest.GetBBoxCorrect
+[       OK ] CloudTest.GetBBoxCorrect (0 ms)
+[ RUN      ] CloudTest.GetCenterCorrect
+[       OK ] CloudTest.GetCenterCorrect (0 ms)
+[ RUN      ] CloudTest.GetValuesCorrect
+[       OK ] CloudTest.GetValuesCorrect (0 ms)
+[ RUN      ] CloudTest.GetValuesMinMax
+[       OK ] CloudTest.GetValuesMinMax (0 ms)
+[ RUN      ] CloudTest.GetXYConcatenation
+[       OK ] CloudTest.GetXYConcatenation (0 ms)
+[ RUN      ] CloudTest.NearestPointCorrect
+[       OK ] CloudTest.NearestPointCorrect (0 ms)
+[ RUN      ] CloudTest.SetValuesConstant
+[       OK ] CloudTest.SetValuesConstant (0 ms)
+[ RUN      ] CloudTest.SetValuesVector
+[       OK ] CloudTest.SetValuesVector (0 ms)
+[ RUN      ] CloudTest.RemapValuesRange
+[       OK ] CloudTest.RemapValuesRange (0 ms)
+[ RUN      ] CloudTest.RandomizeDeterministic
+[       OK ] CloudTest.RandomizeDeterministic (0 ms)
+[ RUN      ] CloudTest.ShuffleDeterministic
+[       OK ] CloudTest.ShuffleDeterministic (0 ms)
+[ RUN      ] CloudTest.ConvexHullSquare
+[       OK ] CloudTest.ConvexHullSquare (0 ms)
+[ RUN      ] CloudTest.ConvexHullIgnoresInnerPoint
+[       OK ] CloudTest.ConvexHullIgnoresInnerPoint (0 ms)
+[ RUN      ] CloudTest.MergeCloudsConcatenates
+[       OK ] CloudTest.MergeCloudsConcatenates (0 ms)
+[ RUN      ] CloudTest.ScaleUniformDefaultCenter
+[       OK ] CloudTest.ScaleUniformDefaultCenter (0 ms)
+[ RUN      ] CloudTest.ScaleNonUniformCustomCenter
+[       OK ] CloudTest.ScaleNonUniformCustomCenter (0 ms)
+[ RUN      ] CloudTest.ScaleCustomCenter
+[       OK ] CloudTest.ScaleCustomCenter (0 ms)
+[ RUN      ] CloudTest.ScalePreservesPointValues
+[       OK ] CloudTest.ScalePreservesPointValues (0 ms)
+[ RUN      ] CloudTest.MoveConstructor
+[       OK ] CloudTest.MoveConstructor (0 ms)
+[ RUN      ] CloudTest.ContainerAccessAndIterators
+[       OK ] CloudTest.ContainerAccessAndIterators (0 ms)
+[ RUN      ] CloudTest.RejectionFilterDensityActuallyErases
+[       OK ] CloudTest.RejectionFilterDensityActuallyErases (0 ms)
+[ RUN      ] CloudTest.RemapValuesEmptyCloudSafe
+[       OK ] CloudTest.RemapValuesEmptyCloudSafe (0 ms)
+[ RUN      ] CloudTest.ConvexHullDegenerateInputsSafe
+[       OK ] CloudTest.ConvexHullDegenerateInputsSafe (0 ms)
+[ RUN      ] CloudTest.ToArrayDegenerateBBoxSafe
+[       OK ] CloudTest.ToArrayDegenerateBBoxSafe (0 ms)
+[ RUN      ] CloudTest.InverseSamplingPointsAndCloud
+hmap [warn ] [point_sampling.cpp      :138] Array is empty or uninitialized (shape: 0x0, buffer size: 0)
+hmap [warn ] [cloud.cpp               :916] Array is empty or uninitialized (shape: 0x0, buffer size: 0)
+[       OK ] CloudTest.InverseSamplingPointsAndCloud (0 ms)
+[ RUN      ] CloudTest.InverseSampler2DSequentialAndRegionUpdate
+[       OK ] CloudTest.InverseSampler2DSequentialAndRegionUpdate (0 ms)
+[ RUN      ] CloudTest.SetValuesFromArrayRadius
+[       OK ] CloudTest.SetValuesFromArrayRadius (0 ms)
+[----------] 34 tests from CloudTest (0 ms total)
+
+[----------] 7 tests from ColorMatchMask
+[ RUN      ] ColorMatchMask.ExactMatch
+[       OK ] ColorMatchMask.ExactMatch (0 ms)
+[ RUN      ] ColorMatchMask.WithinToleranceSmallDeviation
+[       OK ] ColorMatchMask.WithinToleranceSmallDeviation (0 ms)
+[ RUN      ] ColorMatchMask.OutsideTolerance
+[       OK ] ColorMatchMask.OutsideTolerance (0 ms)
+[ RUN      ] ColorMatchMask.ExactlyOnToleranceBoundary
+[       OK ] ColorMatchMask.ExactlyOnToleranceBoundary (0 ms)
+[ RUN      ] ColorMatchMask.MultiPixel
+[       OK ] ColorMatchMask.MultiPixel (0 ms)
+[ RUN      ] ColorMatchMask.VerySmallTolerance
+[       OK ] ColorMatchMask.VerySmallTolerance (0 ms)
+[ RUN      ] ColorMatchMask.MaxRangeDifference
+[       OK ] ColorMatchMask.MaxRangeDifference (0 ms)
+[----------] 7 tests from ColorMatchMask (0 ms total)
+
+[----------] 6 tests from ComputeModeMatrixTest
+[ RUN      ] ComputeModeMatrixTest.ArrayMethodsWithCommMatrix
+[       OK ] ComputeModeMatrixTest.ArrayMethodsWithCommMatrix (389 ms)
+[ RUN      ] ComputeModeMatrixTest.RemapMatrix
+[       OK ] ComputeModeMatrixTest.RemapMatrix (266 ms)
+[ RUN      ] ComputeModeMatrixTest.SmoothCPulseMatrix
+[       OK ] ComputeModeMatrixTest.SmoothCPulseMatrix (225 ms)
+[ RUN      ] ComputeModeMatrixTest.DistanceTransformMatrix
+[       OK ] ComputeModeMatrixTest.DistanceTransformMatrix (1164 ms)
+[ RUN      ] ComputeModeMatrixTest.SnowSimulationMatrix
+[       OK ] ComputeModeMatrixTest.SnowSimulationMatrix (1052 ms)
+[ RUN      ] ComputeModeMatrixTest.SnowSimulation4KMinimalMemory
+Starting SnowRepro (shape 4096, tile 1024, VA_DISK_LRU_STREAM)...
+Init va_z with noise_fbm...
+Init other VAs...
+Running snow_simulation...
+In tile (0, 0)
+In tile (1, 0)
+In tile (2, 0)
+In tile (3, 0)
+In tile (0, 1)
+In tile (1, 1)
+In tile (2, 1)
+In tile (3, 1)
+In tile (0, 2)
+In tile (1, 2)
+In tile (2, 2)
+In tile (3, 2)
+In tile (0, 3)
+In tile (1, 3)
+In tile (2, 3)
+In tile (3, 3)
+Tile finished (0, 0)
+Tile finished (1, 0)
+Tile finished (2, 0)
+Tile finished (3, 0)
+Tile finished (0, 1)
+Tile finished (1, 1)
+Tile finished (2, 1)
+Tile finished (3, 1)
+Tile finished (0, 2)
+Tile finished (1, 2)
+Tile finished (2, 2)
+Tile finished (3, 2)
+Tile finished (0, 3)
+Tile finished (1, 3)
+Tile finished (2, 3)
+Tile finished (3, 3)
+Done!
+[       OK ] ComputeModeMatrixTest.SnowSimulation4KMinimalMemory (4697 ms)
+[----------] 6 tests from ComputeModeMatrixTest (7794 ms total)
+
+[----------] 6 tests from ConnectedComponents
+[ RUN      ] ConnectedComponents.SingleComponent
+[       OK ] ConnectedComponents.SingleComponent (0 ms)
+[ RUN      ] ConnectedComponents.TwoSeparateComponents
+[       OK ] ConnectedComponents.TwoSeparateComponents (0 ms)
+[ RUN      ] ConnectedComponents.DiagonalConnectivity
+[       OK ] ConnectedComponents.DiagonalConnectivity (0 ms)
+[ RUN      ] ConnectedComponents.SurfaceThresholdFiltering
+[       OK ] ConnectedComponents.SurfaceThresholdFiltering (0 ms)
+[ RUN      ] ConnectedComponents.LabelRemappingIsCompact
+[       OK ] ConnectedComponents.LabelRemappingIsCompact (0 ms)
+[ RUN      ] ConnectedComponents.CentroidComputation
+[       OK ] ConnectedComponents.CentroidComputation (0 ms)
+[----------] 6 tests from ConnectedComponents (0 ms total)
+
+[----------] 6 tests from ConvolutionScaling
+[ RUN      ] ConvolutionScaling.CPU_Convolve2D_DirectScaling
+[       OK ] ConvolutionScaling.CPU_Convolve2D_DirectScaling (0 ms)
+[ RUN      ] ConvolutionScaling.CPU_Convolve2D_SvdScaling
+[       OK ] ConvolutionScaling.CPU_Convolve2D_SvdScaling (6 ms)
+[ RUN      ] ConvolutionScaling.GPU_BilateralFilterScaling
+[       OK ] ConvolutionScaling.GPU_BilateralFilterScaling (1 ms)
+[ RUN      ] ConvolutionScaling.GPU_ExpandScaling
+[       OK ] ConvolutionScaling.GPU_ExpandScaling (2 ms)
+[ RUN      ] ConvolutionScaling.GPU_LocalMetricsScaling
+[       OK ] ConvolutionScaling.GPU_LocalMetricsScaling (2 ms)
+[ RUN      ] ConvolutionScaling.GPU_SparseMaxConvolutionScaling
+[       OK ] ConvolutionScaling.GPU_SparseMaxConvolutionScaling (1 ms)
+[----------] 6 tests from ConvolutionScaling (14 ms total)
+
+[----------] 5 tests from CoordFrameTest
+[ RUN      ] CoordFrameTest.TransformAndIntersection
+[       OK ] CoordFrameTest.TransformAndIntersection (0 ms)
+[ RUN      ] CoordFrameTest.ArrayIdentityPreservation
+[       OK ] CoordFrameTest.ArrayIdentityPreservation (0 ms)
+[ RUN      ] CoordFrameTest.VirtualArrayModesAndStreaming
+[       OK ] CoordFrameTest.VirtualArrayModesAndStreaming (10 ms)
+[ RUN      ] CoordFrameTest.FlattenHeightmapInPlace
+[       OK ] CoordFrameTest.FlattenHeightmapInPlace (0 ms)
+[ RUN      ] CoordFrameTest.InterpolateTerrainFillMask
+[       OK ] CoordFrameTest.InterpolateTerrainFillMask (0 ms)
+[----------] 5 tests from CoordFrameTest (11 ms total)
+
+[----------] 3 tests from PathDecimateVw
+[ RUN      ] PathDecimateVw.ReducesPointCount
+[       OK ] PathDecimateVw.ReducesPointCount (1 ms)
+[ RUN      ] PathDecimateVw.PreservesStraightLine
+[       OK ] PathDecimateVw.PreservesStraightLine (0 ms)
+[ RUN      ] PathDecimateVw.PreservesCircle
+[       OK ] PathDecimateVw.PreservesCircle (0 ms)
+[----------] 3 tests from PathDecimateVw (1 ms total)
+
+[----------] 6 tests from DistanceShaper
+[ RUN      ] DistanceShaper.EmptyArray
+hmap [warn ] [distance_shaper.cpp     :255] Array is empty or uninitialized (shape: 0x0, buffer size: 0)
+[       OK ] DistanceShaper.EmptyArray (0 ms)
+[ RUN      ] DistanceShaper.GeneratesSlopesFromFlatShape
+[       OK ] DistanceShaper.GeneratesSlopesFromFlatShape (10 ms)
+[ RUN      ] DistanceShaper.SkewControl
+[       OK ] DistanceShaper.SkewControl (1 ms)
+[ RUN      ] DistanceShaper.AsteriskCutsBetweenDirections
+[       OK ] DistanceShaper.AsteriskCutsBetweenDirections (3 ms)
+[ RUN      ] DistanceShaper.ClassicMethod
+[       OK ] DistanceShaper.ClassicMethod (1 ms)
+[ RUN      ] DistanceShaper.MaskAndMixRatio
+[       OK ] DistanceShaper.MaskAndMixRatio (5 ms)
+[----------] 6 tests from DistanceShaper (22 ms total)
+
+[----------] 10 tests from DistanceTransform
+[ RUN      ] DistanceTransform.ProducesCorrectDistances
+[       OK ] DistanceTransform.ProducesCorrectDistances (111 ms)
+[ RUN      ] DistanceTransform.SquaredDistanceConsistency
+[       OK ] DistanceTransform.SquaredDistanceConsistency (0 ms)
+[ RUN      ] DistanceTransform.EmptyMask
+[       OK ] DistanceTransform.EmptyMask (0 ms)
+[ RUN      ] DistanceTransform.FullMask
+[       OK ] DistanceTransform.FullMask (0 ms)
+[ RUN      ] DistanceTransform.SinglePoint
+[       OK ] DistanceTransform.SinglePoint (0 ms)
+[ RUN      ] DistanceTransform.HorizontalLine
+[       OK ] DistanceTransform.HorizontalLine (0 ms)
+[ RUN      ] DistanceTransform.VerticalLine
+[       OK ] DistanceTransform.VerticalLine (0 ms)
+[ RUN      ] DistanceTransform.ConsistencyWithDistanceTransformWithClosest
+[       OK ] DistanceTransform.ConsistencyWithDistanceTransformWithClosest (1 ms)
+[ RUN      ] DistanceTransform.ApproxMatchesExactWithinTolerance
+[       OK ] DistanceTransform.ApproxMatchesExactWithinTolerance (0 ms)
+[ RUN      ] DistanceTransform.TiledWithCommunicator
+[       OK ] DistanceTransform.TiledWithCommunicator (25 ms)
+[----------] 10 tests from DistanceTransform (139 ms total)
+
+[----------] 1 test from DistanceTransformManhattan
+[ RUN      ] DistanceTransformManhattan.ProducesCorrectDistances
+[       OK ] DistanceTransformManhattan.ProducesCorrectDistances (105 ms)
+[----------] 1 test from DistanceTransformManhattan (105 ms total)
+
+[----------] 4 tests from DrainageBasin
+[ RUN      ] DrainageBasin.BasicConstructionAndOutlets
+[       OK ] DrainageBasin.BasicConstructionAndOutlets (2 ms)
+[ RUN      ] DrainageBasin.StrahlerOrderTree
+[       OK ] DrainageBasin.StrahlerOrderTree (0 ms)
+[ RUN      ] DrainageBasin.RidgeNodesAndRootsInitialized
+[       OK ] DrainageBasin.RidgeNodesAndRootsInitialized (2 ms)
+[ RUN      ] DrainageBasin.ResponseTimesAndElevationUpdate
+[       OK ] DrainageBasin.ResponseTimesAndElevationUpdate (1 ms)
+[----------] 4 tests from DrainageBasin (5 ms total)
+
+[----------] 17 tests from ElevationFromContours
+[ RUN      ] ElevationFromContours.InvalidInputsReturnEmpty
+hmap [error] [elevation_from_contou...:888] elevation_from_contours: at least one contour is required
+hmap [error] [elevation_from_contou...:894] elevation_from_contours: contours (1) and elevations (2) sizes differ
+hmap [error] [elevation_from_contou...:904] elevation_from_contours: contour 0 has fewer than 3 points
+hmap [warn ] [elevation_from_contou...:909] Array shape mismatch: expected shape (32, 32), actual is (16, 16) [size: 256]
+[       OK ] ElevationFromContours.InvalidInputsReturnEmpty (0 ms)
+[ RUN      ] ElevationFromContours.ContourPixelsAreExact
+[       OK ] ElevationFromContours.ContourPixelsAreExact (1 ms)
+[ RUN      ] ElevationFromContours.BetweenNestedContoursValuesAreBounded
+[       OK ] ElevationFromContours.BetweenNestedContoursValuesAreBounded (2 ms)
+[ RUN      ] ElevationFromContours.DeterministicModeIgnoresSeed
+[       OK ] ElevationFromContours.DeterministicModeIgnoresSeed (1 ms)
+[ RUN      ] ElevationFromContours.StochasticModeIsSeedReproducible
+[       OK ] ElevationFromContours.StochasticModeIsSeedReproducible (1 ms)
+[ RUN      ] ElevationFromContours.LeafZoneRisesAboveItsContour
+[       OK ] ElevationFromContours.LeafZoneRisesAboveItsContour (1 ms)
+[ RUN      ] ElevationFromContours.OutsideDropsBelowRootContour
+[       OK ] ElevationFromContours.OutsideDropsBelowRootContour (0 ms)
+[ RUN      ] ElevationFromContours.BasinLeafSinksBelowItsContour
+[       OK ] ElevationFromContours.BasinLeafSinksBelowItsContour (0 ms)
+[ RUN      ] ElevationFromContours.HighProbabilityKeepsTerrainLower
+[       OK ] ElevationFromContours.HighProbabilityKeepsTerrainLower (1 ms)
+[ RUN      ] ElevationFromContours.RisingZoneHasNoPits
+[       OK ] ElevationFromContours.RisingZoneHasNoPits (1 ms)
+[ RUN      ] ElevationFromContours.OutsideZoneIsContinuousBetweenRoots
+[       OK ] ElevationFromContours.OutsideZoneIsContinuousBetweenRoots (1 ms)
+[ RUN      ] ElevationFromContours.SiblingsAtDifferentElevationsAreContinuous
+[       OK ] ElevationFromContours.SiblingsAtDifferentElevationsAreContinuous (1 ms)
+[ RUN      ] ElevationFromContours.RasterContoursOverloadWorks
+[       OK ] ElevationFromContours.RasterContoursOverloadWorks (1 ms)
+[ RUN      ] ElevationFromContours.RasterContoursEmptyInput
+hmap [warn ] [elevation_from_contou...:935] Array is empty or uninitialized (shape: 0x0, buffer size: 0)
+hmap [error] [elevation_from_contou...:947] elevation_from_contours: no contours found in input array
+[       OK ] ElevationFromContours.RasterContoursEmptyInput (0 ms)
+[ RUN      ] ElevationFromContours.SmoothstepInterpolation
+[       OK ] ElevationFromContours.SmoothstepInterpolation (2 ms)
+[ RUN      ] ElevationFromContours.OpenBoundaryContourPathRisesToPeak
+[       OK ] ElevationFromContours.OpenBoundaryContourPathRisesToPeak (0 ms)
+[ RUN      ] ElevationFromContours.OpenBoundaryContourRasterRisesToPeak
+[       OK ] ElevationFromContours.OpenBoundaryContourRasterRisesToPeak (0 ms)
+[----------] 17 tests from ElevationFromContours (17 ms total)
+
+[----------] 2 tests from ElevationFromSparseConstraints
+[ RUN      ] ElevationFromSparseConstraints.ExactConstraintsPreservation
+[       OK ] ElevationFromSparseConstraints.ExactConstraintsPreservation (177 ms)
+[ RUN      ] ElevationFromSparseConstraints.DefaultPerimeterBoundary
+[       OK ] ElevationFromSparseConstraints.DefaultPerimeterBoundary (166 ms)
+[----------] 2 tests from ElevationFromSparseConstraints (344 ms total)
+
+[----------] 2 tests from HarmonicInterpolation
+[ RUN      ] HarmonicInterpolation.VaryingDiffusionAnisotropy
+[       OK ] HarmonicInterpolation.VaryingDiffusionAnisotropy (119 ms)
+[ RUN      ] HarmonicInterpolation.CpuGpuConsistencyWithDxDy
+[       OK ] HarmonicInterpolation.CpuGpuConsistencyWithDxDy (164 ms)
+[----------] 2 tests from HarmonicInterpolation (284 ms total)
+
+[----------] 7 tests from Erosion
+[ RUN      ] Erosion.IdentityWhenRadiusZero
+[       OK ] Erosion.IdentityWhenRadiusZero (0 ms)
+[ RUN      ] Erosion.SingleMinimumPropagation
+[       OK ] Erosion.SingleMinimumPropagation (0 ms)
+[ RUN      ] Erosion.EdgeHandling
+[       OK ] Erosion.EdgeHandling (0 ms)
+[ RUN      ] Erosion.LargerRadius
+[       OK ] Erosion.LargerRadius (0 ms)
+[ RUN      ] Erosion.MonotonicDecrease
+[       OK ] Erosion.MonotonicDecrease (0 ms)
+[ RUN      ] Erosion.FlatRegionUnchanged
+[       OK ] Erosion.FlatRegionUnchanged (0 ms)
+[ RUN      ] Erosion.NonSquareArray
+[       OK ] Erosion.NonSquareArray (0 ms)
+[----------] 7 tests from Erosion (0 ms total)
+
+[----------] 1 test from ThermalConserve
+[ RUN      ] ThermalConserve.MassPreserved
+[       OK ] ThermalConserve.MassPreserved (166 ms)
+[----------] 1 test from ThermalConserve (166 ms total)
+
+[----------] 1 test from ThermalGPU
+[ RUN      ] ThermalGPU.VariantsRunAndModify
+[       OK ] ThermalGPU.VariantsRunAndModify (122 ms)
+[----------] 1 test from ThermalGPU (122 ms total)
+
+[----------] 1 test from DepressionFilling
+[ RUN      ] DepressionFilling.BoundaryConditions
+[       OK ] DepressionFilling.BoundaryConditions (0 ms)
+[----------] 1 test from DepressionFilling (0 ms total)
+
+[----------] 1 test from DepressionFillingPriorityFlood
+[ RUN      ] DepressionFillingPriorityFlood.BoundaryConditions
+[       OK ] DepressionFillingPriorityFlood.BoundaryConditions (0 ms)
+[----------] 1 test from DepressionFillingPriorityFlood (0 ms total)
+
+[----------] 2 tests from HydraulicMusgrave
+[ RUN      ] HydraulicMusgrave.BasicExecution
+[       OK ] HydraulicMusgrave.BasicExecution (2 ms)
+[ RUN      ] HydraulicMusgrave.FlatRegionUnchanged
+[       OK ] HydraulicMusgrave.FlatRegionUnchanged (0 ms)
+[----------] 2 tests from HydraulicMusgrave (2 ms total)
+
+[----------] 2 tests from HydraulicMusgraveGPU
+[ RUN      ] HydraulicMusgraveGPU.BasicExecution
+[       OK ] HydraulicMusgraveGPU.BasicExecution (131 ms)
+[ RUN      ] HydraulicMusgraveGPU.FlatRegionUnchanged
+[       OK ] HydraulicMusgraveGPU.FlatRegionUnchanged (199 ms)
+[----------] 2 tests from HydraulicMusgraveGPU (330 ms total)
+
+[----------] 5 tests from HydraulicMise
+[ RUN      ] HydraulicMise.BasicExecution
+[       OK ] HydraulicMise.BasicExecution (17 ms)
+[ RUN      ] HydraulicMise.MaskedExecution
+[       OK ] HydraulicMise.MaskedExecution (13 ms)
+[ RUN      ] HydraulicMise.BedrockConstraint
+[       OK ] HydraulicMise.BedrockConstraint (13 ms)
+[ RUN      ] HydraulicMise.Determinism
+[       OK ] HydraulicMise.Determinism (25 ms)
+[ RUN      ] HydraulicMise.VirtualArrayComparison
+[       OK ] HydraulicMise.VirtualArrayComparison (81 ms)
+[----------] 5 tests from HydraulicMise (152 ms total)
+
+[----------] 1 test from HydraulicSchottGPU
+[ RUN      ] HydraulicSchottGPU.BasicExecution
+[       OK ] HydraulicSchottGPU.BasicExecution (130 ms)
+[----------] 1 test from HydraulicSchottGPU (130 ms total)
+
+[----------] 1 test from HydraulicSchottErosionGPU
+[ RUN      ] HydraulicSchottErosionGPU.BasicExecution
+[       OK ] HydraulicSchottErosionGPU.BasicExecution (194 ms)
+[----------] 1 test from HydraulicSchottErosionGPU (195 ms total)
+
+[----------] 1 test from HydraulicParticleGPU
+[ RUN      ] HydraulicParticleGPU.ErodibilityInput
+[       OK ] HydraulicParticleGPU.ErodibilityInput (127 ms)
+[----------] 1 test from HydraulicParticleGPU (127 ms total)
+
+[----------] 1 test from HydraulicStreamLogGPU
+[ RUN      ] HydraulicStreamLogGPU.ErodibilityInput
+[       OK ] HydraulicStreamLogGPU.ErodibilityInput (120 ms)
+[----------] 1 test from HydraulicStreamLogGPU (120 ms total)
+
+[----------] 3 tests from AeolianErosionGPU
+[ RUN      ] AeolianErosionGPU.BasicExecutionAndConservation
+[       OK ] AeolianErosionGPU.BasicExecutionAndConservation (178 ms)
+[ RUN      ] AeolianErosionGPU.TiledDistributedExecution
+[       OK ] AeolianErosionGPU.TiledDistributedExecution (347 ms)
+[ RUN      ] AeolianErosionGPU.MultiscaleExecution
+[       OK ] AeolianErosionGPU.MultiscaleExecution (188 ms)
+[----------] 3 tests from AeolianErosionGPU (714 ms total)
+
+[----------] 1 test from Strata
+[ RUN      ] Strata.NoNaNAtHighResolution
+[       OK ] Strata.NoNaNAtHighResolution (156 ms)
+[----------] 1 test from Strata (156 ms total)
+
+[----------] 5 tests from ExportAsset
+[ RUN      ] ExportAsset.TriOptimizedExportsWithoutCrash
+hmap [trace] [export_asset.cpp        :280] exporting asset, format [GL Transmission Format v. 2 (binary) - *.glb] aka [glb2]
+hmap [trace] [export_asset.cpp        :211] remeshing (Delaunay)
+[       OK ] ExportAsset.TriOptimizedExportsWithoutCrash (2 ms)
+[ RUN      ] ExportAsset.TriExportsWithoutCrash
+hmap [trace] [export_asset.cpp        :280] exporting asset, format [GL Transmission Format v. 2 (binary) - *.glb] aka [glb2]
+[       OK ] ExportAsset.TriExportsWithoutCrash (1 ms)
+[ RUN      ] ExportAsset.TriFitBoundariesCoordinates
+hmap [trace] [export_asset.cpp        :280] exporting asset, format [GL Transmission Format v. 2 (binary) - *.glb] aka [glb2]
+hmap [trace] [export_asset.cpp        :280] exporting asset, format [GL Transmission Format v. 2 (binary) - *.glb] aka [glb2]
+[       OK ] ExportAsset.TriFitBoundariesCoordinates (3 ms)
+[ RUN      ] ExportAsset.TriOptimizedFitBoundariesCoordinates
+hmap [trace] [export_asset.cpp        :280] exporting asset, format [GL Transmission Format v. 2 (binary) - *.glb] aka [glb2]
+hmap [trace] [export_asset.cpp        :211] remeshing (Delaunay)
+hmap [trace] [export_asset.cpp        :280] exporting asset, format [GL Transmission Format v. 2 (binary) - *.glb] aka [glb2]
+hmap [trace] [export_asset.cpp        :211] remeshing (Delaunay)
+[       OK ] ExportAsset.TriOptimizedFitBoundariesCoordinates (1 ms)
+[ RUN      ] ExportAsset.MaskedFitBoundariesCoordinates
+hmap [trace] [export_asset.cpp        :359] exporting asset, format [GL Transmission Format v. 2 (binary) - *.glb] aka [glb2]
+hmap [trace] [export_asset.cpp        :359] exporting asset, format [GL Transmission Format v. 2 (binary) - *.glb] aka [glb2]
+[       OK ] ExportAsset.MaskedFitBoundariesCoordinates (4 ms)
+[----------] 5 tests from ExportAsset (13 ms total)
+
+[----------] 3 tests from ExportUsd
+[ RUN      ] ExportUsd.BasicExport
+hmap [trace] [export_usd.cpp          :382] exporting USD scene to [/tmp/test_highmap_scene.usda]
+Wrote USDA to [/tmp/test_highmap_scene.usda]
+hmap [trace] [export_usd.cpp          :382] exporting USD scene to [/tmp/test_highmap_scene.usdc]
+hmap [trace] [export_usd.cpp          :382] exporting USD scene to [/tmp/test_highmap_opt.usda]
+hmap [trace] [export_usd.cpp          :224] remeshing USD terrain (Delaunay)
+Wrote USDA to [/tmp/test_highmap_opt.usda]
+[       OK ] ExportUsd.BasicExport (15 ms)
+[ RUN      ] ExportUsd.ForestExport
+hmap [trace] [export_usd.cpp          :382] exporting USD scene to [/tmp/test_highmap_forest.usda]
+Wrote USDA to [/tmp/test_highmap_forest.usda]
+hmap [trace] [export_usd.cpp          :382] exporting USD scene to [/tmp/test_highmap_forest.usdc]
+hmap [trace] [export_usd.cpp          :382] exporting USD scene to [/tmp/test_highmap_forest_standalone.usda]
+Wrote USDA to [/tmp/test_highmap_forest_standalone.usda]
+[       OK ] ExportUsd.ForestExport (1 ms)
+[ RUN      ] ExportUsd.RockFieldExport
+hmap [trace] [export_usd.cpp          :382] exporting USD scene to [/tmp/test_highmap_rock_field.usda]
+Wrote USDA to [/tmp/test_highmap_rock_field.usda]
+hmap [trace] [export_usd.cpp          :382] exporting USD scene to [/tmp/test_highmap_rock_field.usdc]
+[       OK ] ExportUsd.RockFieldExport (0 ms)
+[----------] 3 tests from ExportUsd (17 ms total)
+
+[----------] 4 tests from FillTalus
+[ RUN      ] FillTalus.DeterministicWithSameSeed
+[       OK ] FillTalus.DeterministicWithSameSeed (0 ms)
+[ RUN      ] FillTalus.DifferentSeedsProduceDifferentResults
+[       OK ] FillTalus.DifferentSeedsProduceDifferentResults (0 ms)
+[ RUN      ] FillTalus.SeedMaskRestrictsPropagation
+[       OK ] FillTalus.SeedMaskRestrictsPropagation (0 ms)
+[ RUN      ] FillTalus.RespectsLocalSlopeConstraint
+[       OK ] FillTalus.RespectsLocalSlopeConstraint (0 ms)
+[----------] 4 tests from FillTalus (0 ms total)
+
+[----------] 2 tests from FlattenAroundPoints
+[ RUN      ] FlattenAroundPoints.SinglePoint
+[       OK ] FlattenAroundPoints.SinglePoint (0 ms)
+[ RUN      ] FlattenAroundPoints.LargerRadiusDominates
+[       OK ] FlattenAroundPoints.LargerRadiusDominates (0 ms)
+[----------] 2 tests from FlattenAroundPoints (0 ms total)
+
+[----------] 3 tests from FlattenAroundPointsTerrainAware
+[ RUN      ] FlattenAroundPointsTerrainAware.FlatTerrainPlateau
+[       OK ] FlattenAroundPointsTerrainAware.FlatTerrainPlateau (0 ms)
+[ RUN      ] FlattenAroundPointsTerrainAware.FollowsValley
+[       OK ] FlattenAroundPointsTerrainAware.FollowsValley (0 ms)
+[ RUN      ] FlattenAroundPointsTerrainAware.OutsideBboxSeedIgnored
+[       OK ] FlattenAroundPointsTerrainAware.OutsideBboxSeedIgnored (0 ms)
+[----------] 3 tests from FlattenAroundPointsTerrainAware (0 ms total)
+
+[----------] 7 tests from FloodFill
+[ RUN      ] FloodFill.SimpleRegion
+[       OK ] FloodFill.SimpleRegion (0 ms)
+[ RUN      ] FloodFill.SingleCell
+[       OK ] FloodFill.SingleCell (0 ms)
+[ RUN      ] FloodFill.NoOpOnNonBackground
+[       OK ] FloodFill.NoOpOnNonBackground (0 ms)
+[ RUN      ] FloodFill.DisconnectedRegions
+[       OK ] FloodFill.DisconnectedRegions (0 ms)
+[ RUN      ] FloodFill.BoundaryClipping
+[       OK ] FloodFill.BoundaryClipping (0 ms)
+[ RUN      ] FloodFill.DoesNotOverwriteFillValue
+[       OK ] FloodFill.DoesNotOverwriteFillValue (0 ms)
+[ RUN      ] FloodFill.AlreadyFilledSeed
+[       OK ] FloodFill.AlreadyFilledSeed (0 ms)
+[----------] 7 tests from FloodFill (0 ms total)
+
+[----------] 3 tests from TreeTest
+[ RUN      ] TreeTest.DefaultConstructor
+[       OK ] TreeTest.DefaultConstructor (0 ms)
+[ RUN      ] TreeTest.ParameterizedConstructors
+[       OK ] TreeTest.ParameterizedConstructors (0 ms)
+[ RUN      ] TreeTest.ConversionsAndOperators
+[       OK ] TreeTest.ConversionsAndOperators (0 ms)
+[----------] 3 tests from TreeTest (0 ms total)
+
+[----------] 18 tests from ForestTest
+[ RUN      ] ForestTest.ToString
+[       OK ] ForestTest.ToString (0 ms)
+[ RUN      ] ForestTest.DefaultConstructorEmpty
+[       OK ] ForestTest.DefaultConstructorEmpty (0 ms)
+[ RUN      ] ForestTest.ContainerOperations
+[       OK ] ForestTest.ContainerOperations (2 ms)
+[ RUN      ] ForestTest.FromAndToCloud
+[       OK ] ForestTest.FromAndToCloud (0 ms)
+[ RUN      ] ForestTest.FilterByClassAndClassIds
+[       OK ] ForestTest.FilterByClassAndClassIds (0 ms)
+[ RUN      ] ForestTest.GetBbox
+[       OK ] ForestTest.GetBbox (0 ms)
+[ RUN      ] ForestTest.SetElevationFromTerrain
+[       OK ] ForestTest.SetElevationFromTerrain (0 ms)
+[ RUN      ] ForestTest.ToCsv
+[       OK ] ForestTest.ToCsv (0 ms)
+[ RUN      ] ForestTest.PruneDensity
+[       OK ] ForestTest.PruneDensity (0 ms)
+[ RUN      ] ForestTest.ToPng
+hmap [warn ] [scatter_field.cpp       :1589] Array is empty or uninitialized (shape: 0x0, buffer size: 0)
+[       OK ] ForestTest.ToPng (0 ms)
+[ RUN      ] ForestTest.ShuffleClasses
+[       OK ] ForestTest.ShuffleClasses (0 ms)
+[ RUN      ] ForestTest.PruneUnviable
+[       OK ] ForestTest.PruneUnviable (0 ms)
+[ RUN      ] ForestTest.DensifyBasic
+[       OK ] ForestTest.DensifyBasic (0 ms)
+[ RUN      ] ForestTest.DensifySmallForest
+[       OK ] ForestTest.DensifySmallForest (0 ms)
+[ RUN      ] ForestTest.DensifyGridSpeciesMajority
+[       OK ] ForestTest.DensifyGridSpeciesMajority (0 ms)
+[ RUN      ] ForestTest.ReinforceClassClustersBasic
+[       OK ] ForestTest.ReinforceClassClustersBasic (0 ms)
+[ RUN      ] ForestTest.ReinforceClassClustersMultiIteration
+[       OK ] ForestTest.ReinforceClassClustersMultiIteration (0 ms)
+[ RUN      ] ForestTest.ToDensityMap
+[       OK ] ForestTest.ToDensityMap (0 ms)
+[----------] 18 tests from ForestTest (4 ms total)
+
+[----------] 10 tests from ForestSeedingTest
+[ RUN      ] ForestSeedingTest.SeedForestClustersWithRejection
+[       OK ] ForestSeedingTest.SeedForestClustersWithRejection (0 ms)
+[ RUN      ] ForestSeedingTest.EmptyAndInvalidInputs
+hmap [warn ] [forest_seeding.cpp      :163] Array is empty or uninitialized (shape: 0x0, buffer size: 0)
+hmap [warn ] [forest_seeding.cpp      :305] Array is empty or uninitialized (shape: 0x0, buffer size: 0)
+hmap [warn ] [forest_seeding.cpp      :178] Array shape mismatch: lhs is (16, 16) [size: 256], rhs is (8, 8) [size: 64]
+hmap [warn ] [forest_seeding.cpp      :320] Array shape mismatch: lhs is (16, 16) [size: 256], rhs is (8, 8) [size: 64]
+[       OK ] ForestSeedingTest.EmptyAndInvalidInputs (0 ms)
+[ RUN      ] ForestSeedingTest.BasicClusterSeeding
+[       OK ] ForestSeedingTest.BasicClusterSeeding (0 ms)
+[ RUN      ] ForestSeedingTest.BasicKMeansSeeding
+[       OK ] ForestSeedingTest.BasicKMeansSeeding (0 ms)
+[ RUN      ] ForestSeedingTest.DensityAdherence
+[       OK ] ForestSeedingTest.DensityAdherence (0 ms)
+[ RUN      ] ForestSeedingTest.ExclusionMapMasking
+[       OK ] ForestSeedingTest.ExclusionMapMasking (0 ms)
+[ RUN      ] ForestSeedingTest.SpeciesWeights
+[       OK ] ForestSeedingTest.SpeciesWeights (0 ms)
+[ RUN      ] ForestSeedingTest.VirtualArrayBasicClusterSeeding
+[       OK ] ForestSeedingTest.VirtualArrayBasicClusterSeeding (0 ms)
+[ RUN      ] ForestSeedingTest.VirtualArrayExclusionMask
+[       OK ] ForestSeedingTest.VirtualArrayExclusionMask (0 ms)
+[ RUN      ] ForestSeedingTest.VirtualArrayEmptyAndZeroDensity
+[       OK ] ForestSeedingTest.VirtualArrayEmptyAndZeroDensity (0 ms)
+[----------] 10 tests from ForestSeedingTest (1 ms total)
+
+[----------] 5 tests from FlowFixingMST
+[ RUN      ] FlowFixingMST.DijkstraModePreservesShapeAndNonEmpty
+[       OK ] FlowFixingMST.DijkstraModePreservesShapeAndNonEmpty (1 ms)
+[ RUN      ] FlowFixingMST.MidpointModePreservesShapeAndNonEmpty
+[       OK ] FlowFixingMST.MidpointModePreservesShapeAndNonEmpty (1 ms)
+[ RUN      ] FlowFixingMST.MidpointReducesSinks
+[       OK ] FlowFixingMST.MidpointReducesSinks (5 ms)
+[ RUN      ] FlowFixingMST.TriangulatedPathsAndCarving
+[       OK ] FlowFixingMST.TriangulatedPathsAndCarving (2 ms)
+[ RUN      ] FlowFixingMST.VirtualArrayTriangulatedExecution
+[       OK ] FlowFixingMST.VirtualArrayTriangulatedExecution (3 ms)
+[----------] 5 tests from FlowFixingMST (15 ms total)
+
+[----------] 1 test from FlowAccumulationDinf
+[ RUN      ] FlowAccumulationDinf.StandaloneVsTiledCommunicator
+[       OK ] FlowAccumulationDinf.StandaloneVsTiledCommunicator (0 ms)
+[----------] 1 test from FlowAccumulationDinf (0 ms total)
+
+[----------] 8 tests from FlowSimulation
+[ RUN      ] FlowSimulation.NonNegativity
+[       OK ] FlowSimulation.NonNegativity (144 ms)
+[ RUN      ] FlowSimulation.VelocityExport
+[       OK ] FlowSimulation.VelocityExport (170 ms)
+[ RUN      ] FlowSimulation.OutflowBoundaries
+[       OK ] FlowSimulation.OutflowBoundaries (138 ms)
+[ RUN      ] FlowSimulation.RainAndEvaporation
+[       OK ] FlowSimulation.RainAndEvaporation (119 ms)
+[ RUN      ] FlowSimulation.IterationParityAndDeterminism
+[       OK ] FlowSimulation.IterationParityAndDeterminism (189 ms)
+[ RUN      ] FlowSimulation.ZeroIterationsReturnsInitialState
+[       OK ] FlowSimulation.ZeroIterationsReturnsInitialState (147 ms)
+[ RUN      ] FlowSimulation.RainMapOfOnesEqualsUniformRain
+[       OK ] FlowSimulation.RainMapOfOnesEqualsUniformRain (119 ms)
+[ RUN      ] FlowSimulation.TiledDistributedExecution
+[       OK ] FlowSimulation.TiledDistributedExecution (418 ms)
+[----------] 8 tests from FlowSimulation (1448 ms total)
+
+[----------] 7 tests from FlowSimulationViscous
+[ RUN      ] FlowSimulationViscous.MassConservationFlatDomain
+[       OK ] FlowSimulationViscous.MassConservationFlatDomain (172 ms)
+[ RUN      ] FlowSimulationViscous.NoSpuriousMassFromDryRidge
+[       OK ] FlowSimulationViscous.NoSpuriousMassFromDryRidge (168 ms)
+[ RUN      ] FlowSimulationViscous.IterationParityAndDeterminism
+[       OK ] FlowSimulationViscous.IterationParityAndDeterminism (116 ms)
+[ RUN      ] FlowSimulationViscous.ZeroIterationsReturnsInitialState
+[       OK ] FlowSimulationViscous.ZeroIterationsReturnsInitialState (166 ms)
+[ RUN      ] FlowSimulationViscous.OutflowBoundaries
+[       OK ] FlowSimulationViscous.OutflowBoundaries (171 ms)
+[ RUN      ] FlowSimulationViscous.Evaporation
+[       OK ] FlowSimulationViscous.Evaporation (114 ms)
+[ RUN      ] FlowSimulationViscous.TiledDistributedExecution
+[       OK ] FlowSimulationViscous.TiledDistributedExecution (330 ms)
+[----------] 7 tests from FlowSimulationViscous (1241 ms total)
+
+[----------] 5 tests from FlowStreamMesh
+[ RUN      ] FlowStreamMesh.StreamToBoundaryVertex
+[       OK ] FlowStreamMesh.StreamToBoundaryVertex (0 ms)
+[ RUN      ] FlowStreamMesh.StreamFromCoordinates
+[       OK ] FlowStreamMesh.StreamFromCoordinates (0 ms)
+[ RUN      ] FlowStreamMesh.StreamFromHeightmapMesh
+[       OK ] FlowStreamMesh.StreamFromHeightmapMesh (2 ms)
+[ RUN      ] FlowStreamMesh.FavorExistingStreams
+[       OK ] FlowStreamMesh.FavorExistingStreams (1 ms)
+[ RUN      ] FlowStreamMesh.NetworkReachBoundaryAndDecreasingElevation
+[       OK ] FlowStreamMesh.NetworkReachBoundaryAndDecreasingElevation (12 ms)
+[----------] 5 tests from FlowStreamMesh (16 ms total)
+
+[----------] 1 test from FlowStreamVirtualArray
+[ RUN      ] FlowStreamVirtualArray.StreamOnVirtualArray
+[       OK ] FlowStreamVirtualArray.StreamOnVirtualArray (1 ms)
+[----------] 1 test from FlowStreamVirtualArray (1 ms total)
+
+[----------] 1 test from FlowStreamArray
+[ RUN      ] FlowStreamArray.FavorExistingStreams
+[       OK ] FlowStreamArray.FavorExistingStreams (20 ms)
+[----------] 1 test from FlowStreamArray (20 ms total)
+
+[----------] 2 tests from FlowStream
+[ RUN      ] FlowStream.TruncateAtIntersection
+[       OK ] FlowStream.TruncateAtIntersection (1 ms)
+[ RUN      ] FlowStream.HydrologyPathsToGraph
+[       OK ] FlowStream.HydrologyPathsToGraph (0 ms)
+[----------] 2 tests from FlowStream (1 ms total)
+
+[----------] 6 tests from FoldPeriodic
+[ RUN      ] FoldPeriodic.EmptyArray
+hmap [warn ] [filters.cpp             :192] Array is empty or uninitialized (shape: 0x0, buffer size: 0)
+[       OK ] FoldPeriodic.EmptyArray (0 ms)
+[ RUN      ] FoldPeriodic.SingleIterationCosineStd
+[       OK ] FoldPeriodic.SingleIterationCosineStd (0 ms)
+[ RUN      ] FoldPeriodic.SingleIterationTriangle
+[       OK ] FoldPeriodic.SingleIterationTriangle (0 ms)
+[ RUN      ] FoldPeriodic.DefaultRangeOverload
+[       OK ] FoldPeriodic.DefaultRangeOverload (0 ms)
+[ RUN      ] FoldPeriodic.DegenerateConstantRange
+[       OK ] FoldPeriodic.DegenerateConstantRange (0 ms)
+[ RUN      ] FoldPeriodic.MultipleIterations
+[       OK ] FoldPeriodic.MultipleIterations (0 ms)
+[----------] 6 tests from FoldPeriodic (0 ms total)
+
+[----------] 2 tests from InteractionMatrixTest
+[ RUN      ] InteractionMatrixTest.BasicOperations
+[       OK ] InteractionMatrixTest.BasicOperations (0 ms)
+[ RUN      ] InteractionMatrixTest.FactoryMethods
+[       OK ] InteractionMatrixTest.FactoryMethods (0 ms)
+[----------] 2 tests from InteractionMatrixTest (0 ms total)
+
+[----------] 1 test from SpeciesTest
+[ RUN      ] SpeciesTest.DefaultAndCustomConstructors
+[       OK ] SpeciesTest.DefaultAndCustomConstructors (0 ms)
+[----------] 1 test from SpeciesTest (0 ms total)
+
+[----------] 10 tests from ForestGrowthTest
+[ RUN      ] ForestGrowthTest.SoftCoreGrowth
+[       OK ] ForestGrowthTest.SoftCoreGrowth (0 ms)
+[ RUN      ] ForestGrowthTest.CompetitionNN
+[       OK ] ForestGrowthTest.CompetitionNN (0 ms)
+[ RUN      ] ForestGrowthTest.CompetitionNNPruneUnviable
+[       OK ] ForestGrowthTest.CompetitionNNPruneUnviable (0 ms)
+[ RUN      ] ForestGrowthTest.CompetitionNNMaxRadiusScale
+[       OK ] ForestGrowthTest.CompetitionNNMaxRadiusScale (0 ms)
+[ RUN      ] ForestGrowthTest.CompetitionVoronoiBasic
+[       OK ] ForestGrowthTest.CompetitionVoronoiBasic (0 ms)
+[ RUN      ] ForestGrowthTest.CompetitionVoronoiPrune
+[       OK ] ForestGrowthTest.CompetitionVoronoiPrune (0 ms)
+[ RUN      ] ForestGrowthTest.CompetitionVoronoiMaxRadiusScale
+[       OK ] ForestGrowthTest.CompetitionVoronoiMaxRadiusScale (0 ms)
+[ RUN      ] ForestGrowthTest.CompetitionVoronoiCollisionPruning
+[       OK ] ForestGrowthTest.CompetitionVoronoiCollisionPruning (0 ms)
+[ RUN      ] ForestGrowthTest.IterativeGrowthBasic
+[       OK ] ForestGrowthTest.IterativeGrowthBasic (0 ms)
+[ RUN      ] ForestGrowthTest.IterativeGrowthCompetitionAndSuppression
+[       OK ] ForestGrowthTest.IterativeGrowthCompetitionAndSuppression (0 ms)
+[----------] 10 tests from ForestGrowthTest (0 ms total)
+
+[----------] 6 tests from TreeDensityTest
+[ RUN      ] TreeDensityTest.EmptyAndInvalidInputs
+hmap [warn ] [forest_seeding.cpp      :59] Array is empty or uninitialized (shape: 0x0, buffer size: 0)
+hmap [warn ] [forest_seeding.cpp      :118] Array shape mismatch: lhs is (32, 32) [size: 1024], rhs is (16, 16) [size: 256]
+hmap [warn ] [forest_seeding.cpp      :140] Array shape mismatch: lhs is (32, 32) [size: 1024], rhs is (16, 16) [size: 256]
+[       OK ] TreeDensityTest.EmptyAndInvalidInputs (0 ms)
+[ RUN      ] TreeDensityTest.BasicDensityComputation
+[       OK ] TreeDensityTest.BasicDensityComputation (0 ms)
+[ RUN      ] TreeDensityTest.ExclusionMask
+[       OK ] TreeDensityTest.ExclusionMask (0 ms)
+[ RUN      ] TreeDensityTest.SecondaryDensityModulation
+[       OK ] TreeDensityTest.SecondaryDensityModulation (0 ms)
+[ RUN      ] TreeDensityTest.ZeroWeightsFailsafe
+[       OK ] TreeDensityTest.ZeroWeightsFailsafe (0 ms)
+[ RUN      ] TreeDensityTest.FlatTerrainAndLinearSlope
+[       OK ] TreeDensityTest.FlatTerrainAndLinearSlope (0 ms)
+[----------] 6 tests from TreeDensityTest (1 ms total)
+
+[----------] 8 tests from GpuCpu
+[ RUN      ] GpuCpu.ClosingByReconstruction
+[       OK ] GpuCpu.ClosingByReconstruction (553 ms)
+[ RUN      ] GpuCpu.MorphologicalOperators
+[       OK ] GpuCpu.MorphologicalOperators (352 ms)
+[ RUN      ] GpuCpu.HarmonicInterpolation
+[       OK ] GpuCpu.HarmonicInterpolation (3 ms)
+[ RUN      ] GpuCpu.WaterDepthFromMask
+[       OK ] GpuCpu.WaterDepthFromMask (2 ms)
+[ RUN      ] GpuCpu.Noise
+[       OK ] GpuCpu.Noise (3 ms)
+[ RUN      ] GpuCpu.NoiseFbm
+[       OK ] GpuCpu.NoiseFbm (8 ms)
+[ RUN      ] GpuCpu.CurvatureQuadric
+[       OK ] GpuCpu.CurvatureQuadric (208 ms)
+[ RUN      ] GpuCpu.NoiseSlope
+[       OK ] GpuCpu.NoiseSlope (8 ms)
+[----------] 8 tests from GpuCpu (1139 ms total)
+
+[----------] 13 tests from Gradient
+[ RUN      ] Gradient.GradientX_LinearRamp
+[       OK ] Gradient.GradientX_LinearRamp (0 ms)
+[ RUN      ] Gradient.GradientY_LinearRamp
+[       OK ] Gradient.GradientY_LinearRamp (0 ms)
+[ RUN      ] Gradient.GradientNorm_ConstantField
+[       OK ] Gradient.GradientNorm_ConstantField (0 ms)
+[ RUN      ] Gradient.GradientNorm_SimpleSlope
+[       OK ] Gradient.GradientNorm_SimpleSlope (0 ms)
+[ RUN      ] Gradient.GradientNorm_OperatorsConsistency
+[       OK ] Gradient.GradientNorm_OperatorsConsistency (0 ms)
+[ RUN      ] Gradient.GradientAngle_SlopeConsistency
+[       OK ] Gradient.GradientAngle_SlopeConsistency (0 ms)
+[ RUN      ] Gradient.GradientAngle_SlopeX
+[       OK ] Gradient.GradientAngle_SlopeX (0 ms)
+[ RUN      ] Gradient.GradientAngle_SlopeY
+[       OK ] Gradient.GradientAngle_SlopeY (0 ms)
+[ RUN      ] Gradient.Divergence_ZeroField
+[       OK ] Gradient.Divergence_ZeroField (0 ms)
+[ RUN      ] Gradient.Laplacian_ConstantField
+[       OK ] Gradient.Laplacian_ConstantField (0 ms)
+[ RUN      ] Gradient.Laplacian_Quadratic
+[       OK ] Gradient.Laplacian_Quadratic (0 ms)
+[ RUN      ] Gradient.GradientTalus_Step
+[       OK ] Gradient.GradientTalus_Step (0 ms)
+[ RUN      ] Gradient.TalusJumpMask_BinaryResponse
+[       OK ] Gradient.TalusJumpMask_BinaryResponse (0 ms)
+[----------] 13 tests from Gradient (0 ms total)
+
+[----------] 9 tests from GraphTest
+[ RUN      ] GraphTest.ConstructionAndEdgeManagement
+[       OK ] GraphTest.ConstructionAndEdgeManagement (0 ms)
+[ RUN      ] GraphTest.DijkstraShortestPath
+[       OK ] GraphTest.DijkstraShortestPath (0 ms)
+[ RUN      ] GraphTest.MinimumSpanningTreePrim
+[       OK ] GraphTest.MinimumSpanningTreePrim (0 ms)
+[ RUN      ] GraphTest.RemoveOrphanPoints
+[       OK ] GraphTest.RemoveOrphanPoints (0 ms)
+[ RUN      ] GraphTest.EdgeCoordinatesAndLengths
+[       OK ] GraphTest.EdgeCoordinatesAndLengths (0 ms)
+[ RUN      ] GraphTest.DistanceToOutlet
+[       OK ] GraphTest.DistanceToOutlet (0 ms)
+[ RUN      ] GraphTest.StrahlerOrder
+[       OK ] GraphTest.StrahlerOrder (0 ms)
+[ RUN      ] GraphTest.EnforceDownhillElevation
+[       OK ] GraphTest.EnforceDownhillElevation (0 ms)
+[ RUN      ] GraphTest.FlowAccumulation
+[       OK ] GraphTest.FlowAccumulation (0 ms)
+[----------] 9 tests from GraphTest (0 ms total)
+
+[----------] 5 tests from Grids
+[ RUN      ] Grids.ConvertLengthToPixel
+[       OK ] Grids.ConvertLengthToPixel (0 ms)
+[ RUN      ] Grids.GridXyVector
+[       OK ] Grids.GridXyVector (0 ms)
+[ RUN      ] Grids.RescaleGridFromUnitSquareToBbox
+[       OK ] Grids.RescaleGridFromUnitSquareToBbox (0 ms)
+[ RUN      ] Grids.RescalePointsToUnitSquare
+[       OK ] Grids.RescalePointsToUnitSquare (0 ms)
+[ RUN      ] Grids.NeighborhoodStructures
+[       OK ] Grids.NeighborhoodStructures (0 ms)
+[----------] 5 tests from Grids (0 ms total)
+
+[----------] 5 tests from ImageWriterTest
+[ RUN      ] ImageWriterTest.FactoryCreation
+[       OK ] ImageWriterTest.FactoryCreation (0 ms)
+[ RUN      ] ImageWriterTest.OpenEXRTiledRoundTrip
+[       OK ] ImageWriterTest.OpenEXRTiledRoundTrip (0 ms)
+[ RUN      ] ImageWriterTest.BigTiffTiledWrite
+[       OK ] ImageWriterTest.BigTiffTiledWrite (0 ms)
+[ RUN      ] ImageWriterTest.VirtualArrayExportImage
+[       OK ] ImageWriterTest.VirtualArrayExportImage (0 ms)
+[ RUN      ] ImageWriterTest.ExportImageVirtualTexture
+[       OK ] ImageWriterTest.ExportImageVirtualTexture (1 ms)
+[----------] 5 tests from ImageWriterTest (2 ms total)
+
+[----------] 4 tests from Interpolator1D
+[ RUN      ] Interpolator1D.CoincidentXDoesNotCrash
+[       OK ] Interpolator1D.CoincidentXDoesNotCrash (0 ms)
+[ RUN      ] Interpolator1D.AllCoincidentXThrows
+[       OK ] Interpolator1D.AllCoincidentXThrows (0 ms)
+[ RUN      ] Interpolator1D.DecreasingXThrows
+[       OK ] Interpolator1D.DecreasingXThrows (0 ms)
+[ RUN      ] Interpolator1D.MismatchedOrTooFewPointsThrows
+[       OK ] Interpolator1D.MismatchedOrTooFewPointsThrows (0 ms)
+[----------] 4 tests from Interpolator1D (0 ms total)
+
+[----------] 7 tests from InterpolateArrayEmptySource
+[ RUN      ] InterpolateArrayEmptySource.BilinearLeavesTargetZeroed
+hmap [warn ] [interpolate_array.cpp   :145] Array is empty or uninitialized (shape: 0x0, buffer size: 0)
+[       OK ] InterpolateArrayEmptySource.BilinearLeavesTargetZeroed (0 ms)
+[ RUN      ] InterpolateArrayEmptySource.NearestLeavesTargetZeroed
+hmap [warn ] [interpolate_array.cpp   :221] Array is empty or uninitialized (shape: 0x0, buffer size: 0)
+[       OK ] InterpolateArrayEmptySource.NearestLeavesTargetZeroed (0 ms)
+[ RUN      ] InterpolateArrayEmptySource.BicubicLeavesTargetZeroed
+hmap [warn ] [interpolate_array.cpp   :52] Array is empty or uninitialized (shape: 0x0, buffer size: 0)
+[       OK ] InterpolateArrayEmptySource.BicubicLeavesTargetZeroed (0 ms)
+[ RUN      ] InterpolateArrayEmptySource.SingleDegenerateDimensionIsHandled
+hmap [warn ] [array.cpp               :23] Invalid array shape (0, 8): dimensions must be positive
+hmap [warn ] [interpolate_array.cpp   :145] Array is empty or uninitialized (shape: 0x0, buffer size: 0)
+[       OK ] InterpolateArrayEmptySource.SingleDegenerateDimensionIsHandled (0 ms)
+[ RUN      ] InterpolateArrayEmptySource.ResampleToShapeIsSafe
+hmap [warn ] [interpolate_array.cpp   :145] Array is empty or uninitialized (shape: 0x0, buffer size: 0)
+hmap [warn ] [interpolate_array.cpp   :221] Array is empty or uninitialized (shape: 0x0, buffer size: 0)
+[       OK ] InterpolateArrayEmptySource.ResampleToShapeIsSafe (0 ms)
+[ RUN      ] InterpolateArrayEmptySource.NonEmptySourceStillInterpolates
+[       OK ] InterpolateArrayEmptySource.NonEmptySourceStillInterpolates (0 ms)
+[ RUN      ] InterpolateArrayEmptySource.ResampleBicubicWarpEmptySourceIsSafe
+hmap [warn ] [interpolate_array.cpp   :255] Array is empty or uninitialized (shape: 0x0, buffer size: 0)
+[       OK ] InterpolateArrayEmptySource.ResampleBicubicWarpEmptySourceIsSafe (0 ms)
+[----------] 7 tests from InterpolateArrayEmptySource (0 ms total)
+
+[----------] 1 test from InterpolateBspline
+[ RUN      ] InterpolateBspline.BsplineWeightsProperties
+[       OK ] InterpolateBspline.BsplineWeightsProperties (0 ms)
+[----------] 1 test from InterpolateBspline (0 ms total)
+
+[----------] 1 test from InterpolateArray
+[ RUN      ] InterpolateArray.ResampleBicubicWarp
+[       OK ] InterpolateArray.ResampleBicubicWarp (0 ms)
+[----------] 1 test from InterpolateArray (0 ms total)
+
+[----------] 2 tests from IslandChain
+[ RUN      ] IslandChain.DeterministicCentersNoNoise
+[       OK ] IslandChain.DeterministicCentersNoNoise (0 ms)
+[ RUN      ] IslandChain.SizeFalloffShrinksTowardEnd
+[       OK ] IslandChain.SizeFalloffShrinksTowardEnd (0 ms)
+[----------] 2 tests from IslandChain (0 ms total)
+
+[----------] 16 tests from JaggedTest
+[ RUN      ] JaggedTest.AmpZeroReturnsInput
+[       OK ] JaggedTest.AmpZeroReturnsInput (171 ms)
+[ RUN      ] JaggedTest.AmpNonZeroModifies
+[       OK ] JaggedTest.AmpNonZeroModifies (117 ms)
+[ RUN      ] JaggedTest.GammaModulatesDomeShape
+[       OK ] JaggedTest.GammaModulatesDomeShape (181 ms)
+[ RUN      ] JaggedTest.MaskPreservesUnmaskedArea
+[       OK ] JaggedTest.MaskPreservesUnmaskedArea (168 ms)
+[ RUN      ] JaggedTest.ScalarKwOverloadEquivalence
+[       OK ] JaggedTest.ScalarKwOverloadEquivalence (120 ms)
+[ RUN      ] JaggedTest.AngleRotatesPattern
+[       OK ] JaggedTest.AngleRotatesPattern (177 ms)
+[ RUN      ] JaggedTest.EmptyArrayReturnsEmpty
+hmap [warn ] [jagged.cpp              :31] Array is empty or uninitialized (shape: 0x0, buffer size: 0)
+[       OK ] JaggedTest.EmptyArrayReturnsEmpty (163 ms)
+[ RUN      ] JaggedTest.FbmAmpZeroReturnsInput
+[       OK ] JaggedTest.FbmAmpZeroReturnsInput (122 ms)
+[ RUN      ] JaggedTest.FbmOctavesZeroReturnsInput
+[       OK ] JaggedTest.FbmOctavesZeroReturnsInput (133 ms)
+[ RUN      ] JaggedTest.FbmSingleOctaveMatchesJagged
+[       OK ] JaggedTest.FbmSingleOctaveMatchesJagged (202 ms)
+[ RUN      ] JaggedTest.FbmMultipleOctavesAddsDetail
+[       OK ] JaggedTest.FbmMultipleOctavesAddsDetail (121 ms)
+[ RUN      ] JaggedTest.FbmPersistenceAndLacunarityEffect
+[       OK ] JaggedTest.FbmPersistenceAndLacunarityEffect (134 ms)
+[ RUN      ] JaggedTest.FbmMaskPreservesUnmaskedArea
+[       OK ] JaggedTest.FbmMaskPreservesUnmaskedArea (199 ms)
+[ RUN      ] JaggedTest.FbmScalarKwOverloadEquivalence
+[       OK ] JaggedTest.FbmScalarKwOverloadEquivalence (123 ms)
+[ RUN      ] JaggedTest.FbmEmptyArrayReturnsEmpty
+hmap [warn ] [jagged.cpp              :112] Array is empty or uninitialized (shape: 0x0, buffer size: 0)
+[       OK ] JaggedTest.FbmEmptyArrayReturnsEmpty (119 ms)
+[ RUN      ] JaggedTest.FbmSwitchKxKyAlternatesComponents
+[       OK ] JaggedTest.FbmSwitchKxKyAlternatesComponents (179 ms)
+[----------] 16 tests from JaggedTest (2438 ms total)
+
+[----------] 8 tests from KDTreeTest
+[ RUN      ] KDTreeTest.EmptyTree
+[       OK ] KDTreeTest.EmptyTree (0 ms)
+[ RUN      ] KDTreeTest.SinglePoint
+[       OK ] KDTreeTest.SinglePoint (0 ms)
+[ RUN      ] KDTreeTest.XYVectorQueries
+[       OK ] KDTreeTest.XYVectorQueries (0 ms)
+[ RUN      ] KDTreeTest.PointVectorQueries
+[       OK ] KDTreeTest.PointVectorQueries (0 ms)
+[ RUN      ] KDTreeTest.CloudConstruction
+[       OK ] KDTreeTest.CloudConstruction (0 ms)
+[ RUN      ] KDTreeTest.PathConstruction
+[       OK ] KDTreeTest.PathConstruction (0 ms)
+[ RUN      ] KDTreeTest.DistanceRangeEuclidean
+[       OK ] KDTreeTest.DistanceRangeEuclidean (0 ms)
+[ RUN      ] KDTreeTest.MoveSemantics
+[       OK ] KDTreeTest.MoveSemantics (0 ms)
+[----------] 8 tests from KDTreeTest (0 ms total)
+
+[----------] 6 tests from LevelSetCurvature
+[ RUN      ] LevelSetCurvature.CpuGpuFlatField
+[       OK ] LevelSetCurvature.CpuGpuFlatField (0 ms)
+[ RUN      ] LevelSetCurvature.CpuGpuLinearRampX
+[       OK ] LevelSetCurvature.CpuGpuLinearRampX (0 ms)
+[ RUN      ] LevelSetCurvature.CpuGpuParaboloid
+[       OK ] LevelSetCurvature.CpuGpuParaboloid (0 ms)
+[ RUN      ] LevelSetCurvature.CpuGpuWithPrefilter
+[       OK ] LevelSetCurvature.CpuGpuWithPrefilter (0 ms)
+[ RUN      ] LevelSetCurvature.CpuGpuRandomField
+[       OK ] LevelSetCurvature.CpuGpuRandomField (0 ms)
+[ RUN      ] LevelSetCurvature.OutputShape
+[       OK ] LevelSetCurvature.OutputShape (0 ms)
+[----------] 6 tests from LevelSetCurvature (0 ms total)
+
+[----------] 14 tests from LocalMetrics
+[ RUN      ] LocalMetrics.LocalMax_BasicPeakPropagation
+[       OK ] LocalMetrics.LocalMax_BasicPeakPropagation (1 ms)
+[ RUN      ] LocalMetrics.LocalMax_Convergence
+[       OK ] LocalMetrics.LocalMax_Convergence (1 ms)
+[ RUN      ] LocalMetrics.LocalMax_Monotonicity
+[       OK ] LocalMetrics.LocalMax_Monotonicity (0 ms)
+[ RUN      ] LocalMetrics.LocalMin_DualityWithMax
+[       OK ] LocalMetrics.LocalMin_DualityWithMax (0 ms)
+[ RUN      ] LocalMetrics.LocalMin_Monotonicity
+[       OK ] LocalMetrics.LocalMin_Monotonicity (0 ms)
+[ RUN      ] LocalMetrics.LocalMean_SmoothingEffect
+[       OK ] LocalMetrics.LocalMean_SmoothingEffect (0 ms)
+[ RUN      ] LocalMetrics.LocalMean_PreservationOfConstantField
+[       OK ] LocalMetrics.LocalMean_PreservationOfConstantField (0 ms)
+[ RUN      ] LocalMetrics.LocalMean_Linearity
+[       OK ] LocalMetrics.LocalMean_Linearity (0 ms)
+[ RUN      ] LocalMetrics.LocalRelief_Definition
+[       OK ] LocalMetrics.LocalRelief_Definition (0 ms)
+[ RUN      ] LocalMetrics.Roughness_FlatTerrain
+[       OK ] LocalMetrics.Roughness_FlatTerrain (0 ms)
+[ RUN      ] LocalMetrics.Roughness_CpuGpuEquivalenceAndWrapper
+[       OK ] LocalMetrics.Roughness_CpuGpuEquivalenceAndWrapper (0 ms)
+[ RUN      ] LocalMetrics.TopographicWetnessIndex_EmptyArray
+hmap [warn ] [topographic_wetness_i...:20] Array is empty or uninitialized (shape: 0x0, buffer size: 0)
+[       OK ] LocalMetrics.TopographicWetnessIndex_EmptyArray (0 ms)
+[ RUN      ] LocalMetrics.TopographicWetnessIndex_FlatTerrain
+[       OK ] LocalMetrics.TopographicWetnessIndex_FlatTerrain (0 ms)
+[ RUN      ] LocalMetrics.TopographicWetnessIndex_ValleyHighlights
+[       OK ] LocalMetrics.TopographicWetnessIndex_ValleyHighlights (0 ms)
+[----------] 14 tests from LocalMetrics (5 ms total)
+
+[----------] 5 tests from LoggerTest
+[ RUN      ] LoggerTest.BasicLogging
+hmap [trace] [test_logger.cpp         :10] Trace test: ok
+hmap [info ] [test_logger.cpp         :11] Info test: 123
+hmap [warn ] [test_logger.cpp         :12] Warn test: 456
+hmap [error] [test_logger.cpp         :13] Error test: 789
+hmap [trace] [test_logger.cpp         :16] dynamic message
+hmap [info ] [test_logger.cpp         :17] dynamic message
+hmap [warn ] [test_logger.cpp         :18] dynamic message
+hmap [error] [test_logger.cpp         :19] dynamic message
+[       OK ] LoggerTest.BasicLogging (0 ms)
+[ RUN      ] LoggerTest.FormattedOutput
+[       OK ] LoggerTest.FormattedOutput (0 ms)
+[ RUN      ] LoggerTest.ErrorOutput
+[       OK ] LoggerTest.ErrorOutput (0 ms)
+[ RUN      ] LoggerTest.ExplicitSourceLocation
+[       OK ] LoggerTest.ExplicitSourceLocation (0 ms)
+[ RUN      ] LoggerTest.FixedWidthFormattingAndTruncation
+[       OK ] LoggerTest.FixedWidthFormattingAndTruncation (0 ms)
+[----------] 5 tests from LoggerTest (0 ms total)
+
+[----------] 3 tests from SymmetrizeTest
+[ RUN      ] SymmetrizeTest.AllSymmetryModesProduceExactGeometricSymmetry
+[       OK ] SymmetrizeTest.AllSymmetryModesProduceExactGeometricSymmetry (0 ms)
+[ RUN      ] SymmetrizeTest.EmptyInputReturnsEmptyArray
+hmap [warn ] [transform.cpp           :195] Array is empty or uninitialized (shape: 0x0, buffer size: 0)
+[       OK ] SymmetrizeTest.EmptyInputReturnsEmptyArray (0 ms)
+[ RUN      ] SymmetrizeTest.FlattenCenterReducesCenterElevationToMinimum
+[       OK ] SymmetrizeTest.FlattenCenterReducesCenterElevationToMinimum (0 ms)
+[----------] 3 tests from SymmetrizeTest (0 ms total)
+
+[----------] 5 tests from LooseSymmetryTest
+[ RUN      ] LooseSymmetryTest.OutputShapeMatchesInputShape
+hmap [trace] [terrain_super_resolut...:409] terrain_super_resolution: 169 atoms
+hmap [trace] [terrain_super_resolut...:409] terrain_super_resolution: 25 atoms
+[       OK ] LooseSymmetryTest.OutputShapeMatchesInputShape (1 ms)
+[ RUN      ] LooseSymmetryTest.EmptyInputReturnsEmptyArray
+hmap [warn ] [loose_symmetry.cpp      :50] Array is empty or uninitialized (shape: 0x0, buffer size: 0)
+[       OK ] LooseSymmetryTest.EmptyInputReturnsEmptyArray (0 ms)
+[ RUN      ] LooseSymmetryTest.TunableStrengthRunsAndProducesFiniteResults
+hmap [trace] [terrain_super_resolut...:409] terrain_super_resolution: 169 atoms
+[       OK ] LooseSymmetryTest.TunableStrengthRunsAndProducesFiniteResults (1 ms)
+[ RUN      ] LooseSymmetryTest.HasNaturalVariationComparedToStrictMirror
+hmap [trace] [terrain_super_resolut...:409] terrain_super_resolution: 169 atoms
+[       OK ] LooseSymmetryTest.HasNaturalVariationComparedToStrictMirror (1 ms)
+[ RUN      ] LooseSymmetryTest.FlattenCenterRunsAndFlattensCenterArea
+hmap [trace] [terrain_super_resolut...:409] terrain_super_resolution: 169 atoms
+[       OK ] LooseSymmetryTest.FlattenCenterRunsAndFlattensCenterArea (1 ms)
+[----------] 5 tests from LooseSymmetryTest (5 ms total)
+
+[----------] 33 tests from MathTest
+[ RUN      ] MathTest.AbsBasic
+[       OK ] MathTest.AbsBasic (0 ms)
+[ RUN      ] MathTest.AbsSmoothBasic
+[       OK ] MathTest.AbsSmoothBasic (0 ms)
+[ RUN      ] MathTest.AlmostUnitIdentity
+[       OK ] MathTest.AlmostUnitIdentity (0 ms)
+[ RUN      ] MathTest.CosZero
+[       OK ] MathTest.CosZero (0 ms)
+[ RUN      ] MathTest.ExpZero
+[       OK ] MathTest.ExpZero (0 ms)
+[ RUN      ] MathTest.FastExpApprox
+[       OK ] MathTest.FastExpApprox (0 ms)
+[ RUN      ] MathTest.FastLogApprox
+[       OK ] MathTest.FastLogApprox (0 ms)
+[ RUN      ] MathTest.GaussianDecayAtZero
+[       OK ] MathTest.GaussianDecayAtZero (0 ms)
+[ RUN      ] MathTest.HypotBasic
+[       OK ] MathTest.HypotBasic (0 ms)
+[ RUN      ] MathTest.Log10Basic
+[       OK ] MathTest.Log10Basic (0 ms)
+[ RUN      ] MathTest.PowSquare
+[       OK ] MathTest.PowSquare (0 ms)
+[ RUN      ] MathTest.PowSqrt
+[       OK ] MathTest.PowSqrt (0 ms)
+[ RUN      ] MathTest.LerpScalar
+[       OK ] MathTest.LerpScalar (0 ms)
+[ RUN      ] MathTest.LerpArray
+[       OK ] MathTest.LerpArray (0 ms)
+[ RUN      ] MathTest.SigmoidCenter
+[       OK ] MathTest.SigmoidCenter (0 ms)
+[ RUN      ] MathTest.SqrtSafe
+[       OK ] MathTest.SqrtSafe (0 ms)
+[ RUN      ] MathTest.ThresholdBasic
+[       OK ] MathTest.ThresholdBasic (0 ms)
+[ RUN      ] MathTest.ThresholdArray
+[       OK ] MathTest.ThresholdArray (0 ms)
+[ RUN      ] MathTest.Smoothstep3Basic
+[       OK ] MathTest.Smoothstep3Basic (0 ms)
+[ RUN      ] MathTest.IsZero
+[       OK ] MathTest.IsZero (0 ms)
+[ RUN      ] MathTest.IsNonZero
+[       OK ] MathTest.IsNonZero (0 ms)
+[ RUN      ] MathTest.CeilDiv
+[       OK ] MathTest.CeilDiv (0 ms)
+[ RUN      ] MathTest.TriangleBasic
+[       OK ] MathTest.TriangleBasic (0 ms)
+[ RUN      ] MathTest.RMinScalar
+[       OK ] MathTest.RMinScalar (0 ms)
+[ RUN      ] MathTest.RMaxScalar
+[       OK ] MathTest.RMaxScalar (0 ms)
+[ RUN      ] MathTest.RMinRMaxArray
+[       OK ] MathTest.RMinRMaxArray (0 ms)
+[ RUN      ] MathTest.BuildDensityLinearBasic
+[       OK ] MathTest.BuildDensityLinearBasic (0 ms)
+[ RUN      ] MathTest.BuildDensityLinearEmptyAndMismatched
+hmap [warn ] [math.cpp                :137] build_density_linear: layers list is empty
+hmap [warn ] [math.cpp                :147] Array is empty or uninitialized (shape: 0x0, buffer size: 0)
+hmap [warn ] [math.cpp                :167] Array shape mismatch: lhs is (2, 2) [size: 4], rhs is (3, 3) [size: 9]
+hmap [warn ] [math.cpp                :152] build_density_linear: weights size (2) does not match layers size (1)
+[       OK ] MathTest.BuildDensityLinearEmptyAndMismatched (0 ms)
+[ RUN      ] MathTest.BuildDensityLogBasic
+[       OK ] MathTest.BuildDensityLogBasic (0 ms)
+[ RUN      ] MathTest.BuildDensityLogEmptyAndMismatched
+hmap [warn ] [math.cpp                :203] build_density_log: layers list is empty
+hmap [warn ] [math.cpp                :213] Array is empty or uninitialized (shape: 0x0, buffer size: 0)
+hmap [warn ] [math.cpp                :232] Array shape mismatch: lhs is (2, 2) [size: 4], rhs is (3, 3) [size: 9]
+hmap [warn ] [math.cpp                :218] build_density_log: weights size (2) does not match layers size (1)
+[       OK ] MathTest.BuildDensityLogEmptyAndMismatched (0 ms)
+[ RUN      ] MathTest.LogSafeScalar
+[       OK ] MathTest.LogSafeScalar (0 ms)
+[ RUN      ] MathTest.LogSafeArray
+[       OK ] MathTest.LogSafeArray (0 ms)
+[ RUN      ] MathTest.Constants
+[       OK ] MathTest.Constants (0 ms)
+[----------] 33 tests from MathTest (0 ms total)
+
+[----------] 1 test from ConvolveSvdTest
+[ RUN      ] ConvolveSvdTest.ReturnInputWhenKernelNullOrFlat
+[       OK ] ConvolveSvdTest.ReturnInputWhenKernelNullOrFlat (0 ms)
+[----------] 1 test from ConvolveSvdTest (0 ms total)
+
+[----------] 11 tests from MatchHistogram
+[ RUN      ] MatchHistogram.Identity
+[       OK ] MatchHistogram.Identity (0 ms)
+[ RUN      ] MatchHistogram.ConstantReference
+[       OK ] MatchHistogram.ConstantReference (0 ms)
+[ RUN      ] MatchHistogram.SortedRanks
+[       OK ] MatchHistogram.SortedRanks (0 ms)
+[ RUN      ] MatchHistogram.ReverseOrdering
+[       OK ] MatchHistogram.ReverseOrdering (0 ms)
+[ RUN      ] MatchHistogram.Interpolation
+[       OK ] MatchHistogram.Interpolation (0 ms)
+[ RUN      ] MatchHistogram.RandomMonotonicity
+[       OK ] MatchHistogram.RandomMonotonicity (0 ms)
+[ RUN      ] MatchHistogram.SingleValueInput
+[       OK ] MatchHistogram.SingleValueInput (0 ms)
+[ RUN      ] MatchHistogram.SingleInputUsesOddReferenceMedian
+[       OK ] MatchHistogram.SingleInputUsesOddReferenceMedian (0 ms)
+[ RUN      ] MatchHistogram.SingleInputInterpolatesEvenReferenceMedian
+[       OK ] MatchHistogram.SingleInputInterpolatesEvenReferenceMedian (0 ms)
+[ RUN      ] MatchHistogram.SingleReferenceMapsEveryInput
+[       OK ] MatchHistogram.SingleReferenceMapsEveryInput (0 ms)
+[ RUN      ] MatchHistogram.EmptyInputAndReferenceAreNoOps
+hmap [warn ] [filters.cpp             :552] Array is empty or uninitialized (shape: 0x0, buffer size: 0)
+hmap [warn ] [filters.cpp             :552] Array is empty or uninitialized (shape: 0x0, buffer size: 0)
+[       OK ] MatchHistogram.EmptyInputAndReferenceAreNoOps (0 ms)
+[----------] 11 tests from MatchHistogram (0 ms total)
+
+[----------] 5 tests from NoiseStretch
+[ RUN      ] NoiseStretch.CpuIsotropicPreserved
+[       OK ] NoiseStretch.CpuIsotropicPreserved (2 ms)
+[ RUN      ] NoiseStretch.CpuDirectionalMatchesAxisScaling
+[       OK ] NoiseStretch.CpuDirectionalMatchesAxisScaling (0 ms)
+[ RUN      ] NoiseStretch.CpuOctaveDecay
+[       OK ] NoiseStretch.CpuOctaveDecay (3 ms)
+[ RUN      ] NoiseStretch.GpuIsotropicAndDirectional
+[       OK ] NoiseStretch.GpuIsotropicAndDirectional (2 ms)
+[ RUN      ] NoiseStretch.AllNoiseTypesCpuAndGpu
+[       OK ] NoiseStretch.AllNoiseTypesCpuAndGpu (30 ms)
+[----------] 5 tests from NoiseStretch (40 ms total)
+
+[----------] 10 tests from Normalize
+[ RUN      ] Normalize.MinMax_RangeIs0To1
+[       OK ] Normalize.MinMax_RangeIs0To1 (0 ms)
+[ RUN      ] Normalize.MinMax_MonotonicityPreserved
+[       OK ] Normalize.MinMax_MonotonicityPreserved (0 ms)
+[ RUN      ] Normalize.MinMax_ConstantField
+[       OK ] Normalize.MinMax_ConstantField (0 ms)
+[ RUN      ] Normalize.Standardize_MeanZero
+[       OK ] Normalize.Standardize_MeanZero (0 ms)
+[ RUN      ] Normalize.Standardize_UnitVariance
+[       OK ] Normalize.Standardize_UnitVariance (0 ms)
+[ RUN      ] Normalize.Standardize_InvariantToShift
+[       OK ] Normalize.Standardize_InvariantToShift (0 ms)
+[ RUN      ] Normalize.Robust_CenteringAroundMedian
+[       OK ] Normalize.Robust_CenteringAroundMedian (0 ms)
+[ RUN      ] Normalize.Robust_ScaleInvariantToShift
+[       OK ] Normalize.Robust_ScaleInvariantToShift (0 ms)
+[ RUN      ] Normalize.Robust_HandlesSmallIQR
+[       OK ] Normalize.Robust_HandlesSmallIQR (0 ms)
+[ RUN      ] Normalize.InvalidMethodThrows
+[       OK ] Normalize.InvalidMethodThrows (0 ms)
+[----------] 10 tests from Normalize (1 ms total)
+
+[----------] 6 tests from PathArcLength
+[ RUN      ] PathArcLength.OpenNonUniformCumulativeDistance
+[       OK ] PathArcLength.OpenNonUniformCumulativeDistance (0 ms)
+[ RUN      ] PathArcLength.OpenTwoPointArcLengthIsFinite
+[       OK ] PathArcLength.OpenTwoPointArcLengthIsFinite (0 ms)
+[ RUN      ] PathArcLength.ClosedSquareCumulativeDistance
+[       OK ] PathArcLength.ClosedSquareCumulativeDistance (0 ms)
+[ RUN      ] PathArcLength.DegenerateZeroLengthPath
+[       OK ] PathArcLength.DegenerateZeroLengthPath (0 ms)
+[ RUN      ] PathArcLength.EmptyPathSafety
+[       OK ] PathArcLength.EmptyPathSafety (0 ms)
+[ RUN      ] PathArcLength.ShortPathsTangentsAndCurvature
+[       OK ] PathArcLength.ShortPathsTangentsAndCurvature (0 ms)
+[----------] 6 tests from PathArcLength (0 ms total)
+
+[----------] 3 tests from PathFractalize
+[ RUN      ] PathFractalize.BoundedWithinSingleEdgeBoundingBox
+[       OK ] PathFractalize.BoundedWithinSingleEdgeBoundingBox (0 ms)
+[ RUN      ] PathFractalize.BoundedMultiEdgePath
+[       OK ] PathFractalize.BoundedMultiEdgePath (0 ms)
+[ RUN      ] PathFractalize.DefaultUnboundedBehavior
+[       OK ] PathFractalize.DefaultUnboundedBehavior (0 ms)
+[----------] 3 tests from PathFractalize (0 ms total)
+
+[----------] 13 tests from PathMultiscale
+[ RUN      ] PathMultiscale.ConnectsStartToEnd
+[       OK ] PathMultiscale.ConnectsStartToEnd (4 ms)
+[ RUN      ] PathMultiscale.VectorOverloadReturnsSameEndpoints
+[       OK ] PathMultiscale.VectorOverloadReturnsSameEndpoints (0 ms)
+[ RUN      ] PathMultiscale.IdenticalStartAndEnd
+[       OK ] PathMultiscale.IdenticalStartAndEnd (0 ms)
+[ RUN      ] PathMultiscale.AvoidsObstaclesWithNogoMask
+[       OK ] PathMultiscale.AvoidsObstaclesWithNogoMask (0 ms)
+[ RUN      ] PathMultiscale.DijkstraVsAStar
+[       OK ] PathMultiscale.DijkstraVsAStar (5 ms)
+[ RUN      ] PathMultiscale.OptionalPathSmoothing
+[       OK ] PathMultiscale.OptionalPathSmoothing (4 ms)
+[ RUN      ] PathMultiscale.PathOverloadAndToArray
+[       OK ] PathMultiscale.PathOverloadAndToArray (1 ms)
+[ RUN      ] PathMultiscale.FindCutPathMultiscale
+[       OK ] PathMultiscale.FindCutPathMultiscale (4 ms)
+[ RUN      ] PathMultiscale.FindPathDijkstraHarmonized
+[       OK ] PathMultiscale.FindPathDijkstraHarmonized (2 ms)
+[ RUN      ] PathMultiscale.FindPathMidpointHarmonized
+[       OK ] PathMultiscale.FindPathMidpointHarmonized (0 ms)
+[ RUN      ] PathMultiscale.VAFindCutPathDijkstra
+[       OK ] PathMultiscale.VAFindCutPathDijkstra (4 ms)
+[ RUN      ] PathMultiscale.FindCutPathDijkstraFavorDomainCenter
+[       OK ] PathMultiscale.FindCutPathDijkstraFavorDomainCenter (10 ms)
+[ RUN      ] PathMultiscale.VAFindPathDijkstra
+[       OK ] PathMultiscale.VAFindPathDijkstra (4 ms)
+[----------] 13 tests from PathMultiscale (42 ms total)
+
+[----------] 6 tests from PathSampleAt
+[ RUN      ] PathSampleAt.InterpolatesPositionValueAndTangent
+[       OK ] PathSampleAt.InterpolatesPositionValueAndTangent (0 ms)
+[ RUN      ] PathSampleAt.SamplesAtControlPoints
+[       OK ] PathSampleAt.SamplesAtControlPoints (0 ms)
+[ RUN      ] PathSampleAt.ClampsParameter
+[       OK ] PathSampleAt.ClampsParameter (0 ms)
+[ RUN      ] PathSampleAt.UsesArcLengthParameterization
+[       OK ] PathSampleAt.UsesArcLengthParameterization (0 ms)
+[ RUN      ] PathSampleAt.UsesProvidedArcVector
+[       OK ] PathSampleAt.UsesProvidedArcVector (0 ms)
+[ RUN      ] PathSampleAt.DegenerateSegmentUsesDefaultTangent
+[       OK ] PathSampleAt.DegenerateSegmentUsesDefaultTangent (0 ms)
+[----------] 6 tests from PathSampleAt (0 ms total)
+
+[----------] 5 tests from PathScale
+[ RUN      ] PathScale.ScaleUniformDefaultCenter
+[       OK ] PathScale.ScaleUniformDefaultCenter (0 ms)
+[ RUN      ] PathScale.ScaleClosedPathPreservesClosure
+[       OK ] PathScale.ScaleClosedPathPreservesClosure (0 ms)
+[ RUN      ] PathScale.ScaleNonUniformCustomCenter
+[       OK ] PathScale.ScaleNonUniformCustomCenter (0 ms)
+[ RUN      ] PathScale.ScaleExpandBeyondDomain
+[       OK ] PathScale.ScaleExpandBeyondDomain (0 ms)
+[ RUN      ] PathScale.ScalePreservesPointValues
+[       OK ] PathScale.ScalePreservesPointValues (0 ms)
+[----------] 5 tests from PathScale (0 ms total)
+
+[----------] 4 tests from PathSDF
+[ RUN      ] PathSDF.OpenPathDoesNotIncludeClosingSegment
+[       OK ] PathSDF.OpenPathDoesNotIncludeClosingSegment (0 ms)
+[ RUN      ] PathSDF.ClosedPathIncludesClosingSegmentAndInteriorSign
+[       OK ] PathSDF.ClosedPathIncludesClosingSegmentAndInteriorSign (0 ms)
+[ RUN      ] PathSDF.TwoPointOpenPathIncludesSegmentAndEndpoints
+[       OK ] PathSDF.TwoPointOpenPathIncludesSegmentAndEndpoints (0 ms)
+[ RUN      ] PathSDF.OpenPathRespectsDomainAndWarp
+[       OK ] PathSDF.OpenPathRespectsDomainAndWarp (0 ms)
+[----------] 4 tests from PathSDF (0 ms total)
+
+[----------] 7 tests from PathSquiggle
+[ RUN      ] PathSquiggle.BasicEdgeSubdivision
+[       OK ] PathSquiggle.BasicEdgeSubdivision (0 ms)
+[ RUN      ] PathSquiggle.FirstAndLastEdgeSubdivision
+[       OK ] PathSquiggle.FirstAndLastEdgeSubdivision (0 ms)
+[ RUN      ] PathSquiggle.ClosedPathPreservesClosure
+[       OK ] PathSquiggle.ClosedPathPreservesClosure (0 ms)
+[ RUN      ] PathSquiggle.Determinism
+[       OK ] PathSquiggle.Determinism (0 ms)
+[ RUN      ] PathSquiggle.SpatialWeights
+[       OK ] PathSquiggle.SpatialWeights (0 ms)
+[ RUN      ] PathSquiggle.MaskAvoidance
+[       OK ] PathSquiggle.MaskAvoidance (0 ms)
+[ RUN      ] PathSquiggle.Branching
+[       OK ] PathSquiggle.Branching (0 ms)
+[----------] 7 tests from PathSquiggle (0 ms total)
+
+[----------] 8 tests from PdfSampler
+[ RUN      ] PdfSampler.SampleReturnsValueInUnitInterval
+[       OK ] PdfSampler.SampleReturnsValueInUnitInterval (0 ms)
+[ RUN      ] PdfSampler.SampleVectorSize
+[       OK ] PdfSampler.SampleVectorSize (0 ms)
+[ RUN      ] PdfSampler.DeterministicWithSameSeed
+[       OK ] PdfSampler.DeterministicWithSameSeed (0 ms)
+[ RUN      ] PdfSampler.DifferentSeedsProduceDifferentSequences
+[       OK ] PdfSampler.DifferentSeedsProduceDifferentSequences (0 ms)
+[ RUN      ] PdfSampler.UniformPdfProducesUniformBins
+[       OK ] PdfSampler.UniformPdfProducesUniformBins (0 ms)
+[ RUN      ] PdfSampler.WeightedPdfFavorsLargerBins
+[       OK ] PdfSampler.WeightedPdfFavorsLargerBins (0 ms)
+[ RUN      ] PdfSampler.SingleBinAlwaysSamplesInsideBin
+[       OK ] PdfSampler.SingleBinAlwaysSamplesInsideBin (0 ms)
+[ RUN      ] PdfSampler.SampleVectorDeterministic
+[       OK ] PdfSampler.SampleVectorDeterministic (0 ms)
+[----------] 8 tests from PdfSampler (0 ms total)
+
+[----------] 7 tests from PoiTest
+[ RUN      ] PoiTest.ApexDetectionSinglePeak
+[       OK ] PoiTest.ApexDetectionSinglePeak (1 ms)
+[ RUN      ] PoiTest.SinkDetection
+[       OK ] PoiTest.SinkDetection (0 ms)
+[ RUN      ] PoiTest.MinDistanceEnforcement
+[       OK ] PoiTest.MinDistanceEnforcement (0 ms)
+[ RUN      ] PoiTest.ProminenceFiltering
+[       OK ] PoiTest.ProminenceFiltering (0 ms)
+[ RUN      ] PoiTest.MaskExclusion
+[       OK ] PoiTest.MaskExclusion (0 ms)
+[ RUN      ] PoiTest.CloudAndPositionsConversion
+[       OK ] PoiTest.CloudAndPositionsConversion (1 ms)
+[ RUN      ] PoiTest.DeterministicSeed
+[       OK ] PoiTest.DeterministicSeed (1 ms)
+[----------] 7 tests from PoiTest (6 ms total)
+
+[----------] 31 tests from PointTest
+[ RUN      ] PointTest.DefaultConstructor
+[       OK ] PointTest.DefaultConstructor (0 ms)
+[ RUN      ] PointTest.ParameterizedConstructor
+[       OK ] PointTest.ParameterizedConstructor (0 ms)
+[ RUN      ] PointTest.GlmVec2ConstructorAndConversion
+[       OK ] PointTest.GlmVec2ConstructorAndConversion (0 ms)
+[ RUN      ] PointTest.GlmVec3ConstructorAndConversion
+[       OK ] PointTest.GlmVec3ConstructorAndConversion (0 ms)
+[ RUN      ] PointTest.EqualityOperator
+[       OK ] PointTest.EqualityOperator (0 ms)
+[ RUN      ] PointTest.InequalityOperator
+[       OK ] PointTest.InequalityOperator (0 ms)
+[ RUN      ] PointTest.AdditionOperator
+[       OK ] PointTest.AdditionOperator (0 ms)
+[ RUN      ] PointTest.SubtractionOperator
+[       OK ] PointTest.SubtractionOperator (0 ms)
+[ RUN      ] PointTest.ScalarMultiplicationRight
+[       OK ] PointTest.ScalarMultiplicationRight (0 ms)
+[ RUN      ] PointTest.ScalarMultiplicationLeft
+[       OK ] PointTest.ScalarMultiplicationLeft (0 ms)
+[ RUN      ] PointTest.ScalarDivision
+[       OK ] PointTest.ScalarDivision (0 ms)
+[ RUN      ] PointTest.CompoundOperators
+[       OK ] PointTest.CompoundOperators (0 ms)
+[ RUN      ] PointTest.DistanceBasic
+[       OK ] PointTest.DistanceBasic (0 ms)
+[ RUN      ] PointTest.CrossProductOrientation
+[       OK ] PointTest.CrossProductOrientation (0 ms)
+[ RUN      ] PointTest.CrossProductColinear
+[       OK ] PointTest.CrossProductColinear (0 ms)
+[ RUN      ] PointTest.AngleBetweenPoints
+[       OK ] PointTest.AngleBetweenPoints (0 ms)
+[ RUN      ] PointTest.AngleThreePointsRightAngle
+[       OK ] PointTest.AngleThreePointsRightAngle (0 ms)
+[ RUN      ] PointTest.PointInsideBoundingBox
+[       OK ] PointTest.PointInsideBoundingBox (0 ms)
+[ RUN      ] PointTest.PointOutsideBoundingBox
+[       OK ] PointTest.PointOutsideBoundingBox (0 ms)
+[ RUN      ] PointTest.LerpEndpoints
+[       OK ] PointTest.LerpEndpoints (0 ms)
+[ RUN      ] PointTest.LerpMidpoint
+[       OK ] PointTest.LerpMidpoint (0 ms)
+[ RUN      ] PointTest.BezierEndpoints
+[       OK ] PointTest.BezierEndpoints (0 ms)
+[ RUN      ] PointTest.CatmullRomEndpoints
+[       OK ] PointTest.CatmullRomEndpoints (0 ms)
+[ RUN      ] PointTest.DecasteljauEmptyAndEndpoints
+[       OK ] PointTest.DecasteljauEmptyAndEndpoints (0 ms)
+[ RUN      ] PointTest.SegmentIntersectionExists
+[       OK ] PointTest.SegmentIntersectionExists (0 ms)
+[ RUN      ] PointTest.SegmentIntersectionNone
+[       OK ] PointTest.SegmentIntersectionNone (0 ms)
+[ RUN      ] PointTest.TriangleAreaBasic
+[       OK ] PointTest.TriangleAreaBasic (0 ms)
+[ RUN      ] PointTest.TriangleAreaColinear
+[       OK ] PointTest.TriangleAreaColinear (0 ms)
+[ RUN      ] PointTest.SortPointsLexicographic
+[       OK ] PointTest.SortPointsLexicographic (0 ms)
+[ RUN      ] PointTest.ScaleUniformDefaultCenter
+[       OK ] PointTest.ScaleUniformDefaultCenter (0 ms)
+[ RUN      ] PointTest.ScaleNonUniformCustomCenter
+[       OK ] PointTest.ScaleNonUniformCustomCenter (0 ms)
+[----------] 31 tests from PointTest (0 ms total)
+
+[----------] 4 tests from QuadSurface
+[ RUN      ] QuadSurface.CornerValuesInterpolation
+[       OK ] QuadSurface.CornerValuesInterpolation (0 ms)
+[ RUN      ] QuadSurface.ArrayEvaluation
+[       OK ] QuadSurface.ArrayEvaluation (0 ms)
+[ RUN      ] QuadSurface.FlatSurface
+[       OK ] QuadSurface.FlatSurface (0 ms)
+[ RUN      ] QuadSurface.FunctionDirectEvaluation
+[       OK ] QuadSurface.FunctionDirectEvaluation (0 ms)
+[----------] 4 tests from QuadSurface (0 ms total)
+
+[----------] 14 tests from Quilting
+[ RUN      ] Quilting.InvalidParametersReturnEmptyArray
+hmap [warn ] [quilting.cpp            :34] Invalid array shape (0, 16): dimensions must be positive
+hmap [warn ] [quilting.cpp            :34] Invalid array shape (0, 2): dimensions must be positive
+hmap [warn ] [quilting.cpp            :38] Array is empty or uninitialized (shape: 0x0, buffer size: 0)
+hmap [warn ] [quilting.cpp            :278] Array is empty or uninitialized (shape: 0x0, buffer size: 0)
+hmap [warn ] [quilting.cpp            :383] Array is empty or uninitialized (shape: 0x0, buffer size: 0)
+[       OK ] Quilting.InvalidParametersReturnEmptyArray (1 ms)
+[ RUN      ] Quilting.BasicQuiltingAndShape
+[       OK ] Quilting.BasicQuiltingAndShape (1 ms)
+[ RUN      ] Quilting.SecondaryArrays
+[       OK ] Quilting.SecondaryArrays (2 ms)
+[ RUN      ] Quilting.QuiltingBlend
+[       OK ] Quilting.QuiltingBlend (2 ms)
+[ RUN      ] Quilting.QuiltingExpand
+[       OK ] Quilting.QuiltingExpand (1 ms)
+[ RUN      ] Quilting.QuiltingShuffle
+[       OK ] Quilting.QuiltingShuffle (1 ms)
+[ RUN      ] Quilting.FindVerticalCutPathOptimality
+[       OK ] Quilting.FindVerticalCutPathOptimality (0 ms)
+[ RUN      ] Quilting.ZeroOverlapQuilting
+[       OK ] Quilting.ZeroOverlapQuilting (1 ms)
+[ RUN      ] Quilting.SecondaryChannelsShareGuideSeamsAndTransforms
+[       OK ] Quilting.SecondaryChannelsShareGuideSeamsAndTransforms (53 ms)
+[ RUN      ] Quilting.SecondaryAliasesAreNotOverwrittenUntilAllSourcesAreConsumed
+[       OK ] Quilting.SecondaryAliasesAreNotOverwrittenUntilAllSourcesAreConsumed (7 ms)
+[ RUN      ] Quilting.ExpandAndShufflePreserveSecondaryChannelAlignment
+[       OK ] Quilting.ExpandAndShufflePreserveSecondaryChannelAlignment (4 ms)
+[ RUN      ] Quilting.MismatchedSecondaryShapesReturnEmptyWithoutMutation
+hmap [warn ] [quilting.cpp            :49] Array shape mismatch: lhs is (48, 32) [size: 1536], rhs is (32, 32) [size: 1024]
+hmap [warn ] [quilting.cpp            :49] Array shape mismatch: lhs is (32, 32) [size: 1024], rhs is (48, 32) [size: 1536]
+[       OK ] Quilting.MismatchedSecondaryShapesReturnEmptyWithoutMutation (1 ms)
+[ RUN      ] Quilting.RandomPatchSecondaryOwnershipPreservesSources
+[       OK ] Quilting.RandomPatchSecondaryOwnershipPreservesSources (11 ms)
+[ RUN      ] Quilting.SubpixelSmoothingRadiusProducesFiniteSeams
+[       OK ] Quilting.SubpixelSmoothingRadiusProducesFiniteSeams (1 ms)
+[----------] 14 tests from Quilting (90 ms total)
+
+[----------] 2 tests from RangeChop
+[ RUN      ] RangeChop.BasicThreshold
+[       OK ] RangeChop.BasicThreshold (0 ms)
+[ RUN      ] RangeChop.AllBelowThreshold
+[       OK ] RangeChop.AllBelowThreshold (0 ms)
+[----------] 2 tests from RangeChop (0 ms total)
+
+[----------] 1 test from RangeChopMaxSmooth
+[ RUN      ] RangeChopMaxSmooth.BehaviorRegions
+[       OK ] RangeChopMaxSmooth.BehaviorRegions (0 ms)
+[----------] 1 test from RangeChopMaxSmooth (0 ms total)
+
+[----------] 3 tests from RangeClamp
+[ RUN      ] RangeClamp.Basic
+[       OK ] RangeClamp.Basic (0 ms)
+[ RUN      ] RangeClamp.SymmetricMode
+[       OK ] RangeClamp.SymmetricMode (0 ms)
+[ RUN      ] RangeClamp.PositiveOnly
+[       OK ] RangeClamp.PositiveOnly (0 ms)
+[----------] 3 tests from RangeClamp (0 ms total)
+
+[----------] 1 test from RangeClampMax
+[ RUN      ] RangeClampMax.Scalar
+[       OK ] RangeClampMax.Scalar (0 ms)
+[----------] 1 test from RangeClampMax (0 ms total)
+
+[----------] 1 test from RangeClampMin
+[ RUN      ] RangeClampMin.Scalar
+[       OK ] RangeClampMin.Scalar (0 ms)
+[----------] 1 test from RangeClampMin (0 ms total)
+
+[----------] 2 tests from RangeClampSmooth
+[ RUN      ] RangeClampSmooth.NoCrashes
+[       OK ] RangeClampSmooth.NoCrashes (0 ms)
+[ RUN      ] RangeClampSmooth.ZeroWidthUsesHardBoundsForEveryOverload
+[       OK ] RangeClampSmooth.ZeroWidthUsesHardBoundsForEveryOverload (0 ms)
+[----------] 2 tests from RangeClampSmooth (0 ms total)
+
+[----------] 1 test from RangeMaximum
+[ RUN      ] RangeMaximum.ArrayArray
+[       OK ] RangeMaximum.ArrayArray (0 ms)
+[----------] 1 test from RangeMaximum (0 ms total)
+
+[----------] 1 test from RangeMinimum
+[ RUN      ] RangeMinimum.ArrayArray
+[       OK ] RangeMinimum.ArrayArray (0 ms)
+[----------] 1 test from RangeMinimum (0 ms total)
+
+[----------] 1 test from RangeMaxMinSmooth
+[ RUN      ] RangeMaxMinSmooth.Consistency
+[       OK ] RangeMaxMinSmooth.Consistency (0 ms)
+[----------] 1 test from RangeMaxMinSmooth (0 ms total)
+
+[----------] 3 tests from RangeRemap
+[ RUN      ] RangeRemap.NormalizeRange
+[       OK ] RangeRemap.NormalizeRange (0 ms)
+[ RUN      ] RangeRemap.FlatArray
+[       OK ] RangeRemap.FlatArray (0 ms)
+[ RUN      ] RangeRemap.ExplicitRange
+[       OK ] RangeRemap.ExplicitRange (0 ms)
+[----------] 3 tests from RangeRemap (0 ms total)
+
+[----------] 2 tests from RangeRescale
+[ RUN      ] RangeRescale.ScalingOnly
+[       OK ] RangeRescale.ScalingOnly (0 ms)
+[ RUN      ] RangeRescale.WithReference
+[       OK ] RangeRescale.WithReference (0 ms)
+[----------] 2 tests from RangeRescale (0 ms total)
+
+[----------] 3 tests from RangeNormalizeAndClip
+[ RUN      ] RangeNormalizeAndClip.WithoutSmoothing
+[       OK ] RangeNormalizeAndClip.WithoutSmoothing (0 ms)
+[ RUN      ] RangeNormalizeAndClip.WithSmoothing
+[       OK ] RangeNormalizeAndClip.WithSmoothing (0 ms)
+[ RUN      ] RangeNormalizeAndClip.Range01
+[       OK ] RangeNormalizeAndClip.Range01 (0 ms)
+[----------] 3 tests from RangeNormalizeAndClip (0 ms total)
+
+[----------] 4 tests from RecastCliff
+[ RUN      ] RecastCliff.CliffMaskFlatTerrainIsZero
+[       OK ] RecastCliff.CliffMaskFlatTerrainIsZero (1 ms)
+[ RUN      ] RecastCliff.CliffMaskSteepTerrainIsPositive
+[       OK ] RecastCliff.CliffMaskSteepTerrainIsPositive (2 ms)
+[ RUN      ] RecastCliff.CliffMaskWithInputMask
+[       OK ] RecastCliff.CliffMaskWithInputMask (1 ms)
+[ RUN      ] RecastCliff.TiledDistributedExecution
+[       OK ] RecastCliff.TiledDistributedExecution (204 ms)
+[----------] 4 tests from RecastCliff (210 ms total)
+
+[----------] 4 tests from RecastCliffDirectional
+[ RUN      ] RecastCliffDirectional.CliffMaskPositive
+[       OK ] RecastCliffDirectional.CliffMaskPositive (3 ms)
+[ RUN      ] RecastCliffDirectional.CliffMaskWithInputMask
+[       OK ] RecastCliffDirectional.CliffMaskWithInputMask (2 ms)
+[ RUN      ] RecastCliffDirectional.CliffMaskWithVariableAngle
+[       OK ] RecastCliffDirectional.CliffMaskWithVariableAngle (3 ms)
+[ RUN      ] RecastCliffDirectional.TiledDistributedExecution
+[       OK ] RecastCliffDirectional.TiledDistributedExecution (202 ms)
+[----------] 4 tests from RecastCliffDirectional (212 ms total)
+
+[----------] 14 tests from Remap
+[ RUN      ] Remap.AutoRangeBasic
+[       OK ] Remap.AutoRangeBasic (0 ms)
+[ RUN      ] Remap.AutoRangeCustomTarget
+[       OK ] Remap.AutoRangeCustomTarget (0 ms)
+[ RUN      ] Remap.AutoRangeNegativeValues
+[       OK ] Remap.AutoRangeNegativeValues (0 ms)
+[ RUN      ] Remap.AutoRangeConstantArray
+[       OK ] Remap.AutoRangeConstantArray (0 ms)
+[ RUN      ] Remap.AutoRangeMonotonicity
+[       OK ] Remap.AutoRangeMonotonicity (0 ms)
+[ RUN      ] Remap.ExplicitRangeBasic
+[       OK ] Remap.ExplicitRangeBasic (0 ms)
+[ RUN      ] Remap.ExplicitRangeCustomTarget
+[       OK ] Remap.ExplicitRangeCustomTarget (0 ms)
+[ RUN      ] Remap.ExplicitRangeOutsideInput
+[       OK ] Remap.ExplicitRangeOutsideInput (0 ms)
+[ RUN      ] Remap.ExplicitRangeConstantSource
+[       OK ] Remap.ExplicitRangeConstantSource (0 ms)
+[ RUN      ] Remap.ExplicitRangeMonotonicity
+[       OK ] Remap.ExplicitRangeMonotonicity (0 ms)
+[ RUN      ] Remap.RangeMatchesTarget
+[       OK ] Remap.RangeMatchesTarget (0 ms)
+[ RUN      ] Remap.IdentityMapping
+[       OK ] Remap.IdentityMapping (0 ms)
+[ RUN      ] Remap.StaysWithinTargetRange
+[       OK ] Remap.StaysWithinTargetRange (2 ms)
+[ RUN      ] Remap.ExplicitRangeMapsMinimumExactly
+[       OK ] Remap.ExplicitRangeMapsMinimumExactly (0 ms)
+[----------] 14 tests from Remap (2 ms total)
+
+[----------] 1 test from Gain
+[ RUN      ] Gain.FiniteJustOutsideUnitRange
+[       OK ] Gain.FiniteJustOutsideUnitRange (0 ms)
+[----------] 1 test from Gain (0 ms total)
+
+[----------] 8 tests from RemoveEndpoints
+[ RUN      ] RemoveEndpoints.SingleEndpoint
+[       OK ] RemoveEndpoints.SingleEndpoint (0 ms)
+[ RUN      ] RemoveEndpoints.TwoIterations
+[       OK ] RemoveEndpoints.TwoIterations (0 ms)
+[ RUN      ] RemoveEndpoints.TwoIterationsPreserveOddLengthCenter
+[       OK ] RemoveEndpoints.TwoIterationsPreserveOddLengthCenter (0 ms)
+[ RUN      ] RemoveEndpoints.RemoveLonelyPixel
+[       OK ] RemoveEndpoints.RemoveLonelyPixel (0 ms)
+[ RUN      ] RemoveEndpoints.KeepBranch
+[       OK ] RemoveEndpoints.KeepBranch (0 ms)
+[ RUN      ] RemoveEndpoints.CustomBackground
+[       OK ] RemoveEndpoints.CustomBackground (0 ms)
+[ RUN      ] RemoveEndpoints.ZeroIterations
+[       OK ] RemoveEndpoints.ZeroIterations (0 ms)
+[ RUN      ] RemoveEndpoints.DiagonalConnectivity
+[       OK ] RemoveEndpoints.DiagonalConnectivity (0 ms)
+[----------] 8 tests from RemoveEndpoints (0 ms total)
+
+[----------] 6 tests from RidgeAccentuate
+[ RUN      ] RidgeAccentuate.ConstantFieldPreserved
+[       OK ] RidgeAccentuate.ConstantFieldPreserved (0 ms)
+[ RUN      ] RidgeAccentuate.IdentityWhenStrengthZero
+[       OK ] RidgeAccentuate.IdentityWhenStrengthZero (0 ms)
+[ RUN      ] RidgeAccentuate.RidgeSharpeningOnGaussianPeak
+[       OK ] RidgeAccentuate.RidgeSharpeningOnGaussianPeak (0 ms)
+[ RUN      ] RidgeAccentuate.MeshSizeIndependence
+[       OK ] RidgeAccentuate.MeshSizeIndependence (0 ms)
+[ RUN      ] RidgeAccentuate.MaskSupport
+[       OK ] RidgeAccentuate.MaskSupport (0 ms)
+[ RUN      ] RidgeAccentuate.ReverseFormsValleys
+[       OK ] RidgeAccentuate.ReverseFormsValleys (0 ms)
+[----------] 6 tests from RidgeAccentuate (0 ms total)
+
+[----------] 1 test from RidgeAccentuate_CPU_GPU
+[ RUN      ] RidgeAccentuate_CPU_GPU.RandomFieldsEquivalence
+[       OK ] RidgeAccentuate_CPU_GPU.RandomFieldsEquivalence (1 ms)
+[----------] 1 test from RidgeAccentuate_CPU_GPU (1 ms total)
+
+[----------] 1 test from RockTest
+[ RUN      ] RockTest.BasicRockItem
+[       OK ] RockTest.BasicRockItem (0 ms)
+[----------] 1 test from RockTest (0 ms total)
+
+[----------] 7 tests from RockFieldTest
+[ RUN      ] RockFieldTest.PowerLawDistribution
+[       OK ] RockFieldTest.PowerLawDistribution (0 ms)
+[ RUN      ] RockFieldTest.SlopeSorting
+[       OK ] RockFieldTest.SlopeSorting (0 ms)
+[ RUN      ] RockFieldTest.InterstitialPacking
+[       OK ] RockFieldTest.InterstitialPacking (0 ms)
+[ RUN      ] RockFieldTest.Seeding
+[       OK ] RockFieldTest.Seeding (1 ms)
+[ RUN      ] RockFieldTest.VirtualArraySeeding
+[       OK ] RockFieldTest.VirtualArraySeeding (0 ms)
+[ RUN      ] RockFieldTest.VirtualArrayExclusionMask
+[       OK ] RockFieldTest.VirtualArrayExclusionMask (0 ms)
+[ RUN      ] RockFieldTest.VirtualArrayEmptyAndZeroDensity
+[       OK ] RockFieldTest.VirtualArrayEmptyAndZeroDensity (0 ms)
+[----------] 7 tests from RockFieldTest (1 ms total)
+
+[----------] 6 tests from RockSimulationTest
+[ RUN      ] RockSimulationTest.DownhillMotionAndFrictionRest
+[       OK ] RockSimulationTest.DownhillMotionAndFrictionRest (2 ms)
+[ RUN      ] RockSimulationTest.DiscardOutOfBounds
+[       OK ] RockSimulationTest.DiscardOutOfBounds (0 ms)
+[ RUN      ] RockSimulationTest.RespawnOutOfBounds
+[       OK ] RockSimulationTest.RespawnOutOfBounds (1 ms)
+[ RUN      ] RockSimulationTest.EmissionSimulation
+[       OK ] RockSimulationTest.EmissionSimulation (2 ms)
+[ RUN      ] RockSimulationTest.CollisionNonOverlap
+[       OK ] RockSimulationTest.CollisionNonOverlap (0 ms)
+[ RUN      ] RockSimulationTest.ProgressiveSpawn
+[       OK ] RockSimulationTest.ProgressiveSpawn (2 ms)
+[----------] 6 tests from RockSimulationTest (9 ms total)
+
+[----------] 7 tests from RockProceduralTest
+[ RUN      ] RockProceduralTest.EmptyInput
+hmap [warn ] [rock_procedural.cpp     :173] Array is empty or uninitialized (shape: 0x0, buffer size: 0)
+[       OK ] RockProceduralTest.EmptyInput (0 ms)
+[ RUN      ] RockProceduralTest.DeterministicAndBounded
+[       OK ] RockProceduralTest.DeterministicAndBounded (0 ms)
+[ RUN      ] RockProceduralTest.SizeBroadensAtLowElevation
+[       OK ] RockProceduralTest.SizeBroadensAtLowElevation (0 ms)
+[ RUN      ] RockProceduralTest.AutomaticDensityAndNoOverlaps
+[       OK ] RockProceduralTest.AutomaticDensityAndNoOverlaps (0 ms)
+[ RUN      ] RockProceduralTest.VirtualArrayBasicExecution
+[       OK ] RockProceduralTest.VirtualArrayBasicExecution (0 ms)
+[ RUN      ] RockProceduralTest.VirtualArrayExclusionMask
+[       OK ] RockProceduralTest.VirtualArrayExclusionMask (0 ms)
+[ RUN      ] RockProceduralTest.VirtualArrayEmptyAndZeroDensity
+[       OK ] RockProceduralTest.VirtualArrayEmptyAndZeroDensity (0 ms)
+[----------] 7 tests from RockProceduralTest (1 ms total)
+
+[----------] 3 tests from RockDensityTest
+[ RUN      ] RockDensityTest.EmptyAndInvalidInputs
+hmap [warn ] [rock_procedural.cpp     :47] Array is empty or uninitialized (shape: 0x0, buffer size: 0)
+hmap [warn ] [rock_procedural.cpp     :122] Array shape mismatch: lhs is (32, 32) [size: 1024], rhs is (16, 16) [size: 256]
+hmap [warn ] [rock_procedural.cpp     :146] Array shape mismatch: lhs is (32, 32) [size: 1024], rhs is (16, 16) [size: 256]
+[       OK ] RockDensityTest.EmptyAndInvalidInputs (0 ms)
+[ RUN      ] RockDensityTest.BasicComputationAndExclusion
+[       OK ] RockDensityTest.BasicComputationAndExclusion (0 ms)
+[ RUN      ] RockDensityTest.TiledBoundingBox
+[       OK ] RockDensityTest.TiledBoundingBox (0 ms)
+[----------] 3 tests from RockDensityTest (0 ms total)
+
+[----------] 8 tests from Saturate
+[ RUN      ] Saturate.ClampOnly_KZero
+[       OK ] Saturate.ClampOnly_KZero (0 ms)
+[ RUN      ] Saturate.RemapRange
+[       OK ] Saturate.RemapRange (0 ms)
+[ RUN      ] Saturate.MonotonicityPreserved
+[       OK ] Saturate.MonotonicityPreserved (0 ms)
+[ RUN      ] Saturate.AutoRangeBasic
+[       OK ] Saturate.AutoRangeBasic (0 ms)
+[ RUN      ] Saturate.AutoRangeClamp
+[       OK ] Saturate.AutoRangeClamp (0 ms)
+[ RUN      ] Saturate.AutoRangeConstantField
+[       OK ] Saturate.AutoRangeConstantField (0 ms)
+[ RUN      ] Saturate.SmoothClampRangePreserved
+[       OK ] Saturate.SmoothClampRangePreserved (0 ms)
+[ RUN      ] Saturate.SmoothClampMonotonic
+[       OK ] Saturate.SmoothClampMonotonic (0 ms)
+[----------] 8 tests from Saturate (0 ms total)
+
+[----------] 2 tests from SaturatePercentile
+[ RUN      ] SaturatePercentile.BasicPercentile
+[       OK ] SaturatePercentile.BasicPercentile (0 ms)
+[ RUN      ] SaturatePercentile.Monotonicity
+[       OK ] SaturatePercentile.Monotonicity (0 ms)
+[----------] 2 tests from SaturatePercentile (0 ms total)
+
+[----------] 3 tests from ScatterItemTest
+[ RUN      ] ScatterItemTest.DefaultConstructor
+[       OK ] ScatterItemTest.DefaultConstructor (0 ms)
+[ RUN      ] ScatterItemTest.ParameterizedConstructors
+[       OK ] ScatterItemTest.ParameterizedConstructors (0 ms)
+[ RUN      ] ScatterItemTest.ConversionsAndOperators
+[       OK ] ScatterItemTest.ConversionsAndOperators (0 ms)
+[----------] 3 tests from ScatterItemTest (0 ms total)
+
+[----------] 27 tests from ScatterFieldTest
+[ RUN      ] ScatterFieldTest.ContainerOperations
+[       OK ] ScatterFieldTest.ContainerOperations (0 ms)
+[ RUN      ] ScatterFieldTest.FromAndToCloud
+[       OK ] ScatterFieldTest.FromAndToCloud (0 ms)
+[ RUN      ] ScatterFieldTest.FilterByClassAndBbox
+[       OK ] ScatterFieldTest.FilterByClassAndBbox (0 ms)
+[ RUN      ] ScatterFieldTest.PackInterstitial
+[       OK ] ScatterFieldTest.PackInterstitial (0 ms)
+[ RUN      ] ScatterFieldTest.PruneCollisions
+[       OK ] ScatterFieldTest.PruneCollisions (0 ms)
+[ RUN      ] ScatterFieldTest.PruneCollisionsAgainstOtherField
+[       OK ] ScatterFieldTest.PruneCollisionsAgainstOtherField (0 ms)
+[ RUN      ] ScatterFieldTest.PruneDensityTileable
+[       OK ] ScatterFieldTest.PruneDensityTileable (0 ms)
+[ RUN      ] ScatterFieldTest.SetElevationFromTerrain
+[       OK ] ScatterFieldTest.SetElevationFromTerrain (0 ms)
+[ RUN      ] ScatterFieldTest.Densify
+[       OK ] ScatterFieldTest.Densify (0 ms)
+[ RUN      ] ScatterFieldTest.ReinforceClassClusters
+[       OK ] ScatterFieldTest.ReinforceClassClusters (0 ms)
+[ RUN      ] ScatterFieldTest.ShuffleClasses
+[       OK ] ScatterFieldTest.ShuffleClasses (0 ms)
+[ RUN      ] ScatterFieldTest.PerturbPositions
+[       OK ] ScatterFieldTest.PerturbPositions (0 ms)
+[ RUN      ] ScatterFieldTest.RegularizePositions
+[       OK ] ScatterFieldTest.RegularizePositions (0 ms)
+[ RUN      ] ScatterFieldTest.ResolveCollisionsSelf
+[       OK ] ScatterFieldTest.ResolveCollisionsSelf (0 ms)
+[ RUN      ] ScatterFieldTest.ResolveCollisionsAgainstOther
+[       OK ] ScatterFieldTest.ResolveCollisionsAgainstOther (0 ms)
+[ RUN      ] ScatterFieldTest.ResolveCollisionsLargeRandom
+[       OK ] ScatterFieldTest.ResolveCollisionsLargeRandom (0 ms)
+[ RUN      ] ScatterFieldTest.MergeScatterFieldsPreserveClasses
+[       OK ] ScatterFieldTest.MergeScatterFieldsPreserveClasses (0 ms)
+[ RUN      ] ScatterFieldTest.MergeScatterFieldsRemapClasses
+[       OK ] ScatterFieldTest.MergeScatterFieldsRemapClasses (0 ms)
+[ RUN      ] ScatterFieldTest.MergeScatterFieldsMultiple
+[       OK ] ScatterFieldTest.MergeScatterFieldsMultiple (0 ms)
+[ RUN      ] ScatterFieldTest.MergeScatterFieldsWithBbox
+hmap [warn ] [scatter_field.cpp       :1822] Field count (2) does not match bounding box count (1)
+[       OK ] ScatterFieldTest.MergeScatterFieldsWithBbox (0 ms)
+[ RUN      ] ScatterFieldTest.ToHeightmapEmpty
+[       OK ] ScatterFieldTest.ToHeightmapEmpty (0 ms)
+[ RUN      ] ScatterFieldTest.ToHeightmapDisk
+[       OK ] ScatterFieldTest.ToHeightmapDisk (0 ms)
+[ RUN      ] ScatterFieldTest.ToHeightmapPolygonAndShapes
+[       OK ] ScatterFieldTest.ToHeightmapPolygonAndShapes (1 ms)
+[ RUN      ] ScatterFieldTest.ToHeightmapClassFilterAndFreeFunction
+[       OK ] ScatterFieldTest.ToHeightmapClassFilterAndFreeFunction (0 ms)
+[ RUN      ] ScatterFieldTest.ToHeightmapRockMap
+[       OK ] ScatterFieldTest.ToHeightmapRockMap (0 ms)
+[ RUN      ] ScatterFieldTest.ToImg8bit
+hmap [warn ] [scatter_field.cpp       :1589] Array is empty or uninitialized (shape: 0x0, buffer size: 0)
+[       OK ] ScatterFieldTest.ToImg8bit (0 ms)
+[ RUN      ] ScatterFieldTest.ToPly
+[       OK ] ScatterFieldTest.ToPly (0 ms)
+[----------] 27 tests from ScatterFieldTest (3 ms total)
+
+[----------] 1 test from ScatterSeedingTest
+[ RUN      ] ScatterSeedingTest.SeedScatterClustersAndKMeans
+[       OK ] ScatterSeedingTest.SeedScatterClustersAndKMeans (0 ms)
+[----------] 1 test from ScatterSeedingTest (0 ms total)
+
+[----------] 5 tests from SelectAngle
+[ RUN      ] SelectAngle.WrapAcrossZeroNorth
+[       OK ] SelectAngle.WrapAcrossZeroNorth (0 ms)
+[ RUN      ] SelectAngle.BoundaryEquivalence0And360
+[       OK ] SelectAngle.BoundaryEquivalence0And360 (0 ms)
+[ RUN      ] SelectAngle.ExactMatchAndOutOfTolerance
+[       OK ] SelectAngle.ExactMatchAndOutOfTolerance (0 ms)
+[ RUN      ] SelectAngle.FlatTerrainExclusion
+[       OK ] SelectAngle.FlatTerrainExclusion (0 ms)
+[ RUN      ] SelectAngle.ValidationEmpty
+hmap [warn ] [selector.cpp            :49] Array is empty or uninitialized (shape: 0x0, buffer size: 0)
+[       OK ] SelectAngle.ValidationEmpty (0 ms)
+[----------] 5 tests from SelectAngle (0 ms total)
+
+[----------] 6 tests from SelectRange
+[ RUN      ] SelectRange.InsideRange
+[       OK ] SelectRange.InsideRange (0 ms)
+[ RUN      ] SelectRange.OutsideRange
+[       OK ] SelectRange.OutsideRange (0 ms)
+[ RUN      ] SelectRange.SmoothTransition
+[       OK ] SelectRange.SmoothTransition (0 ms)
+[ RUN      ] SelectRange.ZeroWidthStep
+[       OK ] SelectRange.ZeroWidthStep (0 ms)
+[ RUN      ] SelectRange.InvertedVminVmax
+[       OK ] SelectRange.InvertedVminVmax (0 ms)
+[ RUN      ] SelectRange.ValidationEmpty
+hmap [warn ] [selector.cpp            :373] Array is empty or uninitialized (shape: 0x0, buffer size: 0)
+[       OK ] SelectRange.ValidationEmpty (0 ms)
+[----------] 6 tests from SelectRange (0 ms total)
+
+[----------] 4 tests from SelectorNormalization
+[ RUN      ] SelectorNormalization.SelectCavitiesNormalization
+[       OK ] SelectorNormalization.SelectCavitiesNormalization (0 ms)
+[ RUN      ] SelectorNormalization.SelectValleyNormalization
+[       OK ] SelectorNormalization.SelectValleyNormalization (0 ms)
+[ RUN      ] SelectorNormalization.SelectBlobLogNormalization
+[       OK ] SelectorNormalization.SelectBlobLogNormalization (0 ms)
+[ RUN      ] SelectorNormalization.GpuSelectorsNormalization
+[       OK ] SelectorNormalization.GpuSelectorsNormalization (2 ms)
+[----------] 4 tests from SelectorNormalization (3 ms total)
+
+[----------] 2 tests from ShadeColor
+[ RUN      ] ShadeColor.TextureBasicAndAlphaPreservation
+[       OK ] ShadeColor.TextureBasicAndAlphaPreservation (0 ms)
+[ RUN      ] ShadeColor.EmptyOrMismatchedInputs
+hmap [warn ] [color_adjust.cpp        :140] Texture is empty or uninitialized (shape: 0x0, channels: 0)
+hmap [warn ] [color_adjust.cpp        :141] Array is empty or uninitialized (shape: 0x0, buffer size: 0)
+hmap [warn ] [color_adjust.cpp        :142] Texture/Array shape mismatch: texture is (4, 4), array is (2, 2)
+hmap [warn ] [color_adjust.cpp        :140] Texture has 1 channels, but at least 3 are required
+[       OK ] ShadeColor.EmptyOrMismatchedInputs (0 ms)
+[----------] 2 tests from ShadeColor (0 ms total)
+
+[----------] 3 tests from ShadeTopographicResidual
+[ RUN      ] ShadeTopographicResidual.FlatTerrainProducesNeutralShade
+[       OK ] ShadeTopographicResidual.FlatTerrainProducesNeutralShade (0 ms)
+[ RUN      ] ShadeTopographicResidual.PeakAndValley
+[       OK ] ShadeTopographicResidual.PeakAndValley (0 ms)
+[ RUN      ] ShadeTopographicResidual.InvalidInputs
+hmap [warn ] [color_adjust.cpp        :166] Texture is empty or uninitialized (shape: 0x0, channels: 0)
+hmap [warn ] [color_adjust.cpp        :167] Array is empty or uninitialized (shape: 0x0, buffer size: 0)
+hmap [warn ] [color_adjust.cpp        :168] Texture/Array shape mismatch: texture is (8, 8), array is (4, 4)
+[       OK ] ShadeTopographicResidual.InvalidInputs (0 ms)
+[----------] 3 tests from ShadeTopographicResidual (0 ms total)
+
+[----------] 2 tests from SingleArrayComputeTest
+[ RUN      ] SingleArrayComputeTest.OutputOnlyCommunicatorKeepsExistingValues
+[       OK ] SingleArrayComputeTest.OutputOnlyCommunicatorKeepsExistingValues (1 ms)
+[ RUN      ] SingleArrayComputeTest.DirectMixedShapesRetainLegacyResampling
+[       OK ] SingleArrayComputeTest.DirectMixedShapesRetainLegacyResampling (0 ms)
+[----------] 2 tests from SingleArrayComputeTest (2 ms total)
+
+[----------] 8 tests from Skeleton
+[ RUN      ] Skeleton.EmptyInput
+[       OK ] Skeleton.EmptyInput (0 ms)
+[ RUN      ] Skeleton.SinglePixelInvariant
+[       OK ] Skeleton.SinglePixelInvariant (0 ms)
+[ RUN      ] Skeleton.AlreadyThinStructure
+[       OK ] Skeleton.AlreadyThinStructure (0 ms)
+[ RUN      ] Skeleton.ThickBlockReduces
+[       OK ] Skeleton.ThickBlockReduces (0 ms)
+[ RUN      ] Skeleton.ConnectivityPreserved
+[       OK ] Skeleton.ConnectivityPreserved (0 ms)
+[ RUN      ] Skeleton.Idempotence
+[       OK ] Skeleton.Idempotence (0 ms)
+[ RUN      ] Skeleton.ZeroAtBorders
+[       OK ] Skeleton.ZeroAtBorders (0 ms)
+[ RUN      ] Skeleton.ReductionButNotFullRemoval
+[       OK ] Skeleton.ReductionButNotFullRemoval (0 ms)
+[----------] 8 tests from Skeleton (0 ms total)
+
+[----------] 1 test from Skeleton_CPU_GPU
+[ RUN      ] Skeleton_CPU_GPU.RandomBinaryFields
+[       OK ] Skeleton_CPU_GPU.RandomBinaryFields (13 ms)
+[----------] 1 test from Skeleton_CPU_GPU (13 ms total)
+
+[----------] 11 tests from SlsDeformation
+[ RUN      ] SlsDeformation.GaussianPushSetsCenterAndVanishesOutsideRadius
+[       OK ] SlsDeformation.GaussianPushSetsCenterAndVanishesOutsideRadius (0 ms)
+[ RUN      ] SlsDeformation.GaussianPushIsClippedAtArrayBorder
+[       OK ] SlsDeformation.GaussianPushIsClippedAtArrayBorder (0 ms)
+[ RUN      ] SlsDeformation.MatchConstraintReducesDistanceToTarget
+[       OK ] SlsDeformation.MatchConstraintReducesDistanceToTarget (138 ms)
+[ RUN      ] SlsDeformation.ShapeMaskConstraintsEnforceLandAndSea
+[       OK ] SlsDeformation.ShapeMaskConstraintsEnforceLandAndSea (125 ms)
+[ RUN      ] SlsDeformation.RecordedPushesReplayExactly
+[       OK ] SlsDeformation.RecordedPushesReplayExactly (17 ms)
+[ RUN      ] SlsDeformation.SameSeedIsDeterministic
+[       OK ] SlsDeformation.SameSeedIsDeterministic (42 ms)
+[ RUN      ] SlsDeformation.SatisfiedConstraintLeavesTerrainUnchanged
+[       OK ] SlsDeformation.SatisfiedConstraintLeavesTerrainUnchanged (0 ms)
+[ RUN      ] SlsDeformation.SlopeLimitBoundsPushAmplitude
+[       OK ] SlsDeformation.SlopeLimitBoundsPushAmplitude (14 ms)
+[ RUN      ] SlsDeformation.EmptyConstraintsReturnInput
+[       OK ] SlsDeformation.EmptyConstraintsReturnInput (0 ms)
+[ RUN      ] SlsDeformation.MismatchedConstraintShapeReturnsInput
+hmap [warn ] [sls_deformation.cpp     :254] Array shape mismatch: lhs is (16, 16) [size: 256], rhs is (8, 8) [size: 64]
+[       OK ] SlsDeformation.MismatchedConstraintShapeReturnsInput (0 ms)
+[ RUN      ] SlsDeformation.ConstraintScaleWeightsCompetingTerms
+[       OK ] SlsDeformation.ConstraintScaleWeightsCompetingTerms (125 ms)
+[----------] 11 tests from SlsDeformation (463 ms total)
+
+[----------] 5 tests from SmoothCPulse
+[ RUN      ] SmoothCPulse.ConstantFieldPreserved
+[       OK ] SmoothCPulse.ConstantFieldPreserved (0 ms)
+[ RUN      ] SmoothCPulse.IdentityWhenRadiusZero
+[       OK ] SmoothCPulse.IdentityWhenRadiusZero (0 ms)
+[ RUN      ] SmoothCPulse.SmoothingReducesContrast
+[       OK ] SmoothCPulse.SmoothingReducesContrast (1 ms)
+[ RUN      ] SmoothCPulse.SymmetryPreserved
+[       OK ] SmoothCPulse.SymmetryPreserved (0 ms)
+[ RUN      ] SmoothCPulse.NoNewExtremaCreated
+[       OK ] SmoothCPulse.NoNewExtremaCreated (0 ms)
+[----------] 5 tests from SmoothCPulse (1 ms total)
+
+[----------] 1 test from SmoothCPulse_CPU_GPU
+[ RUN      ] SmoothCPulse_CPU_GPU.RandomBinaryFields
+[       OK ] SmoothCPulse_CPU_GPU.RandomBinaryFields (5 ms)
+[----------] 1 test from SmoothCPulse_CPU_GPU (5 ms total)
+
+[----------] 3 tests from SmoothCPulse_VirtualArray
+[ RUN      ] SmoothCPulse_VirtualArray.SingleTileMatchesGPU
+[       OK ] SmoothCPulse_VirtualArray.SingleTileMatchesGPU (0 ms)
+[ RUN      ] SmoothCPulse_VirtualArray.MaskedFilter
+[       OK ] SmoothCPulse_VirtualArray.MaskedFilter (2 ms)
+[ RUN      ] SmoothCPulse_VirtualArray.ReturnsFilteredVirtualArray
+[       OK ] SmoothCPulse_VirtualArray.ReturnsFilteredVirtualArray (1 ms)
+[----------] 3 tests from SmoothCPulse_VirtualArray (3 ms total)
+
+[----------] 6 tests from SnowMantle
+[ RUN      ] SnowMantle.EmptyInputReturnsEmpty
+hmap [warn ] [snow_mantle.cpp         :42] Array is empty or uninitialized (shape: 0x0, buffer size: 0)
+[       OK ] SnowMantle.EmptyInputReturnsEmpty (0 ms)
+[ RUN      ] SnowMantle.BasicAccumulation
+[       OK ] SnowMantle.BasicAccumulation (182 ms)
+[ RUN      ] SnowMantle.FlowPreservesNonNegativityAndSmooths
+[       OK ] SnowMantle.FlowPreservesNonNegativityAndSmooths (173 ms)
+[ RUN      ] SnowMantle.MeltingReducesSnowVolume
+[       OK ] SnowMantle.MeltingReducesSnowVolume (121 ms)
+[ RUN      ] SnowMantle.DirectionalBias
+[       OK ] SnowMantle.DirectionalBias (179 ms)
+[ RUN      ] SnowMantle.NoiseModulation
+[       OK ] SnowMantle.NoiseModulation (176 ms)
+[----------] 6 tests from SnowMantle (832 ms total)
+
+[----------] 5 tests from SnowSimulation
+[ RUN      ] SnowSimulation.ZeroIterationsReturnsEmpty
+[       OK ] SnowSimulation.ZeroIterationsReturnsEmpty (120 ms)
+[ RUN      ] SnowSimulation.IterationParityAndDeterminism
+[       OK ] SnowSimulation.IterationParityAndDeterminism (181 ms)
+[ RUN      ] SnowSimulation.SnowAccumulationWithoutMelting
+[       OK ] SnowSimulation.SnowAccumulationWithoutMelting (172 ms)
+[ RUN      ] SnowSimulation.MeltingReducesSnowVolume
+[       OK ] SnowSimulation.MeltingReducesSnowVolume (120 ms)
+[ RUN      ] SnowSimulation.TiledMinStorageLruMin
+[       OK ] SnowSimulation.TiledMinStorageLruMin (528 ms)
+[----------] 5 tests from SnowSimulation (1124 ms total)
+
+[----------] 4 tests from PathSplines
+[ RUN      ] PathSplines.PreserveStartEndPoints
+[       OK ] PathSplines.PreserveStartEndPoints (0 ms)
+[ RUN      ] PathSplines.PreservePathShape
+[       OK ] PathSplines.PreservePathShape (0 ms)
+[ RUN      ] PathSplines.HasNoDuplicates
+[       OK ] PathSplines.HasNoDuplicates (0 ms)
+[ RUN      ] PathSplines.TwoPointEdgeCases
+[       OK ] PathSplines.TwoPointEdgeCases (0 ms)
+[----------] 4 tests from PathSplines (0 ms total)
+
+[----------] 6 tests from TerrainSuperResolution
+[ RUN      ] TerrainSuperResolution.OutputShapeIsInputShapeTimesFactor
+hmap [trace] [terrain_super_resolut...:409] terrain_super_resolution: 49 atoms
+[       OK ] TerrainSuperResolution.OutputShapeIsInputShapeTimesFactor (4 ms)
+[ RUN      ] TerrainSuperResolution.InvalidParametersReturnEmptyArray
+hmap [trace] [terrain_super_resolut...:409] terrain_super_resolution: 49 atoms
+hmap [warn ] [terrain_super_resolut...:341] terrain_super_resolution: factor must be >= 1 (got 0)
+hmap [warn ] [terrain_super_resolut...:349] terrain_super_resolution: patch_size must be >= 2 (got 1)
+hmap [warn ] [terrain_super_resolut...:357] terrain_super_resolution: strides must be in [1, patch_size = 8] (got analysis_stride = 0, synthesis_stride = 4)
+hmap [warn ] [terrain_super_resolut...:357] terrain_super_resolution: strides must be in [1, patch_size = 8] (got analysis_stride = 4, synthesis_stride = 9)
+hmap [warn ] [terrain_super_resolut...:368] terrain_super_resolution: sparsity must be >= 1 (got 0)
+hmap [warn ] [terrain_super_resolut...:382] terrain_super_resolution: exemplar downsampled by 8 is 8x8, smaller than the patch size 16
+hmap [warn ] [terrain_super_resolut...:336] Array is empty or uninitialized (shape: 0x0, buffer size: 0)
+hmap [warn ] [terrain_super_resolut...:336] Array is empty or uninitialized (shape: 0x0, buffer size: 0)
+[       OK ] TerrainSuperResolution.InvalidParametersReturnEmptyArray (1 ms)
+[ RUN      ] TerrainSuperResolution.FlatExemplarReturnsEmptyArray
+hmap [warn ] [terrain_super_resolut...:404] terrain_super_resolution: no usable patch in the exemplar (flat exemplar?)
+[       OK ] TerrainSuperResolution.FlatExemplarReturnsEmptyArray (0 ms)
+[ RUN      ] TerrainSuperResolution.ReconstructsExemplarFromItsOwnDownsampling
+hmap [trace] [terrain_super_resolut...:409] terrain_super_resolution: 49 atoms
+[       OK ] TerrainSuperResolution.ReconstructsExemplarFromItsOwnDownsampling (4 ms)
+[ RUN      ] TerrainSuperResolution.SparsityAboveOneStillReconstructsExactPatches
+hmap [trace] [terrain_super_resolut...:409] terrain_super_resolution: 49 atoms
+[       OK ] TerrainSuperResolution.SparsityAboveOneStillReconstructsExactPatches (4 ms)
+[ RUN      ] TerrainSuperResolution.GenericRunIsFiniteAndDeterministic
+hmap [trace] [terrain_super_resolut...:409] terrain_super_resolution: 49 atoms
+hmap [trace] [terrain_super_resolut...:409] terrain_super_resolution: 49 atoms
+[       OK ] TerrainSuperResolution.GenericRunIsFiniteAndDeterministic (17 ms)
+[----------] 6 tests from TerrainSuperResolution (31 ms total)
+
+[----------] 4 tests from TerrainTriMeshTest
+[ RUN      ] TerrainTriMeshTest.EmptyMeshSanity
+[       OK ] TerrainTriMeshTest.EmptyMeshSanity (0 ms)
+[ RUN      ] TerrainTriMeshTest.BasicTriangulationAndBarycentric
+[       OK ] TerrainTriMeshTest.BasicTriangulationAndBarycentric (0 ms)
+[ RUN      ] TerrainTriMeshTest.RelaxAndSmoothing
+[       OK ] TerrainTriMeshTest.RelaxAndSmoothing (0 ms)
+[ RUN      ] TerrainTriMeshTest.SlopeLimiter
+[       OK ] TerrainTriMeshTest.SlopeLimiter (0 ms)
+[----------] 4 tests from TerrainTriMeshTest (0 ms total)
+
+[----------] 1 test from TextureIO
+[ RUN      ] TextureIO.PngRoundTripOrientationAndData
+[       OK ] TextureIO.PngRoundTripOrientationAndData (0 ms)
+[----------] 1 test from TextureIO (0 ms total)
+
+[----------] 5 tests from TextureColorize
+[ RUN      ] TextureColorize.CustomColormapAndOperations
+[       OK ] TextureColorize.CustomColormapAndOperations (2 ms)
+[ RUN      ] TextureColorize.MixWithMask
+hmap [warn ] [colorize.cpp            :631] Texture is empty or uninitialized (shape: 0x0, channels: 0)
+hmap [warn ] [colorize.cpp            :632] Texture is empty or uninitialized (shape: 0x0, channels: 0)
+hmap [warn ] [colorize.cpp            :634] Array is empty or uninitialized (shape: 0x0, buffer size: 0)
+hmap [warn ] [colorize.cpp            :635] Texture/Array shape mismatch: texture is (4, 4), array is (8, 8)
+[       OK ] TextureColorize.MixWithMask (0 ms)
+[ RUN      ] TextureColorize.BivariateReverseAndNoise
+[       OK ] TextureColorize.BivariateReverseAndNoise (0 ms)
+[ RUN      ] TextureColorize.TerrainTextureBasic
+hmap [warn ] [terrain_texture.cpp     :34] Array shape mismatch: lhs is (16, 16) [size: 256], rhs is (8, 8) [size: 64]
+[       OK ] TextureColorize.TerrainTextureBasic (41 ms)
+[ RUN      ] TextureColorize.TerrainTextureSnowDepth
+[       OK ] TextureColorize.TerrainTextureSnowDepth (3 ms)
+[----------] 5 tests from TextureColorize (47 ms total)
+
+[----------] 1 test from TextureTransform
+[ RUN      ] TextureTransform.BasicTransforms
+[       OK ] TextureTransform.BasicTransforms (0 ms)
+[----------] 1 test from TextureTransform (0 ms total)
+
+[----------] 1 test from TextureBlending
+[ RUN      ] TextureBlending.BlendPoissonBf
+hmap [warn ] [blending_gpu.cpp        :104] Texture is empty or uninitialized (shape: 0x0, channels: 0)
+hmap [warn ] [blending_gpu.cpp        :106] Texture has 2 channels, but exactly 3 are required
+hmap [warn ] [blending_gpu.cpp        :104] Texture shape mismatch: lhs is (32, 32), rhs is (16, 16)
+hmap [warn ] [blending_gpu.cpp        :107] Texture/Array shape mismatch: texture is (32, 32), array is (16, 16)
+[       OK ] TextureBlending.BlendPoissonBf (12 ms)
+[----------] 1 test from TextureBlending (12 ms total)
+
+[----------] 1 test from DepressionFilling_Communicator
+[ RUN      ] DepressionFilling_Communicator.TiledMatchesMonolithic
+[       OK ] DepressionFilling_Communicator.TiledMatchesMonolithic (7 ms)
+[----------] 1 test from DepressionFilling_Communicator (7 ms total)
+
+[----------] 1 test from DepressionFillingPriorityFlood_Communicator
+[ RUN      ] DepressionFillingPriorityFlood_Communicator.TiledMatchesMonolithic
+[       OK ] DepressionFillingPriorityFlood_Communicator.TiledMatchesMonolithic (7 ms)
+[----------] 1 test from DepressionFillingPriorityFlood_Communicator (7 ms total)
+
+[----------] 2 tests from FloodingLakeSystem_VirtualArray
+[ RUN      ] FloodingLakeSystem_VirtualArray.SingleTileMatchesArray
+[       OK ] FloodingLakeSystem_VirtualArray.SingleTileMatchesArray (1 ms)
+[ RUN      ] FloodingLakeSystem_VirtualArray.MultiTileWithSurfaceThreshold
+[       OK ] FloodingLakeSystem_VirtualArray.MultiTileWithSurfaceThreshold (1 ms)
+[----------] 2 tests from FloodingLakeSystem_VirtualArray (3 ms total)
+
+[----------] 3 tests from FloodingFromPoint_Communicator
+[ RUN      ] FloodingFromPoint_Communicator.TiledMatchesMonolithicSingleSeed
+[       OK ] FloodingFromPoint_Communicator.TiledMatchesMonolithicSingleSeed (1 ms)
+[ RUN      ] FloodingFromPoint_Communicator.TiledMatchesMonolithicBoundarySeed
+[       OK ] FloodingFromPoint_Communicator.TiledMatchesMonolithicBoundarySeed (1 ms)
+[ RUN      ] FloodingFromPoint_Communicator.TiledMatchesMonolithicMultiSeed
+[       OK ] FloodingFromPoint_Communicator.TiledMatchesMonolithicMultiSeed (1 ms)
+[----------] 3 tests from FloodingFromPoint_Communicator (4 ms total)
+
+[----------] 2 tests from FloodingFromBoundaries_Communicator
+[ RUN      ] FloodingFromBoundaries_Communicator.TiledMatchesMonolithicAllBoundaries
+[       OK ] FloodingFromBoundaries_Communicator.TiledMatchesMonolithicAllBoundaries (2 ms)
+[ RUN      ] FloodingFromBoundaries_Communicator.TiledMatchesMonolithicSelectiveBoundaries
+[       OK ] FloodingFromBoundaries_Communicator.TiledMatchesMonolithicSelectiveBoundaries (1 ms)
+[----------] 2 tests from FloodingFromBoundaries_Communicator (3 ms total)
+
+[----------] 8 tests from TrenchCarving
+[ RUN      ] TrenchCarving.EmptyInputsHandledGracefully
+hmap [warn ] [trench.cpp              :344] Array is empty or uninitialized (shape: 0x0, buffer size: 0)
+hmap [warn ] [trench.cpp              :557] Path is empty
+[       OK ] TrenchCarving.EmptyInputsHandledGracefully (0 ms)
+[ RUN      ] TrenchCarving.SinglePointCarvingModifiesCenter
+[       OK ] TrenchCarving.SinglePointCarvingModifiesCenter (0 ms)
+[ RUN      ] TrenchCarving.PolylinePathCarvesSmoothTrench
+[       OK ] TrenchCarving.PolylinePathCarvesSmoothTrench (0 ms)
+[ RUN      ] TrenchCarving.CurvatureScalingAndNoise
+[       OK ] TrenchCarving.CurvatureScalingAndNoise (0 ms)
+[ RUN      ] TrenchCarving.VirtualArrayVsArrayComparisonSingleTile
+[DEBUG] SingleTile max_diff = 1.37091e-06
+[       OK ] TrenchCarving.VirtualArrayVsArrayComparisonSingleTile (0 ms)
+[ RUN      ] TrenchCarving.VirtualArrayVsArrayComparisonMultiTile
+[DEBUG] MultiTile max_diff = 1.01328e-06
+[       OK ] TrenchCarving.VirtualArrayVsArrayComparisonMultiTile (0 ms)
+[ RUN      ] TrenchCarving.PathReorderingByLengthDescending
+[       OK ] TrenchCarving.PathReorderingByLengthDescending (0 ms)
+[ RUN      ] TrenchCarving.GraphFlowNetworkWithOutletDistanceScaling
+[       OK ] TrenchCarving.GraphFlowNetworkWithOutletDistanceScaling (0 ms)
+[----------] 8 tests from TrenchCarving (0 ms total)
+
+[----------] 1 test from CarveRiver
+[ RUN      ] CarveRiver.RiverNetworkIncisionAndMonotonicity
+[       OK ] CarveRiver.RiverNetworkIncisionAndMonotonicity (0 ms)
+[----------] 1 test from CarveRiver (0 ms total)
+
+[----------] 12 tests from ValidationTest
+[ RUN      ] ValidationTest.ValidateShape
+hmap [warn ] [test_validation.cpp     :16] Invalid array shape (0, 10): dimensions must be positive
+hmap [warn ] [test_validation.cpp     :17] Invalid array shape (10, 0): dimensions must be positive
+hmap [warn ] [test_validation.cpp     :18] Invalid array shape (-5, 10): dimensions must be positive
+hmap [warn ] [test_validation.cpp     :19] Invalid array shape (10, -5): dimensions must be positive
+[       OK ] ValidationTest.ValidateShape (0 ms)
+[ RUN      ] ValidationTest.ValidateNonEmpty
+hmap [warn ] [test_validation.cpp     :25] Array is empty or uninitialized (shape: 0x0, buffer size: 0)
+hmap [warn ] [test_validation.cpp     :32] Array buffer size (15) does not match shape dimensions (4x4 = 16)
+[       OK ] ValidationTest.ValidateNonEmpty (0 ms)
+[ RUN      ] ValidationTest.ValidateSameShape
+hmap [warn ] [test_validation.cpp     :42] Array shape mismatch: lhs is (4, 4) [size: 16], rhs is (4, 5) [size: 20]
+[       OK ] ValidationTest.ValidateSameShape (0 ms)
+[ RUN      ] ValidationTest.ValidateSlice
+hmap [warn ] [test_validation.cpp     :52] Invalid slice [-1, 5, 0, 5] for array shape (10, 10)
+hmap [warn ] [test_validation.cpp     :53] Invalid slice [5, 5, 0, 5] for array shape (10, 10)
+hmap [warn ] [test_validation.cpp     :54] Invalid slice [6, 5, 0, 5] for array shape (10, 10)
+hmap [warn ] [test_validation.cpp     :55] Invalid slice [0, 11, 0, 5] for array shape (10, 10)
+hmap [warn ] [test_validation.cpp     :56] Invalid slice [0, 5, 0, 11] for array shape (10, 10)
+[       OK ] ValidationTest.ValidateSlice (0 ms)
+[ RUN      ] ValidationTest.ValidateSliceForArray
+hmap [warn ] [test_validation.cpp     :67] Slice dimensions (3, 4) do not match source array shape (2, 2)
+[       OK ] ValidationTest.ValidateSliceForArray (0 ms)
+[ RUN      ] ValidationTest.ValidateNotZero
+hmap [warn ] [test_validation.cpp     :76] Division by zero encountered
+[       OK ] ValidationTest.ValidateNotZero (0 ms)
+[ RUN      ] ValidationTest.ValidateParameterRange
+hmap [warn ] [test_validation.cpp     :87] Range [-0.1, 0.8] is invalid: expected values within [0, 1] with low <= high
+hmap [warn ] [test_validation.cpp     :89] Range [0.2, 1.1] is invalid: expected values within [0, 1] with low <= high
+hmap [warn ] [test_validation.cpp     :91] Range [0.8, 0.2] is invalid: expected values within [0, 1] with low <= high
+[       OK ] ValidationTest.ValidateParameterRange (0 ms)
+[ RUN      ] ValidationTest.ValidateFinite
+hmap [warn ] [test_validation.cpp     :101] Non-finite value (nan) encountered at linear index 4
+hmap [warn ] [test_validation.cpp     :104] Non-finite value (inf) encountered at linear index 4
+[       OK ] ValidationTest.ValidateFinite (0 ms)
+[ RUN      ] ValidationTest.SourceLocationLoggingOutput
+[       OK ] ValidationTest.SourceLocationLoggingOutput (0 ms)
+[ RUN      ] ValidationTest.ArrayOperationsGracefulFailure
+hmap [warn ] [array.cpp               :281] Array shape mismatch: lhs is (3, 3) [size: 9], rhs is (4, 4) [size: 16]
+hmap [warn ] [array.cpp               :163] Array shape mismatch: lhs is (3, 3) [size: 9], rhs is (4, 4) [size: 16]
+hmap [warn ] [methods.cpp             :31] Array is empty or uninitialized (shape: 0x0, buffer size: 0)
+[       OK ] ValidationTest.ArrayOperationsGracefulFailure (0 ms)
+[ RUN      ] ValidationTest.ValidateTexture
+hmap [warn ] [test_validation.cpp     :150] Texture is empty or uninitialized (shape: 0x0, channels: 0)
+hmap [warn ] [test_validation.cpp     :155] Texture has 3 channels, but at least 4 are required
+hmap [warn ] [test_validation.cpp     :158] Texture has 3 channels, but exactly 4 are required
+hmap [warn ] [test_validation.cpp     :161] Texture shape mismatch: lhs is (4, 4), rhs is (4, 5)
+hmap [warn ] [test_validation.cpp     :167] Texture/Array shape mismatch: texture is (4, 4), array is (4, 5)
+[       OK ] ValidationTest.ValidateTexture (0 ms)
+[ RUN      ] ValidationTest.ValidateCmap
+hmap [warn ] [test_validation.cpp     :175] Invalid colormap ID (-1)
+hmap [warn ] [test_validation.cpp     :176] Invalid colormap ID (999)
+hmap [warn ] [get_colormap_data.cpp   :24] Invalid colormap ID (999)
+[       OK ] ValidationTest.ValidateCmap (0 ms)
+[----------] 12 tests from ValidationTest (0 ms total)
+
+[----------] 11 tests from ValleyHead
+[ RUN      ] ValleyHead.HeadAndUpstreamZero
+[       OK ] ValleyHead.HeadAndUpstreamZero (0 ms)
+[ RUN      ] ValleyHead.DownstreamDepthIncreases
+[       OK ] ValleyHead.DownstreamDepthIncreases (0 ms)
+[ RUN      ] ValleyHead.WidthIncreasesDownstream
+[       OK ] ValleyHead.WidthIncreasesDownstream (0 ms)
+[ RUN      ] ValleyHead.SymmetricCrossSection
+[       OK ] ValleyHead.SymmetricCrossSection (0 ms)
+[ RUN      ] ValleyHead.OutsideInfluenceZero
+[       OK ] ValleyHead.OutsideInfluenceZero (0 ms)
+[ RUN      ] ValleyHead.LateralContinuity
+[       OK ] ValleyHead.LateralContinuity (2 ms)
+[ RUN      ] ValleyHead.ParameterExtremes
+[       OK ] ValleyHead.ParameterExtremes (0 ms)
+[ RUN      ] ValleyHead.OrientationRotation
+[       OK ] ValleyHead.OrientationRotation (0 ms)
+[ RUN      ] ValleyHead.CrossSectionNoise
+[       OK ] ValleyHead.CrossSectionNoise (0 ms)
+[ RUN      ] ValleyHead.MinDepthAtHead
+[       OK ] ValleyHead.MinDepthAtHead (0 ms)
+[ RUN      ] ValleyHead.MinDepthEqualMaxDepth
+[       OK ] ValleyHead.MinDepthEqualMaxDepth (0 ms)
+[----------] 11 tests from ValleyHead (4 ms total)
+
+[----------] 7 tests from Variance
+[ RUN      ] Variance.ConstantArray
+[       OK ] Variance.ConstantArray (0 ms)
+[ RUN      ] Variance.KnownValues
+[       OK ] Variance.KnownValues (0 ms)
+[ RUN      ] Variance.WithProvidedMean
+[       OK ] Variance.WithProvidedMean (0 ms)
+[ RUN      ] Variance.WrongMeanChangesResult
+[       OK ] Variance.WrongMeanChangesResult (0 ms)
+[ RUN      ] Variance.InvariantToOffset
+[       OK ] Variance.InvariantToOffset (0 ms)
+[ RUN      ] Variance.ScalingProperty
+[       OK ] Variance.ScalingProperty (0 ms)
+[ RUN      ] Variance.NonSquareArray
+[       OK ] Variance.NonSquareArray (0 ms)
+[----------] 7 tests from Variance (0 ms total)
+
+[----------] 1 test from ArrayStd
+[ RUN      ] ArrayStd.MeanOutputPointer
+[       OK ] ArrayStd.MeanOutputPointer (0 ms)
+[----------] 1 test from ArrayStd (0 ms total)
+
+[----------] 16 tests from VirtualArrayTest
+[ RUN      ] VirtualArrayTest.ConstructionAndProperties
+[       OK ] VirtualArrayTest.ConstructionAndProperties (0 ms)
+[ RUN      ] VirtualArrayTest.SingleTileGeometry
+[       OK ] VirtualArrayTest.SingleTileGeometry (0 ms)
+[ RUN      ] VirtualArrayTest.TileCoordinateMapping
+[       OK ] VirtualArrayTest.TileCoordinateMapping (0 ms)
+[ RUN      ] VirtualArrayTest.TileRegionInnerBbox
+[       OK ] VirtualArrayTest.TileRegionInnerBbox (0 ms)
+[ RUN      ] VirtualArrayTest.CellGetSet
+[       OK ] VirtualArrayTest.CellGetSet (0 ms)
+[ RUN      ] VirtualArrayTest.FillAndReductions
+[       OK ] VirtualArrayTest.FillAndReductions (0 ms)
+[ RUN      ] VirtualArrayTest.ArrayRoundTripSequentialAndDistributed
+[       OK ] VirtualArrayTest.ArrayRoundTripSequentialAndDistributed (0 ms)
+[ RUN      ] VirtualArrayTest.CloneAndCopyFrom
+[       OK ] VirtualArrayTest.CloneAndCopyFrom (0 ms)
+[ RUN      ] VirtualArrayTest.RemapAndInverse
+[       OK ] VirtualArrayTest.RemapAndInverse (0 ms)
+[ RUN      ] VirtualArrayTest.StorageModesPersistence
+[       OK ] VirtualArrayTest.StorageModesPersistence (0 ms)
+[ RUN      ] VirtualArrayTest.MemoryFootprintTracking
+[       OK ] VirtualArrayTest.MemoryFootprintTracking (0 ms)
+[ RUN      ] VirtualArrayTest.SyncOverlapBuffersOperations
+[       OK ] VirtualArrayTest.SyncOverlapBuffersOperations (0 ms)
+[ RUN      ] VirtualArrayTest.SumPerTile
+[       OK ] VirtualArrayTest.SumPerTile (0 ms)
+[ RUN      ] VirtualArrayTest.MPICollectiveMinTiledVsNonTiled
+[       OK ] VirtualArrayTest.MPICollectiveMinTiledVsNonTiled (55 ms)
+[ RUN      ] VirtualArrayTest.StorageClonePersistenceAndDeepCopy
+[       OK ] VirtualArrayTest.StorageClonePersistenceAndDeepCopy (0 ms)
+[ RUN      ] VirtualArrayTest.SchedulerCooperativeExceptionPropagation
+[       OK ] VirtualArrayTest.SchedulerCooperativeExceptionPropagation (0 ms)
+[----------] 16 tests from VirtualArrayTest (59 ms total)
+
+[----------] 9 tests from VirtualTextureTest
+[ RUN      ] VirtualTextureTest.ConstructionAndChannels
+[       OK ] VirtualTextureTest.ConstructionAndChannels (0 ms)
+[ RUN      ] VirtualTextureTest.TextureRoundTrip
+[       OK ] VirtualTextureTest.TextureRoundTrip (0 ms)
+[ RUN      ] VirtualTextureTest.ChannelConversion
+[       OK ] VirtualTextureTest.ChannelConversion (0 ms)
+[ RUN      ] VirtualTextureTest.Luminance
+[       OK ] VirtualTextureTest.Luminance (0 ms)
+[ RUN      ] VirtualTextureTest.MixFourChannels
+[       OK ] VirtualTextureTest.MixFourChannels (0 ms)
+[ RUN      ] VirtualTextureTest.ColorizeThreeChannelsDoesNotCrash
+[       OK ] VirtualTextureTest.ColorizeThreeChannelsDoesNotCrash (0 ms)
+[ RUN      ] VirtualTextureTest.MixNormalMapThreeChannels
+[       OK ] VirtualTextureTest.MixNormalMapThreeChannels (0 ms)
+[ RUN      ] VirtualTextureTest.MemoryFootprintAndTrim
+[       OK ] VirtualTextureTest.MemoryFootprintAndTrim (0 ms)
+[ RUN      ] VirtualTextureTest.SyncOverlapBuffers
+[       OK ] VirtualTextureTest.SyncOverlapBuffers (0 ms)
+[----------] 9 tests from VirtualTextureTest (0 ms total)
+
+[----------] 11 tests from VoronoiShrinkTest
+[ RUN      ] VoronoiShrinkTest.ShrinkFactorOnePreservesInput
+[       OK ] VoronoiShrinkTest.ShrinkFactorOnePreservesInput (125 ms)
+[ RUN      ] VoronoiShrinkTest.ShrinkingCreatesRiftsWithFillValue
+[       OK ] VoronoiShrinkTest.ShrinkingCreatesRiftsWithFillValue (136 ms)
+[ RUN      ] VoronoiShrinkTest.ScalarKwOverloadEquivalence
+[       OK ] VoronoiShrinkTest.ScalarKwOverloadEquivalence (174 ms)
+[ RUN      ] VoronoiShrinkTest.MaskPreservesUnmaskedArea
+[       OK ] VoronoiShrinkTest.MaskPreservesUnmaskedArea (148 ms)
+[ RUN      ] VoronoiShrinkTest.NoisePerturbationModifiesOutput
+[       OK ] VoronoiShrinkTest.NoisePerturbationModifiesOutput (123 ms)
+[ RUN      ] VoronoiShrinkTest.EmptyArrayReturnsEmpty
+hmap [warn ] [voronoi_shrink.cpp      :33] Array is empty or uninitialized (shape: 0x0, buffer size: 0)
+[       OK ] VoronoiShrinkTest.EmptyArrayReturnsEmpty (153 ms)
+[ RUN      ] VoronoiShrinkTest.PointsShrinkFactorOnePreservesInput
+[       OK ] VoronoiShrinkTest.PointsShrinkFactorOnePreservesInput (185 ms)
+[ RUN      ] VoronoiShrinkTest.PointsShrinkingCreatesRiftsWithFillValue
+[       OK ] VoronoiShrinkTest.PointsShrinkingCreatesRiftsWithFillValue (123 ms)
+[ RUN      ] VoronoiShrinkTest.PointsOverloadEquivalence
+[       OK ] VoronoiShrinkTest.PointsOverloadEquivalence (145 ms)
+[ RUN      ] VoronoiShrinkTest.PointsMaskPreservesUnmaskedArea
+[       OK ] VoronoiShrinkTest.PointsMaskPreservesUnmaskedArea (185 ms)
+[ RUN      ] VoronoiShrinkTest.PointsEmptyCloudReturnsUnchangedShape
+[       OK ] VoronoiShrinkTest.PointsEmptyCloudReturnsUnchangedShape (124 ms)
+[----------] 11 tests from VoronoiShrinkTest (1627 ms total)
+
+[----------] 72 tests from StorageGridHaloStride/SingleArraySnapshotTest
+[ RUN      ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/0
+[       OK ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/0 (0 ms)
+[ RUN      ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/1
+[       OK ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/1 (0 ms)
+[ RUN      ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/2
+[       OK ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/2 (0 ms)
+[ RUN      ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/3
+[       OK ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/3 (0 ms)
+[ RUN      ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/4
+[       OK ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/4 (0 ms)
+[ RUN      ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/5
+[       OK ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/5 (0 ms)
+[ RUN      ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/6
+[       OK ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/6 (21 ms)
+[ RUN      ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/7
+[       OK ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/7 (0 ms)
+[ RUN      ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/8
+[       OK ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/8 (21 ms)
+[ RUN      ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/9
+[       OK ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/9 (0 ms)
+[ RUN      ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/10
+[       OK ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/10 (19 ms)
+[ RUN      ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/11
+[       OK ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/11 (0 ms)
+[ RUN      ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/12
+[       OK ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/12 (0 ms)
+[ RUN      ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/13
+[       OK ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/13 (0 ms)
+[ RUN      ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/14
+[       OK ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/14 (0 ms)
+[ RUN      ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/15
+[       OK ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/15 (0 ms)
+[ RUN      ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/16
+[       OK ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/16 (0 ms)
+[ RUN      ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/17
+[       OK ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/17 (0 ms)
+[ RUN      ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/18
+[       OK ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/18 (19 ms)
+[ RUN      ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/19
+[       OK ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/19 (0 ms)
+[ RUN      ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/20
+[       OK ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/20 (20 ms)
+[ RUN      ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/21
+[       OK ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/21 (0 ms)
+[ RUN      ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/22
+[       OK ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/22 (19 ms)
+[ RUN      ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/23
+[       OK ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/23 (0 ms)
+[ RUN      ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/24
+[       OK ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/24 (1 ms)
+[ RUN      ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/25
+[       OK ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/25 (0 ms)
+[ RUN      ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/26
+[       OK ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/26 (2 ms)
+[ RUN      ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/27
+[       OK ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/27 (0 ms)
+[ RUN      ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/28
+[       OK ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/28 (0 ms)
+[ RUN      ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/29
+[       OK ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/29 (0 ms)
+[ RUN      ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/30
+[       OK ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/30 (20 ms)
+[ RUN      ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/31
+[       OK ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/31 (1 ms)
+[ RUN      ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/32
+[       OK ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/32 (19 ms)
+[ RUN      ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/33
+[       OK ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/33 (2 ms)
+[ RUN      ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/34
+[       OK ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/34 (22 ms)
+[ RUN      ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/35
+[       OK ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/35 (0 ms)
+[ RUN      ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/36
+[       OK ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/36 (0 ms)
+[ RUN      ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/37
+[       OK ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/37 (0 ms)
+[ RUN      ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/38
+[       OK ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/38 (2 ms)
+[ RUN      ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/39
+[       OK ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/39 (0 ms)
+[ RUN      ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/40
+[       OK ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/40 (0 ms)
+[ RUN      ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/41
+[       OK ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/41 (0 ms)
+[ RUN      ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/42
+[       OK ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/42 (22 ms)
+[ RUN      ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/43
+[       OK ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/43 (0 ms)
+[ RUN      ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/44
+[       OK ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/44 (21 ms)
+[ RUN      ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/45
+[       OK ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/45 (2 ms)
+[ RUN      ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/46
+[       OK ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/46 (19 ms)
+[ RUN      ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/47
+[       OK ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/47 (0 ms)
+[ RUN      ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/48
+[       OK ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/48 (0 ms)
+[ RUN      ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/49
+[       OK ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/49 (0 ms)
+[ RUN      ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/50
+[       OK ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/50 (0 ms)
+[ RUN      ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/51
+[       OK ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/51 (0 ms)
+[ RUN      ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/52
+[       OK ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/52 (0 ms)
+[ RUN      ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/53
+[       OK ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/53 (0 ms)
+[ RUN      ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/54
+[       OK ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/54 (22 ms)
+[ RUN      ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/55
+[       OK ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/55 (1 ms)
+[ RUN      ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/56
+[       OK ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/56 (21 ms)
+[ RUN      ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/57
+[       OK ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/57 (0 ms)
+[ RUN      ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/58
+[       OK ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/58 (20 ms)
+[ RUN      ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/59
+[       OK ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/59 (0 ms)
+[ RUN      ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/60
+[       OK ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/60 (0 ms)
+[ RUN      ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/61
+[       OK ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/61 (0 ms)
+[ RUN      ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/62
+[       OK ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/62 (0 ms)
+[ RUN      ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/63
+[       OK ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/63 (0 ms)
+[ RUN      ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/64
+[       OK ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/64 (0 ms)
+[ RUN      ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/65
+[       OK ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/65 (0 ms)
+[ RUN      ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/66
+[       OK ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/66 (20 ms)
+[ RUN      ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/67
+[       OK ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/67 (0 ms)
+[ RUN      ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/68
+[       OK ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/68 (20 ms)
+[ RUN      ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/69
+[       OK ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/69 (0 ms)
+[ RUN      ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/70
+[       OK ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/70 (20 ms)
+[ RUN      ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/71
+[       OK ] StorageGridHaloStride/SingleArraySnapshotTest.PreservesSnapshotsOptionalPortsAndOutputReads/71 (0 ms)
+[----------] 72 tests from StorageGridHaloStride/SingleArraySnapshotTest (405 ms total)
+
+[----------] Global test environment tear-down
+[==========] 996 tests from 167 test suites ran. (22888 ms total)
+[  PASSED  ] 996 tests.
+Timer dump: 
+                 CPU         1            0.362017 ms
+                 GPU         1            0.822129 ms

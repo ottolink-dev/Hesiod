@@ -1,0 +1,56 @@
+{
+  "complete": true,
+  "memory_scaling_check": "incomplete",
+  "cells": [
+    {
+      "case": "ExportAsset",
+      "variant": "full",
+      "inputs_only": false,
+      "policy": "ram-sequential",
+      "tiles": 1,
+      "overlap": 0.0,
+      "size": 1024,
+      "planned": 1,
+      "successful": 1,
+      "status": "complete",
+      "process_peak_mib_median": 1030.0546875,
+      "process_peak_mib_min": 1030.0546875,
+      "process_peak_mib_max": 1030.0546875,
+      "wall_seconds_median": 13.016418801998952
+    },
+    {
+      "case": "TextureQuiltingExpand",
+      "variant": "full",
+      "inputs_only": false,
+      "policy": "ram-sequential",
+      "tiles": 1,
+      "overlap": 0.0,
+      "size": 1024,
+      "planned": 1,
+      "successful": 1,
+      "status": "complete",
+      "process_peak_mib_median": 718.20703125,
+      "process_peak_mib_min": 718.20703125,
+      "process_peak_mib_max": 718.20703125,
+      "wall_seconds_median": 1.754157732008025
+    },
+    {
+      "case": "TextureQuiltingShuffle",
+      "variant": "full",
+      "inputs_only": false,
+      "policy": "ram-sequential",
+      "tiles": 1,
+      "overlap": 0.0,
+      "size": 1024,
+      "planned": 1,
+      "successful": 1,
+      "status": "complete",
+      "process_peak_mib_median": 683.26953125,
+      "process_peak_mib_min": 683.26953125,
+      "process_peak_mib_max": 683.26953125,
+      "wall_seconds_median": 1.6831559779966483
+    }
+  ],
+  "comparisons": [],
+  "limitations": "Whole-process kernel peak RSS including startup and source nodes; not per-node allocation totals or GPU VRAM. Scalar RSS guards can miss localized growth hidden by fixed process overhead. Node completion does not establish numerical output correctness."
+}

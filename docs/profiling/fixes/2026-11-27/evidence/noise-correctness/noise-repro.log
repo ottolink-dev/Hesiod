@@ -1,0 +1,23 @@
+[clwrap] [12:53:18] [---T---] DeviceManager::DeviceManager
+[clwrap] [12:53:18] [---T---] initializing OpenCL devices...
+[clwrap] [12:53:18] [---T---] checking device performances...
+[clwrap] [12:53:18] [---T---] checking platform: NVIDIA Corporation - NVIDIA CUDA
+[clwrap] [12:53:18] [---T---] rating - device: NVIDIA GeForce RTX 5060 Laptop GPU, score: 1000052.6580820961
+[clwrap] [12:53:18] [---I---] Selected OpenCL device: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:53:18] [---I---] - device Name: NVIDIA GeForce RTX 5060 Laptop GPU
+[clwrap] [12:53:18] [---I---]  - device Vendor: NVIDIA Corporation
+[clwrap] [12:53:18] [---I---]  - device Version: OpenCL 3.0 CUDA
+[clwrap] [12:53:18] [---I---]  - device Type: GPU
+[clwrap] [12:53:18] [---T---] loading kernel sources
+[clwrap] [12:53:18] [---T---] program building skipped, kernel sources are empty
+[clwrap] [12:53:18] [---T---] loading kernel sources
+[clwrap] [12:53:18] [---T---] building OpenCL kernels
+[clwrap] [12:53:18] [---T---] build options: -cl-fast-relaxed-math -cl-mad-enable -cl-no-signed-zeros -cl-denorms-are-zero -cl-finite-math-only 
+[clwrap] [12:53:18] [---T---] available kernels: noise;noise_fbm;noise_slope;gabor_wave;gabor_wave_fbm;gavoronoise;gavoronoise_with_base;hemisphere_field;hemisphere_field_fbm;laplacian_fract;mountain_range_radial;phase_averaging;phase_field;polygon_field;polygon_field_fbm;wavelet_noise;vorolines;voronoi_edge_distance;voronoi;voronoi_fbm;voronoise;voronoise_fbm;vororand;aeolian_shadow_map;aeolian_transport;aeolian_stabilize_sediment;mcdonald_solve;mcdonald_filter;mcdonald_debris;hydraulic_musgrave;hydraulic_particle;hydraulic_schott;hydraulic_schott_erosion;hydraulic_vpipes_flow_pass;hydraulic_vpipes_water_pass;hydraulic_vpipes_erosion_pass;hydraulic_vpipes_sediment_transport_pass;hydraulic_vpipes_rain_pass;rifts;strata;strata_cells;strata_terrace;thermal;thermal_with_bedrock;thermal_auto_bedrock;thermal_conserve;thermal_flatten;thermal_inflate;thermal_olsen;thermal_rib;thermal_ridge;thermal_schott;thermal_scree;bilateral_filter;directional_blur;distance_shaper_rt;expand;laplace;mean_shift;median_3x3;normal_displacement;plateau_post;smooth_cpulse;sparse_max_convolution;sparse_max_convolution_with_size;water_depth_filter;coastal_fetch;coastal_fetch_directional;flow_accum_stochastic_solve;flow_accum_stochastic_normalize;flow_direction_d8;generate_riverbed;shallow_viscous_flow;snow_simulation;curvature_quadric;local_max;local_max_octagon;local_max_square;local_mean;local_min;local_min_octagon;local_min_square;local_relief;local_skewness;local_variance;local_z_score;ridge_accentuate;ruggedness;rugosity_post;topographic_position_index;advection_particle;poisson_compute_laplacian;blend_poisson_red_black;eulerian_transport;harmonic_interpolation_red_black;harmonic_interpolation_red_black_diff;harmonic_interpolation_red_black_diff_aniso;interpolate_array_bicubic;interpolate_array_bilinear;interpolate_array_nearest;interpolate_array_lagrange;jagged;jump_flooding;project_talus_along_direction;rotate_hmap;sdf_2d_polyline;sdf_2d_polyline_bezier;thinning;relative_distance_from_skeleton;voronoi_shrink;voronoi_shrink_points;warp_xy;warp_x;warp_y;terrain_fallline_walk;terrain_shade;rock_simulate_physics;scatter_to_heightmap
+[clwrap] [12:53:18] [---T---] Run::Run [noise]
+noise: CPU nonfinite=4096 GPU nonfinite=0 cells=4096 old_assert=1 strict_L1=nan
+[clwrap] [12:53:18] [---T---] Run::Run [noise_fbm]
+noise_fbm: CPU nonfinite=4096 GPU nonfinite=0 cells=4096 old_assert=1 strict_L1=nan
+clamp_min_smooth(-1,0,0)=-nan
+clamp_min_smooth(0,0,0)=-nan
+clamp_min_smooth(1,0,0)=-nan

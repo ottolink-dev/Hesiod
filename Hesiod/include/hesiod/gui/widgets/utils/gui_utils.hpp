@@ -25,6 +25,9 @@ void apply_graph_style();
 // Linear blend of two colours, alpha included; `amount` is clamped to [0, 1].
 QColor mix_colors(const QColor &from, const QColor &to, qreal amount);
 
+// The same colour at another opacity, `alpha` in [0, 1].
+QColor with_alpha(QColor color, qreal alpha);
+
 // Border of the rounded pane cards, and of the popups and dialogs drawn to
 // match them. The stylesheet's COLOR_PANEL_BORDER is this same colour.
 QColor panel_border_color();

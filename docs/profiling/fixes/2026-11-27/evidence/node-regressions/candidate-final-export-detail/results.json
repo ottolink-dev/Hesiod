@@ -1,0 +1,2062 @@
+{
+  "ExportAsset-detail-m0-mask0-none-t1": {
+    "kind": "unchanged",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/candidate-final-export-detail/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/candidate-final-export-detail/ExportAsset-detail-m0-mask0-none-t1/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "f8626cc1dbaf62aa5d7ab8e139ab7c403f4f8e6cec4cd0b374450e7b5b610790",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14644,
+    "process_peak_rss_kib": 359208,
+    "process_user_seconds": 0.13544799999999999,
+    "process_system_seconds": 0.31628799999999996,
+    "wall_seconds": 0.5446458920050645,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "ExportAsset",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "6",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "7",
+        "type": "HeightmapToNormalMap",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result..glb": {
+        "bytes": 716052,
+        "sha256": "b02834574c89dafa9edf945299d64a0c0dbbdac87147ec5b555e8290b392f763",
+        "normalized_chunks": [
+          [
+            1313821514,
+            "72cfeefa94d616c1921a0270fa6caf5ddc44fbc6738c836f6dfc2558ea7aefc7"
+          ],
+          [
+            5130562,
+            "bebd44f99dffb35851c5196287535d934098aa26bf39b80f8fab6c2ea5482f5d"
+          ]
+        ]
+      },
+      "result..png": {
+        "bytes": 81561,
+        "sha256": "6526e3bea908ef0ba6254d132b3084e24a9583037c79f8009a7c6dd4c2df6a38",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "fc464d8922c312b80681f897b2f89ee31a2ad4fd17031621f0ab21fabc773b0c"
+      },
+      "result._nmap.png": {
+        "bytes": 86239,
+        "sha256": "7c6030956d379edf671e210bb88224a91921c693cb4b2cb80e003a78bbc97379",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "d4d41ab7eba914fa78e2f5079667055e7d21a701f8c21f05824fd66fd57775e9"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportAsset-detail-m0-mask1-none-t1": {
+    "kind": "unchanged",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/candidate-final-export-detail/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/candidate-final-export-detail/ExportAsset-detail-m0-mask1-none-t1/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "446a8eb628ec697665f449cb8c74ecff531b43eccff09d343311d7d6dc243d8d",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14644,
+    "process_peak_rss_kib": 358120,
+    "process_user_seconds": 0.14810299999999998,
+    "process_system_seconds": 0.22475299999999998,
+    "wall_seconds": 0.428422828001203,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "ExportAsset",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "6",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "7",
+        "type": "HeightmapToNormalMap",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result..glb": {
+        "bytes": 716020,
+        "sha256": "fdbd16bf433dd4ac828ffc608865744775053d4bfb30da99ddbf02c40d10140f",
+        "normalized_chunks": [
+          [
+            1313821514,
+            "7315497dfda9b7d5c6bacd4fbb4ea535e173f2d10086c49aec078910f97b8b77"
+          ],
+          [
+            5130562,
+            "1c2a1986e2b3cb51870633c5fd83e937f8fe37f31da2baaf2dcddf6739a1507c"
+          ]
+        ]
+      },
+      "result..png": {
+        "bytes": 81561,
+        "sha256": "6526e3bea908ef0ba6254d132b3084e24a9583037c79f8009a7c6dd4c2df6a38",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "fc464d8922c312b80681f897b2f89ee31a2ad4fd17031621f0ab21fabc773b0c"
+      },
+      "result._nmap.png": {
+        "bytes": 86239,
+        "sha256": "7c6030956d379edf671e210bb88224a91921c693cb4b2cb80e003a78bbc97379",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "d4d41ab7eba914fa78e2f5079667055e7d21a701f8c21f05824fd66fd57775e9"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportAsset-detail-m1-mask0-x-t1": {
+    "kind": "unchanged",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/candidate-final-export-detail/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/candidate-final-export-detail/ExportAsset-detail-m1-mask0-x-t1/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "822ceb1e5b33f6f123d8fcb0a0f5dc0a6f78ad62d5f671b046b71b3cdf57f57b",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14632,
+    "process_peak_rss_kib": 358916,
+    "process_user_seconds": 0.131292,
+    "process_system_seconds": 0.223547,
+    "wall_seconds": 0.48129989599692635,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "ExportAsset",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "6",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "7",
+        "type": "HeightmapToNormalMap",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result..glb": {
+        "bytes": 716052,
+        "sha256": "0dd57b271492226a843f63a1944b32fe968281401474f72a6bc170cf62241dd5",
+        "normalized_chunks": [
+          [
+            1313821514,
+            "72cfeefa94d616c1921a0270fa6caf5ddc44fbc6738c836f6dfc2558ea7aefc7"
+          ],
+          [
+            5130562,
+            "71a0e9b466e1d7e840e91c73a8573ce35ee6b5a6ce9a33a05dee9a2684c7e0bc"
+          ]
+        ]
+      },
+      "result..png": {
+        "bytes": 81713,
+        "sha256": "3c8078e4ae0cb3dea04ca906c01fbec18a0f311a715f4e76bf5ec1271eeb27f4",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "e23ab61b06fc52dc5ea60046ca47ceea284c429d4fc991c8e6a71c99275eb3d7"
+      },
+      "result._nmap.png": {
+        "bytes": 89272,
+        "sha256": "341a499e4b0fe5a41f309bb8604f98b9b5f2080f1546805fe16afe336cc9c5fe",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "dcfab5216e529bd46f28bd8a2f3d4cee84782902e635f86ee57ec6c2591586dc"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportAsset-detail-m1-mask1-x-t1": {
+    "kind": "unchanged",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/candidate-final-export-detail/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/candidate-final-export-detail/ExportAsset-detail-m1-mask1-x-t1/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "aab1e9a5b3fe679b8212aa4e98ced208bdd8c2bafd89a11574e427e28aaff608",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14640,
+    "process_peak_rss_kib": 358448,
+    "process_user_seconds": 0.151193,
+    "process_system_seconds": 0.22550299999999998,
+    "wall_seconds": 0.485972185007995,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "ExportAsset",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "6",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "7",
+        "type": "HeightmapToNormalMap",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result..glb": {
+        "bytes": 716008,
+        "sha256": "952f892a84afd6c2d8991e8ef7a54d0623cd7558d9ede51a83ad8b645a9a8de5",
+        "normalized_chunks": [
+          [
+            1313821514,
+            "9b120d27c84b856a58b7d084cd53abc06146b06c0aadaf4d4e8954b1b709092d"
+          ],
+          [
+            5130562,
+            "a56efc3e377fcbd6bd2cba534d31783aa77f054714e3e95d61d5fa0572f2c6e6"
+          ]
+        ]
+      },
+      "result..png": {
+        "bytes": 81713,
+        "sha256": "3c8078e4ae0cb3dea04ca906c01fbec18a0f311a715f4e76bf5ec1271eeb27f4",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "e23ab61b06fc52dc5ea60046ca47ceea284c429d4fc991c8e6a71c99275eb3d7"
+      },
+      "result._nmap.png": {
+        "bytes": 89272,
+        "sha256": "341a499e4b0fe5a41f309bb8604f98b9b5f2080f1546805fe16afe336cc9c5fe",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "dcfab5216e529bd46f28bd8a2f3d4cee84782902e635f86ee57ec6c2591586dc"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportAsset-detail-m2-mask0-y-t1": {
+    "kind": "unchanged",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/candidate-final-export-detail/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/candidate-final-export-detail/ExportAsset-detail-m2-mask0-y-t1/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "7ec25837eb078c6cf876f78277741a95086ea1b59a3c477980401f5c3f9e98fb",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14636,
+    "process_peak_rss_kib": 359148,
+    "process_user_seconds": 0.13394599999999998,
+    "process_system_seconds": 0.222522,
+    "wall_seconds": 0.42077144799986854,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 0
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "ExportAsset",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "6",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "7",
+        "type": "HeightmapToNormalMap",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result..glb": {
+        "bytes": 716052,
+        "sha256": "1eb204c733251f328e776888739519e11771841d2481d9e0305b1ba7a74d0a76",
+        "normalized_chunks": [
+          [
+            1313821514,
+            "72cfeefa94d616c1921a0270fa6caf5ddc44fbc6738c836f6dfc2558ea7aefc7"
+          ],
+          [
+            5130562,
+            "cbc8134f405aa32a124cf91de9791d4608190161cb8f41bc6535ef7ccaf96e4e"
+          ]
+        ]
+      },
+      "result..png": {
+        "bytes": 81559,
+        "sha256": "513acc2fe76757f6ad4633edee179ecbe90240bba2e267a37a8b944e25bae131",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "1e0bb0b9525fb5f4f5626a728dce64c0524836f647807104ae22c1b5f22887d4"
+      },
+      "result._nmap.png": {
+        "bytes": 87926,
+        "sha256": "86f72eaa9fca2e11f67160d3a20ade6c01516d139d65e54e1ee533d3f14213f2",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "cdeafbe780940212ba25313ca406acb374bd5c5eba77bef942a19b3529ea3477"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportAsset-detail-m2-mask1-y-t1": {
+    "kind": "unchanged",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/candidate-final-export-detail/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/candidate-final-export-detail/ExportAsset-detail-m2-mask1-y-t1/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "e9431c7dcbeb1a1963926d2a31600939068c52116b4286195034a70b89e6009a",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14640,
+    "process_peak_rss_kib": 358524,
+    "process_user_seconds": 0.152997,
+    "process_system_seconds": 0.222631,
+    "wall_seconds": 0.4225683210097486,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "ExportAsset",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "6",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "7",
+        "type": "HeightmapToNormalMap",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result..glb": {
+        "bytes": 716008,
+        "sha256": "b226328651cf6be7fa6d65c0cd8d5c4e5fdc48eb119c9600603c8cb61f499ae5",
+        "normalized_chunks": [
+          [
+            1313821514,
+            "9b120d27c84b856a58b7d084cd53abc06146b06c0aadaf4d4e8954b1b709092d"
+          ],
+          [
+            5130562,
+            "ab141515fcea3d851b43b5a53fa6361c6aafbeb6e5ff455ba665f9cfb9009820"
+          ]
+        ]
+      },
+      "result..png": {
+        "bytes": 81559,
+        "sha256": "513acc2fe76757f6ad4633edee179ecbe90240bba2e267a37a8b944e25bae131",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "1e0bb0b9525fb5f4f5626a728dce64c0524836f647807104ae22c1b5f22887d4"
+      },
+      "result._nmap.png": {
+        "bytes": 87926,
+        "sha256": "86f72eaa9fca2e11f67160d3a20ade6c01516d139d65e54e1ee533d3f14213f2",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "cdeafbe780940212ba25313ca406acb374bd5c5eba77bef942a19b3529ea3477"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportAsset-detail-m3-mask0-xy-t1": {
+    "kind": "unchanged",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/candidate-final-export-detail/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/candidate-final-export-detail/ExportAsset-detail-m3-mask0-xy-t1/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "2d455ed8b981d49df41b2c8a98005c8fa005d90760a10c5049d816d41c92ef4b",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14624,
+    "process_peak_rss_kib": 359020,
+    "process_user_seconds": 0.130156,
+    "process_system_seconds": 0.230991,
+    "wall_seconds": 0.42587718401046004,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 0
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "ExportAsset",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "6",
+        "type": "GaussianPulse",
+        "occurrences": 0
+      },
+      {
+        "graph": "graph",
+        "id": "7",
+        "type": "HeightmapToNormalMap",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result..glb": {
+        "bytes": 716052,
+        "sha256": "c14f3433d40242675dc8f08d7303178348a794a890e198eda1a5f07fc1d7865b",
+        "normalized_chunks": [
+          [
+            1313821514,
+            "72cfeefa94d616c1921a0270fa6caf5ddc44fbc6738c836f6dfc2558ea7aefc7"
+          ],
+          [
+            5130562,
+            "7c3d345c379e6b8ec1ed0f7c42ee94011c21223a8d786bb398033249c3bde3b9"
+          ]
+        ]
+      },
+      "result..png": {
+        "bytes": 81679,
+        "sha256": "6cc85a92bafd23755618d3d885bebbefcc18e7a5dba5573494f27aca19616d65",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "573d12041f35ec9b83dc56dc03de2af22646058b9866a49f592bfaa6aa0cdf7c"
+      },
+      "result._nmap.png": {
+        "bytes": 90124,
+        "sha256": "ee1c8a7c68b515a8ffdc1239549ae8730554be01f6733cf62b128dc0cd47e17f",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "60d0fd6cd5c999f36ab3940f2072d109dbf2f3c652b58c4d07ae4f491a8c6dea"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportAsset-detail-m3-mask1-xy-t1": {
+    "kind": "unchanged",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/candidate-final-export-detail/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/candidate-final-export-detail/ExportAsset-detail-m3-mask1-xy-t1/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "f73e8b891c6cbac1cf7e4fa99027b35490bf6ab81936480ea210393956c74766",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14640,
+    "process_peak_rss_kib": 357404,
+    "process_user_seconds": 0.152034,
+    "process_system_seconds": 0.21961499999999998,
+    "wall_seconds": 0.41970366300665773,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "ExportAsset",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "6",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "7",
+        "type": "HeightmapToNormalMap",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result..glb": {
+        "bytes": 716020,
+        "sha256": "4fd79a560b3173037ac940203ad94614598d6ea9b8e118e68391305511091996",
+        "normalized_chunks": [
+          [
+            1313821514,
+            "7315497dfda9b7d5c6bacd4fbb4ea535e173f2d10086c49aec078910f97b8b77"
+          ],
+          [
+            5130562,
+            "ba070e8d09bd850528e1d7e378bd685467ffd0fc4045c5ff916c77c74f5dec98"
+          ]
+        ]
+      },
+      "result..png": {
+        "bytes": 81679,
+        "sha256": "6cc85a92bafd23755618d3d885bebbefcc18e7a5dba5573494f27aca19616d65",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "573d12041f35ec9b83dc56dc03de2af22646058b9866a49f592bfaa6aa0cdf7c"
+      },
+      "result._nmap.png": {
+        "bytes": 90124,
+        "sha256": "ee1c8a7c68b515a8ffdc1239549ae8730554be01f6733cf62b128dc0cd47e17f",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "60d0fd6cd5c999f36ab3940f2072d109dbf2f3c652b58c4d07ae4f491a8c6dea"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportAsset-detail-m4-mask0-xy-t1": {
+    "kind": "unchanged",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/candidate-final-export-detail/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/candidate-final-export-detail/ExportAsset-detail-m4-mask0-xy-t1/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "485ebe0550529e5ea35222f6b7ca1bc9bd26622c98035d1d8cfae75f08af83cb",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14640,
+    "process_peak_rss_kib": 358676,
+    "process_user_seconds": 0.13777,
+    "process_system_seconds": 0.227542,
+    "wall_seconds": 0.42304633698950056,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 0
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "ExportAsset",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "6",
+        "type": "GaussianPulse",
+        "occurrences": 0
+      },
+      {
+        "graph": "graph",
+        "id": "7",
+        "type": "HeightmapToNormalMap",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result..glb": {
+        "bytes": 716052,
+        "sha256": "c14f3433d40242675dc8f08d7303178348a794a890e198eda1a5f07fc1d7865b",
+        "normalized_chunks": [
+          [
+            1313821514,
+            "72cfeefa94d616c1921a0270fa6caf5ddc44fbc6738c836f6dfc2558ea7aefc7"
+          ],
+          [
+            5130562,
+            "7c3d345c379e6b8ec1ed0f7c42ee94011c21223a8d786bb398033249c3bde3b9"
+          ]
+        ]
+      },
+      "result..png": {
+        "bytes": 81679,
+        "sha256": "6cc85a92bafd23755618d3d885bebbefcc18e7a5dba5573494f27aca19616d65",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "573d12041f35ec9b83dc56dc03de2af22646058b9866a49f592bfaa6aa0cdf7c"
+      },
+      "result._nmap.png": {
+        "bytes": 90155,
+        "sha256": "5ccff44a42257e38ce72a9e2289c430a3ca0740e4108bc3f623e6d8e79efbc43",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "0e8584e3966f2ee13d3765ff91d03a16ca438e30d89cc3ec1fcbae9b0f0d9c03"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportAsset-detail-m4-mask1-xy-t1": {
+    "kind": "unchanged",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/candidate-final-export-detail/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/candidate-final-export-detail/ExportAsset-detail-m4-mask1-xy-t1/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=1,1",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "26c2827c7a31354fb10355bbaa4d3e9c8ae466e38eb26f344448e24a0c3fbcc5",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14648,
+    "process_peak_rss_kib": 358664,
+    "process_user_seconds": 0.14113699999999998,
+    "process_system_seconds": 0.228317,
+    "wall_seconds": 0.42447117299889214,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "ExportAsset",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "6",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "7",
+        "type": "HeightmapToNormalMap",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result..glb": {
+        "bytes": 716020,
+        "sha256": "4fd79a560b3173037ac940203ad94614598d6ea9b8e118e68391305511091996",
+        "normalized_chunks": [
+          [
+            1313821514,
+            "7315497dfda9b7d5c6bacd4fbb4ea535e173f2d10086c49aec078910f97b8b77"
+          ],
+          [
+            5130562,
+            "ba070e8d09bd850528e1d7e378bd685467ffd0fc4045c5ff916c77c74f5dec98"
+          ]
+        ]
+      },
+      "result..png": {
+        "bytes": 81679,
+        "sha256": "6cc85a92bafd23755618d3d885bebbefcc18e7a5dba5573494f27aca19616d65",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "573d12041f35ec9b83dc56dc03de2af22646058b9866a49f592bfaa6aa0cdf7c"
+      },
+      "result._nmap.png": {
+        "bytes": 90155,
+        "sha256": "5ccff44a42257e38ce72a9e2289c430a3ca0740e4108bc3f623e6d8e79efbc43",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "0e8584e3966f2ee13d3765ff91d03a16ca438e30d89cc3ec1fcbae9b0f0d9c03"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportAsset-detail-m0-mask0-none-t4": {
+    "kind": "unchanged",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/candidate-final-export-detail/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/candidate-final-export-detail/ExportAsset-detail-m0-mask0-none-t4/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "f8626cc1dbaf62aa5d7ab8e139ab7c403f4f8e6cec4cd0b374450e7b5b610790",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14640,
+    "process_peak_rss_kib": 358132,
+    "process_user_seconds": 0.137735,
+    "process_system_seconds": 0.21900399999999998,
+    "wall_seconds": 0.41968454798916355,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "ExportAsset",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "6",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "7",
+        "type": "HeightmapToNormalMap",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result..glb": {
+        "bytes": 716052,
+        "sha256": "b02834574c89dafa9edf945299d64a0c0dbbdac87147ec5b555e8290b392f763",
+        "normalized_chunks": [
+          [
+            1313821514,
+            "72cfeefa94d616c1921a0270fa6caf5ddc44fbc6738c836f6dfc2558ea7aefc7"
+          ],
+          [
+            5130562,
+            "bebd44f99dffb35851c5196287535d934098aa26bf39b80f8fab6c2ea5482f5d"
+          ]
+        ]
+      },
+      "result..png": {
+        "bytes": 86206,
+        "sha256": "467732b59d1ccebcd263deaed1f5c79b8ff2f72d79d09f8a155787c5f5abe82f",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "f68973e018b73010153d45ab8cca4dcd40412d4b679120a3d17038bdc4d9c162"
+      },
+      "result._nmap.png": {
+        "bytes": 86239,
+        "sha256": "7c6030956d379edf671e210bb88224a91921c693cb4b2cb80e003a78bbc97379",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "d4d41ab7eba914fa78e2f5079667055e7d21a701f8c21f05824fd66fd57775e9"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportAsset-detail-m0-mask1-none-t4": {
+    "kind": "unchanged",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/candidate-final-export-detail/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/candidate-final-export-detail/ExportAsset-detail-m0-mask1-none-t4/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "446a8eb628ec697665f449cb8c74ecff531b43eccff09d343311d7d6dc243d8d",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14640,
+    "process_peak_rss_kib": 358156,
+    "process_user_seconds": 0.139059,
+    "process_system_seconds": 0.239283,
+    "wall_seconds": 0.4219604079989949,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "ExportAsset",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "6",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "7",
+        "type": "HeightmapToNormalMap",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result..glb": {
+        "bytes": 716020,
+        "sha256": "fdbd16bf433dd4ac828ffc608865744775053d4bfb30da99ddbf02c40d10140f",
+        "normalized_chunks": [
+          [
+            1313821514,
+            "7315497dfda9b7d5c6bacd4fbb4ea535e173f2d10086c49aec078910f97b8b77"
+          ],
+          [
+            5130562,
+            "1c2a1986e2b3cb51870633c5fd83e937f8fe37f31da2baaf2dcddf6739a1507c"
+          ]
+        ]
+      },
+      "result..png": {
+        "bytes": 86206,
+        "sha256": "467732b59d1ccebcd263deaed1f5c79b8ff2f72d79d09f8a155787c5f5abe82f",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "f68973e018b73010153d45ab8cca4dcd40412d4b679120a3d17038bdc4d9c162"
+      },
+      "result._nmap.png": {
+        "bytes": 86239,
+        "sha256": "7c6030956d379edf671e210bb88224a91921c693cb4b2cb80e003a78bbc97379",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "d4d41ab7eba914fa78e2f5079667055e7d21a701f8c21f05824fd66fd57775e9"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportAsset-detail-m1-mask0-x-t4": {
+    "kind": "unchanged",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/candidate-final-export-detail/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/candidate-final-export-detail/ExportAsset-detail-m1-mask0-x-t4/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "822ceb1e5b33f6f123d8fcb0a0f5dc0a6f78ad62d5f671b046b71b3cdf57f57b",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14636,
+    "process_peak_rss_kib": 357996,
+    "process_user_seconds": 0.136851,
+    "process_system_seconds": 0.225246,
+    "wall_seconds": 0.4189499220083235,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "ExportAsset",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "6",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "7",
+        "type": "HeightmapToNormalMap",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result..glb": {
+        "bytes": 716052,
+        "sha256": "0dd57b271492226a843f63a1944b32fe968281401474f72a6bc170cf62241dd5",
+        "normalized_chunks": [
+          [
+            1313821514,
+            "72cfeefa94d616c1921a0270fa6caf5ddc44fbc6738c836f6dfc2558ea7aefc7"
+          ],
+          [
+            5130562,
+            "71a0e9b466e1d7e840e91c73a8573ce35ee6b5a6ce9a33a05dee9a2684c7e0bc"
+          ]
+        ]
+      },
+      "result..png": {
+        "bytes": 86357,
+        "sha256": "9871db45b66d651180d3d3555f4467fb87dbdedb4176d1832d409d4ecfb9dba9",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "e1f01f40e23e49659da656b18ea83c4d113e9e26070006008ab12895fbb1f165"
+      },
+      "result._nmap.png": {
+        "bytes": 89272,
+        "sha256": "341a499e4b0fe5a41f309bb8604f98b9b5f2080f1546805fe16afe336cc9c5fe",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "dcfab5216e529bd46f28bd8a2f3d4cee84782902e635f86ee57ec6c2591586dc"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportAsset-detail-m1-mask1-x-t4": {
+    "kind": "unchanged",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/candidate-final-export-detail/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/candidate-final-export-detail/ExportAsset-detail-m1-mask1-x-t4/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "aab1e9a5b3fe679b8212aa4e98ced208bdd8c2bafd89a11574e427e28aaff608",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14644,
+    "process_peak_rss_kib": 358312,
+    "process_user_seconds": 0.166326,
+    "process_system_seconds": 0.21323899999999998,
+    "wall_seconds": 0.41647178899438586,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "ExportAsset",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "6",
+        "type": "GaussianPulse",
+        "occurrences": 0
+      },
+      {
+        "graph": "graph",
+        "id": "7",
+        "type": "HeightmapToNormalMap",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result..glb": {
+        "bytes": 716008,
+        "sha256": "952f892a84afd6c2d8991e8ef7a54d0623cd7558d9ede51a83ad8b645a9a8de5",
+        "normalized_chunks": [
+          [
+            1313821514,
+            "9b120d27c84b856a58b7d084cd53abc06146b06c0aadaf4d4e8954b1b709092d"
+          ],
+          [
+            5130562,
+            "a56efc3e377fcbd6bd2cba534d31783aa77f054714e3e95d61d5fa0572f2c6e6"
+          ]
+        ]
+      },
+      "result..png": {
+        "bytes": 86357,
+        "sha256": "9871db45b66d651180d3d3555f4467fb87dbdedb4176d1832d409d4ecfb9dba9",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "e1f01f40e23e49659da656b18ea83c4d113e9e26070006008ab12895fbb1f165"
+      },
+      "result._nmap.png": {
+        "bytes": 89272,
+        "sha256": "341a499e4b0fe5a41f309bb8604f98b9b5f2080f1546805fe16afe336cc9c5fe",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "dcfab5216e529bd46f28bd8a2f3d4cee84782902e635f86ee57ec6c2591586dc"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportAsset-detail-m2-mask0-y-t4": {
+    "kind": "unchanged",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/candidate-final-export-detail/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/candidate-final-export-detail/ExportAsset-detail-m2-mask0-y-t4/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "7ec25837eb078c6cf876f78277741a95086ea1b59a3c477980401f5c3f9e98fb",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14640,
+    "process_peak_rss_kib": 358236,
+    "process_user_seconds": 0.137849,
+    "process_system_seconds": 0.22453299999999998,
+    "wall_seconds": 0.4172026400046889,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "ExportAsset",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "6",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "7",
+        "type": "HeightmapToNormalMap",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result..glb": {
+        "bytes": 716052,
+        "sha256": "1eb204c733251f328e776888739519e11771841d2481d9e0305b1ba7a74d0a76",
+        "normalized_chunks": [
+          [
+            1313821514,
+            "72cfeefa94d616c1921a0270fa6caf5ddc44fbc6738c836f6dfc2558ea7aefc7"
+          ],
+          [
+            5130562,
+            "cbc8134f405aa32a124cf91de9791d4608190161cb8f41bc6535ef7ccaf96e4e"
+          ]
+        ]
+      },
+      "result..png": {
+        "bytes": 86217,
+        "sha256": "3598733324cec7157df168897aa16f96e54febe0732368375ade2c20562c0a33",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "e36ec460f3c1e7373c5eb10dcc95ff9787333de3312e00e72665a1a081f8fa1c"
+      },
+      "result._nmap.png": {
+        "bytes": 87926,
+        "sha256": "86f72eaa9fca2e11f67160d3a20ade6c01516d139d65e54e1ee533d3f14213f2",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "cdeafbe780940212ba25313ca406acb374bd5c5eba77bef942a19b3529ea3477"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportAsset-detail-m2-mask1-y-t4": {
+    "kind": "unchanged",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/candidate-final-export-detail/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/candidate-final-export-detail/ExportAsset-detail-m2-mask1-y-t4/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "e9431c7dcbeb1a1963926d2a31600939068c52116b4286195034a70b89e6009a",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14636,
+    "process_peak_rss_kib": 358296,
+    "process_user_seconds": 0.153192,
+    "process_system_seconds": 0.21365699999999999,
+    "wall_seconds": 0.41408653400139883,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "ExportAsset",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "6",
+        "type": "GaussianPulse",
+        "occurrences": 0
+      },
+      {
+        "graph": "graph",
+        "id": "7",
+        "type": "HeightmapToNormalMap",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result..glb": {
+        "bytes": 716008,
+        "sha256": "b226328651cf6be7fa6d65c0cd8d5c4e5fdc48eb119c9600603c8cb61f499ae5",
+        "normalized_chunks": [
+          [
+            1313821514,
+            "9b120d27c84b856a58b7d084cd53abc06146b06c0aadaf4d4e8954b1b709092d"
+          ],
+          [
+            5130562,
+            "ab141515fcea3d851b43b5a53fa6361c6aafbeb6e5ff455ba665f9cfb9009820"
+          ]
+        ]
+      },
+      "result..png": {
+        "bytes": 86217,
+        "sha256": "3598733324cec7157df168897aa16f96e54febe0732368375ade2c20562c0a33",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "e36ec460f3c1e7373c5eb10dcc95ff9787333de3312e00e72665a1a081f8fa1c"
+      },
+      "result._nmap.png": {
+        "bytes": 87926,
+        "sha256": "86f72eaa9fca2e11f67160d3a20ade6c01516d139d65e54e1ee533d3f14213f2",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "cdeafbe780940212ba25313ca406acb374bd5c5eba77bef942a19b3529ea3477"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportAsset-detail-m3-mask0-xy-t4": {
+    "kind": "unchanged",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/candidate-final-export-detail/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/candidate-final-export-detail/ExportAsset-detail-m3-mask0-xy-t4/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "2d455ed8b981d49df41b2c8a98005c8fa005d90760a10c5049d816d41c92ef4b",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14660,
+    "process_peak_rss_kib": 358260,
+    "process_user_seconds": 0.136565,
+    "process_system_seconds": 0.224355,
+    "wall_seconds": 0.415330203002668,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "ExportAsset",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "6",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "7",
+        "type": "HeightmapToNormalMap",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result..glb": {
+        "bytes": 716052,
+        "sha256": "c14f3433d40242675dc8f08d7303178348a794a890e198eda1a5f07fc1d7865b",
+        "normalized_chunks": [
+          [
+            1313821514,
+            "72cfeefa94d616c1921a0270fa6caf5ddc44fbc6738c836f6dfc2558ea7aefc7"
+          ],
+          [
+            5130562,
+            "7c3d345c379e6b8ec1ed0f7c42ee94011c21223a8d786bb398033249c3bde3b9"
+          ]
+        ]
+      },
+      "result..png": {
+        "bytes": 86375,
+        "sha256": "880589e7cdef2f80d73b7b40435dbbef170d6b27ef1899ecd4973a2e7e9d58d8",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "88598a89d42a62a3ea418a1791fed2d5a38cbe95bb013f5457293abe754030d1"
+      },
+      "result._nmap.png": {
+        "bytes": 90124,
+        "sha256": "ee1c8a7c68b515a8ffdc1239549ae8730554be01f6733cf62b128dc0cd47e17f",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "60d0fd6cd5c999f36ab3940f2072d109dbf2f3c652b58c4d07ae4f491a8c6dea"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportAsset-detail-m3-mask1-xy-t4": {
+    "kind": "unchanged",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/candidate-final-export-detail/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/candidate-final-export-detail/ExportAsset-detail-m3-mask1-xy-t4/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "f73e8b891c6cbac1cf7e4fa99027b35490bf6ab81936480ea210393956c74766",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14536,
+    "process_peak_rss_kib": 358096,
+    "process_user_seconds": 0.14898,
+    "process_system_seconds": 0.219696,
+    "wall_seconds": 0.41483190198778175,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "ExportAsset",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "6",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "7",
+        "type": "HeightmapToNormalMap",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result..glb": {
+        "bytes": 716020,
+        "sha256": "4fd79a560b3173037ac940203ad94614598d6ea9b8e118e68391305511091996",
+        "normalized_chunks": [
+          [
+            1313821514,
+            "7315497dfda9b7d5c6bacd4fbb4ea535e173f2d10086c49aec078910f97b8b77"
+          ],
+          [
+            5130562,
+            "ba070e8d09bd850528e1d7e378bd685467ffd0fc4045c5ff916c77c74f5dec98"
+          ]
+        ]
+      },
+      "result..png": {
+        "bytes": 86375,
+        "sha256": "880589e7cdef2f80d73b7b40435dbbef170d6b27ef1899ecd4973a2e7e9d58d8",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "88598a89d42a62a3ea418a1791fed2d5a38cbe95bb013f5457293abe754030d1"
+      },
+      "result._nmap.png": {
+        "bytes": 90124,
+        "sha256": "ee1c8a7c68b515a8ffdc1239549ae8730554be01f6733cf62b128dc0cd47e17f",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "60d0fd6cd5c999f36ab3940f2072d109dbf2f3c652b58c4d07ae4f491a8c6dea"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportAsset-detail-m4-mask0-xy-t4": {
+    "kind": "unchanged",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/candidate-final-export-detail/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/candidate-final-export-detail/ExportAsset-detail-m4-mask0-xy-t4/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "485ebe0550529e5ea35222f6b7ca1bc9bd26622c98035d1d8cfae75f08af83cb",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14636,
+    "process_peak_rss_kib": 339388,
+    "process_user_seconds": 0.144143,
+    "process_system_seconds": 0.195813,
+    "wall_seconds": 0.4870937439991394,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "ExportAsset",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "6",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "7",
+        "type": "HeightmapToNormalMap",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result..glb": {
+        "bytes": 716052,
+        "sha256": "c14f3433d40242675dc8f08d7303178348a794a890e198eda1a5f07fc1d7865b",
+        "normalized_chunks": [
+          [
+            1313821514,
+            "72cfeefa94d616c1921a0270fa6caf5ddc44fbc6738c836f6dfc2558ea7aefc7"
+          ],
+          [
+            5130562,
+            "7c3d345c379e6b8ec1ed0f7c42ee94011c21223a8d786bb398033249c3bde3b9"
+          ]
+        ]
+      },
+      "result..png": {
+        "bytes": 86375,
+        "sha256": "880589e7cdef2f80d73b7b40435dbbef170d6b27ef1899ecd4973a2e7e9d58d8",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "88598a89d42a62a3ea418a1791fed2d5a38cbe95bb013f5457293abe754030d1"
+      },
+      "result._nmap.png": {
+        "bytes": 90155,
+        "sha256": "5ccff44a42257e38ce72a9e2289c430a3ca0740e4108bc3f623e6d8e79efbc43",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "0e8584e3966f2ee13d3765ff91d03a16ca438e30d89cc3ec1fcbae9b0f0d9c03"
+      }
+    },
+    "status": "ok"
+  },
+  "ExportAsset-detail-m4-mask1-xy-t4": {
+    "kind": "unchanged",
+    "command": [
+      "/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/candidate-final-export-detail/bin/hesiod",
+      "--batch=/home/barrulus/dev/Hesiod-783/output/fixes/node-regressions/candidate-final-export-detail/ExportAsset-detail-m4-mask1-xy-t4/fixture.hsd",
+      "--shape=128,128",
+      "--tiling=4,4",
+      "--overlap=0",
+      "--force-sequential"
+    ],
+    "fixture_sha256": "26c2827c7a31354fb10355bbaa4d3e9c8ae466e38eb26f344448e24a0c3fbcc5",
+    "app_exit": 0,
+    "failure_kind": null,
+    "supervisor_rss_before_spawn_kib": 14640,
+    "process_peak_rss_kib": 339372,
+    "process_user_seconds": 0.146166,
+    "process_system_seconds": 0.187746,
+    "wall_seconds": 0.42617551899456885,
+    "validation": "fresh fixture and positive completed batch runtime for exactly the expected node set, error-free logs, effective configuration; GLB structure and PNG dimensions",
+    "compute_start_log_occurrences": [
+      {
+        "graph": "graph",
+        "id": "1",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "2",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "3",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "4",
+        "type": "ColorizeGradient",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "5",
+        "type": "ExportAsset",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "6",
+        "type": "GaussianPulse",
+        "occurrences": 1
+      },
+      {
+        "graph": "graph",
+        "id": "7",
+        "type": "HeightmapToNormalMap",
+        "occurrences": 1
+      }
+    ],
+    "compiled_setting_defaults_used": 66,
+    "known_single_tile_noop_warnings": 0,
+    "artifacts": {
+      "result..glb": {
+        "bytes": 716020,
+        "sha256": "4fd79a560b3173037ac940203ad94614598d6ea9b8e118e68391305511091996",
+        "normalized_chunks": [
+          [
+            1313821514,
+            "7315497dfda9b7d5c6bacd4fbb4ea535e173f2d10086c49aec078910f97b8b77"
+          ],
+          [
+            5130562,
+            "ba070e8d09bd850528e1d7e378bd685467ffd0fc4045c5ff916c77c74f5dec98"
+          ]
+        ]
+      },
+      "result..png": {
+        "bytes": 86375,
+        "sha256": "880589e7cdef2f80d73b7b40435dbbef170d6b27ef1899ecd4973a2e7e9d58d8",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "88598a89d42a62a3ea418a1791fed2d5a38cbe95bb013f5457293abe754030d1"
+      },
+      "result._nmap.png": {
+        "bytes": 90155,
+        "sha256": "5ccff44a42257e38ce72a9e2289c430a3ca0740e4108bc3f623e6d8e79efbc43",
+        "dimensions": [
+          128,
+          128
+        ],
+        "bitdepth": 16,
+        "pixels_sha256": "0e8584e3966f2ee13d3765ff91d03a16ca438e30d89cc3ec1fcbae9b0f0d9c03"
+      }
+    },
+    "status": "ok"
+  }
+}
