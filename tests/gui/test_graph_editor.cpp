@@ -24,7 +24,7 @@
 #include "hesiod/gui/hesiod_node_proxy.hpp"
 #include "hesiod/gui/widgets/dialogs/node_inspector_widget.hpp"
 #include "hesiod/gui/widgets/graph/graph_node_widget.hpp"
-#include "hesiod/model/graph/graph_manager.hpp"
+#include "hesiod/model/graph_manager/graph_manager.hpp"
 #include "hesiod/model/graph/graph_node.hpp"
 #include "hesiod/model/nodes/base_node.hpp"
 #include "hesiod/model/nodes/node_factory.hpp"
