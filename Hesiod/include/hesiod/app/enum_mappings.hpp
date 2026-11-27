@@ -133,10 +133,6 @@ static struct EnumMappings
       {"Triangle Sharp", hmap::ErosionProfile::EP_TRIANGLE_SHARP},
       {"Triangle Smooth", hmap::ErosionProfile::EP_TRIANGLE_SMOOTH}};
 
-  const std::map<std::string, int> flow_direction_method_map = {
-      {"D8", hmap::FlowDirectionMethod::FDM_D8},
-      {"Priority Flood", hmap::FlowDirectionMethod::FDM_PRIORITY_FLOOD}};
-
   const std::map<std::string, int> heightmap_export_format_map = {
       {"png (8 bit)", ExportFormat::PNG8BIT},
       {"png (16 bit)", ExportFormat::PNG16BIT},
