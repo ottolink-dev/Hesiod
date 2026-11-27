@@ -7,6 +7,7 @@
 #include <QPainter>
 #include <QPropertyAnimation>
 
+#include "hesiod/gui/motion/motion.hpp"
 #include "hesiod/gui/widgets/dialogs/splash_screen.hpp"
 
 namespace hesiod
@@ -37,13 +38,23 @@ SplashScreen::SplashScreen()
 
 void SplashScreen::close()
 {
-  // Fade out animation
+  // with interface animations off the splash is simply gone
+  if (!motion::enabled())
+  {
+    this->hide();
+    this->deleteLater();
+    return;
+  }
+
+  // Fade out animation: gone in a third of a second, gathering speed. A full
+  // second of linear fade kept a ghost of the splash over a window that was
+  // ready to use.
   QPropertyAnimation *anim = new QPropertyAnimation(this, "windowOpacity");
 
-  anim->setDuration(1000);
+  anim->setDuration(motion::splash_out);
   anim->setStartValue(1.f);
   anim->setEndValue(0.f);
-  anim->setEasingCurve(QEasingCurve::Linear);
+  anim->setEasingCurve(QEasingCurve::InCubic);
 
   QObject::connect(anim,
                    &QPropertyAnimation::finished,
