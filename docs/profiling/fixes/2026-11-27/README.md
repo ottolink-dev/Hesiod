@@ -3,12 +3,18 @@
 Fixes for [Hesiod #783](https://github.com/ottolink-dev/Hesiod/issues/783),
 following the [frozen baseline assessment](../../assessments/2026-11-27/README.md).
 The measured implementation addressed 21 tracked findings; two follow-ups remain.
-The changes are now being prepared for review against `dev`. The original
+The changes are published for review against `dev` in [Hesiod #942](https://github.com/ottolink-dev/Hesiod/pull/942). The original
 assessment and all evidence records below remain unchanged, including their
 historical commit IDs and issue status. See [issue/commit mapping](evidence/issue-status.json)
 and [source provenance](evidence/source-provenance.json).
 
 ## Publication port to dev
+
+Dependency PRs: [CLWrapper #11](https://github.com/ottolink-dev/CLWrapper/pull/11),
+[GNode #35](https://github.com/ottolink-dev/GNode/pull/35), and
+[HighMap #598](https://github.com/ottolink-dev/HighMap/pull/598). All target `dev`.
+Hesiod and HighMap are draft integration PRs pending the remaining validation
+and dependency review; nothing has been merged or deployed.
 
 The publication branch starts from upstream `dev` commit
 `697ad0ae03ff79aff4bd1e5b57a5d2349916fc1d`. It ports only the assessment, fixes,
@@ -20,8 +26,12 @@ are preserved; dependency publication branches supply the corresponding fixes.
 The native tests, exact output comparisons and memory measurements below were
 run on the main-based implementation identified in the evidence. They have
 **not been rerun on this dev port** and do not establish its native correctness
-or memory usage. Integration build and native validation remain pending before
-this draft is ready to merge.
+or memory usage. A compile-only check passed for all nine changed node implementations against
+the publication Hesiod/HighMap headers. It reused existing generated headers and
+unchanged dependency include paths; it did not configure/link/run the full app.
+[Exact commands and results](publication/node-compilation-summary.json) are
+recorded separately. Full application linking/runtime validation remains pending
+before this draft is ready to merge.
 
 The dev port passes 160 Python tests and 29 subtests, with ten skips: seven need
 Apple linker tools and three need a native Hesiod binary. The 34 profiling

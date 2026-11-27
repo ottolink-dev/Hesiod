@@ -1,0 +1,81 @@
+{
+  "scope": "Compile-only source/API compatibility; no application linking or runtime validation. Original configured build-generated headers and unchanged dependency include paths retained. Source and Hesiod headers from publication worktree; HighMap public headers from publication worktree. No original source/build writes.",
+  "source_head": "07029019e0072fb19e81135c828e68f6fe4b757d",
+  "highmap_head": "da516c772248085673f7eb5461f9ba613010414a",
+  "passed": 9,
+  "failed": 0,
+  "results": [
+    {
+      "source": "Hesiod/src/model/nodes/nodes_function/cloud_random_distance.cpp",
+      "exit_code": 0,
+      "started_at": "2026-11-27T14:15:34.247110+00:00",
+      "ended_at": "2026-11-27T14:15:44.687329+00:00",
+      "log": "/home/barrulus/dev/Hesiod-783-dev/output/dev-port-validation/node-compilation/cloud_random_distance.log",
+      "object": "/home/barrulus/dev/Hesiod-783-dev/output/dev-port-validation/node-compilation/cloud_random_distance.o"
+    },
+    {
+      "source": "Hesiod/src/model/nodes/nodes_function/export_asset.cpp",
+      "exit_code": 0,
+      "started_at": "2026-11-27T14:15:34.247419+00:00",
+      "ended_at": "2026-11-27T14:15:51.809217+00:00",
+      "log": "/home/barrulus/dev/Hesiod-783-dev/output/dev-port-validation/node-compilation/export_asset.log",
+      "object": "/home/barrulus/dev/Hesiod-783-dev/output/dev-port-validation/node-compilation/export_asset.o"
+    },
+    {
+      "source": "Hesiod/src/model/nodes/nodes_function/export_normal_map.cpp",
+      "exit_code": 0,
+      "started_at": "2026-11-27T14:15:44.687528+00:00",
+      "ended_at": "2026-11-27T14:15:57.635129+00:00",
+      "log": "/home/barrulus/dev/Hesiod-783-dev/output/dev-port-validation/node-compilation/export_normal_map.log",
+      "object": "/home/barrulus/dev/Hesiod-783-dev/output/dev-port-validation/node-compilation/export_normal_map.o"
+    },
+    {
+      "source": "Hesiod/src/model/nodes/nodes_function/export_tiled.cpp",
+      "exit_code": 0,
+      "started_at": "2026-11-27T14:15:51.809354+00:00",
+      "ended_at": "2026-11-27T14:16:03.351896+00:00",
+      "log": "/home/barrulus/dev/Hesiod-783-dev/output/dev-port-validation/node-compilation/export_tiled.log",
+      "object": "/home/barrulus/dev/Hesiod-783-dev/output/dev-port-validation/node-compilation/export_tiled.o"
+    },
+    {
+      "source": "Hesiod/src/model/nodes/nodes_function/heightmap_to_normal_map.cpp",
+      "exit_code": 0,
+      "started_at": "2026-11-27T14:15:57.635283+00:00",
+      "ended_at": "2026-11-27T14:16:03.463318+00:00",
+      "log": "/home/barrulus/dev/Hesiod-783-dev/output/dev-port-validation/node-compilation/heightmap_to_normal_map.log",
+      "object": "/home/barrulus/dev/Hesiod-783-dev/output/dev-port-validation/node-compilation/heightmap_to_normal_map.o"
+    },
+    {
+      "source": "Hesiod/src/model/nodes/nodes_function/quilting_expand.cpp",
+      "exit_code": 0,
+      "started_at": "2026-11-27T14:16:03.352031+00:00",
+      "ended_at": "2026-11-27T14:16:08.738406+00:00",
+      "log": "/home/barrulus/dev/Hesiod-783-dev/output/dev-port-validation/node-compilation/quilting_expand.log",
+      "object": "/home/barrulus/dev/Hesiod-783-dev/output/dev-port-validation/node-compilation/quilting_expand.o"
+    },
+    {
+      "source": "Hesiod/src/model/nodes/nodes_function/quilting_shuffle.cpp",
+      "exit_code": 0,
+      "started_at": "2026-11-27T14:16:03.463449+00:00",
+      "ended_at": "2026-11-27T14:16:08.899205+00:00",
+      "log": "/home/barrulus/dev/Hesiod-783-dev/output/dev-port-validation/node-compilation/quilting_shuffle.log",
+      "object": "/home/barrulus/dev/Hesiod-783-dev/output/dev-port-validation/node-compilation/quilting_shuffle.o"
+    },
+    {
+      "source": "Hesiod/src/model/nodes/nodes_function/texture_quilting_expand.cpp",
+      "exit_code": 0,
+      "started_at": "2026-11-27T14:16:08.738541+00:00",
+      "ended_at": "2026-11-27T14:16:15.675336+00:00",
+      "log": "/home/barrulus/dev/Hesiod-783-dev/output/dev-port-validation/node-compilation/texture_quilting_expand.log",
+      "object": "/home/barrulus/dev/Hesiod-783-dev/output/dev-port-validation/node-compilation/texture_quilting_expand.o"
+    },
+    {
+      "source": "Hesiod/src/model/nodes/nodes_function/texture_quilting_shuffle.cpp",
+      "exit_code": 0,
+      "started_at": "2026-11-27T14:16:08.899326+00:00",
+      "ended_at": "2026-11-27T14:16:15.486433+00:00",
+      "log": "/home/barrulus/dev/Hesiod-783-dev/output/dev-port-validation/node-compilation/texture_quilting_shuffle.log",
+      "object": "/home/barrulus/dev/Hesiod-783-dev/output/dev-port-validation/node-compilation/texture_quilting_shuffle.o"
+    }
+  ]
+}
