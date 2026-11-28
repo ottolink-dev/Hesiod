@@ -7,21 +7,25 @@
 #include <set>
 #include <utility>
 
+#include <QAbstractItemView>
 #include <QApplication>
 #include <QCompleter>
+#include <QKeyEvent>
 #include <QMouseEvent>
 #include <QPainter>
 #include <QPixmap>
 #include <QResizeEvent>
-#include <QScreen>
 #include <QScrollArea>
-#include <QStringListModel>
+#include <QStandardItemModel>
 #include <QTimer>
 #include <QVBoxLayout>
 
+#include "hesiod/gui/widgets/node_widgets/node_palette/category_glyph.hpp"
 #include "hesiod/gui/widgets/node_widgets/node_palette/fold_button.hpp"
 #include "hesiod/gui/widgets/node_widgets/node_palette/fold_flight.hpp"
 #include "hesiod/gui/widgets/node_widgets/node_palette/node_palette_style.hpp"
+#include "hesiod/gui/widgets/node_widgets/node_palette/palette_flyout_card.hpp"
+#include "hesiod/gui/widgets/node_widgets/node_palette/palette_tree_node.hpp"
 #include "hesiod/gui/widgets/node_widgets/node_palette/rail_scroller.hpp"
 #include "hesiod/gui/widgets/node_widgets/node_palette/search_fade_veil.hpp"
 #include "hesiod/gui/widgets/node_widgets/node_palette_sidebar.hpp"
@@ -61,55 +65,6 @@ QColor derived_accent(const QString &category)
     hash = (hash ^ static_cast<uint>(c.unicode())) * 16777619u;
 
   return QColor::fromHsl(static_cast<int>(hash % 360u), 110, 150);
-}
-
-/** @brief Force a shown popup inside @p available.
- *
- * QMenu positions itself on the screen, but a menu with more entries than the
- * display is tall is laid out in columns first, and that layout overshoots by
- * the frame width -- measured at every scale from 0.5x to 3x, the last column
- * ended up 13 to 88 logical pixels below the bottom of the screen. Sliding the
- * popup back inside fixes that; its size is left to QMenu, whose own scroll
- * arrows (`menu-scrollable`) handle a list taller than the display.
- */
-void clamp_to_screen(QMenu *menu, const QRect &available)
-{
-  // move() below produces a move event that comes straight back here; one pass
-  // is always enough, so refuse to re-enter rather than relying on the
-  // rectangle happening to be a fixed point
-  static bool clamping = false;
-  if (clamping)
-    return;
-
-  const QRect geom = menu->geometry();
-  QRect       moved = geom;
-
-  // Move only, never resize. A popup's size is decided by QMenu's own layout
-  // pass (column count, scroll arrows, the native shadow margin around it);
-  // forcing a different size from the outside leaves the widget's idea of its
-  // rectangle and the platform window disagreeing, and every mouse position is
-  // then translated through the wrong one -- the cursor highlights one entry
-  // while the click lands on another. Anything genuinely taller than the screen
-  // is handled by the menu's own scroll arrows, which is what `menu-scrollable`
-  // in the stylesheet is for.
-  if (moved.bottom() > available.bottom())
-    moved.moveBottom(available.bottom());
-  if (moved.right() > available.right())
-    moved.moveRight(available.right());
-
-  // top/left last: on a menu taller or wider than the screen these win, so the
-  // start of the list stays reachable rather than its end
-  if (moved.top() < available.top())
-    moved.moveTop(available.top());
-  if (moved.left() < available.left())
-    moved.moveLeft(available.left());
-
-  if (moved.topLeft() == geom.topLeft())
-    return;
-
-  clamping = true;
-  menu->move(moved.topLeft());
-  clamping = false;
 }
 
 /// The search field's leading mark, drawn at 3x so it stays crisp at any
@@ -227,6 +182,9 @@ NodePaletteSidebar::NodePaletteSidebar(
 
 NodePaletteSidebar::~NodePaletteSidebar()
 {
+  this->watch_application(false);
+  if (this->flyout)
+    delete this->flyout;
   if (this->flight)
     delete this->flight;
   live_sidebars().erase(this);
@@ -262,58 +220,6 @@ std::vector<std::string> NodePaletteSidebar::all_node_types() const
   return all;
 }
 
-void NodePaletteSidebar::apply_menu_style(QMenu *menu, const QColor &accent)
-{
-  const QString
-      sheet = QString("QMenu {"
-                      "  background-color: %1;"
-                      "  color: %2;"
-                      "  border: 1px solid %3;"
-                      "  border-left: 2px solid %4;"
-                      "  border-radius: %5px;"
-                      "  padding: %6px;"
-                      // Without this a category with more entries than the screen is
-                      // tall gets laid out in multiple columns, which overshoots the
-                      // screen by the frame and puts the last column off the edge. A
-                      // scrolling single column is both correct and easier to read.
-                      "  menu-scrollable: 1;"
-                      "}"
-                      "QMenu::item {"
-                      "  background: transparent;"
-                      "  height: %7px;"
-                      "  padding-left: 14px;"
-                      "  padding-right: 28px;"
-                      "  border-radius: %8px;"
-                      "}"
-                      "QMenu::item:selected {"
-                      "  background-color: %9;"
-                      "  color: %10;"
-                      "}"
-                      "QMenu::item:disabled { color: %3; }"
-                      "QMenu::separator {"
-                      "  height: 1px;"
-                      "  background: %3;"
-                      "  margin: %6px 8px;"
-                      "}"
-                      "QMenu::icon { padding-left: 10px; }")
-                  .arg(this->style.flyout_bg.name())
-                  .arg(this->style.text.name())
-                  .arg(this->style.flyout_border.name())
-                  .arg(accent.name())
-                  .arg(std::max(0, this->style.corner_radius))
-                  .arg(std::max(0, this->style.flyout_padding))
-                  .arg(std::max(12, this->style.flyout_row_height))
-                  .arg(std::max(0, this->style.corner_radius / 2))
-                  .arg(this->style.surface_selected.name())
-                  .arg(this->style.text_active.name());
-
-  menu->setStyleSheet(sheet);
-
-  for (QAction *action : menu->actions())
-    if (action->menu())
-      this->apply_menu_style(action->menu(), accent);
-}
-
 void NodePaletteSidebar::build_rail(const std::map<std::string, std::string> &inventory)
 {
   // node type -> "Cat/Sub/Sub" becomes a per-category tree; the rail is the top
@@ -344,35 +250,30 @@ void NodePaletteSidebar::build_rail(const std::map<std::string, std::string> &in
   rail_layout->setContentsMargins(0, 0, 0, 0);
   rail_layout->setSpacing(this->style.button_spacing);
 
-  // recursive menu build, so a category three levels deep is not a special case
-  std::function<void(QMenu *, const TreeNode &, const QColor &)> fill =
-      [&](QMenu *menu, const TreeNode &node, const QColor &accent)
+  // what a category's card lists, built recursively so a category three
+  // levels deep is not a special case
+  std::function<std::shared_ptr<PaletteTreeNode>(const QString &,
+                                                 const QString &,
+                                                 const QString &,
+                                                 const TreeNode &,
+                                                 const QColor &)>
+      build_tree = [&](const QString  &title,
+                       const QString  &path,
+                       const QString  &category,
+                       const TreeNode &node,
+                       const QColor   &accent)
   {
-    std::vector<QString> leaves = node.leaves;
-    std::sort(leaves.begin(), leaves.end());
-
-    for (const QString &leaf : leaves)
-    {
-      QAction *action = menu->addAction(leaf);
-      action->setData(leaf);
-
-      // connected per action rather than through QMenu::triggered: that signal
-      // only reaches the root menu along the popup chain, so a node picked from
-      // a submenu would depend on how the menu happened to be opened
-      this->connect(action,
-                    &QAction::triggered,
-                    this,
-                    [this, leaf]() { this->emit_for_type(leaf); });
-    }
-
-    if (!leaves.empty() && !node.children.empty())
-      menu->addSeparator();
-
+    auto out = std::make_shared<PaletteTreeNode>();
+    out->title = title;
+    out->path = path;
+    out->category = category;
+    out->accent = accent;
+    out->leaves = node.leaves;
+    std::sort(out->leaves.begin(), out->leaves.end());
     for (const auto &[name, child] : node.children)
-    {
-      QMenu *sub = menu->addMenu(name.toUpper());
-      fill(sub, child, accent);
-    }
+      out->children.push_back(
+          build_tree(name, path + "/" + name, category, child, accent));
+    return out;
   };
 
   for (const auto &[category, tree] : roots)
@@ -381,21 +282,6 @@ void NodePaletteSidebar::build_rail(const std::map<std::string, std::string> &in
 
     auto *button = new CategoryRailButton(category, accent, this->style, this->rail);
     rail_layout->addWidget(button);
-
-    auto *menu = new QMenu(category, this);
-    fill(menu, tree, accent);
-    this->apply_menu_style(menu, accent);
-
-    // filter the whole tree, not just the root: submenus need the show-time
-    // screen clamp, and mouse moves over them still have to switch categories
-    std::function<void(QMenu *)> watch = [&](QMenu *m)
-    {
-      m->installEventFilter(this);
-      for (QAction *action : m->actions())
-        if (action->menu())
-          watch(action->menu());
-    };
-    watch(menu);
 
     // collect every leaf under this category, for the tests and for the search
     std::vector<std::string>              types;
@@ -412,17 +298,8 @@ void NodePaletteSidebar::build_rail(const std::map<std::string, std::string> &in
     const int index = static_cast<int>(this->buttons.size());
 
     this->buttons.push_back(button);
-    this->menus.push_back(menu);
+    this->trees.push_back(build_tree(category, category, category, tree, accent));
     this->node_types.push_back(std::move(types));
-
-    this->connect(menu,
-                  &QMenu::aboutToHide,
-                  this,
-                  [this, index]()
-                  {
-                    if (this->open_index == index)
-                      this->close_flyout();
-                  });
 
     this->connect(button,
                   &QAbstractButton::clicked,
@@ -491,8 +368,10 @@ void NodePaletteSidebar::close_flyout()
   const int index = this->open_index;
   this->open_index = -1;
 
-  if (QMenu *menu = this->menu_at(index))
-    menu->close();
+  this->watch_application(false);
+
+  if (this->flyout)
+    this->flyout->dismiss();
 
   if (CategoryRailButton *button = this->button_at(index))
     button->set_open(false);
@@ -526,39 +405,49 @@ bool NodePaletteSidebar::eventFilter(QObject *watched, QEvent *event)
       (event->type() == QEvent::Resize || event->type() == QEvent::Show))
     this->sync_overlay_bounds();
 
-  // Submenus are popped up by Qt, not by us, so this is the only place a deep
-  // node list can be pulled back onto the screen. Move and Resize are watched
-  // as well as Show because Qt keeps adjusting a scrollable menu after it has
-  // been shown, and the last word has to be the screen's.
-  if (event->type() == QEvent::Show || event->type() == QEvent::Move ||
-      event->type() == QEvent::Resize)
+  if (this->open_index < 0)
+    return QWidget::eventFilter(watched, event);
+
+  // the card never takes the focus, so the application is watched while it is
+  // open: a click elsewhere, Escape or the window going inactive closes it
+  switch (event->type())
   {
-    if (auto *menu = qobject_cast<QMenu *>(watched))
-      if (menu->isVisible())
-        if (const QScreen *screen = menu->screen())
-          clamp_to_screen(menu, screen->availableGeometry());
+  case QEvent::MouseButtonPress:
+  case QEvent::MouseButtonDblClick:
+  {
+    const QPoint global = static_cast<QMouseEvent *>(event)->globalPosition().toPoint();
+    const bool   on_rail = this->isVisible() &&
+                         this->rect().contains(this->mapFromGlobal(global));
+    const bool on_card = this->flyout && this->flyout->contains_global(global);
+    if (!on_rail && !on_card)
+      this->close_flyout();
+    break;
   }
 
-  if (event->type() == QEvent::MouseMove && this->open_index >= 0 &&
-      qobject_cast<QMenu *>(watched))
+  case QEvent::KeyPress:
   {
-    auto        *move = static_cast<QMouseEvent *>(event);
-    const QPoint global = move->globalPosition().toPoint();
-
-    for (int i = 0; i < static_cast<int>(this->buttons.size()); ++i)
+    const int key = static_cast<QKeyEvent *>(event)->key();
+    if (key == Qt::Key_Escape)
     {
-      CategoryRailButton *button = this->buttons.at(i);
-      if (i == this->open_index || !button->isVisible())
-        continue;
-
-      if (button->rect().contains(button->mapFromGlobal(global)))
-      {
-        // reopening from inside the menu's own event delivery re-enters
-        // QMenu::popup; defer it by one turn of the loop
-        QTimer::singleShot(0, this, [this, i]() { this->open_category(i); });
-        break;
-      }
+      this->close_flyout();
+      return true;
     }
+    if (this->flyout && this->flyout->key(key))
+      return true;
+    break;
+  }
+
+  case QEvent::ApplicationDeactivate:
+    this->close_flyout();
+    break;
+
+  case QEvent::WindowDeactivate:
+    if (watched == this->window())
+      this->close_flyout();
+    break;
+
+  default:
+    break;
   }
 
   return QWidget::eventFilter(watched, event);
@@ -762,12 +651,7 @@ void NodePaletteSidebar::layout_header()
   }
 }
 
-QMenu *NodePaletteSidebar::menu_at(int index) const
-{
-  if (index < 0 || index >= static_cast<int>(this->menus.size()))
-    return nullptr;
-  return this->menus.at(index);
-}
+PaletteFlyoutCard *NodePaletteSidebar::flyout_card() const { return this->flyout.data(); }
 
 std::vector<std::string> NodePaletteSidebar::node_types_at(int index) const
 {
@@ -779,40 +663,31 @@ std::vector<std::string> NodePaletteSidebar::node_types_at(int index) const
 void NodePaletteSidebar::open_category(int index)
 {
   CategoryRailButton *button = this->button_at(index);
-  QMenu              *menu = this->menu_at(index);
-
-  if (!button || !menu)
+  if (!button || index < 0 || index >= static_cast<int>(this->trees.size()))
     return;
 
+  // from one category to the next the open card moves, it does not close
   if (this->open_index >= 0 && this->open_index != index)
-    this->close_flyout();
+    if (CategoryRailButton *previous = this->button_at(this->open_index))
+      previous->set_open(false);
 
   this->open_index = index;
   button->set_open(true);
 
-  // flush against the card's right edge: a gap here is the classic hover dead
-  // zone, where the pointer leaves the rail before it reaches the flyout
-  QPoint pos = this->mapToGlobal(
-      QPoint(this->width(), button->mapTo(this, QPoint(0, 0)).y()));
+  if (!this->flyout)
+    this->flyout = new PaletteFlyoutCard(
+        this->style,
+        [this](const QString &node_type) { this->emit_for_type(node_type); },
+        this->window());
 
-  const QScreen *screen = button->screen();
-  QRect          available;
+  this->watch_application(true);
 
-  if (screen)
-  {
-    available = screen->availableGeometry();
-
-    // nudge upwards up front, so the common case does not flip the whole menu
-    // over the rail
-    const int height = menu->sizeHint().height();
-    if (pos.y() + height > available.bottom())
-      pos.setY(std::max(available.top(), available.bottom() - height));
-  }
-
-  menu->popup(pos);
-
-  if (!available.isNull())
-    clamp_to_screen(menu, available);
+  // beside the card's right edge, level with the row
+  const int    card_right = static_cast<int>(std::lround(this->card_rect().right()));
+  const QPoint anchor = this->mapToGlobal(
+      QPoint(card_right + np::flyout_gap,
+             button->mapTo(this, QPoint(0, button->height() / 2)).y()));
+  this->flyout->present(this->trees.at(size_t(index)), anchor);
 }
 
 int NodePaletteSidebar::open_category_index() const { return this->open_index; }
@@ -843,6 +718,44 @@ void NodePaletteSidebar::paintEvent(QPaintEvent *)
   painter.setPen(QPen(this->style.seam, 1));
   painter.setBrush(this->style.rail_bg);
   painter.drawRoundedRect(card, radius, radius);
+}
+
+// The glyphs of the search results are pictures in the list's model, so they
+// are drawn again whenever the colors change.
+void NodePaletteSidebar::refresh_search_icons()
+{
+  if (!this->search_model)
+    return;
+
+  const qreal dpr = this->devicePixelRatioF();
+  const int   side = np::search_result_icon;
+
+  for (int row = 0; row < this->search_model->rowCount(); ++row)
+  {
+    QStandardItem *item = this->search_model->item(row);
+    if (!item)
+      continue;
+
+    const QString category = item->data(np::search_category_role).toString();
+    const QColor  ink = mix_colors(
+        this->style.text,
+        this->accent_for(category),
+        std::clamp(this->style.accent_strength * np::flyout_rest_ink, 0.0, 1.0));
+
+    QPixmap picture(QSize(side, side) * dpr);
+    picture.setDevicePixelRatio(dpr);
+    picture.fill(Qt::transparent);
+    {
+      QPainter painter(&picture);
+      painter.setRenderHint(QPainter::Antialiasing, true);
+      draw_node_glyph(painter,
+                      QRectF(0, 0, side, side),
+                      ink,
+                      item->data(np::search_type_role).toString(),
+                      category);
+    }
+    item->setIcon(QIcon(picture));
+  }
 }
 
 void NodePaletteSidebar::resizeEvent(QResizeEvent *event)
@@ -948,14 +861,12 @@ void NodePaletteSidebar::set_style(const NodePalettePalette &new_style)
   if (this->rail && this->rail->layout())
     this->rail->layout()->setSpacing(this->style.button_spacing);
 
-  for (int i = 0; i < static_cast<int>(this->buttons.size()); ++i)
-  {
-    CategoryRailButton *button = this->buttons.at(i);
+  for (CategoryRailButton *button : this->buttons)
     button->set_style(this->style);
 
-    if (QMenu *menu = this->menu_at(i))
-      this->apply_menu_style(menu, this->accent_for(button->text()));
-  }
+  if (this->flyout)
+    this->flyout->set_style(this->style);
+  this->refresh_search_icons();
 
   if (this->scroll)
   {
@@ -1058,7 +969,9 @@ void NodePaletteSidebar::set_visible_animated(bool visible, bool animate)
 
 void NodePaletteSidebar::setup_search(const std::map<std::string, std::string> &inventory)
 {
-  QStringList entries;
+  // a model rather than a plain list of strings, so every result carries its
+  // node's glyph (see refresh_search_icons)
+  this->search_model = new QStandardItemModel(this);
 
   for (const auto &[node_type, path] : inventory)
   {
@@ -1068,15 +981,23 @@ void NodePaletteSidebar::setup_search(const std::map<std::string, std::string> &
                                 .arg(QString::fromStdString(node_type))
                                 .arg(QString::fromStdString(path));
 
-    entries << display;
+    auto *item = new QStandardItem(display);
+    item->setData(QString::fromStdString(node_type), np::search_type_role);
+    item->setData(split_path(QString::fromStdString(path)).value(0),
+                  np::search_category_role);
+    this->search_model->appendRow(item);
     this->search_index[display] = QString::fromStdString(node_type);
   }
 
-  auto *completer = new QCompleter(entries, this);
+  auto *completer = new QCompleter(this->search_model, this);
   completer->setCaseSensitivity(Qt::CaseInsensitive);
   completer->setFilterMode(Qt::MatchContains);
   completer->setCompletionMode(QCompleter::PopupCompletion);
-  completer->setMaxVisibleItems(14);
+  completer->setMaxVisibleItems(np::search_max_rows);
+  // wide enough for a name and its category: at the width of the field, with
+  // a glyph ahead of each one, every result was cut off after a few letters
+  if (QAbstractItemView *popup = completer->popup())
+    popup->setMinimumWidth(np::search_popup_min_width);
 
   this->search->setCompleter(completer);
 
@@ -1131,6 +1052,25 @@ void NodePaletteSidebar::sync_overlay_bounds()
   this->setGeometry(x, 0, w, h);
   this->layout_header();
   Q_EMIT this->footprint_changed(this->footprint_right());
+}
+
+const PaletteTreeNode *NodePaletteSidebar::tree_at(int index) const
+{
+  if (index < 0 || index >= static_cast<int>(this->trees.size()))
+    return nullptr;
+  return this->trees.at(size_t(index)).get();
+}
+
+void NodePaletteSidebar::watch_application(bool state)
+{
+  if (state == this->watching_application || !qApp)
+    return;
+
+  if (state)
+    qApp->installEventFilter(this);
+  else
+    qApp->removeEventFilter(this);
+  this->watching_application = state;
 }
 
 void NodePaletteSidebar::apply_reveal(double amount)
