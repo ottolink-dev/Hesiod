@@ -5,76 +5,26 @@
 #include <string>
 #include <vector>
 
-#include <QAbstractButton>
+#include <QAction>
 #include <QColor>
 #include <QLineEdit>
 #include <QMenu>
 #include <QPointer>
-#include <QVariantAnimation>
+#include <QRectF>
+#include <QScrollArea>
 #include <QWidget>
 
+#include "hesiod/gui/motion/motion.hpp"
 #include "hesiod/gui/theme/node_palette_palette.hpp"
+#include "hesiod/gui/widgets/node_widgets/node_palette/category_rail_button.hpp"
 
 namespace hesiod
 {
 
-// =====================================
-// CategoryRailButton
-// =====================================
-
-/** @brief One category in the vertical rail: glyph, label, hover/open state.
- *
- * Custom-painted rather than a styled QPushButton because the resting/hover
- * cross-fade has to be interruptible and has to settle *immediately* when
- * animations are switched off, which a stylesheet :hover cannot express.
- */
-class CategoryRailButton : public QAbstractButton
-{
-  Q_OBJECT
-
-public:
-  CategoryRailButton(const QString            &category,
-                     const QColor             &accent,
-                     const NodePalettePalette &style,
-                     QWidget                  *parent = nullptr);
-
-  void set_style(const NodePalettePalette &style);
-
-  /// True while this category's flyout is open; drives the selected surface.
-  void set_open(bool state);
-  bool is_open() const;
-
-  /// Current surface colour, i.e. where the cross-fade actually is.
-  QColor current_surface() const;
-
-  QSize sizeHint() const override;
-
-signals:
-  /// Pointer entered the button. The rail uses this to switch open flyouts.
-  void hovered();
-
-protected:
-  bool event(QEvent *event) override;
-  void enterEvent(QEnterEvent *event) override;
-  void leaveEvent(QEvent *event) override;
-  void paintEvent(QPaintEvent *event) override;
-
-private:
-  QColor target_surface() const;
-  void   retarget_surface();
-
-  QString            category;
-  QColor             accent;
-  NodePalettePalette style;
-  bool               open = false;
-  bool               hovering = false;
-  QColor             surface;
-  QVariantAnimation  surface_animation;
-};
-
-// =====================================
-// NodePaletteSidebar
-// =====================================
+class FoldButton;
+class FoldFlight;
+class RailScroller;
+class SearchFadeVeil;
 
 /** @brief Category rail with hierarchical flyouts, as an alternative to the
  *  dense node library tree.
@@ -89,6 +39,10 @@ private:
  * screen-bounds clamping, scrolling when a category is taller than the display,
  * Escape/arrow navigation and Qt's sloppy-submenu tracking (no diagonal dead
  * zone) without reimplementing any of it.
+ *
+ * In the graph editor it is a card floating over the graph (overlay mode): it
+ * folds to its glyphs and back, slides in and out with View > Node Library,
+ * and the graph's toolbar keeps to its right edge (footprint_changed).
  */
 class NodePaletteSidebar : public QWidget
 {
@@ -127,16 +81,49 @@ public:
   void close_flyout();
   int  open_category_index() const;
 
-protected:
-  /// Watches the open flyout so moving the pointer back onto the rail switches
-  /// categories: while a QMenu holds the mouse grab the rail buttons never see
-  /// an enter event of their own.
-  bool eventFilter(QObject *watched, QEvent *event) override;
+  // --- Folding and overlay presentation
+  /// Folded, the rail shows the category glyphs alone and takes a fraction of
+  /// the width; the labels come back on unfolding. The flyouts are the same.
+  void set_compact(bool state, bool animate = true);
+  bool is_compact() const;
+
+  /// Float the card over its parent (the graph canvas) instead of taking a
+  /// place in a layout, so folding or hiding it never resizes the graph view.
+  void set_overlay_mode(bool enabled);
+  void sync_overlay_bounds();
+  /// The right edge of the card as shown now, in the parent's coordinates.
+  int footprint_right() const;
+
+  /// A widget that keeps to the sidebar's right edge (the graph's toolbar). It
+  /// travels with the fold as part of the same moving picture.
+  void set_companion(QWidget *widget);
+
+  /// Slide the card in or out (View > Node Library).
+  void set_visible_animated(bool visible, bool animate = true);
+
+  /// Fold or unfold every sidebar alive in this process (one per graph tab).
+  static void set_all_compact(bool state);
 
 signals:
+  /// The rail was folded or unfolded, by its button or by set_compact().
+  void compact_changed(bool state);
+
+  /// The card's right edge moved (fold, unfold, slide in or out), so a docked
+  /// toolbar can keep beside it.
+  void footprint_changed(int right_px);
+
   void node_type_selected(const std::string &node_type);
   void node_type_selected_ctrl(const std::string &node_type);
   void node_type_selected_shift(const std::string &node_type);
+
+protected:
+  /// Watches the open flyout so moving the pointer back onto the rail switches
+  /// categories: while a QMenu holds the mouse grab the rail buttons never see
+  /// an enter event of their own. In overlay mode it also follows the parent's
+  /// size.
+  bool eventFilter(QObject *watched, QEvent *event) override;
+  void paintEvent(QPaintEvent *event) override;
+  void resizeEvent(QResizeEvent *event) override;
 
 private:
   void   build_rail(const std::map<std::string, std::string> &inventory);
@@ -144,12 +131,44 @@ private:
   void   emit_for_type(const QString &node_type);
   void   apply_menu_style(QMenu *menu, const QColor &accent);
   QColor accent_for(const QString &category) const;
+  int    header_height() const;
+  int    expanded_width() const;
+  int    compact_width() const;
+  int    ideal_overlay_height() const;
+  void   layout_header();
+  void   apply_reveal(double amount);
+  void   apply_visibility(double amount);
+  QRectF card_rect() const;
+  bool   fly_fold(double target);
+  void   land_fold();
 
   std::map<std::string, QColor> category_colors;
   NodePalettePalette            style;
 
-  QWidget   *rail = nullptr;
-  QLineEdit *search = nullptr;
+  QWidget        *header_bar = nullptr;
+  QWidget        *search_clip = nullptr;
+  SearchFadeVeil *search_veil = nullptr;
+  QWidget        *rail = nullptr;
+  QScrollArea    *scroll = nullptr;
+  RailScroller   *scroller = nullptr;
+  QLineEdit      *search = nullptr;
+  QAction        *search_icon = nullptr;
+  FoldButton     *fold_button = nullptr;
+
+  bool   compact = false;
+  bool   overlay_mode = false;
+  bool   target_visible = true;
+  double reveal = 1.0;     // 0 folded .. 1 unfolded
+  double visibility = 1.0; // 0 slid out .. 1 shown
+  Anim   reveal_anim{1.0};
+  Anim   visibility_anim{1.0};
+
+  // the fold as one moving picture, see fly_fold()
+  QPointer<QWidget>    companion;
+  QPointer<FoldFlight> flight;
+  bool                 content_only = false; // while a picture of the content is taken
+  bool                 flying = false; // the widgets wait, hidden, under the picture
+  bool                 search_wants_focus = false;
 
   std::vector<CategoryRailButton *>     buttons;
   std::vector<QPointer<QMenu>>          menus;

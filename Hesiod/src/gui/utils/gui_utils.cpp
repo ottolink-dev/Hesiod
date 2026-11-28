@@ -17,7 +17,9 @@
 #include "hesiod/app/hesiod_application.hpp"
 #include "hesiod/gui/motion/motion.hpp"
 #include "hesiod/gui/theme/oklch.hpp"
+#include "hesiod/gui/widgets/controls/control_tones.hpp"
 #include "hesiod/gui/widgets/node_widgets/node_palette_sidebar.hpp"
+#include "hesiod/gui/widgets/rail/rail_style.hpp"
 #include "hesiod/gui/widgets/utils/gui_utils.hpp"
 #include "hesiod/logger.hpp"
 #include "hesiod/model/utils.hpp"
@@ -90,6 +92,28 @@ NodePalettePalette current_node_palette_palette()
 {
   NodePalettePalette style = HSD_CTX.app_settings.node_palette;
   style.animations = HSD_CTX.app_settings.interface.enable_ui_animations;
+
+  // The library floats in the graph editor like the toolbar beside it, so it
+  // takes the toolbar's surface, outline and plates: its rows are that surface
+  // at rest and lift under the pointer as a tool does, the search is a well,
+  // a flyout is a popup.
+  const auto        &colors = HSD_CTX.app_settings.colors;
+  const ControlTones tones = control_tones();
+  const QColor       card = rail::surface_color();
+  style.canvas_bg = colors.bg_primary;
+  style.rail_bg = card;
+  style.surface = card;
+  style.surface_hover = mix_colors(card, colors.text_primary, rail::hover_plate_tone);
+  style.surface_selected = mix_colors(card,
+                                      colors.text_primary,
+                                      rail::hover_plate_tone + rail::held_plate_tone);
+  style.seam = rail::border_color();
+  style.field_bg = tones.field;
+  style.focus = colors.accent;
+  style.flyout_bg = popup_color();
+  style.flyout_border = seam_color();
+  style.text = colors.text_secondary;
+  style.text_active = colors.text_primary;
   return style;
 }
 

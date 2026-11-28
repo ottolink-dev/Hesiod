@@ -4,6 +4,8 @@
 #include <algorithm>
 
 #include <QGridLayout>
+#include <QHBoxLayout>
+#include <QPointer>
 #include <QSplitter>
 #include <QTimer>
 #include <QToolButton>
@@ -20,6 +22,7 @@
 #include "hesiod/gui/widgets/node_widgets/node_library_widget.hpp"
 #include "hesiod/gui/widgets/node_widgets/node_palette_sidebar.hpp"
 #include "hesiod/gui/widgets/node_widgets/node_settings_widget.hpp"
+#include "hesiod/gui/widgets/rail/tool_rail.hpp"
 #include "hesiod/gui/widgets/utils/gui_utils.hpp"
 #include "hesiod/gui/widgets/viewers/viewer_3d.hpp"
 #include "hesiod/logger.hpp"
@@ -126,13 +129,9 @@ void GraphWorkspaceWidget::set_node_library_visible(bool new_state)
   if (this->node_library_widget)
     this->node_library_widget->setVisible(new_state);
 
+  // slides in and out over the graph (closing its flyout on the way out)
   if (this->node_palette_sidebar)
-  {
-    // a hidden rail must not leave its flyout floating over the graph
-    if (!new_state)
-      this->node_palette_sidebar->close_flyout();
-    this->node_palette_sidebar->setVisible(new_state);
-  }
+    this->node_palette_sidebar->set_visible_animated(new_state, this->isVisible());
 
   if (this->library_gap)
     this->library_gap->setVisible(new_state);
@@ -179,8 +178,32 @@ void GraphWorkspaceWidget::setup_layout()
   layout->setSpacing(0);
   this->setLayout(layout);
 
-  // collapsible left pan for the node library: a thin full-height arrow
-  // strip (column 0) toggles the library widget (column 1)
+  // The category rail (NodePaletteSidebar) is part of the graph editor: a card
+  // floating over the graph, set up with the graph below. The library tree is
+  // a pane of its own, with a thin full-height arrow strip (column 0) that
+  // toggles it (column 1).
+  const bool rail_library = HSD_CTX.app_settings.interface.enable_node_palette_sidebar;
+  if (rail_library)
+  {
+    this->node_palette_sidebar = new NodePaletteSidebar(
+        get_node_inventory(),
+        HSD_CTX.node_graph_palette.category_color_map,
+        current_node_palette_palette());
+    this->node_palette_sidebar->set_compact(
+        HSD_CTX.app_settings.node_editor.node_library_compact,
+        false);
+
+    // folding one graph's rail folds them all, and is remembered
+    this->connect(this->node_palette_sidebar,
+                  &NodePaletteSidebar::compact_changed,
+                  this,
+                  [](bool state)
+                  {
+                    HSD_CTX.app_settings.node_editor.node_library_compact = state;
+                    NodePaletteSidebar::set_all_compact(state);
+                  });
+  }
+  else
   {
     // no strip in headless CLI modes (e.g. --snapshot): it would eat 16px of
     // frame width in the rendered doc screenshots, which disable the library
@@ -197,22 +220,8 @@ void GraphWorkspaceWidget::setup_layout()
       layout->addWidget(this->node_library_toggle_button, 0, 0, 2, 1);
     }
 
-    QWidget *library = nullptr;
-    if (HSD_CTX.app_settings.interface.enable_node_palette_sidebar)
-    {
-      this->node_palette_sidebar = new NodePaletteSidebar(
-          get_node_inventory(),
-          HSD_CTX.node_graph_palette.category_color_map,
-          current_node_palette_palette());
-      library = this->node_palette_sidebar;
-    }
-    else
-    {
-      this->node_library_widget = new NodeLibraryWidget();
-      library = this->node_library_widget;
-    }
-
-    layout->addWidget(wrap(library), 0, 1, 2, 1);
+    this->node_library_widget = new NodeLibraryWidget();
+    layout->addWidget(wrap(this->node_library_widget), 0, 1, 2, 1);
 
     // gap between the library card and the graph column, shown together with
     // the library (see set_node_library_visible)
@@ -250,7 +259,45 @@ void GraphWorkspaceWidget::setup_layout()
   // the graph fills its card, with the project's graphs as tabs on its left
   // edge (GraphTabsWidget keeps every workspace's strip in step)
   this->tab_strip = new GraphTabStrip(Qt::Vertical);
-  QWidget *graph_card = wrap(this->graph_node_widget);
+  // The rail floats over the graph rather than beside it, so folding,
+  // unfolding or hiding it never resizes the graph view under the nodes; the
+  // graph's toolbar keeps to its right edge.
+  QWidget *graph_pane = this->graph_node_widget;
+  if (this->node_palette_sidebar)
+  {
+    graph_pane = new QWidget();
+    graph_pane->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    auto *pane_layout = new QHBoxLayout(graph_pane);
+    pane_layout->setContentsMargins(0, 0, 0, 0);
+    pane_layout->setSpacing(0);
+    pane_layout->addWidget(this->graph_node_widget, 1);
+
+    this->node_palette_sidebar->setParent(graph_pane);
+    this->node_palette_sidebar->set_overlay_mode(true);
+    this->node_palette_sidebar->raise();
+
+    QPointer<rail::ToolRail> toolbar = this->graph_node_widget
+                                           ->findChild<rail::ToolRail *>();
+    if (toolbar)
+    {
+      this->connect(this->node_palette_sidebar,
+                    &NodePaletteSidebar::footprint_changed,
+                    toolbar,
+                    [toolbar](int right_px)
+                    {
+                      if (toolbar)
+                        toolbar->set_left_inset(right_px);
+                    });
+      toolbar->set_left_inset(this->node_palette_sidebar->footprint_right());
+      this->node_palette_sidebar->set_companion(toolbar);
+    }
+
+    // after parenting: showing a parentless pane would open it as a window
+    this->set_node_library_visible(
+        HSD_CTX.app_settings.node_editor.show_node_library_pan);
+  }
+
+  QWidget *graph_card = wrap(graph_pane);
   auto    *tabbed_card = new TabbedCard(graph_card, this->tab_strip);
   v_splitter->addWidget(tabbed_card);
 

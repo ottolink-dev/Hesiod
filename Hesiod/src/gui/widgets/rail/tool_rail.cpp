@@ -190,6 +190,16 @@ void ToolRail::json_from(const nlohmann::json &json)
   this->place();
 }
 
+void ToolRail::set_left_inset(qreal px)
+{
+  const qreal inset = std::max<qreal>(0.0, px);
+  if (std::abs(this->left_inset - inset) < inset_step)
+    return;
+
+  this->left_inset = inset;
+  this->place();
+}
+
 void ToolRail::place()
 {
   if (this->dragging || this->flying)
@@ -539,7 +549,12 @@ void ToolRail::paintEvent(QPaintEvent *)
 
 QRectF ToolRail::viewport_rect() const
 {
-  return this->parentWidget() ? QRectF(this->parentWidget()->rect()) : QRectF();
+  if (!this->parentWidget())
+    return QRectF();
+
+  QRectF r(this->parentWidget()->rect());
+  r.setLeft(r.left() + this->left_inset);
+  return r;
 }
 
 qreal ToolRail::length() const
