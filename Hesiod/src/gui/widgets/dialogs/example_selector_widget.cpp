@@ -2,87 +2,48 @@
  * Public License. The full license is in the file LICENSE, distributed with
  * this software. */
 #include <algorithm>
-#include <functional>
+#include <utility>
 
-#include <QCheckBox>
 #include <QDateTime>
 #include <QDir>
 #include <QFileDialog>
 #include <QFileInfo>
-#include <QFontDatabase>
-#include <QFrame>
-#include <QGridLayout>
 #include <QGuiApplication>
 #include <QHBoxLayout>
-#include <QIcon>
 #include <QKeyEvent>
 #include <QLabel>
-#include <QLineEdit>
 #include <QMouseEvent>
 #include <QPainter>
 #include <QPainterPath>
-#include <QPixmap>
-#include <QPushButton>
 #include <QResizeEvent>
 #include <QScreen>
-#include <QScrollArea>
-#include <QScrollBar>
 #include <QSet>
-#include <QStackedWidget>
+#include <QShortcut>
+#include <QShowEvent>
 #include <QTimer>
 #include <QVBoxLayout>
-#include <QVariantAnimation>
-#include <QWheelEvent>
 
 #include "hesiod/app/hesiod_application.hpp"
-#include "hesiod/gui/theme/style_sheet.hpp"
+#include "hesiod/gui/widgets/controls/control_tones.hpp"
+#include "hesiod/gui/widgets/controls/toggle_switch.hpp"
 #include "hesiod/gui/widgets/dialogs/example_selector_dialog.hpp"
-#include "hesiod/gui/widgets/node_widgets/properties_panel_design.hpp"
+#include "hesiod/gui/widgets/dialogs/start_screen/example_tile.hpp"
+#include "hesiod/gui/widgets/dialogs/start_screen/glide_scroll_area.hpp"
+#include "hesiod/gui/widgets/dialogs/start_screen/recent_row.hpp"
+#include "hesiod/gui/widgets/dialogs/start_screen/start_action.hpp"
+#include "hesiod/gui/widgets/dialogs/start_screen/start_screen_style.hpp"
 #include "hesiod/gui/widgets/shell/window_chrome.hpp"
+#include "hesiod/gui/widgets/utils/gui_utils.hpp"
 #include "hesiod/logger.hpp"
 #include "meta_qt/ui/theme.hpp"
 
 namespace hesiod
 {
 
+namespace ss = start_screen;
+
 namespace
 {
-
-QColor blend_color(const QColor &from, const QColor &to, qreal amount)
-{
-  amount = std::clamp(amount, 0.0, 1.0);
-  return QColor(qRound(from.red() + (to.red() - from.red()) * amount),
-                qRound(from.green() + (to.green() - from.green()) * amount),
-                qRound(from.blue() + (to.blue() - from.blue()) * amount),
-                qRound(from.alpha() + (to.alpha() - from.alpha()) * amount));
-}
-
-meta::qt::Theme selector_theme()
-{
-  const auto &design = properties_panel_design();
-  return design.has_own_chrome ? *design.theme
-                               : meta::qt::Theme::from_palette(QApplication::palette());
-}
-
-QIcon search_icon()
-{
-  // Render above display resolution; QIcon chooses the correct device scale.
-  QPixmap pixmap(64, 64);
-  pixmap.fill(Qt::transparent);
-  pixmap.setDevicePixelRatio(4);
-  QPainter painter(&pixmap);
-  painter.setRenderHint(QPainter::Antialiasing);
-  // centred in the 16px box, drawn fine and dimmed so it reads as a hint
-  // rather than competing with the placeholder text
-  QColor ink = selector_theme().ink_secondary;
-  ink.setAlphaF(0.8);
-  QPen pen(ink, 1.25);
-  pen.setCapStyle(Qt::RoundCap);
-  painter.setPen(pen);
-  painter.drawEllipse(QRectF(3.0, 3.0, 7.0, 7.0));
-  painter.drawLine(QPointF(9.1, 9.1), QPointF(12.5, 12.5));
-  return QIcon(pixmap);
-}
 
 QString pretty_project_name(const QFileInfo &info)
 {
@@ -114,369 +75,20 @@ QString preview_for_project(const QFileInfo &info)
   return {};
 }
 
-QString file_size_label(qint64 bytes)
+// a label in one of the start screen's inks, on whatever is behind it
+QLabel *make_label(const QString &text,
+                   const QFont   &font,
+                   const QColor  &ink,
+                   QWidget       *parent)
 {
-  if (bytes < 1024 * 1024)
-    return QString::number(std::max<qint64>(1, bytes / 1024)) + " KB";
-  return QString::number(bytes / (1024.0 * 1024.0), 'f', 1) + " MB";
+  auto *label = new QLabel(text, parent);
+  label->setFont(font);
+  label->setStyleSheet(
+      QStringLiteral("color: %1; background: transparent;").arg(ink.name()));
+  return label;
 }
 
-class DialogTitleBar final : public QWidget
-{
-public:
-  explicit DialogTitleBar(QDialog *dialog) : QWidget(dialog), dialog(dialog)
-  {
-    this->setObjectName("selectorTitleBar");
-    this->setFixedHeight(48);
-  }
-
-protected:
-  void mousePressEvent(QMouseEvent *event) override
-  {
-    if (event->button() == Qt::LeftButton)
-    {
-      this->dragging = true;
-      this->drag_offset = event->globalPosition().toPoint() -
-                          this->dialog->frameGeometry().topLeft();
-      event->accept();
-      return;
-    }
-    QWidget::mousePressEvent(event);
-  }
-
-  void mouseMoveEvent(QMouseEvent *event) override
-  {
-    if (this->dragging && (event->buttons() & Qt::LeftButton))
-    {
-      this->dialog->move(event->globalPosition().toPoint() - this->drag_offset);
-      event->accept();
-      return;
-    }
-    QWidget::mouseMoveEvent(event);
-  }
-
-  void mouseReleaseEvent(QMouseEvent *event) override
-  {
-    this->dragging = false;
-    QWidget::mouseReleaseEvent(event);
-  }
-
-private:
-  QDialog *dialog = nullptr;
-  QPoint   drag_offset;
-  bool     dragging = false;
-};
-
-class SmoothScrollArea final : public QScrollArea
-{
-public:
-  explicit SmoothScrollArea(QWidget *parent = nullptr) : QScrollArea(parent)
-  {
-    this->scroll_animation = new QVariantAnimation(this);
-    QObject::connect(this->verticalScrollBar(),
-                     &QScrollBar::sliderPressed,
-                     this->scroll_animation,
-                     &QVariantAnimation::stop);
-    QObject::connect(this->scroll_animation,
-                     &QVariantAnimation::valueChanged,
-                     this,
-                     [this](const QVariant &value)
-                     { this->verticalScrollBar()->setValue(value.toInt()); });
-  }
-
-protected:
-  void wheelEvent(QWheelEvent *event) override
-  {
-    // Precision touchpads already deliver smooth pixel deltas. Only animate
-    // discrete mouse-wheel steps, where the stock table used to jump a row.
-    if (!event->pixelDelta().isNull() || event->angleDelta().y() == 0)
-    {
-      this->scroll_animation->stop();
-      QScrollArea::wheelEvent(event);
-      return;
-    }
-
-    QScrollBar *bar = this->verticalScrollBar();
-    const int   base = this->scroll_animation->state() == QAbstractAnimation::Running
-                           ? this->scroll_animation->endValue().toInt()
-                           : bar->value();
-    const qreal steps = event->angleDelta().y() / 120.0;
-    const int   target = std::clamp(base - qRound(steps * 150),
-                                  bar->minimum(),
-                                  bar->maximum());
-
-    this->scroll_animation->stop();
-    this->scroll_animation->setStartValue(bar->value());
-    this->scroll_animation->setEndValue(target);
-    this->scroll_animation->setDuration(170);
-    this->scroll_animation->setEasingCurve(QEasingCurve::OutCubic);
-    this->scroll_animation->start();
-    event->accept();
-  }
-
-private:
-  QVariantAnimation *scroll_animation = nullptr;
-};
-
-// Paint directly from the source image at the destination device scale.
-// Pre-scaling to logical pixels loses detail on 150% and 200% displays.
-void draw_preview(QPainter &painter, const QPixmap &image, const QRectF &target)
-{
-  if (image.isNull())
-    return;
-  const qreal  scale = std::max(target.width() / image.width(),
-                               target.height() / image.height());
-  const QSizeF source_size(target.width() / scale, target.height() / scale);
-  const QRectF source((image.width() - source_size.width()) / 2,
-                      (image.height() - source_size.height()) / 2,
-                      source_size.width(),
-                      source_size.height());
-  painter.setRenderHint(QPainter::SmoothPixmapTransform);
-  painter.drawPixmap(target, image, source);
-}
-
-class WelcomeCanvas final : public QWidget
-{
-public:
-  explicit WelcomeCanvas(QWidget *parent) : QWidget(parent) {}
-
-protected:
-  void paintEvent(QPaintEvent *) override
-  {
-    const auto t = selector_theme();
-    QPainter   p(this);
-    p.setRenderHint(QPainter::Antialiasing);
-    p.fillRect(rect(), t.page);
-    // The application's own icon as a watermark, rather than a chevron drawn
-    // here. Hand drawing it means the welcome screen carries a second, subtly
-    // different mark that has to be kept in step with the real one by hand;
-    // loading the asset means it simply is the logo.
-    //
-    // Requested at low opacity rather than by blending a pen colour, because
-    // the asset is a full colour image and there is no single stroke colour to
-    // tint. Rendered above display resolution so it stays clean when scaled.
-    const QString icon_path = QString::fromStdString(
-        HSD_CTX.app_settings.global.icon_path);
-    const QIcon mark(icon_path);
-
-    if (!mark.isNull())
-    {
-      const int   side = int(std::min(width() * 0.52, height() * 0.62));
-      const QRect target(int(width() * 0.02), int(height() * 0.30), side, side);
-
-      p.setOpacity(0.045);
-      p.drawPixmap(target, mark.pixmap(target.size() * 2, this->devicePixelRatioF()));
-      p.setOpacity(1.0);
-    }
-  }
-};
-
-class RecentProjectRow final : public QPushButton
-{
-public:
-  RecentProjectRow(const QString        &title,
-                   const QString        &detail,
-                   std::function<void()> activate,
-                   QWidget              *parent)
-      : QPushButton(parent), title(title), detail(detail)
-  {
-    setObjectName("selectorRecentRow");
-    setFixedHeight(62);
-    setCursor(Qt::PointingHandCursor);
-    setAccessibleName(title);
-    setAccessibleDescription(detail);
-    setAutoDefault(false);
-    connect(this, &QPushButton::clicked, this, std::move(activate));
-  }
-
-protected:
-  void paintEvent(QPaintEvent *) override
-  {
-    const auto t = selector_theme();
-    QPainter   p(this);
-    p.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
-    p.setBrush(underMouse() ? t.field_hover : t.bar);
-    p.setPen(QPen(hasFocus() ? t.accent : t.field_border, 1));
-    p.drawRoundedRect(QRectF(rect()).adjusted(0.5, 0.5, -0.5, -0.5),
-                      t.metrics.section_card_radius,
-                      t.metrics.section_card_radius);
-    p.setFont(meta::qt::ui_font(14));
-    p.setPen(t.ink_primary);
-    p.drawText(QRect(14, 8, width() - 42, 23),
-               Qt::AlignVCenter,
-               p.fontMetrics().elidedText(title, Qt::ElideRight, width() - 42));
-    p.setFont(meta::qt::ui_font(12));
-    p.setPen(t.ink_secondary);
-    p.drawText(QRect(14, 33, width() - 42, 21),
-               Qt::AlignVCenter,
-               p.fontMetrics().elidedText(detail, Qt::ElideMiddle, width() - 42));
-    p.setPen(QPen(t.ink_secondary, 1.5, Qt::SolidLine, Qt::RoundCap));
-    p.drawLine(QPointF(width() - 21, 27), QPointF(width() - 17, 31));
-    p.drawLine(QPointF(width() - 17, 31), QPointF(width() - 21, 35));
-  }
-
-private:
-  QString title, detail;
-};
-
-class ExamplesTile final : public QPushButton
-{
-public:
-  ExamplesTile(const QString        &path,
-               int                   count,
-               std::function<void()> activate,
-               QWidget              *parent)
-      : QPushButton(parent), preview(path), count(count)
-  {
-    setObjectName("selectorExamplesTile");
-    setFixedHeight(164);
-    setCursor(Qt::PointingHandCursor);
-    setAccessibleName(QStringLiteral("Open Examples"));
-    setAutoDefault(false);
-    connect(this, &QPushButton::clicked, this, std::move(activate));
-  }
-
-protected:
-  void paintEvent(QPaintEvent *) override
-  {
-    const auto t = selector_theme();
-    QPainter   p(this);
-    p.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
-    const QRectF box = QRectF(rect()).adjusted(0.5, 0.5, -0.5, -0.5);
-    QPainterPath clip;
-    clip.addRoundedRect(box,
-                        t.metrics.section_card_radius,
-                        t.metrics.section_card_radius);
-    p.save();
-    p.setClipPath(clip);
-    p.fillRect(box, underMouse() ? t.field_hover : t.bar);
-    draw_preview(p, preview, QRectF(0, 0, width(), 112));
-    p.restore();
-    p.setPen(QPen(hasFocus() || underMouse() ? t.accent : t.field_border, 1));
-    p.setBrush(Qt::NoBrush);
-    p.drawPath(clip);
-    p.setFont(meta::qt::ui_font(14));
-    p.setPen(t.ink_primary);
-    p.drawText(QRect(14, 119, width() - 28, 24), Qt::AlignVCenter, "Open Examples");
-    p.setFont(meta::qt::ui_font(12));
-    p.setPen(t.ink_secondary);
-    p.drawText(QRect(14, 141, width() - 28, 20),
-               Qt::AlignVCenter,
-               QStringLiteral("%1 starting points to explore").arg(count));
-  }
-
-private:
-  QPixmap preview;
-  int     count;
-};
-
-struct ProjectEntry
-{
-  QString path, title, subtitle, preview;
-  bool    project = false;
-};
 } // namespace
-
-class ProjectCard final : public QPushButton
-{
-public:
-  ProjectCard(const ProjectEntry &entry, QWidget *parent)
-      : QPushButton(parent), entry(entry), preview(entry.preview)
-  {
-    setObjectName("selectorProjectCard");
-    setMinimumWidth(210);
-    setFixedHeight(188);
-    setCursor(Qt::PointingHandCursor);
-    setAccessibleName(entry.title);
-    setToolTip(entry.title);
-    setAutoDefault(false);
-    connect(this,
-            &QPushButton::clicked,
-            this,
-            [this]()
-            {
-              if (select_callback)
-                select_callback(this);
-            });
-  }
-  const QString &file_path() const { return entry.path; }
-  bool           is_project() const { return entry.project; }
-  void           set_selected(bool value)
-  {
-    selected = value;
-    update();
-  }
-  void set_select_callback(std::function<void(ProjectCard *)> fn)
-  {
-    select_callback = std::move(fn);
-  }
-  void set_activate_callback(std::function<void(ProjectCard *)> fn)
-  {
-    activate_callback = std::move(fn);
-  }
-
-protected:
-  void keyPressEvent(QKeyEvent *event) override
-  {
-    if (event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter)
-    {
-      if (activate_callback)
-        activate_callback(this);
-      event->accept();
-      return;
-    }
-    QPushButton::keyPressEvent(event);
-  }
-  void mouseDoubleClickEvent(QMouseEvent *event) override
-  {
-    if (event->button() == Qt::LeftButton && activate_callback)
-      activate_callback(this);
-    else
-      QPushButton::mouseDoubleClickEvent(event);
-  }
-  void paintEvent(QPaintEvent *) override
-  {
-    const auto t = selector_theme();
-    QPainter   p(this);
-    p.setRenderHints(QPainter::Antialiasing | QPainter::TextAntialiasing);
-    const QRectF box = QRectF(rect()).adjusted(1, 1, -1, -1);
-    QPainterPath clip;
-    clip.addRoundedRect(box,
-                        t.metrics.section_card_radius,
-                        t.metrics.section_card_radius);
-    p.save();
-    p.setClipPath(clip);
-    p.fillRect(box,
-               selected       ? blend_color(t.bar, t.accent, 0.12)
-               : underMouse() ? t.field_hover
-                              : t.bar);
-    const QRectF image(1, 1, width() - 2, height() - 49);
-    if (preview.isNull())
-    {
-      p.setFont(meta::qt::ui_font(14));
-      p.setPen(t.ink_secondary);
-      p.drawText(image, Qt::AlignCenter, "Preview unavailable");
-    }
-    else
-      draw_preview(p, preview, image);
-    p.restore();
-    p.setBrush(Qt::NoBrush);
-    p.setPen(QPen(selected || hasFocus() ? t.accent : t.field_border,
-                  selected || hasFocus() ? 2 : 1));
-    p.drawPath(clip);
-    p.setFont(meta::qt::ui_font(14, selected));
-    p.setPen(t.ink_primary);
-    p.drawText(QRect(14, height() - 43, width() - 28, 34),
-               Qt::AlignVCenter,
-               p.fontMetrics().elidedText(entry.title, Qt::ElideRight, width() - 28));
-  }
-
-private:
-  ProjectEntry                       entry;
-  QPixmap                            preview;
-  bool                               selected = false;
-  std::function<void(ProjectCard *)> select_callback, activate_callback;
-};
 
 ExampleSelectorDialog::ExampleSelectorDialog(const QString &examples_path,
                                              QWidget       *parent)
@@ -484,345 +96,554 @@ ExampleSelectorDialog::ExampleSelectorDialog(const QString &examples_path,
 {
   Logger::log()->trace("ExampleSelectorDialog::ExampleSelectorDialog");
 
-  this->setObjectName("exampleSelector");
-  this->setWindowTitle("Hesiod Project Browser");
+  this->setWindowTitle("Hesiod");
   this->setWindowFlags(Qt::Dialog | Qt::FramelessWindowHint);
   this->setModal(true);
   this->setAttribute(Qt::WA_TranslucentBackground);
-  this->setFont(meta::qt::ui_font(14));
+  this->setFont(meta::qt::ui_font(13));
 
+  // the lockup is drawn in light grays, made for a dark page; on a light
+  // theme the name is set in type instead
+  const auto &colors = HSD_CTX.app_settings.colors;
+  if (colors.text_primary.lightnessF() > colors.bg_primary.lightnessF())
+    this->lockup.load("data/hesiod_lockup.png");
+
+  // --- size: generous, but never the whole screen
   QScreen    *screen = parent ? parent->screen() : QGuiApplication::primaryScreen();
-  const QRect available = screen ? screen->availableGeometry() : QRect(0, 0, 900, 700);
-  const int   max_width = std::max(460, available.width() - 24);
-  const int   max_height = std::max(400, available.height() - 24);
-  const int   min_width = std::min(560, max_width);
-  const int   min_height = std::min(450, max_height);
-  const int   width = std::clamp(qRound(available.width() * 0.82),
-                               min_width,
-                               std::min(900, max_width));
-  const int   height = std::clamp(qRound(available.height() * 0.72),
-                                min_height,
-                                std::min(740, max_height));
-  this->resize(width, height);
-  this->setMinimumSize(std::min(680, width), std::min(600, height));
+  const QRect available = screen ? screen->availableGeometry() : QRect(0, 0, 1280, 800);
+  const int   card_w = std::clamp(
+      qRound(available.width() * ss::card_width_ratio),
+      std::min(ss::card_min_width, available.width() - ss::card_screen_margin),
+      std::min(ss::card_max_width, available.width() - ss::card_screen_margin));
+  const int card_h = std::clamp(
+      qRound(available.height() * ss::card_height_ratio),
+      std::min(ss::card_min_height, available.height() - ss::card_screen_margin),
+      std::min(ss::card_max_height, available.height() - ss::card_screen_margin));
+  this->setFixedSize(card_w + 2 * ss::shadow, card_h + 2 * ss::shadow);
   this->move(available.center() - this->rect().center());
 
-  auto *root_layout = new QVBoxLayout(this);
-  root_layout->setContentsMargins(1, 1, 1, 1);
-  root_layout->setSpacing(0);
+  // --- the two sides
+  auto *root = new QHBoxLayout(this);
+  root->setContentsMargins(ss::shadow, ss::shadow, ss::shadow, ss::shadow);
+  root->setSpacing(0);
 
-  auto *title_bar = new DialogTitleBar(this);
-  auto *title_layout = new QHBoxLayout(title_bar);
-  title_layout->setContentsMargins(14, 0, 8, 0);
-  title_layout->setSpacing(9);
+  auto *rail = new QWidget(this);
+  rail->setFixedWidth(ss::rail_width);
+  rail->setAttribute(Qt::WA_NoSystemBackground);
+  this->build_rail(rail);
+  root->addWidget(rail);
 
-  auto *identity = new QLabel(title_bar);
-  identity->setFixedSize(24, 24);
-  identity->setAlignment(Qt::AlignCenter);
-  identity->setPixmap(QIcon(QString::fromStdString(HSD_CTX.app_settings.global.icon_path))
-                          .pixmap(QSize(24, 24), this->devicePixelRatioF()));
-  identity->setAccessibleName(QStringLiteral("Hesiod"));
-  identity->setObjectName("selectorIdentity");
-  identity->setAttribute(Qt::WA_TransparentForMouseEvents);
-  title_layout->addWidget(identity);
+  auto *main = new QWidget(this);
+  main->setAttribute(Qt::WA_NoSystemBackground);
+  this->build_examples(main);
+  root->addWidget(main, 1);
 
-  auto *title_divider = new QFrame(title_bar);
-  title_divider->setObjectName("selectorTitleDivider");
-  title_divider->setFrameShape(QFrame::VLine);
-  title_divider->setFixedSize(1, 18);
-  title_layout->addWidget(title_divider);
-
-  auto *window_label = new QLabel(QStringLiteral("Welcome to Hesiod 0.6.0"), title_bar);
-  window_label->setObjectName("selectorWindowLabel");
-  window_label->setAttribute(Qt::WA_TransparentForMouseEvents);
-  title_layout->addWidget(window_label);
-  title_layout->addStretch();
-
-  // painted glyph, not the U+00D7 character: a font glyph sits on the text
-  // baseline and never lands in the middle of its button
-  auto *close_button = new WindowButton(WindowButton::Kind::Close, title_bar);
-  close_button->setObjectName("selectorClose");
-  close_button->setToolTip(QStringLiteral("Close"));
-  close_button->setFixedSize(36, 32);
-  title_layout->addWidget(close_button, 0, Qt::AlignVCenter);
-  root_layout->addWidget(title_bar);
-
-  this->pages = new QStackedWidget(this);
-  this->pages->setObjectName("selectorPages");
-
-  // Welcome page: intentionally sparse, with the action stack and recents on
-  // the right and a quiet Hesiod watermark anchoring the left half.
-  this->welcome_page = new WelcomeCanvas(this->pages);
-  auto *welcome_layout = new QHBoxLayout(this->welcome_page);
-  welcome_layout->setContentsMargins(38, 34, 34, 26);
-  welcome_layout->setSpacing(28);
-
-  auto *brand_layout = new QVBoxLayout();
-  brand_layout->setContentsMargins(0, 0, 0, 0);
-  brand_layout->setSpacing(5);
-  brand_layout->addSpacing(44);
-  auto *brand = new QLabel(QStringLiteral("HESIOD"), this->welcome_page);
-  brand->setObjectName("selectorBrand");
-  brand_layout->addWidget(brand);
-  auto *brand_subtitle = new QLabel(QStringLiteral("Procedural Terrain Design"),
-                                    this->welcome_page);
-  brand_subtitle->setObjectName("selectorBrandSubtitle");
-  brand_layout->addWidget(brand_subtitle);
-  brand_layout->addStretch(4);
-  auto *build_label = new QLabel(QStringLiteral("Hesiod 0.6.0"), this->welcome_page);
-  build_label->setObjectName("selectorBuild");
-  brand_layout->addWidget(build_label);
-  welcome_layout->addLayout(brand_layout, 1);
-
-  auto *action_panel = new QWidget(this->welcome_page);
-  action_panel->setObjectName("selectorActionPanel");
-  action_panel->setFixedWidth(310);
-  auto *action_layout = new QVBoxLayout(action_panel);
-  action_layout->setContentsMargins(0, 0, 0, 0);
-  action_layout->setSpacing(8);
-
-  auto *new_project_button = new QPushButton(QStringLiteral("New Project"), action_panel);
-  new_project_button->setObjectName("selectorWelcomePrimary");
-  action_layout->addWidget(new_project_button);
-
-  auto *open_project_button = new QPushButton(QStringLiteral("Open From File..."),
-                                              action_panel);
-  open_project_button->setObjectName("selectorWelcomeSecondary");
-  action_layout->addWidget(open_project_button);
-
-  this->recent_search = new QLineEdit(action_panel);
-  this->recent_search->setObjectName("selectorRecentSearch");
-  this->recent_search->setPlaceholderText(QStringLiteral("Search recent projects..."));
-  this->recent_search->setClearButtonEnabled(true);
-  this->recent_search->addAction(search_icon(), QLineEdit::LeadingPosition);
-  action_layout->addSpacing(5);
-  action_layout->addWidget(this->recent_search);
-
-  auto *recent_label = new QLabel(QStringLiteral("RECENT PROJECTS"), action_panel);
-  recent_label->setObjectName("selectorSectionLabel");
-  action_layout->addWidget(recent_label);
-
-  this->recent_host = new QWidget(action_panel);
-  this->recent_host->setObjectName("selectorRecentHost");
-  this->recent_layout = new QVBoxLayout(this->recent_host);
-  this->recent_layout->setContentsMargins(0, 0, 0, 0);
-  this->recent_layout->setSpacing(6);
-  action_layout->addWidget(this->recent_host);
-  action_layout->addStretch(1);
-
-  QDir              examples_dir(this->examples_path);
-  const QStringList example_files = examples_dir.entryList({"*.hsd"}, QDir::Files);
-  QString           tile_preview;
-  if (example_files.contains(QStringLiteral("island.hsd")))
-    tile_preview = preview_for_project(QFileInfo(examples_dir.filePath("island.hsd")));
-  else if (!example_files.isEmpty())
-    tile_preview = preview_for_project(
-        QFileInfo(examples_dir.filePath(example_files.first())));
-
-  auto *examples_tile = new ExamplesTile(
-      tile_preview,
-      example_files.size(),
-      [this]() { this->show_examples(); },
-      action_panel);
-  action_layout->addWidget(examples_tile);
-  // The column is fixed-size content (buttons, 62 px rows, the examples tile):
-  // at a large interface scale the dialog, capped to the screen, is shorter
-  // than it, and a plain layout then squeezes the rows over one another.
-  // Scrolling keeps every piece whole; at normal scales nothing scrolls.
-  auto *action_scroll = new SmoothScrollArea(this->welcome_page);
-  action_scroll->setObjectName("selectorActionScroll");
-  action_scroll->setWidgetResizable(true);
-  action_scroll->setFrameShape(QFrame::NoFrame);
-  action_scroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-  action_scroll->setFixedWidth(310 + 14);
-  action_scroll->setWidget(action_panel);
-  action_panel->setFixedWidth(310);
-  welcome_layout->addWidget(action_scroll);
-  this->pages->addWidget(this->welcome_page);
-
-  // Examples page: a focused secondary view, reached from the single welcome
-  // tile rather than presenting a wall of thumbnails at startup.
-  this->examples_page = new QWidget(this->pages);
-  this->examples_page->setObjectName("selectorExamplesPage");
-  auto *examples_layout = new QVBoxLayout(this->examples_page);
-  examples_layout->setContentsMargins(24, 20, 24, 20);
-  examples_layout->setSpacing(10);
-
-  auto *examples_header = new QHBoxLayout();
-  auto *back_button = new QPushButton(QStringLiteral("Back"), this->examples_page);
-  back_button->setObjectName("selectorBackButton");
-  QObject::connect(back_button,
-                   &QPushButton::clicked,
-                   this,
-                   &ExampleSelectorDialog::show_welcome);
-  examples_header->addWidget(back_button);
-  examples_header->addSpacing(8);
-  auto *examples_heading = new QLabel(QStringLiteral("Select an Example Project"),
-                                      this->examples_page);
-  examples_heading->setObjectName("selectorHeading");
-  examples_header->addWidget(examples_heading);
-  examples_header->addStretch();
-  this->result_count = new QLabel(this->examples_page);
-  this->result_count->setObjectName("selectorCount");
-  this->result_count->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-  examples_header->addWidget(this->result_count);
-  examples_layout->addLayout(examples_header);
-
-  this->search = new QLineEdit(this->examples_page);
-  this->search->setObjectName("selectorSearch");
-  this->search->setPlaceholderText(QStringLiteral("Search examples..."));
-  this->search->setClearButtonEnabled(true);
-  this->search->addAction(search_icon(), QLineEdit::LeadingPosition);
-  examples_layout->addWidget(this->search);
-
-  this->scroll_area = new SmoothScrollArea(this->examples_page);
-  this->scroll_area->setObjectName("selectorScroll");
-  this->scroll_area->setWidgetResizable(true);
-  this->scroll_area->setFrameShape(QFrame::NoFrame);
-  this->scroll_area->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-
-  this->cards_host = new QWidget(this->scroll_area);
-  this->cards_host->setObjectName("selectorCardsHost");
-  this->cards_layout = new QGridLayout(this->cards_host);
-  this->cards_layout->setContentsMargins(1, 1, 5, 1);
-  this->cards_layout->setHorizontalSpacing(14);
-  this->cards_layout->setVerticalSpacing(12);
-  this->cards_layout->setAlignment(Qt::AlignTop);
-  this->empty_state = new QLabel(this->cards_host);
-  this->empty_state->setObjectName("selectorEmpty");
-  this->empty_state->setAlignment(Qt::AlignCenter);
-  this->empty_state->setWordWrap(true);
-  this->empty_state->setMinimumHeight(190);
-  this->scroll_area->setWidget(this->cards_host);
-  examples_layout->addWidget(this->scroll_area, 1);
-  this->pages->addWidget(this->examples_page);
-  root_layout->addWidget(this->pages, 1);
-
-  auto *footer = new QWidget(this);
-  footer->setObjectName("selectorFooter");
-  auto *footer_layout = new QHBoxLayout(footer);
-  footer_layout->setContentsMargins(16, 10, 16, 10);
-  footer_layout->setSpacing(8);
-
-  this->startup_check = new QCheckBox(QStringLiteral("Show at startup"), footer);
-  this->startup_check->setObjectName("selectorStartupCheck");
-  this->startup_check->setChecked(
-      HSD_CTX.app_settings.interface.enable_example_selector_at_startup);
-  footer_layout->addWidget(this->startup_check);
-  footer_layout->addStretch();
-
-  auto *file_button = new QPushButton(QStringLiteral("Open From File..."), footer);
-  file_button->setObjectName("selectorFileButton");
-  footer_layout->addWidget(file_button);
-  QObject::connect(file_button,
-                   &QPushButton::clicked,
-                   this,
-                   &ExampleSelectorDialog::open_project);
-
-  this->secondary_button = new QPushButton(QStringLiteral("New Project"), footer);
-  this->secondary_button->setObjectName("selectorSecondaryButton");
-  footer_layout->addWidget(this->secondary_button);
-
-  this->open_button = new QPushButton(QStringLiteral("Open Example"), footer);
-  this->open_button->setObjectName("selectorPrimaryButton");
-  this->open_button->setAutoDefault(false);
-  footer_layout->addWidget(this->open_button);
-  root_layout->addWidget(footer);
-
-  this->apply_theme();
-
-  QObject::connect(close_button,
+  // --- close, in the corner of the card
+  this->close_button = new WindowButton(WindowButton::Kind::Close, this);
+  this->close_button->setFixedSize(ss::close_width, ss::close_height);
+  this->close_button->setToolTip(QStringLiteral("Close"));
+  this->close_button->setAccessibleName(QStringLiteral("Close"));
+  QObject::connect(this->close_button,
                    &QAbstractButton::clicked,
                    this,
                    &ExampleSelectorDialog::on_reject);
-  QObject::connect(new_project_button,
-                   &QPushButton::clicked,
+
+  // --- the keys that do what the two actions do
+  auto *new_keys = new QShortcut(QKeySequence::New, this);
+  QObject::connect(new_keys,
+                   &QShortcut::activated,
                    this,
                    &ExampleSelectorDialog::start_new_project);
-  QObject::connect(open_project_button,
-                   &QPushButton::clicked,
+  auto *open_keys = new QShortcut(QKeySequence::Open, this);
+  QObject::connect(open_keys,
+                   &QShortcut::activated,
                    this,
                    &ExampleSelectorDialog::open_project);
-  QObject::connect(this->open_button,
-                   &QPushButton::clicked,
+
+  this->rebuild_recent_projects();
+}
+
+ExampleSelectorDialog::~ExampleSelectorDialog() = default;
+
+void ExampleSelectorDialog::build_rail(QWidget *host)
+{
+  const ControlTones t = control_tones();
+
+  auto *layout = new QVBoxLayout(host);
+  layout->setContentsMargins(ss::rail_inset, 0, ss::rail_inset, ss::rail_bottom);
+  layout->setSpacing(4);
+
+  // the name of the application is painted by the dialog itself, above this
+  layout->addSpacing(ss::rail_head);
+
+  auto *new_action = new StartAction(
+      QStringLiteral("New project"),
+      QKeySequence(QKeySequence::New).toString(QKeySequence::NativeText),
+      StartAction::Glyph::New,
+      true,
+      host);
+  QObject::connect(new_action,
+                   &QAbstractButton::clicked,
                    this,
-                   &ExampleSelectorDialog::on_accept);
-  QObject::connect(this->secondary_button,
-                   &QPushButton::clicked,
+                   &ExampleSelectorDialog::start_new_project);
+  layout->addWidget(new_action);
+  this->first_action = new_action;
+  this->action_arrivals.push_back([new_action](int delay)
+                                  { new_action->arrival.arrive(delay); });
+
+  auto *open_action = new StartAction(
+      QStringLiteral("Open project…"),
+      QKeySequence(QKeySequence::Open).toString(QKeySequence::NativeText),
+      StartAction::Glyph::Open,
+      false,
+      host);
+  QObject::connect(open_action,
+                   &QAbstractButton::clicked,
                    this,
-                   [this]() { this->start_new_project(); });
-  QObject::connect(this->search,
-                   &QLineEdit::textChanged,
-                   this,
-                   [this]() { this->rebuild_cards(); });
-  QObject::connect(this->recent_search,
-                   &QLineEdit::textChanged,
-                   this,
-                   [this]() { this->rebuild_recent_projects(); });
+                   &ExampleSelectorDialog::open_project);
+  layout->addWidget(open_action);
+  this->action_arrivals.push_back([open_action](int delay)
+                                  { open_action->arrival.arrive(delay); });
+
+  layout->addSpacing(ss::rail_section_gap);
+
+  auto *recent_caption = make_label(QStringLiteral("RECENT"),
+                                    meta::qt::ui_font(11, true, 0.7),
+                                    t.ink_faint,
+                                    host);
+  recent_caption->setContentsMargins(ss::caption_inset, 0, 0, 0);
+  layout->addWidget(recent_caption);
+  layout->addSpacing(4);
+
+  this->recent_host = new QWidget(host);
+  this->recent_host->setAttribute(Qt::WA_NoSystemBackground);
+  this->recent_layout = new QVBoxLayout(this->recent_host);
+  this->recent_layout->setContentsMargins(0, 0, 0, 0);
+  this->recent_layout->setSpacing(2);
+  layout->addWidget(this->recent_host);
+
+  layout->addStretch(1);
+
+  // --- foot of the rail: whether this screen shows at start, and the version
+  auto *foot = new QHBoxLayout();
+  foot->setContentsMargins(11, 0, 9, 0);
+  foot->setSpacing(10);
+
+  this->startup_toggle = new ToggleSwitch(host);
+  this->startup_toggle->setChecked(
+      HSD_CTX.app_settings.interface.enable_example_selector_at_startup);
+  this->startup_toggle->sync();
+  this->startup_toggle->setAccessibleName(QStringLiteral("Show at startup"));
+  foot->addWidget(this->startup_toggle);
+
+  foot->addWidget(make_label(QStringLiteral("Show at startup"),
+                             meta::qt::ui_font(12),
+                             t.ink_dim,
+                             host));
+  foot->addStretch(1);
+
+  foot->addWidget(make_label(QStringLiteral("v%1.%2.%3")
+                                 .arg(HESIOD_VERSION_MAJOR)
+                                 .arg(HESIOD_VERSION_MINOR)
+                                 .arg(HESIOD_VERSION_PATCH),
+                             meta::qt::mono_font(11),
+                             t.ink_faint,
+                             host));
+  layout->addLayout(foot);
+
   QObject::connect(
-      this->startup_check,
-      &QCheckBox::toggled,
+      this->startup_toggle,
+      &QAbstractButton::toggled,
       this,
       [](bool checked)
       {
         HSD_CTX.app_settings.interface.enable_example_selector_at_startup = checked;
         HSD_CTX.save_settings();
       });
-
-  this->show_welcome();
 }
 
-void ExampleSelectorDialog::apply_theme()
+void ExampleSelectorDialog::build_examples(QWidget *host)
 {
-  const auto t = selector_theme();
+  const ControlTones t = control_tones();
 
-  static constexpr std::string_view css_template =
-#include "hesiod/gui/styles/example_selector.css"
-      ;
+  QDir              dir(this->examples_path);
+  const QStringList files = dir.entryList({"*.hsd"},
+                                          QDir::Files | QDir::Readable,
+                                          QDir::Name | QDir::IgnoreCase);
 
-  const auto &icons = HSD_CTX.app_settings.icons.icon_paths;
-  const auto  check = icons.find("check");
+  // the picture that leads: the most striking of the set when it is there
+  QStringList ordered;
+  for (const QString &lead : {QStringLiteral("island.hsd"),
+                              QStringLiteral("yukon_valley.hsd"),
+                              QStringLiteral("facing_strata.hsd")})
+    if (files.contains(lead, Qt::CaseInsensitive))
+    {
+      ordered << lead;
+      break;
+    }
+  for (const QString &file : files)
+    if (!ordered.contains(file, Qt::CaseInsensitive))
+      ordered << file;
 
-  const std::map<std::string, std::string> string_tokens = {
-      {"UI_FONT", meta::qt::ui_font(14).family().toStdString()},
-      {"CARD_RADIUS", std::to_string(t.metrics.section_card_radius)},
-      {"RADIUS", std::to_string(std::max(6, t.metrics.radius))},
-      {"CHECK_ICON", check != icons.end() ? check->second : "data/icons/pp_check.svg"}};
+  // The "default" project's picture is a screenshot of the application, the
+  // least inviting of the set: it goes near the end, and the last place is
+  // kept for a landscape, which may be shown wide (see layout_tiles).
+  for (int i = 0; i < ordered.size(); ++i)
+    if (ordered[i].startsWith('_') && ordered.size() >= 3)
+    {
+      ordered.move(i, ordered.size() - 2);
+      break;
+    }
 
-  const std::map<std::string, QColor> color_tokens = {
-      {"PAGE", t.page},
-      {"BAR", t.bar},
-      {"INK", t.ink_primary},
-      {"SECONDARY", t.ink_secondary},
-      {"ACCENT", t.accent},
-      {"FIELD", t.field},
-      {"BORDER", t.field_border},
-      {"HOVER", t.field_hover},
-      {"DISABLED", t.ink_locked},
-      {"SELECTED", blend_color(t.bar, t.accent, 0.14)}};
+  auto *layout = new QVBoxLayout(host);
+  layout->setContentsMargins(ss::examples_left, ss::examples_top, ss::examples_right, 0);
+  layout->setSpacing(0);
 
-  QString css = render_stylesheet(css_template, string_tokens, color_tokens);
-  this->setStyleSheet(css);
-  this->update();
+  layout->addWidget(make_label(QStringLiteral("Start from an example"),
+                               meta::qt::ui_font(19, true),
+                               t.ink,
+                               host));
+  layout->addSpacing(4);
+
+  auto *lede = make_label(
+      ordered.isEmpty()
+          ? QStringLiteral("No example projects were found in %1.")
+                .arg(QDir::toNativeSeparators(dir.absolutePath()))
+          : QStringLiteral("Finished terrains to open, pull apart and make your own."),
+      meta::qt::ui_font(13),
+      t.ink_dim,
+      host);
+  lede->setWordWrap(true);
+  layout->addWidget(lede);
+  layout->addSpacing(ss::examples_lede_gap);
+
+  this->scroll_area = new GlideScrollArea(host);
+  this->scroll_area->setFrameShape(QFrame::NoFrame);
+  this->scroll_area->setWidgetResizable(true);
+  this->scroll_area->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+  this->scroll_area->setStyleSheet(
+      QStringLiteral("QScrollArea { background: transparent; border: none; }"));
+  this->scroll_area->viewport()->setAutoFillBackground(false);
+
+  this->tiles_host = new QWidget(this->scroll_area);
+  this->tiles_host->setAttribute(Qt::WA_NoSystemBackground);
+  this->tiles_host->setStyleSheet(QStringLiteral("background: transparent;"));
+
+  for (int index = 0; index < ordered.size(); ++index)
+  {
+    const QFileInfo info(dir.filePath(ordered[index]));
+    const QString   path = info.absoluteFilePath();
+    auto           *tile = new ExampleTile(pretty_project_name(info),
+                                 preview_for_project(info),
+                                 index == 0 && ordered.size() >= 3,
+                                 this->tiles_host);
+    QObject::connect(tile,
+                     &QAbstractButton::clicked,
+                     this,
+                     [this, path]() { this->accept_path(path, false); });
+    this->tiles.push_back(tile);
+  }
+
+  this->scroll_area->setWidget(this->tiles_host);
+  layout->addWidget(this->scroll_area, 1);
+}
+
+// The pictures are laid out by hand: three columns of 16:9 cells, the first
+// picture taking two columns and two rows. A grid layout cannot keep cells at
+// a ratio, and the ratio is what makes the page look composed.
+void ExampleSelectorDialog::layout_tiles()
+{
+  if (!this->scroll_area || !this->tiles_host || this->tiles.isEmpty())
+    return;
+
+  const int   gap = ss::tile_gap;
+  const int   columns = ss::tile_columns;
+  const int   width = this->scroll_area->viewport()->width() - ss::tile_right_room;
+  const qreal cell_w = (width - (columns - 1) * gap) / qreal(columns);
+  const qreal cell_h = cell_w * 9.0 / 16.0;
+
+  auto place = [&](ExampleTile *tile, int column, int row, int span_x, int span_y)
+  {
+    if (!tile)
+      return;
+    const int x = qRound(column * (cell_w + gap));
+    const int y = qRound(row * (cell_h + gap));
+    const int w = qRound((column + span_x) * (cell_w + gap) - gap) - x;
+    const int h = qRound((row + span_y) * (cell_h + gap) - gap) - y;
+    tile->setGeometry(x, y, w, h);
+  };
+
+  int        column = 0, row = 0, index = 0;
+  const bool lead = this->tiles.size() >= 3;
+  if (lead)
+  {
+    place(this->tiles[0], 0, 0, 2, 2);
+    place(this->tiles[1], 2, 0, 1, 1);
+    place(this->tiles[2], 2, 1, 1, 1);
+    index = 3;
+    row = 2;
+  }
+  for (; index < this->tiles.size(); ++index)
+  {
+    // a last row that would stop one cell short is closed by its last
+    // picture, shown two cells wide
+    const bool closes_row = index == this->tiles.size() - 1 && column == columns - 2;
+    place(this->tiles[index], column, row, closes_row ? 2 : 1, 1);
+    column += closes_row ? 2 : 1;
+    if (column >= columns)
+    {
+      column = 0;
+      ++row;
+    }
+  }
+
+  const int rows = row + (column > 0 ? 1 : 0);
+  const int height = qRound(rows * (cell_h + gap) - gap) + ss::tile_bottom_air;
+  this->tiles_host->setFixedHeight(height);
+}
+
+void ExampleSelectorDialog::rebuild_recent_projects()
+{
+  if (!this->recent_layout || !this->recent_host)
+    return;
+
+  while (QLayoutItem *item = this->recent_layout->takeAt(0))
+  {
+    if (QWidget *widget = item->widget())
+      widget->deleteLater();
+    delete item;
+  }
+
+  this->recent_arrivals.clear();
+
+  QSet<QString> seen;
+  int           shown = 0;
+
+  for (const std::string &raw_path : HSD_CTX.app_settings.global.recent_files)
+  {
+    const QFileInfo info(QString::fromStdString(raw_path));
+    if (!info.exists() || !info.isFile() ||
+        info.suffix().compare("hsd", Qt::CaseInsensitive) != 0)
+      continue;
+
+    const QString normalized = QDir::cleanPath(info.absoluteFilePath()).toLower();
+    if (seen.contains(normalized))
+      continue;
+    seen.insert(normalized);
+
+    const QString path = info.absoluteFilePath();
+    auto         *row = new RecentRow(pretty_project_name(info),
+                              info.lastModified().toString("d MMM"),
+                              QDir::toNativeSeparators(info.absolutePath()),
+                              this->recent_host);
+    row->setToolTip(QDir::toNativeSeparators(path));
+    QObject::connect(row,
+                     &QAbstractButton::clicked,
+                     this,
+                     [this, path]() { this->accept_path(path, true); });
+    this->recent_layout->addWidget(row);
+    this->recent_arrivals.push_back([row](int delay) { row->arrival.arrive(delay); });
+
+    if (++shown >= ss::recent_max)
+      break;
+  }
+
+  if (shown == 0)
+  {
+    auto *empty = make_label(
+        QStringLiteral("Projects you open or save will be listed here."),
+        meta::qt::ui_font(12),
+        control_tones().ink_faint,
+        this->recent_host);
+    empty->setWordWrap(true);
+    empty->setContentsMargins(ss::caption_inset, 4, ss::caption_inset, 4);
+    this->recent_layout->addWidget(empty);
+  }
+}
+
+// The entrance. The card itself is brought in by the application's dialog
+// motion; on top of that the parts arrive a beat apart: the name, the two
+// actions, the recent projects, then the pictures, the large one first.
+void ExampleSelectorDialog::start_reveal()
+{
+  if (std::exchange(this->revealed, true))
+    return;
+
+  if (motion::enabled())
+  {
+    this->brand_t.set(0.0);
+    QTimer::singleShot(
+        motion::start_lead,
+        this,
+        [this]() { this->brand_t.to(1.0, motion::start_brand_in, motion::enter()); });
+  }
+  else
+    this->brand_t.set(1.0);
+
+  int delay = motion::start_lead + motion::start_actions_after;
+  for (const auto &arrive : this->action_arrivals)
+  {
+    arrive(delay);
+    delay += motion::start_action_step;
+  }
+  delay += motion::start_recent_after;
+  for (const auto &arrive : this->recent_arrivals)
+  {
+    arrive(delay);
+    delay += motion::start_recent_step;
+  }
+
+  int tile_delay = motion::start_lead + motion::start_tiles_after;
+  for (ExampleTile *tile : this->tiles)
+  {
+    if (tile)
+      tile->arrival.arrive(tile_delay);
+    tile_delay += motion::start_tile_step;
+  }
+}
+
+void ExampleSelectorDialog::showEvent(QShowEvent *event)
+{
+  QDialog::showEvent(event);
+  this->layout_tiles();
+  this->start_reveal();
+  if (this->first_action)
+    this->first_action->setFocus(Qt::OtherFocusReason);
+
+  // the viewport has its final width only once the dialog is laid out
+  QTimer::singleShot(0, this, [this]() { this->layout_tiles(); });
+}
+
+void ExampleSelectorDialog::resizeEvent(QResizeEvent *event)
+{
+  QDialog::resizeEvent(event);
+  if (this->close_button)
+    this->close_button->move(this->width() - ss::shadow - this->close_button->width() -
+                                 ss::close_inset,
+                             ss::shadow + ss::close_inset);
+  this->layout_tiles();
 }
 
 void ExampleSelectorDialog::paintEvent(QPaintEvent *)
 {
-  const auto t = selector_theme();
-  QPainter   p(this);
+  const ControlTones t = control_tones();
+
+  QPainter p(this);
   p.setRenderHint(QPainter::Antialiasing);
-  p.setPen(QPen(t.field_border, 1));
-  p.setBrush(t.page);
-  p.drawRoundedRect(QRectF(rect()).adjusted(0.5, 0.5, -0.5, -0.5),
-                    t.metrics.section_card_radius,
-                    t.metrics.section_card_radius);
+
+  const QRectF card = QRectF(this->rect())
+                          .adjusted(ss::shadow, ss::shadow, -ss::shadow, -ss::shadow);
+
+  // soft shadow: stacked rounded shapes fading out, a little lower than the card
+  p.setPen(Qt::NoPen);
+  for (int i = ss::shadow; i > 0; i -= 2)
+  {
+    const qreal s = 1.0 - qreal(i) / ss::shadow;
+    p.setBrush(QColor(0, 0, 0, qRound(ss::shadow_alpha * s * s)));
+    p.drawRoundedRect(card.adjusted(-i, -i + ss::shadow_drop, i, i + ss::shadow_drop),
+                      ss::card_radius + i,
+                      ss::card_radius + i);
+  }
+
+  QPainterPath shape;
+  shape.addRoundedRect(card.adjusted(0.5, 0.5, -0.5, -0.5),
+                       ss::card_radius,
+                       ss::card_radius);
+  p.fillPath(shape, t.card);
+
+  // the rail: the same card, a step darker on its left
+  p.save();
+  p.setClipPath(shape);
+  p.fillRect(QRectF(card.left(), card.top(), ss::rail_width, card.height()), t.content);
+  p.restore();
+
+  p.setPen(QPen(t.border, 1));
+  p.setBrush(Qt::NoBrush);
+  p.drawPath(shape);
+
+  this->paint_brand(p, card);
 }
 
-void ExampleSelectorDialog::changeEvent(QEvent *event)
+// the name of the application, at the head of the rail
+void ExampleSelectorDialog::paint_brand(QPainter &p, const QRectF &card)
 {
-  QDialog::changeEvent(event);
-  if (event->type() == QEvent::ApplicationPaletteChange && this->pages)
-    this->apply_theme();
+  const qreal a = std::clamp(this->brand_t.value(), 0.0, 1.0);
+  if (a <= 0.001)
+    return;
+
+  const ControlTones t = control_tones();
+
+  p.save();
+  p.setOpacity(a);
+  p.translate(0.0, ss::brand_rise * (1.0 - a));
+
+  const qreal left = card.left() + ss::brand_left;
+  const qreal top = card.top() + ss::brand_top;
+  const qreal room = ss::rail_width - 2.0 * ss::brand_left;
+
+  if (!this->lockup.isNull())
+  {
+    const qreal h = ss::brand_height;
+    const qreal w = h * this->lockup.width() / qreal(this->lockup.height());
+    p.setRenderHint(QPainter::SmoothPixmapTransform);
+    p.drawPixmap(QRectF(left, top, w, h), this->lockup, QRectF(this->lockup.rect()));
+  }
+  else
+  {
+    p.setFont(meta::qt::ui_font(22, true));
+    p.setPen(t.ink);
+    p.drawText(QRectF(left, top, room, ss::brand_height),
+               Qt::AlignLeft | Qt::AlignVCenter,
+               QStringLiteral("Hesiod"));
+  }
+
+  p.setFont(meta::qt::ui_font(12));
+  p.setPen(t.ink_faint);
+  p.drawText(QRectF(left + 1.0, top + ss::brand_tagline_gap, room, 18.0),
+             Qt::AlignLeft | Qt::AlignVCenter,
+             QStringLiteral("Procedural terrain design"));
+  p.restore();
+}
+
+void ExampleSelectorDialog::keyPressEvent(QKeyEvent *event)
+{
+  if (event->key() == Qt::Key_Escape)
+  {
+    this->on_reject();
+    return;
+  }
+  QDialog::keyPressEvent(event);
+}
+
+// the card has no title bar: it is moved by any part that is not a control
+void ExampleSelectorDialog::mousePressEvent(QMouseEvent *event)
+{
+  if (event->button() == Qt::LeftButton)
+  {
+    this->dragging = true;
+    this->drag_offset = event->globalPosition().toPoint() -
+                        this->frameGeometry().topLeft();
+    event->accept();
+    return;
+  }
+  QDialog::mousePressEvent(event);
+}
+
+void ExampleSelectorDialog::mouseMoveEvent(QMouseEvent *event)
+{
+  if (this->dragging && (event->buttons() & Qt::LeftButton))
+  {
+    this->move(event->globalPosition().toPoint() - this->drag_offset);
+    event->accept();
+    return;
+  }
+  QDialog::mouseMoveEvent(event);
+}
+
+void ExampleSelectorDialog::mouseReleaseEvent(QMouseEvent *event)
+{
+  this->dragging = false;
+  QDialog::mouseReleaseEvent(event);
 }
 
 void ExampleSelectorDialog::accept_path(const QString &path, bool project)
@@ -831,59 +652,6 @@ void ExampleSelectorDialog::accept_path(const QString &path, bool project)
     return;
   this->selected_filename = path;
   this->selected_project = project;
-  this->result = Outcome::OpenFile;
-  this->accept();
-}
-
-void ExampleSelectorDialog::accept_card(ProjectCard *card)
-{
-  this->select_card(card);
-  this->on_accept();
-}
-
-void ExampleSelectorDialog::clear_cards()
-{
-  while (QLayoutItem *item = this->cards_layout->takeAt(0))
-  {
-    QWidget *widget = item->widget();
-    if (widget && widget != this->empty_state)
-      widget->deleteLater();
-    delete item;
-  }
-
-  this->cards.clear();
-  this->selected_card = nullptr;
-  this->selected_filename.clear();
-  this->selected_project = false;
-  this->card_columns = 0;
-  this->open_button->setEnabled(false);
-}
-
-void ExampleSelectorDialog::keyPressEvent(QKeyEvent *event)
-{
-  if (event->key() == Qt::Key_Escape)
-  {
-    if (this->pages->currentWidget() == this->examples_page)
-      this->show_welcome();
-    else
-      this->on_reject();
-    return;
-  }
-
-  if ((event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter) &&
-      this->pages->currentWidget() == this->examples_page && this->selected_card)
-  {
-    this->on_accept();
-    return;
-  }
-
-  QDialog::keyPressEvent(event);
-}
-
-void ExampleSelectorDialog::on_accept()
-{
-  if (!this->selected_card || this->selected_filename.isEmpty())
-    return;
   this->result = Outcome::OpenFile;
   this->accept();
 }
@@ -907,160 +675,12 @@ void ExampleSelectorDialog::open_project()
     this->accept_path(path, true);
 }
 
-void ExampleSelectorDialog::rebuild_recent_projects()
+void ExampleSelectorDialog::start_new_project()
 {
-  while (QLayoutItem *item = this->recent_layout->takeAt(0))
-  {
-    if (QWidget *widget = item->widget())
-      widget->deleteLater();
-    delete item;
-  }
-
-  const QString query = this->recent_search->text().trimmed();
-  QSet<QString> seen;
-  int           shown = 0;
-
-  for (const std::string &raw_path : HSD_CTX.app_settings.global.recent_files)
-  {
-    const QFileInfo info(QString::fromStdString(raw_path));
-    if (!info.exists() || !info.isFile() ||
-        info.suffix().compare("hsd", Qt::CaseInsensitive) != 0)
-      continue;
-
-    const QString normalized = QDir::cleanPath(info.absoluteFilePath()).toLower();
-    if (seen.contains(normalized))
-      continue;
-    seen.insert(normalized);
-
-    const QString title = pretty_project_name(info);
-    if (!query.isEmpty() && !title.contains(query, Qt::CaseInsensitive) &&
-        !info.absoluteFilePath().contains(query, Qt::CaseInsensitive))
-      continue;
-
-    const QString detail = QStringLiteral("%1  \u00b7  %2")
-                               .arg(info.lastModified().toString("dd MMM yyyy"))
-                               .arg(QDir::toNativeSeparators(info.absolutePath()));
-    const QString path = info.absoluteFilePath();
-    auto         *row = new RecentProjectRow(
-        title,
-        detail,
-        [this, path]() { this->accept_path(path, true); },
-        this->recent_host);
-    row->setToolTip(path);
-    this->recent_layout->addWidget(row);
-
-    if (++shown >= 3)
-      break;
-  }
-
-  if (shown == 0)
-  {
-    auto *empty = new QLabel(query.isEmpty() ? QStringLiteral("No recent projects yet")
-                                             : QStringLiteral("No matching projects"),
-                             this->recent_host);
-    empty->setObjectName("selectorRecentEmpty");
-    empty->setAlignment(Qt::AlignCenter);
-    empty->setFixedHeight(54);
-    this->recent_layout->addWidget(empty);
-  }
-}
-
-void ExampleSelectorDialog::rebuild_cards()
-{
-  this->clear_cards();
-  this->empty_state->hide();
-
-  const QString         query = this->search->text().trimmed();
-  QVector<ProjectEntry> entries;
-
-  QDir              dir(this->examples_path);
-  const QStringList files = dir.entryList({"*.hsd"},
-                                          QDir::Files | QDir::Readable,
-                                          QDir::Name | QDir::IgnoreCase);
-  for (const QString &file : files)
-  {
-    const QFileInfo info(dir.filePath(file));
-    const QString   title = pretty_project_name(info);
-    if (!query.isEmpty() && !title.contains(query, Qt::CaseInsensitive) &&
-        !file.contains(query, Qt::CaseInsensitive))
-      continue;
-
-    entries.push_back({info.absoluteFilePath(),
-                       title,
-                       QStringLiteral("CURATED  ·  %1").arg(file_size_label(info.size())),
-                       preview_for_project(info),
-                       false});
-  }
-
-  for (const ProjectEntry &entry : entries)
-  {
-    auto *card = new ProjectCard(entry, this->cards_host);
-    card->set_select_callback([this](ProjectCard *selected)
-                              { this->select_card(selected); });
-    card->set_activate_callback([this](ProjectCard *selected)
-                                { this->accept_card(selected); });
-    this->cards.push_back(card);
-  }
-
-  this->result_count->setText(QStringLiteral("%1 examples").arg(entries.size()));
-
-  if (this->cards.isEmpty())
-  {
-    this->empty_state->setText(
-        QStringLiteral("No examples found\n\nTry a different name."));
-    this->empty_state->show();
-    this->cards_layout->addWidget(this->empty_state, 0, 0, 1, 2);
-    return;
-  }
-
-  this->relayout_cards();
-  this->select_card(this->cards.first());
-}
-
-void ExampleSelectorDialog::relayout_cards()
-{
-  if (this->cards.isEmpty() || !this->scroll_area)
-    return;
-
-  const int columns = std::clamp(this->scroll_area->viewport()->width() / 220, 1, 3);
-  if (columns == this->card_columns && this->cards_layout->count() > 0)
-    return;
-  this->card_columns = columns;
-
-  while (QLayoutItem *item = this->cards_layout->takeAt(0))
-    delete item;
-
-  for (int column = 0; column < 3; ++column)
-    this->cards_layout->setColumnStretch(column, column < columns ? 1 : 0);
-  for (int index = 0; index < this->cards.size(); ++index)
-  {
-    ProjectCard *card = this->cards[index];
-    card->setFixedHeight(188);
-    this->cards_layout->addWidget(card, index / columns, index % columns);
-  }
-  this->cards_host->updateGeometry();
-}
-
-void ExampleSelectorDialog::resizeEvent(QResizeEvent *event)
-{
-  QDialog::resizeEvent(event);
-  this->relayout_cards();
-}
-
-void ExampleSelectorDialog::select_card(ProjectCard *card)
-{
-  if (!card)
-    return;
-
-  this->selected_card = card;
-  for (ProjectCard *candidate : this->cards)
-    candidate->set_selected(candidate == card);
-
-  this->selected_filename = card->file_path();
-  this->selected_project = card->is_project();
-  this->open_button->setEnabled(true);
-  this->open_button->setText(this->selected_project ? QStringLiteral("OPEN PROJECT")
-                                                    : QStringLiteral("Open Example"));
+  this->selected_filename.clear();
+  this->selected_project = false;
+  this->result = Outcome::NewProject;
+  this->accept();
 }
 
 ExampleSelectorDialog::Outcome ExampleSelectorDialog::outcome() const
@@ -1068,56 +688,8 @@ ExampleSelectorDialog::Outcome ExampleSelectorDialog::outcome() const
   return this->result;
 }
 
-void ExampleSelectorDialog::start_new_project()
-{
-  // Accepted, not rejected. A rejected dialog means the user closed it, and
-  // the caller treats that as "do not continue"; asking for a new project is a
-  // choice and has to be reported as one, or from the menu bar the window just
-  // closes and the open project stays put.
-  this->selected_filename.clear();
-  this->selected_project = false;
-  this->result = Outcome::NewProject;
-  this->accept();
-}
-
 QString ExampleSelectorDialog::selected_file() const { return this->selected_filename; }
 
 bool ExampleSelectorDialog::selected_is_project() const { return this->selected_project; }
-
-void ExampleSelectorDialog::show_examples()
-{
-  this->pages->setCurrentWidget(this->examples_page);
-  this->open_button->setDefault(true);
-  this->secondary_button->setText(QStringLiteral("New Project"));
-  this->secondary_button->show();
-  this->findChild<QPushButton *>("selectorFileButton")->show();
-  this->open_button->show();
-  this->rebuild_cards();
-  this->search->setFocus(Qt::OtherFocusReason);
-
-  // The stacked page receives its final viewport geometry after the page
-  // switch. Relayout once that happens so a wide view starts with the appropriate number
-  // of columns.
-  QTimer::singleShot(0,
-                     this,
-                     [this]()
-                     {
-                       this->card_columns = 0;
-                       this->relayout_cards();
-                     });
-}
-
-void ExampleSelectorDialog::show_welcome()
-{
-  this->pages->setCurrentWidget(this->welcome_page);
-  this->open_button->setDefault(false);
-  this->secondary_button->setText(QStringLiteral("New Project"));
-  this->secondary_button->hide();
-  this->findChild<QPushButton *>("selectorFileButton")->hide();
-  this->open_button->hide();
-  this->rebuild_recent_projects();
-  this->findChild<QPushButton *>("selectorWelcomePrimary")
-      ->setFocus(Qt::OtherFocusReason);
-}
 
 } // namespace hesiod

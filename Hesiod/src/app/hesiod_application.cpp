@@ -20,6 +20,7 @@
 #include <QMenuBar>
 #include <QMessageBox>
 #include <QPainter>
+#include <QPointer>
 #include <QProcess>
 #include <QProgressDialog>
 #include <QPushButton>
@@ -153,8 +154,10 @@ HesiodApplication::HesiodApplication(int &argc, char **argv, StartupMode mode)
   QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
   QCoreApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
 
-  // launch splash
-  SplashScreen *splash = new SplashScreen();
+  // launch splash. It deletes itself once its closing fade has run, so it is
+  // held through a guarded pointer: the start screen below closes it early,
+  // and everything after that must not assume it is still there.
+  QPointer<SplashScreen> splash = new SplashScreen();
 
   // apply style
   this->setWindowIcon(QIcon(this->context.app_settings.global.icon_path.c_str()));
@@ -178,7 +181,8 @@ HesiodApplication::HesiodApplication(int &argc, char **argv, StartupMode mode)
       std::chrono::seconds(this->context.app_settings.global.autosave_interval_s));
 
   // (after MainWindow creation)
-  splash->show_message("Loading project...");
+  if (splash)
+    splash->show_message("Loading project...");
 
   // a pending recovery snapshot wins over the command-line file and the
   // example selector: the user has unsaved work to decide about first
@@ -206,6 +210,11 @@ HesiodApplication::HesiodApplication(int &argc, char **argv, StartupMode mode)
     if (fname.empty() &&
         this->context.app_settings.interface.enable_example_selector_at_startup)
     {
+      // the splash gives way to the start screen rather than lingering
+      // behind it
+      if (splash)
+        splash->close();
+
       std::string           path = this->context.app_settings.global.ready_made_path;
       ExampleSelectorDialog ex_dialog(QString::fromStdString(path));
       ex_dialog.exec();
@@ -215,8 +224,8 @@ HesiodApplication::HesiodApplication(int &argc, char **argv, StartupMode mode)
       // Project falls through with an empty filename, which is what starts one.
       if (ex_dialog.outcome() == ExampleSelectorDialog::Outcome::Closed)
       {
-        splash->close();
-        delete splash;
+        if (splash)
+          delete splash.data();
         ::exit(0);
       }
 
@@ -234,7 +243,15 @@ HesiodApplication::HesiodApplication(int &argc, char **argv, StartupMode mode)
   }
 
   // others
-  splash->show_message("Opening UI...");
+  // The splash's message pumps the event loop here, and the window relies on
+  // that: the layout of the freshly shown main window settles before the title
+  // bar is set up, so the viewport's toolbar is placed for the size the
+  // viewport really has. With the splash already gone (the start screen closes
+  // it), the pump has to be asked for.
+  if (splash)
+    splash->show_message("Opening UI...");
+  else
+    QApplication::processEvents();
 
   this->setup_menu_bar();
   this->setup_title_bar();
@@ -242,7 +259,8 @@ HesiodApplication::HesiodApplication(int &argc, char **argv, StartupMode mode)
 
   this->notify("Ready");
 
-  splash->close();
+  if (splash)
+    splash->close();
 }
 
 HesiodApplication::~HesiodApplication() = default;

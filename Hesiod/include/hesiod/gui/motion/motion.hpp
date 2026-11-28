@@ -77,6 +77,21 @@ constexpr int build_fill_last = 90; // the bar running to its end as the build f
 constexpr int stop_warm_in = 150;   // the stop tool taking the building color
 constexpr int stop_warm_out = 280;  // and giving it back
 
+// the start screen and the splash before it
+constexpr int start_lead = 70;      // the card's own entrance, before its parts follow
+constexpr int start_brand_in = 380; // the name of the application arriving
+constexpr int start_part_in = 360;  // an action, a recent project or a picture arriving
+constexpr int start_actions_after = 70; // the first action, after the name
+constexpr int start_action_step = 45;   // each action after the one above it
+constexpr int start_recent_after = 30;  // the recent projects, after the last action
+constexpr int start_recent_step = 35;   // each recent project after the one above it
+constexpr int start_tiles_after = 90;   // the first picture, after the card
+constexpr int start_tile_step = 48;     // each picture after the one before it
+constexpr int start_tile_zoom_in = 520; // a picture drawing closer under the pointer
+constexpr int start_tile_zoom_out = 420;
+constexpr int start_scroll_glide = 190; // the pictures gliding to a wheel notch
+constexpr int splash_out = 340; // the splash fading as the start screen or window comes
+
 const QEasingCurve &enter();  // (.22, 1, .36, 1)   decelerate into place
 const QEasingCurve &leave();  // (.4, 0, .9, .6)     gather speed and go
 const QEasingCurve &change(); // (.45, 0, .15, 1)   between two resting states
