@@ -30,6 +30,7 @@ struct NodePalettePalette
   QColor surface_selected{"#3b3b3b"}; ///< category whose flyout is open
   QColor flyout_bg{"#1e1e1e"};
   QColor flyout_border{"#3a3a3a"};
+  QColor flyout_hover{"#2e2e2e"}; ///< the row under the pointer in a flyout
   QColor text{"#b9b9b9"};
   QColor text_active{"#f2f2f2"};
 

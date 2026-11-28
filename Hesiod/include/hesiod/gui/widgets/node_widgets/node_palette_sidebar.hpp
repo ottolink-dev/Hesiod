@@ -2,13 +2,13 @@
    License. The full license is in the file LICENSE, distributed with this software. */
 #pragma once
 #include <map>
+#include <memory>
 #include <string>
 #include <vector>
 
 #include <QAction>
 #include <QColor>
 #include <QLineEdit>
-#include <QMenu>
 #include <QPointer>
 #include <QRectF>
 #include <QScrollArea>
@@ -18,11 +18,15 @@
 #include "hesiod/gui/theme/node_palette_palette.hpp"
 #include "hesiod/gui/widgets/node_widgets/node_palette/category_rail_button.hpp"
 
+class QStandardItemModel;
+
 namespace hesiod
 {
 
 class FoldButton;
 class FoldFlight;
+class PaletteFlyoutCard;
+struct PaletteTreeNode;
 class RailScroller;
 class SearchFadeVeil;
 
@@ -35,10 +39,10 @@ class SearchFadeVeil;
  * NodeLibraryWidget and is wired to the same node-creation slots, so both
  * sidebars create nodes through one code path.
  *
- * Flyouts are QMenus rather than hand-rolled popups. That is what buys
- * screen-bounds clamping, scrolling when a category is taller than the display,
- * Escape/arrow navigation and Qt's sloppy-submenu tracking (no diagonal dead
- * zone) without reimplementing any of it.
+ * A category's nodes are listed in a card floating beside the rail
+ * (PaletteFlyoutCard), with its sub-categories in cards of the same kind. The
+ * sidebar closes it on a click elsewhere, Escape, or the window going inactive,
+ * and hands it the arrow keys while it is open.
  *
  * In the graph editor it is a card floating over the graph (overlay mode): it
  * folds to its glyphs and back, slides in and out with View > Node Library,
@@ -67,10 +71,13 @@ public:
   static void restyle_all(const NodePalettePalette &style);
 
   // --- Inspection (also the test surface)
-  QStringList              category_names() const;
-  int                      category_count() const;
-  CategoryRailButton      *button_at(int index) const;
-  QMenu                   *menu_at(int index) const;
+  QStringList         category_names() const;
+  int                 category_count() const;
+  CategoryRailButton *button_at(int index) const;
+  /// The category's nodes and sub-categories, as its card lists them.
+  const PaletteTreeNode *tree_at(int index) const;
+  /// The card of the open category; null before one has been opened.
+  PaletteFlyoutCard       *flyout_card() const;
   std::vector<std::string> node_types_at(int index) const;
   /// Every node type reachable through the rail, sorted.
   std::vector<std::string> all_node_types() const;
@@ -117,10 +124,10 @@ signals:
   void node_type_selected_shift(const std::string &node_type);
 
 protected:
-  /// Watches the open flyout so moving the pointer back onto the rail switches
-  /// categories: while a QMenu holds the mouse grab the rail buttons never see
-  /// an enter event of their own. In overlay mode it also follows the parent's
-  /// size.
+  /// While a card is open it watches the application: a click outside the
+  /// rail and the cards, Escape, or the window going inactive closes it, and
+  /// the arrow keys and Return go to it. In overlay mode it also follows the
+  /// parent's size.
   bool eventFilter(QObject *watched, QEvent *event) override;
   void paintEvent(QPaintEvent *event) override;
   void resizeEvent(QResizeEvent *event) override;
@@ -129,7 +136,8 @@ private:
   void   build_rail(const std::map<std::string, std::string> &inventory);
   void   setup_search(const std::map<std::string, std::string> &inventory);
   void   emit_for_type(const QString &node_type);
-  void   apply_menu_style(QMenu *menu, const QColor &accent);
+  void   refresh_search_icons();
+  void   watch_application(bool state);
   QColor accent_for(const QString &category) const;
   int    header_height() const;
   int    expanded_width() const;
@@ -170,12 +178,16 @@ private:
   bool                 flying = false; // the widgets wait, hidden, under the picture
   bool                 search_wants_focus = false;
 
-  std::vector<CategoryRailButton *>     buttons;
-  std::vector<QPointer<QMenu>>          menus;
-  std::vector<std::vector<std::string>> node_types; // per category, sorted
+  std::vector<CategoryRailButton *>             buttons;
+  std::vector<std::shared_ptr<PaletteTreeNode>> trees;
+  std::vector<std::vector<std::string>>         node_types; // per category, sorted
+  QPointer<PaletteFlyoutCard>                   flyout;
+  bool                                          watching_application = false;
 
-  /// search display string -> node type
+  /// search display string -> node type; the model holds the same rows with
+  /// a glyph each
   std::map<QString, QString> search_index;
+  QStandardItemModel        *search_model = nullptr;
 
   int open_index = -1;
 };

@@ -103,6 +103,19 @@ constexpr int library_hide = 190;          // and out
 constexpr int library_scroll_glide = 150;  // the rows gliding to a wheel notch
 constexpr int library_page_glide = 200;    // a click beside the scrollbar's thumb
 constexpr int library_scroll_linger = 700; // the thumb stays forward after scrolling
+constexpr int library_flyout_in = 165;     // a category's card arriving beside the rail
+constexpr int library_flyout_out = 125;    // and going
+constexpr int library_flyout_glide = 175;  // the open card moving to another category
+constexpr int library_flyout_swap = 145;   // its rows changing on the way
+constexpr int library_flyout_settle = 130; // a card that was leaving, coming back
+constexpr int library_flyout_plate = 80;   // its highlight, from a row to the next
+constexpr int library_flyout_scroll = 115; // its rows gliding to a wheel notch
+constexpr int library_sub_open = 45;  // a sub-list, after the pointer rests on its row
+constexpr int library_sub_close = 95; // and closing, once the pointer has left
+constexpr int library_flyout_thumb_in = 130;   // the card's scrollbar under the pointer
+constexpr int library_flyout_thumb_wake = 100; // and while scrolling
+constexpr int library_flyout_thumb_out = 240;
+constexpr int library_flyout_linger = 650; // the thumb stays forward after scrolling
 
 const QEasingCurve &enter();  // (.22, 1, .36, 1)   decelerate into place
 const QEasingCurve &leave();  // (.4, 0, .9, .6)     gather speed and go

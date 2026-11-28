@@ -13,6 +13,7 @@
 #include <QCompleter>
 #include <QDir>
 #include <QEnterEvent>
+#include <QMenu>
 #include <QPainter>
 #include <QPaintEvent>
 #include <QScreen>
@@ -31,6 +32,8 @@
 
 #include "hesiod/app/ui_scale.hpp"
 #include "hesiod/gui/widgets/utils/fractional_repaint_filter.hpp"
+#include "hesiod/gui/widgets/node_widgets/node_palette/palette_flyout_card.hpp"
+#include "hesiod/gui/widgets/node_widgets/node_palette/palette_tree_node.hpp"
 #include "hesiod/gui/widgets/node_widgets/node_palette_sidebar.hpp"
 #include "hesiod/gui/widgets/dialogs/scrollable_dialog.hpp"
 
@@ -97,35 +100,19 @@ std::map<std::string, QColor> sample_colors()
           {"Primitive", QColor(42, 161, 152)}};
 }
 
-QAction *find_action(QMenu *menu, const QString &text)
+bool find_leaf(const PaletteTreeNode *node, const QString &text)
 {
-  for (QAction *action : menu->actions())
-  {
-    if (action->menu())
-    {
-      if (QAction *hit = find_action(action->menu(), text))
-        return hit;
-    }
-    else if (action->text() == text)
-    {
-      return action;
-    }
-  }
-  return nullptr;
+  if (!node)
+    return false;
+  if (std::find(node->leaves.begin(), node->leaves.end(), text) != node->leaves.end())
+    return true;
+  for (const auto &child : node->children)
+    if (find_leaf(child.get(), text))
+      return true;
+  return false;
 }
 
-int count_leaf_actions(QMenu *menu)
-{
-  int n = 0;
-  for (QAction *action : menu->actions())
-  {
-    if (action->menu())
-      n += count_leaf_actions(action->menu());
-    else if (!action->isSeparator())
-      ++n;
-  }
-  return n;
-}
+int count_leaves(const PaletteTreeNode *node) { return node ? node->total_leaves() : 0; }
 
 void write_config(const QString &path, const std::string &body)
 {
@@ -509,26 +496,21 @@ void test_category_completeness()
                           reachable.end();
   check(every_node_present, "no node type is missing from the flyouts");
 
-  // and the menus themselves hold those nodes, not just the bookkeeping vectors
-  int leaf_actions = 0;
+  // and the cards' trees hold those nodes, not just the bookkeeping vectors
+  int leaves = 0;
   for (int i = 0; i < sidebar.category_count(); ++i)
-    leaf_actions += count_leaf_actions(sidebar.menu_at(i));
-  check(leaf_actions == static_cast<int>(inventory.size()),
-        "the flyout menus contain exactly the inventory's nodes");
+    leaves += count_leaves(sidebar.tree_at(i));
+  check(leaves == static_cast<int>(inventory.size()),
+        "the flyout cards list exactly the inventory's nodes");
 
   // a deep path becomes nested submenus, not a flattened list
   const int erosion = names.indexOf("Erosion");
   check(erosion >= 0, "the Erosion category exists");
   if (erosion >= 0)
   {
-    QMenu *menu = sidebar.menu_at(erosion);
-    int    submenus = 0;
-    for (QAction *action : menu->actions())
-      if (action->menu())
-        ++submenus;
-    check(submenus == 3, "Erosion has one submenu per subcategory");
-    check(find_action(menu, "Thermal") != nullptr,
-          "a node two levels deep is present in the flyout tree");
+    const PaletteTreeNode *tree = sidebar.tree_at(erosion);
+    check(tree && tree->children.size() == 3, "Erosion has one sub-list per subcategory");
+    check(find_leaf(tree, "Thermal"), "a node two levels deep is present in the flyout tree");
   }
 
   // a category the colour map does not name still gets a usable, stable accent
@@ -542,9 +524,9 @@ void test_category_completeness()
   const int bridges = names.indexOf("Bridges");
   if (bridges >= 0)
   {
-    QMenu *menu = sidebar.menu_at(bridges);
-    check(menu->actions().size() == 1 && menu->actions().front()->text() ==
-                                             "BlenderBridge",
+    const PaletteTreeNode *tree = sidebar.tree_at(bridges);
+    check(tree && tree->children.empty() && tree->leaves.size() == 1 &&
+              tree->leaves.front() == "BlenderBridge",
           "a node on a category root is a direct flyout entry");
   }
 }
@@ -558,17 +540,19 @@ void test_node_creation_signal()
   QSignalSpy spy(&sidebar, &NodePaletteSidebar::node_type_selected);
 
   const int erosion = sidebar.category_names().indexOf("Erosion");
-  QAction  *thermal = find_action(sidebar.menu_at(erosion), "Thermal");
-  check(thermal != nullptr, "the Thermal action exists");
+  check(find_leaf(sidebar.tree_at(erosion), "Thermal"), "the Thermal node is listed");
 
-  // Open the flyout first, then trigger action to simulate user click
+  // open the flyout first, then pick from it as a click on its row does
   sidebar.open_category(erosion);
   check(sidebar.open_category_index() == erosion, "erosion category is open");
   check(sidebar.button_at(erosion)->is_open(), "erosion button is open before selection");
 
-  if (thermal)
+  PaletteFlyoutCard *card = sidebar.flyout_card();
+  check(card != nullptr && card->is_open(), "opening a category shows its card");
+
+  if (card)
   {
-    thermal->trigger();
+    card->pick("Thermal");
     check(spy.count() == 1, "triggering a flyout entry requests one node");
     if (spy.count() == 1)
       check(spy.front().front().value<std::string>() == "Thermal",
@@ -578,12 +562,13 @@ void test_node_creation_signal()
           "selecting a node unmarks the rail button as open");
   }
 
-  // a submenu entry must work without the menu ever having been popped up along
-  // its parent chain, which is how the flyouts are actually driven
-  QAction *deep = find_action(sidebar.menu_at(erosion), "HydraulicParticle");
-  if (deep)
+  // a node in a sub-list works the same once its category is open again
+  check(find_leaf(sidebar.tree_at(erosion), "HydraulicParticle"),
+        "the nested HydraulicParticle node is listed");
+  sidebar.open_category(erosion);
+  if (card)
   {
-    deep->trigger();
+    card->pick("HydraulicParticle");
     check(spy.count() == 2, "a nested entry requests a node too");
   }
 }
@@ -654,12 +639,16 @@ void test_flyout_geometry()
   sidebar.open_category(0);
   QApplication::processEvents();
 
-  QMenu *menu = sidebar.menu_at(0);
-  check(menu->isVisible(), "the flyout opened");
+  PaletteFlyoutCard *card = sidebar.flyout_card();
+  check(card != nullptr && card->isVisible(), "the flyout opened");
   check(sidebar.open_category_index() == 0, "the rail knows which flyout is open");
   check(sidebar.button_at(0)->is_open(), "the open category is marked on the rail");
+  if (!card)
+    return;
 
-  const QRect geom = menu->geometry();
+  check(card->scrolls(), "a category taller than its card scrolls");
+
+  const QRect geom = card->geometry();
   check(available.contains(geom, /*proper*/ false) ||
             (geom.top() >= available.top() && geom.bottom() <= available.bottom() &&
              geom.left() >= available.left() && geom.right() <= available.right()),
@@ -669,7 +658,7 @@ void test_flyout_geometry()
 
   sidebar.close_flyout();
   QApplication::processEvents();
-  check(!menu->isVisible(), "closing the flyout hides it");
+  check(!card->is_open(), "closing the flyout closes its card");
   check(sidebar.open_category_index() == -1, "the rail forgets the closed flyout");
   check(!sidebar.button_at(0)->is_open(), "the rail button returns to its resting state");
 
@@ -911,8 +900,12 @@ void test_real_dpi()
     sidebar.open_category(i);
     QApplication::processEvents();
 
-    QMenu      *menu = sidebar.menu_at(i);
-    const QRect geom = menu->geometry();
+    PaletteFlyoutCard *card = sidebar.flyout_card();
+    if (!card)
+      continue;
+    QApplication::processEvents();
+    QTest::qWait(250); // a card moving to the next category lands first
+    const QRect geom = card->geometry();
 
     const bool inside = geom.left() >= available.left() &&
                         geom.right() <= available.right() &&
@@ -929,7 +922,7 @@ void test_real_dpi()
     all_on_screen &= inside;
     none_too_tall &= geom.height() <= available.height();
 
-    if (menu->sizeHint().height() > available.height())
+    if (card->scrolls())
       ++scrolled;
   }
 
@@ -938,10 +931,10 @@ void test_real_dpi()
   check(all_on_screen, "every category flyout opens inside the available screen area");
   check(none_too_tall, "no flyout is taller than the screen");
   std::cout << "  ..   " << scrolled << " of " << sidebar.category_count()
-            << " flyouts wanted more height than the screen has\n";
+            << " flyouts scroll\n";
   check(scrolled > 0,
-        "the 160-node category really does overflow the screen, so the clamp above "
-        "was exercised rather than trivially true");
+        "the 160-node category really does overflow its card, so the bounds above "
+        "were exercised rather than trivially true");
 
   sidebar.hide();
 }
@@ -991,28 +984,26 @@ void render_reference_images()
     sidebar.open_category(erosion);
     QApplication::processEvents();
 
-    QMenu *menu = sidebar.menu_at(erosion);
-    QTest::qWait(120);
-    std::cout << "  ..   flyout logical size " << menu->width() << "x" << menu->height()
-              << "\n";
-    check(menu->grab().save("ui-palette-flyout-dpr" + tag + ".png"),
-          "rendered ui-palette-flyout");
-
-    QMenu *sub = nullptr;
-    for (QAction *action : menu->actions())
-      if (action->menu())
-      {
-        sub = action->menu();
-        break;
-      }
-
-    if (sub)
+    PaletteFlyoutCard *card = sidebar.flyout_card();
+    if (card)
     {
-      sub->popup(menu->mapToGlobal(QPoint(menu->width(), 0)));
-      QTest::qWait(120);
-      check(sub->grab().save("ui-palette-flyout-nodes-dpr" + tag + ".png"),
-            "rendered ui-palette-flyout-nodes");
-      sub->close();
+      QTest::qWait(250);
+      std::cout << "  ..   flyout logical size " << card->width() << "x" << card->height()
+                << "\n";
+      check(card->grab().save("ui-palette-flyout-dpr" + tag + ".png"),
+            "rendered ui-palette-flyout");
+
+      // the last row is a sub-list: Up from nothing lands on it, Right opens it
+      card->key(Qt::Key_Up);
+      card->key(Qt::Key_Right);
+      PaletteFlyoutCard *sub = card->child_card();
+      check(sub != nullptr && sub->is_open(), "Right on a sub-list's row opens its card");
+      if (sub)
+      {
+        QTest::qWait(250);
+        check(sub->grab().save("ui-palette-flyout-nodes-dpr" + tag + ".png"),
+              "rendered ui-palette-flyout-nodes");
+      }
     }
 
     sidebar.close_flyout();

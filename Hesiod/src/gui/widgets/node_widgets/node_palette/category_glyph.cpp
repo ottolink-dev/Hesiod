@@ -339,4 +339,14 @@ int category_glyph_shape(const QString &category)
   return static_cast<int>(hash % 8u);
 }
 
+void draw_node_glyph(QPainter      &painter,
+                     const QRectF  &box,
+                     const QColor  &color,
+                     const QString &node_type,
+                     const QString &category)
+{
+  Q_UNUSED(node_type); // until nodes have icons of their own
+  draw_category_glyph(painter, box, color, category_glyph_shape(category));
+}
+
 } // namespace hesiod

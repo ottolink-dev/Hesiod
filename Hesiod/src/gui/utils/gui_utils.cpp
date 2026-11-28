@@ -112,6 +112,7 @@ NodePalettePalette current_node_palette_palette()
   style.focus = colors.accent;
   style.flyout_bg = popup_color();
   style.flyout_border = seam_color();
+  style.flyout_hover = menu_hover_color();
   style.text = colors.text_secondary;
   style.text_active = colors.text_primary;
   return style;
