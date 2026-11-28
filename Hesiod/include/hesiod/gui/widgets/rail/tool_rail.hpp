@@ -29,6 +29,8 @@ class SnapGuide;
 // it will land. Its tools are reported to its owner (RailOwner).
 class ToolRail : public QWidget
 {
+  Q_OBJECT
+
 public:
   struct Item
   {
@@ -71,6 +73,10 @@ public:
 
   // dock where the user chose, derived for the current parent and tool set
   void place();
+
+  // keep clear of a strip along the parent's left edge (the node library
+  // floating over the graph), so the rail docks beside it instead of under it
+  void set_left_inset(qreal px);
 
 protected:
   // for rails with tools of their own kind: under the tools, a whole cell
@@ -146,6 +152,7 @@ private:
   Anim              morph_t{this, 1.0};      // length change when the tools change
   QRectF            morph_from;
   bool              has_placed_once = false;
+  qreal             left_inset = 0.0;
 
   void  set_hovered(int index);
   qreal cell_along(size_t i) const;

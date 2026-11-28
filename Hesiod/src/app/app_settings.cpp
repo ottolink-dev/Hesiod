@@ -198,6 +198,19 @@ void AppSettings::json_from(nlohmann::json const &json)
     get_metric("node_palette.flyout_padding", node_palette.flyout_padding, 0, 24);
     get_metric("node_palette.animation_ms", node_palette.animation_ms, 0, 1000);
 
+    // A config written before the rail moved into the graph editor carries the
+    // old compiled defaults (tall, widely spaced rows). Those were never a
+    // choice, so they follow the new defaults; other values were set by hand
+    // and are kept.
+    if (node_palette.button_height == 40 && node_palette.button_spacing == 6 &&
+        node_palette.icon_size == 22)
+    {
+      const NodePalettePalette fresh;
+      node_palette.button_height = fresh.button_height;
+      node_palette.button_spacing = fresh.button_spacing;
+      node_palette.icon_size = fresh.icon_size;
+    }
+
     if (json.contains("node_palette.accent_strength") &&
         json.at("node_palette.accent_strength").is_number())
     {
@@ -255,6 +268,9 @@ void AppSettings::json_from(nlohmann::json const &json)
   json_safe_get(json,
                 "node_editor.show_node_settings_pan",
                 node_editor.show_node_settings_pan);
+  json_safe_get(json,
+                "node_editor.node_library_compact",
+                node_editor.node_library_compact);
   json_safe_get(json,
                 "node_editor.node_settings_panel_width",
                 node_editor.node_settings_panel_width);
@@ -361,6 +377,7 @@ nlohmann::json AppSettings::json_to() const
   json["node_editor.auto_layout_dy"] = node_editor.auto_layout_dy;
   json["node_editor.show_node_library_pan"] = node_editor.show_node_library_pan;
   json["node_editor.show_node_settings_pan"] = node_editor.show_node_settings_pan;
+  json["node_editor.node_library_compact"] = node_editor.node_library_compact;
   json["node_editor.node_settings_panel_width"] = node_editor.node_settings_panel_width;
   json["node_editor.show_node_toolbar_in_settings_pan"] =
       node_editor.show_node_toolbar_in_settings_pan;

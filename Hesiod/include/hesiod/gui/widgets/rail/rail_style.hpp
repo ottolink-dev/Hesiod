@@ -30,6 +30,8 @@ constexpr int kMargin = 10;     // distance from the parent's edges
 constexpr int kMagnet = 28;     // snap to a corner within this distance
 constexpr int kCenterSnap = 32; // drop this close to an edge's middle to centre on it
 constexpr int kRadius = 12;     // rail corners; cells use kRadius minus their inset
+constexpr qreal
+    inset_step = 0.25; // a smaller change of the left inset is not worth a layout
 
 // --- tool plates and ink (ToolRail), from the surface toward the text color
 constexpr qreal hover_plate_tone = 0.075;

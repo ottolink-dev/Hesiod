@@ -5,30 +5,32 @@
 #include <cmath>
 #include <functional>
 #include <set>
-
-namespace
-{
-constexpr double kPi = 3.14159265358979323846;
-}
+#include <utility>
 
 #include <QApplication>
 #include <QCompleter>
-#include <QEnterEvent>
-#include <QFontMetrics>
 #include <QMouseEvent>
 #include <QPainter>
-#include <QPainterPath>
+#include <QPixmap>
+#include <QResizeEvent>
 #include <QScreen>
 #include <QScrollArea>
 #include <QStringListModel>
 #include <QTimer>
 #include <QVBoxLayout>
 
-#include "hesiod/gui/theme/theme.hpp"
+#include "hesiod/gui/widgets/node_widgets/node_palette/fold_button.hpp"
+#include "hesiod/gui/widgets/node_widgets/node_palette/fold_flight.hpp"
+#include "hesiod/gui/widgets/node_widgets/node_palette/node_palette_style.hpp"
+#include "hesiod/gui/widgets/node_widgets/node_palette/rail_scroller.hpp"
+#include "hesiod/gui/widgets/node_widgets/node_palette/search_fade_veil.hpp"
 #include "hesiod/gui/widgets/node_widgets/node_palette_sidebar.hpp"
+#include "hesiod/gui/widgets/utils/gui_utils.hpp"
 
 namespace hesiod
 {
+
+namespace np = node_palette;
 
 namespace
 {
@@ -45,14 +47,6 @@ QStringList split_path(const QString &path)
   return path.split('/', Qt::SkipEmptyParts);
 }
 
-QColor blend(const QColor &a, const QColor &b, double t)
-{
-  t = std::clamp(t, 0.0, 1.0);
-  return QColor(static_cast<int>(a.red() * (1.0 - t) + b.red() * t),
-                static_cast<int>(a.green() * (1.0 - t) + b.green() * t),
-                static_cast<int>(a.blue() * (1.0 - t) + b.blue() * t));
-}
-
 /** @brief A readable accent for a category that the palette does not name.
  *
  * Hashing the name keeps it stable across runs and across machines, which
@@ -67,151 +61,6 @@ QColor derived_accent(const QString &category)
     hash = (hash ^ static_cast<uint>(c.unicode())) * 16777619u;
 
   return QColor::fromHsl(static_cast<int>(hash % 360u), 110, 150);
-}
-
-/** @brief One of eight line glyphs, picked deterministically from the name.
- *
- * Hesiod ships no per-category artwork and inventing forty SVGs for a togglable
- * sidebar is not worth it. Drawing them keeps the set consistent, scales with
- * the interface scale for free, and stays distinguishable because the shape is
- * a stable function of the category name.
- */
-void draw_glyph(QPainter &painter, const QRectF &box, const QColor &color, int shape)
-{
-  painter.save();
-  painter.setRenderHint(QPainter::Antialiasing, true);
-
-  QPen pen(color);
-  pen.setWidthF(std::max(1.2, box.width() * 0.09));
-  pen.setCapStyle(Qt::RoundCap);
-  pen.setJoinStyle(Qt::RoundJoin);
-  painter.setPen(pen);
-  painter.setBrush(Qt::NoBrush);
-
-  const QPointF c = box.center();
-  const double  r = box.width() * 0.5;
-
-  switch (shape)
-  {
-  case 0: // hexagon
-  {
-    QPolygonF poly;
-    for (int i = 0; i < 6; ++i)
-    {
-      const double a = kPi / 6.0 + i * kPi / 3.0;
-      poly << QPointF(c.x() + r * std::cos(a), c.y() + r * std::sin(a));
-    }
-    painter.drawPolygon(poly);
-    break;
-  }
-  case 1: // ring with a core
-    painter.drawEllipse(c, r, r);
-    painter.setBrush(color);
-    painter.drawEllipse(c, r * 0.22, r * 0.22);
-    break;
-  case 2: // waves
-  {
-    QPainterPath path;
-    path.moveTo(box.left(), c.y() - r * 0.35);
-    path.cubicTo(box.left() + box.width() * 0.33,
-                 c.y() - r * 1.1,
-                 box.left() + box.width() * 0.66,
-                 c.y() + r * 0.4,
-                 box.right(),
-                 c.y() - r * 0.35);
-    painter.drawPath(path);
-    painter.translate(0, r * 0.7);
-    painter.drawPath(path);
-    break;
-  }
-  case 3: // ridge / triangle
-  {
-    QPolygonF poly;
-    poly << QPointF(box.left(), box.bottom()) << QPointF(c.x(), box.top())
-         << QPointF(box.right(), box.bottom());
-    painter.drawPolyline(poly);
-    break;
-  }
-  case 4: // grid
-    for (int i = 0; i <= 2; ++i)
-    {
-      const double t = box.left() + box.width() * i * 0.5;
-      painter.drawLine(QPointF(t, box.top()), QPointF(t, box.bottom()));
-      const double u = box.top() + box.height() * i * 0.5;
-      painter.drawLine(QPointF(box.left(), u), QPointF(box.right(), u));
-    }
-    break;
-  case 5: // droplet
-  {
-    QPainterPath path;
-    path.moveTo(c.x(), box.top());
-    path.quadTo(box.right(), c.y(), c.x(), box.bottom());
-    path.quadTo(box.left(), c.y(), c.x(), box.top());
-    painter.drawPath(path);
-    break;
-  }
-  case 6: // scatter
-    painter.setBrush(color);
-    painter.setPen(Qt::NoPen);
-    for (const QPointF &p : {QPointF(-0.5, -0.4),
-                             QPointF(0.45, -0.15),
-                             QPointF(-0.15, 0.5),
-                             QPointF(0.2, 0.2),
-                             QPointF(-0.45, 0.1)})
-      painter.drawEllipse(QPointF(c.x() + p.x() * r * 1.6, c.y() + p.y() * r * 1.6),
-                          r * 0.16,
-                          r * 0.16);
-    break;
-  case 8: // rock
-  {
-    QPolygonF rock;
-    rock << QPointF(box.left() + box.width() * 0.15, box.bottom() - box.height() * 0.10)
-         << QPointF(box.left() + box.width() * 0.05, box.top() + box.height() * 0.55)
-         << QPointF(box.left() + box.width() * 0.35, box.top() + box.height() * 0.15)
-         << QPointF(box.left() + box.width() * 0.75, box.top() + box.height() * 0.22)
-         << QPointF(box.right() - box.width() * 0.05, box.top() + box.height() * 0.62)
-         << QPointF(box.right() - box.width() * 0.18, box.bottom() - box.height() * 0.10);
-    painter.drawPolygon(rock);
-
-    // facet lines
-    painter.drawLine(
-        QPointF(box.left() + box.width() * 0.35, box.top() + box.height() * 0.15),
-        QPointF(box.left() + box.width() * 0.48, box.top() + box.height() * 0.55));
-    painter.drawLine(
-        QPointF(box.left() + box.width() * 0.48, box.top() + box.height() * 0.55),
-        QPointF(box.right() - box.width() * 0.05, box.top() + box.height() * 0.62));
-    painter.drawLine(
-        QPointF(box.left() + box.width() * 0.48, box.top() + box.height() * 0.55),
-        QPointF(box.left() + box.width() * 0.32, box.bottom() - box.height() * 0.10));
-    break;
-  }
-  case 9: // graph io (bidirectional arrows)
-  {
-    const double y_top = box.top() + box.height() * 0.32;
-    const double y_bot = box.top() + box.height() * 0.68;
-    const double x_l = box.left() + box.width() * 0.12;
-    const double x_r = box.right() - box.width() * 0.12;
-    const double ah = box.height() * 0.16;
-
-    // top arrow pointing right (->)
-    painter.drawLine(QPointF(x_l, y_top), QPointF(x_r, y_top));
-    painter.drawLine(QPointF(x_r - ah, y_top - ah), QPointF(x_r, y_top));
-    painter.drawLine(QPointF(x_r - ah, y_top + ah), QPointF(x_r, y_top));
-
-    // bottom arrow pointing left (<-)
-    painter.drawLine(QPointF(x_l, y_bot), QPointF(x_r, y_bot));
-    painter.drawLine(QPointF(x_l + ah, y_bot - ah), QPointF(x_l, y_bot));
-    painter.drawLine(QPointF(x_l + ah, y_bot + ah), QPointF(x_l, y_bot));
-    break;
-  }
-  default: // node / connector
-    painter.drawLine(QPointF(box.left(), c.y()), QPointF(box.right(), c.y()));
-    painter.drawEllipse(QPointF(box.left() + r * 0.3, c.y()), r * 0.28, r * 0.28);
-    painter.drawEllipse(QPointF(box.right() - r * 0.3, c.y()), r * 0.28, r * 0.28);
-    break;
-  }
-
-  painter.restore();
 }
 
 /** @brief Force a shown popup inside @p available.
@@ -263,250 +112,30 @@ void clamp_to_screen(QMenu *menu, const QRect &available)
   clamping = false;
 }
 
-int glyph_shape_for(const QString &category)
+/// The search field's leading mark, drawn at 3x so it stays crisp at any
+/// interface scale.
+QIcon magnifier_icon(const QColor &color)
 {
-  if (category == QStringLiteral("Rock"))
-    return 8;
-  if (category == QStringLiteral("Graph IO"))
-    return 9;
+  const qreal ratio = np::search_icon_ratio;
+  QPixmap pixmap(int(np::search_icon_side * ratio), int(np::search_icon_side * ratio));
+  pixmap.setDevicePixelRatio(ratio);
+  pixmap.fill(Qt::transparent);
 
-  uint hash = 2166136261u;
-  for (const QChar c : category)
-    hash = (hash ^ static_cast<uint>(c.unicode())) * 16777619u;
-  return static_cast<int>(hash % 8u);
+  QPainter painter(&pixmap);
+  painter.setRenderHint(QPainter::Antialiasing, true);
+  QPen pen(color);
+  pen.setWidthF(np::search_icon_pen);
+  pen.setCapStyle(Qt::RoundCap);
+  painter.setPen(pen);
+  painter.drawEllipse(QPointF(np::search_icon_center, np::search_icon_center),
+                      np::search_icon_radius,
+                      np::search_icon_radius);
+  painter.drawLine(QPointF(np::search_icon_handle_from, np::search_icon_handle_from),
+                   QPointF(np::search_icon_handle_to, np::search_icon_handle_to));
+  return QIcon(pixmap);
 }
 
 } // namespace
-
-// =====================================
-// CategoryRailButton
-// =====================================
-
-CategoryRailButton::CategoryRailButton(const QString            &category,
-                                       const QColor             &accent,
-                                       const NodePalettePalette &style,
-                                       QWidget                  *parent)
-    : QAbstractButton(parent), category(category), accent(accent), style(style)
-{
-  this->setText(category);
-  this->setCursor(Qt::PointingHandCursor);
-  this->setFocusPolicy(Qt::TabFocus);
-  this->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
-  this->setAttribute(Qt::WA_Hover, true);
-
-  this->surface = this->style.surface;
-
-  this->surface_animation.setEasingCurve(QEasingCurve::OutCubic);
-  this->connect(&this->surface_animation,
-                &QVariantAnimation::valueChanged,
-                this,
-                [this](const QVariant &value)
-                {
-                  this->surface = value.value<QColor>();
-                  this->update();
-                });
-  this->connect(&this->surface_animation,
-                &QVariantAnimation::finished,
-                this,
-                [this]()
-                {
-                  this->surface = this->target_surface();
-                  this->update();
-                });
-}
-
-QColor CategoryRailButton::current_surface() const { return this->surface; }
-
-void CategoryRailButton::enterEvent(QEnterEvent *event)
-{
-  const bool was_hovering = this->hovering;
-  this->hovering = true;
-  this->retarget_surface();
-  if (!was_hovering)
-    Q_EMIT this->hovered();
-  QAbstractButton::enterEvent(event);
-}
-
-bool CategoryRailButton::event(QEvent *event)
-{
-  switch (event->type())
-  {
-  case QEvent::HoverEnter:
-  {
-    const bool was_hovering = this->hovering;
-    this->hovering = true;
-    this->retarget_surface();
-    if (!was_hovering)
-      Q_EMIT this->hovered();
-    break;
-  }
-  case QEvent::HoverLeave:
-  {
-    this->hovering = false;
-    this->retarget_surface();
-    break;
-  }
-  default:
-    break;
-  }
-  return QAbstractButton::event(event);
-}
-
-bool CategoryRailButton::is_open() const { return this->open; }
-
-void CategoryRailButton::leaveEvent(QEvent *event)
-{
-  this->hovering = false;
-  this->retarget_surface();
-  QAbstractButton::leaveEvent(event);
-}
-
-void CategoryRailButton::paintEvent(QPaintEvent *)
-{
-  if (!this->open && this->hovering)
-  {
-    const QPoint global_mouse = QCursor::pos();
-    if (!this->rect().contains(this->mapFromGlobal(global_mouse)))
-    {
-      this->hovering = false;
-      this->retarget_surface();
-    }
-  }
-
-  QPainter painter(this);
-  painter.setRenderHint(QPainter::Antialiasing, true);
-
-  const QRectF box = QRectF(this->rect()).adjusted(0.5, 0.5, -0.5, -0.5);
-
-  painter.setPen(Qt::NoPen);
-  painter.setBrush(this->surface);
-  painter.drawRoundedRect(box, this->style.corner_radius, this->style.corner_radius);
-
-  // the accent only ever touches the glyph and a hairline, never the surface:
-  // a full-width category colour is what makes the old tree hard to read
-  if (this->open || this->hovering)
-  {
-    QPen pen(blend(this->accent, this->style.surface_selected, 0.35));
-    pen.setWidthF(1.0);
-    painter.setPen(pen);
-    painter.setBrush(Qt::NoBrush);
-    painter.drawRoundedRect(box, this->style.corner_radius, this->style.corner_radius);
-  }
-
-  const double icon = this->style.icon_size;
-  const double pad = this->style.rail_padding;
-
-  const QRectF glyph_box(box.left() + pad, box.center().y() - icon * 0.5, icon, icon);
-
-  const QColor glyph_color = blend(this->style.text,
-                                   this->accent,
-                                   this->style.accent_strength);
-  draw_glyph(painter,
-             glyph_box.adjusted(icon * 0.12, icon * 0.12, -icon * 0.12, -icon * 0.12),
-             glyph_color,
-             glyph_shape_for(this->category));
-
-  QFont font = this->font();
-  font.setBold(this->open);
-  painter.setFont(font);
-  painter.setPen(this->open || this->hovering ? this->style.text_active
-                                              : this->style.text);
-
-  const QRectF text_box(glyph_box.right() + pad,
-                        box.top(),
-                        box.right() - glyph_box.right() - 2.0 * pad,
-                        box.height());
-
-  const QString elided = QFontMetrics(font).elidedText(
-      this->category,
-      Qt::ElideRight,
-      static_cast<int>(text_box.width()));
-  painter.drawText(text_box, Qt::AlignVCenter | Qt::AlignLeft, elided);
-}
-
-void CategoryRailButton::retarget_surface()
-{
-  const QColor target = this->target_surface();
-
-  if (!this->style.animations || this->style.animation_ms <= 0)
-  {
-    // "off" has to mean off *now*, not after the current fade finishes
-    this->surface_animation.stop();
-    this->surface = target;
-    this->update();
-    return;
-  }
-
-  // if already animating towards target, let it continue
-  if (this->surface_animation.state() == QAbstractAnimation::Running &&
-      this->surface_animation.endValue().value<QColor>() == target)
-  {
-    return;
-  }
-
-  // if already at target and not animating, nothing to do
-  if (this->surface_animation.state() == QAbstractAnimation::Stopped &&
-      this->surface == target)
-  {
-    return;
-  }
-
-  this->surface_animation.stop();
-  if (this->surface == target)
-  {
-    this->update();
-    return;
-  }
-
-  this->surface_animation.setDuration(this->style.animation_ms);
-  this->surface_animation.setStartValue(this->surface);
-  this->surface_animation.setEndValue(target);
-  this->surface_animation.start();
-}
-
-void CategoryRailButton::set_open(bool state)
-{
-  if (this->open == state)
-    return;
-
-  this->open = state;
-  if (!state)
-  {
-    const QPoint global_mouse = QCursor::pos();
-    this->hovering = this->rect().contains(this->mapFromGlobal(global_mouse));
-  }
-  this->retarget_surface();
-  this->update();
-}
-
-void CategoryRailButton::set_style(const NodePalettePalette &new_style)
-{
-  this->style = new_style;
-  this->surface_animation.stop();
-  this->surface = this->target_surface();
-  this->updateGeometry();
-  this->update();
-}
-
-QSize CategoryRailButton::sizeHint() const
-{
-  const int text_w = QFontMetrics(this->font()).horizontalAdvance(this->category);
-  return QSize(3 * this->style.rail_padding + this->style.icon_size + text_w,
-               this->style.button_height);
-}
-
-QColor CategoryRailButton::target_surface() const
-{
-  if (this->open)
-    return this->style.surface_selected;
-  if (this->hovering)
-    return this->style.surface_hover;
-  return this->style.surface;
-}
-
-// =====================================
-// NodePaletteSidebar
-// =====================================
 
 NodePaletteSidebar::NodePaletteSidebar(
     const std::map<std::string, std::string> &inventory,
@@ -518,28 +147,76 @@ NodePaletteSidebar::NodePaletteSidebar(
   live_sidebars().insert(this);
 
   auto *layout = new QVBoxLayout(this);
-  layout->setContentsMargins(this->style.rail_padding,
-                             this->style.rail_padding,
-                             this->style.rail_padding,
-                             this->style.rail_padding);
-  layout->setSpacing(this->style.button_spacing);
+  layout->setSpacing(this->style.rail_padding); // margins: see set_style
 
-  this->search = new QLineEdit(this);
-  this->search->setPlaceholderText("Search nodes...");
+  // header: laid out by hand (layout_header) so the search field slides
+  // behind the fold button as the rail folds, instead of being squeezed
+  this->header_bar = new QWidget(this);
+  this->header_bar->setAttribute(Qt::WA_NoSystemBackground);
+  this->header_bar->setAutoFillBackground(false);
+
+  this->search_clip = new QWidget(this->header_bar);
+  this->search_clip->setAttribute(Qt::WA_NoSystemBackground);
+  this->search_clip->setAutoFillBackground(false);
+
+  this->search = new QLineEdit(this->search_clip);
+  this->search->setPlaceholderText("Search nodes");
   this->search->setClearButtonEnabled(true);
-  layout->addWidget(this->search);
+  this->search_icon = this->search->addAction(magnifier_icon(this->style.text),
+                                              QLineEdit::LeadingPosition);
+
+  this->search_veil = new SearchFadeVeil(this->search_clip);
+
+  this->fold_button = new FoldButton(this->header_bar);
+  layout->addWidget(this->header_bar);
+
+  this->connect(this->fold_button,
+                &QAbstractButton::clicked,
+                this,
+                [this]()
+                {
+                  const bool unfolding = this->compact;
+                  this->set_compact(!this->compact);
+                  if (!unfolding || !this->search)
+                    return;
+
+                  // while the fold is in flight the field is not on screen
+                  // yet; it takes the caret when it lands
+                  if (this->flying)
+                    this->search_wants_focus = true;
+                  else
+                    this->search->setFocus(Qt::OtherFocusReason);
+                });
+
+  this->reveal_anim.on_tick = [this]() { this->apply_reveal(this->reveal_anim.value()); };
+  this->visibility_anim.on_tick = [this]()
+  { this->apply_visibility(this->visibility_anim.value()); };
+  this->visibility_anim.on_done = [this]()
+  {
+    if (!this->target_visible && this->visibility_anim.value() <= np::hidden_below)
+      this->hide();
+  };
 
   this->build_rail(inventory);
   this->setup_search(inventory);
 
   // the rail scrolls so every category stays reachable when the interface is
   // scaled up or the window is short
-  auto *scroll = new QScrollArea(this);
-  scroll->setWidget(this->rail);
-  scroll->setWidgetResizable(true);
-  scroll->setFrameShape(QFrame::NoFrame);
-  scroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-  layout->addWidget(scroll, 1);
+  this->scroll = new QScrollArea(this);
+  this->scroll->setWidget(this->rail);
+  this->scroll->setWidgetResizable(true);
+  this->scroll->setFrameShape(QFrame::NoFrame);
+  this->scroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+  // its own bar would stand in the rows, against the icons: see RailScroller
+  this->scroll->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+  layout->addWidget(this->scroll, 100);
+  this->scroller = new RailScroller(this->scroll, this);
+
+  // The list is as tall as its rows and no taller (see set_style); whatever
+  // height the editor has beyond that stays empty below the card, so the
+  // library is a card that ends with its last row rather than a full-height
+  // slab with a hole at the bottom.
+  layout->addStretch(1);
 
   this->setToolTip("Click a category for its nodes.\n"
                    "Ctrl + click a node: replace the selected node\n"
@@ -548,7 +225,12 @@ NodePaletteSidebar::NodePaletteSidebar(
   this->set_style(this->style);
 }
 
-NodePaletteSidebar::~NodePaletteSidebar() { live_sidebars().erase(this); }
+NodePaletteSidebar::~NodePaletteSidebar()
+{
+  if (this->flight)
+    delete this->flight;
+  live_sidebars().erase(this);
+}
 
 QColor NodePaletteSidebar::accent_for(const QString &category) const
 {
@@ -558,10 +240,10 @@ QColor NodePaletteSidebar::accent_for(const QString &category) const
     QColor color = it->second;
     color.setAlpha(255);
 
-    // several registry colours are near-black, which is invisible as a glyph on
-    // a dark rail; lift only those rather than recolouring the whole palette
+    // several registry colors are near-black, which is invisible as a glyph on
+    // a dark rail; lift only those rather than recoloring the whole palette
     if (color.lightness() < 70)
-      color = blend(color, QColor("#c8c8c8"), 0.55);
+      color = mix_colors(color, QColor("#c8c8c8"), 0.55);
 
     return color;
   }
@@ -693,8 +375,6 @@ void NodePaletteSidebar::build_rail(const std::map<std::string, std::string> &in
     }
   };
 
-  int max_width = 0;
-
   for (const auto &[category, tree] : roots)
   {
     const QColor accent = this->accent_for(category);
@@ -765,13 +445,9 @@ void NodePaletteSidebar::build_rail(const std::map<std::string, std::string> &in
                     if (this->open_index >= 0 && this->open_index != index)
                       this->open_category(index);
                   });
-
-    max_width = std::max(max_width, button->sizeHint().width());
   }
 
   rail_layout->addStretch(1);
-
-  this->setMinimumWidth(max_width + 4 * this->style.rail_padding);
 }
 
 CategoryRailButton *NodePaletteSidebar::button_at(int index) const
@@ -779,6 +455,19 @@ CategoryRailButton *NodePaletteSidebar::button_at(int index) const
   if (index < 0 || index >= static_cast<int>(this->buttons.size()))
     return nullptr;
   return this->buttons.at(index);
+}
+
+QRectF NodePaletteSidebar::card_rect() const
+{
+  int bottom = this->height() - np::outer;
+  if (this->scroll)
+    bottom = std::min(bottom,
+                      this->scroll->geometry().bottom() + 1 + this->style.rail_padding);
+
+  return QRectF(np::outer + 0.5,
+                np::outer + 0.5,
+                this->width() - np::outer - 1.0,
+                bottom - np::outer - 1.0);
 }
 
 int NodePaletteSidebar::category_count() const
@@ -809,6 +498,12 @@ void NodePaletteSidebar::close_flyout()
     button->set_open(false);
 }
 
+int NodePaletteSidebar::compact_width() const
+{
+  // one square cell
+  return this->style.button_height + 2 * this->style.rail_padding + np::outer;
+}
+
 void NodePaletteSidebar::emit_for_type(const QString &node_type)
 {
   this->close_flyout();
@@ -826,6 +521,11 @@ void NodePaletteSidebar::emit_for_type(const QString &node_type)
 
 bool NodePaletteSidebar::eventFilter(QObject *watched, QEvent *event)
 {
+  // floating over the graph, the card follows the graph's size
+  if (this->overlay_mode && watched == this->parentWidget() &&
+      (event->type() == QEvent::Resize || event->type() == QEvent::Show))
+    this->sync_overlay_bounds();
+
   // Submenus are popped up by Qt, not by us, so this is the only place a deep
   // node list can be pulled back onto the screen. Move and Resize are watched
   // as well as Show because Qt keeps adjusting a scrollable menu after it has
@@ -839,7 +539,8 @@ bool NodePaletteSidebar::eventFilter(QObject *watched, QEvent *event)
           clamp_to_screen(menu, screen->availableGeometry());
   }
 
-  if (event->type() == QEvent::MouseMove && this->open_index >= 0)
+  if (event->type() == QEvent::MouseMove && this->open_index >= 0 &&
+      qobject_cast<QMenu *>(watched))
   {
     auto        *move = static_cast<QMouseEvent *>(event);
     const QPoint global = move->globalPosition().toPoint();
@@ -863,7 +564,203 @@ bool NodePaletteSidebar::eventFilter(QObject *watched, QEvent *event)
   return QWidget::eventFilter(watched, event);
 }
 
+int NodePaletteSidebar::expanded_width() const
+{
+  int widest = 0;
+  for (const CategoryRailButton *button : this->buttons)
+    widest = std::max(widest, button->sizeHint().width());
+  return std::max(widest, np::rows_min_width) + 2 * this->style.rail_padding + np::outer;
+}
+
+// The fold as one moving picture (see FoldFlight). False when it cannot be
+// done that way (not floating over the graph, or nothing to draw on), and the
+// caller folds the widgets live instead.
+bool NodePaletteSidebar::fly_fold(double target)
+{
+  QWidget *host = this->parentWidget();
+  if (!this->overlay_mode || !host || !host->isVisible() || this->visibility < 0.995)
+    return false;
+
+  // a flight still under way ends where it was going: the widgets under it
+  // are already there
+  this->land_fold();
+  this->reveal_anim.set(this->reveal);
+
+  QWidget *mate = (this->companion && this->companion->isVisible())
+                      ? this->companion.data()
+                      : nullptr;
+
+  auto content_shot = [this]()
+  {
+    this->content_only = true;
+    QPixmap shot = this->grab();
+    this->content_only = false;
+    return shot;
+  };
+  auto mate_rect = [host, mate]()
+  { return mate ? QRect(mate->mapTo(host, QPoint(0, 0)), mate->size()) : QRect(); };
+
+  // --- before
+  const QPixmap content_from = content_shot();
+  const QRect   side_from = this->geometry();
+  const QRectF  card_from = this->card_rect().translated(side_from.topLeft());
+  const QRect   mate_from = mate_rect();
+  const QPixmap mate_shot = mate ? mate->grab() : QPixmap();
+  const double  reveal_from = this->reveal;
+
+  // --- after: the real widgets take their final state now, in one step
+  this->reveal_anim.set(target);
+  this->apply_reveal(target);
+
+  const QPixmap content_to = content_shot();
+  const QRect   side_to = this->geometry();
+  const QRectF  card_to = this->card_rect().translated(side_to.topLeft());
+  const QRect   mate_to = mate_rect();
+
+  // --- the graph behind them, taken with both out of the way
+  QRect bounds = side_from.united(side_to);
+  if (mate)
+    bounds = bounds.united(mate_from).united(mate_to);
+  bounds = bounds
+               .adjusted(-np::flight_margin,
+                         -np::flight_margin,
+                         np::flight_margin,
+                         np::flight_margin)
+               .intersected(host->rect());
+  if (bounds.isEmpty())
+    return true; // already in the final state, nothing to show
+
+  // They stay out of the way until the picture has landed: shown now, they
+  // would repaint in their new state underneath it, which is exactly the work
+  // the picture is there to keep out of the moving frames.
+  this->hide();
+  if (mate)
+    mate->hide();
+  const QPixmap backdrop = host->grab(bounds);
+  this->flying = true;
+
+  const QPointF    base = bounds.topLeft();
+  FoldFlight::Shot from, to;
+  from.content = content_from;
+  from.origin = QPointF(side_from.topLeft()) - base;
+  from.card = card_from.translated(-base);
+  from.rail_pos = QPointF(mate_from.topLeft()) - base;
+  from.reveal = reveal_from;
+  to.content = content_to;
+  to.origin = QPointF(side_to.topLeft()) - base;
+  to.card = card_to.translated(-base);
+  to.rail_pos = QPointF(mate_to.topLeft()) - base;
+  to.reveal = target;
+
+  FoldFlight::Look look;
+  look.card_bg = this->style.rail_bg;
+  look.seam = this->style.seam;
+  look.radius = this->style.corner_radius + np::card_radius_extra;
+
+  this->flight = new FoldFlight(host,
+                                bounds,
+                                backdrop,
+                                from,
+                                to,
+                                mate_shot,
+                                look,
+                                [this]() { this->land_fold(); });
+  return true;
+}
+
+int NodePaletteSidebar::footprint_right() const
+{
+  if (!this->overlay_mode)
+    return 0;
+  if (!this->target_visible && this->visibility <= np::hidden_below)
+    return 0;
+
+  const int    from = this->compact_width();
+  const int    to = this->expanded_width();
+  const double w = from + (to - from) * this->reveal;
+  return std::max(0, static_cast<int>(std::lround(w * this->visibility)));
+}
+
 const NodePalettePalette &NodePaletteSidebar::get_style() const { return this->style; }
+
+int NodePaletteSidebar::header_height() const
+{
+  // the field and the button are one row with the category rows' rhythm
+  return std::max(np::header_min_height, this->style.button_height - 2);
+}
+
+int NodePaletteSidebar::ideal_overlay_height() const
+{
+  const int pad = this->style.rail_padding;
+  const int list_h = (this->rail && this->rail->layout())
+                         ? this->rail->layout()->sizeHint().height()
+                         : 0;
+  return 2 * np::outer + 3 * pad + this->header_height() + list_h + np::card_bottom_slack;
+}
+
+bool NodePaletteSidebar::is_compact() const { return this->compact; }
+
+// The picture has arrived (or is cut short): the widgets, already in their
+// final state, come back in its place.
+void NodePaletteSidebar::land_fold()
+{
+  if (!std::exchange(this->flying, false))
+    return;
+
+  if (this->target_visible)
+    this->show();
+  if (this->companion)
+  {
+    this->companion->show();
+    this->companion->raise();
+  }
+  if (this->target_visible)
+    this->raise();
+
+  if (this->flight)
+  {
+    this->flight->hide();
+    this->flight->deleteLater();
+    this->flight = nullptr;
+  }
+
+  if (std::exchange(this->search_wants_focus, false) && this->search && !this->compact)
+    this->search->setFocus(Qt::OtherFocusReason);
+}
+
+void NodePaletteSidebar::layout_header()
+{
+  if (!this->header_bar || !this->fold_button || !this->search_clip || !this->search)
+    return;
+
+  const int header_h = this->header_height();
+  const int bar_w = this->header_bar->width();
+  const int fold_x = std::max(0, bar_w - header_h);
+  this->fold_button->setGeometry(fold_x, 0, header_h, header_h);
+
+  // the field keeps its unfolded width and is cut by the clip as the rail
+  // folds, so its text never reflows on the way
+  const int  clip_w = std::max(0, fold_x - np::header_gap);
+  const int  full_search_w = std::max(np::search_min_width,
+                                     this->expanded_width() - np::outer -
+                                         2 * this->style.rail_padding - header_h -
+                                         np::header_gap);
+  const bool show_search = this->reveal > np::hidden_below && clip_w > 2;
+  this->search_clip->setVisible(show_search);
+  if (!show_search)
+    return;
+
+  this->search_clip->setGeometry(0, 0, clip_w, header_h);
+  this->search->setGeometry(0, 0, full_search_w, header_h);
+  if (this->search_veil)
+  {
+    this->search_veil->setGeometry(0, 0, clip_w, header_h);
+    this->search_veil->set_state(
+        this->style.rail_bg,
+        1.0 - np::smoothstep(np::search_fade_from, np::search_fade_to, this->reveal));
+    this->search_veil->raise();
+  }
+}
 
 QMenu *NodePaletteSidebar::menu_at(int index) const
 {
@@ -893,9 +790,10 @@ void NodePaletteSidebar::open_category(int index)
   this->open_index = index;
   button->set_open(true);
 
-  // flush against the button's right edge: a gap here is the classic hover dead
-  // zone, where the pointer leaves the button before it reaches the flyout
-  QPoint pos = button->mapToGlobal(QPoint(button->width(), 0));
+  // flush against the card's right edge: a gap here is the classic hover dead
+  // zone, where the pointer leaves the rail before it reaches the flyout
+  QPoint pos = this->mapToGlobal(
+      QPoint(this->width(), button->mapTo(this, QPoint(0, 0)).y()));
 
   const QScreen *screen = button->screen();
   QRect          available;
@@ -919,6 +817,40 @@ void NodePaletteSidebar::open_category(int index)
 
 int NodePaletteSidebar::open_category_index() const { return this->open_index; }
 
+void NodePaletteSidebar::paintEvent(QPaintEvent *)
+{
+  // a picture of the content alone is being taken, see fly_fold()
+  if (this->content_only)
+    return;
+
+  // Floating over the graph the card is drawn on the graph itself (nothing
+  // behind its rounded corners); in a layout it fills its ground first.
+  QPainter painter(this);
+  painter.setRenderHint(QPainter::Antialiasing, true);
+
+  if (this->overlay_mode)
+    painter.setOpacity(std::clamp(this->visibility * np::show_opacity_lead, 0.0, 1.0));
+  else
+    painter.fillRect(this->rect(), this->style.canvas_bg);
+
+  const QRectF card = this->card_rect();
+  if (card.width() <= 0.0 || card.height() <= 0.0)
+    return;
+
+  const double radius = std::min<double>(this->style.corner_radius +
+                                             np::card_radius_extra,
+                                         std::min(card.width(), card.height()) / 2.0);
+  painter.setPen(QPen(this->style.seam, 1));
+  painter.setBrush(this->style.rail_bg);
+  painter.drawRoundedRect(card, radius, radius);
+}
+
+void NodePaletteSidebar::resizeEvent(QResizeEvent *event)
+{
+  QWidget::resizeEvent(event);
+  this->layout_header();
+}
+
 void NodePaletteSidebar::restyle_all(const NodePalettePalette &style)
 {
   for (NodePaletteSidebar *sidebar : live_sidebars())
@@ -927,47 +859,201 @@ void NodePaletteSidebar::restyle_all(const NodePalettePalette &style)
 
 QLineEdit *NodePaletteSidebar::search_field() const { return this->search; }
 
+void NodePaletteSidebar::set_all_compact(bool state)
+{
+  // only the one on screen needs to be seen folding
+  for (NodePaletteSidebar *sidebar : live_sidebars())
+    sidebar->set_compact(state, sidebar->isVisible());
+}
+
+void NodePaletteSidebar::set_compact(bool state, bool animate)
+{
+  if (this->compact == state)
+    return;
+
+  this->compact = state;
+  this->close_flyout();
+
+  if (this->fold_button)
+    this->fold_button->set_look(this->style, state);
+
+  // folded, the name moves into the tooltip
+  for (CategoryRailButton *button : this->buttons)
+    button->setToolTip(state ? button->text() : QString());
+
+  const double target = state ? 0.0 : 1.0;
+
+  if (!animate || !this->style.animations || this->style.animation_ms <= 0 ||
+      !this->isVisible())
+  {
+    this->reveal_anim.set(target);
+    this->apply_reveal(target);
+  }
+  else if (!this->fly_fold(target))
+  {
+    this->reveal_anim.to(target,
+                         state ? motion::library_fold_live : motion::library_unfold_live,
+                         state ? motion::change() : motion::enter());
+  }
+
+  Q_EMIT this->compact_changed(state);
+}
+
+void NodePaletteSidebar::set_companion(QWidget *widget) { this->companion = widget; }
+
+void NodePaletteSidebar::set_overlay_mode(bool enabled)
+{
+  if (this->overlay_mode == enabled)
+    return;
+
+  this->overlay_mode = enabled;
+  this->setAttribute(Qt::WA_TranslucentBackground, enabled);
+  this->setAttribute(Qt::WA_NoSystemBackground, enabled);
+  this->setAutoFillBackground(!enabled);
+
+  if (QWidget *host = this->parentWidget())
+  {
+    if (enabled)
+      host->installEventFilter(this);
+    else
+      host->removeEventFilter(this);
+  }
+
+  if (enabled)
+  {
+    this->setMinimumWidth(0);
+    this->setMaximumWidth(QWIDGETSIZE_MAX);
+    this->sync_overlay_bounds();
+  }
+  else
+  {
+    this->apply_reveal(this->reveal);
+  }
+  this->update();
+}
+
 void NodePaletteSidebar::set_style(const NodePalettePalette &new_style)
 {
   this->style = new_style;
 
   if (auto *layout = qobject_cast<QVBoxLayout *>(this->layout()))
   {
-    layout->setContentsMargins(this->style.rail_padding,
-                               this->style.rail_padding,
-                               this->style.rail_padding,
-                               this->style.rail_padding);
-    layout->setSpacing(this->style.button_spacing);
+    // the card is inset from the editor's edges on three sides; on the fourth
+    // it meets the graph, where the tool rail keeps its own distance
+    const int pad = this->style.rail_padding;
+    layout->setContentsMargins(np::outer + pad, np::outer + pad, pad, np::outer + pad);
+    layout->setSpacing(pad);
   }
 
   if (this->rail && this->rail->layout())
     this->rail->layout()->setSpacing(this->style.button_spacing);
 
-  int max_width = 0;
-
   for (int i = 0; i < static_cast<int>(this->buttons.size()); ++i)
   {
     CategoryRailButton *button = this->buttons.at(i);
     button->set_style(this->style);
-    max_width = std::max(max_width, button->sizeHint().width());
 
     if (QMenu *menu = this->menu_at(i))
       this->apply_menu_style(menu, this->accent_for(button->text()));
   }
 
-  if (this->search)
-    this->search->setStyleSheet(
-        QString("QLineEdit { background-color: %1; color: %2; border: 1px solid %3;"
-                " border-radius: %4px; padding: 4px 8px; }")
-            .arg(this->style.flyout_bg.name())
-            .arg(this->style.text_active.name())
-            .arg(this->style.flyout_border.name())
-            .arg(std::max(0, this->style.corner_radius)));
+  if (this->scroll)
+  {
+    if (this->rail && this->rail->layout())
+      this->scroll->setMaximumHeight(this->rail->layout()->sizeHint().height());
 
-  if (max_width > 0)
-    this->setMinimumWidth(max_width + 4 * this->style.rail_padding);
+    this->scroll->setStyleSheet(
+        "QScrollArea, QScrollArea > QWidget > QWidget { background: transparent; }");
+
+    // the bar for the short editor that cannot show every category sits in
+    // the card's edge padding and only exists while there is something to
+    // scroll
+    if (this->scroller)
+    {
+      this->scroller->set_colors(this->style.rail_bg, this->style.text);
+      this->scroller->set_step(np::wheel_rows *
+                               (this->style.button_height + this->style.button_spacing));
+      this->scroller->sync();
+    }
+  }
+
+  const int header_h = this->header_height();
+
+  if (this->header_bar)
+    this->header_bar->setFixedHeight(header_h);
+
+  if (this->search)
+  {
+    // a well in the card: no border at rest, a gray one under the pointer and
+    // the accent only while typing
+    this->search->setFixedHeight(header_h);
+    this->search->setStyleSheet(
+        QString(
+            "QLineEdit { background-color: %1; color: %2; border: 1px solid %1;"
+            " border-radius: %3px; padding: 0px %4px; selection-background-color: %5; }"
+            "QLineEdit:hover { border-color: %6; }"
+            "QLineEdit:focus { border-color: %5; }")
+            .arg(this->style.field_bg.name())
+            .arg(this->style.text_active.name())
+            .arg(std::max(0, std::min(this->style.corner_radius, header_h / 2)))
+            .arg(np::search_padding)
+            .arg(this->style.focus.name())
+            .arg(this->style.flyout_border.name()));
+    if (this->search_icon)
+      this->search_icon->setIcon(magnifier_icon(this->style.text));
+  }
+
+  if (this->fold_button)
+  {
+    this->fold_button->setFixedSize(header_h, header_h);
+    this->fold_button->set_look(this->style, this->compact);
+    this->fold_button->set_reveal(this->reveal);
+  }
+
+  this->reveal_anim.set(this->compact ? 0.0 : 1.0);
+  this->apply_reveal(this->compact ? 0.0 : 1.0);
 
   this->update();
+}
+
+void NodePaletteSidebar::set_visible_animated(bool visible, bool animate)
+{
+  this->land_fold();
+  this->target_visible = visible;
+
+  // a hidden rail must not leave its flyout floating over the graph
+  if (!visible)
+    this->close_flyout();
+
+  if (!this->overlay_mode)
+  {
+    this->visibility = visible ? 1.0 : 0.0;
+    this->visibility_anim.set(this->visibility);
+    this->setVisible(visible);
+    return;
+  }
+
+  const double target = visible ? 1.0 : 0.0;
+  if (visible && !this->isVisible())
+  {
+    this->show();
+    this->raise();
+  }
+
+  if (!animate || !this->style.animations || this->style.animation_ms <= 0 ||
+      !this->parentWidget() || !this->parentWidget()->isVisible())
+  {
+    this->visibility_anim.set(target);
+    this->apply_visibility(target);
+    if (!visible)
+      this->hide();
+  }
+  else
+  {
+    this->visibility_anim.to(target,
+                             visible ? motion::library_show : motion::library_hide,
+                             visible ? motion::enter() : motion::leave());
+  }
 }
 
 void NodePaletteSidebar::setup_search(const std::map<std::string, std::string> &inventory)
@@ -1028,6 +1114,55 @@ void NodePaletteSidebar::setup_search(const std::map<std::string, std::string> &
                       return;
                     }
                 });
+}
+
+void NodePaletteSidebar::sync_overlay_bounds()
+{
+  if (!this->overlay_mode || !this->parentWidget())
+    return;
+
+  const int from = this->compact_width();
+  const int to = this->expanded_width();
+  const int w = static_cast<int>(std::lround(from + (to - from) * this->reveal));
+  const int parent_h = this->parentWidget()->height();
+  const int h = std::max(1, std::min(parent_h, this->ideal_overlay_height()));
+  const int x = static_cast<int>(std::lround(-w * (1.0 - this->visibility)));
+
+  this->setGeometry(x, 0, w, h);
+  this->layout_header();
+  Q_EMIT this->footprint_changed(this->footprint_right());
+}
+
+void NodePaletteSidebar::apply_reveal(double amount)
+{
+  this->reveal = std::clamp(amount, 0.0, 1.0);
+
+  if (this->overlay_mode)
+  {
+    this->sync_overlay_bounds();
+  }
+  else
+  {
+    const int from = this->compact_width();
+    const int to = this->expanded_width();
+    this->setFixedWidth(static_cast<int>(std::lround(from + (to - from) * this->reveal)));
+    this->layout_header();
+  }
+
+  if (this->fold_button)
+    this->fold_button->set_reveal(this->reveal);
+
+  for (CategoryRailButton *button : this->buttons)
+    button->set_reveal(this->reveal);
+
+  this->update();
+}
+
+void NodePaletteSidebar::apply_visibility(double amount)
+{
+  this->visibility = std::clamp(amount, 0.0, 1.0);
+  this->sync_overlay_bounds();
+  this->update();
 }
 
 } // namespace hesiod

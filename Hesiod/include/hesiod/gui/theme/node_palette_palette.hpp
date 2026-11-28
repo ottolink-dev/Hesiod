@@ -20,7 +20,12 @@ namespace hesiod
 struct NodePalettePalette
 {
   // --- surfaces
-  QColor surface{"#242424"};          ///< resting category button
+  QColor canvas_bg{"#1b1b1b"};        ///< behind the card, when it is not floating
+  QColor rail_bg{"#242424"};          ///< the card the rows sit on
+  QColor seam{"#2f2f2f"};             ///< the card's outline
+  QColor field_bg{"#1b1b1b"};         ///< search field
+  QColor focus{"#5e81ac"};            ///< search field while typing
+  QColor surface{"#242424"};          ///< resting category row: the card itself
   QColor surface_hover{"#303030"};    ///< hovered category button
   QColor surface_selected{"#3b3b3b"}; ///< category whose flyout is open
   QColor flyout_bg{"#1e1e1e"};
@@ -29,10 +34,10 @@ struct NodePalettePalette
   QColor text_active{"#f2f2f2"};
 
   // --- metrics, logical px
-  int button_height = 40;
-  int button_spacing = 6;
+  int button_height = 32;
+  int button_spacing = 2;
   int rail_padding = 8;
-  int icon_size = 22;
+  int icon_size = 18;
   int corner_radius = 8;
   int flyout_row_height = 28;
   int flyout_padding = 6;

@@ -92,6 +92,18 @@ constexpr int start_tile_zoom_out = 420;
 constexpr int start_scroll_glide = 190; // the pictures gliding to a wheel notch
 constexpr int splash_out = 340; // the splash fading as the start screen or window comes
 
+// the node library in the graph editor
+constexpr int library_fold = 250;      // folding to its icons, as one picture
+constexpr int library_unfold = 280;    // and back
+constexpr int library_fold_lead = 34;  // the picture stands still while the click settles
+constexpr int library_fold_live = 210; // folding the widgets themselves (no picture)
+constexpr int library_unfold_live = 250;
+constexpr int library_show = 240;          // View > Node Library: sliding in
+constexpr int library_hide = 190;          // and out
+constexpr int library_scroll_glide = 150;  // the rows gliding to a wheel notch
+constexpr int library_page_glide = 200;    // a click beside the scrollbar's thumb
+constexpr int library_scroll_linger = 700; // the thumb stays forward after scrolling
+
 const QEasingCurve &enter();  // (.22, 1, .36, 1)   decelerate into place
 const QEasingCurve &leave();  // (.4, 0, .9, .6)     gather speed and go
 const QEasingCurve &change(); // (.45, 0, .15, 1)   between two resting states
